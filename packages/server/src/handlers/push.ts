@@ -386,7 +386,13 @@ async function deliver(
       await repo.deletePushSubscription(subscription.playerId, subscription.deviceId);
       return "dropped";
     }
-    return result === "sent" ? "sent" : "failed";
+    if (result !== "sent") return "failed";
+    // Accepted: kept another 30 days (#524). A phone nothing reaches expires.
+    // The push went either way, so a failed renewal is logged, not a failure.
+    await repo.touchPushSubscription(subscription.playerId, subscription.deviceId).catch((err: unknown) => {
+      console.warn(`push: could not renew the subscription of device ${subscription.deviceId}:`, err);
+    });
+    return "sent";
   } catch (err) {
     console.warn(`push: a turn notice to device ${subscription.deviceId} failed:`, err);
     return "failed";

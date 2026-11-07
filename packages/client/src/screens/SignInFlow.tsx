@@ -144,7 +144,8 @@ export function OfferStep({
         Right now they&rsquo;re saved on our servers for this phone, and only while you keep playing:{" "}
         <b>seven days</b> after your last adventure, they&rsquo;re deleted
         {fieldGuide ? <>, along with your Field Guide</> : null}. Add an email and they&rsquo;re kept, levels, items
-        and all, until you delete them.
+        and all, for as long as they keep playing: a kid who stops is deleted <b>a year</b> after their last
+        adventure, or sooner if you choose.
       </p>
       <ul className="keepsake__party">
         {motes.map((mote) => (

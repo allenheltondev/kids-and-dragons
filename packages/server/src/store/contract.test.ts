@@ -22,6 +22,7 @@ import { emptyCamp, emptyKit, FIELD_GUIDE_VERSION, FORGOTTEN_FINDER } from "@kad
 import type { CampRecord, Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
+import { AccountRetiringError } from "./repository.ts";
 import type { CharacterWrite, EventRecord, GameRepository, PushSubscriptionRecord, RoomRecord } from "./repository.ts";
 
 const HOUR = 3600_000;
@@ -274,6 +275,10 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
 
     describe("multi-owner households (#248)", () => {
       const at = "2026-07-04T18:00:00.000Z";
+      // An owner is an owner of a household that is there (#524).
+      beforeEach(async () => {
+        await repo.putHousehold(household({ id: "h_g", ownerSub: "sub_a" }));
+      });
 
       it("gives every owner the household, and lists them all", async () => {
         await repo.putHousehold(household({ id: "h_g", ownerSub: "sub_a" }));
@@ -463,6 +468,28 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect((await repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben))?.householdId).toBe("h_g");
       });
 
+      it("hands out nothing while the sweep retires its household, or the sign-in redeeming it (#524)", async () => {
+        await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later));
+        const nowIso = new Date().toISOString();
+
+        // The household's owners were read when it was marked: no new one now.
+        await repo.beginRetiring("h_g");
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, ben)).toBeNull();
+        expect(await repo.listOwners("h_g", { consistent: true })).toEqual([]);
+        await repo.endRetiring("h_g");
+
+        // A sign-in about to be deleted gains no household from a code.
+        await repo.beginRetiringAccount("sub_b");
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, ben)).toBeNull();
+        expect(await repo.ownsAnyHousehold("sub_b")).toBe(false);
+        expect(await repo.listOwners("h_g", { consistent: true })).toEqual([]);
+
+        // Refused, not spent: it works once neither mark stands.
+        await repo.endRetiringAccount("sub_b");
+        expect((await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, ben))?.householdId).toBe("h_g");
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+      });
+
       it("will not spend an invite past its expiry, even before it is swept, and writes nothing", async () => {
         const expiresAt = new Date(Date.now() + HOUR).toISOString();
         await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", expiresAt));
@@ -533,6 +560,16 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         return repo.moveProfile({ move: read, code: "MOVEHERNOW", nowIso: at, to, forwardTtl: forwardTtl() });
       }
 
+      it("moves no kid into a home the sweep is retiring (#524), and leaves her where she was", async () => {
+        await club();
+        expect(await repo.beginRetiring("h_home")).toBe(true);
+        expect(await move({ householdId: "h_home" })).toBe("changed");
+        expect(await repo.getPlayer("h_club", "p_ada")).not.toBeNull();
+        expect(await repo.getPlayer("h_home", "p_ada")).toBeNull();
+        await repo.endRetiring("h_home");
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+      });
+
       it("reads what is hers and nothing else", async () => {
         await club();
         const read = await repo.readProfileMove("h_club", "p_ada");
@@ -599,6 +636,21 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.listOwners("h_new")).toEqual([owner]);
         expect((await repo.listCharacters("h_new")).map((c) => c.id).sort()).toEqual(["c_moth", "c_spark"]);
         expect(Object.keys((await repo.getFieldGuide("h_new")).entries)).toEqual(["moth"]);
+      });
+
+      it("makes no new home for a sign-in the sweep is retiring (#524), and moves nothing", async () => {
+        await club();
+        const home = household({ id: "h_new", displayName: "Ada's household", ownerSub: "sub_dad" });
+        const owner = { householdId: "h_new", cognitoSub: "sub_dad", addedAt: T };
+        await repo.beginRetiringAccount("sub_dad");
+        expect(await move({ household: home, owner })).toBe("changed");
+        expect(await repo.getHousehold("h_new")).toBeNull();
+        expect(await repo.ownsAnyHousehold("sub_dad")).toBe(false);
+        expect(await repo.getPlayer("h_club", "p_ada")).not.toBeNull();
+
+        await repo.endRetiringAccount("sub_dad");
+        expect(await move({ household: home, owner })).toBe("moved");
+        expect(await repo.listHouseholdsForAccount("sub_dad")).toEqual(["h_new"]);
       });
 
       it("carries her own record with her hero: her finished campaigns, and the finds she made visiting (#283)", async () => {
@@ -2420,6 +2472,135 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         await repo.deletePushSubscription("p_1", "d_nope");
         await repo.deletePushSubscription("p_9", "d_2");
         expect((await repo.listPushSubscriptions("p_1")).map((s) => s.deviceId)).toEqual(["d_2"]);
+      });
+
+      it("renews one that is there, and never brings back one that is not (#524)", async () => {
+        await repo.putPushSubscription(pushSubscription("p_1", "d_1"));
+        await repo.touchPushSubscription("p_1", "d_1");
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([pushSubscription("p_1", "d_1")]);
+        await repo.touchPushSubscription("p_1", "d_nope");
+        await repo.deletePushSubscription("p_1", "d_1");
+        await repo.touchPushSubscription("p_1", "d_1");
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([]);
+      });
+    });
+
+    describe("retiring a kept household and its sign-ins (#524)", () => {
+      it("makes a kid only in a household nobody is retiring, and never over one there", async () => {
+        await repo.putHousehold(household());
+        expect(await repo.createPlayer(player("p_1"))).toBe(true);
+        expect(await repo.createPlayer(player("p_1"))).toBe(false);
+        expect(await repo.hasPlayers("h_1")).toBe(true);
+
+        expect(await repo.beginRetiring("h_1")).toBe(true);
+        expect(await repo.beginRetiring("h_1")).toBe(true);
+        expect(await repo.createPlayer(player("p_2"))).toBe(false);
+        expect(await repo.getPlayer("h_1", "p_2")).toBeNull();
+
+        await repo.endRetiring("h_1");
+        expect(await repo.createPlayer(player("p_2"))).toBe(true);
+      });
+
+      it("makes no kid and no owner in a household that is gone or being deleted", async () => {
+        const owner = { householdId: "h_1", cognitoSub: "sub_b", addedAt: "2026-07-04T18:00:00.000Z" };
+        // Never there.
+        expect(await repo.createPlayer(player("p_1"))).toBe(false);
+        await expect(repo.putOwner(owner)).rejects.toBeInstanceOf(AccountRetiringError);
+
+        // Deleted: a call that arrives after the purge leaves nothing behind.
+        await repo.putHousehold(household());
+        await repo.beginRetiring("h_1");
+        expect(await repo.deleteRetiringHousehold("h_1")).toBe("deleted");
+        expect(await repo.createPlayer(player("p_late"))).toBe(false);
+        await expect(repo.putOwner(owner)).rejects.toBeInstanceOf(AccountRetiringError);
+        expect(await repo.getPlayer("h_1", "p_late")).toBeNull();
+        expect(await repo.hasPlayers("h_1")).toBe(false);
+        expect(await repo.listOwners("h_1", { consistent: true })).toEqual([]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+      });
+
+      it("makes a kept household with its first grown-up all at once, or not at all", async () => {
+        const at = "2026-07-04T18:00:00.000Z";
+        const owner = { householdId: "h_new", cognitoSub: "sub_a", addedAt: at };
+        const home = household({ id: "h_new", ownerSub: "sub_a" });
+
+        await repo.beginRetiringAccount("sub_a");
+        expect(await repo.createOwnedHousehold(home, { cognitoSub: "sub_a", owner })).toBe(false);
+        expect(await repo.getHousehold("h_new")).toBeNull();
+        expect(await repo.listOwners("h_new", { consistent: true })).toEqual([]);
+        expect(await repo.ownsAnyHousehold("sub_a")).toBe(false);
+
+        await repo.endRetiringAccount("sub_a");
+        expect(await repo.createOwnedHousehold(home, { cognitoSub: "sub_a", owner })).toBe(true);
+        expect(await repo.getHousehold("h_new")).toEqual(home);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_new"]);
+        expect(await repo.listOwners("h_new", { consistent: true })).toEqual([owner]);
+        // An id already taken is refused, and the first stands.
+        expect(await repo.createOwnedHousehold({ ...home, displayName: "Other" }, { cognitoSub: "sub_b" })).toBe(false);
+        expect(await repo.getHousehold("h_new")).toEqual(home);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+
+        // Without an owner row: the pointer alone, as a brand-new sign-in's home.
+        expect(await repo.createOwnedHousehold(household({ id: "h_solo", ownerSub: "sub_c" }), { cognitoSub: "sub_c" })).toBe(true);
+        expect(await repo.listHouseholdsForAccount("sub_c")).toEqual(["h_solo"]);
+        expect(await repo.listOwners("h_solo", { consistent: true })).toEqual([]);
+      });
+
+      it("will not mark a household that is gone, and reads emptiness from what is there", async () => {
+        expect(await repo.beginRetiring("h_none")).toBe(false);
+        await repo.putHousehold(household());
+        expect(await repo.hasPlayers("h_1")).toBe(false);
+      });
+
+      it("deletes a household only while its mark stands", async () => {
+        await repo.putHousehold(household());
+        expect(await repo.deleteRetiringHousehold("h_1")).toBe("unmarked");
+        expect(await repo.getHousehold("h_1")).not.toBeNull();
+
+        await repo.beginRetiring("h_1");
+        // A write that replaces the household takes the mark with it.
+        await repo.putHousehold(household({ displayName: "Renamed" }));
+        expect(await repo.deleteRetiringHousehold("h_1")).toBe("unmarked");
+
+        await repo.beginRetiring("h_1");
+        expect(await repo.deleteRetiringHousehold("h_1")).toBe("deleted");
+        expect(await repo.getHousehold("h_1")).toBeNull();
+        expect(await repo.deleteRetiringHousehold("h_1")).toBe("gone");
+      });
+
+      it("adds no owner to a household being retired", async () => {
+        await repo.putHousehold(household());
+        await repo.beginRetiring("h_1");
+        await expect(
+          repo.putOwner({ householdId: "h_1", cognitoSub: "sub_b", addedAt: "2026-07-04T18:00:00.000Z" }),
+        ).rejects.toBeInstanceOf(AccountRetiringError);
+        expect(await repo.listOwners("h_1", { consistent: true })).toEqual([]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+      });
+
+      it("writes no household pointer for a sign-in being retired, by any of the three ways", async () => {
+        await repo.putHousehold(guest("h_g", new Date(Date.now() + DAY).toISOString()));
+        await repo.putHousehold(household({ id: "h_2" }));
+        await repo.beginRetiringAccount("sub_a");
+        await repo.beginRetiringAccount("sub_a");
+
+        await expect(repo.putAccountPointer("sub_a", "h_1")).rejects.toBeInstanceOf(AccountRetiringError);
+        await expect(
+          repo.putOwner({ householdId: "h_2", cognitoSub: "sub_a", addedAt: "2026-07-04T18:00:00.000Z" }),
+        ).rejects.toBeInstanceOf(AccountRetiringError);
+        expect(await repo.claimHousehold("h_g", "sub_a", "d_1")).toBe(false);
+        expect((await repo.getHousehold("h_g"))?.guest).toBe(true);
+        expect(await repo.ownsAnyHousehold("sub_a")).toBe(false);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual([]);
+
+        // Another sign-in is untouched by the mark.
+        await repo.putAccountPointer("sub_b", "h_1");
+        expect(await repo.ownsAnyHousehold("sub_b")).toBe(true);
+
+        await repo.endRetiringAccount("sub_a");
+        expect(await repo.claimHousehold("h_g", "sub_a", "d_1")).toBe(true);
+        expect(await repo.ownsAnyHousehold("sub_a")).toBe(true);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_g"]);
       });
     });
   });

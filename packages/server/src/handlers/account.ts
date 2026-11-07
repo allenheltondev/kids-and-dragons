@@ -29,6 +29,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { keepUntil, startClocks } from "./retention.ts";
 
 /**
  * How long an unclaimed household survives. Long enough that "we'll play again
@@ -41,6 +42,14 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
  * those characters on Saturday.
  */
 export const GUEST_HOUSEHOLD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Said when a sign-in cannot make a household because the retention sweep
+ * is removing it (#524): it has owned nothing for a long time. Rare, and
+ * over within the sweep's run.
+ */
+export const RETIRING_SIGN_IN =
+  "This sign-in is being removed after a long time without a household. Try again in a few minutes, or sign up again.";
 
 /**
  * Somebody is playing in this household: if it is a guest, its 7 days start
@@ -189,11 +198,16 @@ export function vetTypedName(raw: unknown, fallback: string): HandlerResult<stri
  * A player profile and nothing else: no device is bound to it. `addPlayer`
  * binds the phone that asked; a kid added on a shared tablet gets no binding
  * at all (#250).
+ *
+ * A kid added to a kept household starts on its retention clock at once
+ * (#524), counted from now, so one added and never played with is not kept
+ * forever. A guest household's kid has no clock: the guest sweep takes her
+ * with the household.
  */
 export async function createProfile(
   householdId: string,
   displayName: string,
-  deps: Pick<AccountDeps, "repo">,
+  deps: Pick<AccountDeps, "repo" | "now">,
 ): Promise<PlayerProfile> {
   if (isBlockedName(displayName)) throw new Error("createProfile was handed a name the filter refuses");
   const existing = await deps.repo.listPlayers(householdId);
@@ -203,7 +217,16 @@ export async function createProfile(
     displayName,
     color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
   };
-  await deps.repo.putPlayer(player);
+  // Refused while the retention sweep is retiring or deleting the household
+  // (#524): the sweep has read it as empty, and a kid made now would go with it.
+  if (!(await deps.repo.createPlayer(player))) {
+    throw new Error(`household ${householdId} is being removed; no kid can be added to it`);
+  }
+  const household = await deps.repo.getHousehold(householdId);
+  if (household && !household.guest) {
+    const now = iso(deps.now());
+    await deps.repo.touchPlayer(householdId, player.id, now, keepUntil(household, now));
+  }
   return player;
 }
 
@@ -345,7 +368,18 @@ export async function linkAccount(
         }
       } else {
         const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub, input.principal.deviceId);
-        if (claimed) return ok(await describe(current.id, true, true, input.cognitoSub, deps));
+        if (claimed) {
+          // Kept now: its kids leave the guest sweep for the retention clock
+          // (#524). Never fails the claim, which has landed: a kid this misses
+          // is filed the next time she plays (`notePlayed`).
+          try {
+            const kept = await deps.repo.getHousehold(current.id);
+            if (kept) await startClocks(kept, deps);
+          } catch (err) {
+            console.error(`linkAccount: could not start the retention clocks of ${current.id}:`, err);
+          }
+          return ok(await describe(current.id, true, true, input.cognitoSub, deps));
+        }
       }
       // Someone else's already, or not this device's to claim. Fall through to
       // this account's own household.
@@ -373,14 +407,19 @@ export async function linkAccount(
   // Case 3 — a brand new account with nothing to claim.
   const nowMs = deps.now();
   const householdId = newId("h");
-  await deps.repo.putHousehold({
-    id: householdId,
-    displayName: `${safeEmailName(input.email)} household`,
-    ownerSub: input.cognitoSub,
-    guest: false,
-    createdAt: iso(nowMs),
-  });
-  await deps.repo.putAccountPointer(input.cognitoSub, householdId);
+  // The household and its pointer together, or neither (#524): a kept
+  // household nothing points at would never be swept.
+  const made = await deps.repo.createOwnedHousehold(
+    {
+      id: householdId,
+      displayName: `${safeEmailName(input.email)} household`,
+      ownerSub: input.cognitoSub,
+      guest: false,
+      createdAt: iso(nowMs),
+    },
+    { cognitoSub: input.cognitoSub },
+  );
+  if (!made) return fail("ILLEGAL", RETIRING_SIGN_IN);
 
   const bound = await addPlayer(
     { householdId, displayName: safeEmailName(input.email) },
