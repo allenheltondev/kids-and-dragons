@@ -30,6 +30,9 @@ try:
 except ImportError:
     sys.exit("error: needs Pillow and numpy  ->  pip install pillow numpy")
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import coat  # noqa: E402  (coat masks: tools/art/coat.py)
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MANIFEST = os.path.join(ROOT, "assets", "manifest.json")
 
@@ -1219,6 +1222,81 @@ def check_story_props(rep: Report, mf: dict) -> None:
                 rep.fail(f"story-props/{stem}", "declared in manifest.storyProps.ids", "undeclared file")
 
 
+
+def check_coat_masks(rep: Report, mf: dict) -> None:
+    """Hero-look coat masks (docs/hero-looks.md section 4.3, step 4).
+
+    Every species names its region, and every mask is gated: listed in coatMasks.paintings
+    exactly when it is on disk (a draft is never shipped as is), 8-bit greyscale on its
+    painting's own canvas, neither empty nor the whole canvas, and on a transparent painting,
+    inside the painting's alpha. A gear portrait is opaque, so the review sheet is its only
+    check that the background stays out."""
+    section = mf.get("coatMasks")
+    if section is None:
+        rep.fail("manifest coatMasks", "declared (hero-looks.md section 4.2)", "missing")
+        return
+    allowed_regions = {"coat", "mane", "scales", "feathers", "fur"}
+    for sp in mf["species"]:
+        region = section["regions"].get(sp["id"])
+        if region is None:
+            rep.fail(f"coatMasks.regions.{sp['id']}", "a region for every species", "missing")
+        elif region.get("region") not in allowed_regions:
+            rep.fail(f"coatMasks.regions.{sp['id']}.region", sorted(allowed_regions), region.get("region"))
+        elif region.get("draftFrom") not in sp["palette"]:
+            rep.fail(f"coatMasks.regions.{sp['id']}.draftFrom", f"a palette slot of {sp['id']}", region.get("draftFrom"))
+
+    tol = section["tolerance"]
+    known = {p.painting: p for p in coat.paintings(mf)}
+    listed = section.get("paintings", [])
+    for painting in listed:
+        if painting not in known:
+            rep.fail(f"coatMasks.paintings {painting}", "a declared hero painting", "unknown painting")
+    if len(set(listed)) != len(listed):
+        rep.fail("coatMasks.paintings", "each painting once", "duplicates")
+
+    by_mask = {os.path.normcase(os.path.normpath(coat.asset(p.mask, ROOT))): p for p in known.values()}
+    for p in known.values():
+        mask_path = coat.asset(p.mask, ROOT)
+        on_disk = os.path.isfile(mask_path)
+        if p.painting in listed and not on_disk:
+            rep.fail(p.mask, "present (listed in coatMasks.paintings)", "missing")
+            continue
+        if not on_disk:
+            continue
+        if p.painting not in listed:
+            rep.fail(p.mask, "listed in manifest coatMasks.paintings once hand-cleaned and reviewed",
+                     "unlisted (a draft?)", "hero-looks.md section 4.3: a draft is never shipped as is")
+        painting_path = coat.asset(p.painting, ROOT)
+        if not os.path.isfile(painting_path):
+            rep.fail(p.mask, "a mask beside a delivered painting", f"{p.painting} missing")
+            continue
+        try:
+            with Image.open(mask_path) as mask_im, Image.open(painting_path) as painting_im:
+                mask_im.load()
+                painting_im.load()
+                problems = coat.mask_problems(mask_im, painting_im, tol)
+        except Exception as err:  # noqa: BLE001 - a bad PNG is the finding
+            rep.fail(p.mask, "a decodable PNG", str(err))
+            continue
+        for what, expected, actual in problems:
+            rep.fail(f"{p.mask} {what}", expected, actual, "hero-looks.md section 4.2-4.3")
+        if not problems:
+            rep.ok(f"{p.mask}  coat mask")
+
+    # a mask-shaped file beside no declared painting
+    for directory in ("characters", "character-rigs", "gear-portraits"):
+        base_dir = os.path.join(ROOT, "assets", directory)
+        if not os.path.isdir(base_dir):
+            continue
+        for base, _, files in os.walk(base_dir):
+            for filename in files:
+                if "coat-mask" not in filename:
+                    continue
+                path = os.path.normcase(os.path.normpath(os.path.join(base, filename)))
+                if path not in by_mask:
+                    rep.fail(os.path.relpath(path, ROOT), "a mask beside a declared hero painting", "stray mask")
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -1279,6 +1357,7 @@ def main() -> int:
     # checking it is that nobody was going to remember to ask.
     check_gear_portraits(rep, mf)
     check_figure_variants(rep, mf)
+    check_coat_masks(rep, mf)
     check_campaign_art(rep, mf)
     check_story_plates(rep, mf)
     check_camp_layout(rep, mf)

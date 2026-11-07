@@ -168,6 +168,14 @@ together to keep that window short.
 5. `assets/manifest.json` lists which paintings have masks, so the client never asks for a mask
    that does not exist (as `figureVariants` does for class art).
 
+Built in #673: `assets/manifest.json` → `coatMasks` holds the species regions (`regions`, with
+the palette slot the draft picks from), the gate's bounds (`tolerance`) and the listed paintings
+(`paintings`, paths under `assets/`); `tools/art/coat.py` is the library under the draft tool,
+the gate and the sheet, and `packages/client/src/world/coat-masks.ts` is the client's lookup
+(`coatRegionOf`, `hasCoatMask`, `coatMaskUrl`). A drafted mask fails `art:verify` until its
+painting is listed, so a draft cannot ship by accident. The sheet's colour pages are
+`art/review/<species>/coat-<family>.png` and include unlisted drafts.
+
 ## 5. The tinter
 
 ### 5.1 One resolver, one tinter, two outputs
