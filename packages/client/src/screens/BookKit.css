@@ -1,0 +1,337 @@
+/* Her kit in the adventure book (BookKit.tsx): her pitch, then one shelf of
+   painted tiles at a time, in the Field Guide's gold-and-plum. */
+
+.book-kit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+/* Her pitch: a little campsite card, lit warm from the fire. */
+.book-kit__pitch {
+  position: relative;
+  border: 0.08em solid #ad8857aa;
+  border-radius: 1.2em 0.7em 1.2em 0.7em;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 100%, #ffb86b33, transparent 70%),
+    linear-gradient(#2c2340, #2a2a3a 62%, #3b3a2a 62%, #2f2c22);
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0004;
+  overflow: hidden;
+  padding: 0.6em 0.6em 0.5em;
+}
+
+.book-kit__stage {
+  position: relative;
+  block-size: clamp(9.5em, 46vw, 13em);
+  max-inline-size: 26em;
+  margin-inline: auto;
+}
+
+.book-kit__stage.is-bouncing {
+  animation: book-kit-bounce var(--kad-dur-base, 260ms) var(--kad-ease-out, ease-out);
+}
+
+@keyframes book-kit-bounce {
+  0% { transform: scale(0.97); }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-kit__stage.is-bouncing { animation: none; }
+}
+
+.book-kit__tent {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 8%;
+  inline-size: 62%;
+  aspect-ratio: 1;
+}
+
+.book-kit__tent > svg,
+.book-kit__tent > img,
+.book-kit__bedroll > svg,
+.book-kit__bedroll > img,
+.book-kit__buddy > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+/* Decorations hang on the tent's two spots, as at camp. */
+.book-kit__hung {
+  position: absolute;
+  inline-size: 24%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 0.1em 0.15em #0006);
+}
+.book-kit__hung--0 { inset-inline-start: 22%; inset-block-start: 22%; }
+.book-kit__hung--1 { inset-inline-end: 20%; inset-block-start: 16%; }
+
+.book-kit__bedroll {
+  position: absolute;
+  inset-block-end: -4%;
+  inset-inline-end: 4%;
+  inline-size: 34%;
+  aspect-ratio: 1;
+}
+
+.book-kit__buddy {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: 22%;
+  aspect-ratio: 1;
+}
+
+.book-kit__caption {
+  position: relative;
+  margin: 0.35em 0 0;
+  text-align: center;
+  font-family: var(--kad-font-display, inherit);
+  font-weight: 700;
+  color: #f3ddb3;
+}
+
+/* The shelves: gold pills, every one in view, as the Field Guide's sections. */
+/* All five in one row, even on the narrowest phone: equal columns, icon over word. */
+.book-kit__shelves {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0.3em;
+}
+
+.book-kit__shelf-tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  min-inline-size: 0;
+  min-block-size: max(48px, 3.2em);
+  padding: 0.3em 0.2em;
+  font: inherit;
+  font-size: 0.78em;
+  font-weight: 700;
+  color: #e6d3b0;
+  background: linear-gradient(#3c2d42, #20192f);
+  border: 0.08em solid #ad885777;
+  border-radius: 1em;
+  box-shadow: inset 0 -0.2em #0003;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-kit__shelf-tab .kad-icon { color: #e5c281; font-size: 1.2em; }
+.book-kit__shelf-tab[aria-selected="true"] {
+  color: var(--kad-accent-ink);
+  background: linear-gradient(#ffe9a8, #e8b85a);
+  border-color: #ffe9a8;
+  box-shadow: 0 0.15em 0.4em #0007;
+}
+.book-kit__shelf-tab[aria-selected="true"] .kad-icon { color: inherit; }
+
+.book-kit__group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.book-kit__legend {
+  padding: 0;
+  margin-block-end: 0.5em;
+  font-weight: 700;
+  color: var(--kad-ink-dim);
+  font-size: 0.9em;
+}
+
+/* Big painted tiles, the Field Guide's cards. */
+.book-kit__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(6.6em, 100%), 1fr));
+  gap: 0.6em;
+}
+
+.book-kit__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.3em;
+  min-block-size: 7.6em;
+  padding: 0.5em 0.4em 0.55em;
+  font: inherit;
+  color: var(--kad-ink);
+  background: radial-gradient(ellipse at 50% 25%, #5a4668aa, #231d35 78%);
+  border: 0.08em solid #ad8857aa;
+  border-radius: 1.1em 0.6em 1.1em 0.6em;
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
+  cursor: pointer;
+  transition: transform var(--kad-dur-fast, 120ms) var(--kad-ease, ease), box-shadow var(--kad-dur-fast, 120ms) var(--kad-ease, ease);
+}
+.book-kit__tile:active { transform: scale(0.96); }
+.book-kit__tile[aria-pressed="true"] {
+  border-color: #ffe9a8;
+  box-shadow: 0 0 0 0.12em #ffe9a8, 0 0 1em #e8b85a66, inset 0 0.15em #ffffff18;
+  background: radial-gradient(ellipse at 50% 25%, #7a5c6c, #2b2238 80%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .book-kit__tile { transition: none; }
+  .book-kit__tile:active { transform: none; }
+}
+
+.book-kit__tile-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-block-size: 0;
+  inline-size: 100%;
+  block-size: 4.6em;
+  color: #e5c281;
+}
+.book-kit__tile-art > svg,
+.book-kit__tile-art > img {
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+  object-fit: contain;
+}
+
+.book-kit__tile-name {
+  font-size: 0.85em;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.book-kit__tile-check {
+  position: absolute;
+  inset-block-start: 0.3em;
+  inset-inline-end: 0.3em;
+  display: grid;
+  place-items: center;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  border-radius: 50%;
+  color: var(--kad-accent-ink);
+  background: linear-gradient(#ffe9a8, #e8b85a);
+  box-shadow: 0 0.1em 0.3em #0006;
+  font-size: 0.8em;
+}
+
+/* Colors: big round swatches, the chosen one ringed in gold. */
+.book-kit__swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.4em, 1fr));
+  gap: 0.5em;
+}
+
+.book-kit__swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.35em 0.2em;
+  font: inherit;
+  color: var(--kad-ink);
+  background: none;
+  border: 0;
+  border-radius: 1em;
+  cursor: pointer;
+}
+
+.book-kit__swatch-dot {
+  display: grid;
+  place-items: center;
+  inline-size: 3.1em;
+  block-size: 3.1em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff55, transparent 45%), var(--swatch);
+  box-shadow: inset 0 -0.2em #0003, 0 0.15em 0.4em #0005;
+  border: 0.15em solid #ffffff22;
+  color: #fff;
+  transition: transform var(--kad-dur-fast, 120ms) var(--kad-ease, ease);
+}
+.book-kit__swatch[aria-pressed="true"] .book-kit__swatch-dot {
+  border-color: #ffe9a8;
+  box-shadow: 0 0 0 0.18em #2a2236, 0 0 0 0.32em #ffe9a8, 0 0 1em #e8b85a77;
+  transform: scale(1.06);
+}
+.book-kit__swatch:active .book-kit__swatch-dot { transform: scale(0.94); }
+@media (prefers-reduced-motion: reduce) {
+  .book-kit__swatch-dot { transition: none; }
+  .book-kit__swatch[aria-pressed="true"] .book-kit__swatch-dot,
+  .book-kit__swatch:active .book-kit__swatch-dot { transform: none; }
+}
+
+.book-kit__swatch-name {
+  font-size: 0.78em;
+  font-weight: 700;
+  color: var(--kad-ink-dim);
+}
+.book-kit__swatch[aria-pressed="true"] .book-kit__swatch-name { color: #f3ddb3; }
+
+/* Decorations: her tent's two spots, then what to hang there. */
+.book-kit__decorate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+.book-kit__spots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+}
+
+.book-kit__spot {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-block-size: 3.4em;
+  padding: 0.35em 0.6em;
+  font: inherit;
+  color: #e6d3b0;
+  background: linear-gradient(#3c2d42, #20192f);
+  border: 0.1em dashed #ad885799;
+  border-radius: 1em;
+  cursor: pointer;
+  text-align: start;
+}
+.book-kit__spot[aria-checked="true"] {
+  border-style: solid;
+  border-color: #ffe9a8;
+  box-shadow: 0 0 0 0.1em #ffe9a8, 0 0 0.8em #e8b85a55;
+}
+
+.book-kit__spot-art {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.4em;
+  block-size: 2.4em;
+  border-radius: 0.7em;
+  background: #0003;
+  color: #e5c281;
+}
+.book-kit__spot-art > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.book-kit__spot-name {
+  font-size: 0.85em;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

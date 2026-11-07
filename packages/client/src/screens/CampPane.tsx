@@ -17,15 +17,16 @@
  *     here only: nothing is sent, and no table hears it. Not over its head in
  *     the picture, where at camp scale it covered the figures' names.
  *   - **Her hero's kit** (tent, bedroll and pack, color, decorations) and her
- *     **buddy** in this crew's camp change exactly as on the phone's Camp
- *     panel (CampPanel.tsx `KitEditor`, the table's rules), through the book's
- *     own write (store/book-kit-sync.ts): at once, queued on the phone when
- *     there is no signal ("Saved on this phone…"), and applied when it is
- *     sent, over anything changed meanwhile (the device wins, §11), with a
- *     short note for a pick that could not be saved.
+ *     **buddy** in this crew's camp, first on the page: her pitch and one
+ *     shelf of painted tiles at a time (BookKit.tsx), on the table's rules.
+ *     Every tap saves itself, behind the scenes (store/book-kit-sync.ts): at
+ *     once, queued on the phone when there is no signal, and applied when it
+ *     is sent, over anything changed meanwhile (the device wins, §11). Nothing
+ *     says "saving" (owner, 2026-11-07); only a pick the server refused, or
+ *     one the phone could not keep, says so.
  *
- * Named crew (a picker when her heroes sit with more than one), when it was
- * last synced, and a first-visit word when there is nothing to show yet.
+ * Named crew (a picker when her heroes sit with more than one), and a
+ * first-visit word when there is nothing to show yet.
  * Lazy: JournalScreen loads this chunk the first time "Camp" is opened, so
  * none of the camp is in the journal chunk, let alone the first paint.
  */
@@ -35,22 +36,21 @@ import type { ReactElement } from "react";
 import { bookKitChanges, friendsOut } from "@kad/shared";
 import type { BookKitState, CampFriendCard, ClientIntent, HeroKitView, JournalCrewCamp, JournalFriend, JournalKit, JournalResponse, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { Icon } from "./icons";
-import { FriendArt, KitEditor } from "./CampPanel";
+import { FriendArt } from "./CampPanel";
+import { BookKit } from "./BookKit";
 import { StillCamp } from "../world/StillCamp";
 import { campLayoutFor } from "../world/lobby-camp";
 import { campBackdropFamily } from "../world/camp-backdrop";
-import { pieceName } from "../world/camp-scene";
+import { CREW_PIECE_ART, pieceName } from "../world/camp-scene";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { loadPlayerDeviceToken } from "../store/persistence";
-import { journalKitState, kitQueueUnsaved, loadKitQueue, withQueuedKit } from "../store/kit-queue";
+import { journalKitState, loadKitQueue, withQueuedKit } from "../store/kit-queue";
 import { bookKitStatus, clearBookKitNotes, editBookKit, onBookKit, type ApplyKit } from "../store/book-kit-sync";
 import { warm } from "../sw/warm";
 import "./CampPane.css";
 
 export interface CampPaneProps {
   journal: JournalResponse;
-  /** "Last synced earlier today", or "Synced just now": said by the book, which knows when it read. */
-  synced: string;
   /** A fresh read (with a signal): the camp's art is saved for offline while there is one. */
   fresh: boolean;
   /** The hero the book has open, and a way to open another. */
@@ -69,7 +69,7 @@ let chosenCrew: string | null | undefined;
 /** Each friend's next reaction, round and round, for the life of the page. */
 const reactionAt = new Map<string, number>();
 
-export default function CampPane({ journal, synced, fresh, hero, onHero, onKit }: CampPaneProps): ReactElement {
+export default function CampPane({ journal, fresh, hero, onHero, onKit }: CampPaneProps): ReactElement {
   const camp = journal.camp;
   const [, rerender] = useReducer((n: number) => n + 1, 0);
   useEffect(() => onBookKit(rerender), []);
@@ -113,7 +113,6 @@ export default function CampPane({ journal, synced, fresh, hero, onHero, onKit }
         hero={hero}
         onHero={onHero}
         serverKit={camp.kits[hero.id] ?? null}
-        synced={synced}
         fresh={fresh}
         onKit={onKit}
       />
@@ -182,7 +181,6 @@ function CrewCamp({
   hero,
   onHero,
   serverKit,
-  synced,
   fresh,
   onKit,
 }: {
@@ -193,7 +191,6 @@ function CrewCamp({
   hero: ResolvedCharacter;
   onHero: (id: string) => void;
   serverKit: JournalKit | null;
-  synced: string;
   fresh: boolean;
   onKit: ApplyKit;
 }): ReactElement {
@@ -212,7 +209,6 @@ function CrewCamp({
 
   const shown = serverKit ? withQueuedKit(serverKit, hero.id, queue) : null;
   const kit = shown ? kitView(shown, crew.crew) : null;
-  const waiting = queue.some((e) => e.characterId === hero.id);
   const out = friendsOut(crew.friends.map((f) => f.id), [kit?.buddy]);
   const family = campBackdropFamily(journal.whereabouts?.biome ?? null);
   const layout = campLayoutFor(crew.camp.frameStage, family);
@@ -236,15 +232,15 @@ function CrewCamp({
     return () => clearTimeout(timer);
   }, [fresh, crew.crew, hero.id]);
 
-  const dispatch = (intent: ClientIntent): void => {
-    if (intent.type !== "KIT_EDIT" || !shown || !serverKit) return;
+  const edit = (change: Omit<Extract<ClientIntent, { type: "KIT_EDIT" }>, "type" | "characterId" | "revision">): void => {
+    if (!shown || !serverKit) return;
     const now: BookKitState = journalKitState(shown, crew.crew);
     const next: BookKitState = {
-      style: intent.style ?? now.style,
-      tent: intent.tent ?? now.tent,
-      color: intent.color !== undefined ? intent.color : now.color,
-      slots: intent.slots ? [...intent.slots] : now.slots,
-      buddy: intent.buddy !== undefined ? intent.buddy : now.buddy,
+      style: change.style ?? now.style,
+      tent: change.tent ?? now.tent,
+      color: change.color !== undefined ? change.color : now.color,
+      slots: change.slots ? [...change.slots] : now.slots,
+      buddy: change.buddy !== undefined ? change.buddy : now.buddy,
     };
     setError(null);
     editBookKit({ characterId: hero.id, crew: crew.crew, changes: bookKitChanges(now, next) }, onKit).catch((e: unknown) => {
@@ -264,75 +260,6 @@ function CrewCamp({
 
   return (
     <div ref={root} className="book-camp__body">
-      <header className="book-camp__head">
-        <h2 className="book-camp__title">
-          <Icon name="rest" />
-          <span>{`${crew.name}'s camp`}</span>
-        </h2>
-        <p className="book-camp__synced kad-muted" data-testid="book-camp-synced">
-          <Icon name="waiting" />
-          <span>{synced}</span>
-        </p>
-      </header>
-
-      {crews.length > 1 ? (
-        <div className="book-camp__crews" role="radiogroup" aria-label="Which crew's camp" data-testid="book-camp-crews">
-          {crews.map((c) => (
-            <button
-              key={c.crew ?? ""}
-              type="button"
-              role="radio"
-              aria-checked={c.crew === crew.crew}
-              className={`book-camp__crew kad-tap kad-focusable${c.crew === crew.crew ? " is-on" : ""}`}
-              onClick={() => onCrew(c.crew)}
-            >
-              <Icon name="crew" />
-              <span>{c.name}</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {/* Kept only in memory, it is not saved on this phone: the note says so instead (book-kit-sync.ts `UNSAVED_NOTE`). */}
-      {waiting && status.offline && kitQueueUnsaved() ? null : waiting && status.offline ? (
-        <p className="book-camp__queued" role="status" data-testid="book-camp-queued">
-          <Icon name="check" />
-          <span>Saved on this phone, will share when you're back online.</span>
-        </p>
-      ) : waiting ? (
-        <p className="book-camp__queued book-camp__queued--sending" role="status" data-testid="book-camp-sending">
-          <Icon name="waiting" />
-          <span>Saving…</span>
-        </p>
-      ) : null}
-      {status.notes.length > 0 ? (
-        <div className="book-camp__note" role="status" data-testid="book-camp-note">
-          <Icon name="hand" />
-          <p>{status.notes.join(" ")}</p>
-          <button type="button" className="book-camp__note-ok kad-tap kad-focusable" onClick={clearBookKitNotes}>
-            OK
-          </button>
-        </div>
-      ) : null}
-      {error ? (
-        <p className="book-camp__error" role="alert">
-          {error}
-        </p>
-      ) : null}
-
-      {layout && state ? (
-        <div className="book-camp__picture" aria-hidden="true">
-          <StillCamp layout={layout} state={state} fit="width" footRoom={FOOT_ROOM} />
-        </div>
-      ) : null}
-
-      {startingOut ? (
-        <p className="book-camp__start" data-testid="book-camp-start">
-          <Icon name="star" />
-          <span>Your camp is just starting! Things your crew finds and friends you make on adventures show up here.</span>
-        </p>
-      ) : null}
-
       {journal.heroes.length > 1 ? (
         <div className="book-camp__heroes" role="radiogroup" aria-label="Whose kit">
           {journal.heroes.map((h) => (
@@ -353,52 +280,116 @@ function CrewCamp({
         </div>
       ) : null}
 
-      {crew.friends.length > 0 ? (
-        <section className="book-camp__section" aria-labelledby={`${base}-friends`} data-testid="book-camp-friends">
-          <h3 className="book-camp__heading" id={`${base}-friends`}>
-            <Icon name="heart" />
-            <span>Friends</span>
-          </h3>
-          <ul className="book-camp__friends">
-            {crew.friends.map((friend) => (
-              <li key={friend.id}>
-                <button type="button" className="camp-option camp-option--friend book-camp__friend kad-focusable" onClick={() => say(friend)} data-friend={friend.id}>
-                  <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
-                    <FriendArt card={card(friend)} />
-                  </span>
-                  <span className="camp-option__label">{`Say hi to ${friend.name}`}</span>
-                </button>
-                <span className="book-camp__from">{friend.source}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="book-camp__said" role="status" aria-live="polite" data-testid="book-camp-said">
-            {words ? `${crew.friends.find((f) => f.id === words.id)?.name ?? ""}: ${words.text}` : ""}
-          </p>
-          {crew.friends.length > out.length ? <p className="book-camp__from">Your crew's friends take turns at camp.</p> : null}
-        </section>
+      {/* Only what could not be kept, never "saving" (owner, 2026-11-07): a refused pick, or a phone that could not hold it. */}
+      {status.notes.length > 0 ? (
+        <div className="book-camp__note" role="status" data-testid="book-camp-note">
+          <Icon name="hand" />
+          <p>{status.notes.join(" ")}</p>
+          <button type="button" className="book-camp__note-ok kad-tap kad-focusable" onClick={clearBookKitNotes}>
+            OK
+          </button>
+        </div>
+      ) : null}
+      {error ? (
+        <p className="book-camp__error" role="alert">
+          {error}
+        </p>
       ) : null}
 
       {kit ? (
-        <KitEditor member={seated(hero)} kit={kit} held={false} dispatch={dispatch} friends={crew.friends.map(card)} />
+        <BookKit hero={hero} kit={kit} friends={crew.friends.map(card)} edit={edit} />
       ) : (
         <p className="book-camp__from">{`${hero.name}'s kit comes along the next time your book opens with a signal.`}</p>
       )}
 
-      <section className="book-camp__section" aria-labelledby={`${base}-pieces`} data-testid="book-camp-pieces">
-        <h3 className="book-camp__heading" id={`${base}-pieces`}>
-          <Icon name="crew" />
-          <span>In your crew's camp</span>
-        </h3>
-        <p className="book-camp__from">Your crew changes these together, at the table.</p>
-        <ul className="book-camp__pieces">
-          {pieces.map((id) => (
-            <li key={id} className="book-camp__piece" data-piece={id}>
-              <span className="book-camp__piece-name">{pieceName(id)}</span>
-              <span className="book-camp__from">{crew.sources[id]}</span>
-            </li>
-          ))}
-        </ul>
+      <section className="book-camp__crew-camp" aria-labelledby={`${base}-camp`}>
+        <header className="book-camp__head">
+          <h2 className="book-camp__title" id={`${base}-camp`}>
+            <Icon name="rest" />
+            <span>{`${crew.name}'s camp`}</span>
+          </h2>
+        </header>
+
+        {crews.length > 1 ? (
+          <div className="book-camp__crews" role="radiogroup" aria-label="Which crew's camp" data-testid="book-camp-crews">
+            {crews.map((c) => (
+              <button
+                key={c.crew ?? ""}
+                type="button"
+                role="radio"
+                aria-checked={c.crew === crew.crew}
+                className={`book-camp__crew kad-tap kad-focusable${c.crew === crew.crew ? " is-on" : ""}`}
+                onClick={() => onCrew(c.crew)}
+              >
+                <Icon name="crew" />
+                <span>{c.name}</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {layout && state ? (
+          <div className="book-camp__picture" aria-hidden="true">
+            <StillCamp layout={layout} state={state} fit="width" footRoom={FOOT_ROOM} />
+          </div>
+        ) : null}
+
+        {startingOut ? (
+          <p className="book-camp__start" data-testid="book-camp-start">
+            <Icon name="star" />
+            <span>Your camp is just starting! Things your crew finds and friends you make on adventures show up here.</span>
+          </p>
+        ) : null}
+
+        {crew.friends.length > 0 ? (
+          <section className="book-camp__section" aria-labelledby={`${base}-friends`} data-testid="book-camp-friends">
+            <h3 className="book-camp__heading" id={`${base}-friends`}>
+              <Icon name="heart" />
+              <span>Friends</span>
+            </h3>
+            <ul className="book-camp__friends">
+              {crew.friends.map((friend) => (
+                <li key={friend.id}>
+                  <button type="button" className="book-camp__friend kad-focusable" onClick={() => say(friend)} data-friend={friend.id} aria-label={`Say hi to ${friend.name}`}>
+                    <span className="book-camp__friend-art" aria-hidden="true">
+                      <FriendArt card={card(friend)} />
+                    </span>
+                    <span className="book-camp__friend-name">{friend.name}</span>
+                    <span className="book-camp__from">{friend.source}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p className={`book-camp__said${words ? " is-on" : ""}`} role="status" aria-live="polite" data-testid="book-camp-said">
+              {words ? `${crew.friends.find((f) => f.id === words.id)?.name ?? ""}: ${words.text}` : ""}
+            </p>
+            {crew.friends.length > out.length ? <p className="book-camp__from">Your crew's friends take turns at camp.</p> : null}
+          </section>
+        ) : null}
+
+        {pieces.length > 0 ? (
+          <section className="book-camp__section" aria-labelledby={`${base}-pieces`} data-testid="book-camp-pieces">
+            <h3 className="book-camp__heading" id={`${base}-pieces`}>
+              <Icon name="crew" />
+              <span>Things in your camp</span>
+            </h3>
+            <p className="book-camp__from">Your crew changes these together, at the table.</p>
+            <ul className="book-camp__pieces">
+              {pieces.map((id) => {
+                const art = CREW_PIECE_ART.find((p) => p.id === id)?.path;
+                return (
+                  <li key={id} className="book-camp__piece" data-piece={id}>
+                    <span className="book-camp__piece-art" aria-hidden="true">
+                      {art ? <img src={`/assets/${art}`} alt="" /> : <Icon name="crew" size="1.6em" />}
+                    </span>
+                    <span className="book-camp__piece-name">{pieceName(id)}</span>
+                    <span className="book-camp__from">{crew.sources[id]}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ) : null}
       </section>
     </div>
   );

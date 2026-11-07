@@ -266,7 +266,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1709 -> 1711 for the camp's air (camp-air.ts: snow, embers and seeds over the
 // three backdrops with no painted accent): 1709KB measured, first paint 328KB.
 // 2KB of slack again.
-const TOTAL_BUDGET_KB = 1711;
+// 1711 -> 1716 for the book's kit dressing room (BookKit.tsx: her pitch, the
+// shelves of painted tiles) in the lazy Camp chunk: 1714KB measured, first
+// paint 328KB unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1716;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

@@ -16,7 +16,7 @@ import { makeCharacter } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { getFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { currentRoute, navigate } from "../router";
-import { JournalScreen, campSynced, savedWhen } from "./JournalScreen";
+import { JournalScreen, savedWhen } from "./JournalScreen";
 
 const ITEMS: ItemCatalog = {
   honey_cake: { kind: "consumable", name: "Honey Cake", text: "Heals a little. Tastes like summer.", icon: "potion" },
@@ -187,10 +187,3 @@ describe("savedWhen", () => {
   });
 });
 
-describe("campSynced", () => {
-  it("says the camp's own time when only the camp is last time's (#656), and now when it is fresh", () => {
-    const now = new Date(2026, 6, 10, 15, 0);
-    expect(campSynced(new Date(2026, 6, 9, 22, 0).toISOString(), now, now)).toBe("Last synced yesterday");
-    expect(campSynced(null, now, now)).toMatch(/^Synced at /);
-  });
-});

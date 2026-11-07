@@ -203,7 +203,6 @@ export function JournalScreen(): ReactElement {
     window.addEventListener("online", send);
     return () => window.removeEventListener("online", send);
   }, [ready, fresh, applyKit]);
-  const [readAt] = useState(() => new Date());
 
   // Back to the game she is seated in, if a family tablet seated her; home for a phone (#299).
   const play = useCallback(() => {
@@ -285,8 +284,7 @@ export function JournalScreen(): ReactElement {
           </ChunkBoundary>
         ) : null}
         {pane === "camp" ? (
-          <CampTray journal={load.journal} fresh={load.savedAt === null}
-            synced={campSynced(load.campSavedAt ?? load.savedAt, readAt)} onKit={applyKit} />
+          <CampTray journal={load.journal} fresh={load.savedAt === null} onKit={applyKit} />
         ) : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
@@ -310,27 +308,13 @@ export function savedWhen(savedAt: string, now: Date = new Date()): string {
   return saved.toLocaleDateString(undefined, { month: "long", day: "numeric" });
 }
 
-/**
- * What the Camp tray says about when its camp was read: now, or the saved
- * copy's time, which is the camp's own when only the camp could not be read
- * (#656; `JournalLoad.campSavedAt`).
- */
-export function campSynced(savedAt: string | null, readAt: Date, now: Date = new Date()): string {
-  return savedAt === null ? syncedAt(readAt) : `Last synced ${savedWhen(savedAt, now)}`;
-}
-
-/** "Synced at 4:05 PM": when this read landed, for the Camp tray. */
-export function syncedAt(at: Date): string {
-  return `Synced at ${at.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`;
-}
-
 /** The Camp tray (#629), for the hero the book has open. */
-function CampTray({ journal, synced, fresh, onKit }: { journal: JournalResponse; synced: string; fresh: boolean; onKit: ApplyKit }): ReactElement {
+function CampTray({ journal, fresh, onKit }: { journal: JournalResponse; fresh: boolean; onKit: ApplyKit }): ReactElement {
   const [hero, choose] = useChosenHero(journal.heroes);
   return (
     <ChunkBoundary inline message="Your camp couldn’t open.">
       <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your camp…</span></div>}>
-        <CampPane journal={journal} synced={synced} fresh={fresh} hero={hero} onHero={choose} onKit={onKit} />
+        <CampPane journal={journal} fresh={fresh} hero={hero} onHero={choose} onKit={onKit} />
       </Suspense>
     </ChunkBoundary>
   );
