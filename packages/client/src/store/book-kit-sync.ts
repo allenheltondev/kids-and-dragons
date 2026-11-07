@@ -237,15 +237,44 @@ export async function editBookKit(
   }
   const sessionToken = useGameStore.getState().session?.sessionToken;
   if (!sessionToken) throw new ApiError(401, "This phone is not signed in as anyone yet.");
-  const response = await send(bodyOf({ ...input, direct: true }), { sessionToken });
-  apply(input.characterId, response.kit);
-  const note = noteOf(response);
-  if (note) setStatus({ notes: [...status.notes, note] });
+  // A seat with no binding of its own (a family tablet): no queue to keep it in, so the
+  // change shows at once from memory (`pendingKitEdits`), and the sends go one at a
+  // time, in the order she tapped, so the last tap is the one that stands.
+  const entry: QueuedKitChange = { id: `pending-${String(++pendingSeq)}`, ...input, changes: [...input.changes], direct: true, at: new Date().toISOString() };
+  pending = [...pending, entry];
+  emit();
+  const sent = chain.then(async () => {
+    try {
+      const response = await send(bodyOf({ ...input, direct: true }), { sessionToken });
+      apply(input.characterId, response.kit);
+      const note = noteOf(response);
+      if (note) setStatus({ notes: [...status.notes, note] });
+    } finally {
+      // Landed, or refused: either way it no longer shows from memory (a refusal rolls back).
+      pending = pending.filter((e) => e !== entry);
+      emit();
+    }
+  });
+  chain = sent.catch(() => undefined);
+  await sent;
+}
+
+/** A seat with no binding: changes sent but not yet answered, shown as if they had landed. */
+let pending: readonly QueuedKitChange[] = [];
+let pendingSeq = 0;
+/** Their sends, one after another. */
+let chain: Promise<void> = Promise.resolve();
+
+/** The changes a seat without a binding has sent and is waiting on (`withQueuedKit` shows them). */
+export function pendingKitEdits(): readonly QueuedKitChange[] {
+  return pending;
 }
 
 /** Test seam: forget the status. */
 export function resetBookKitSync(): void {
   status = { offline: false, notes: [] };
+  pending = [];
+  chain = Promise.resolve();
   busy = null;
   again = false;
 }

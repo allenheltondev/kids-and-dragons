@@ -68,7 +68,7 @@ import "./CampPanel.css";
 
 type Dispatch = (intent: ClientIntent) => void;
 
-const COLOR_NAMES: Record<string, string> = {
+export const COLOR_NAMES: Record<string, string> = {
   orchid: "Gold",
   meadow: "Blue",
   tide: "Orange",
