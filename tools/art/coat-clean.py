@@ -65,6 +65,7 @@ SOFTEN = 0.8  # the parts' edge: a gaussian of this sigma (px) over the cleaned 
 #   "skin"     Bigfoot: inside the box, the largest smooth warm piece is skin
 #   "not_skin" Bigfoot: inside the box, nothing is skin (it is fur)
 #   "coat"     unicorn: inside the box, her soft lavender is coat (inner ears, the far belly)
+#   "cloth"    unicorn: inside the box, dull indigo paint is costume cloth, not mane shadow
 #   "nose"     manticore: inside the box, the crimson paint is her nose, in neither part
 
 FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
@@ -73,6 +74,15 @@ FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     "characters/unicorn/sworn/assembled.png": {"coat": [(160, 210, 395, 420), (550, 620, 544, 606)]},
     "characters/unicorn/radiant/assembled.png": {"coat": [(165, 218, 390, 415), (560, 605, 548, 595)]},
     "characters/unicorn/mythic/assembled.png": {"coat": [(590, 626, 552, 600)]},
+    # the purple shading strokes under her jaw, coat and not a lock of mane
+    "gear-portraits/songkeeper/sworn/unicorn.png": {"coat": [(455, 505, 395, 480)]},
+    # Duskrunner's indigo scarf and vest, dyed near her own purple: where her dull cloth is
+    "character-rigs/duskrunner/sworn/unicorn/assembled.png": {"cloth": [(432, 650, 255, 475), (400, 432, 445, 475)]},
+    "character-rigs/duskrunner/radiant/unicorn/assembled.png": {"cloth": [(412, 670, 290, 530)]},
+    "character-rigs/duskrunner/mythic/unicorn/assembled.png": {"cloth": [(395, 670, 305, 690)]},
+    "gear-portraits/duskrunner/sworn/unicorn.png": {"cloth": [(548, 810, 330, 600), (515, 548, 540, 600)]},
+    "gear-portraits/duskrunner/radiant/unicorn.png": {"cloth": [(530, 850, 335, 600)]},
+    "gear-portraits/duskrunner/mythic/unicorn.png": {"cloth": [(500, 860, 365, 800)]},
     # her nose, painted in her mane's crimson
     "characters/manticore/fledgling/assembled.png": {"nose": [(360, 397, 186, 252)]},
     "characters/manticore/sworn/assembled.png": {"nose": [(362, 398, 196, 257)]},
@@ -153,22 +163,40 @@ def clean_unicorn(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     - The coat's shaded underside (a deeper lavender) that the draft left out of R is grown
       back from the coat by hue.
     - Last, the specks left in neither part where coat meets mane (not ink, not horn, near one
-      part's hue) go to the nearer part, so no untinted lilac shows under a dark colour."""
+      part's hue) go to the nearer part, so no untinted lilac shows under a dark colour.
+
+    Her class paintings and gear portraits (`character-rigs/`, `gear-portraits/`) go through
+    `clean_unicorn_dressed`, which finds her costume first and keeps it out of both parts."""
+    if not painting.startswith("characters/"):
+        return clean_unicorn_dressed(look, draft, painting)
+    return unicorn_parts(look, draft, painting)
+
+
+def unicorn_parts(look: Look, draft: np.ndarray, painting: str, k: float = 1.0,
+                  never: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """`clean_unicorn`'s rules. `k` scales its pixel sizes to the canvas (1 on a 1024 painting),
+    `never` (her costume, on a class painting or gear portrait) is kept out of both parts as her
+    horn is. With the defaults it is exactly the base family's cleaning."""
+    def px(n: float) -> int:
+        return max(1, int(round(n * k)))
+
     a = look.alpha
     ys = np.nonzero(a)[0]
     y0, y1 = ys.min(), ys.max()
-    horn = unicorn_horn(look)
-    g = draft[..., 1] > 96
+    horn = unicorn_horn(look, k)
+    if never is not None:
+        horn = horn | never
+    g = (draft[..., 1] > 96) & ~horn if never is not None else draft[..., 1] > 96
     labs, n = ndimage.label(g)
     keep = np.zeros_like(g)
     for i in range(1, n + 1):
         comp = labs == i
-        if comp.sum() < 400:
+        if comp.sum() < 400 * k * k:
             continue
         if np.nonzero(comp)[0].mean() > y1 - 0.14 * (y1 - y0):  # a hoof
             continue
         keep |= comp
-    mane = (draft[..., 1] > 128) & ndimage.binary_dilation(keep, iterations=3)
+    mane = (draft[..., 1] > 128) & ndimage.binary_dilation(keep, iterations=px(3))
     mane = ndimage.binary_fill_holes(ndimage.binary_closing(mane, structure=SQUARE, iterations=1)) & a & ~horn
     mane_hue = np.median(look.hue[mane])
     dm = np.abs((look.hue - mane_hue + 180) % 360 - 180)
@@ -176,7 +204,7 @@ def clean_unicorn(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     mane |= ndimage.binary_propagation(mane, mask=glow | mane)
     # (ink outlines are brown, hue 0..30, and her hooves as purple as her mane: both stay out)
     shadow = a & ~horn & (look.C >= 0.06) & (look.L >= 0.2) & (look.hue > -115) & (look.hue < mane_hue - 8)
-    reach = ndimage.binary_dilation(mane, structure=disk(25))
+    reach = ndimage.binary_dilation(mane, structure=disk(px(25)))
     mane |= ndimage.binary_propagation(mane, mask=(shadow & reach) | mane)
 
     coat_ = (draft[..., 0] > 128) & a & ~mane & ~horn
@@ -191,7 +219,7 @@ def clean_unicorn(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     shaded = a & ~mane & ~coat_ & ~horn & (look.L >= 0.6) & (dh < 25) & (look.C < 0.12)
     coat_ |= ndimage.binary_propagation(coat_, mask=shaded | coat_)
     # the pale coat showing between the mane's last strands is coat, not a pale fringe of mane
-    pale = mane & (look.L > 0.72) & (look.C < 0.075) & ndimage.binary_dilation(coat_, structure=disk(6))
+    pale = mane & (look.L > 0.72) & (look.C < 0.075) & ndimage.binary_dilation(coat_, structure=disk(px(6)))
     pale = ndimage.binary_propagation(coat_, mask=pale | coat_) & pale
     mane &= ~pale
     coat_ |= pale
@@ -202,25 +230,64 @@ def clean_unicorn(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     eyes = np.zeros_like(a)
     if n:
         small = np.zeros(n + 1, bool)
-        small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500
-        eyes = ndimage.binary_dilation(small[labs], structure=disk(2))
+        small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500 * k * k
+        eyes = ndimage.binary_dilation(small[labs], structure=disk(px(2)))
     hued = (look.C >= 0.02) & ((dh < 40) | (dm < 40))
     white = (look.C < 0.02) & (look.L > 0.8)
     left = a & ~mane & ~coat_ & ~horn & ~look.ink & ~eyes & (hued | white)
     d_coat = ndimage.distance_transform_edt(~coat_)
     d_mane = ndimage.distance_transform_edt(~mane)
-    coat_ |= left & (d_coat <= 5) & (d_coat <= d_mane)
-    mane |= left & (d_mane <= 5) & (d_mane < d_coat)
+    coat_ |= left & (d_coat <= 5 * k) & (d_coat <= d_mane)
+    mane |= left & (d_mane <= 5 * k) & (d_mane < d_coat)
+    if never is not None:
+        # (dressed) the shaded belly and far leg under her costume, and an inner ear, are a
+        # soft lavender: a small piece of mane paler and duller than the mane is coat
+        mC, mL = np.median(look.C[mane]), np.median(look.L[mane])
+        labs, n = ndimage.label(mane)
+        if n:
+            i = np.arange(1, n + 1)
+            soft = np.zeros(n + 1, bool)
+            soft[1:] = ((ndimage.sum(mane, labs, i) < 0.1 * mane.sum())
+                        & (ndimage.median(look.C, labs, i) < 0.8 * mC)
+                        & (ndimage.median(look.L, labs, i) > mL + 0.06))
+            coat_ |= soft[labs]
+            mane &= ~soft[labs]
+        # ...and the shade under her jaw, grown into the mane where a lock meets it: the
+        # mane's soft, pale paint in pieces of 300px or more that touch the coat
+        pale = mane & (look.C < 0.85 * mC) & (look.L > mL + 0.06)
+        labs, n = ndimage.label(pale)
+        if n:
+            i = np.arange(1, n + 1)
+            touch = np.zeros(n + 1, bool)
+            touch[np.unique(labs[ndimage.binary_dilation(coat_, structure=SQUARE) & pale])] = True
+            touch[0] = False
+            soft = np.zeros(n + 1, bool)
+            soft[1:] = ((ndimage.sum(pale, labs, i) >= 300 * k * k)
+                        & (ndimage.median(look.L, labs, i) > mL + 0.1))
+            coat_ |= (soft & touch)[labs]
+            mane &= ~(soft & touch)[labs]
+        # ...and a fleck of mane under 150px ringed by coat is a stroke of the coat's shading
+        labs, n = ndimage.label(mane)
+        if n:
+            i = np.arange(1, n + 1)
+            ring = ndimage.binary_dilation(mane, structure=disk(px(3))) & ~mane & a & ~look.ink
+            near = ndimage.grey_dilation(labs, footprint=disk(px(3))) * ring
+            coated = ndimage.sum(coat_, near, i) / np.maximum(ndimage.sum(ring, near, i), 1)
+            fleck = np.zeros(n + 1, bool)
+            fleck[1:] = (ndimage.sum(mane, labs, i) < 150 * k * k) & (coated > 0.8)
+            coat_ |= fleck[labs]
+            mane &= ~fleck[labs]
     # ink drawn as an outline (at her edge, or against her pale coat) is in neither part; the
     # strand lines inside her mane are its painting
     line = look.outline(light=0.78)
     return coat_ & ~mane & ~horn & ~line, mane & ~line
 
 
-def unicorn_horn(look: Look) -> np.ndarray:
+def unicorn_horn(look: Look, k: float = 1.0) -> np.ndarray:
     """Her horn, never coloured: the largest blue piece (OKLab hue 210..285) in the top of her
     figure and the blue pieces beside it (the crystals at its base), closed and filled, so its
-    pale facets go with it."""
+    pale facets go with it. (`k` scales the reach and closing to the canvas; 1 is unchanged.)"""
+    r = max(1, int(round(6 * k)))
     a = look.alpha
     blue = a & (look.C > 0.035) & (look.hue > -150) & (look.hue < -75)
     ys = np.nonzero(a)[0]
@@ -231,10 +298,116 @@ def unicorn_horn(look: Look) -> np.ndarray:
         return np.zeros_like(a)
     sizes = ndimage.sum(labs > 0, labs, np.arange(1, n + 1))
     biggest = labs == (int(np.argmax(sizes)) + 1)
-    near = np.unique(labs[ndimage.binary_dilation(biggest, structure=disk(6))])
+    near = np.unique(labs[ndimage.binary_dilation(biggest, structure=disk(r))])
     horn = np.isin(labs, near[near > 0])
-    horn = ndimage.binary_fill_holes(ndimage.binary_closing(horn, structure=disk(3)))
+    horn = ndimage.binary_fill_holes(ndimage.binary_closing(horn, structure=disk(max(1, int(round(3 * k))))))
     return ndimage.binary_dilation(horn, structure=SQUARE) & a
+
+
+def clean_unicorn_dressed(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, ...]:
+    """Her class paintings and gear portraits: `unicorn_parts` with her costume kept out. On a
+    gear portrait her figure is found afresh (`unicorn_figure`) and returned as B too."""
+    k = look.alpha.shape[0] / 1024
+    figure = None
+    if painting.startswith("gear-portraits/"):
+        figure = unicorn_figure(look.rgba, draft, k)
+        look = Look(look.rgba, figure > 0.5)
+    never = unicorn_costume(look, k, boxes(painting, "cloth", look.alpha.shape))
+    main, accent = unicorn_parts(look, draft, painting, k, never)
+    return (main, accent) if figure is None else (main, accent, figure)
+
+
+def unicorn_figure(rgba: np.ndarray, draft: np.ndarray, k: float) -> np.ndarray:
+    """Her figure on an opaque gear portrait, 0..1. The draft's flood from the edges (a colour
+    step of 45) stops short in the dark backdrop between her legs and under her costume, and
+    bites into her darkest locks and hooves. Here the backdrop is modelled instead: its colour
+    is the draft's sure backdrop (B ~ 0) averaged locally (a 40px gaussian, OKLab), and she is
+    whatever differs from it by more than 0.07: closed across her ink lines, its pieces of
+    2000px and more (at 1024; the floating gem is one), holes under 3000px filled; then her ink
+    outline (within 2px, still 0.04 from the backdrop) and a ~1px soft edge."""
+    def px(n: float) -> int:
+        return max(1, int(round(n * k)))
+
+    lab = coat.srgb_to_oklab(rgba[..., :3] / 255.0)
+    sure = draft[..., 2] < 5
+    s = 40 * k
+    w = np.maximum(ndimage.gaussian_filter(sure.astype(float), s), 1e-6)
+    mu = np.stack([ndimage.gaussian_filter(lab[..., i] * sure, s) / w for i in range(3)], -1)
+    d = np.sqrt(((lab - mu) ** 2).sum(-1))
+    fg = ndimage.binary_closing(d > 0.07, structure=disk(px(2)))
+    labs, n = ndimage.label(fg)
+    if n:
+        sizes = np.zeros(n + 1)
+        sizes[1:] = ndimage.sum(fg, labs, np.arange(1, n + 1))
+        fg = (sizes >= 2000 * k * k)[labs]
+    holes = ndimage.binary_fill_holes(fg) & ~fg
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 3000 * k * k
+        fg |= small[labs]
+    fg |= ndimage.binary_dilation(fg, structure=disk(px(2))) & (d > 0.04)
+    return np.clip(ndimage.gaussian_filter(fg.astype(float), SOFTEN), 0, 1)
+
+
+def unicorn_costume(look: Look, k: float, cloth: np.ndarray | None = None) -> np.ndarray:
+    """Her class costume and anything she carries or wears, never coloured.
+
+    Her own paint is one hue family (OKLab hue -75..-5): the pale lilac coat and the purple
+    mane. Costume is (1) paint of any other hue (gold, brass, leather, green, teal, the blue of a
+    gem) and (2) cloth dyed near her own hue but duller than her mane and darker than her coat
+    (Duskrunner's indigo scarf and vest, dark enough that half of it reads as ink). Their pieces
+    of 1500px and more (at 1024) after an opening, grown back, closed and filled, so the
+    stitching, buckles and pale studs on them go with them. A dull piece ringed by her
+    saturated mane paint is the deep shadow inside her tail or mane, not cloth."""
+    def px(n: float) -> int:
+        return max(1, int(round(n * k)))
+
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    hers = (hue > -75) & (hue < -5)
+    # (and its darks, as dark as ink, where ink's brown and plum hue -40..30 is not: dark
+    # leather, a deep teal cape)
+    other = a & ~hers & (L >= 0.12) & (((C >= 0.04) & ~look.ink) | ((C >= 0.025) & ((hue > 40) | (hue < -100))))
+    dull = a & (hue > -115) & (hue < -5) & (C >= 0.03) & (L >= 0.2) & (
+        ((C < 0.10) & (L < 0.6) & (hue < -48)) | ((C < 0.125) & (L < 0.5) & (hue < -55)))
+    dull = dull & cloth if cloth is not None else np.zeros_like(a)
+    cand = ndimage.binary_closing(other | dull, structure=disk(px(2))) & a
+    body = ndimage.binary_opening(cand, structure=disk(px(3)))
+    labs, n = ndimage.label(body)
+    if not n:
+        return np.zeros_like(a)
+    idx = np.arange(1, n + 1)
+    sizes = ndimage.sum(body, labs, idx)
+    dull_share = ndimage.mean(dull, labs, idx)
+    hue_med = ndimage.median(hue, labs, idx)
+    mane_paint = a & hers & (C >= 0.12) & ~look.ink
+    objs = ndimage.find_objects(labs)
+    big = np.zeros(n + 1, bool)
+    for i in idx:
+        if sizes[i - 1] < 1500 * k * k:
+            continue
+        # (a dull piece, or one of blue-violet paint: the galaxy deep in her tail)
+        if dull_share[i - 1] > 0.5 or -130 < hue_med[i - 1] < -5:
+            sl = objs[i - 1]
+            pad = px(8)
+            sl = (slice(max(sl[0].start - pad, 0), sl[0].stop + pad), slice(max(sl[1].start - pad, 0), sl[1].stop + pad))
+            comp = labs[sl] == i
+            ring = ndimage.binary_dilation(comp, structure=disk(px(6))) & ~comp & a[sl] & ~look.ink[sl]
+            if ring.any() and mane_paint[sl][ring].mean() > RING_MANE:
+                continue
+        big[i] = True
+    kept = big[labs]
+    costume = ndimage.binary_propagation(kept, mask=cand & ndimage.binary_dilation(kept, structure=disk(px(4))))
+    holes = ndimage.binary_fill_holes(costume) & ~costume
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 5000 * k * k
+        costume |= small[labs]
+    return costume & a
+
+
+RING_MANE = 0.5
 
 
 # ----------------------------------------------------------------------------- bigfoot
@@ -824,8 +997,11 @@ def clean(rgba: np.ndarray, draft: np.ndarray, species: str, painting: str) -> n
     hand fixes, softened, clipped to the figure and shared out; B as drafted."""
     # Her figure is the draft's B: the painting's alpha on a cut-out (base and class), and
     # everything but the painted backdrop on a gear portrait, which is opaque.
-    main, accent = RULES[species](Look(rgba, draft[..., 2] > 127), draft, painting)
-    B = draft[..., 2].astype(float) / 255.0
+    parts = RULES[species](Look(rgba, draft[..., 2] > 127), draft, painting)
+    main, accent = parts[0], parts[1]
+    # (a species may return a better figure, 0..1, as a third value: the unicorn does on her
+    # gear portraits, where the draft's backdrop flood bites into her and leaves dark backdrop in)
+    B = parts[2] if len(parts) > 2 else draft[..., 2].astype(float) / 255.0
     R, G = soften(main & ~accent), soften(accent)
     total = R + G
     share = np.where(total > 1, 1.0 / np.maximum(total, 1e-9), 1.0)
