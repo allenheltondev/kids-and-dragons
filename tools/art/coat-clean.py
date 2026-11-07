@@ -518,7 +518,11 @@ def clean_kitsune(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
       and the Mythic crystals (KITSUNE_CRYSTALS, traced by hand); pieces under 400px dropped,
       holes under 150px (a fleck of orange stroke in the pale fur) filled, then grown 1px into
       the orange so the soft edge leaves no pale rim untinted.
-    - Ink drawn as an outline is in neither part."""
+    - Ink drawn as an outline is in neither part.
+
+    Her class paintings and gear portraits (dressed, with props) are `kitsune_dressed`."""
+    if not painting.startswith("characters/"):
+        return kitsune_dressed(look, draft, painting)
     a, C, hue = look.alpha, look.C, look.hue
     eyes = kitsune_eyes(look)
 
@@ -594,15 +598,322 @@ def kitsune_crystals(painting: str, shape: tuple[int, int]) -> np.ndarray:
     return ndimage.binary_dilation(np.asarray(im, bool), structure=disk(2))
 
 
-def kitsune_eyes(look: Look) -> np.ndarray:
-    """Her eyes: small loops of ink, filled (their white highlights go with them)."""
+def kitsune_eyes(look: Look, most: int = 2500, darkest: float = 1.01) -> np.ndarray:
+    """Her eyes: small loops of ink (under `most` px, and of mean OKLab L under `darkest`: on a
+    dressed painting, fur shut in by a costume's outlines is a pale loop), filled (their white
+    highlights go with them)."""
     loops = ndimage.binary_fill_holes(look.ink) & ~look.ink
     labs, n = ndimage.label(loops)
     if not n:
         return np.zeros_like(look.alpha)
     small = np.zeros(n + 1, bool)
-    small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500
+    i = np.arange(1, n + 1)
+    small[1:] = (ndimage.sum(loops, labs, i) < most) & (ndimage.mean(look.L, labs, i) < darkest)
     return ndimage.binary_dilation(small[labs], structure=disk(2))
+
+
+def kitsune_dressed(look: Look, draft: np.ndarray, painting: str):
+    """Her class paintings (`character-rigs/`, cut-outs on 1024) and gear portraits
+    (`gear-portraits/`, opaque on 1254): the same two parts as her base paintings, with her
+    costume, gear and props left as painted. Pixel sizes are for the 1024 canvas, scaled by `s`.
+
+    - Figure (gear portraits only): `kitsune_figure`, as the draft's leaks into her navy cloak.
+    - Costume: `kitsune_costume`, the paint that is none of her colours (navy, gold, bark,
+      moss, metal grey, silver, rose, the dark teal of the Starweaver cape) found between the
+      ink lines, the Songkeeper mantles traced by hand (KITSUNE_COSTUME), and the props traced
+      by hand (KITSUNE_PROPS: the Thornguard squirrel, the Starweaver crystal).
+    - Tails: her bright teal (L >= 0.5), as on her base paintings, never the costume, grown
+      over their deeper shading along an ink line. Other teal is a gem when it sits in the
+      costume (the moon pendant's gloss, a mantle's stones), else a fleck of her tails.
+    - Orange stays as painted (hue 15..62: her gold trim is 62 and up, and is costume); the
+      socks rule as on her base paintings, plus the pale soft shading low on her legs and small
+      soft warm pieces in a cloak's shadow, which are fur.
+    - Fur: the rest of her, as on her base paintings (eyes are small, dark loops of ink: a
+      pale loop is fur shut in by a costume's lines)."""
+    s = look.alpha.shape[1] / 1024.0
+    gear = painting.startswith("gear-portraits/")
+    figure = None
+    if gear:
+        figure = kitsune_figure(look.rgba, painting, s)
+        look = Look(look.rgba, figure > 0.5)
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    eyes = kitsune_eyes(look, int(2500 * s * s), 0.6)
+    bright_teal = a & (C >= 0.03) & ((hue > 140) | (hue < -110)) & (L >= 0.5)
+    props = kitsune_traced(KITSUNE_PROPS, painting, a.shape, 2, "prop")
+    props |= kitsune_traced(KITSUNE_PROPS, painting, a.shape, 2, "beside_tails") & ~bright_teal
+    costume = (kitsune_costume(look, painting, s) | props) & a
+
+    teal = bright_teal & ~costume
+    labs, n = ndimage.label(ndimage.binary_closing(teal, structure=SQUARE))
+    sizes = ndimage.sum(teal, labs, np.arange(1, n + 1)) if n else np.zeros(0)
+    tails = np.isin(labs, np.nonzero(sizes >= 3000 * s * s)[0] + 1) & teal
+    tails = ndimage.binary_closing(tails, structure=disk(3))
+    tails = ndimage.binary_fill_holes(tails) & a & ~costume
+    # their deeper shading along an ink line, grown from them
+    shade = a & ~costume & ~look.ink & (C >= 0.03) & ((hue > 140) | (hue < -110)) & (L >= 0.3)
+    reach = ndimage.binary_dilation(tails, structure=disk(max(3, round(8 * s))))
+    tails |= ndimage.binary_propagation(tails, mask=(shade & reach) | tails)
+    # the rest of the teal is glass or a gem where it lies in her costume (a moon pendant's
+    # gloss, a mantle's stones: its rim mostly costume), else flecks of her tails among their
+    # white tips. A gem takes the pale glints shut in by it.
+    rest = teal & ~tails
+    labs, n = ndimage.label(rest)
+    gems = np.zeros_like(a)
+    if n:
+        rim = ndimage.binary_dilation(rest, structure=disk(3)) & ~rest & ~look.ink & a
+        near = ndimage.grey_dilation(labs, footprint=disk(3))
+        i = np.arange(1, n + 1)
+        worn = np.zeros(n + 1, bool)
+        worn[1:] = ndimage.sum(rim & costume, near, i) >= 0.3 * np.maximum(ndimage.sum(rim, near, i), 1)
+        gems = worn[labs]
+        tails |= rest & ~gems
+    gems = ndimage.binary_closing(gems, structure=disk(2))
+    holes = ndimage.binary_fill_holes(gems) & ~gems
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 1500 * s * s
+        gems |= small[labs]
+    costume |= gems & a & ~tails
+
+    orange = a & (C >= 0.085) & (hue > 15) & (hue < 62) & ~costume
+    ys = np.nonzero(a)[0]
+    labs, n = ndimage.label(orange)
+    if n:
+        i = np.arange(1, n + 1)
+        rows = np.array([c[0] for c in ndimage.center_of_mass(orange, labs, i)])
+        sock = np.zeros(n + 1, bool)
+        sock[1:] = rows > ys.min() + 0.85 * (ys.max() - ys.min())
+        orange &= ~sock[labs]
+    # (and the soft, pale orange shading lower on her legs, wherever its piece is centred:
+    # a crisp flame marking is stronger, C >= 0.13, and stays)
+    low = np.arange(a.shape[0])[:, None] > ys.min() + 0.6 * (ys.max() - ys.min())
+    orange &= ~(low & (C < 0.13) & (L >= 0.76))
+    # (and a small piece of soft warm shade, C under 0.12 on the whole, where her fur meets a
+    # cloak's shadow: her ruff and markings are painted at C ~0.15 and up)
+    labs, n = ndimage.label(orange)
+    if n:
+        i = np.arange(1, n + 1)
+        shade = np.zeros(n + 1, bool)
+        shade[1:] = (ndimage.mean(C, labs, i) < 0.12) & (ndimage.sum(orange, labs, i) < 1500 * s * s)
+        orange &= ~shade[labs]
+    fur = a & ~tails & ~orange & ~look.ink & ~eyes & ~costume
+    labs, n = ndimage.label(fur)
+    if n:
+        sizes = ndimage.sum(fur, labs, np.arange(1, n + 1))
+        fur = np.isin(labs, np.nonzero(sizes >= 400 * s * s)[0] + 1)
+    holes = ndimage.binary_fill_holes(fur) & ~fur
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 150 * s * s
+        fur |= small[labs] & ~look.ink & ~eyes & ~costume
+    fur |= ndimage.binary_dilation(fur, structure=SQUARE) & orange
+    line = look.outline()
+    if figure is None:
+        return fur & ~line, tails & ~line
+    return fur & ~line, tails & ~line, figure
+
+
+def kitsune_figure(rgba: np.ndarray, painting: str, s: float) -> np.ndarray:
+    """A gear portrait's figure (0..1): everything but the backdrop. The backdrop is one flat
+    dusky violet (OKLab L ~0.29, C ~0.025, hue ~-59, a faint vignette), so it is found by its
+    colour, read off the canvas border, wherever it joins the border (or makes a pocket of
+    2000px or more, between tails or legs). Her navy cloak (hue ~-83, C ~0.06) and the ink are
+    not that colour, though the draft's flood, which steps by RGB difference, leaked into them.
+    Specks of figure under 300px (sparkles painted on the backdrop) are backdrop; the edge is
+    softened as the draft's is."""
+    lab = coat.srgb_to_oklab(rgba[..., :3] / 255.0)
+    border = np.zeros(lab.shape[:2], bool)
+    border[:6, :] = border[-6:, :] = True
+    border[:, :6] = border[:, -6:] = True
+    L = lab[..., 0]
+    C = np.hypot(lab[..., 1], lab[..., 2])
+    hue = np.degrees(np.arctan2(lab[..., 2], lab[..., 1]))
+    ref_L, ref_C, ref_hue = np.median(L[border]), np.median(C[border]), np.median(hue[border])
+    bg = (np.abs(L - ref_L) < 0.04) & (np.abs(C - ref_C) < 0.012) & (np.abs(hue - ref_hue) < 10)
+    bg = ndimage.binary_closing(bg, structure=SQUARE)
+    bg = ndimage.binary_opening(bg, structure=disk(2))
+    labs, n = ndimage.label(bg)
+    keep = np.zeros(n + 1, bool)
+    keep[np.unique(labs[border & bg])] = True
+    keep[1:] |= ndimage.sum(bg, labs, np.arange(1, n + 1)) >= 2000 * s * s
+    keep[0] = False
+    back = keep[labs] | (border & ~ndimage.binary_dilation(~bg, structure=disk(3)))
+    # the dim glow painted on the backdrop round a prop (the Starweaver crystal), inside the
+    # traced `glow` shapes: dark, greyish paint, out from the backdrop
+    zone = kitsune_traced(KITSUNE_FIGURE, painting, L.shape, 0, "glow")
+    haze = zone & (L >= 0.24) & (L < 0.5) & (C < 0.045)
+    haze = ndimage.binary_opening(haze, structure=SQUARE)
+    back |= haze
+    fig = ~back
+    # (the morphology above frays the canvas edge: an edge that is backdrop stays backdrop)
+    fig[:3, :] = fig[-3:, :] = False
+    fig[:, :3] = fig[:, -3:] = False
+    labs, n = ndimage.label(fig)
+    if n:
+        sizes = ndimage.sum(fig, labs, np.arange(1, n + 1))
+        body = ndimage.binary_fill_holes(labs == int(np.argmax(sizes)) + 1) & ~haze
+        # a prop floating apart from her (the Starweaver crystal) without the dim glow and
+        # sparkles painted round it on the backdrop
+        props = fig & ~body & ~((L < 0.45) & (C < 0.08))
+        props = ndimage.binary_opening(props, structure=SQUARE)
+        labs, n = ndimage.label(props)
+        big = np.zeros(n + 1, bool)
+        if n:
+            big[1:] = ndimage.sum(props, labs, np.arange(1, n + 1)) >= 300 * s * s
+        fig = body | ndimage.binary_closing(big[labs], structure=disk(2))
+    return np.clip(ndimage.gaussian_filter(fig.astype(float), 1.2), 0, 1)
+
+
+def kitsune_costume(look: Look, painting: str, s: float) -> np.ndarray:
+    """Her class costume and gear, never coloured: paint in none of her colours (navy and
+    violet, OKLab hue -125..-20; gold, hue 62..110 at C >= 0.09; moss green; the brown of bark
+    and leather, dark and dull; metal grey; the dark teal of a cape, L < 0.5; rose red, hue
+    -20..28, which none of her own paint is; blue-white silver, pale with hue -135..-40, where
+    her white tail tips are greenish), found between
+    the ink lines: every piece mostly of those colours is costume whole, so its pale
+    highlights and stitching go with it. Closed, and holes under 1500px filled (a buckle, a
+    gem). The `costume` / `not_costume` traced shapes (KITSUNE_COSTUME) settle the rest."""
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    ink = look.ink
+    navy = (C >= 0.03) & (hue > -125) & (hue < -20)
+    gold = ((C >= 0.09) & (hue >= 62) & (hue < 110)) | ((C >= 0.04) & (hue >= 75) & (hue < 110) & (L >= 0.6))
+    moss = (C >= 0.03) & (hue >= 100) & (hue < 140)
+    bark = (C >= 0.015) & (C < 0.09) & (hue > 30) & (hue < 110) & (L < 0.6)
+    grey = ((C < 0.025) & (L < 0.72)) | ((C < 0.012) & (L < 0.86))
+    dark_teal = (C >= 0.03) & ((hue > 140) | (hue <= -125)) & (L < 0.5)
+    rose = (C >= 0.06) & (hue > -20) & (hue <= 28)  # (none of her own paint is this red)
+    silver = (C >= 0.012) & (C < 0.07) & (hue > -135) & (hue < -40) & (L >= 0.6)  # a moon, trim
+    paint = a & ~ink & (navy | gold | moss | bark | grey | dark_teal | rose | silver)
+    lines = ndimage.binary_dilation(ink, structure=SQUARE)
+    regions, rn = ndimage.label(a & ~lines)
+    idx = np.arange(1, rn + 1)
+    share = np.zeros(rn + 1)
+    share[1:] = ndimage.mean(paint, regions, idx)
+    costume = (share >= 0.45)[regions] & (regions > 0)
+    # (pixel by pixel too, but for the dark teal, grey and silver in and beside her tails:
+    # their own shading near an ink line is as dark, their pale streaks as grey)
+    bright = a & (C >= 0.03) & ((hue > 140) | (hue <= -110)) & (L >= 0.5)
+    labs, n = ndimage.label(bright)
+    if n:
+        big = np.zeros(n + 1, bool)
+        big[1:] = ndimage.sum(bright, labs, np.arange(1, n + 1)) >= 3000 * s * s
+        bright = big[labs]
+    near_tails = ndimage.binary_dilation(bright, structure=disk(max(3, round(8 * s))))
+    near_tails = ndimage.binary_fill_holes(near_tails)  # (and the pale streaks inside them)
+    # (and but for warm brown alone, hue under 60: her fur in the shadow of a cloak is as
+    # brown, so only a piece that is mostly so is costume; bark and leather are yellower)
+    shadow = bark & (hue < 60) & ~(navy | gold | moss | grey | rose | silver)
+    costume |= paint & ~((dark_teal | grey | silver) & near_tails) & ~shadow
+    costume = ndimage.binary_opening(costume, structure=disk(max(1, round(s))))
+    costume = ndimage.binary_closing(costume, structure=disk(max(2, round(2 * s))))
+    holes = ndimage.binary_fill_holes(costume) & ~costume
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 1500 * s * s
+        costume |= small[labs]
+    labs, n = ndimage.label(costume)
+    if n:
+        big = np.zeros(n + 1, bool)
+        big[1:] = ndimage.sum(costume, labs, np.arange(1, n + 1)) >= 150 * s * s
+        costume = big[labs]
+    # a traced `costume` shape takes the pieces between the ink lines that are mostly inside
+    # it, so the costume's edge is its own ink line, not the tracing
+    zone = kitsune_traced(KITSUNE_COSTUME, painting, a.shape, 0, "costume")
+    if zone.any():
+        inside = np.zeros(rn + 1, bool)
+        inside[1:] = ndimage.mean(zone, regions, idx) >= 0.5
+        costume |= inside[regions] & (regions > 0)
+        costume |= ndimage.binary_closing(costume, structure=disk(2)) & zone
+    # a `costume_all` shape is all costume, traced to the garment's own edge (where cloth as
+    # pale as her fur runs into her fur with no ink line between)
+    # pale paint in that shape's edge (the cloth's lit rim) goes with it, her teal never does
+    rim = ~((C >= 0.03) & ((hue > 140) | (hue < -110))) & ~ink
+    costume |= kitsune_traced(KITSUNE_COSTUME, painting, a.shape, 0, "costume_all")
+    costume |= kitsune_traced(KITSUNE_COSTUME, painting, a.shape, max(2, round(5 * s)), "costume_all") & rim
+    costume &= ~kitsune_traced(KITSUNE_COSTUME, painting, a.shape, 0, "not_costume")
+    return costume & a
+
+
+# Hand-traced shapes on her dressed paintings, as (x, y) canvas points.
+#   KITSUNE_PROPS    what floats by her or sits on her, never coloured (a margin of 2px):
+#                    "prop" all of the shape (the Starweaver crystal, teal as her tails and
+#                    touching them); "beside_tails" all but her bright teal (the Thornguard
+#                    squirrel, whose cream muzzle and chest are as pale as her fur, traced
+#                    loosely where its tail lies on hers)
+#   KITSUNE_COSTUME  "costume": a garment the colour rules miss (the Songkeeper mantles' cream
+#                    bands and patterns, and the Mythic mantle, as orange as her ruff); it
+#                    takes the pieces between ink lines mostly inside it. "costume_all": all
+#                    of the shape (a gear portrait's mantle, softer-edged). "not_costume":
+#                    her own fur or tails the rules took for costume
+KITSUNE_PROPS: dict[str, dict[str, list[list[tuple[int, int]]]]] = {
+    "character-rigs/starweaver/sworn/kitsune/assembled.png": {"prop": [
+        [(532, 77), (578, 162), (560, 210), (535, 240), (527, 240), (500, 200), (485, 162)]]},
+    "character-rigs/starweaver/radiant/kitsune/assembled.png": {"prop": [
+        [(717, 128), (766, 215), (748, 262), (717, 309), (688, 262), (668, 215)]]},
+    "character-rigs/starweaver/mythic/kitsune/assembled.png": {"prop": [
+        [(557, 100), (608, 198), (588, 247), (553, 292), (520, 243), (503, 200)]]},
+    "gear-portraits/starweaver/sworn/kitsune.png": {"prop": [
+        [(837, 186), (894, 287), (838, 380), (779, 285)]]},
+    "gear-portraits/starweaver/radiant/kitsune.png": {"prop": [
+        [(937, 199), (996, 302), (980, 347), (937, 412), (886, 333), (877, 302)]]},
+    "gear-portraits/starweaver/mythic/kitsune.png": {"prop": [
+        [(936, 147), (1028, 308), (938, 476), (881, 390), (847, 310)]]},
+    "character-rigs/thornguard/radiant/kitsune/assembled.png": {"beside_tails": [
+        [(398, 240), (410, 215), (426, 195), (445, 214), (470, 214), (486, 186), (500, 212),
+         (522, 215), (560, 185), (600, 185), (634, 213), (636, 245), (610, 262), (602, 280),
+         (615, 330), (600, 380), (540, 400), (500, 400), (440, 368), (415, 345), (418, 300),
+         (396, 272)]]},
+    "character-rigs/thornguard/mythic/kitsune/assembled.png": {"beside_tails": [
+        [(352, 240), (378, 192), (396, 214), (430, 205), (442, 186), (452, 214), (468, 236),
+         (500, 200), (545, 185), (575, 200), (582, 240), (560, 262), (552, 300), (548, 360),
+         (450, 368), (360, 352), (350, 300)]]},
+    "gear-portraits/thornguard/radiant/kitsune.png": {"beside_tails": [
+        [(498, 330), (515, 265), (530, 262), (540, 285), (580, 280), (595, 255), (605, 270),
+         (640, 265), (660, 255), (700, 252), (740, 262), (770, 290), (775, 320), (735, 330),
+         (725, 360), (735, 420), (700, 470), (560, 470), (520, 450), (505, 400), (492, 360)]]},
+    "gear-portraits/thornguard/mythic/kitsune.png": {"beside_tails": [
+        [(440, 340), (455, 280), (470, 272), (478, 292), (510, 290), (525, 262), (540, 275),
+         (565, 285), (590, 270), (620, 258), (660, 262), (690, 285), (710, 315), (690, 330),
+         (670, 345), (675, 420), (660, 470), (560, 480), (460, 460), (450, 420), (438, 390)]]},
+}
+KITSUNE_COSTUME: dict[str, dict[str, list[list[tuple[int, int]]]]] = {
+    "character-rigs/songkeeper/radiant/kitsune/assembled.png": {"costume": [
+        [(280, 535), (295, 490), (380, 440), (460, 430), (530, 440), (560, 460), (585, 520),
+         (595, 570), (565, 585), (520, 630), (460, 660), (390, 675), (345, 655), (330, 610),
+         (300, 565)]]},
+    "character-rigs/songkeeper/mythic/kitsune/assembled.png": {"costume": [
+        [(300, 560), (380, 500), (450, 470), (520, 465), (560, 490), (610, 550), (650, 640),
+         (685, 720), (705, 765), (690, 780), (620, 760), (520, 720), (420, 670), (330, 610),
+         (295, 585)]]},
+    "gear-portraits/songkeeper/radiant/kitsune.png": {"costume_all": [
+        [(360, 640), (440, 600), (520, 560), (580, 520), (605, 508), (640, 535), (690, 555),
+         (740, 575), (762, 600), (762, 650), (700, 712), (640, 760), (580, 792), (520, 815),
+         (470, 828), (455, 790), (420, 745), (395, 715), (375, 680)]]},
+    "gear-portraits/songkeeper/mythic/kitsune.png": {"costume_all": [
+        [(500, 480), (560, 518), (640, 545), (692, 570), (728, 622), (752, 690), (772, 770),
+         (794, 840), (826, 900), (870, 942), (900, 975), (895, 1000), (700, 995), (640, 955),
+         (580, 915), (520, 880), (470, 850), (470, 700), (480, 560)]]},
+}
+#   KITSUNE_FIGURE   on a gear portrait, "glow": where the dim glow round a prop is backdrop
+KITSUNE_FIGURE: dict[str, dict[str, list[list[tuple[int, int]]]]] = {
+    "gear-portraits/starweaver/mythic/kitsune.png": {"glow": [[(690, 60), (1160, 60), (1160, 480), (690, 480)]]},
+}
+
+
+def kitsune_traced(table: dict, painting: str, shape: tuple[int, int], margin: int, kind: str) -> np.ndarray:
+    """A table's traced shapes of one kind for one painting as a mask, grown by `margin` px."""
+    from PIL import ImageDraw
+
+    polys = table.get(painting, {}).get(kind, [])
+    im = Image.new("1", (shape[1], shape[0]), 0)
+    draw = ImageDraw.Draw(im)
+    for poly in polys:
+        draw.polygon(poly, fill=1, outline=1)
+    out = np.array(im, bool)
+    return ndimage.binary_dilation(out, structure=disk(margin)) if margin and out.any() else out
 
 
 # ----------------------------------------------------------------------------- dragonling
