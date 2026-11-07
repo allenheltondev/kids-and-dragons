@@ -72,6 +72,10 @@ SOFTEN = 0.8  # the parts' edge: a gaussian of this sigma (px) over the cleaned 
 #   "feathers" griffin: inside the box, his blue paint is feathers, not his class costume
 #   "backdrop" griffin (gear portrait): inside the box, a piece of the figure apart from him is
 #              the painted backdrop, not his figure (B)
+#   "wing"     dragonling: inside the box, her strong orange is wing webbing (not costume)
+#   "costume"  dragonling: inside the box, the warm paint is her class costume (not wing)
+#   "backdrop" dragonling gear portrait: inside the box, the backdrop shut inside her figure
+#              is taken out of B (see `dragonling_figure`)
 
 FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     # her inner ears and the shaded belly between her far legs, lavender like her mane
@@ -107,6 +111,16 @@ FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     # griffin: the hummingbird painted in the backdrop of two of his gear portraits
     "gear-portraits/thornguard/radiant/griffin.png": {"backdrop": [(140, 440, 780, 1140)]},
     "gear-portraits/thornguard/mythic/griffin.png": {"backdrop": [(140, 440, 780, 1140)]},
+    # dragonling: the backdrop shut in between her crest, her crystal and her wing
+    "gear-portraits/starweaver/mythic/dragonling.png": {"backdrop": [(150, 650, 545, 705)]},
+    # dragonling: the lower band and fringe of her gold cape, as even as her webbing
+    "character-rigs/songkeeper/sworn/dragonling/assembled.png": {"costume": [(495, 690, 190, 515)]},
+    # dragonling: Starweaver's Sworn capelet, a dark grey-teal as dull as her shaded scales
+    "character-rigs/starweaver/sworn/dragonling/assembled.png": {"costume": [(450, 665, 175, 440), (475, 665, 440, 475)]},
+    "gear-portraits/starweaver/sworn/dragonling.png": {"costume": [(560, 885, 265, 590)]},
+    # dragonling: her far wing, where her cape's gold runs into it
+    "gear-portraits/songkeeper/mythic/dragonling.png": {
+        "wing": [(270, 600, 680, 1010), (600, 650, 760, 1010), (650, 720, 880, 1010)]},
 }
 
 
@@ -937,7 +951,7 @@ def kitsune_traced(table: dict, painting: str, shape: tuple[int, int], margin: i
 
 # ----------------------------------------------------------------------------- dragonling
 
-def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
+def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, ...]:
     """Scales (R) and wings (G) are found afresh from the painting; the draft gives only B.
 
     1. Between the ink lines, every piece that is mostly dark green paint (OKLab hue 100..200,
@@ -953,9 +967,23 @@ def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.n
        and its spots, the grey-lavender (or mint) belly and the mint wing bones, all one
        colour. Never: ink, eyes (small loops of ink: pupils, highlights, fangs), orange eyes.
     4. Last, the specks left in neither part (not ink, eyes or a spike's pale rim) go to the
-       nearer part within 5px."""
+       nearer part within 5px.
+
+    A classed painting (`character-rigs/`, `gear-portraits/`; the base paintings take none of
+    this, and their masks are as they were) also wears her class costume, in neither part: see
+    `dragonling_costume`, which also finds her webbing there, piece by piece, since her
+    costume can be as orange as her wings. Every size above is at 1024px and scaled to the
+    canvas (a gear portrait is 1254). And on a classed painting:
+    - the mint spots on her head and neck, each ringed in ink and painted stronger than on the
+      base paintings, are scales: neither a spike (a small, light green piece) nor an eye (a
+      loop of ink holding light mint);
+    - the strongest of the mint on her scales (chroma up to 0.16) is scales.
+    On a gear portrait with `backdrop` fix boxes it returns a third value, her figure redrawn
+    without the backdrop shut inside it (`dragonling_figure`), which `clean` uses as B."""
     a, L, C, hue = look.alpha, look.L, look.C, look.hue
     ink = look.ink
+    k = a.shape[0] / 1024  # the rules are drawn at 1024px; a gear portrait is 1254
+    px = lambda r: max(1, int(round(r * k)))  # noqa: E731
     lines = ndimage.binary_dilation(ink, structure=SQUARE)
     regions, rn = ndimage.label(a & ~lines)
     idx = np.arange(1, rn + 1)
@@ -964,49 +992,241 @@ def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.n
     green_share = np.zeros(rn + 1)
     green_share[1:] = ndimage.mean(green, regions, idx)
     spike = (green_share >= 0.5)[regions] & (regions > 0)
-    spike |= green & ndimage.binary_dilation(spike, structure=disk(3))
-    spike = ndimage.binary_fill_holes(ndimage.binary_closing(spike, structure=disk(2))) & a
+    spike |= green & ndimage.binary_dilation(spike, structure=disk(px(3)))
+    spike = ndimage.binary_fill_holes(ndimage.binary_closing(spike, structure=disk(px(2)))) & a
     # the spike's own ink edge belongs with it
     spike |= ndimage.binary_dilation(spike, structure=SQUARE, iterations=2) & ink
 
     orange = a & (hue > 15) & (hue < 110) & (C >= 0.07) & ~ink
-    labs, n = ndimage.label(orange)
-    wing = np.zeros_like(a)
-    if n:
-        sizes = ndimage.sum(orange, labs, np.arange(1, n + 1))
-        big = np.zeros(n + 1, bool)
-        big[1:] = sizes >= 3000
-        wing = big[labs]
-    wing = ndimage.binary_fill_holes(ndimage.binary_closing(wing, structure=disk(3))) & a & ~spike
+    classed = not painting.startswith("characters/")
+    costume = np.zeros_like(a)
+    if classed:
+        # the mint spots on her head and neck, each ringed in ink, are painted stronger on the
+        # classed paintings and read as green pieces: a small, light one is a spot, not a spike
+        labs, n = ndimage.label(spike)
+        if n:
+            i = np.arange(1, n + 1)
+            spot = np.zeros(n + 1, bool)
+            paint = np.where(ink, 0, labs)  # (its paint, not its ink edge)
+            mL = ndimage.median(L, paint, i)
+            low = ndimage.labeled_comprehension(L, paint, i, lambda v: np.percentile(v, 25), float, 0)
+            spot[1:] = (((ndimage.sum(spike, labs, i) < 1500 * k * k) & (mL >= 0.66))
+                        # (and a big light one, L 0.64 and up, its darkest quarter still
+                        # light, is her mint belly in the shade of a cape: her spikes are darker)
+                        | ((mL >= 0.64) & (low >= 0.58)))
+            spike &= ~spot[labs] | ink
+        # her class costume (and on Thornguard and Songkeeper it is orange or gold, like her wings)
+        wing, costume = dragonling_costume(look, orange, lines, spike, painting)
+    else:
+        labs, n = ndimage.label(orange)
+        wing = np.zeros_like(a)
+        if n:
+            sizes = ndimage.sum(orange, labs, np.arange(1, n + 1))
+            big = np.zeros(n + 1, bool)
+            big[1:] = sizes >= 3000
+            wing = big[labs]
+    wing = ndimage.binary_fill_holes(ndimage.binary_closing(wing, structure=disk(px(3)))) & a & ~spike & ~costume
 
     loops = ndimage.binary_fill_holes(ink) & ~ink
     labs, n = ndimage.label(loops)
     eyes = np.zeros_like(a)
     if n:
         small = np.zeros(n + 1, bool)
-        small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500
-        eyes = ndimage.binary_dilation(small[labs], structure=disk(2))
+        small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500 * k * k
+        if classed:
+            # (a loop of ink holding light mint is one of the spots on her scales, not an eye)
+            mint = (hue > 135) & (hue < 185) & (L >= 0.6)
+            small[1:] &= ndimage.mean(mint, labs, np.arange(1, n + 1)) < 0.6
+        eyes = ndimage.binary_dilation(small[labs], structure=disk(px(2)))
     # the glowing marks painted on the webbing (Radiant's spots, Mythic's stars, veins and edge
     # line) take the wing's colour, staying lighter than it; the ones the fill missed, where a
     # star touches a wing bone or the line runs along the wing's edge, are grown from the wing,
     # and then the faded orange beyond them, up to the ink
-    marks = a & ~ink & ~spike & (hue > 110) & (hue < 220) & (C >= 0.08) & (L >= 0.75)
+    marks = a & ~ink & ~spike & ~costume & (hue > 110) & (hue < 220) & (C >= 0.08) & (L >= 0.75)
     wing |= ndimage.binary_propagation(wing, mask=marks | wing)
-    fade = a & ~ink & ~spike & (hue > 0) & (hue < 120) & (C >= 0.035)
-    wing |= ndimage.binary_propagation(wing, mask=(fade & ndimage.binary_dilation(wing, structure=disk(5))) | wing)
+    fade = a & ~ink & ~spike & ~costume & (hue > 0) & (hue < 120) & (C >= 0.035)
+    wing |= ndimage.binary_propagation(wing, mask=(fade & ndimage.binary_dilation(wing, structure=disk(px(5)))) | wing)
 
     warm = (hue > 0) & (hue < 120) & (C >= 0.05)
-    scales = a & ~ink & ~spike & ~wing & ~eyes & ~warm & (C < 0.09) & (L >= 0.5)
+    scales = a & ~ink & ~spike & ~costume & ~wing & ~eyes & ~warm & (C < 0.09) & (L >= 0.5)
+    if classed:
+        # (the strongest of the mint spots on her scales, which the classed paintings paint
+        # brighter, are scales)
+        scales |= a & ~ink & ~spike & ~costume & ~wing & ~eyes & (hue > 135) & (hue < 185) & (C < 0.16) & (L >= 0.6)
 
     # specks in neither (not ink, eyes, an orange eye or a spike's pale rim) go to the nearer part
-    near_spike = ndimage.binary_dilation(spike, structure=disk(3))
-    iris = ndimage.binary_dilation(orange & ~wing, structure=disk(2))
-    left = a & ~ink & ~spike & ~near_spike & ~eyes & ~iris & ~scales & ~wing & (L >= 0.5)
+    near_spike = ndimage.binary_dilation(spike, structure=disk(px(3)))
+    iris = ndimage.binary_dilation(orange & ~wing, structure=disk(px(2)))
+    left = a & ~ink & ~spike & ~costume & ~near_spike & ~eyes & ~iris & ~scales & ~wing & (L >= 0.5)
     d_s = ndimage.distance_transform_edt(~scales)
     d_w = ndimage.distance_transform_edt(~wing)
-    scales |= left & (d_s <= 5) & (d_s <= d_w)
-    wing |= left & (d_w <= 5) & (d_w < d_s)
+    scales |= left & (d_s <= 5 * k) & (d_s <= d_w)
+    wing |= left & (d_w <= 5 * k) & (d_w < d_s)
+    if boxes(painting, "backdrop", a.shape) is not None:
+        # a gear portrait whose backdrop is shut inside her figure: B redrawn without it
+        return scales & ~wing, wing, dragonling_figure(look.rgba, draft[..., 2] / 255.0, painting)
     return scales & ~wing, wing
+
+
+def dragonling_figure(rgba: np.ndarray, B: np.ndarray, painting: str) -> np.ndarray:
+    """A dragonling gear portrait's figure (B, 0..1) less the painted backdrop shut inside it, where a prop
+    closes a ring with her (the draft's flood from the edges cannot reach it): inside the
+    painting's `backdrop` boxes, the thick pieces of paint within a step of 45 (summed over R,
+    G, B, as the flood) of the backdrop's own colour nearby, grown over the rest of the dark
+    backdrop and its glow (never over green, warm or light paint), then softened."""
+    k = B.shape[0] / 1024
+    rgb = rgba[..., :3].astype(float)
+    outside = (B < 0.05).astype(float)
+    sig = 40 * k
+    n = np.maximum(ndimage.gaussian_filter(outside, sig), 1e-6)
+    ground = np.stack([ndimage.gaussian_filter(rgb[..., c] * outside, sig) / n for c in range(3)], -1)
+    step = np.abs(rgb - ground).sum(-1)
+    box = boxes(painting, "backdrop", B.shape)
+    near = box & (B > 0.5) & (step < 45)
+    near = ndimage.binary_opening(near, structure=disk(max(1, int(round(3 * k)))))
+    labs, n_ = ndimage.label(near)
+    if not n_:
+        return B
+    keep = np.zeros(n_ + 1, bool)
+    keep[1:] = ndimage.sum(near, labs, np.arange(1, n_ + 1)) >= 300 * k * k
+    pocket = keep[labs]
+    # grown over the rest of the shut-in backdrop: dark, or a step of 90 from the ground, and
+    # never a figure's paint (green, warm, or light)
+    lab = coat.srgb_to_oklab(rgb / 255.0)
+    L, C = lab[..., 0], np.hypot(lab[..., 1], lab[..., 2])
+    hue = np.degrees(np.arctan2(lab[..., 2], lab[..., 1]))
+    paint = ((hue > 100) & (hue < 185) & (C >= 0.04)) | ((hue > 15) & (hue < 110) & (C >= 0.05)) | (L > 0.6)
+    grow = box & (B > 0.05) & ~paint & ((step < 90) | ((L < 0.45) & (C < 0.1)))
+    pocket = ndimage.binary_propagation(pocket, mask=grow | pocket)
+    return np.minimum(B, 1.0 - ndimage.gaussian_filter(pocket.astype(float), 1.0))
+
+
+def dragonling_costume(look: Look, orange: np.ndarray, lines: np.ndarray, spike: np.ndarray,
+                       painting: str) -> tuple[np.ndarray, np.ndarray]:
+    """A classed dragonling's wing webbing (before its marks and fade are grown) and her class
+    costume, which is in neither part.
+
+    - The orange between the ink lines, piece by piece (pieces of 300px or more at 1024px): her
+      webbing is one even, strong orange (OKLab chroma >= 0.115 at the median, and its lightness
+      spread, 10th to 90th percentile, under 0.26). Thornguard's bronze armour and Songkeeper's
+      gold cape are as warm and sometimes as strong, but painted in folds, tooling and
+      highlights: wider in lightness. The webbing grows out from the even pieces of 3000px or
+      more (and the even red-orange ones, median hue under 50, of 800px or more: a membrane
+      cut small by her chin and a bone), piece by piece, over the even pieces beside it whose
+      orange may be softer (chroma >= 0.09, hue under 62: membrane in shade), and over a thin,
+      light orange piece beside it (the lit rim past the webbing's ink edge). Every other warm
+      piece is costume, unless held inside the webbing (the yellow cores of Radiant's spots).
+    - Costume also: the strong cool paint (chroma >= 0.05, hue under 15 or over 172: her scales
+      are mint, ~160) of Duskrunner's violet scarf, Starweaver's teal capelet and floating
+      crystal, the gems, less its lone flecks (sparkles painted on her scales, which take their
+      colour); and, inside a `costume` box, the dull dark paint (L < 0.56) whose edge, where it
+      is not ink, is mostly costume (Starweaver's Sworn capelet, a darkened mint, as dull as her
+      shaded belly). Closed and its holes filled
+      (buckles, studs, tassels and pale highlights go with it), then grown 2px over its own
+      soft edge.
+    - The `costume` and `wing` fix boxes settle what the rules cannot: inside a `wing` box the
+      strong orange (hue under 62) is webbing; inside a `costume` box the warm paint is
+      costume."""
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    k = a.shape[0] / 1024
+    px = lambda r: max(1, int(round(r * k)))  # noqa: E731
+    ink = look.ink
+    to_wing = boxes(painting, "wing", a.shape)
+    to_costume = boxes(painting, "costume", a.shape)
+
+    pieces = orange & ~lines
+    labs, n = ndimage.label(pieces)
+    even = np.zeros(n + 1, bool)  # even, strong orange: webbing
+    soft = np.zeros(n + 1, bool)  # even, softer orange: webbing in shade, beside the webbing
+    deep = np.zeros(n + 1, bool)  # even, strong and red-orange: webbing however small
+    size = np.zeros(n + 1)
+    if n:
+        i = np.arange(1, n + 1)
+        size[1:] = ndimage.sum(pieces, labs, i)
+        for j in np.nonzero(size >= 300 * k * k)[0]:
+            comp = labs == j
+            lo, hi = np.percentile(L[comp], [10, 90])
+            mc, mh = np.median(C[comp]), np.median(hue[comp])
+            even[j] = (hi - lo < 0.26) and mc >= 0.115
+            soft[j] = (hi - lo < 0.26) and mc >= 0.09 and mh < 62
+            deep[j] = even[j] and mh < 50 and size[j] >= 800 * k * k
+    seed = ((even & (size >= 3000 * k * k)) | deep)[labs]
+    wing = seed
+    for _ in range(6):  # (piece by piece, out from the big ones)
+        near = ndimage.binary_dilation(wing, structure=disk(px(12)))
+        beside = np.unique(labs[near & pieces & soft[labs]])
+        grown = seed | (np.isin(labs, beside[beside > 0]) & soft[labs])
+        if (grown == wing).all():
+            break
+        wing = grown
+    if to_wing is not None:
+        wing |= to_wing & orange & (C >= 0.1) & (hue < 62)
+    if to_costume is not None:
+        wing &= ~to_costume
+    # the lit rim of her webbing, past its ink edge (Duskrunner's Radiant wing): a thin, light
+    # orange piece beside it
+    if n:
+        thick = ndimage.distance_transform_edt(pieces)
+        touch = ndimage.binary_dilation(wing, structure=disk(px(6)))
+        for j in np.setdiff1d(np.unique(labs[touch & pieces]), np.unique(labs[wing])):
+            if j == 0 or size[j] < 30 * k * k:
+                continue
+            comp = labs == j
+            if thick[comp].max() <= 7 * k \
+                    and np.median(hue[comp]) < 70 and np.median(L[comp]) >= 0.72:
+                wing |= comp
+    # warm costume: every warm piece neither beside the webbing nor held inside it (the
+    # yellow-green cores of Radiant's spots)
+    warm = a & ~ink & (hue > 15) & (hue < 110) & (C >= 0.06)
+    held = ndimage.binary_fill_holes(ndimage.binary_closing(wing, structure=disk(px(3))))
+    warm_costume = warm & ~ndimage.binary_dilation(held, structure=disk(px(4)))
+    labs, n = ndimage.label(warm_costume)
+    if n:  # (a few pixels of faded orange along the webbing's edge are webbing, grown later)
+        keep = np.zeros(n + 1, bool)
+        keep[1:] = ndimage.sum(warm_costume, labs, np.arange(1, n + 1)) >= 30 * k * k
+        warm_costume = keep[labs]
+    cool = a & ~ink & (C >= 0.05) & ((hue < 15) | (hue > 172))
+    # (a fleck of it by itself is a sparkle painted on her scales, and takes their colour)
+    labs, n = ndimage.label(ndimage.binary_dilation(cool, structure=disk(px(3))))
+    if n:
+        keep = np.zeros(n + 1, bool)
+        keep[1:] = ndimage.sum(cool, labs, np.arange(1, n + 1)) >= 120 * k * k
+        cool &= keep[labs]
+    labs, n = ndimage.label(cool)
+    if n:  # (and so is a small light one, beside her crest or another sparkle)
+        i = np.arange(1, n + 1)
+        spark = np.zeros(n + 1, bool)
+        spark[1:] = (ndimage.sum(cool, labs, i) < 60 * k * k) & (ndimage.mean(L, labs, i) >= 0.7)
+        cool &= ~spark[labs]
+    costume = warm_costume | cool
+    if to_costume is not None:
+        costume |= to_costume & warm
+    # inside a `costume` box, dull dark paint held in by it is cloth too (Starweaver's Sworn
+    # capelet is a dark grey-teal, her own mint darkened, so no colour tells it from her shaded
+    # belly): a dark piece in the box whose edge, where it is not ink, is mostly costume
+    dull = a & ~ink & ~spike & (L < 0.56) & (C < 0.09)
+    labs, n = ndimage.label(dull) if to_costume is not None else (None, 0)
+    if n:
+        touch = ndimage.binary_dilation(costume, structure=disk(px(3)))
+        sizes = ndimage.sum(dull, labs, np.arange(1, n + 1))
+        for j, sl in enumerate(ndimage.find_objects(labs), start=1):
+            if sl is None or sizes[j - 1] < 300 * k * k:
+                continue
+            sl = tuple(slice(max(s.start - 2, 0), s.stop + 2) for s in sl)
+            piece = labs[sl] == j
+            ring = ndimage.binary_dilation(piece, structure=SQUARE, iterations=2) & ~piece & ~ink[sl] & a[sl]
+            if ring.any() and (ring & touch[sl]).sum() >= 0.5 * ring.sum() \
+                    and (piece & to_costume[sl]).sum() >= 0.8 * piece.sum():
+                costume[sl] |= piece
+    costume = ndimage.binary_closing(costume, structure=disk(px(2)))
+    holes = ndimage.binary_fill_holes(costume) & ~costume
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 3000 * k * k
+        costume |= small[labs]
+    costume = ndimage.binary_dilation(costume, structure=disk(px(2))) & a & ~wing & ~spike
+    return wing & ~costume, costume
 
 
 # ----------------------------------------------------------------------------- griffin
