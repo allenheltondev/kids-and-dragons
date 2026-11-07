@@ -33,7 +33,7 @@ import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
-import { heroBase, type HeroArtSubject } from "../world/hero-art";
+import { heroBase, heroPaintingUrl, type HeroArtSubject } from "../world/hero-art";
 import { useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
@@ -123,16 +123,20 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
     props.hero !== undefined
       ? props.hero
       : { species: props.species, tier: props.tier ?? STARTING_TIER, class: props.characterClass };
+  // Failures are keyed on the painting, not the URL drawn: her colour (#666)
+  // draws an object URL of it, and a painting that is not there has no colour.
   const [failedGearSrc, setFailedGearSrc] = useState<string | null>(null);
   const [failedBaseSrc, setFailedBaseSrc] = useState<string | null>(null);
-  const baseSrc = useHeroArt(heroBase(subject), "portrait");
-  const preferredSrc = useHeroArt(subject, "portrait");
-  const gearSrc = preferredSrc === baseSrc ? null : preferredSrc;
+  const basePainting = heroPaintingUrl(heroBase(subject), "portrait");
+  const gearPainting = heroPaintingUrl(subject, "portrait");
   // A separately deployed gear portrait may briefly 404 before its bundle
   // catches up. Step down to the known species art before conceding to an icon.
-  const src = gearSrc !== null && !isMissingArt(failedGearSrc, gearSrc) ? gearSrc : baseSrc;
-  const missing = src === baseSrc && isMissingArt(failedBaseSrc, baseSrc);
-  const showingGear = gearSrc !== null && src === gearSrc;
+  const showingGear = gearPainting !== basePainting && !isMissingArt(failedGearSrc, gearPainting);
+  // Only the painting shown is tinted: the other is never held or made.
+  const gearSrc = useHeroArt(subject, "portrait", showingGear);
+  const baseSrc = useHeroArt(heroBase(subject), "portrait", !showingGear);
+  const src = showingGear ? gearSrc : baseSrc;
+  const missing = !showingGear && isMissingArt(failedBaseSrc, basePainting);
 
   const style: CSSProperties & Record<string, string | undefined> = {
     // The ground-contact contract, handed to CSS so the stylesheet never has
@@ -168,10 +172,10 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
           // The URL that failed, not "this portrait failed" — a later species,
           // a later tier, or a later deploy of the same file all get another go.
           onError={() => {
-            if (gearSrc !== null && src === gearSrc) {
-              setFailedGearSrc(src);
+            if (showingGear) {
+              setFailedGearSrc(gearPainting);
             } else {
-              setFailedBaseSrc(src);
+              setFailedBaseSrc(basePainting);
             }
           }}
         />

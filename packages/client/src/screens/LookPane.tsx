@@ -1,9 +1,9 @@
 /**
- * "Look": her hero's name style in the adventure book (docs/hero-looks.md
+ * "Look": her hero's colour and name style in the adventure book (docs/hero-looks.md
  * §8.1; #664), on the tray beside Camp.
  *
  * Built like the kit's dressing room (CampPane.tsx, BookKit.tsx): her hero up
- * top wearing the look as she taps, then the Nameplate and Title shelves
+ * top wearing the look as she taps, then the Color, Nameplate and Title shelves
  * (LookEditor.tsx `BookLook`). Every tap saves itself, behind the scenes,
  * through the kit's own queue, sender and endpoint, with the look's fields as
  * change kinds of their own (store/kit-queue.ts, store/book-kit-sync.ts): at
@@ -49,7 +49,7 @@ export default function LookPane({ journal, hero, onHero, onKit }: LookPaneProps
         <section className="book-camp__empty" data-testid="book-look-empty">
           <Icon name="star" size="2.4em" />
           <h2 className="book-camp__empty-title">No hero yet</h2>
-          <p>Make a hero in your next game, and you can pick her nameplate and title here.</p>
+          <p>Make a hero in your next game, and you can pick her look here.</p>
         </section>
       </Frame>
     );
@@ -89,7 +89,7 @@ export default function LookPane({ journal, hero, onHero, onKit }: LookPaneProps
                 onClick={() => onHero(h.id)}
               >
                 <span className="journal__pick-art" aria-hidden="true">
-                  <CharacterPortrait backdrop species={h.species} accent={h.appearance.accent} tier={h.tier} characterClass={h.class} lit={h.id === hero.id} />
+                  <CharacterPortrait backdrop hero={{ ...h, look: withQueuedLook(h.look, h.id, queue) }} accent={h.appearance.accent} lit={h.id === hero.id} />
                 </span>
                 <span className="journal__pick-name">
                   <HeroName name={h.name} look={withQueuedLook(h.look, h.id, queue)} />

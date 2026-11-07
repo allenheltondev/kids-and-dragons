@@ -47,6 +47,7 @@ import { TrayObject } from "./TrayObjects";
 import { Atlas, AtlasUnrolling, placeOf } from "./WorldMapPanel";
 import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
 import { offlineArtFor, warm } from "../sw/warm";
+import { heroOfflineArt } from "../world/hero-art";
 import { usePersistStorage } from "../storage/persist";
 import "./shared.css";
 import "./JournalScreen.css";
@@ -173,7 +174,10 @@ export function JournalScreen(): ReactElement {
     const loadWorld = useGameStore.getState().loadWorld;
     void Promise.all([loadWorld(), loadFieldGuide().catch(() => null)]).then(([, guide]) => {
       if (!live) return;
-      void warm(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), { essential: true });
+      // And her heroes, with their coat masks (docs/hero-looks.md §5.4): her colour, and the Look
+      // page's Color shelf, are tinted from what is saved here when there is no signal.
+      const heroes = journal.heroes.flatMap((h) => heroOfflineArt(h));
+      void warm([...offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), ...heroes], { essential: true });
     });
     return () => {
       live = false;

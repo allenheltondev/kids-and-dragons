@@ -1,6 +1,6 @@
 # Hero looks: a colour and a name style of her own
 
-**Status: design approved (2026-11-07); phase 1, the name style, built (#664).** Every decision in §11 is *decided*: the
+**Status: design approved (2026-11-07); phase 1, the name style, built (#664); phase 2, colours (the tinter, data, editors and offline), built (#666), waiting on masks (#667, #668).** Every decision in §11 is *decided*: the
 product owner's own on 2026-11-07, and the rest approved with this doc after two design reviews
 the same day. Nothing is still only proposed. The second revision answered the first review: the gear portraits (§4), book edits against the revision (§3.2), every
 hero drawing path (§9), the nameplate's geometry (§7.2), offline prefetch (§5.4), the tinter's
@@ -296,6 +296,62 @@ A few earned coats are more than a colour (*decided*):
   hide it), its moving gradient clipped by the region mask (`mask-image`), so it lights only her
   coloured part. **Under reduced motion** it is a still sheen, and no sweep.
 
+*As built (#666, phase 2; no real mask ships yet, so every hero still draws as painted until
+#667 and #668 list theirs in `coatMasks.paintings`):*
+
+- **The data.** `look.coat` is a catalog id (`content/looks.json` → `coats`): `id`, `name` (the
+  tile's word), `unlock`, `species` (one each) and `color`. Six starters per species (§7.1).
+  How the tinter paints a coat is shared `CoatPaint`, one kind today (`{ kind: "plain", color }`);
+  `speciesCoat` (hers, by species), `coatPaintOf` and `coatPaintKey` are in shared `hero-look.ts`.
+  **For #669:** add an optional `effect` to `CatalogCoat` and its schema (say
+  `{ "kind": "two-tone", "dark": "#hex" }`, `{ "kind": "shimmer" }`), map it in `coatPaintOf` to a
+  new `CoatPaint` member, and add its case to `coatTarget` / `tintCoatPixels` (hero-coat.ts) and
+  coat.py's `tint`. `color` stays every coat's base, so a build that does not know an effect
+  draws it plain. Shimmer's moving sweep is a separate overlay (§5.5), not the tinter's.
+- **The resolver** (`world/hero-art.ts`): `HeroArtSubject` carries `look` (a `Character` or a
+  `ResolvedCharacter` passes it whole). `heroCoatOf(hero, place)` is the tint request
+  (`{ painting, mask, paint, key }`) or null: no colour, not her species', or no mask listed.
+  `heroArtUrl` stays the painting as painted (what a figure is keyed and built on); her colour
+  reaches a surface only through the doors that hold it: `useHeroArt` / `HeroImage` (and
+  `CharacterPortrait` on it) and `loadHeroTexture`. `heroOfflineArt(hero)` lists her paintings
+  and masks for saving. A test holds that `CharacterPortrait`'s `species` prop (no look) is
+  creation's alone.
+- **The tinter.** `world/oklab.ts` (the matrices coat.py uses); `world/hero-coat.ts`
+  (`coatRegionStats`, `coatTarget`, `swapPixel`, `tintCoatPixels`, `COAT_SWAP`): §5.2's swap,
+  held to coat.py within one 8-bit step on `tools/art/fixtures/coat-reference.json` (and its
+  `.png` sheet), which `tools/art/coat-reference.py --check` regenerates and compares.
+  `world/hero-coat-pass.ts`: one pass (`runTint`) fetches and decodes both files, swaps a slice at
+  a time and encodes an image (for Pixi) and a PNG (for the object URL); `defaultTintRunner()`
+  runs it in `hero-coat.worker.ts` on an `OffscreenCanvas`, else on the page in slices
+  (`canvasIO`); a mask off its painting's canvas fails the pass (drawn as painted).
+- **The cache** (`world/hero-coat-cache.ts`, loaded by `hero-coat-load.ts` only when a hero
+  with a colour stands on a masked painting, never in the first paint): `heroCoats()` is a
+  `CoatCache`; a surface asks through `cache.slot(show)` → `slot.want(request | null)`,
+  `slot.shown`, `slot.close()`. One pass per painting and paint, shared, one at a time. A new
+  want supersedes the last: a queued pass nobody wants is dropped, a running one aborted and its
+  result thrown away; the slot keeps showing what it showed until the new one is ready, so an
+  older colour never shows after a newer one. Entries count `width × height × 4` bytes; over
+  `COAT_CACHE_BUDGET` (48 MiB) the least recently used unpinned entry is evicted (URL revoked,
+  texture destroyed, bitmap closed); a slot pins what it shows. A failed pass is remembered for
+  the page's life and that hero draws as painted.
+- **The stages.** `loadHeroTexture` returns a handle: call it to let go (the lineup, the board
+  and the camp now call it whenever a figure is torn down or the stage is), `handle.update(hero)`
+  to retint the same figure when her colour changes (a new painting is still a new figure). A
+  stage's `use` swaps the texture on the existing sprite. A colour already tinted is on her
+  before her painting can be.
+- **Offline.** `art-paths.ts` `maskPathBeside` / `coatMaskFor(painting, masked)`, pure, so
+  `sw/chapter-art.ts` (`heroPaintingsWithMasks`) adds every seated hero's world figure, portrait
+  and their listed masks. The page passes the manifest's list (`coat-masks.ts`
+  `coatMaskPaintings()`); the service worker, which cannot import JSON, is handed it by
+  `sw-build.ts` as `__KAD_COAT_MASKS__`, and its overnight `swNextChapterArt` passes it. The scenes
+  ahead (`prefetch.ts`) warm figure masks too, and the book's fresh read warms every hero's
+  paintings and masks (`heroOfflineArt`, JournalScreen). The tint itself is not stored: it is made
+  again, on the device, from those two files.
+- **The editors.** A **Color** shelf, first in the book's Look page and in the table's compact
+  editor: "As painted" and her species' colours, each tile `CharacterPortrait` of her wearing it
+  (and a dot of the colour by its name). It is offered only once one of her paintings has a
+  mask; before that every tile would look the same.
+
 ## 6. Unlocks
 
 - **Starter looks** are free from the start, for every hero, old or new.
@@ -327,6 +383,21 @@ A few earned coats are more than a colour (*decided*):
     distance ≥ 0.08 **or** a lightness difference ≥ 0.10. Natural sets (two browns) pass on
     lightness, as real browns are told apart.
 - The player's accent is untouched, so a colour never clashes with "whose hero is whose".
+
+*As built (#666):* six starters per species in `content/looks.json` (checked by
+`tools/content/looks-catalog.mjs`: four to eight each, named and coloured apart).
+`packages/client/src/world/coat-palette.test.ts` holds both rules **on a stand-in for the
+rendered hero**, since no real mask ships yet: a body painted in the species' own region colour
+(the manifest palette slot the draft picks by), shaded, with a soft-edged mask, at 96 pixels,
+tinted by the real tinter and averaged in linear light. The backdrops are
+`coat-backdrops.fixture.json`, the mean of the bottom 30% of every biome background and camp
+backdrop (`tools/art/backdrop-grounds.py`; a test fails when a backdrop is missing from it).
+Colour-blind vision is Machado et al. (2009) at full severity. When the base masks land (#667),
+measure on the base painting and its mask instead; some colours may need nudging then. The
+starters were found by a search that kept each near a natural target and moved it only as far
+as the two rules needed, which is why a few are brighter than a painter would pick (Ginger,
+Amber) and why grey is missing from the Bigfoot set: a mid grey sits too close to the grey
+grounds, so his grey is a light Frost.
 
 ### 7.2 Nameplates
 

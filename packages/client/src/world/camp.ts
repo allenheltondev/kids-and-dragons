@@ -57,7 +57,7 @@ import {
   measurePaint,
 } from "./actor-art";
 import type { HeroArtSubject } from "./hero-art";
-import { loadHeroTexture } from "./hero-art-pixi";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 import {
   campRoute,
   campRoutes,
@@ -314,6 +314,8 @@ type Place = WanderPlace;
 
 interface Actor {
   def: CampFigure;
+  /** A hero's figure texture (hero-art-pixi.ts): her colour, let go of when she leaves or the camp comes down. */
+  heroArt?: HeroTextureHandle;
   container: Container;
   body: Container;
   art: Container;
@@ -1180,6 +1182,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (!url) return;
     const show = (texture: Texture): void => {
       if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
+      // A hero's colour, arriving after her painting: the same figure, a new texture.
+      if (actor.sprite && actor.def.hero) {
+        actor.sprite.texture = texture;
+        return;
+      }
       const sprite = new Sprite(texture);
       shadeAt(sprite, actor.y);
       sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
@@ -1190,7 +1197,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       fitArt(actor);
     };
     // A failed load keeps the placeholder: a to-do, not a broken image.
-    if (actor.def.hero) loadHeroTexture(actor.def.hero, "world", show, { load });
+    actor.heroArt?.();
+    actor.heroArt = undefined;
+    if (actor.def.hero) actor.heroArt = loadHeroTexture(actor.def.hero, "world", show, { load });
     else void load(url).then(show).catch(() => undefined);
   }
 
@@ -1550,6 +1559,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actors.delete(actor.def.id);
         planner.remove(actor.def.id);
         tapQueue.forget(actor.def.id);
+        actor.heroArt?.();
         actor.words?.destroy({ children: true });
         actor.container.destroy({ children: true });
       }
@@ -1668,6 +1678,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actor.sprite = null;
         actor.placeholder.visible = true;
         loadArt(actor);
+      } else if (def.hero) {
+        // Her colour (#666), changed at a rest or from the book: the same figure, retinted.
+        actor.heroArt?.update(def.hero);
       }
     }
     friendsOut = [];
@@ -2333,6 +2346,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     destroyed = true;
     app.ticker.remove(tick);
+    for (const actor of actors.values()) actor.heroArt?.();
     actors.clear();
     view.destroy({ children: true });
   }

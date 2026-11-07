@@ -8,12 +8,15 @@
  *
  * Keyed by painting URL, so it sits under whichever resolver picked the painting
  * (`characterArtUrl`, `characterWorldArtUrl`, `characterPortraitArtUrl`): ask
- * `coatMaskUrl(paintingUrl)`. Kept out of art-paths.ts, which the service worker concatenates
- * and so cannot import JSON.
+ * `coatMaskUrl(paintingUrl)`. The path rule itself (`maskPathBeside`, `coatMaskFor`) is in
+ * art-paths.ts, which the service worker concatenates and so can use without the JSON.
  */
 
 import type { SpeciesId } from "@kad/shared";
 import { coatMasks } from "../../../../assets/manifest.json";
+import { coatMaskFor, maskPathBeside } from "./art-paths";
+
+export { maskPathBeside };
 
 /** The part of a species that takes her colour (§4.2). The code says `coat` whatever it is. */
 export type CoatRegion = "coat" | "mane" | "scales" | "feathers" | "fur";
@@ -29,35 +32,34 @@ interface CoatRegionEntry {
 const REGIONS = coatMasks.regions as Record<SpeciesId, CoatRegionEntry>;
 
 /** Paintings with a shipped mask, as paths under /assets/. */
-const MASKED: ReadonlySet<string> = new Set(coatMasks.paintings as readonly string[]);
+const SHIPPED: readonly string[] = coatMasks.paintings as readonly string[];
+let masked: ReadonlySet<string> = new Set(SHIPPED);
 
 /** Which part of a species her colour goes on (§4.2). */
 export function coatRegionOf(species: SpeciesId): CoatRegion {
   return REGIONS[species].region;
 }
 
-function assetPath(paintingUrl: string): string | null {
-  return paintingUrl.startsWith("/assets/") ? paintingUrl.slice("/assets/".length) : null;
+/** The paintings with a mask, as paths under /assets/ (the manifest's list, or a test's). */
+export function coatMaskPaintings(): readonly string[] {
+  return [...masked];
 }
 
 /** Whether a painting (by its URL, `/assets/...`) has a coat mask. */
 export function hasCoatMask(paintingUrl: string): boolean {
-  const path = assetPath(paintingUrl);
-  return path !== null && MASKED.has(path);
-}
-
-/**
- * Where a painting's mask would be (§4.2), whether or not it has one: `x/assembled.png` →
- * `x/coat-mask.png`, a gear portrait's `x/<species>.png` → `x/<species>.coat-mask.png`.
- * Use `coatMaskUrl` to fetch one.
- */
-export function maskPathBeside(painting: string): string {
-  return painting.endsWith("/assembled.png")
-    ? painting.slice(0, -"assembled.png".length) + "coat-mask.png"
-    : painting.replace(/\.png$/, ".coat-mask.png");
+  return coatMaskFor(paintingUrl, masked) !== null;
 }
 
 /** The mask for a painting (by its URL), or null when it has none and draws as painted. */
 export function coatMaskUrl(paintingUrl: string): string | null {
-  return hasCoatMask(paintingUrl) ? maskPathBeside(paintingUrl) : null;
+  return coatMaskFor(paintingUrl, masked);
+}
+
+/**
+ * Test seam: pretend these paintings (paths under assets/) have masks, as a later art wave's
+ * manifest will list them; null goes back to the manifest's own list. No real hero has a
+ * shipped mask yet (#667, #668), so every test of a coloured hero runs on a list of its own.
+ */
+export function setCoatMaskPaintings(paths: readonly string[] | null): void {
+  masked = new Set(paths ?? SHIPPED);
 }

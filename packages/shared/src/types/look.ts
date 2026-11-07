@@ -97,16 +97,35 @@ export type LookUnlockRule =
   /** A camp milestone. */
   | { from: "milestone"; camp: "firstFriend" | "fullCamp" };
 
-/** A coat (phase 2, #666): a colour for one species' region, or a special effect. */
+/**
+ * A coat (phase 2, #666): a colour for one species' region (§4.2, §7.1). The
+ * kid sees it on the **Color** shelf; the code says `coat` whichever part of
+ * her it colours.
+ *
+ * Every coat has a `color`: the plain colour, and the base of a special coat.
+ * The special coats (§5.5, #669) are an `effect` added beside it, mapped to a
+ * new member of `CoatPaint` below, so a build that does not know an effect
+ * still draws the coat in its plain colour.
+ */
 export interface CatalogCoat {
   id: CoatId;
   name: string;
   unlock: LookUnlockRule;
   /** The species whose region it colours; each species has its own set (§7.1). */
   species: SpeciesId[];
-  /** sRGB hex. */
+  /** sRGB hex: the coat's colour, and the base of a special coat. */
   color: string;
 }
+
+/**
+ * How a coat is painted, as the tinter reads it (client world/hero-coat.ts,
+ * tools/art/coat.py). One kind today, `plain`: the region takes `color` by
+ * the §5.2 colour swap. #669 adds the special coats as new kinds here (say
+ * `{ kind: "two-tone"; color; dark }`, `{ kind: "shimmer"; color }`), an
+ * optional `effect` on `CatalogCoat` that `coatPaintOf` maps to them, and a
+ * case in the tinter; each kind has its own cache key (`coatPaintKey`).
+ */
+export type CoatPaint = { kind: "plain"; color: string };
 
 /** A nameplate frame (§7.2). */
 export interface CatalogNameplate {

@@ -278,7 +278,16 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // nine-slice of its own rather than Pixi's), the table's Look editor in the
 // camp panel, and the book's Look page in its own lazy chunk. 1733KB measured
 // (main measured 1715KB), first paint 328KB unchanged. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1735;
+// 1735 -> 1756 for the hero's colour (#666, docs/hero-looks.md §5): 1754KB measured,
+// first paint 328KB unchanged. The tinter is never in the first paint, and is not
+// fetched at all until a hero with a colour stands on a painting with a mask: its
+// cache and sliced pass are their own lazy chunk (about 8KB), and the worker that
+// runs the pass off the main thread is a separate file (about 5KB) that repeats the
+// colour swap, because a worker cannot share the page's chunk. The rest is the 36
+// starter colours in the looks catalog (content/looks.json, about 5KB, with the
+// name style's chunk), the Color shelf and the stages' retint and release. 2KB of
+// slack again.
+const TOTAL_BUDGET_KB = 1756;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

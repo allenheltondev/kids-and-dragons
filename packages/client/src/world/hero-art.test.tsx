@@ -7,7 +7,7 @@
  * lists every use of the four painting helpers and fails on one outside the
  * resolver, character creation and the service worker, unless `ALLOWED` below
  * names it with a reason. A new screen that draws a hero cannot skip her look
- * (#666) by reaching for a helper.
+ * (#666) by reaching for a helper, or by drawing her as a species.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -181,7 +181,7 @@ describe("the hero-art resolver", () => {
     for (const hero of heroes()) {
       expect(heroArtUrl(hero, "world")).toBe(characterWorldArtUrl(hero.species, hero.tier, hero.class));
       expect(heroArtUrl(hero, "portrait")).toBe(characterPortraitArtUrl(hero.species, hero.tier, hero.class));
-      // As painted, until #666 tints it.
+      // As painted: her colour is the tinter's, through useHeroArt and loadHeroTexture (hero-coat-surfaces.test.tsx).
       for (const place of HERO_ART_PLACES) expect(heroArtUrl(hero, place)).toBe(heroPaintingUrl(hero, place));
     }
   });
@@ -264,6 +264,16 @@ describe("the hero-art inventory (docs/hero-looks.md §9)", () => {
       expect(reason.trim(), file).not.toBe("");
       expect(used.has(file), `${file} no longer uses a helper; drop its entry`).toBe(true);
     }
+  });
+
+  it("draws a player's hero whole, never as a species: CharacterPortrait's `species` is creation's alone (#666)", () => {
+    // A portrait given `species` has no look behind it and draws as painted:
+    // right for creation's cards, wrong for a hero who has picked a colour.
+    const stray = sources(SRC)
+      .map((path) => ({ file: relative(SRC, path).split("\\").join("/"), code: codeOnly(readFileSync(path, "utf8")) }))
+      .filter(({ file, code }) => !exempt(file) && /<CharacterPortrait\b[^>]*\bspecies=/.test(code))
+      .map(({ file }) => file);
+    expect(stray).toEqual([]);
   });
 
   it("puts every surface in the inventory on the resolver", () => {

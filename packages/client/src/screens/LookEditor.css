@@ -38,3 +38,25 @@
   text-align: center;
   padding-inline: 0.25rem;
 }
+
+/* The Color shelf (#666): her hero on every tile, tinted, with a dot naming the colour. */
+.book-look__tile--color .book-look__tile-art {
+  padding: 0;
+}
+
+.look-option__art--color {
+  inline-size: 4.2rem;
+  block-size: 4.2rem;
+  padding: 0;
+}
+
+.look-swatch {
+  display: inline-block;
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  margin-inline-end: 0.3em;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 0.45);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6);
+  vertical-align: -0.05em;
+}

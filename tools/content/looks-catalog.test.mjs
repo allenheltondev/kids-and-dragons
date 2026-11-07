@@ -50,6 +50,25 @@ describe("content/looks.json", () => {
     expect(problems(broken).some((p) => p.includes('no "plain" nameplate'))).toBe(true);
   });
 
+  it("gives every species about six starter colors of its own (#666, §7.1)", () => {
+    for (const species of Object.keys(RULES.species)) {
+      const starters = CATALOG.coats.filter((c) => c.species.includes(species) && c.unlock.from === "starter");
+      expect(starters.length, species).toBe(6);
+      for (const coat of starters) expect(coat.species, coat.id).toEqual([species]);
+    }
+  });
+
+  it("catches a species short of colors, and two colors with one name or one color", () => {
+    const broken = structuredClone(CATALOG);
+    broken.coats = broken.coats.filter((c) => !c.species.includes("griffin") || c.id === "griffin_snowy");
+    const unicorn = broken.coats.find((c) => c.id === "unicorn_sky");
+    broken.coats.push({ ...unicorn, id: "unicorn_sky_again" });
+    const found = problems(broken);
+    expect(found.some((p) => p.includes("griffin has 1 starter colors"))).toBe(true);
+    expect(found.some((p) => p.includes('already has a color called "Sky"'))).toBe(true);
+    expect(found.some((p) => p.includes("is already unicorn_sky"))).toBe(true);
+  });
+
   it("refuses a delivered frame the catalog does not paint", () => {
     expect(problems(CATALOG, { ids: ["plain"] }).some((p) => p.includes('"plain" is not a frame with art'))).toBe(true);
     expect(problems(CATALOG, { ids: ["ribbon"] })).toEqual([]);

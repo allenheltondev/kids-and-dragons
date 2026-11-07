@@ -7,7 +7,10 @@
  * whole: ids unique across all three lists (a receipt names one look, never
  * two), the plain plate there and free with no art (it is today's look, and
  * what every hero wears until she picks another), at least one free title,
- * every frame's art at `nameplates/<id>.webp`, every frame the art manifest
+ * every frame's art at `nameplates/<id>.webp`, every species with its own
+ * starter colours (`STARTER_COATS`), named and coloured apart within it
+ * (whether they can be told apart is a client test, coat-palette.test.ts),
+ * every frame the art manifest
  * calls delivered (`nameplateFrames.ids`) one the catalog has, and every
  * unlock rule naming a tier, class, campaign or camp friend that exists.
  *
@@ -17,6 +20,9 @@
 
 const LOOKS = "content/looks.json";
 const MANIFEST = "assets/manifest.json";
+
+/** How many free colours each species starts with (§7.1: "about six"). */
+export const STARTER_COATS = { min: 4, max: 8 };
 
 /**
  * @param {object} input
@@ -60,9 +66,32 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
   });
   if (!catalog.titles.some((t) => t.unlock.from === "starter")) fail("/titles", "no starter title", "A few titles are free from the start (§7.3).");
 
+  // Colours (#666, §7.1): each species its own starter set, about six, named and coloured apart.
+  const bySpecies = new Map();
   catalog.coats.forEach((coat, i) => {
-    for (const id of coat.species) if (!species.has(id)) fail(`/coats/${i}/species`, `no species "${id}"`);
+    for (const id of coat.species) {
+      if (!species.has(id)) {
+        fail(`/coats/${i}/species`, `no species "${id}"`);
+        continue;
+      }
+      const set = bySpecies.get(id) ?? { names: new Map(), colors: new Map(), starters: 0 };
+      bySpecies.set(id, set);
+      if (set.names.has(coat.name)) fail(`/coats/${i}/name`, `${id} already has a color called "${coat.name}" (${set.names.get(coat.name)})`, "The shelf shows the names side by side.");
+      else set.names.set(coat.name, coat.id);
+      const color = coat.color.toUpperCase();
+      if (set.colors.has(color)) fail(`/coats/${i}/color`, `${color} is already ${set.colors.get(color)}`, "Two tiles that look the same are one choice.");
+      else set.colors.set(color, coat.id);
+      if (coat.unlock.from === "starter") set.starters += 1;
+    }
   });
+  if (catalog.coats.length > 0) {
+    for (const id of [...species].sort()) {
+      const starters = bySpecies.get(id)?.starters ?? 0;
+      if (starters < STARTER_COATS.min || starters > STARTER_COATS.max) {
+        fail("/coats", `${id} has ${starters} starter colors`, `About six per species, natural for it (§7.1): ${STARTER_COATS.min} to ${STARTER_COATS.max}.`);
+      }
+    }
+  }
 
   const delivered = manifest?.ids ?? [];
   const frames = new Map(catalog.nameplates.map((n) => [n.id, n]));

@@ -94,7 +94,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { loadHeroTexture } from "./hero-art-pixi";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 
 import {
   createNameplate,
@@ -282,6 +282,8 @@ export interface BoardLayer {
 }
 
 interface BoardActor {
+  /** A hero's figure texture (hero-art-pixi.ts), let go of when the actor is: her colour's cache entry. */
+  heroArt?: HeroTextureHandle;
   charging: boolean;
   slam: boolean;
   slamAge: number;
@@ -693,6 +695,11 @@ export function createBoardLayer(): BoardLayer {
         // Identity, not id — a stale resolve must not draw into a destroyed
         // container after the fight rebuilt this figure.
         if (destroyed || actors.get(combatant.id) !== actor) return;
+        // A hero's colour, arriving after her painting: the same figure, a new texture.
+        if (actor.sprite) {
+          actor.sprite.texture = texture;
+          return;
+        }
         const sprite = new Sprite(texture);
         sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
         clearTimeout(reveal);
@@ -728,7 +735,7 @@ export function createBoardLayer(): BoardLayer {
       };
       if (combatant.side === "party") {
         const member = current.party.find((m) => m.character.id === combatant.id);
-        if (member) loadHeroTexture(member.character, "world", show, { missing });
+        if (member) actor.heroArt = loadHeroTexture(member.character, "world", show, { missing });
         return;
       }
       const url = enemyArtUrlFor(combatant, current);
@@ -806,6 +813,9 @@ export function createBoardLayer(): BoardLayer {
           const look = current.party.find((m) => m.character.id === combatant.id)?.character.look;
           existing.dress = dressNameplate(nameLayer, existing.label, heroNameStyle(look), existing.dress);
         }
+        // And her colour (#666): the same figure, retinted.
+        const member = current.party.find((m) => m.character.id === combatant.id);
+        if (member) existing.heroArt?.update(member.character);
         continue;
       }
       const made = makeActor(combatant, gridActor, current);
@@ -815,6 +825,7 @@ export function createBoardLayer(): BoardLayer {
 
     for (const [id, actor] of [...actors.entries()]) {
       if (seen.has(id)) continue;
+      actor.heroArt?.();
       actor.container.destroy({ children: true });
       // The name is not in that container (see `nameLayer`), so it does not
       // come down with it — a beaten figure would leave its label on the grid.
@@ -1417,6 +1428,7 @@ export function createBoardLayer(): BoardLayer {
       for (const floater of floaters) floater.text.destroy();
       floaters.length = 0;
       for (const actor of actors.values()) {
+        actor.heroArt?.();
         actor.container.destroy({ children: true });
         // Released here rather than left to `container.destroy` below, so the
         // one thing an actor owns outside its own subtree is owned in the

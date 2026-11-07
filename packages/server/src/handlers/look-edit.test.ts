@@ -89,11 +89,85 @@ describe("LOOK_EDIT at the table (§3.2, §8.2)", () => {
     expect(earned.error?.code).toBe("ILLEGAL");
     const unknown = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, title: "the_magnificent" });
     expect(unknown.error?.code).toBe("ILLEGAL");
-    // No colours yet (#666): any coat is refused.
     const coat = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "midnight" });
     expect(coat.error?.code).toBe("ILLEGAL");
     expect((await harness.repo.getCharacter(t.householdId, p1))!.look).toBeUndefined();
   });
+});
+
+describe("her colour at the table (#666, §3.2, §7.1)", () => {
+  it("accepts one of her species' starter colours, back to as painted too, and shows it on the run", async () => {
+    const { harness, t, p1, p2 } = await lobby();
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "unicorn_sky" });
+    expect(await partyLook(t, p1)).toMatchObject({ revision: 1, coat: "unicorn_sky" });
+    expect((await stored(harness, t.householdId, p1)).coat).toBe("unicorn_sky");
+    await t.send("p_2", { type: "LOOK_EDIT", characterId: p2, revision: 0, coat: "bigfoot_ginger" });
+    expect((await partyLook(t, p2))?.coat).toBe("bigfoot_ginger");
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 1, coat: null });
+    expect((await partyLook(t, p1))?.coat).toBeNull();
+  });
+
+  it("refuses another species' colour", async () => {
+    const { harness, t, p1, p2 } = await lobby();
+    const bigfoots = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "bigfoot_ginger" });
+    expect(bigfoots.ok).toBe(false);
+    expect(bigfoots.error?.code).toBe("ILLEGAL");
+    expect(bigfoots.error?.message).toMatch(/not one of her colors/);
+    const unicorns = await t.attempt("p_2", { type: "LOOK_EDIT", characterId: p2, revision: 0, coat: "unicorn_sky" });
+    expect(unicorns.error?.code).toBe("ILLEGAL");
+    expect((await harness.repo.getCharacter(t.householdId, p1))!.look).toBeUndefined();
+    expect((await harness.repo.getCharacter(t.householdId, p2))!.look).toBeUndefined();
+  });
+
+  it("refuses a colour she has not unlocked, and takes it once she holds its receipt", async () => {
+    const { harness, t, p1 } = await lobby();
+    const locked = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "unicorn_starlight" });
+    expect(locked.error?.code).toBe("ILLEGAL");
+    expect(locked.error?.message).toMatch(/not hers yet/);
+    const row = (await harness.repo.getCharacter(t.householdId, p1))!;
+    const look: HeroLook = { ...readLook(row), unlocked: { unicorn_starlight: { from: "found", rewardId: "test.starlight" } } };
+    expect(await harness.repo.writeCharacter({ character: { ...row, look }, expectedVersion: row.version ?? 0, expectedClaim: row.provisional?.runId ?? null })).toBe(true);
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "unicorn_starlight" });
+    expect((await stored(harness, t.householdId, p1)).coat).toBe("unicorn_starlight");
+  });
+});
+
+describe("her colour from the book (#666, §3.2)", () => {
+  it("applies one of her colours, and ends two queued colour edits on the later one", async () => {
+    const { harness, t, p1 } = await lobby();
+    await book(harness.deps, t.householdId, "p_1", { characterId: p1, merge: true, changes: [{ field: "coat", before: null, after: "unicorn_sky" }] });
+    await book(harness.deps, t.householdId, "p_1", { characterId: p1, merge: true, changes: [{ field: "coat", before: "unicorn_sky", after: "unicorn_midnight" }] });
+    expect((await stored(harness, t.householdId, p1)).coat).toBe("unicorn_midnight");
+  });
+
+  it("skips another species' colour, or one not hers yet, from the queue and says so", async () => {
+    const { harness, t, p1 } = await lobby();
+    for (const after of ["bigfoot_ginger", "unicorn_starlight"]) {
+      const answer = await book(harness.deps, t.householdId, "p_1", {
+        characterId: p1,
+        merge: true,
+        changes: [
+          { field: "coat", before: null, after },
+          { field: "title", before: null, after: "the_bold" },
+        ],
+      });
+      expect(answer.ok).toBe(true);
+      const value = (answer as { value: BookKitResponse }).value;
+      expect(value.refused).toEqual(["coat"]);
+      expect(value.applied).toEqual(["title"]);
+    }
+    expect((await stored(harness, t.householdId, p1)).coat).toBeNull();
+  });
+
+  it("refuses a colour not hers sent straight away", async () => {
+    const { harness, t, p1 } = await lobby();
+    const answer = await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "coat", before: null, after: "bigfoot_frost" }] });
+    expect(answer.ok).toBe(false);
+    expect((await harness.repo.getCharacter(t.householdId, p1))!.look).toBeUndefined();
+  });
+});
+
+describe("LOOK_EDIT at the table, continued", () => {
 
   it("accepts an earned look once she holds its receipt", async () => {
     const { harness, t, p1 } = await lobby();

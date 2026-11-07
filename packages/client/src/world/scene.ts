@@ -73,7 +73,7 @@ import {
 import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import { heroArtUrl } from "./hero-art";
-import { loadHeroTexture } from "./hero-art-pixi";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 import {
   RIFT_FOOT,
   riftPasses,
@@ -444,6 +444,12 @@ interface Actor extends StageFigureArt {
   characterId: string;
   /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
+  /**
+   * Her figure's texture (hero-art-pixi.ts): `update` gives it her look as it
+   * stands (a new colour on the same figure), calling it lets go of her tinted
+   * texture. Called whenever the actor is torn down.
+   */
+  heroArt: HeroTextureHandle | null;
   /*
    * `label` is the name under their feet — who this is, when two players
    * picked the same species (nameplate.ts). Null for a name with nothing in
@@ -505,7 +511,9 @@ interface CastActor extends StageFigureArt {
  * from it any more — the runtime recolour is gone and every figure wears the
  * colours it was authored in (`nameplate.ts` explains why) — so folding it in
  * would throw a illustration away and reload an identical one because
- * somebody tapped a swatch that now only colours their UI chrome.
+ * somebody tapped a swatch that now only colours their UI chrome. Nor is her
+ * chosen colour (#666, `look.coat`): a new colour is a new texture on the same
+ * figure (`Actor.heroArt.update`), not a new figure.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
  * way `storyFocusTiles` is.
@@ -1658,6 +1666,7 @@ export function createScene(app: Application): PartyScene {
       art,
       characterId: id,
       visualKey: visualKeyOf(member),
+      heroArt: null,
       label,
       labelText: nameplateLabel(name),
       dress: label ? dressNameplate(container, label, heroNameStyle(member.character.look)) : null,
@@ -1695,11 +1704,17 @@ export function createScene(app: Application): PartyScene {
      * placeholder when it isn't there cannot go stale.
      */
     const loadPng = (): void => {
-      loadHeroTexture(member.character, "world", (texture) => {
+      actor.heroArt = loadHeroTexture(member.character, "world", (texture) => {
         // Identity, not id: a character who left and rejoined mid-load has a
         // *new* actor under the same id, and this stale resolve would draw
         // into containers that were destroyed with the old one.
         if (destroyed || actors.get(id) !== actor) return;
+        // Her colour, arriving after her painting (or a new one): the same
+        // canvas and alpha, so the same figure with a new texture.
+        if (actor.sprite) {
+          actor.sprite.texture = texture;
+          return;
+        }
         const sprite = new Sprite(texture);
         sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
         art.removeChildren();
@@ -1788,11 +1803,14 @@ export function createScene(app: Application): PartyScene {
           // arrives on a patch.
           setLabel(existing, member.character.name);
           dressActor(existing, member);
+          // Her colour, changed at a rest or from the book (#666): the same figure, retinted.
+          existing.heroArt?.update(member.character);
           continue;
         }
         if (existing) {
           // A tier or class illustration changed; rebuild its sprite.
 
+          existing.heroArt?.();
           existing.container.destroy({ children: true });
           actors.delete(id);
         }
@@ -1801,6 +1819,7 @@ export function createScene(app: Application): PartyScene {
 
       for (const [id, actor] of [...actors.entries()]) {
         if (seen.has(id)) continue;
+        actor.heroArt?.();
         actor.container.destroy({ children: true });
         actors.delete(id);
       }
@@ -2180,6 +2199,7 @@ export function createScene(app: Application): PartyScene {
       stepVeil.destroy();
       victoryGlow.destroy();
       for (const actor of actors.values()) {
+        actor.heroArt?.();
         actor.container.destroy({ children: true });
       }
       actors.clear();

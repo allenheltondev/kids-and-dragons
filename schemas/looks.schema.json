@@ -10,7 +10,7 @@
     "$schema": { "type": "string" },
     "$comment": { "type": "string" },
     "coats": {
-      "description": "Colours for one species' region (§4, §7.1). Phase 2 (#666) fills these; empty until then.",
+      "description": "Colours for one species' coloured region (§4, §7.1; #666), shown to the kid as Color: about six starters per species. color is the coat's colour and the base of a special coat; #669 adds an optional effect (two-tone, shimmer) beside it.",
       "type": "array",
       "items": {
         "type": "object",

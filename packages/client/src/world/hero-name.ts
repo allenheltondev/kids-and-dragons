@@ -12,8 +12,8 @@
  * the name exactly as today, with nothing behind it, and no request for a
  * file that is not there.
  *
- * Where to add the Color shelf (#666): `lookChoices` already lists coats by
- * the same rule (starters and her receipts, nothing locked shown).
+ * `lookChoices` lists the Color shelf's coats (#666) by the same rule
+ * (starters and her receipts, nothing locked shown), and her species' only.
  */
 
 import { holdsLook, lookTitleText, PLAIN_NAMEPLATE } from "@kad/shared";

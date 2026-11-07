@@ -6,6 +6,9 @@
 
 import { describe, expect, it } from "vitest";
 import {
+  coatPaintKey,
+  coatPaintOf,
+  speciesCoat,
   emptyLook,
   holdsLook,
   lookEditProblem,
@@ -32,6 +35,17 @@ const CATALOG: LookCatalog = {
     { id: "of_the_gemfall", text: "of the Gemfall", unlock: { from: "milestone", campaign: "gemfall" } },
   ],
 };
+
+describe("her colour (#666, §7.1)", () => {
+  it("is drawn only when it is one of her species' own, and painted plain", () => {
+    expect(speciesCoat(CATALOG, "unicorn", "midnight")?.id).toBe("midnight");
+    expect(speciesCoat(CATALOG, "bigfoot", "midnight")).toBeNull();
+    expect(speciesCoat(CATALOG, "unicorn", "nonesuch")).toBeNull();
+    expect(speciesCoat(CATALOG, "unicorn", null)).toBeNull();
+    expect(coatPaintOf({ color: "#223355" })).toEqual({ kind: "plain", color: "#223355" });
+    expect(coatPaintKey(coatPaintOf({ color: "#aabbcc" }))).toBe("plain:#AABBCC");
+  });
+});
 
 describe("what is hers to wear (§6)", () => {
   it("is every starter, and an earned look only with its receipt", () => {

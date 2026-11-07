@@ -15,14 +15,12 @@
  * Either way the server checks every look named is hers (a starter, or one she
  * holds a receipt for) and, for a colour, one of her species' own (§7.1).
  *
- * Where to add a field (#666 brings the Color shelf for `coat`): the field is
- * already in `LookEdit`, `BOOK_LOOK_FIELDS` and the stored shape, and
- * `lookEditProblem` already checks it against the catalog's coats; a coat
- * with no catalog entry is simply refused until then.
+ * The colour (`coat`, #666) must be one of her species' own (`speciesCoat`);
+ * how the tinter paints it is `coatPaintOf`.
  */
 
 import type { Character, SpeciesId } from "./types/domain.js";
-import type { HeroLook, HeroLookView, LookCatalog, LookUnlock } from "./types/look.js";
+import type { CatalogCoat, CoatPaint, HeroLook, HeroLookView, LookCatalog, LookUnlock } from "./types/look.js";
 import { LOOK_VERSION } from "./types/look.js";
 
 /** The longest title the catalog may have, in characters: what the nameplate collision tests are run at (§7.3). */
@@ -195,6 +193,28 @@ export function withBookLookChanges(view: HeroLookView, changes: readonly BookLo
   let out = view;
   for (const change of changes) out = { ...out, [change.field]: change.after };
   return out;
+}
+
+/**
+ * The coat a hero of `species` wears for `id`: the catalog's entry, or null
+ * for none, one the catalog no longer has, or another species' colour (which
+ * the server never stores, but a screen must not draw either). Unlocks are
+ * the server's to check; a stored coat is hers.
+ */
+export function speciesCoat(catalog: Pick<LookCatalog, "coats">, species: SpeciesId, id: string | null | undefined): CatalogCoat | null {
+  if (!id) return null;
+  const coat = catalog.coats.find((c) => c.id === id);
+  return coat && coat.species.includes(species) ? coat : null;
+}
+
+/** How a coat is painted (`CoatPaint`). Plain today; #669 maps a coat's `effect` to its kind here. */
+export function coatPaintOf(coat: Pick<CatalogCoat, "color">): CoatPaint {
+  return { kind: "plain", color: coat.color.toUpperCase() };
+}
+
+/** A paint's identity, for the tinter's cache: one entry per painting and paint. */
+export function coatPaintKey(paint: CoatPaint): string {
+  return `${paint.kind}:${paint.color.toUpperCase()}`;
 }
 
 /** A title's words, or null for none (or one the catalog no longer has). */

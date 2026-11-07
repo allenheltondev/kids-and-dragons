@@ -33,10 +33,18 @@ import type { ContentStore } from "./content/loader.ts";
 
 /**
  * A small hero looks catalog (docs/hero-looks.md §7): the starter frames and
- * titles, and one earned title and frame nobody holds until a test gives it.
+ * titles, and one earned title and frame nobody holds until a test gives it;
+ * two starter colours each for a unicorn and a Bigfoot, and one earned
+ * unicorn colour (#666).
  */
 export const LOOKS_FIXTURE: LookCatalog = {
-  coats: [],
+  coats: [
+    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], color: "#58BCFD" },
+    { id: "unicorn_midnight", name: "Midnight", unlock: { from: "starter" }, species: ["unicorn"], color: "#20134E" },
+    { id: "unicorn_starlight", name: "Starlight", unlock: { from: "found" }, species: ["unicorn"], color: "#E8F0FF" },
+    { id: "bigfoot_ginger", name: "Ginger", unlock: { from: "starter" }, species: ["bigfoot"], color: "#F27B00" },
+    { id: "bigfoot_frost", name: "Frost", unlock: { from: "starter" }, species: ["bigfoot"], color: "#EBE7E3" },
+  ],
   nameplates: [
     { id: "plain", name: "Plain", unlock: { from: "starter" } },
     { id: "ribbon", name: "Ribbon", unlock: { from: "starter" }, art: "nameplates/ribbon.webp" },
