@@ -56,7 +56,9 @@ being added while it is made (`retireIfLast` in `handlers/retention.ts`):
 
 1. **The household is marked** (`beginRetiring`, `retiring` on `META`). From then on no kid can be
    made in it (`createPlayer`, a transaction with a check on `META`), moved into it (the move's
-   check), or given an owner (`putOwner`).
+   check), or given an owner (`putOwner`, `redeemOrganizerInvite`). Every one of those checks also
+   requires `META` to exist and not be `sweeping`, so a call that arrives after the household is
+   deleted, or while an owner is deleting it, leaves nothing behind.
 2. **Only then is emptiness read**, strongly consistent (`hasPlayers`). A kid added before the mark
    is seen and the mark comes off; one after is refused.
 3. **The owners are read** (strongly consistent, after the mark) **and written onto the kid's forget
@@ -64,8 +66,10 @@ being added while it is made (`retireIfLast` in `handlers/retention.ts`):
 4. **The delete needs the mark** (`deleteRetiringHousehold`): a write that replaced `META` since
    (a rename) took the mark, so the job goes back to step 1 on the next sweep.
 5. **Each owner's sign-in is marked** (`ACCT#<sub>` / `RETIRING`, 7-day `ttl`), which refuses every
-   new household pointer for it (`putAccountPointer`, `putOwner`, and `claimHousehold`, now one
-   transaction with its pointer). **Only then is ownership read**, strongly consistent
+   new household pointer for it. Every write of an `ACCT#<sub>/HH#` pointer checks the mark in its
+   own transaction: `putAccountPointer`, `putOwner`, `claimHousehold` (now one transaction with its
+   pointer), `redeemOrganizerInvite`, and a transfer into a new home (`moveProfile`'s
+   `account-open` step). **Only then is ownership read**, strongly consistent
    (`ownsAnyHousehold`): a pointer written before the mark keeps the sign-in, one after is refused.
    Then `AdminDeleteUser`.
 6. **Retryable throughout.** The kid's forget job stays until all of this and the scrub finish;

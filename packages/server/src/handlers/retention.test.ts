@@ -532,6 +532,50 @@ describe("retention (#252, #524)", () => {
     await h.repo.putAccountPointer(ada.owner.cognitoSub, "h_later");
   });
 
+  it("lets no organizer invite give a sign-in a household while the sweep deletes it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const club = value(await createGroup({ cognitoSub: "sub_lead", displayName: "Club" }, h.deps));
+    const invite = value(await createOrganizerInvite({ cognitoSub: "sub_lead", householdId: club.id }, h.deps));
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const owns = h.repo.ownsAnyHousehold.bind(h.repo);
+    let redeemed: HandlerResult<unknown> | null = null;
+    vi.spyOn(h.repo, "ownsAnyHousehold").mockImplementationOnce(async (sub) => {
+      // Ada's grown-up redeems an invite between the sweep's read and its delete.
+      redeemed = await acceptOrganizerInvite({ ...ada.owner, code: invite.code }, h.deps);
+      return owns(sub);
+    });
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(redeemed).toMatchObject({ ok: false });
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual([]);
+    expect((await h.repo.listOwners(club.id)).map((o) => o.cognitoSub)).toEqual(["sub_lead"]);
+  });
+
+  it("lets no organizer invite add an owner to a household while the sweep retires it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const invite = value(await createOrganizerInvite({ ...ada.owner, householdId: ada.householdId }, h.deps));
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const has = h.repo.hasPlayers.bind(h.repo);
+    let redeemed: HandlerResult<unknown> | null = null;
+    vi.spyOn(h.repo, "hasPlayers").mockImplementationOnce(async (id) => {
+      // A second grown-up redeems an invite after the household was marked.
+      redeemed = await acceptOrganizerInvite({ cognitoSub: "sub_ben", code: invite.code }, h.deps);
+      return has(id);
+    });
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(redeemed).toMatchObject({ ok: false });
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    // Ben never became an owner, so no pointer of his names a deleted household.
+    expect(await h.repo.listHouseholdsForAccount("sub_ben")).toEqual([]);
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+  });
+
   it("refuses a household pointer for a sign-in once it is marked, and deletes the sign-in", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");
@@ -607,6 +651,25 @@ describe("retention (#252, #524)", () => {
     expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).not.toBeNull();
     h.clock.advance(335 * DAY);
     expect((await sweep(h.repo, () => h.clock.now())).idle.deleted).toEqual([ada.playerId]);
+  });
+});
+
+describe("a household part-way through being deleted (#524)", () => {
+  it("takes no new kid and no new owner, from an owner's delete or the sweep's", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    // The delete sets its mark, then dies before its purge finishes.
+    const store = h.repo as unknown as { purge: (id: string) => Promise<void> };
+    vi.spyOn(store, "purge").mockRejectedValueOnce(new Error("throttled"));
+    await expect(h.repo.deleteHousehold(ada.householdId)).rejects.toThrow("throttled");
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    expect(await h.repo.createPlayer({ id: "p_late", householdId: ada.householdId, displayName: "Bo", color: "#7FD4C1" })).toBe(false);
+    await expect(
+      h.repo.putOwner({ householdId: ada.householdId, cognitoSub: "sub_new", addedAt: new Date(h.clock.now()).toISOString() }),
+    ).rejects.toBeInstanceOf(AccountRetiringError);
+    await expect(addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps)).rejects.toThrow();
+    expect(await h.repo.listHouseholdsForAccount("sub_new")).toEqual([]);
   });
 });
 

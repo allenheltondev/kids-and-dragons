@@ -850,13 +850,15 @@ export class DynamoRepository implements GameRepository {
               },
             },
             { Put: { TableName: this.table, Item: accountPointerItem(owner.cognitoSub, owner.householdId) } },
-            // Neither a household being retired (#524), whose owners the sweep
-            // has already read, nor a sign-in it may be about to delete.
+            // A household that is there, and neither being retired (#524),
+            // whose owners the sweep has already read, nor being deleted; and
+            // not a sign-in the sweep may be about to delete. A call that
+            // arrives after the household is gone leaves nothing behind.
             {
               ConditionCheck: {
                 TableName: this.table,
                 Key: { PK: HH(owner.householdId), SK: META },
-                ConditionExpression: "attribute_not_exists(retiring)",
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(retiring) AND attribute_not_exists(sweeping)",
               },
             },
             this.accountNotRetiring(owner.cognitoSub),
@@ -1025,13 +1027,16 @@ export class DynamoRepository implements GameRepository {
             },
             {
               // A code made before its household was deleted hands out
-              // nothing (#252): there, and not being deleted.
+              // nothing (#252): there, and not being deleted, nor being
+              // retired by the sweep, which has already read its owners (#524).
               ConditionCheck: {
                 TableName: this.table,
                 Key: { PK: HH(row.householdId), SK: META },
-                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping)",
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping) AND attribute_not_exists(retiring)",
               },
             },
+            // Nor to a sign-in the sweep is about to delete (#524).
+            this.accountNotRetiring(row.cognitoSub),
             {
               Put: {
                 TableName: this.table,
@@ -1225,6 +1230,9 @@ export class DynamoRepository implements GameRepository {
             ExpressionAttributeValues: { ":now": step.nowIso, ":hh": step.householdId, ":pid": step.playerId },
           },
         };
+      case "account-open":
+        // A new home's grown-up is not a sign-in being retired (#524).
+        return this.accountNotRetiring(step.cognitoSub);
       case "check":
         // The new home is there, and nobody is retiring or deleting it (#524).
         return {
@@ -1332,7 +1340,9 @@ export class DynamoRepository implements GameRepository {
               ConditionCheck: {
                 TableName: this.table,
                 Key: { PK: HH(player.householdId), SK: META },
-                ConditionExpression: "attribute_not_exists(retiring) AND attribute_not_exists(sweeping)",
+                // There: a call that arrives after the household was deleted
+                // must not leave a kid behind with no home to sweep her.
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(retiring) AND attribute_not_exists(sweeping)",
               },
             },
             {

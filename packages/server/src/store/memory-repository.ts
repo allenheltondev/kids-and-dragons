@@ -598,8 +598,10 @@ export class MemoryRepository implements GameRepository {
   }
 
   async putOwner(owner: HouseholdOwnerRecord): Promise<void> {
-    // Neither a household being retired nor a sign-in being retired (#524).
-    if (this.get(HH(owner.householdId), META)?.retiring || this.accountRetiring(owner.cognitoSub)) {
+    // A household that is there and neither being retired nor deleted, and a
+    // sign-in not being retired (#524), as the real store's transaction says.
+    const meta = this.get(HH(owner.householdId), META);
+    if (!meta || meta.retiring || meta.sweeping || this.accountRetiring(owner.cognitoSub)) {
       throw new AccountRetiringError();
     }
     // No await between the two: one transaction, as in the real store.
@@ -640,8 +642,10 @@ export class MemoryRepository implements GameRepository {
     if (!invite || invite.expiresAt <= nowIso) return null;
     // The real store's condition check on the household (#252): a code made
     // before its household was deleted hands out nothing.
+    // Nor one the sweep is retiring, nor to a sign-in it is about to delete (#524).
     const household = this.get(HH(invite.householdId), META);
-    if (!household || household.sweeping) return null;
+    if (!household || household.sweeping || household.retiring) return null;
+    if (this.accountRetiring(owner.cognitoSub)) return null;
     this.items.delete(rowKey(INVITE(code), META));
     await this.putOwner({ ...owner, householdId: invite.householdId });
     return invite;
@@ -716,6 +720,9 @@ export class MemoryRepository implements GameRepository {
         // There, and nobody retiring or deleting it (#524).
         const home = this.get(step.PK, step.SK);
         if (!home || home.retiring || home.sweeping) return "changed";
+      } else if (step.op === "account-open") {
+        // A new home's grown-up is not a sign-in being retired (#524).
+        if (this.accountRetiring(step.cognitoSub)) return "changed";
       } else if (step.op === "delete") {
         const row = this.get(step.PK, step.SK);
         if (!row || !isDeepStrictEqual(row.data, step.data)) return "changed";
@@ -759,7 +766,7 @@ export class MemoryRepository implements GameRepository {
   async createPlayer(player: PlayerProfile): Promise<boolean> {
     // As the real store's transaction: a new row, in a household nobody is retiring or deleting (#524).
     const meta = this.get(HH(player.householdId), META);
-    if (meta?.retiring || meta?.sweeping) return false;
+    if (!meta || meta.retiring || meta.sweeping) return false;
     if (this.items.has(rowKey(HH(player.householdId), PLAYER_SK(player.id)))) return false;
     this.writePlayer(undefined, player);
     return true;
