@@ -489,11 +489,118 @@ def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.n
     return scales & ~wing, wing
 
 
+# ----------------------------------------------------------------------------- griffin
+
+def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
+    """Feathers (G) and coat (R) are found afresh from the painting; the draft is not read.
+
+    He is painted in one blue hue (OKLab ~-105) at every depth: the white body (C ~0.02), its
+    blue-grey shading (C ~0.03..0.045), the stars on it, and the blue plumage (C ~0.07, L ~0.55).
+    So the parts are told apart by chroma and lightness, then by size and place.
+
+    1. Feathers: blue paint at least as strong as the plumage's shade (C >= 0.05, L < 0.76),
+       opened to cut bridges; the pieces of 2500px and more (crest and ruff, tail tuft) that
+       are not low on the figure (talons are blue-black too). Grown back over blue paint and
+       the dark strokes between feathers within reach, and over the mythic crest's icy
+       crystals; closed and holes filled.
+    2. Never coloured: ink outlines (dark at the figure's edge or against light paint),
+       the talons and every other dark piece outside the plumage, the yellow wings, beak and
+       feet (any warm or yellow hue with C >= 0.04), the mouth and eyes (small loops of ink).
+    3. Coat: the rest of him that is pale or blue-grey, as its largest pieces (the body, head
+       and any limb cut off by a line); the stars and shading on it are coat. Specks between
+       coat and feathers that are neither go to the nearer part.
+    4. The yellow wings stay as painted: the owner chose the blue plumage as the accent."""
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    ys = np.nonzero(a)[0]
+    y0, y1 = ys.min(), ys.max()
+    rows = np.arange(a.shape[0])[:, None]
+    blue = (hue > -150) & (hue < -60)
+    yellow = a & (C >= 0.04) & (hue > -20) & (hue < 140)
+    yellow = ndimage.binary_closing(yellow, structure=SQUARE) & a
+
+    core = a & blue & (C >= 0.05) & (L >= 0.3) & (L < 0.76)
+    core = ndimage.binary_opening(core, structure=SQUARE, iterations=1)
+    labs, n = ndimage.label(core)
+    keep = np.zeros_like(a)
+    for i in range(1, n + 1):
+        comp = labs == i
+        if comp.sum() < 2500:
+            continue
+        if np.nonzero(comp)[0].mean() > y1 - 0.12 * (y1 - y0):  # talons
+            continue
+        keep |= comp
+    # the plumage's smaller pieces, cut off by a line or an ear, beside its big ones: as deep
+    # a blue as the plumage (the shading on his chest and the stars are lighter)
+    raw = a & blue & (C >= 0.05) & (L >= 0.3) & (L < 0.76)
+    labs, n = ndimage.label(raw)
+    if n:
+        i = np.arange(1, n + 1)
+        near = ndimage.minimum(ndimage.distance_transform_edt(~keep), labs, i) <= 40
+        deep = (ndimage.mean(L, labs, i) < 0.56) & (ndimage.mean(C, labs, i) >= 0.06)
+        add = np.zeros(n + 1, bool)
+        add[1:] = near & deep & (ndimage.sum(raw, labs, i) >= 20)
+        keep |= add[labs] & (rows < y1 - 0.12 * (y1 - y0))
+    reach = ndimage.binary_dilation(keep, structure=disk(12))
+    grow = a & ~yellow & ((blue & (C >= 0.04)) | (L < 0.5)) & reach
+    feathers = ndimage.binary_propagation(keep, mask=grow | keep)
+    feathers = ndimage.binary_closing(feathers, structure=disk(2))
+    feathers = ndimage.binary_fill_holes(feathers) & a & ~yellow
+
+    # eyes: small loops of ink holding mostly dark paint (the iris round its catch-light); a
+    # pale loop, such as the cheek shut in between eye, beak and outline, is coat
+    loops = ndimage.binary_fill_holes(look.ink) & ~look.ink
+    labs, n = ndimage.label(loops)
+    eyes = np.zeros_like(a)
+    if n:
+        i = np.arange(1, n + 1)
+        small = np.zeros(n + 1, bool)
+        size, mL = ndimage.sum(loops, labs, i), ndimage.mean(L, labs, i)
+        dark = (mL < 0.6) | (ndimage.mean(yellow, labs, i) > 0.4)  # a brown or a gold iris
+        glint = (size < 400) & (mL > 0.75) & (ndimage.mean(C, labs, i) < 0.03)  # a catch-light
+        small[1:] = (size < 2500) & (dark | glint)
+        eyes = ndimage.binary_dilation(small[labs], structure=disk(2))
+
+    never = yellow | eyes | (look.ink & ~feathers)
+    cand = a & ~feathers & ~never & (L >= 0.45)
+    labs, n = ndimage.label(cand)
+    coat_ = np.zeros_like(a)
+    if n:
+        sizes = ndimage.sum(cand, labs, np.arange(1, n + 1))
+        big = np.zeros(n + 1, bool)
+        big[1:] = sizes >= max(1500, 0.02 * sizes.max())
+        coat_ = big[labs]
+    coat_ = ndimage.binary_fill_holes(coat_) & ~never & ~feathers & a
+    # the small pale pieces left over go to the nearer part: the tips of the mythic crest's
+    # crystals and a lit feather edge cut off by a line to the plumage, a cheek shut in between
+    # eye, beak and outline to the coat
+    rest = cand & ~coat_
+    labs, n = ndimage.label(rest)
+    if n:
+        i = np.arange(1, n + 1)
+        d_c = ndimage.minimum(ndimage.distance_transform_edt(~coat_), labs, i)
+        d_f = ndimage.minimum(ndimage.distance_transform_edt(~feathers), labs, i)
+        to_f = np.zeros(n + 1, bool)
+        to_c = np.zeros(n + 1, bool)
+        to_f[1:] = (d_f <= 8) & (d_f <= d_c)
+        to_c[1:] = (d_c <= 8) & (d_c < d_f)
+        feathers |= to_f[labs]
+        coat_ |= to_c[labs]
+
+    left = a &~coat_ & ~feathers & ~never & (L >= 0.36)
+    d_coat = ndimage.distance_transform_edt(~coat_)
+    d_feat = ndimage.distance_transform_edt(~feathers)
+    coat_ |= left & (d_coat <= 5) & (d_coat <= d_feat)
+    feathers |= left & (d_feat <= 5) & (d_feat < d_coat)
+    line = look.outline(light=0.7)
+    return coat_ & ~line, feathers & ~line
+
+
 RULES = {
     "unicorn": clean_unicorn,
     "bigfoot": clean_bigfoot,
     "kitsune": clean_kitsune,
     "dragonling": clean_dragonling,
+    "griffin": clean_griffin,
 }
 
 
