@@ -234,9 +234,7 @@ export function TransformCutscene(): ReactElement | null {
             <Icon name="levelup" size="60%" />
           ) : (
             <CharacterPortrait
-              species={member.character.species}
-              characterClass={member.character.class}
-              tier={shownTier}
+              hero={{ ...member.character, tier: shownTier }}
               accent={member.character.appearance.accent}
               size="100%"
               lit

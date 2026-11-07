@@ -7,6 +7,11 @@
  * so a unicorn looks like the same unicorn everywhere — the same rule scene.ts
  * follows for the two Pixi stages.
  *
+ * A player's hero is passed whole (`hero`) and drawn through the hero-art
+ * resolver (`useHeroArt`, docs/hero-looks.md §9), so she wears her look on
+ * every still. A species with no hero behind it yet (creation's cards) passes
+ * `species` instead, and is drawn as painted.
+ *
  * Three things it has to get right:
  *
  *   - **It never breaks a screen.** Art is a separate deploy from the bundle
@@ -27,12 +32,9 @@
 import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
-import {
-  ANCHOR_Y,
-  STARTING_TIER,
-  characterArtUrl,
-  characterPortraitArtUrl,
-} from "../world/art-paths";
+import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
+import { heroBase, heroPaintingUrl, heroSparkleOf, type HeroArtSubject } from "../world/hero-art";
+import { HeroSparkles, useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
 
@@ -58,12 +60,27 @@ export function isMissingArt(failedSrc: string | null, src: string): boolean {
   return failedSrc !== null && failedSrc === src;
 }
 
-export interface CharacterPortraitProps {
-  species: SpeciesId;
-  /** Enables an approved creature/class/tier gear portrait when one exists. */
-  characterClass?: ClassId;
-  /** Defaults to the tier every character starts at. */
-  tier?: TierId;
+/** Who is drawn: a player's hero, or (creation) a species with no hero yet. */
+export type CharacterPortraitSubject =
+  | {
+      /** A player's hero, or the hero at a tier she is growing into (`{ ...character, tier }`). */
+      hero: HeroArtSubject;
+      species?: never;
+      characterClass?: never;
+      tier?: never;
+    }
+  | {
+      hero?: never;
+      species: SpeciesId;
+      /** Enables an approved creature/class/tier gear portrait when one exists. */
+      characterClass?: ClassId;
+      /** Defaults to the tier every character starts at. */
+      tier?: TierId;
+    };
+
+export type CharacterPortraitProps = CharacterPortraitSubject & PortraitLook;
+
+interface PortraitLook {
   /** Any CSS length. The art scales to fit; the box is what you size. */
   size?: string;
   /**
@@ -92,28 +109,38 @@ export interface CharacterPortraitProps {
   className?: string;
 }
 
-export function CharacterPortrait({
-  species,
-  characterClass,
-  tier = STARTING_TIER,
-  size,
-  lit = false,
-  accent,
-  backdrop = false,
-  float = false,
-  stand = "centre",
-  className = "",
-}: CharacterPortraitProps): ReactElement {
+export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
+  const {
+    size,
+    lit = false,
+    accent,
+    backdrop = false,
+    float = false,
+    stand = "centre",
+    className = "",
+  } = props;
+  const subject: HeroArtSubject =
+    props.hero !== undefined
+      ? props.hero
+      : { species: props.species, tier: props.tier ?? STARTING_TIER, class: props.characterClass };
+  // Failures are keyed on the painting, not the URL drawn: her colour (#666)
+  // draws an object URL of it, and a painting that is not there has no colour.
   const [failedGearSrc, setFailedGearSrc] = useState<string | null>(null);
   const [failedBaseSrc, setFailedBaseSrc] = useState<string | null>(null);
-  const baseSrc = characterArtUrl(species, tier);
-  const preferredSrc = characterPortraitArtUrl(species, tier, characterClass);
-  const gearSrc = preferredSrc === baseSrc ? null : preferredSrc;
+  const basePainting = heroPaintingUrl(heroBase(subject), "portrait");
+  const gearPainting = heroPaintingUrl(subject, "portrait");
   // A separately deployed gear portrait may briefly 404 before its bundle
   // catches up. Step down to the known species art before conceding to an icon.
-  const src = gearSrc !== null && !isMissingArt(failedGearSrc, gearSrc) ? gearSrc : baseSrc;
-  const missing = src === baseSrc && isMissingArt(failedBaseSrc, baseSrc);
-  const showingGear = gearSrc !== null && src === gearSrc;
+  const showingGear = gearPainting !== basePainting && !isMissingArt(failedGearSrc, gearPainting);
+  // Only the painting shown is tinted: the other is never held or made.
+  const gearSrc = useHeroArt(subject, "portrait", showingGear);
+  const baseSrc = useHeroArt(heroBase(subject), "portrait", !showingGear);
+  const src = showingGear ? gearSrc : baseSrc;
+  const missing = !showingGear && isMissingArt(failedBaseSrc, basePainting);
+  // A sparkle special (§5.5), over the painting shown: in the image's own grid
+  // cell, laid on top of it, never behind (a gear portrait is opaque), clipped
+  // by her figure.
+  const sparkle = props.hero !== undefined && !missing ? heroSparkleOf(showingGear ? subject : heroBase(subject), "portrait") : null;
 
   const style: CSSProperties & Record<string, string | undefined> = {
     // The ground-contact contract, handed to CSS so the stylesheet never has
@@ -130,11 +157,11 @@ export function CharacterPortrait({
     <span
       className={`portrait portrait--${stand}${backdrop ? " portrait--backdrop" : ""}${showingGear ? " portrait--gear" : ""}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
       style={style}
-      data-species={species}
-      data-character-class={characterClass}
+      data-species={subject.species}
+      data-character-class={subject.class}
     >
       {missing ? (
-        <Icon name={species} className="portrait__fallback" size="72%" />
+        <Icon name={subject.species} className="portrait__fallback" size="72%" />
       ) : (
         <img
           className="portrait__img"
@@ -149,14 +176,15 @@ export function CharacterPortrait({
           // The URL that failed, not "this portrait failed" — a later species,
           // a later tier, or a later deploy of the same file all get another go.
           onError={() => {
-            if (gearSrc !== null && src === gearSrc) {
-              setFailedGearSrc(src);
+            if (showingGear) {
+              setFailedGearSrc(gearPainting);
             } else {
-              setFailedBaseSrc(src);
+              setFailedBaseSrc(basePainting);
             }
           }}
         />
       )}
+      {sparkle ? <HeroSparkles sparkle={sparkle} className="portrait__img portrait__sparkle" /> : null}
     </span>
   );
 }

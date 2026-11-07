@@ -1,0 +1,119 @@
+/*
+ * A sparkle special in the DOM (docs/hero-looks.md §5.5): small stars
+ * twinkling over her whole figure, in an element laid OVER her image (never
+ * behind it: a gear portrait is opaque and would hide it), in the image's own
+ * grid cell so it moves with her whatever moves her. It is clipped by her
+ * figure, read by alpha: a cut-out painting's own alpha, or her figure made
+ * from an opaque portrait's mask (white, its alpha the mask's blue channel).
+ * The stars twinkle on hero-art.ts `SPARKLE.periodMs` (2.4 s), each layer on
+ * its own beat.
+ *
+ * Under reduced motion (the device's or the setting's) the stars rest at a
+ * steady glow: no twinkle.
+ */
+
+.hero-sparkle {
+  pointer-events: none;
+  position: relative;
+  display: block;
+  -webkit-mask-image: var(--hero-sparkle-mask);
+  mask-image: var(--hero-sparkle-mask);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: var(--hero-sparkle-mask-size, contain);
+  mask-size: var(--hero-sparkle-mask-size, contain);
+  -webkit-mask-position: var(--hero-sparkle-mask-position, 50% 100%);
+  mask-position: var(--hero-sparkle-mask-position, 50% 100%);
+  -webkit-mask-source-type: alpha;
+  mask-mode: alpha;
+  mix-blend-mode: screen;
+}
+
+/* Two layers of stars, each twinkling on its own beat. */
+.hero-sparkle::before,
+.hero-sparkle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  animation: hero-sparkle-twinkle 2.4s ease-in-out infinite;
+}
+
+.hero-sparkle::before {
+  background-image:
+    radial-gradient(circle, rgb(255 255 255 / 95%) 0 14%, transparent 42%),
+    radial-gradient(circle, rgb(255 246 200 / 90%) 0 11%, transparent 36%),
+    radial-gradient(circle, rgb(255 255 255 / 95%) 0 14%, transparent 42%),
+    radial-gradient(circle, rgb(220 240 255 / 90%) 0 11%, transparent 36%),
+    radial-gradient(circle, rgb(255 255 255 / 95%) 0 14%, transparent 42%);
+  background-size: 9% 9%;
+  background-position: 34% 30%, 62% 44%, 45% 62%, 70% 74%, 30% 82%;
+}
+
+.hero-sparkle::after {
+  background-image:
+    radial-gradient(circle, rgb(255 246 200 / 90%) 0 11%, transparent 36%),
+    radial-gradient(circle, rgb(255 255 255 / 95%) 0 14%, transparent 42%),
+    radial-gradient(circle, rgb(220 240 255 / 90%) 0 11%, transparent 36%),
+    radial-gradient(circle, rgb(255 255 255 / 95%) 0 14%, transparent 42%);
+  background-size: 9% 9%;
+  background-position: 52% 24%, 40% 46%, 58% 58%, 50% 86%;
+  animation-delay: -1.2s;
+}
+
+@keyframes hero-sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Reduced motion: the stars rest at a steady glow. */
+.hero-sparkle--still::before,
+.hero-sparkle--still::after {
+  animation: none !important;
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sparkle::before,
+  .hero-sparkle::after {
+    animation: none !important;
+    opacity: 0.55;
+  }
+}
+
+html[data-motion="reduced"] .hero-sparkle::before,
+html[data-motion="reduced"] .hero-sparkle::after {
+  animation: none !important;
+  opacity: 0.55;
+}
+
+/*
+ * HeroImage's host: one grid cell for her image and her sparkles, wearing the
+ * image's class and style, so they move as one. The image fills it and fits
+ * its painting as the host's class says.
+ */
+.hero-sparkle-host {
+  display: inline-grid;
+  line-height: 0;
+}
+
+.hero-sparkle-host > .hero-sparkle-host__img,
+.hero-sparkle-host > .hero-sparkle {
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.hero-sparkle-host > .hero-sparkle-host__img {
+  object-fit: inherit;
+  object-position: inherit;
+}

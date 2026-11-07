@@ -62,7 +62,17 @@ export type Effect =
    * (`RunState.campFinds`, kind `friend`); a reward this crew has already
    * claimed gives nothing.
    */
-  | { type: "befriend"; friendId: string; rewardId: string };
+  | { type: "befriend"; friendId: string; rewardId: string }
+  /**
+   * A look find (docs/hero-looks.md §6; #669): every seated hero gets her own
+   * copy of each look in `looks` (content/looks.json, each `unlock.from:
+   * "found"`) that is for her: every frame and title, and the coat of her own
+   * species, so a coat find names one coat for every species. `rewardId` is
+   * `<chapter id>.<name>`, shared by every way into the same place. Once per
+   * hero, ever: one she already holds gives nothing more. Never a gate, never
+   * in a bag, never taken back. Saved when found (`RunState.lookFinds`).
+   */
+  | { type: "findLook"; looks: string[]; rewardId: string };
 
 /**
  * A test against the party and the run's flags (#158). Every field is

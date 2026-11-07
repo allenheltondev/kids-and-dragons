@@ -109,7 +109,8 @@
         "mane": "#4C3F32",
         "accent": "#70E09F",
         "marking": "#E0CAB4",
-        "outline": "#3B311D"
+        "outline": "#3B311D",
+        "skin": "#E6B481"
       }
     },
     {
@@ -1270,6 +1271,12 @@
       "plates/riftlight/epilogue-rivers-wander-2",
       "plates/riftlight/epilogue-rivers-wander-3"
     ]
+  },
+  "$nameplateFramesComment": "Nameplate frames (docs/hero-looks.md §7.2; art #665): UI art drawn behind a hero's name on the TV and phones, nine-sliced to the name's width with room for the title line under it. One transparent WebP per frame at assets/nameplates/<id>.webp, its id and art path declared in content/looks.json -> nameplates. `ids` lists only the frames delivered: the client draws a frame only when it is listed here, and otherwise the plain plate (the name exactly as today), so it never asks for a file that is not there. `slice` is the nine-slice inset in canvas pixels (left, top, right, bottom) every frame keeps its corners in; `canvas` its size. art:inventory owes every frame the catalog paints and this does not list.",
+  "nameplateFrames": {
+    "canvas": { "width": 512, "height": 192 },
+    "slice": { "left": 64, "top": 48, "right": 64, "bottom": 48 },
+    "ids": []
   },
   "camp": {
     "$comment": "The crew's camp (docs/camp.md §3.1, §4.1, §8.3 and §8.4; brief docs/briefs/camp.md; prompts docs/camp-art-prompts.json, docs/camp-kit-art-prompts.json and docs/camp-art-prompts-phase2.json). Every coordinate is a fraction of backdropCanvas: x from the left edge, y from the top. A lane's y is the ground line its figures' and pieces' ground contact (the canvas origin, 512,900) stands on. backdrops: one opaque 1920x1080 WebP per terrain family (biomeFamilies) at assets/<path>; open_plains is the fallback for every family not painted yet. A backdrop's lanes are its walkable floor, back to near; a nearer lane draws in front and at its larger scale, and x0..x1 is how far along it a figure may walk. A figure changes lanes only at a crossing, between the lanes the crossing lists. frames: one per frame stage (§4.1). pieces are 1024x1024 RGBA cutouts on the figure canvas, standing on a lane at x; movingParts are cutouts on the same canvas, laid exactly over their piece and animated only while a figure uses it (§8.4). standPoints are where one figure at a time may stand, the way it faces (face), and optionally what it does there (action: warmUp, lookUp, peek, rest, greet or pet), the piece it does it at (hotspot, a piece id, or from stage 2 a frame hotspot id, $crewPiecesComment) and, for a bedroll or tent, whose seat it is (seat, 0-3). trailhead is where a ready hero walks to before Begin. Lanes, and so stand points, lie in the open, nearly level grass band the backdrop prompt promises (y 0.45 to 0.75), so the client can slide the cover-fitted painting to stand the camp in the lobby's window (camp-framing.ts); the backdrop spans the screen's whole width, so the camp spreads across the clearing: the campfire at the center, the bedrolls two to each side of it, free wander spots out toward the edges, and every piece and stand point within x 0.08 to 0.92, which a portrait phone keeps (the trailhead, where the party leaves, is the one exception). verify.py checks this layout and the format of any camp art present; missing art is owed in art:inventory, not a failure, and the client draws a stand-in until it lands.",
@@ -3375,6 +3382,43 @@
     }
   ],
   "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required.",
+  "$coatMasksComment": "Hero looks (docs/hero-looks.md section 4): the two parts of each hero painting a kid colours, and the whole figure the special looks (sparkles, gold) go over. A mask is an 8-bit RGB PNG on its painting's own canvas: R is the main part, G the accent part, B the figure (the hero's whole silhouette: the painting's alpha on a transparent painting, everything but the backdrop on an opaque gear portrait). regions: each species' main and accent part (section 4.2), read by tools/art/coat.py (the draft tool, the gate, the sheet) and the client (packages/client/src/world/coat-masks.ts); region is the part's name, which the client shows the kid as the shelf label, draftFrom is the species palette slot, or list of slots for a part painted in more than one colour (Bigfoot's fur: his cream coat and brown mane), the draft tool (npm run art:coat-draft) seeds that part's colour pick from, and confirmed is false until the part is confirmed on that species' clean masks. paintings: every painting that has a shipped, hand-cleaned mask, as its path under assets/ (the mask is coat-mask.png beside an assembled.png, <species>.coat-mask.png beside a gear portrait), so the client never asks for a mask that does not exist. A mask on disk that is not listed here fails art:verify: a draft is never shipped as is. tolerance: the gate's coverage bounds for each part (fractions of the canvas), the most of the canvas the figure may cover, how much of a part may lie outside the figure (and of the figure outside a transparent painting's alpha), and how much of the smaller part may also be in the other.",
+  "coatMasks": {
+    "regions": {
+      "unicorn": {
+        "main": { "region": "coat", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "mane", "draftFrom": "mane", "confirmed": true }
+      },
+      "bigfoot": {
+        "main": { "region": "fur", "draftFrom": ["coat", "mane"], "confirmed": true },
+        "accent": { "region": "skin", "draftFrom": "skin", "confirmed": true }
+      },
+      "dragonling": {
+        "main": { "region": "scales", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "wings", "draftFrom": "accent", "confirmed": false }
+      },
+      "griffin": {
+        "main": { "region": "coat", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "feathers", "draftFrom": "mane", "confirmed": false }
+      },
+      "kitsune": {
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "tails", "draftFrom": "accent", "confirmed": false }
+      },
+      "manticore": {
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "mane", "draftFrom": "mane", "confirmed": false }
+      }
+    },
+    "tolerance": {
+      "minCoverage": 0.003,
+      "maxCoverage": 0.6,
+      "maxFigureCoverage": 0.85,
+      "maxSpill": 0.01,
+      "maxOverlap": 0.08
+    },
+    "paintings": []
+  },
   "$togetherOverlaysComment": "Painted overlays for group-action checks (docs/briefs/group-actions.md §7; approved design merged in #361, closing #360). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate described by that design still need implementation. Overlay art checks run in tools/art/verify.py through the regular art gate and CI.",
   "togetherOverlays": [
     {

@@ -13,7 +13,8 @@ import { useSyncExternalStore } from "react";
 import { enemyArtId, type Chapter, type Combatant, type PartyMember } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 import { useEnsureChapter } from "../screens/content";
-import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
+import { biomeBackdropUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
+import { HeroImage } from "./hero-art-dom";
 
 import { castFor } from "./cast";
 import { campFamilyFor, campLayoutFor, campShownFor, campStage, indoorRest, outdoorRest } from "./lobby-camp";
@@ -129,7 +130,7 @@ export function StaticStage(): React.JSX.Element {
           const kit = packed?.get(hero.id);
           return (
             <li key={hero.id} className={`kad-static-stage__figure${member.down || live?.down ? " is-down" : ""}${kit ? " is-packed" : ""}`}>
-              <img src={characterWorldArtUrl(hero.species, hero.tier, hero.class)} alt="" />
+              <HeroImage hero={hero} place="world" alt="" />
               {kit ? (
                 <span className="kad-static-stage__bedroll" data-testid="packed-bedroll">
                   <CampBedroll style={kit.style} accent={kit.accent} />

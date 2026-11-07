@@ -1,3 +1,4 @@
+import { HeroName } from "./HeroName";
 import { SceneReading } from "../ui/SceneReading";
 import { StoryInteractionControls } from "./StoryInteraction";
 import { PagedOptions } from "../ui/PagedOptions";
@@ -312,10 +313,8 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
   const portrait = (
     <CharacterPortrait
       backdrop
-      species={character.species}
+      hero={character}
       accent={character.appearance.accent}
-      tier={character.tier}
-      characterClass={character.class}
       className="sheet__art"
     />
   );
@@ -338,7 +337,7 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
       {stats ? <HpBar hp={me.hp} max={character.maxHp} down={me.down} className="hp-bar--card" /> : null}
       <span className="sheet__id">
         <span className="sheet__name">
-          {character.name}
+          <HeroName name={character.name} look={character.look} />
           {myTurn ? <span className="kad-sr-only" role="status">: your turn!</span> : null}
         </span>
         {/* Knocked down (spec §7.3) takes the level line's place rather than
@@ -2208,17 +2207,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   <span className="party-strip__portrait" aria-hidden="true">
                     <CharacterPortrait
                       backdrop
-                      species={member.character.species}
+                      hero={member.character}
                       accent={member.character.appearance.accent}
-                      characterClass={member.character.class}
-                      tier={member.character.tier}
                       className="party-strip__art"
                     />
                   </span>
                   {/* Sized to fit its longest word in the card: a long name shrinks rather
                       than spilling into the next card or breaking mid-word. */}
                   <span className="party-strip__name" style={{ "--name-word": longestWord(member.character.name) } as CSSProperties}>
-                    {member.character.name}
+                    <HeroName name={member.character.name} look={member.character.look} />
                   </span>
                   {/* Their health, so who is hurt is seen at a glance (who needs a potion, who to help up). */}
                   <HpBar hp={member.hp} max={member.character.maxHp} down={member.down} className="hp-bar--friend" />

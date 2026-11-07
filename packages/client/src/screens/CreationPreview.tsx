@@ -169,9 +169,7 @@ export function CreationPreview(): ReactElement {
           party.map((member) => (
             <li className="kad-chip kad-chip--ok" key={member.playerId}>
               <CharacterPortrait
-                species={member.character.species}
-                tier={member.character.tier}
-                characterClass={member.character.class}
+                hero={member.character}
                 className="preview__done-art"
               />
               <span className="preview__done-name">{member.character.name}</span>

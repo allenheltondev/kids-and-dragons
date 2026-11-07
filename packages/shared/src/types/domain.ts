@@ -8,6 +8,7 @@
 
 import type { ProfileFlair } from "../kid-profile.js";
 import type { HeroKit } from "./camp.js";
+import type { HeroLook, HeroLookView } from "./look.js";
 import type { MatchupRules } from "./matchups.js";
 
 export type StatId = "might" | "quick" | "clever" | "heart";
@@ -330,6 +331,14 @@ export interface Character {
    * `readKit(character)` (camp-record.ts), never directly.
    */
   kit?: HeroKit;
+  /**
+   * What her kid has chosen her to look like: a colour, a nameplate frame, a
+   * title (docs/hero-looks.md §3.1). Beside the kit, outside the commitment
+   * rule, and absent until something is chosen, so a hero with none draws
+   * exactly as before looks. Read it as `readLook(character)` (hero-look.ts).
+   * Since character schema v10.
+   */
+  look?: HeroLook;
   createdAt: string;
   /**
    * The row's monotonic version, which the claim conditions every write on
@@ -444,6 +453,13 @@ export interface ResolvedCharacter {
    * played the practice resolves exactly as before it existed.
    */
   practiced?: true;
+  /**
+   * `Character.look` as the screens draw it (docs/hero-looks.md §7.2): her
+   * nameplate frame and title, on every surface that shows her name. Present
+   * only when she has a stored look, so a hero with none resolves, draws and
+   * plays exactly as before looks.
+   */
+  look?: HeroLookView;
   /**
    * `CharacterProgress.fitted`, from the effective half, so the engine can
    * tell a hero who still has the fitting stall's swap (`isNewHero`,

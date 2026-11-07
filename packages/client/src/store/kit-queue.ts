@@ -22,7 +22,7 @@
  * It only holds; book-kit-sync.ts sends.
  */
 
-import { withBookKitValue, type BookKitChange, type BookKitState, type JournalKit } from "@kad/shared";
+import { isKitChange, isLookChange, withBookKitValue, withBookLookChanges, type BookKitChange, type BookKitState, type HeroLookView, type JournalKit } from "@kad/shared";
 import { defaultStorage, type KeyValueStorage } from "./persistence";
 
 export const KIT_QUEUE_KEY = "kad.kitQueue";
@@ -234,6 +234,8 @@ export function withQueuedKit(kit: JournalKit, characterId: string, entries: rea
   for (const entry of entries) {
     if (entry.characterId !== characterId) continue;
     for (const change of entry.changes) {
+      // Her look's changes are laid on her look (`withQueuedLook`).
+      if (!isKitChange(change)) continue;
       if (change.field === "buddy") {
         const key = entry.crew ?? "";
         const buddies = { ...out.buddies };
@@ -245,6 +247,24 @@ export function withQueuedKit(kit: JournalKit, characterId: string, entries: rea
       const state = withBookKitValue(journalKitState(out, null), change.field, change.after);
       out = { ...out, style: state.style, tent: state.tent, color: state.color, slots: state.slots };
     }
+  }
+  return out;
+}
+
+/** A hero's look before anything is chosen: what a queued look change is laid over for a hero with none (docs/hero-looks.md §3.1). */
+export const NO_LOOK: HeroLookView = { revision: 0, coat: null, accent: null, special: null, nameplate: null, title: null, unlocked: [] };
+
+/**
+ * Her look as the book shows it (docs/hero-looks.md §3.2; #664): the
+ * server's, with every queued look change for her laid on top, oldest first,
+ * so the last choice for each field shows at once, offline too. Look changes
+ * ride the kit's queue in her hero entry, as change kinds of their own.
+ */
+export function withQueuedLook(look: HeroLookView | undefined, characterId: string, entries: readonly QueuedKitChange[]): HeroLookView {
+  let out: HeroLookView = look ?? NO_LOOK;
+  for (const entry of entries) {
+    if (entry.characterId !== characterId) continue;
+    out = withBookLookChanges(out, entry.changes.filter(isLookChange));
   }
   return out;
 }

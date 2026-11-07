@@ -159,3 +159,25 @@
     transform: scaleY(1.008);
   }
 }
+
+/*
+ * A sparkle special (docs/hero-looks.md §5.5; world/hero-sparkle.css): a box
+ * the image's own size and place, in the same grid cell and laid over it, so
+ * it floats and grounds exactly as the painting does. Over, never behind: a
+ * gear portrait is opaque. Its clip fits the painting as the image does
+ * (`object-position`).
+ */
+.portrait > .portrait__img,
+.portrait > .portrait__fallback {
+  grid-area: 1 / 1;
+}
+
+.portrait > .portrait__sparkle {
+  display: block;
+  --hero-sparkle-mask-size: contain;
+  --hero-sparkle-mask-position: 50% 100%;
+}
+
+.portrait--gear > .portrait__sparkle {
+  --hero-sparkle-mask-position: 50% 50%;
+}

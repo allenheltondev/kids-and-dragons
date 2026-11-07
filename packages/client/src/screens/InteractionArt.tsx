@@ -3,7 +3,7 @@ import { balanceReady, supportsReady } from "@kad/shared";
 import type { InteractionPrompt, PartyMember } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 import { reducedMotion } from "../a11y/prefs";
-import { characterWorldArtUrl } from "../world/art-paths";
+import { HeroImage } from "../world/hero-art-dom";
 import { interactionAppearance, reactionFigure } from "../world/riftlight-art";
 import "./InteractionArt.css";
 
@@ -63,9 +63,9 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
   {primary&&<Picture id={primary} style={style} className="interaction-art__main" />}
   {extras.map((id,index)=><img key={id} className="interaction-art__extra" src={"/assets/cast/"+id+"/assembled.png"} alt="" style={{left:(10+index*65/Math.max(1,extras.length-1))+"%"}} />)}
   {reaction&&<img className="interaction-art__reaction" src={"/assets/cast/"+reaction+"/assembled.png"} alt="" />}
-  {["cooperate","balance","precision","timing"].includes(spec.kind)&&party.map((member,index)=><img key={member.playerId}
+  {["cooperate","balance","precision","timing"].includes(spec.kind)&&party.map((member,index)=><HeroImage key={member.playerId}
    className="interaction-art__hero"
-   src={characterWorldArtUrl(member.character.species,member.character.tier,member.character.class)} alt=""
+   hero={member.character} place="world" alt=""
    style={{left:(15+index*70/Math.max(1,party.length))+"%"}} />)}
  </div>;
 }

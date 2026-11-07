@@ -25,6 +25,7 @@ import {
   enemyArtUrl,
   sceneBackdropUrl,
 } from "../world/art-paths";
+import { coatMaskPaintings, coatMaskUrl } from "../world/coat-masks";
 import { warm } from "./warm";
 
 
@@ -46,7 +47,11 @@ export function upcomingAssets(
 ): string[] {
   const urls = new Set<string>();
   for (const { character } of party) {
-    urls.add(characterWorldArtUrl(character.species, character.tier, character.class));
+    const figure = characterWorldArtUrl(character.species, character.tier, character.class);
+    urls.add(figure);
+    // Her coat mask, where her figure has one: her colour is tinted from both (docs/hero-looks.md §5.4).
+    const mask = coatMaskUrl(figure);
+    if (mask) urls.add(mask);
   }
   if (!chapter) return [...urls];
 
@@ -133,7 +138,7 @@ export function useWarmChapter(display: boolean): void {
     const start = (): void => {
       void import("./chapter-art").then(({chapterAssets})=>{
         if(cancelled)return;
-        const fresh=chapterAssets(chapter,party ?? []).filter(url=>!asked.has(url));
+        const fresh=chapterAssets(chapter,party ?? [],coatMaskPaintings()).filter(url=>!asked.has(url));
         for(const url of fresh)asked.add(url);
         if(fresh.length)void warm(fresh,{lanes:2});
       }).catch(()=>{ /* Missing optional warm-up never blocks the scene. */ });

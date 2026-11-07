@@ -368,10 +368,8 @@ export function ChapterMapPanel(): ReactElement {
                     <span className="trail__face" key={member.playerId}>
                       <CharacterPortrait
                         backdrop
-                        species={member.character.species}
+                        hero={member.character}
                         accent={member.character.appearance.accent}
-                        characterClass={member.character.class}
-                        tier={member.character.tier}
                         lit={false}
                         className="trail__face-art"
                       />
