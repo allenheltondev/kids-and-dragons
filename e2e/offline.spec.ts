@@ -15,6 +15,7 @@ import { revealPagedChoice } from "./choice-pages";
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { startCountingProxy, type CountingProxy } from "./counting-proxy";
+import { phoneStorage, seedTable } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
 const BOOK = /open your book/i;
@@ -464,5 +465,45 @@ test("a page load on a network that hangs opens the saved book within a few seco
   } finally {
     await context.close();
     await proxy.close();
+  }
+});
+
+test("the book's kit shelves open whole offline, even one never opened with a signal (#661)", async ({ browser, baseURL }) => {
+  test.setTimeout(180_000);
+  const table = await seedTable({
+    mode: "travel",
+    ready: false,
+    heroes: [{ name: HERO, species: "unicorn", class: "songkeeper" }],
+    camp: { real: true, grownBy: ["gemfall"], owned: ["find_picnic_blanket"], placed: { friends_corner: "find_picnic_blanket" }, friends: ["duckling"] },
+  });
+  // The seeded phone's binding, on this build's origin (the preview, not the dev server).
+  const storage = phoneStorage(table.phones[0]!);
+  const origin = new URL(baseURL ?? "http://localhost:4173").origin;
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: { ...storage, origins: storage.origins.map((o) => ({ ...o, origin })) } });
+  const phone = await context.newPage();
+  try {
+    // Online: the book opens on Camp, on its first shelf (Tent) only.
+    await phone.goto("/journal");
+    await controlled(phone);
+    await phone.reload();
+    await expect(phone.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+    await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Camp" }).click(TAP);
+    await expect(phone.getByTestId("book-kit-pitch")).toBeVisible(TAP);
+    await expect(phone.locator("[data-decoration]")).toHaveCount(0);
+    // Every shelf's paintings are saved, opened or not: a decoration, a bedroll, the friend.
+    for (const url of ["/assets/camp/decorations/bunting.png", "/assets/camp/kits/patched.png", "/assets/entities/duckling/assembled.png"]) {
+      await expect.poll(() => kept(phone, url), { timeout: 60_000 }).toBe(true);
+    }
+
+    // No signal: reopened, and the Decorate shelf opened for the first time.
+    await context.setOffline(true);
+    await phone.reload();
+    await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Camp" }).click(TAP);
+    await phone.getByTestId("kit-editor").locator('[data-shelf="decor"]').click(TAP);
+    const bunting = phone.locator('[data-decoration="deco_bunting"] img');
+    await expect(bunting).toBeVisible(TAP);
+    await expect.poll(() => bunting.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), TAP).toBe(true);
+  } finally {
+    await context.close();
   }
 });

@@ -37,7 +37,7 @@ import { bookKitChanges, friendsOut } from "@kad/shared";
 import type { BookKitState, CampFriendCard, ClientIntent, HeroKitView, JournalCrewCamp, JournalFriend, JournalKit, JournalResponse, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { Icon } from "./icons";
 import { FriendArt } from "./CampPanel";
-import { BookKit } from "./BookKit";
+import { BookKit, kitArtUrls } from "./BookKit";
 import { StillCamp } from "../world/StillCamp";
 import { campLayoutFor } from "../world/lobby-camp";
 import { campBackdropFamily } from "../world/camp-backdrop";
@@ -45,7 +45,7 @@ import { CREW_PIECE_ART, pieceName } from "../world/camp-scene";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { journalKitState, loadKitQueue, withQueuedKit } from "../store/kit-queue";
-import { bookKitStatus, clearBookKitNotes, editBookKit, onBookKit, type ApplyKit } from "../store/book-kit-sync";
+import { bookKitStatus, clearBookKitNotes, editBookKit, onBookKit, pendingKitEdits, type ApplyKit } from "../store/book-kit-sync";
 import { warm } from "../sw/warm";
 import "./CampPane.css";
 
@@ -197,7 +197,8 @@ function CrewCamp({
   const base = useId();
   const root = useRef<HTMLDivElement | null>(null);
   const deviceToken = loadPlayerDeviceToken();
-  const queue = loadKitQueue(deviceToken);
+  // What she has changed and is not yet answered: the phone's queue, or a family tablet's sends in flight.
+  const queue = [...loadKitQueue(deviceToken), ...pendingKitEdits()];
   const status = bookKitStatus();
   const [error, setError] = useState<string | null>(null);
   const [words, setWords] = useState<{ id: string; text: string } | null>(null);
@@ -227,6 +228,8 @@ function CrewCamp({
       const urls = new Set<string>();
       for (const img of el.querySelectorAll("img")) if (img.getAttribute("src")) urls.add(img.getAttribute("src")!);
       for (const image of el.querySelectorAll("image")) if (image.getAttribute("href")) urls.add(image.getAttribute("href")!);
+      // And every shelf of her kit, opened or not (BookKit shows one shelf at a time).
+      for (const url of kitArtUrls(serverKit ?? { unlocked: [] }, crew.friends.map(card))) urls.add(url);
       void warm([...urls].filter((u) => u.startsWith("/")), { essential: true });
     }, 1500);
     return () => clearTimeout(timer);

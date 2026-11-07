@@ -22,7 +22,8 @@ import { COLOR_NAMES, FriendArt } from "./CampPanel";
 import { CampBedroll, CampTent } from "../world/CampBedroll";
 import { TentStandIn } from "../world/StillCamp";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
-import { DECORATION_ART, KIT_RULES, kitName, tentArt } from "../world/camp-scene";
+import { DECORATION_ART, KIT_RULES, TENT_ART, kitName, tentArt } from "../world/camp-scene";
+import { castArtUrl } from "../world/art-paths";
 import "./BookKit.css";
 
 type KitChange = Omit<Extract<ClientIntent, { type: "KIT_EDIT" }>, "type" | "characterId" | "revision">;
@@ -39,6 +40,29 @@ const SHELVES: readonly { id: KitShelf; label: string; icon: string }[] = [
 
 /** The shelf open, for the life of the page, as the Field Guide keeps its section. */
 let openShelf: KitShelf = "tent";
+
+/**
+ * Every painting her shelves can show, opened or not: each tent and bedroll
+ * she can pick, each decoration, each friend. A fresh read saves them all for
+ * offline (CampPane.tsx), so a shelf she first opens with no signal is whole.
+ */
+export function kitArtUrls(kit: Pick<HeroKitView, "unlocked">, friends: readonly CampFriendCard[]): string[] {
+  const urls = new Set<string>();
+  for (const id of kitTentChoices(KIT_RULES, kit.unlocked)) {
+    const art = TENT_ART.find((t) => t.id === id);
+    if (art) urls.add(`/assets/${art.path}`);
+  }
+  for (const { id } of KIT_RULES.styles) if (Object.hasOwn(CAMP_KIT_STYLES, id)) urls.add(CAMP_KIT_STYLES[id as CampKitStyle].path);
+  for (const id of kitDecorationChoices(KIT_RULES, kit.unlocked)) {
+    const url = decorationUrl(id);
+    if (url) urls.add(url);
+  }
+  for (const card of friends) {
+    const url = castArtUrl(card.figure);
+    if (url) urls.add(url);
+  }
+  return [...urls];
+}
 
 /** A decoration's painting, by id. */
 function decorationUrl(id: string): string | null {

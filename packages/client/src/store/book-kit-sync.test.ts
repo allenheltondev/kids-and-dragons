@@ -9,7 +9,8 @@
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { bookKitProblem, mergeBookKit, type BookKitChange, type BookKitResponse, type JournalKit } from "@kad/shared";
-import { UNSAVED_NOTE, bookKitStatus, editBookKit, flushKitQueue, resetBookKitSync } from "./book-kit-sync";
+import { UNSAVED_NOTE, bookKitStatus, editBookKit, flushKitQueue, pendingKitEdits, resetBookKitSync } from "./book-kit-sync";
+import { useGameStore } from "./index";
 import { KIT_QUEUE_KEY, dropKitQueue, enqueueKitChanges, hasQueuedKitChanges, journalKitState, kitQueueUnsaved, loadKitQueue, withQueuedKit } from "./kit-queue";
 import { defaultStorage, saveIdentity } from "./persistence";
 
@@ -214,5 +215,52 @@ describe("sending the book's kit changes", () => {
       expect(kitQueueUnsaved()).toBe(false);
       expect(bookKitStatus()).toEqual({ offline: false, notes: [] });
     });
+  });
+});
+
+describe("a family tablet's seat: no binding of its own, so no queue (#661)", () => {
+  const SEAT = { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel" as const, sessionToken: "seat_1" };
+  beforeEach(() => {
+    // Seated on the tablet, with no device token of the kid's own.
+    saveIdentity({ householdId: "h_1", playerId: "p_1", displayName: "Ada", deviceToken: "" } as Parameters<typeof saveIdentity>[0]);
+    useGameStore.setState({ session: SEAT });
+  });
+  afterEach(() => {
+    useGameStore.setState({ session: null });
+  });
+
+  it("shows each tap at once, sends them one at a time in the order tapped, and the last tap stands", async () => {
+    const replies: ((response: Response) => void)[] = [];
+    serve(() => new Promise<Response>((resolve) => replies.push(resolve)));
+    const applied: JournalKit[] = [];
+    const first = editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, (_, kit) => applied.push(kit));
+    const second = editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "tide", after: "meadow" }] }, (_, kit) => applied.push(kit));
+    // Both shown straight away, before the server has answered either; the later tap on top.
+    expect(withQueuedKit(KIT, "c_1", pendingKitEdits()).color).toBe("meadow");
+    // One send at a time: the second waits for the first's answer, however slow.
+    await vi.waitFor(() => expect(sent).toHaveLength(1));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(sent).toHaveLength(1);
+    expect((sent[0]!.body.changes as { after: string }[])[0]!.after).toBe("tide");
+    replies[0]!(answer(200, { kit: { ...KIT, revision: 6, color: "tide" }, applied: ["color"], refused: [] }));
+    await first;
+    await vi.waitFor(() => expect(sent).toHaveLength(2));
+    expect((sent[1]!.body.changes as { after: string }[])[0]!.after).toBe("meadow");
+    // The later tap still shows while its send is out.
+    expect(withQueuedKit({ ...KIT, revision: 6, color: "tide" }, "c_1", pendingKitEdits()).color).toBe("meadow");
+    replies[1]!(answer(200, { kit: { ...KIT, revision: 7, color: "meadow" }, applied: ["color"], refused: [] }));
+    await second;
+    expect(applied.map((k) => k.color)).toEqual(["tide", "meadow"]);
+    expect(pendingKitEdits()).toEqual([]);
+    expect(defaultStorage().getItem(KIT_QUEUE_KEY)).toBeNull();
+  });
+
+  it("rolls a refused tap back, and the next tap still goes", async () => {
+    let calls = 0;
+    serve(() => (calls++ === 0 ? answer(403, { error: { code: "FORBIDDEN", message: "not your hero" } }) : answer(200, { kit: { ...KIT, color: "meadow" }, applied: ["color"], refused: [] })));
+    await expect(editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, () => undefined)).rejects.toThrow();
+    expect(pendingKitEdits()).toEqual([]);
+    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "meadow" }] }, () => undefined);
+    expect(sent).toHaveLength(2);
   });
 });
