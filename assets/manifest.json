@@ -3437,7 +3437,11 @@
       "characters/griffin/fledgling/assembled.png",
       "characters/griffin/sworn/assembled.png",
       "characters/griffin/radiant/assembled.png",
-      "characters/griffin/mythic/assembled.png"
+      "characters/griffin/mythic/assembled.png",
+      "characters/manticore/fledgling/assembled.png",
+      "characters/manticore/sworn/assembled.png",
+      "characters/manticore/radiant/assembled.png",
+      "characters/manticore/mythic/assembled.png"
     ]
   },
   "$togetherOverlaysComment": "Painted overlays for group-action checks (docs/briefs/group-actions.md §7; approved design merged in #361, closing #360). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate described by that design still need implementation. Overlay art checks run in tools/art/verify.py through the regular art gate and CI.",

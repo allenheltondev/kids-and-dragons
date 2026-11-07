@@ -56,6 +56,7 @@ SOFTEN = 0.8  # the parts' edge: a gaussian of this sigma (px) over the cleaned 
 #   "skin"     Bigfoot: inside the box, the largest smooth warm piece is skin
 #   "not_skin" Bigfoot: inside the box, nothing is skin (it is fur)
 #   "coat"     unicorn: inside the box, her soft lavender is coat (inner ears, the far belly)
+#   "nose"     manticore: inside the box, the crimson paint is her nose, in neither part
 
 FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     # her inner ears and the shaded belly between her far legs, lavender like her mane
@@ -63,6 +64,11 @@ FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     "characters/unicorn/sworn/assembled.png": {"coat": [(160, 210, 395, 420), (550, 620, 544, 606)]},
     "characters/unicorn/radiant/assembled.png": {"coat": [(165, 218, 390, 415), (560, 605, 548, 595)]},
     "characters/unicorn/mythic/assembled.png": {"coat": [(590, 626, 552, 600)]},
+    # her nose, painted in her mane's crimson
+    "characters/manticore/fledgling/assembled.png": {"nose": [(360, 397, 186, 252)]},
+    "characters/manticore/sworn/assembled.png": {"nose": [(362, 398, 196, 257)]},
+    "characters/manticore/radiant/assembled.png": {"nose": [(353, 389, 189, 250)]},
+    "characters/manticore/mythic/assembled.png": {"nose": [(373, 409, 206, 267)]},
 }
 
 
@@ -595,12 +601,208 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     return coat_ & ~line, feathers & ~line
 
 
+# ----------------------------------------------------------------------------- manticore
+
+def clean_manticore(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
+    """Fur (R) = her pink body fur; mane (G) = her crimson mane, from the draft's two channels.
+
+    - Her scorpion tail and stinger (green, OKLab hue 100..170) are in neither: see
+      `manticore_tail`.
+    - Her claws are as crimson as her mane: G pieces low on the figure (the paws) are claws, in
+      neither part, and so are her eyes: see `manticore_eyes`.
+    - The mane is the draft's largest G piece; the other G pieces join it when dark and crimson
+      and either near it (a lock cut off by a strand line), big and dark (the Mythic's tuft
+      under her chest) or wider than tall in the top half of her (her eyebrows, painted in the
+      mane's crimson, go with it). The rest (her inner ears, the shaded fur between her legs)
+      are given back to the pool for the fur.
+    - Mythic: the black crystal shards in her mane are in neither part, but the crimson glints
+      in them and the dark grey streaks between her locks are mane.
+    - Her nose is painted in the mane's crimson too: the `nose` fix boxes leave it (the largest
+      crimson piece in the box) out of both.
+    - The mane is grown by hue over the bright crimson the draft left out of it.
+    - The fur is the draft's R, grown by hue over the shaded pink the draft left out (inner
+      ears, the belly and far legs in shadow), never into crimson or the mane's own edge.
+    - Last, the specks left in neither where fur meets mane go to the nearer part, and ink
+      drawn as an outline leaves both but for a 2px lip under each part's edge (and over the
+      dark rims of her eyes and nose), so the soft edge never leaves a pale ring of untinted
+      fur inside an outline. The whisker dots on her muzzle are fur."""
+    a = look.alpha
+    ys = np.nonzero(a)[0]
+    y0, y1 = ys.min(), ys.max()
+    rows = np.arange(a.shape[0])[:, None]
+    paws = rows > y1 - 0.14 * (y1 - y0)
+    tail = manticore_tail(look)
+
+    eyes = manticore_eyes(look)
+    nose = np.zeros_like(a)
+    box = boxes(painting, "nose", a.shape)
+    if box is not None:
+        nose = box & a & (look.hue > 12) & (look.hue < 35) & (look.C > 0.085) & (look.L < 0.75)
+        nose = ndimage.binary_fill_holes(ndimage.binary_closing(nose, structure=disk(2))) & box
+        labs, n = ndimage.label(nose)
+        if n:  # the nose itself, not the whisker dots beside it, with its dark nostrils
+            nose = labs == int(np.argmax(ndimage.sum(nose, labs, np.arange(1, n + 1)))) + 1
+            nose |= ndimage.binary_dilation(nose, structure=disk(6)) & box & (look.L < 0.5)
+            nose = ndimage.binary_fill_holes(ndimage.binary_closing(nose, structure=disk(3)))
+        nose &= a
+
+    g = (draft[..., 1] > 96) & a & ~tail
+    labs, n = ndimage.label(g)
+    mane = np.zeros_like(a)
+    claws = np.zeros_like(a)
+    if n:
+        idx = np.arange(1, n + 1)
+        sizes = ndimage.sum(g, labs, idx)
+        core = labs == int(np.argmax(sizes)) + 1
+        near_core = ndimage.binary_dilation(core, structure=disk(30))
+        mane |= core
+        for i in idx:
+            comp = labs == i
+            if comp.sum() < 40 or (comp & core).any():
+                continue
+            cy, cx = np.nonzero(comp)
+            if cy.mean() > y1 - 0.14 * (y1 - y0):
+                claws |= comp
+                continue
+            if np.median(look.hue[comp]) > 32 or np.median(look.L[comp]) >= 0.47:
+                continue
+            wide = (cx.max() - cx.min()) > (cy.max() - cy.min())
+            dark = comp.sum() >= 500 and np.median(look.L[comp]) < 0.4
+            if dark or (comp & near_core).any() or (wide and cy.mean() < y0 + 0.5 * (y1 - y0)):
+                mane |= comp
+    # the claws, whole: their crimson paint within the paws, beside the drafted claws
+    crimson = a & paws & (look.hue > 12) & (look.hue < 35) & (look.C > 0.06) & (look.L < 0.7)
+    claws = ndimage.binary_propagation(claws, mask=crimson | claws)
+    claws = ndimage.binary_dilation(ndimage.binary_fill_holes(claws), structure=SQUARE) & a
+    never = tail | claws | eyes | nose
+    mane = manticore_fill_holes(ndimage.binary_closing(mane, structure=SQUARE), 400) & a & ~never
+    # Mythic: black crystal shards in her mane (grey paint with pale facets) are in neither;
+    # the dark grey streaks between her locks are the mane's own shadow, and go with it
+    grey = a & (look.C < 0.045) & ~never
+    labs, n = ndimage.label(grey)
+    if n:
+        i = np.arange(1, n + 1)
+        faceted = np.zeros(n + 1, bool)
+        # (a dark piece with pale facets: her face's white fur is pale all over)
+        faceted[1:] = ((ndimage.sum(grey & (look.L > 0.5), labs, i) >= 20)
+                       & (ndimage.mean(look.L, labs, i) < 0.45)
+                       & (ndimage.sum(grey, labs, i) >= 300))
+        by_mane = np.zeros(n + 1, bool)
+        by_mane[np.unique(labs[ndimage.binary_dilation(mane, structure=disk(3)) & grey])] = True
+        by_mane[0] = False
+        shards = (faceted & by_mane)[labs]
+        shards = ndimage.binary_fill_holes(ndimage.binary_closing(shards, structure=disk(2)))
+        shards = ndimage.binary_dilation(shards, structure=SQUARE) & a
+        # (the crimson glints in a shard are her mane seen through it, and take its colour)
+        glint = shards & (look.hue > -5) & (look.hue < 35) & (look.C > 0.08)
+        shards &= ~glint
+        never |= shards
+        mane = (mane & ~shards) | glint
+        inside = ndimage.binary_closing(mane, structure=disk(6)) & ~shards
+        mane |= ndimage.binary_propagation(mane, mask=(grey & inside & ~shards) | mane)
+
+    # the bright crimson the draft left out of her mane (a crystal spike's lit face) grown back
+    # from it by hue; her inner ears are a softer pink, under this chroma
+    mane_hue = np.median(look.hue[mane])
+    dm = np.abs((look.hue - mane_hue + 180) % 360 - 180)
+    bright = a & ~never & (dm < 10) & (look.C >= 0.13)
+    mane |= ndimage.binary_propagation(mane, mask=bright | mane)
+
+    fur = (draft[..., 0] > 128) & a & ~mane & ~never
+    # the pale pink of her cheek where it meets her mane is fur, not a pale fringe of mane
+    pale = mane & (look.hue < 12) & (look.L > 0.55)
+    pale = ndimage.binary_propagation(fur, mask=pale | fur) & pale
+    mane &= ~pale
+    fur |= pale
+    edge = ndimage.binary_dilation(mane, structure=disk(3)) & (dm < 8)
+    pink = (a & ~mane & ~never & ~look.ink & ~edge & (look.hue > -15) & (look.hue < 30)
+            & (look.L >= 0.4) & (look.C < 0.13))
+    fur |= ndimage.binary_propagation(fur, mask=pink | fur)
+
+    left = a & ~mane & ~fur & ~never & ~look.ink & (look.hue > -15) & (look.hue < 35)
+    d_fur = ndimage.distance_transform_edt(~fur)
+    d_mane = ndimage.distance_transform_edt(~mane)
+    fur |= left & (d_fur <= 5) & (d_fur <= d_mane)
+    mane |= left & (d_mane <= 5) & (d_mane < d_fur)
+    # ink drawn as an outline is in neither part, except a 2px lip of it under each part's
+    # edge: the soft edge then fades out over dark ink, not over the last light pixels of fur
+    line = look.outline(light=0.7)
+    fur &= ~line
+    mane &= ~line
+    # (the whisker dots on her muzzle: small holes in the fur, not ink, are fur)
+    fur |= manticore_fill_holes(fur, 80) & ~fur & ~never & ~mane & ~look.ink
+    face = eyes | nose
+    lid = face & (look.L < 0.45) & ~ndimage.binary_erosion(face, structure=disk(2))
+    lip = (line & ~never) | lid
+    fur_lip = ndimage.binary_dilation(fur, structure=disk(2)) & lip
+    mane_lip = ndimage.binary_dilation(mane, structure=disk(2)) & lip & ~fur_lip
+    return (fur | fur_lip) & ~mane, mane | mane_lip
+
+
+def manticore_eyes(look: Look) -> np.ndarray:
+    """Her eyes, never coloured: each a dark blob (OKLab L < 0.5: the iris, pupil and lid line,
+    whose browns are as warm as her mane) of under 6000px with a white catchlight inside it,
+    filled, so the green or brown ring of the iris goes with it. The blobs are found with the
+    thin lines opened away (her near eye touches the line of her cheek), then given back the
+    dark paint beside them, but not the pale lids around them (those are fur)."""
+    a = look.alpha
+    dark = a & (look.L < 0.5)
+    blobs = ndimage.binary_opening(dark, structure=disk(2))
+    labs, n = ndimage.label(blobs)
+    eyes = np.zeros_like(a)
+    if not n:
+        return eyes
+    sizes = ndimage.sum(blobs, labs, np.arange(1, n + 1))
+    white = a & (look.L > 0.85) & (look.C < 0.035)
+    h, w = a.shape
+    for i, sl in enumerate(ndimage.find_objects(labs), start=1):
+        if sl is None or sizes[i - 1] >= 6000:
+            continue
+        sl = (slice(max(sl[0].start - 6, 0), min(sl[0].stop + 6, h)),
+              slice(max(sl[1].start - 6, 0), min(sl[1].stop + 6, w)))
+        comp = labs[sl] == i
+        # (closed first: a pale iris can leave the ring open beside the catchlight)
+        filled = ndimage.binary_fill_holes(ndimage.binary_closing(comp, structure=disk(4)))
+        if (filled & ~comp & white[sl]).any():
+            eyes[sl] |= filled
+    near = ndimage.binary_dilation(eyes, structure=disk(3))
+    return ndimage.binary_fill_holes(eyes | (near & dark)) & a
+
+
+def manticore_fill_holes(part: np.ndarray, most: int) -> np.ndarray:
+    """The part with its holes of under `most` pixels filled (a big hole, such as the face her
+    mane rings, stays out)."""
+    holes = ndimage.binary_fill_holes(part) & ~part
+    labs, n = ndimage.label(holes)
+    if not n:
+        return part
+    small = np.zeros(n + 1, bool)
+    small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < most
+    return part | small[labs]
+
+
+def manticore_tail(look: Look) -> np.ndarray:
+    """Her scorpion tail and stinger, never coloured: the green paint (OKLab hue 100..170),
+    closed and filled so its pale highlights and crystal facets go with it."""
+    a = look.alpha
+    green = a & (look.C > 0.035) & (look.hue > 100) & (look.hue < 170)
+    labs, n = ndimage.label(ndimage.binary_closing(green, structure=SQUARE))
+    if not n:
+        return np.zeros_like(a)
+    sizes = ndimage.sum(labs > 0, labs, np.arange(1, n + 1))
+    big = np.zeros(n + 1, bool)
+    big[1:] = sizes >= 200
+    tail = ndimage.binary_fill_holes(ndimage.binary_closing(big[labs], structure=disk(3)))
+    return ndimage.binary_dilation(tail, structure=disk(2)) & a
+
+
 RULES = {
     "unicorn": clean_unicorn,
     "bigfoot": clean_bigfoot,
     "kitsune": clean_kitsune,
     "dragonling": clean_dragonling,
     "griffin": clean_griffin,
+    "manticore": clean_manticore,
 }
 
 
