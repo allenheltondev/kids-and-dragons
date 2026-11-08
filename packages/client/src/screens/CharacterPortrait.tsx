@@ -33,7 +33,7 @@ import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
-import { heroBase, heroPaintingUrl, heroSparkleOf, type HeroArtSubject } from "../world/hero-art";
+import { heroBase, heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtSubject, type HeroCoatRequest } from "../world/hero-art";
 import { HeroSparkles, useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
@@ -107,6 +107,12 @@ interface PortraitLook {
    */
   stand?: "floor" | "centre";
   className?: string;
+}
+
+/** The tint a portrait of `hero` draws (or null: as painted), so a shelf of them can be made together. */
+export function portraitCoatOf(hero: HeroArtSubject): HeroCoatRequest | null {
+  const gear = heroPaintingUrl(hero, "portrait") !== heroPaintingUrl(heroBase(hero), "portrait");
+  return heroCoatOf(gear ? hero : heroBase(hero), "portrait");
 }
 
 export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {

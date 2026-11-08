@@ -222,7 +222,42 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
    */
   function resume(target: BaseAudioContext): void {
     const resumable = target as { resume?: () => Promise<void> };
+    // Never wake a context for a page nobody can see.
+    if (pageHidden()) return;
     resumable.resume?.().catch(() => undefined);
+  }
+
+  /**
+   * Sound belongs to the page being seen. A backgrounded app, a switched tab or
+   * a TV browser left on another input keeps its AudioContext running unless
+   * told otherwise, so the music plays on until the app is force-closed.
+   * Suspending the context stops every bus at once (music, ambience, cues and
+   * recorded voice); coming back resumes it where it stood.
+   */
+  function pageHidden(): boolean {
+    return typeof document !== "undefined" && document.visibilityState === "hidden";
+  }
+  function syncToVisibility(): void {
+    if (!ctx) return;
+    const suspendable = ctx as { suspend?: () => Promise<void> };
+    if (pageHidden()) suspendable.suspend?.().catch(() => undefined);
+    else resume(ctx);
+  }
+  function watchVisibility(): void {
+    if (typeof document === "undefined") return;
+    document.addEventListener("visibilitychange", syncToVisibility);
+    if (typeof window !== "undefined") {
+      window.addEventListener("pagehide", syncToVisibility);
+      window.addEventListener("pageshow", syncToVisibility);
+    }
+  }
+  function unwatchVisibility(): void {
+    if (typeof document === "undefined") return;
+    document.removeEventListener("visibilitychange", syncToVisibility);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("pagehide", syncToVisibility);
+      window.removeEventListener("pageshow", syncToVisibility);
+    }
   }
 
   const stateListeners = new Set<() => void>();
@@ -259,6 +294,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     // The context may still arrive suspended even inside a gesture handler.
     resume(ctx);
     ctx.addEventListener?.("statechange", stateChanged);
+    watchVisibility();
     stateChanged();
 
     /*
@@ -534,6 +570,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       stopMusic = null;
       musicBiome = null;
       ctx?.removeEventListener?.("statechange", stateChanged);
+      unwatchVisibility();
       stateListeners.clear();
       const closable = ctx as { close?: () => Promise<void> } | null;
       closable?.close?.().catch(() => undefined);
