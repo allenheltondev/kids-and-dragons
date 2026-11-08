@@ -530,6 +530,11 @@ A hero's kit (§4.5) fills from three places, none of them Dash Cash, which stay
   The unlock lands when the tier or distinction does, and the phone says so after the
   transformation, never during it. A tier whose art isn't painted yet (spec §8.1 draws Ascendant
   and above as Mythic until it is) unlocks its tent style when that art ships.
+- **Something new is never missed** (*decided*, owner 2026-11-08). In downtime the phone's notice
+  of a new piece or look has **Try it on**, which opens Camp at it (her tent, her decorations, her
+  look); in a scene, a check or a fight it says it waits for the next rest. Either way the phone's
+  Camp button says **New!** until its kid opens Camp, after a reload too
+  (`store/kit-news.ts` `useCampNew`), so a notice missed mid-fight is waiting at the next rest.
 
 ## 6. Who changes what
 
