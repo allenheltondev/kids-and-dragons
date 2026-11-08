@@ -8,9 +8,9 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { clipPath, manifestPath, type NarrationPart, type SpeakOptions, type VoiceManifest } from "@kad/shared";
+import { clipPath, manifestPath, type NarrationPart, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
 import type { VoiceBuffer, VoiceChannel } from "../audio/cue";
-import { createClipSpeaker, manifestOf, RESOLVE_MS, type FetchedLike } from "./clip-speaker";
+import { createClipSpeaker, manifestOf, RESOLVE_MS, whileSeen, type FetchedLike } from "./clip-speaker";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
 const A = "a".repeat(64);
@@ -404,5 +404,68 @@ describe("speak()'s queue and interrupt rules", () => {
     await vi.advanceTimersByTimeAsync(1500 + 2000);
     expect(t.plays[0]!.stopped).toBe(true);
     expect(t.device.texts()).toEqual(["Hero's turn."]);
+  });
+});
+
+describe("narration only while the page is seen (whileSeen)", () => {
+  function page(): { doc: Document; win: Window; show: (state: "hidden" | "visible") => void } {
+    let state: "hidden" | "visible" = "visible";
+    const doc = new EventTarget() as unknown as Document;
+    Object.defineProperty(doc, "visibilityState", { get: () => state });
+    const win = new EventTarget() as unknown as Window;
+    return {
+      doc,
+      win,
+      show(next) {
+        state = next;
+        doc.dispatchEvent(new Event("visibilitychange"));
+      },
+    };
+  }
+  function inner(): { speaker: Speaker; said: string[]; cancels: () => number } {
+    const said: string[] = [];
+    let cancelled = 0;
+    const speaker = ((text: string) => {
+      said.push(text);
+    }) as Speaker;
+    speaker.cancel = () => {
+      cancelled += 1;
+    };
+    return { speaker, said, cancels: () => cancelled };
+  }
+
+  it("cancels on hide, and drops a line that arrives after the hide", () => {
+    const { doc, win, show } = page();
+    const { speaker, said, cancels } = inner();
+    const speak = whileSeen(speaker, doc, win);
+    speak("You reach the bridge.");
+    show("hidden");
+    expect(cancels()).toBe(1);
+    // A new scene lands while the app is in the background: nothing is said or queued.
+    speak("A troll steps out.");
+    expect(said).toEqual(["You reach the bridge."]);
+    show("visible");
+    speak("Welcome back.");
+    expect(said).toEqual(["You reach the bridge.", "Welcome back."]);
+  });
+
+  it("is silent from pagehide until pageshow, even while visibility still says visible", () => {
+    const { doc, win } = page();
+    const { speaker, said, cancels } = inner();
+    const speak = whileSeen(speaker, doc, win);
+    win.dispatchEvent(new Event("pagehide"));
+    expect(cancels()).toBe(1);
+    speak("Still there?");
+    expect(said).toEqual([]);
+    win.dispatchEvent(new Event("pageshow"));
+    speak("Here again.");
+    expect(said).toEqual(["Here again."]);
+  });
+
+  it("passes cancel through", () => {
+    const { doc, win } = page();
+    const { speaker, cancels } = inner();
+    whileSeen(speaker, doc, win).cancel?.();
+    expect(cancels()).toBe(1);
   });
 });

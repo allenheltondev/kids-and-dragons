@@ -289,7 +289,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
 
 /** The table's speaker, on this browser: the recorded voice over `SpeechSynthesis`. */
 export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Speaker {
-  const speaker = createClipSpeaker({
+  return whileSeen(createClipSpeaker({
     device: createSynthSpeaker({
       synth: window.speechSynthesis,
       createUtterance: (text) => new SpeechSynthesisUtterance(text),
@@ -298,12 +298,32 @@ export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Spe
     channel: () => getAudioSink()?.voice ?? null,
     fetch: (url) => fetch(url),
     onSpeaking,
+  }));
+}
+
+/**
+ * Narration is for whoever is looking. Hidden (`visibilitychange`) or left
+ * (`pagehide`, which can come while visibility still says visible) silences
+ * what is said or queued, and refuses what is asked for after: a new scene's
+ * line that lands while the app is in the background is dropped, not read on
+ * into the room. `pageshow` lets it speak again.
+ */
+export function whileSeen(speaker: Speaker, doc: Document = document, win: Window = window): Speaker {
+  let gone = false;
+  const away = (): boolean => gone || doc.visibilityState === "hidden";
+  doc.addEventListener("visibilitychange", () => {
+    if (away()) speaker.cancel?.();
   });
-  // Narration is for whoever is looking: a backgrounded app must go quiet, not read on.
-  const silence = (): void => {
-    if (document.visibilityState === "hidden") speaker.cancel?.();
+  win.addEventListener("pagehide", () => {
+    gone = true;
+    speaker.cancel?.();
+  });
+  win.addEventListener("pageshow", () => {
+    gone = false;
+  });
+  const seen: Speaker = (text, opts) => {
+    if (!away()) speaker(text, opts);
   };
-  document.addEventListener("visibilitychange", silence);
-  window.addEventListener("pagehide", () => speaker.cancel?.());
-  return speaker;
+  seen.cancel = () => speaker.cancel?.();
+  return seen;
 }

@@ -261,21 +261,15 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     pageGone = false;
     syncToVisibility();
   }
-  function watchVisibility(): void {
+  /** Add (`on`) or remove the page's listeners: one list, so the two can never drift apart. */
+  function watchPage(on: boolean): void {
     if (typeof document === "undefined") return;
-    document.addEventListener("visibilitychange", syncToVisibility);
-    if (typeof window !== "undefined") {
-      window.addEventListener("pagehide", onPageHide);
-      window.addEventListener("pageshow", onPageShow);
-    }
-  }
-  function unwatchVisibility(): void {
-    if (typeof document === "undefined") return;
-    document.removeEventListener("visibilitychange", syncToVisibility);
-    if (typeof window !== "undefined") {
-      window.removeEventListener("pagehide", onPageHide);
-      window.removeEventListener("pageshow", onPageShow);
-    }
+    const toggle = (target: EventTarget, type: string, listener: () => void): void =>
+      on ? target.addEventListener(type, listener) : target.removeEventListener(type, listener);
+    toggle(document, "visibilitychange", syncToVisibility);
+    if (typeof window === "undefined") return;
+    toggle(window, "pagehide", onPageHide);
+    toggle(window, "pageshow", onPageShow);
   }
 
   const stateListeners = new Set<() => void>();
@@ -312,7 +306,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     // The context may still arrive suspended even inside a gesture handler.
     resume(ctx);
     ctx.addEventListener?.("statechange", stateChanged);
-    watchVisibility();
+    watchPage(true);
     stateChanged();
 
     /*
@@ -588,7 +582,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       stopMusic = null;
       musicBiome = null;
       ctx?.removeEventListener?.("statechange", stateChanged);
-      unwatchVisibility();
+      watchPage(false);
       stateListeners.clear();
       const closable = ctx as { close?: () => Promise<void> } | null;
       closable?.close?.().catch(() => undefined);
