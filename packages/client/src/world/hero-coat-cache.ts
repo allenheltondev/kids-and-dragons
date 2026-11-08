@@ -239,8 +239,8 @@ export class CoatCache {
     if (!pass) return;
     this.running = pass;
     pass.started = true;
-    const { painting, mask, paint } = pass.request;
-    void this.runner({ painting, mask, paint }, pass.controller.signal)
+    const { painting, mask, paint, size } = pass.request;
+    void this.runner({ painting, mask, paint, ...(size !== undefined ? { size } : {}) }, pass.controller.signal)
       .then((image) => this.finish(pass, image))
       .catch(() => {
         if (!pass.controller.signal.aborted) {

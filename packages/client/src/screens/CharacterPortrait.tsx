@@ -33,7 +33,7 @@ import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
-import { heroBase, heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtSubject, type HeroCoatRequest } from "../world/hero-art";
+import { heroBase, heroCoatOf, heroPaintingUrl, heroSparkleOf, sizedTint, type HeroArtSubject, type HeroCoatRequest } from "../world/hero-art";
 import { HeroSparkles, useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
@@ -106,6 +106,11 @@ interface PortraitLook {
    *     transformation cutscene.
    */
   stand?: "floor" | "centre";
+  /**
+   * Her colour (and a sparkle's clip) made no bigger than this on its longer side: for a small
+   * preview, a shelf's tile (hero-art.ts `PREVIEW_TINT_PX`). Absent: at the painting's size.
+   */
+  tintSize?: number;
   className?: string;
 }
 
@@ -114,12 +119,13 @@ interface PortraitLook {
  * together: her colour on the painting shown (none when she is drawn as
  * painted), and the figure a sparkle special is clipped by on an opaque gear
  * portrait (none on a cut-out, whose own alpha clips it). The painting shown
- * is the one `CharacterPortrait` picks before any art has failed.
+ * is the one `CharacterPortrait` picks before any art has failed. `size` as the portrait's
+ * `tintSize`, so these are the very tints it draws.
  */
-export function portraitTintsOf(hero: HeroArtSubject): HeroCoatRequest[] {
+export function portraitTintsOf(hero: HeroArtSubject, size?: number): HeroCoatRequest[] {
   const gear = heroPaintingUrl(hero, "portrait") !== heroPaintingUrl(heroBase(hero), "portrait");
   const shown = gear ? hero : heroBase(hero);
-  return [heroCoatOf(shown, "portrait"), heroSparkleOf(shown, "portrait")?.figure ?? null].filter((r): r is HeroCoatRequest => r !== null);
+  return [sizedTint(heroCoatOf(shown, "portrait"), size), sizedTint(heroSparkleOf(shown, "portrait")?.figure ?? null, size)].filter((r): r is HeroCoatRequest => r !== null);
 }
 
 export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
@@ -130,6 +136,7 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
     backdrop = false,
     float = false,
     stand = "centre",
+    tintSize,
     className = "",
   } = props;
   const subject: HeroArtSubject =
@@ -146,14 +153,15 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
   // catches up. Step down to the known species art before conceding to an icon.
   const showingGear = gearPainting !== basePainting && !isMissingArt(failedGearSrc, gearPainting);
   // Only the painting shown is tinted: the other is never held or made.
-  const gearSrc = useHeroArt(subject, "portrait", showingGear);
-  const baseSrc = useHeroArt(heroBase(subject), "portrait", !showingGear);
+  const gearSrc = useHeroArt(subject, "portrait", showingGear, tintSize);
+  const baseSrc = useHeroArt(heroBase(subject), "portrait", !showingGear, tintSize);
   const src = showingGear ? gearSrc : baseSrc;
   const missing = !showingGear && isMissingArt(failedBaseSrc, basePainting);
   // A sparkle special (§5.5), over the painting shown: in the image's own grid
   // cell, laid on top of it, never behind (a gear portrait is opaque), clipped
   // by her figure.
-  const sparkle = props.hero !== undefined && !missing ? heroSparkleOf(showingGear ? subject : heroBase(subject), "portrait") : null;
+  const found = props.hero !== undefined && !missing ? heroSparkleOf(showingGear ? subject : heroBase(subject), "portrait") : null;
+  const sparkle = found ? { ...found, figure: sizedTint(found.figure, tintSize) } : null;
 
   const style: CSSProperties & Record<string, string | undefined> = {
     // The ground-contact contract, handed to CSS so the stylesheet never has

@@ -39,9 +39,10 @@ import { Icon } from "./icons";
 import { HeroName } from "./HeroName";
 import { CharacterPortrait, portraitTintsOf } from "./CharacterPortrait";
 import { LOOKS, heroNameStyle, lookChoices } from "../world/hero-name";
-import { HERO_ART_PLACES, heroPaintingUrl, type HeroArtSubject } from "../world/hero-art";
+import { HERO_ART_PLACES, PREVIEW_TINT_PX, heroPaintingUrl, type HeroArtSubject } from "../world/hero-art";
 import { HeroImage, useCoatsReady } from "../world/hero-art-dom";
 import { coatPartLabel, hasCoatMask } from "../world/coat-masks";
+import { reducedMotion } from "../a11y/prefs";
 import "./LookEditor.css";
 
 /** One tap on a shelf: the one field it changes. */
@@ -150,7 +151,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
   // Each tile's colour and, for a sparkle special, the figure its sparkles are clipped by.
   const painted = paintedTiles(shelf, look, hero.species);
   const requests = painted.flatMap(({ change }) =>
-    portraitTintsOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }),
+    portraitTintsOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }, PREVIEW_TINT_PX),
   );
   const ready = useCoatsReady(requests);
   const [shown, setShown] = useState(look);
@@ -165,7 +166,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
   }, [ready, worn]);
   const pending = !revealed;
   const wearing = (change: LookChange): ReactElement => (
-    <CharacterPortrait hero={{ ...hero, look: { coat: shown.coat, accent: shown.accent, special: shown.special, ...change } }} accent={hero.appearance.accent} size="100%" />
+    <CharacterPortrait hero={{ ...hero, look: { coat: shown.coat, accent: shown.accent, special: shown.special, ...change } }} accent={hero.appearance.accent} size="100%" tintSize={PREVIEW_TINT_PX} />
   );
   const part = PART_OF[shelf];
   if (painted.length > 0) {
@@ -258,21 +259,30 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
     openShelf = next;
     setShelf(next);
   };
-  // Her stage gives the pitch's little bounce whenever her look changes (not with reduced motion: BookKit.css).
+  /*
+   * Her stage gives the pitch's little bounce whenever her look changes (BookKit.css
+   * `book-kit-bounce`), played on the stage as it stands rather than by drawing it again: a new
+   * stage would be a new figure, which forgets the colour she wears and shows her painting until
+   * the new one is made. Kept as it is, she wears the last colour until the next is ready.
+   */
   const worn = `${look.coat ?? ""}|${look.accent ?? ""}|${look.special ?? ""}|${look.nameplate ?? ""}|${look.title ?? ""}`;
-  const [bounce, setBounce] = useState(0);
+  const stage = useRef<HTMLDivElement | null>(null);
   const first = useRef(true);
   useEffect(() => {
     if (first.current) {
       first.current = false;
       return;
     }
-    setBounce((n) => n + 1);
+    if (reducedMotion()) return;
+    stage.current?.animate?.(
+      [{ transform: "scale(0.97)" }, { transform: "scale(1.02)", offset: 0.6 }, { transform: "scale(1)" }],
+      { duration: 260, easing: "ease-out" },
+    );
   }, [worn]);
   return (
     <section className="book-kit book-look" aria-label={`${hero.name}'s look`} data-testid="look-editor">
       <div className="book-kit__pitch book-look__pitch" data-testid="book-look-hero">
-        <div key={bounce} className={`book-kit__stage book-look__stage${bounce > 0 ? " is-bouncing" : ""}`} aria-hidden="true">
+        <div ref={stage} className="book-kit__stage book-look__stage" aria-hidden="true">
           <HeroImage hero={{ ...hero, look }} place="world" holdUntilTinted className="book-look__figure" alt="" data-testid="book-look-figure" />
         </div>
         <p className="book-kit__caption book-look__caption" data-testid="book-look-name">

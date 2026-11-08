@@ -26,7 +26,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ImgHTMLAttributes, ReactElement } from "react";
 import { reducedMotion } from "../a11y/prefs";
-import { heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest, type HeroSparkle } from "./hero-art";
+import { heroCoatOf, heroPaintingUrl, heroSparkleOf, sizedTint, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest, type HeroSparkle } from "./hero-art";
 import "./hero-sparkle.css";
 import type { CoatSlot } from "./hero-coat-cache";
 import { heroCoatsLoaded, loadHeroCoats, type HeroCoatsModule as Coats } from "./hero-coat-load";
@@ -157,14 +157,17 @@ export function useCoatsReady(requests: readonly HeroCoatRequest[]): boolean {
  * The URL that draws `hero` in `place`, as of this render. `tinted: false` draws her as painted
  * and holds nothing: for an image kept mounted but not shown (CharacterPortrait's fallback).
  */
-export function useHeroArt(hero: HeroArtSubject, place: HeroArtPlace, tinted = true): string {
-  return useHeroArtState(hero, place, tinted).src;
+export function useHeroArt(hero: HeroArtSubject, place: HeroArtPlace, tinted = true, size?: number): string {
+  return useHeroArtState(hero, place, tinted, size).src;
 }
 
-/** `useHeroArt`, and whether her colour is still being made (`pending`), for a surface that waits for it. */
-export function useHeroArtState(hero: HeroArtSubject, place: HeroArtPlace, tinted = true): { src: string; pending: boolean } {
+/**
+ * `useHeroArt`, and whether her colour is still being made (`pending`), for a surface that waits
+ * for it. `size`: her colour made no bigger than that, for a preview (hero-art.ts `sizedTint`).
+ */
+export function useHeroArtState(hero: HeroArtSubject, place: HeroArtPlace, tinted = true, size?: number): { src: string; pending: boolean } {
   const painted = heroPaintingUrl(hero, place);
-  const { url, pending } = useTint(tinted ? heroCoatOf(hero, place) : null);
+  const { url, pending } = useTint(tinted ? sizedTint(heroCoatOf(hero, place), size) : null);
   return { src: url ?? painted, pending };
 }
 
