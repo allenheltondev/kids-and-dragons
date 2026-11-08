@@ -24,15 +24,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { MILESTONE_KIT_PIECES, TIER_IDS, lookTitleText } from "@kad/shared";
+import { MILESTONE_KIT_PIECES, TIER_IDS, campMomentKind, lookTitleText } from "@kad/shared";
 import type { ClassId, ClassRank, TierId } from "@kad/shared";
 import { camp as campManifest } from "../../../../assets/manifest.json";
-import { useParty, useSession } from "../store";
+import { useParty, useRunState, useSession } from "../store";
 import { ackKitNews, isLookNews, useKitNews, type KitNewsItem } from "../store/kit-news";
 import { LOOKS } from "../world/hero-name";
 import { noticeMs } from "../ui/notice-timing";
 import { useBelowHeroCard, useHasPendingTurn } from "./FieldGuideNews";
 import { TRANSFORM_BEAT_MS } from "./TransformCutscene";
+import { openCampPanel, type CampFocus } from "./camp-panel";
 import "./FieldGuideNews.css";
 import "./KitNews.css";
 
@@ -131,8 +132,16 @@ function useReadyItems(): KitNewsItem[] {
   return own.filter((item) => kitNewsReadyAt(item) <= now);
 }
 
+/** Where in Camp a piece or a look is tried on: the hero who earned it, and the part it goes on. */
+export function campFocusOf(item: Pick<KitNewsItem, "kind" | "characterId">): CampFocus {
+  return { hero: item.characterId, part: isLookNews(item) ? "look" : item.kind === "tent" ? "tent" : "decor" };
+}
+
 export function KitNewsToast(): ReactElement | null {
   const toast = useRef<HTMLDivElement | null>(null);
+  const state = useRunState();
+  // In downtime Camp is open to try it on at once; in a scene, a check or a fight it waits for the next rest.
+  const downtime = state !== null && campMomentKind(state) !== null;
   const busy = useHasPendingTurn();
   const ready = useReadyItems();
   const [shown, setShown] = useState<KitNewsItem[] | null>(null);
@@ -162,7 +171,21 @@ export function KitNewsToast(): ReactElement | null {
         <span className="guide-news__text">
           <span className="guide-news__lead">{lead}</span>
           <span className="guide-news__title">{shown.map(kitPieceName).join(", ")}</span>
+          {downtime ? null : <span className="kit-news__later">Try it on at your next rest!</span>}
         </span>
+        {downtime ? (
+          <button
+            type="button"
+            className="kit-news__try kad-focusable"
+            onClick={() => {
+              openCampPanel(campFocusOf(first));
+              setShown(null);
+            }}
+            data-testid="kit-news-try"
+          >
+            Try it on
+          </button>
+        ) : null}
       </div>
     </div>
   );

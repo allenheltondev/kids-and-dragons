@@ -43,6 +43,7 @@ import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { FOLDS_KEY } from "../ui/Collapsible";
 import { PlayerPanel } from "./PlayerPanel";
+import { closeCampPanel, openCampPanel } from "./camp-panel";
 
 const ITEMS: ItemCatalog = makeItems();
 const POTION: InventoryEntry = { itemId: "sunbloom_draught", kind: "consumable" };
@@ -1512,6 +1513,19 @@ describe("the party strip", () => {
 
     await user.click(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
+  });
+
+  it("gives way to Camp: opened from the news toast over an open sheet, Camp shows", async () => {
+    const user = userEvent.setup();
+    mount({ sceneType: "rest", party: [member(), member({ character: THISTLE })] });
+    serverSends({ campMoment: { id: "rest:s_1|x", kind: "rest", outdoor: false, changes: {} } });
+    await user.click(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }));
+    expect(screen.getByText(/Hero tiers/)).toBeTruthy();
+    // KitNews.tsx `KitNewsToast`'s Try it on: the same call, from outside the panel.
+    act(() => openCampPanel({ hero: "c_1", part: "look" }));
+    expect(screen.getByTestId("camp-panel")).toBeTruthy();
+    expect(screen.queryByText(/Hero tiers/)).toBeNull();
+    act(() => closeCampPanel());
   });
 
   it("opens somebody else's, and says so in their words", async () => {

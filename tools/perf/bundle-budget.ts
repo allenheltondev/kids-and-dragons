@@ -313,7 +313,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1782KB measured, first paint 329KB unchanged. The growth is again only the mask
 // list (144 more paths in coatMasks.paintings): with just the 24 base entries the
 // total is 1774KB. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1784;
+// 1784 -> 1788 for making new pieces and looks hard to miss (#688): the Camp button's
+// New!, kept across a reload (store/kit-news.ts `useCampNew`), the news toast's Try it on
+// that opens Camp at the piece, and the look editor at the chapter's end. 1786KB measured,
+// first paint 329KB unchanged. 2KB of slack again. (#686 had trimmed main to exactly
+// 1784KB, so there was none to spend.)
+const TOTAL_BUDGET_KB = 1788;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

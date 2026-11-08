@@ -83,8 +83,9 @@ export async function prepareLookEdit(
 ): Promise<LookEditResult> {
   const malformed = lookIntentProblem(intent as unknown as Record<string, unknown>);
   if (malformed !== null) return illegal(`malformed LOOK_EDIT: ${malformed}`);
-  const kind = campMomentKind(state);
-  if (kind !== "lobby" && kind !== "rest") return illegal("A look changes in the lobby or at a rest stop.");
+  // Downtime, as her kit: the lobby, a rest and the chapter's end, where what a chapter earned is
+  // first hers to try on (docs/hero-looks.md §8.2).
+  if (campMomentKind(state) === null) return illegal("A look changes in the lobby, at a rest stop or at the chapter's end.");
   const member = state.party.find((m) => m.character.id === intent.characterId);
   if (!member) return { ok: false, error: { code: "NOT_FOUND", message: "that hero is not at this table" } };
   if (member.playerId !== playerId || (state.removed ?? []).includes(playerId)) {
