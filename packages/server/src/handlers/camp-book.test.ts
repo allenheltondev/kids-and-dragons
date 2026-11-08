@@ -369,6 +369,20 @@ describe("the book's kit write (§7, §12.6)", () => {
     expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, tent: "patched", color: "tide" });
   });
 
+  it("keeps a milestone tent picked in the book when the table's welcome card picks a style from the kit it read before", async () => {
+    const { harness, t, p1 } = await lobby();
+    const row = (await harness.repo.getCharacter(t.householdId, p1))!;
+    await harness.repo.putCharacter({ ...row, committed: { ...row.committed, tier: "sworn" } });
+    // The table read her kit as the lobby began: nothing picked, so her phone offers the welcome card.
+    const shown = (await t.state()).kits?.[p1];
+    expect(shown).toMatchObject({ style: null, tent: null });
+    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "tent", before: null, after: "sworn" }] }));
+
+    // The card sends the style and color she tapped, from the kit it still shows (CampPanel.tsx `KitWelcome`).
+    await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: shown!.revision, style: "rolled", color: "rose" });
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ tent: "sworn", style: "rolled", color: "rose" });
+  });
+
   it("refuses another kid's hero, a hero she does not have, and a phone with no binding", async () => {
     const { harness, t, p2 } = await lobby();
     const theirs = await book(harness.deps, t.householdId, "p_1", { characterId: p2, changes: [{ field: "color", before: null, after: "rose" }] });
