@@ -554,7 +554,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
     seeCampNews();
     const at = takeCampFocus();
     headingRef.current?.focus({ preventScroll: at !== null });
-    if (at) panelRef.current?.querySelector(`[data-camp-focus="${at}"]`)?.scrollIntoView?.({ block: "start" });
+    if (at) panelRef.current?.querySelector(`[data-camp-hero="${at.hero}"] [data-camp-focus="${at.part}"]`)?.scrollIntoView?.({ block: "start" });
   }, [open]);
   useEffect(() => {
     if (!open) return;
@@ -593,7 +593,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
         {mine.map((member) => {
           const kit = state.kits?.[member.character.id];
           return (
-            <div key={member.character.id} style={{ display: "contents" }}>
+            <div key={member.character.id} style={{ display: "contents" }} data-camp-hero={member.character.id}>
               {kit ? <KitEditor member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null}
               {/* Her look (docs/hero-looks.md §8.2; #664), in every downtime moment, as her kit. */}
               <LookEditor member={member} held={held} dispatch={dispatch} />

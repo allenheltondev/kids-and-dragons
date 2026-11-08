@@ -132,9 +132,9 @@ function useReadyItems(): KitNewsItem[] {
   return own.filter((item) => kitNewsReadyAt(item) <= now);
 }
 
-/** Where in Camp a piece or a look is tried on. */
-export function campFocusOf(item: Pick<KitNewsItem, "kind">): CampFocus {
-  return isLookNews(item) ? "look" : item.kind === "tent" ? "tent" : "decor";
+/** Where in Camp a piece or a look is tried on: the hero who earned it, and the part it goes on. */
+export function campFocusOf(item: Pick<KitNewsItem, "kind" | "characterId">): CampFocus {
+  return { hero: item.characterId, part: isLookNews(item) ? "look" : item.kind === "tent" ? "tent" : "decor" };
 }
 
 export function KitNewsToast(): ReactElement | null {

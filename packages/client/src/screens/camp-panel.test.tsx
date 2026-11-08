@@ -371,13 +371,38 @@ describe("New! on the Camp button", () => {
     };
     try {
       view(table());
-      act(() => openCampPanel("look"));
+      act(() => openCampPanel({ hero: "c_1", part: "look" }));
       expect(scrolled).toEqual([screen.getByTestId("look-editor")]);
       expect(document.activeElement?.id).toBe(screen.getByRole("dialog").getAttribute("aria-labelledby"));
       // Opened again from the button: the top, nowhere else.
       fireEvent.click(screen.getByRole("button", { name: "Done" }));
       fireEvent.click(screen.getByRole("button", { name: "Camp" }));
       expect(scrolled).toHaveLength(1);
+    } finally {
+      Element.prototype.scrollIntoView = before;
+    }
+  });
+
+  it("opens at the hero who earned it, when one kid plays two", () => {
+    const scrolled: Element[] = [];
+    const before = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    try {
+      const second = makeMember({ playerId: "p_1", character: makeCharacter({ id: "c_3", ownerPlayerId: "p_1", name: "Moss" }) });
+      const state = table({ party: [me, friend, second], kits: { c_1: kit(), c_2: kit(), c_3: kit() } });
+      view(state);
+      act(() => openCampPanel({ hero: "c_3", part: "tent" }));
+      expect(scrolled).toHaveLength(1);
+      const tents = [...document.querySelectorAll('[data-camp-focus="tent"]')];
+      expect(tents).toHaveLength(2);
+      expect(scrolled[0]).toBe(tents[1]);
+      expect(scrolled[0]!.closest("[data-camp-hero]")?.getAttribute("data-camp-hero")).toBe("c_3");
+      fireEvent.click(screen.getByRole("button", { name: "Done" }));
+      act(() => openCampPanel({ hero: "c_3", part: "look" }));
+      expect(scrolled[1]!.closest("[data-camp-hero]")?.getAttribute("data-camp-hero")).toBe("c_3");
+      expect(scrolled[1]!.getAttribute("data-testid")).toBe("look-editor");
     } finally {
       Element.prototype.scrollIntoView = before;
     }

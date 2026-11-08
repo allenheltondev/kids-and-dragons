@@ -95,7 +95,7 @@ describe("the phone's notice", () => {
     act(() => { vi.advanceTimersByTime(TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS + 1); });
     fireEvent.click(screen.getByRole("button", { name: "Try it on" }));
     expect(campPanelOpen()).toBe(true);
-    expect(takeCampFocus()).toBe("tent");
+    expect(takeCampFocus()).toEqual({ hero: "c_pip", part: "tent" });
     expect(screen.queryByTestId("kit-news")).toBeNull();
     act(() => closeCampPanel());
   });

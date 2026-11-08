@@ -7,8 +7,14 @@
 
 type Listener = () => void;
 
-/** A part of the panel to open at: her tent, her decorations, her look (the "Try it on" of a piece's news). */
-export type CampFocus = "tent" | "decor" | "look";
+/**
+ * Where to open the panel: one hero's tent, decorations or look (the "Try it on" of a piece's
+ * news). The hero, because one kid may play several, each with her own editors in the panel.
+ */
+export interface CampFocus {
+  hero: string;
+  part: "tent" | "decor" | "look";
+}
 
 let open = false;
 let focus: CampFocus | null = null;
