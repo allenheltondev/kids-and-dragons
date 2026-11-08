@@ -7,7 +7,17 @@
 
 type Listener = () => void;
 
+/**
+ * Where to open the panel: one hero's tent, decorations or look (the "Try it on" of a piece's
+ * news). The hero, because one kid may play several, each with her own editors in the panel.
+ */
+export interface CampFocus {
+  hero: string;
+  part: "tent" | "decor" | "look";
+}
+
 let open = false;
+let focus: CampFocus | null = null;
 const listeners = new Set<Listener>();
 const emit = (): void => {
   for (const listener of [...listeners]) listener();
@@ -15,10 +25,19 @@ const emit = (): void => {
 
 export const campPanelOpen = (): boolean => open;
 
-export function openCampPanel(): void {
+/** Open the panel, at `at` if given (scrolled to it once it is drawn: `takeCampFocus`). */
+export function openCampPanel(at?: CampFocus): void {
+  focus = at ?? null;
   if (open) return;
   open = true;
   emit();
+}
+
+/** Where the panel was asked to open, once: the panel takes it as it opens. */
+export function takeCampFocus(): CampFocus | null {
+  const at = focus;
+  focus = null;
+  return at;
 }
 
 export function closeCampPanel(): void {

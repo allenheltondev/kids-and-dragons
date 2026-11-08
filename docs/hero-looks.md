@@ -136,8 +136,9 @@ in-memory pending list.
   `content:validate` through `tools/content/looks-catalog.mjs`): `coats` (empty until #666),
   `nameplates` (plain, ribbon, leafy, starry) and `titles` (the three starters and the earned ones
   #669 will grant), each with an `unlock` rule. The client bundles it (`world/hero-name.ts`).
-- **The table.** `LOOK_EDIT` (server `handlers/look-edit.ts`), the lobby and rests only, her own
-  player only, carried by the run's commit like `KIT_EDIT`. A stale revision is refused; when the
+- **The table.** `LOOK_EDIT` (server `handlers/look-edit.ts`), downtime only (the lobby, rests and
+  the chapter's end, as `KIT_EDIT`), her own player only, carried by the run's commit like
+  `KIT_EDIT`. A stale revision is refused; when the
   table's view of her look is behind her row, the refusal still commits the refreshed view, so the
   refused phone shows the look as it now stands and its next tap lands. A live room also reads her
   look afresh as each downtime moment begins (`syncCampDowntime`).
@@ -613,7 +614,8 @@ A **Look** page beside Camp, built like #661's dressing room:
 
 ### 8.2 At the table
 
-A compact Look editor in her phone's panel during downtime (the lobby and rests), next to the
+A compact Look editor in her phone's panel during downtime (the lobby, rests and the chapter's
+end, where what a chapter earned is first hers to try on; *decided*, owner 2026-11-08), next to the
 kit's, with the same shelves as the book's (her two parts, Special once earned, Nameplate,
 Title). `LOOK_EDIT`, unlimited, as `KIT_EDIT` is (*decided*), naming the look's `revision`
 (§3.2). The TV shows the change at once.

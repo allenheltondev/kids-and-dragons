@@ -358,7 +358,7 @@ export function LookEditor({ member, held, dispatch }: { member: PartyMember; he
   );
   const shelves = shelvesFor(hero, look);
   return (
-    <section className="camp-panel__section" aria-labelledby={`${base}-look`} data-testid="look-editor">
+    <section className="camp-panel__section" aria-labelledby={`${base}-look`} data-testid="look-editor" data-camp-focus="look">
       <h3 className="camp-panel__heading" id={`${base}-look`}>
         <Icon name="star" />
         <span>{`${hero.name}'s look`}</span>

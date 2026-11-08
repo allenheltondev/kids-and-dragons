@@ -25,7 +25,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  * and the inventory scroll under the strip.
  */
 
-import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 import {
@@ -100,6 +100,7 @@ import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { CampShopVote, shopLine } from "./CampChapterEnd";
 import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
+import { campPanelOpen, onCampPanel } from "./camp-panel";
 import { ClassPlaceChoice } from "./ClassPlace";
 import {
   beginLabel,
@@ -679,6 +680,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * so it is legal to read one whenever there is a phone to read it on.
    */
   const [sheetFor, setSheetFor] = useState<string | null>(null);
+  // Camp asked to open (a Camp button, or the news toast's Try it on) closes an open sheet: the
+  // panel is drawn over the pane the sheet replaces, so it would otherwise wait unseen behind it.
+  const campOpen = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
+  useEffect(() => {
+    if (campOpen) setSheetFor(null);
+  }, [campOpen]);
   const navigationRevision = usePlayerNavigation((navigation) => navigation.revision);
   const section = usePlayerNavigation((navigation) => navigation.section);
   useEffect(() => { setSheetFor(null); }, [navigationRevision]);

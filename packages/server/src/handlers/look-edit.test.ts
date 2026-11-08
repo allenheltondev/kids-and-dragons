@@ -257,6 +257,14 @@ describe("LOOK_EDIT at the table, continued", () => {
     await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, title: "the_bold" });
     expect((await partyLook(t, p1))?.title).toBe("the_bold");
   });
+
+  it("is open at the chapter's end too, where a chapter's looks are first hers to try on", async () => {
+    const { t, p1 } = await started();
+    await t.goto("scene_ending");
+    expect((await t.state()).campMoment?.kind).toBe("chapterEnd");
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, title: "the_bold" });
+    expect((await partyLook(t, p1))?.title).toBe("the_bold");
+  });
 });
 
 describe("a look from the book (§3.2)", () => {

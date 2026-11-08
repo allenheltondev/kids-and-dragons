@@ -81,10 +81,56 @@ function forRun(runId: string): void {
   lookWatermark = 0;
 }
 
+// ---------------------------------------------------------------------------
+// "New!" on the Camp button: heroes with something told and not yet tried on
+// ---------------------------------------------------------------------------
+
+/**
+ * The heroes on this phone with something new (a piece, a look) that their kid
+ * has not yet opened Camp to see. A toast is missed in a fight; this is not:
+ * the Camp button says "New!" at the next rest, and after a reload too, until
+ * Camp is opened (`seeCampNews`). Every hero's news is noted; the button
+ * reads only its own kid's heroes.
+ */
+const CAMP_NEW_KEY = "kad.campNew";
+
+function readCampNew(): string[] {
+  try {
+    const raw = globalThis.localStorage?.getItem(CAMP_NEW_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+const useCampNewStore = create<{ heroes: readonly string[] }>(() => ({ heroes: readCampNew() }));
+
+function writeCampNew(heroes: readonly string[]): void {
+  useCampNewStore.setState({ heroes });
+  try {
+    if (heroes.length > 0) globalThis.localStorage?.setItem(CAMP_NEW_KEY, JSON.stringify(heroes.slice(-20)));
+    else globalThis.localStorage?.removeItem(CAMP_NEW_KEY);
+  } catch {
+    // Storage blocked: the memory copy holds for this visit.
+  }
+}
+
+/** The heroes with something new to see in Camp. */
+export function useCampNew(): readonly string[] {
+  return useCampNewStore((s) => s.heroes);
+}
+
+/** Camp was opened: everything new has been seen. */
+export function seeCampNews(): void {
+  if (useCampNewStore.getState().heroes.length > 0) writeCampNew([]);
+}
+
 function enqueue(items: readonly Omit<KitNewsItem, "seq" | "arrivedAt" | "crossings">[], seq: number, crossings: number, now: number): void {
   const fresh = items.filter((u) => !told.has(keyOf(u)));
   if (fresh.length === 0) return;
   for (const u of fresh) told.add(keyOf(u));
+  writeCampNew([...new Set([...useCampNewStore.getState().heroes, ...fresh.map((u) => u.characterId)])]);
   useNewsStore.setState((s) => ({
     pending: [...s.pending, ...fresh.map((u) => ({ ...u, seq, arrivedAt: now, crossings }))],
   }));

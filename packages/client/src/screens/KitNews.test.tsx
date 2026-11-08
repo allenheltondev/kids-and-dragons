@@ -5,10 +5,11 @@
  * transformation cutscene (or the rank-up moment) it belongs to has played.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { announceKitNews, announceLookNews, clearKitNews, getKitNews } from "../store/kit-news";
+import { campPanelOpen, closeCampPanel, takeCampFocus } from "./camp-panel";
 import { DISTINCTION_HOLD_MS, KIT_NEWS_GAP_MS, KitNewsToast, kitNewsReadyAt, kitNewsWords } from "./KitNews";
 import { RANK_UP_MS } from "./RankUpMoment";
 import { TRANSFORM_BEAT_MS } from "./TransformCutscene";
@@ -86,6 +87,26 @@ describe("the phone's notice", () => {
     expect(screen.queryByTestId("kit-news")).toBeNull();
     act(() => { vi.advanceTimersByTime(KIT_NEWS_GAP_MS + 1); });
     expect(screen.getByTestId("kit-news").textContent).toContain("Songkeeper Apprentice");
+  });
+
+  it("in downtime, offers to try it on: Camp opens at her new piece", () => {
+    render(<KitNewsToast />);
+    act(() => announceKitNews("r_1", 10, [{ characterId: "c_pip", pieceId: "sworn", kind: "tent" }], 1));
+    act(() => { vi.advanceTimersByTime(TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS + 1); });
+    fireEvent.click(screen.getByRole("button", { name: "Try it on" }));
+    expect(campPanelOpen()).toBe(true);
+    expect(takeCampFocus()).toEqual({ hero: "c_pip", part: "tent" });
+    expect(screen.queryByTestId("kit-news")).toBeNull();
+    act(() => closeCampPanel());
+  });
+
+  it("in a scene, says it waits for the next rest, with nothing to tap", () => {
+    useGameStore.setState((s) => ({ state: { ...s.state!, phase: "scene", sceneType: "story" } }));
+    render(<KitNewsToast />);
+    act(() => announceKitNews("r_1", 11, [{ characterId: "c_pip", pieceId: "sworn", kind: "tent" }], 1));
+    act(() => { vi.advanceTimersByTime(TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS + 1); });
+    expect(screen.getByTestId("kit-news").textContent).toContain("Try it on at your next rest!");
+    expect(screen.queryByRole("button", { name: "Try it on" })).toBeNull();
   });
 
   it("tells only this phone's own hero", () => {
