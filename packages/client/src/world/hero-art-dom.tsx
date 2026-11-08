@@ -43,9 +43,20 @@ interface Hold {
  * shown for the same painting stays until a new one is ready.
  */
 function useTintUrl(request: HeroCoatRequest | null): string | null {
+  return useTint(request).url;
+}
+
+/**
+ * `useTintUrl`, plus whether her colour is still on its way: asked for, not ready, not failed, and
+ * nothing of an earlier look on this painting to keep showing. A surface that would rather wait
+ * than show her uncoloured (the book's look page) holds its image back while this is true.
+ */
+function useTint(request: HeroCoatRequest | null): { url: string | null; pending: boolean } {
   const key = request?.key ?? null;
   const [shown, setShown] = useState<{ key: string; url: string } | null>(null);
   const hold = useRef<Hold | null>(null);
+  // Her colour cannot be made (the pass failed, or the tinter would not load): the hold on her image ends.
+  const [gaveUp, setGaveUp] = useState<string | null>(null);
 
   // The slot lives as long as the image: made when first needed, closed on unmount.
   useEffect(() => {
@@ -70,53 +81,59 @@ function useTintUrl(request: HeroCoatRequest | null): string | null {
     const start = (m: Coats): void => {
       if (!h.live || h.slot) return;
       h.slot = m.heroCoats().slot((entry) => {
-        if (h.live) setShown(entry ? { key: entry.key, url: entry.url() } : null);
+        if (!h.live) return;
+        setShown(entry ? { key: entry.key, url: entry.url() } : null);
+        // Null for a colour that was asked for is a failed pass (a hero with none asks for nothing).
+        if (!entry && h.want) setGaveUp(h.want.key);
       });
       h.slot.want(h.want);
     };
     const now = heroCoatsLoaded();
     if (now) start(now);
-    else void loadHeroCoats().then(start, () => undefined);
+    else {
+      const asked = request.key;
+      void loadHeroCoats().then(start, () => {
+        if (h.live) setGaveUp(asked);
+      });
+    }
     // `request` is read through its key: a new object every render, the same tint.
   }, [key]);
 
-  if (request === null) return null;
-  if (shown?.key === request.key) return shown.url;
+  if (request === null) return { url: null, pending: false };
+  if (shown?.key === request.key) return { url: shown.url, pending: false };
   // A look already tinted (another surface, an earlier visit) shows at once; the effect pins it.
-  const ready = heroCoatsLoaded()?.heroCoats().peek(request.key);
-  if (ready) return ready.url();
+  const cache = heroCoatsLoaded()?.heroCoats();
+  const ready = cache?.peek(request.key);
+  if (ready) return { url: ready.url(), pending: false };
   // Her last look on this painting stays until the new one is ready; another painting's never shows.
-  if (shown !== null && shown.key.startsWith(`${request.painting}|`)) return shown.url;
-  return null;
+  if (shown !== null && shown.key.startsWith(`${request.painting}|`)) return { url: shown.url, pending: false };
+  // A colour that cannot be made draws as painted, for good (hero-coat-cache.ts).
+  return { url: null, pending: gaveUp !== request.key && !cache?.settled(request.key) };
 }
 
 /**
  * Whether a whole set of tints is ready, for a shelf of tiles that should show
  * together rather than one at a time as each pass finishes. Holds every request
- * (so nothing is evicted before the tiles draw it) and returns the key of the
- * set once every one is made or has failed for good, else null. A tile then
+ * (so nothing is evicted before the tiles draw it) and is true once every one
+ * is made or has failed for good (each slot is told either way). A tile then
  * draws its entry from the cache on its first render, with no repaint.
  */
-export function useCoatsReady(requests: readonly (HeroCoatRequest | null)[]): string | null {
-  const setKey = requests.map((r) => r?.key ?? "").join("\n");
+export function useCoatsReady(requests: readonly HeroCoatRequest[]): boolean {
+  const setKey = requests.map((r) => r.key).join("\n");
   const [readyFor, setReadyFor] = useState<string | null>(null);
   useEffect(() => {
-    const wanted = requests.filter((r): r is HeroCoatRequest => r !== null);
-    if (wanted.length === 0) {
-      setReadyFor(setKey);
-      return;
-    }
     let live = true;
     let slots: CoatSlot[] = [];
-    let stop = (): void => undefined;
+    const done = (): void => {
+      if (live) setReadyFor(setKey);
+    };
     const start = (m: Coats): void => {
       if (!live) return;
       const cache = m.heroCoats();
       const check = (): void => {
-        if (live && wanted.every((r) => cache.settled(r.key))) setReadyFor(setKey);
+        if (requests.every((r) => cache.settled(r.key))) done();
       };
-      stop = cache.subscribe(check);
-      slots = wanted.map((r) => {
+      slots = requests.map((r) => {
         const slot = cache.slot(check);
         slot.want(r);
         return slot;
@@ -124,16 +141,16 @@ export function useCoatsReady(requests: readonly (HeroCoatRequest | null)[]): st
       check();
     };
     const now = heroCoatsLoaded();
-    if (now) start(now);
+    if (requests.length === 0) done();
+    else if (now) start(now);
     // A tinter that cannot load draws everything as painted: nothing to wait for.
-    else void loadHeroCoats().then(start, () => live && setReadyFor(setKey));
+    else void loadHeroCoats().then(start, done);
     return () => {
       live = false;
-      stop();
       for (const slot of slots) slot.close();
     };
   }, [setKey]);
-  return readyFor;
+  return readyFor === setKey;
 }
 
 /**
@@ -141,13 +158,21 @@ export function useCoatsReady(requests: readonly (HeroCoatRequest | null)[]): st
  * and holds nothing: for an image kept mounted but not shown (CharacterPortrait's fallback).
  */
 export function useHeroArt(hero: HeroArtSubject, place: HeroArtPlace, tinted = true): string {
+  return useHeroArtState(hero, place, tinted).src;
+}
+
+/** `useHeroArt`, and whether her colour is still being made (`pending`), for a surface that waits for it. */
+export function useHeroArtState(hero: HeroArtSubject, place: HeroArtPlace, tinted = true): { src: string; pending: boolean } {
   const painted = heroPaintingUrl(hero, place);
-  return useTintUrl(tinted ? heroCoatOf(hero, place) : null) ?? painted;
+  const { url, pending } = useTint(tinted ? heroCoatOf(hero, place) : null);
+  return { src: url ?? painted, pending };
 }
 
 export type HeroImageProps = {
   hero: HeroArtSubject;
   place: HeroArtPlace;
+  /** Draw nothing until her colour is ready, rather than her painting first (the look page: no flash of the wrong colour). */
+  holdUntilTinted?: boolean;
 } & Omit<ImgHTMLAttributes<HTMLImageElement>, "src">;
 
 /**
@@ -163,12 +188,14 @@ export type HeroImageProps = {
  * Stylesheets that reach a hero's image by element (`> img`) reach the host
  * too (`.hero-sparkle-host`).
  */
-export function HeroImage({ hero, place, className, style, ...img }: HeroImageProps): ReactElement {
-  const src = useHeroArt(hero, place);
+export function HeroImage({ hero, place, className, style, holdUntilTinted = false, ...img }: HeroImageProps): ReactElement {
+  const { src, pending } = useHeroArtState(hero, place);
   const sparkle = heroSparkleOf(hero, place);
-  if (!sparkle) return <img src={src} className={className} style={style} {...img} />;
+  // Held, then faded in, by the stylesheet (hero-sparkle.css `[data-tint-hold]`).
+  const hold = holdUntilTinted ? (pending ? "held" : "shown") : undefined;
+  if (!sparkle) return <img src={src} className={className} style={style} data-tint-hold={hold} {...img} />;
   return (
-    <span className={`hero-sparkle-host${className ? ` ${className}` : ""}`} style={style} data-testid="hero-sparkle-host">
+    <span className={`hero-sparkle-host${className ? ` ${className}` : ""}`} style={style} data-tint-hold={hold} data-testid="hero-sparkle-host">
       <img src={src} className="hero-sparkle-host__img" {...img} />
       <HeroSparkles sparkle={sparkle} fitFrom="host" />
     </span>
