@@ -289,7 +289,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
 
 /** The table's speaker, on this browser: the recorded voice over `SpeechSynthesis`. */
 export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Speaker {
-  return createClipSpeaker({
+  const speaker = createClipSpeaker({
     device: createSynthSpeaker({
       synth: window.speechSynthesis,
       createUtterance: (text) => new SpeechSynthesisUtterance(text),
@@ -299,4 +299,11 @@ export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Spe
     fetch: (url) => fetch(url),
     onSpeaking,
   });
+  // Narration is for whoever is looking: a backgrounded app must go quiet, not read on.
+  const silence = (): void => {
+    if (document.visibilityState === "hidden") speaker.cancel?.();
+  };
+  document.addEventListener("visibilitychange", silence);
+  window.addEventListener("pagehide", () => speaker.cancel?.());
+  return speaker;
 }

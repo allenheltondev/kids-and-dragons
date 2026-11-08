@@ -112,6 +112,52 @@ function useTint(request: HeroCoatRequest | null): { url: string | null; pending
 }
 
 /**
+ * Whether a whole set of tints is ready, for a shelf of tiles that should show
+ * together rather than one at a time as each pass finishes. Holds every request
+ * (so nothing is evicted before the tiles draw it) and returns the key of the
+ * set once every one is made or has failed for good, else null. A tile then
+ * draws its entry from the cache on its first render, with no repaint.
+ */
+export function useCoatsReady(requests: readonly (HeroCoatRequest | null)[]): string | null {
+  const setKey = requests.map((r) => r?.key ?? "").join("\n");
+  const [readyFor, setReadyFor] = useState<string | null>(null);
+  useEffect(() => {
+    const wanted = requests.filter((r): r is HeroCoatRequest => r !== null);
+    if (wanted.length === 0) {
+      setReadyFor(setKey);
+      return;
+    }
+    let live = true;
+    let slots: CoatSlot[] = [];
+    let stop = (): void => undefined;
+    const start = (m: Coats): void => {
+      if (!live) return;
+      const cache = m.heroCoats();
+      const check = (): void => {
+        if (live && wanted.every((r) => cache.settled(r.key))) setReadyFor(setKey);
+      };
+      stop = cache.subscribe(check);
+      slots = wanted.map((r) => {
+        const slot = cache.slot(check);
+        slot.want(r);
+        return slot;
+      });
+      check();
+    };
+    const now = heroCoatsLoaded();
+    if (now) start(now);
+    // A tinter that cannot load draws everything as painted: nothing to wait for.
+    else void loadHeroCoats().then(start, () => live && setReadyFor(setKey));
+    return () => {
+      live = false;
+      stop();
+      for (const slot of slots) slot.close();
+    };
+  }, [setKey]);
+  return readyFor;
+}
+
+/**
  * The URL that draws `hero` in `place`, as of this render. `tinted: false` draws her as painted
  * and holds nothing: for an image kept mounted but not shown (CharacterPortrait's fallback).
  */

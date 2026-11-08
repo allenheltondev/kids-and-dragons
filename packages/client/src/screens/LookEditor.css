@@ -85,3 +85,30 @@
   opacity: 0.8;
   text-align: center;
 }
+
+/* A shelf's tiles of her hero wait together, then appear together (LookEditor.tsx `ShelfTiles`):
+   never one at a time as each tint finishes. */
+.book-look__tile-art > *,
+.look-option__art > * {
+  transition: opacity 0.25s ease-out;
+}
+
+.look-art--pending > * {
+  opacity: 0;
+}
+
+.look-art--pending {
+  background: radial-gradient(circle at 50% 55%, rgb(255 255 255 / 0.14), transparent 62%);
+  animation: look-art-wait 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes look-art-wait {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .look-art--pending { animation: none; }
+  .book-look__tile-art > *,
+  .look-option__art > * { transition: none; }
+}

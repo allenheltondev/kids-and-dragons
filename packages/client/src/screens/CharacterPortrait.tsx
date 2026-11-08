@@ -33,7 +33,7 @@ import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
-import { heroBase, heroPaintingUrl, heroSparkleOf, type HeroArtSubject } from "../world/hero-art";
+import { heroBase, heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtSubject, type HeroCoatRequest } from "../world/hero-art";
 import { HeroSparkles, useHeroArtState } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
@@ -109,6 +109,19 @@ interface PortraitLook {
   /** Show nothing until her colour is ready, rather than her painting first (the look page's tiles). */
   holdUntilTinted?: boolean;
   className?: string;
+}
+
+/**
+ * Every tint a portrait of `hero` waits on, so a shelf of them can be made
+ * together: her colour on the painting shown (none when she is drawn as
+ * painted), and the figure a sparkle special is clipped by on an opaque gear
+ * portrait (none on a cut-out, whose own alpha clips it). The painting shown
+ * is the one `CharacterPortrait` picks before any art has failed.
+ */
+export function portraitTintsOf(hero: HeroArtSubject): HeroCoatRequest[] {
+  const gear = heroPaintingUrl(hero, "portrait") !== heroPaintingUrl(heroBase(hero), "portrait");
+  const shown = gear ? hero : heroBase(hero);
+  return [heroCoatOf(shown, "portrait"), heroSparkleOf(shown, "portrait")?.figure ?? null].filter((r): r is HeroCoatRequest => r !== null);
 }
 
 export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
