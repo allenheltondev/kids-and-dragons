@@ -1,5 +1,5 @@
 /**
- * "Look": her hero's colour and name style in the adventure book (docs/hero-looks.md
+ * "Style": her hero's colour and name style in the adventure book (docs/hero-looks.md
  * §8.1; #664), on the tray beside Camp.
  *
  * Built like the kit's dressing room (CampPane.tsx, BookKit.tsx): her hero up
@@ -12,7 +12,7 @@
  * from memory and are sent in order. Nothing says "saving"; only a pick the
  * server could not keep says so.
  *
- * Lazy: JournalScreen loads this chunk the first time "Look" is opened.
+ * Lazy: JournalScreen loads this chunk the first time "Style" is opened.
  */
 
 import { useEffect, useReducer, useState } from "react";

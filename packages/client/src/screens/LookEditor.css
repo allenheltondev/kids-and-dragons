@@ -9,13 +9,11 @@
   transform: translateX(-50%);
   block-size: 100%;
   inline-size: auto;
+  /* Her paintings are square: the box has its size before the image has loaded or swapped to her colour. */
+  aspect-ratio: 1;
   max-inline-size: 100%;
   object-fit: contain;
   filter: drop-shadow(0 0.2em 0.25em #0007);
-}
-
-.book-look__figure.hero-sparkle-host {
-  aspect-ratio: 1;
 }
 
 /* Her nameplate and title as the pitch's caption: her name style, at the caption's size. */

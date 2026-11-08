@@ -126,6 +126,11 @@ export class CoatCache {
     return this.entries.get(key) ?? null;
   }
 
+  /** Whether this colour could not be made: it draws as painted for the page's life. */
+  hasFailed(key: string): boolean {
+    return this.failed.has(key);
+  }
+
   stats(): CoatCacheStats {
     let total = 0;
     let pinned = 0;

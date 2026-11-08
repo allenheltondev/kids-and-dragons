@@ -119,7 +119,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
 }): ReactElement {
   const name = hero.name;
   const wearing = (change: LookChange): ReactElement => (
-    <CharacterPortrait hero={{ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }} accent={hero.appearance.accent} size="100%" />
+    <CharacterPortrait hero={{ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }} accent={hero.appearance.accent} size="100%" holdUntilTinted />
   );
   const part = PART_OF[shelf];
   if (shelf === "coat" || shelf === "accent") {
@@ -130,7 +130,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
       <>
         {tile({
           on: look[shelf] === null,
-          label: "As painted",
+          label: "Normal",
           onTap: () => edit({ [shelf]: null }),
           data: { [attr]: "", "data-part": part! },
           preview: wearing(colour(null)),
@@ -261,7 +261,7 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
     <section className="book-kit book-look" aria-label={`${hero.name}'s look`} data-testid="look-editor">
       <div className="book-kit__pitch book-look__pitch" data-testid="book-look-hero">
         <div key={bounce} className={`book-kit__stage book-look__stage${bounce > 0 ? " is-bouncing" : ""}`} aria-hidden="true">
-          <HeroImage hero={{ ...hero, look }} place="world" className="book-look__figure" alt="" data-testid="book-look-figure" />
+          <HeroImage hero={{ ...hero, look }} place="world" holdUntilTinted className="book-look__figure" alt="" data-testid="book-look-figure" />
         </div>
         <p className="book-kit__caption book-look__caption" data-testid="book-look-name">
           <HeroName name={hero.name} look={look} />
