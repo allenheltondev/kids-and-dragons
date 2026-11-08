@@ -59,7 +59,7 @@ afterEach(() => {
 });
 
 describe("Party Mode and the map", () => {
-  it("adds the adventure book to the tray for a kid seated on a family tablet (#299), as on her own phone", () => {
+  it("adds the adventure book to the tray for a kid seated on a family tablet (#299), mid-scene too", () => {
     mount(null, false);
     const nav = screen.getByRole("navigation", { name: "What to look at" });
     expect([...nav.querySelectorAll("button")].map((b) => b.textContent)).toEqual(["World", "You", "Map", "Guide", "Book"]);
@@ -75,12 +75,12 @@ describe("Party Mode and the map", () => {
     }
   });
 
-  it("offers live room mode switching in settings, outside the tray's five tabs", () => {
+  it("offers live room mode switching in settings, outside the four-tab tray", () => {
     const send = vi.fn(async () => true);
     useGameStore.setState({ send });
     mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect(nav.querySelectorAll("button")).toHaveLength(5);
+    expect(nav.querySelectorAll("button")).toHaveLength(4);
     // In the corner gear's Settings sheet, under "This game", and nowhere on the You page.
     expect(screen.queryByRole("button", { name: "No TV? Show the world on the phones" })).toBeNull();
     render(<A11yControl />);
@@ -105,10 +105,25 @@ describe("Party Mode and the map", () => {
     expect(screen.queryByRole("region", { name: "Sparklehoof's character sheet" })).toBeNull();
     expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ })).toBeTruthy();
   });
-  it("offers five destinations, the book among them, and returns from World to a new turn", () => {
+  it("adds the book on her own phone at a rest, and takes it away again when the scene moves on", () => {
+    mount();
+    const nav = () => [...screen.getByRole("navigation", { name: "What to look at" }).querySelectorAll("button")].map((b) => b.textContent);
+    expect(nav()).not.toContain("Book");
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, seq: state.seq + 1, sceneType: "rest" } });
+    });
+    expect(nav()).toEqual(["World", "You", "Map", "Guide", "Book"]);
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, seq: state.seq + 1, sceneType: "story" } });
+    });
+    expect(nav()).not.toContain("Book");
+  });
+  it("offers four destinations mid-scene and returns from World to a new turn", () => {
     const { container } = mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map", "Guide", "Book"]);
+    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map", "Guide"]);
     act(() => screen.getByRole("button", { name: /^world$/i }).click());
     expect(showing(container)).toEqual(["world"]);
     act(() => {

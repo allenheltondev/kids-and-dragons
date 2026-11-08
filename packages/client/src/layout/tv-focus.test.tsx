@@ -152,7 +152,7 @@ describe("TV focus on a Party Mode phone", () => {
   it("changes nothing while it is off", () => {
     seat();
     render(<PartyLayout surface="player" />);
-    expect(tabs()).toEqual(["World", "You", "Map", "Guide", "Book"]);
+    expect(tabs()).toEqual(["World", "You", "Map", "Guide"]);
     expect(screen.queryByTestId("tv-rest")).toBeNull();
     expect(screen.getByRole("list", { name: "Your stats" })).not.toBeNull();
   });
