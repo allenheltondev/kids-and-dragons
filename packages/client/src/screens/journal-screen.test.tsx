@@ -11,8 +11,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ItemCatalog, JournalResponse, WorldMap } from "@kad/shared";
-import { makeCharacter } from "../testing/fixtures";
+import type { ItemCatalog, JournalResponse, RunState, WorldMap } from "@kad/shared";
+import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { getFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { currentRoute, navigate } from "../router";
@@ -145,6 +145,40 @@ describe("JournalScreen", () => {
     mount(journal());
     await user.click(await screen.findByRole("button", { name: "Play" }));
     expect(currentRoute()).toEqual({ name: "home" });
+  });
+
+  describe("seated at a live game (docs/camp.md §7)", () => {
+    const seat = (prompt: RunState["prompt"] = null) => {
+      const beat = vi.fn();
+      useGameStore.setState({
+        session: { runId: "r_1", roomCode: "WXYZ", playerId: "p_1", mode: "party", sessionToken: "t" },
+        state: makeState({ roomCode: "WXYZ", phase: "scene", party: [makeMember({ playerId: "p_1", character: SPARKLEHOOF })], prompt }),
+        beat,
+      });
+      return beat;
+    };
+    afterEach(() => useGameStore.setState({ session: null, state: null }));
+
+    it("goes back to the game from the tray, and keeps saying she is there", async () => {
+      const user = userEvent.setup();
+      const beat = seat();
+      navigate({ name: "journal" });
+      mount(journal());
+      expect(beat).toHaveBeenCalled();
+      expect(screen.queryByTestId("journal-turn")).toBeNull();
+      await user.click(await screen.findByRole("button", { name: "Play" }));
+      expect(currentRoute()).toEqual({ name: "player", code: "WXYZ" });
+    });
+
+    it("says when the game is waiting for her, with the way back", async () => {
+      const user = userEvent.setup();
+      seat({ kind: "ready", forPlayerIds: ["p_1"] });
+      navigate({ name: "journal" });
+      mount(journal());
+      expect((await screen.findByTestId("journal-turn")).textContent).toContain("The game is waiting for you!");
+      await user.click(screen.getByRole("button", { name: "Back to the game" }));
+      expect(currentRoute()).toEqual({ name: "player", code: "WXYZ" });
+    });
   });
 
   it("says the book is empty on a phone that has never played, and offers a game", async () => {

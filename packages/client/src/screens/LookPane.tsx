@@ -10,7 +10,8 @@
  * once with a signal, queued on the phone without one, the last choice for
  * each field standing. A family tablet keeps nothing: its taps show at once
  * from memory and are sent in order. Nothing says "saving"; only a pick the
- * server could not keep says so.
+ * server could not keep says so. While she is seated at a live game in
+ * downtime, a tap hands her to the game's Camp panel instead (book-table.tsx).
  *
  * Lazy: JournalScreen loads this chunk the first time "Style" is opened.
  */
@@ -20,6 +21,7 @@ import type { ReactElement } from "react";
 import type { JournalResponse, ResolvedCharacter } from "@kad/shared";
 import { Icon } from "./icons";
 import { BookLook, type LookChange } from "./LookEditor";
+import { BookTableNote, handOffToCamp, useBookTable } from "./book-table";
 import { HeroName } from "./HeroName";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { loadPlayerDeviceToken } from "../store/persistence";
@@ -42,6 +44,8 @@ export default function LookPane({ journal, hero, onHero, onKit }: LookPaneProps
   const [, rerender] = useReducer((n: number) => n + 1, 0);
   useEffect(() => onBookKit(rerender), []);
   const [error, setError] = useState<string | null>(null);
+  // Seated at a live game: in downtime its Camp panel is her editor (book-table.tsx).
+  const table = useBookTable(hero?.id);
 
   if (!hero) {
     return (
@@ -61,6 +65,10 @@ export default function LookPane({ journal, hero, onHero, onKit }: LookPaneProps
   const status = bookKitStatus();
 
   const edit = (change: LookChange): void => {
+    if (table?.downtime) {
+      handOffToCamp(table, { hero: hero.id, part: "look" });
+      return;
+    }
     const changes: BookKitChange[] = [];
     for (const field of BOOK_LOOK_FIELDS) {
       const after = change[field];
@@ -114,6 +122,7 @@ export default function LookPane({ journal, hero, onHero, onKit }: LookPaneProps
           </p>
         ) : null}
 
+        {table ? <BookTableNote table={table} focus={{ hero: hero.id, part: "look" }} /> : null}
         <BookLook hero={hero} look={look} edit={edit} />
       </div>
     </Frame>

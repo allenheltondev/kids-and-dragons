@@ -621,6 +621,19 @@ Everything shared stays at the table: shared hotspots, purchases and votes. The 
 narrows rather than breaks: nothing in it can change anything **anybody else** owns, so nothing a
 kid does there can upset another kid's game.
 
+**The book is in the game too, and hands off to Camp in downtime** (*decided*, owner 2026-11-08).
+Every seated kid has the book on the game's tray (`layout/BookTab.tsx`), her own phone as well as a
+family tablet, so the place her hero is dressed is found from inside a game. The game stays live
+behind it: her phone keeps saying she is there, a question for her says so at the top of the book
+("The game is waiting for you!", with the way back), and Play goes back to the game. For a hero
+seated at that table (`screens/book-table.tsx`), her kit and Style pages are never read-only:
+
+- **In a scene, a check or a fight** a pick saves as anywhere else in the book, and the page says
+  she wears it from the next rest, when the table reads her kit and look afresh.
+- **In downtime** (the lobby, a rest, the chapter's end) the table's Camp panel is her editor, so
+  the two never hold different copies of her: a tap hands her back to the game with Camp open at
+  that hero's tent, decorations or look, and the page offers "Change it at camp".
+
 **They work offline too** (*decided*). With a signal, an edit goes straight to the server through a
 small write path authorized by the phone's device binding, like the book's read (§12.6). Without
 one, the book makes the change on screen at once, keeps it in a queue on the phone, says "Saved

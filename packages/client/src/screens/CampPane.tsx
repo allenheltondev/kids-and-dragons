@@ -19,6 +19,8 @@
  *   - **Her hero's kit** (tent, bedroll and pack, color, decorations) and her
  *     **buddy** in this crew's camp, first on the page: her pitch and one
  *     shelf of painted tiles at a time (BookKit.tsx), on the table's rules.
+ *     While she is seated at a live game in downtime, a tap hands her to the
+ *     game's Camp panel instead (book-table.tsx): there is one editor then.
  *     Every tap saves itself, behind the scenes (store/book-kit-sync.ts): at
  *     once, queued on the phone when there is no signal, and applied when it
  *     is sent, over anything changed meanwhile (the device wins, §11). Nothing
@@ -38,6 +40,7 @@ import type { BookKitState, CampFriendCard, ClientIntent, HeroKitView, JournalCr
 import { Icon } from "./icons";
 import { FriendArt } from "./CampPanel";
 import { BookKit, kitArtUrls } from "./BookKit";
+import { BookTableNote, handOffToCamp, useBookTable } from "./book-table";
 import { StillCamp } from "../world/StillCamp";
 import { campLayoutFor } from "../world/lobby-camp";
 import { campBackdropFamily } from "../world/camp-backdrop";
@@ -235,7 +238,14 @@ function CrewCamp({
     return () => clearTimeout(timer);
   }, [fresh, crew.crew, hero.id]);
 
+  // Seated at a live game: in downtime its Camp panel is her editor (book-table.tsx).
+  const table = useBookTable(hero.id);
   const edit = (change: Omit<Extract<ClientIntent, { type: "KIT_EDIT" }>, "type" | "characterId" | "revision">): void => {
+    if (table?.downtime) {
+      // Her decorations and buddy are lower in the panel than her tent, bedroll and color.
+      handOffToCamp(table, { hero: hero.id, part: change.slots !== undefined || change.buddy !== undefined ? "decor" : "tent" });
+      return;
+    }
     if (!shown || !serverKit) return;
     const now: BookKitState = journalKitState(shown, crew.crew);
     const next: BookKitState = {
@@ -299,6 +309,7 @@ function CrewCamp({
         </p>
       ) : null}
 
+      {kit && table ? <BookTableNote table={table} focus={{ hero: hero.id, part: "tent" }} /> : null}
       {kit ? (
         <BookKit hero={hero} kit={kit} friends={crew.friends.map(card)} edit={edit} />
       ) : (

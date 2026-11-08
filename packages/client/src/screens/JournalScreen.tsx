@@ -28,10 +28,10 @@ import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
-import { useGameStore, useItems, useWorld } from "../store";
+import { isPromptForPlayer, useGameStore, useItems, useWorld } from "../store";
+import { usePresenceBeat } from "../sync/presence-beat";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
-import { loadPlayerDeviceToken } from "../store/persistence";
 import { dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
 import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
 import { ApiError } from "../sync/client";
@@ -215,11 +215,16 @@ export function JournalScreen(): ReactElement {
     return () => window.removeEventListener("online", send);
   }, [ready, fresh, applyKit]);
 
-  // Back to the game she is seated in, if a family tablet seated her; home for a phone (#299).
+  // Back to the game she is seated in (a phone's or a family tablet's seat, #299); home with none.
+  const seated = useGameStore((store) => Boolean(store.session?.playerId && store.state?.roomCode === store.session.roomCode));
   const play = useCallback(() => {
     const seat = useGameStore.getState().session;
-    navigate(seat?.playerId && loadPlayerDeviceToken() === null ? { name: "player", code: seat.roomCode } : { name: "home" });
-  }, []);
+    navigate(seated && seat ? { name: "player", code: seat.roomCode } : { name: "home" });
+  }, [seated]);
+  // Seated, she is still at the table while she reads: her phone keeps saying so (sync/presence-beat.ts),
+  // and a question for her says so here, with the way back (docs/camp.md §7).
+  usePresenceBeat();
+  const asked = useGameStore((store) => seated && !!store.state && isPromptForPlayer(store.state.prompt, store.session?.playerId ?? "", store.state.party));
 
   if (load.status !== "ready") {
     return (
@@ -269,6 +274,15 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "look"} object="crown" label="Style" onClick={() => setPane("look")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
+      {asked ? (
+        <p className="journal__turn" role="status" data-testid="journal-turn">
+          <Icon name="hand" />
+          <span>The game is waiting for you!</span>
+          <button type="button" className="journal__stale-retry kad-focusable" onClick={play}>
+            Back to the game
+          </button>
+        </p>
+      ) : null}
       {load.savedAt !== null ? (
         <p className="journal__stale" role="status">
           <Icon name="waiting" />

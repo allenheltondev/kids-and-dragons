@@ -80,6 +80,41 @@
   color: #f3ddb3;
 }
 
+/* Seated at a live game (book-table.tsx): when her picks show, or the way to the game's Camp. */
+.book-camp__table {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.6em 0.8em;
+  border-radius: 0.75rem;
+  border: 1px solid #f3ddb355;
+  background: #2a2140;
+  color: #f3ddb3;
+  font-size: 0.95rem;
+}
+.book-camp__table--camp {
+  border-color: #ffd36e;
+  background: #3a2d14;
+  color: #fff1cf;
+}
+.book-camp__table > span {
+  flex: 1 1 12em;
+}
+.book-camp__table-go {
+  flex: none;
+  min-block-size: var(--kad-touch-min, 2.75rem);
+  padding: 0.2em 0.9em;
+  border: 0;
+  border-radius: 999px;
+  background: #ffd36e;
+  color: #1d1430;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .book-camp__note {
   border: 1px solid #ffd36e;
   background: #3a2d14;

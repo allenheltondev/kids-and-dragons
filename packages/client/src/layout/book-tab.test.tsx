@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 /**
- * The book on the tray, for a kid seated on a family tablet (#299): offered
- * only to a seat that has no device token of its own.
+ * The book on the tray, for any kid seated at the game (#299; docs/camp.md
+ * §7): on a family tablet that is nobody's and on her own phone alike, never
+ * on a screen with nobody seated.
  */
 
 import { afterEach, describe, expect, it } from "vitest";
@@ -28,11 +29,12 @@ describe("BookTab", () => {
     expect(currentRoute()).toEqual({ name: "journal" });
   });
 
-  it("is not on a phone that remembers her: her book is on the home screen there", () => {
+  it("is on her own phone too, where the game would otherwise never show her the book", async () => {
     localStorage.setItem("kad.device", JSON.stringify({ deviceToken: "dev_1" }));
     useGameStore.setState({ session: SEAT });
     render(<BookTab />);
-    expect(screen.queryByRole("button", { name: "Book" })).toBeNull();
+    await userEvent.setup().click(screen.getByRole("button", { name: "Book" }));
+    expect(currentRoute()).toEqual({ name: "journal" });
   });
 
   it("is not on a screen with nobody seated", () => {
