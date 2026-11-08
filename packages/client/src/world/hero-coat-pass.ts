@@ -148,8 +148,9 @@ export const DECODED_KEPT = 4;
  * `io`, keeping its last few decodes (by URL and size), so a shelf of colours on one painting
  * fetches and decodes that painting and its mask once, not once a tile, and the figure she stands
  * as reuses them on every tap. A decode is shared, so it is not cancelled with the pass that
- * asked first (a pass checks its own signal once it has its pixels); a failure is not kept. The
- * pixels are only read by a pass, never written.
+ * asked first; each pass waits for it only until its own signal is cancelled, so a cancelled
+ * pass ends at once and the next one starts (`untilCancelled`). A failure is not kept. The pixels
+ * are only read by a pass, never written.
  */
 export function cachedIO(io: PixelIO, kept = DECODED_KEPT): PixelIO {
   const decodes = new Map<string, Promise<Pixels>>();
@@ -170,9 +171,28 @@ export function cachedIO(io: PixelIO, kept = DECODED_KEPT): PixelIO {
       }
       decodes.set(key, decoded);
       while (decodes.size > kept) decodes.delete(decodes.keys().next().value!);
-      return signal.aborted ? Promise.reject(new TintCancelled("cancelled")) : decoded;
+      return untilCancelled(decoded, signal);
     },
   };
+}
+
+/** `shared`, for one pass: it rejects as cancelled the moment `signal` is, whatever `shared` is still doing. */
+function untilCancelled<T>(shared: Promise<T>, signal: AbortSignal): Promise<T> {
+  if (signal.aborted) return Promise.reject(new TintCancelled("cancelled"));
+  return new Promise<T>((resolve, reject) => {
+    const cancelled = (): void => reject(new TintCancelled("cancelled"));
+    signal.addEventListener("abort", cancelled, { once: true });
+    shared.then(
+      (value) => {
+        signal.removeEventListener("abort", cancelled);
+        resolve(value);
+      },
+      (error: unknown) => {
+        signal.removeEventListener("abort", cancelled);
+        reject(error);
+      },
+    );
+  });
 }
 
 /** The size a painting of `width` × `height` is decoded at for a longest side of `size` (never larger). */

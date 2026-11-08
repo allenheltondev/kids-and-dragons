@@ -85,6 +85,36 @@ describe("decoded paintings kept for the next passes (cachedIO)", () => {
     expect(io.calls).toHaveLength(2);
   });
 
+  it("ends a pass cancelled mid-decode at once, and keeps the decode it shared for the next", async () => {
+    let finish: (p: Pixels) => void = () => undefined;
+    let calls = 0;
+    const slow: PixelIO = {
+      decode: () => {
+        calls += 1;
+        return new Promise<Pixels>((resolve) => {
+          finish = resolve;
+        });
+      },
+      encode: async (p) => ({ source: p, blob: new Blob([]) }),
+      pause: async () => undefined,
+    };
+    const kept = cachedIO(slow);
+    const stopping = new AbortController();
+    const cancelled = kept.decode("/p.png", stopping.signal, 320);
+    let state = "waiting";
+    cancelled.then(() => (state = "decoded"), (e: unknown) => (state = e instanceof TintCancelled ? "cancelled" : "failed"));
+    stopping.abort();
+    await Promise.resolve();
+    await Promise.resolve();
+    // Cancelled before the decode it shares has finished: the cache can start the next pass.
+    expect(state).toBe("cancelled");
+
+    const next = kept.decode("/p.png", live(), 320);
+    finish(pixels(4, 4));
+    expect((await next).width).toBe(4);
+    expect(calls).toBe(1);
+  });
+
   it("answers a cancelled pass as cancelled, while the decode it shares goes on for the others", async () => {
     const io = counting();
     const kept = cachedIO(io);
