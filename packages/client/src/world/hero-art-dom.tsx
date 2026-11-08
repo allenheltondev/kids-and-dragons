@@ -191,11 +191,11 @@ export type HeroImageProps = {
 export function HeroImage({ hero, place, className, style, holdUntilTinted = false, ...img }: HeroImageProps): ReactElement {
   const { src, pending } = useHeroArtState(hero, place);
   const sparkle = heroSparkleOf(hero, place);
-  const held = holdUntilTinted && pending;
-  const shown: CSSProperties | undefined = holdUntilTinted ? { ...style, opacity: held ? 0 : 1, transition: "opacity 160ms ease-out" } : style;
-  if (!sparkle) return <img src={src} className={className} style={shown} {...img} />;
+  // Held, then faded in, by the stylesheet (hero-sparkle.css `[data-tint-hold]`).
+  const hold = holdUntilTinted ? (pending ? "held" : "shown") : undefined;
+  if (!sparkle) return <img src={src} className={className} style={style} data-tint-hold={hold} {...img} />;
   return (
-    <span className={`hero-sparkle-host${className ? ` ${className}` : ""}`} style={shown} data-testid="hero-sparkle-host">
+    <span className={`hero-sparkle-host${className ? ` ${className}` : ""}`} style={style} data-tint-hold={hold} data-testid="hero-sparkle-host">
       <img src={src} className="hero-sparkle-host__img" {...img} />
       <HeroSparkles sparkle={sparkle} fitFrom="host" />
     </span>

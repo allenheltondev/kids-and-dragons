@@ -114,13 +114,19 @@ function colourChange(shelf: "coat" | "accent", look: HeroLookView, id: string |
   return { [shelf]: id, special: look.special && LOOKS.specials.find((x) => x.id === look.special)?.effect.kind === "gilded" ? null : look.special };
 }
 
-/** The changes a shelf's painted tiles try on her hero, in order (none for a shelf of names). */
-function paintedChanges(shelf: LookShelf, look: HeroLookView, species: HeroArtSubject["species"]): LookChange[] {
-  if (shelf === "coat" || shelf === "accent") {
-    return [colourChange(shelf, look, null), ...lookChoices(shelf, look, species).map((c) => colourChange(shelf, look, c.id))];
-  }
-  if (shelf === "special") return [{ special: null }, ...lookChoices("special", look).map((c): LookChange => ({ special: c.id }))];
-  return [];
+/**
+ * A shelf's tiles of her hero (her colours, her special), in order: the
+ * choice each makes and the change it tries on her over `look`. Empty for a
+ * shelf of names.
+ */
+function paintedTiles(shelf: LookShelf, look: HeroLookView, species: HeroArtSubject["species"]): { id: string | null; label: string; change: LookChange }[] {
+  if (shelf !== "coat" && shelf !== "accent" && shelf !== "special") return [];
+  const colour = shelf === "special" ? null : shelf;
+  const choices: { id: string | null; name: string }[] = [
+    { id: null, name: colour ? "Normal" : "None" },
+    ...(colour ? lookChoices(colour, look, species) : lookChoices("special", look)),
+  ];
+  return choices.map(({ id, name }) => ({ id, label: name, change: colour ? colourChange(colour, look, id) : { special: id } }));
 }
 
 /**
@@ -142,7 +148,8 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
 }): ReactElement {
   const name = hero.name;
   // Each tile's colour and, for a sparkle special, the figure its sparkles are clipped by.
-  const requests = paintedChanges(shelf, look, hero.species).flatMap((change) =>
+  const painted = paintedTiles(shelf, look, hero.species);
+  const requests = painted.flatMap(({ change }) =>
     portraitTintsOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }),
   );
   const ready = useCoatsReady(requests);
@@ -161,57 +168,20 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
     <CharacterPortrait hero={{ ...hero, look: { coat: shown.coat, accent: shown.accent, special: shown.special, ...change } }} accent={hero.appearance.accent} size="100%" />
   );
   const part = PART_OF[shelf];
-  if (shelf === "coat" || shelf === "accent") {
-    const colour = (id: string | null): LookChange => colourChange(shelf, shown, id);
-    const attr = `data-${shelf}`;
+  if (painted.length > 0) {
     return (
       <>
-        {tile({
-          on: look[shelf] === null,
-          label: "Normal",
-          onTap: () => edit({ [shelf]: null }),
-          data: { [attr]: "", "data-part": part! },
-          preview: wearing(colour(null)),
-          swatch: null,
-          pending,
-        })}
-        {lookChoices(shelf, look, hero.species).map((choice) => (
-          <span key={choice.id} style={{ display: "contents" }}>
+        {painted.map(({ id, label }) => (
+          <span key={id ?? ""} style={{ display: "contents" }}>
             {tile({
-              on: look[shelf] === choice.id,
-              label: choice.name,
-              onTap: () => edit({ [shelf]: choice.id }),
-              data: { [attr]: choice.id, "data-part": part! },
-              preview: wearing(colour(choice.id)),
-              swatch: LOOKS.coats.find((c) => c.id === choice.id)?.color ?? null,
-              source: look.sources?.[choice.id],
-              pending,
-            })}
-          </span>
-        ))}
-      </>
-    );
-  }
-  if (shelf === "special") {
-    return (
-      <>
-        {tile({
-          on: look.special === null,
-          label: "None",
-          onTap: () => edit({ special: null }),
-          data: { "data-special": "" },
-          preview: wearing({ special: null }),
-          pending,
-        })}
-        {lookChoices("special", look).map((choice) => (
-          <span key={choice.id} style={{ display: "contents" }}>
-            {tile({
-              on: look.special === choice.id,
-              label: choice.name,
-              onTap: () => edit({ special: choice.id }),
-              data: { "data-special": choice.id },
-              preview: wearing({ special: choice.id }),
-              source: look.sources?.[choice.id],
+              on: look[shelf as "coat"] === id,
+              label,
+              onTap: () => edit({ [shelf as "coat"]: id }),
+              data: { [`data-${shelf}`]: id ?? "", ...(part ? { "data-part": part } : {}) },
+              // Drawn over her look as last revealed (`shown`), so the shelf changes all at once.
+              preview: wearing(part ? colourChange(shelf as "coat", shown, id) : { special: id }),
+              ...(part ? { swatch: LOOKS.coats.find((c) => c.id === id)?.color ?? null } : {}),
+              source: id ? look.sources?.[id] : undefined,
               pending,
             })}
           </span>

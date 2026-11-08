@@ -23,8 +23,8 @@ describe("holdUntilTinted when the tinter's chunk fails to load", () => {
     setCoatMaskPaintings([painting.slice("/assets/".length)]);
     const { container } = render(<HeroImage hero={{ species: "unicorn", tier: "fledgling", look: { coat: "unicorn_sky" } }} place="world" alt="" holdUntilTinted />);
     const img = container.querySelector("img")!;
-    expect(img.style.opacity).toBe("0");
-    await waitFor(() => expect(img.style.opacity).toBe("1"));
+    expect(img.getAttribute("data-tint-hold")).toBe("held");
+    await waitFor(() => expect(img.getAttribute("data-tint-hold")).toBe("shown"));
     expect(img.getAttribute("src")).toBe(painting);
   });
 });

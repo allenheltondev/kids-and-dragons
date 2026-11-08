@@ -132,7 +132,8 @@ describe("the DOM doors (useHeroArt): HeroImage and CharacterPortrait", () => {
 });
 
 describe("holdUntilTinted (the Style page): hidden until her colour is ready, never for good", () => {
-  const visible = (img: Element): boolean => (img as HTMLElement).style.opacity !== "0";
+  // Held by the stylesheet (hero-sparkle.css), which jsdom does not apply: read the attribute it keys on.
+  const visible = (img: Element): boolean => img.getAttribute("data-tint-hold") === "shown";
 
   it("HeroImage: hidden while the pass runs, then shown tinted", async () => {
     const painting = characterWorldArtUrl("unicorn", "fledgling");
