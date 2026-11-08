@@ -177,6 +177,23 @@
   font-size: 0.9rem;
 }
 
+/* Her turn in the game she is seated at, while she reads (JournalScreen.tsx): the stale line's
+   place, in the shared spots' gold, so it is not missed. */
+.journal__turn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border-block-end: 1px solid #ffd36e;
+  background: #3a2d14;
+  color: #fff1cf;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 .journal__stale-retry {
   min-block-size: var(--kad-touch-min);
   padding: 0 0.8rem;

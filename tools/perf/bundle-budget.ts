@@ -318,7 +318,14 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // that opens Camp at the piece, and the look editor at the chapter's end. 1786KB measured,
 // first paint 329KB unchanged. 2KB of slack again. (#686 had trimmed main to exactly
 // 1784KB, so there was none to spend.)
-const TOTAL_BUDGET_KB = 1788;
+// 1788 -> 1792 for the book in the game (#689): the tray's Book on every seated phone, and
+// the book, while its kid is seated, keeping her presence beat, saying when the game waits for
+// her and handing her kit and Style taps to the game's Camp in downtime (screens/book-table.tsx).
+// 1790KB measured, first paint 330KB (cap 332 unchanged). About half is the new code; the rest
+// is the bundler regrouping what the book's lazy chunks now share with the game's (the camp
+// panel's store, the presence beat, book-table) into four more small chunks, and 12KB of the
+// entry into two chunks it imports, the same code. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1792;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

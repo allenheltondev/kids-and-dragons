@@ -28,10 +28,12 @@ import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
-import { useGameStore, useItems, useWorld } from "../store";
+import { isPromptForPlayer, useGameStore, useItems, useWorld } from "../store";
+import { usePresenceBeat } from "../sync/presence-beat";
+import { useReconnectOnWake } from "../sync/wake-reconnect";
+import { isMyCombatTurn } from "../store/combat";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
-import { loadPlayerDeviceToken } from "../store/persistence";
 import { dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
 import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
 import { ApiError } from "../sync/client";
@@ -148,19 +150,24 @@ export function JournalScreen(): ReactElement {
   /*
    * The guide reads the household's book from its own store, which a room
    * normally feeds. Out of a room the journal feeds it, and takes it away
-   * again on the way out so the next room starts from its own book.
+   * again on the way out so the next room starts from its own book. Seated
+   * at a live game (the tray's Book), the room still feeds it, live: the
+   * journal's copy is older, and taking it away on the way back would leave
+   * the game's guide empty until its next patch.
    */
   const journal = load.status === "ready" ? load.journal : null;
+  const seated = useGameStore((store) => Boolean(store.session?.playerId && store.state?.roomCode === store.session.roomCode));
   useEffect(() => {
     if (journal === null) return;
-    setFieldGuideDiscoveries(journal.fieldGuide);
+    const lent = !seated;
+    if (lent) setFieldGuideDiscoveries(journal.fieldGuide);
     setJournalFinders(journal.finders);
     return () => {
-      setFieldGuideDiscoveries(null);
+      if (lent) setFieldGuideDiscoveries(null);
       setJournalFinders(null);
       selectGuideEntry(null);
     };
-  }, [journal]);
+  }, [journal, seated]);
 
   /*
    * A fresh read means a signal: save the art the book shows offline while
@@ -215,11 +222,23 @@ export function JournalScreen(): ReactElement {
     return () => window.removeEventListener("online", send);
   }, [ready, fresh, applyKit]);
 
-  // Back to the game she is seated in, if a family tablet seated her; home for a phone (#299).
+  // Back to the game she is seated in (a phone's or a family tablet's seat, #299); home with none.
   const play = useCallback(() => {
     const seat = useGameStore.getState().session;
-    navigate(seat?.playerId && loadPlayerDeviceToken() === null ? { name: "player", code: seat.roomCode } : { name: "home" });
-  }, []);
+    navigate(seated && seat ? { name: "player", code: seat.roomCode } : { name: "home" });
+  }, [seated]);
+  // Seated, she is still at the table while she reads (docs/camp.md §7): her phone keeps saying so
+  // (sync/presence-beat.ts), wakes the game's stream as the game's pages do (sync/wake-reconnect.ts),
+  // and the game wanting her, a question or her turn in a fight, says so here with the way back. Not
+  // from a mirror still catching up (`synced`): a stale question is no reason to leave the book.
+  usePresenceBeat();
+  useReconnectOnWake();
+  const asked = useGameStore((store) => {
+    const { state, session } = store;
+    if (!seated || !state || !store.synced) return false;
+    const me = session?.playerId ?? "";
+    return isPromptForPlayer(state.prompt, me, state.party) || isMyCombatTurn(state, me);
+  });
 
   if (load.status !== "ready") {
     return (
@@ -269,6 +288,15 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "look"} object="crown" label="Style" onClick={() => setPane("look")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
+      {asked ? (
+        <p className="journal__turn" role="status" data-testid="journal-turn">
+          <Icon name="hand" />
+          <span>The game is waiting for you!</span>
+          <button type="button" className="journal__stale-retry kad-focusable" onClick={play}>
+            Back to the game
+          </button>
+        </p>
+      ) : null}
       {load.savedAt !== null ? (
         <p className="journal__stale" role="status">
           <Icon name="waiting" />
