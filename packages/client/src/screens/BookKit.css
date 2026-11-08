@@ -50,7 +50,7 @@
 }
 
 .book-kit__tent > svg,
-.book-kit__tent > img,
+.book-kit__tent > img:not(.book-kit__hung),
 .book-kit__bedroll > svg,
 .book-kit__bedroll > img,
 .book-kit__buddy > img {
@@ -60,16 +60,17 @@
   object-fit: contain;
 }
 
-/* Decorations hang on the tent's two spots, as at camp. */
-.book-kit__hung {
+/* Decorations hang on the tent's two spots, as at camp: small, on the tent, never the tent's size.
+   (Reached through the tent, so no rule for the tent's own painting can outweigh it.) */
+.book-kit__tent > .book-kit__hung {
   position: absolute;
   inline-size: 24%;
   aspect-ratio: 1;
   object-fit: contain;
   filter: drop-shadow(0 0.1em 0.15em #0006);
 }
-.book-kit__hung--0 { inset-inline-start: 22%; inset-block-start: 22%; }
-.book-kit__hung--1 { inset-inline-end: 20%; inset-block-start: 16%; }
+.book-kit__tent > .book-kit__hung--0 { inset-inline-start: 22%; inset-block-start: 22%; }
+.book-kit__tent > .book-kit__hung--1 { inset-inline-end: 20%; inset-block-start: 16%; }
 
 .book-kit__bedroll {
   position: absolute;

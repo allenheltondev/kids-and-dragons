@@ -37,10 +37,10 @@ import { PLAIN_NAMEPLATE } from "@kad/shared";
 import type { ClientIntent, CoatPart, HeroLookView, LookEdit, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { Icon } from "./icons";
 import { HeroName } from "./HeroName";
-import { CharacterPortrait } from "./CharacterPortrait";
+import { CharacterPortrait, portraitTintsOf } from "./CharacterPortrait";
 import { LOOKS, heroNameStyle, lookChoices } from "../world/hero-name";
 import { HERO_ART_PLACES, heroPaintingUrl, type HeroArtSubject } from "../world/hero-art";
-import { HeroImage } from "../world/hero-art-dom";
+import { HeroImage, useCoatsReady } from "../world/hero-art-dom";
 import { coatPartLabel, hasCoatMask } from "../world/coat-masks";
 import "./LookEditor.css";
 
@@ -107,9 +107,32 @@ function shelvesFor(hero: HeroArtSubject, look: HeroLookView): ShelfDef[] {
   });
 }
 
-type Tile = (props: { on: boolean; label: string; onTap: () => void; data: Record<string, string>; preview: ReactElement; swatch?: string | null; source?: string | undefined }) => ReactElement;
+type Tile = (props: { on: boolean; label: string; onTap: () => void; data: Record<string, string>; preview: ReactElement; swatch?: string | null; source?: string | undefined; pending?: boolean }) => ReactElement;
 
-/** The tiles of one shelf: each her hero, or her name, wearing that choice. */
+/** What a colour tile shows: her colours, not gold over them: the pair is what she is picking. */
+function colourChange(shelf: "coat" | "accent", look: HeroLookView, id: string | null): LookChange {
+  return { [shelf]: id, special: look.special && LOOKS.specials.find((x) => x.id === look.special)?.effect.kind === "gilded" ? null : look.special };
+}
+
+/** The changes a shelf's painted tiles try on her hero, in order (none for a shelf of names). */
+function paintedChanges(shelf: LookShelf, look: HeroLookView, species: HeroArtSubject["species"]): LookChange[] {
+  if (shelf === "coat" || shelf === "accent") {
+    return [colourChange(shelf, look, null), ...lookChoices(shelf, look, species).map((c) => colourChange(shelf, look, c.id))];
+  }
+  if (shelf === "special") return [{ special: null }, ...lookChoices("special", look).map((c): LookChange => ({ special: c.id }))];
+  return [];
+}
+
+/**
+ * The tiles of one shelf: each her hero, or her name, wearing that choice.
+ *
+ * A tile of her hero is a tinting pass of its own, and passes run one at a
+ * time, so left alone the tiles would repaint one by one while she watches.
+ * Instead the shelf makes all of its tints first and shows them together: the
+ * tiles wait (`pending`), then every one appears at once. When her look
+ * changes, the tiles keep what they show until the new set is all ready, then
+ * swap together. Give the shelf a `key` per shelf, so each reveals afresh.
+ */
 function ShelfTiles({ shelf, hero, look, edit, tile }: {
   shelf: LookShelf;
   hero: HeroArtSubject & { name: string; appearance: { accent: string } };
@@ -118,13 +141,29 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
   tile: Tile;
 }): ReactElement {
   const name = hero.name;
+  // Each tile's colour and, for a sparkle special, the figure its sparkles are clipped by.
+  const requests = paintedChanges(shelf, look, hero.species).flatMap((change) =>
+    portraitTintsOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }),
+  );
+  const setKey = requests.map((r) => r?.key ?? "").join("\n");
+  const readyFor = useCoatsReady(requests);
+  const [shown, setShown] = useState(look);
+  const [revealed, setRevealed] = useState(requests.length === 0);
+  const worn = `${look.coat ?? ""}|${look.accent ?? ""}|${look.special ?? ""}`;
+  useEffect(() => {
+    if (readyFor !== setKey) return;
+    setShown(look);
+    setRevealed(true);
+    // `look` is read through `worn` (what the previews wear), not its identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readyFor, setKey, worn]);
+  const pending = !revealed;
   const wearing = (change: LookChange): ReactElement => (
-    <CharacterPortrait hero={{ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }} accent={hero.appearance.accent} size="100%" />
+    <CharacterPortrait hero={{ ...hero, look: { coat: shown.coat, accent: shown.accent, special: shown.special, ...change } }} accent={hero.appearance.accent} size="100%" />
   );
   const part = PART_OF[shelf];
   if (shelf === "coat" || shelf === "accent") {
-    // A colour tile shows her colours, not gold over them: the pair is what she is picking.
-    const colour = (id: string | null): LookChange => ({ [shelf]: id, special: look.special && LOOKS.specials.find((x) => x.id === look.special)?.effect.kind === "gilded" ? null : look.special });
+    const colour = (id: string | null): LookChange => colourChange(shelf, shown, id);
     const attr = `data-${shelf}`;
     return (
       <>
@@ -135,6 +174,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
           data: { [attr]: "", "data-part": part! },
           preview: wearing(colour(null)),
           swatch: null,
+          pending,
         })}
         {lookChoices(shelf, look, hero.species).map((choice) => (
           <span key={choice.id} style={{ display: "contents" }}>
@@ -146,6 +186,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
               preview: wearing(colour(choice.id)),
               swatch: LOOKS.coats.find((c) => c.id === choice.id)?.color ?? null,
               source: look.sources?.[choice.id],
+              pending,
             })}
           </span>
         ))}
@@ -161,6 +202,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
           onTap: () => edit({ special: null }),
           data: { "data-special": "" },
           preview: wearing({ special: null }),
+          pending,
         })}
         {lookChoices("special", look).map((choice) => (
           <span key={choice.id} style={{ display: "contents" }}>
@@ -171,6 +213,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
               data: { "data-special": choice.id },
               preview: wearing({ special: choice.id }),
               source: look.sources?.[choice.id],
+              pending,
             })}
           </span>
         ))}
@@ -292,13 +335,14 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
           <legend className="book-kit__legend">{shelves.find((s) => s.id === shelf)!.legend}</legend>
           <div className="book-kit__tiles">
             <ShelfTiles
+              key={shelf}
               shelf={shelf}
               hero={hero}
               look={look}
               edit={edit}
-              tile={({ on, label, onTap, data, preview, swatch, source }) => (
+              tile={({ on, label, onTap, data, preview, swatch, source, pending }) => (
                 <button type="button" className={`book-kit__tile book-look__tile kad-focusable${shelf === "coat" || shelf === "accent" || shelf === "special" ? " book-look__tile--color" : ""}`} aria-pressed={on} onClick={onTap} {...data}>
-                  <span className="book-kit__tile-art book-look__tile-art" aria-hidden="true" style={{ ["--name-len" as string]: String(Math.max(hero.name.length, 6)) }}>
+                  <span className={`book-kit__tile-art book-look__tile-art${pending ? " look-art--pending" : ""}`} aria-hidden="true" style={{ ["--name-len" as string]: String(Math.max(hero.name.length, 6)) }}>
                     {preview}
                   </span>
                   <span className="book-kit__tile-name">
@@ -332,9 +376,9 @@ export function LookEditor({ member, held, dispatch }: { member: PartyMember; he
   const look = tableLook(member);
   const base = useId();
   const edit = (change: LookChange): void => dispatch({ type: "LOOK_EDIT", characterId: hero.id, revision: look.revision, ...change });
-  const tile: Tile = ({ on, label, onTap, data, preview, swatch }) => (
+  const tile: Tile = ({ on, label, onTap, data, preview, swatch, pending }) => (
     <button type="button" className="camp-option look-option kad-focusable" aria-pressed={on} disabled={held} onClick={onTap} {...data}>
-      <span className={`camp-option__art look-option__art${"data-coat" in data || "data-accent" in data || "data-special" in data ? " look-option__art--color" : ""}`} aria-hidden="true">
+      <span className={`camp-option__art look-option__art${pending ? " look-art--pending" : ""}${"data-coat" in data || "data-accent" in data || "data-special" in data ? " look-option__art--color" : ""}`} aria-hidden="true">
         {preview}
       </span>
       <span className="camp-option__label">
