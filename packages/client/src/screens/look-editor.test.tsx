@@ -238,3 +238,25 @@ describe("a shelf's tiles appear together (one tint at a time would repaint them
     expect(stars?.dataset["sparkleClip"]).toMatch(/^blob:/);
   });
 });
+
+describe("a shelf whose colours cannot be made", () => {
+  afterEach(() => {
+    setHeroCoats(null);
+    setCoatMaskPaintings(null);
+  });
+
+  it("still shows its tiles, each her portrait as painted, rather than waiting for good", async () => {
+    await loadHeroCoats();
+    const hero = makeCharacter({ name: "Pip", look: look() });
+    const portrait = characterPortraitArtUrl(hero.species, hero.tier, hero.class);
+    setCoatMaskPaintings([portrait.slice("/assets/".length)]);
+    setHeroCoats(new CoatCache({ runner: () => Promise.reject(new Error("no mask")), urls: fakeUrls() }));
+    const member = makeMember({ character: hero });
+    const { container } = render(<LookEditor member={member} held={false} dispatch={() => undefined} />);
+    const arts = () => [...container.querySelectorAll("[data-coat] .look-option__art")];
+    expect(arts().length).toBeGreaterThan(1);
+    await waitFor(() => expect(arts().every((a) => !a.classList.contains("look-art--pending"))).toBe(true));
+    const srcs = [...container.querySelectorAll("[data-coat] img")].map((i) => i.getAttribute("src"));
+    expect(srcs.every((src) => src === portrait)).toBe(true);
+  });
+});

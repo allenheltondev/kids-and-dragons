@@ -36,7 +36,7 @@ test("a hero's longest name stays whole on one line on every name tile, plain or
     const page = await context.newPage();
     await page.goto("/journal");
     await expect(page.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
-    await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Look" }).click(TAP);
+    await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Style" }).click(TAP);
     const look = page.getByTestId("look-editor");
     await expect(look).toBeVisible(TAP);
 

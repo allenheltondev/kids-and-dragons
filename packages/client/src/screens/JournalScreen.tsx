@@ -71,7 +71,7 @@ const StoryPane = lazyChunk(() => import("./StoryPane"), (module) => module.defa
 /** The crew's camp (#629; docs/camp.md §7): its own chunk, fetched the first time "Camp" is opened. */
 const CampPane = lazyChunk(() => import("./CampPane"), (module) => module.default);
 
-/** Her hero's look (docs/hero-looks.md §8.1; #664): its own chunk, fetched the first time "Look" is opened. */
+/** Her hero's look (docs/hero-looks.md §8.1; #664): its own chunk, fetched the first time "Style" is opened. */
 const LookPane = lazyChunk(() => import("./LookPane"), (module) => module.default);
 
 /**
@@ -266,7 +266,7 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
         <TrayTab on={pane === "camp"} object="rest" label="Camp" onClick={() => setPane("camp")} />
-        <TrayTab on={pane === "look"} object="scroll" label="Look" onClick={() => setPane("look")} />
+        <TrayTab on={pane === "look"} object="crown" label="Style" onClick={() => setPane("look")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
       {load.savedAt !== null ? (

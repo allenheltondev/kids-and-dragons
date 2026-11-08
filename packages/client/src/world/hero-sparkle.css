@@ -117,3 +117,20 @@ html[data-motion="reduced"] .hero-sparkle::after {
   object-fit: inherit;
   object-position: inherit;
 }
+
+/* A hero held until her colour is ready (hero-art-dom.tsx `HeroImage` `holdUntilTinted`): hidden, then faded in. */
+[data-tint-hold] {
+  transition: opacity 160ms ease-out;
+}
+
+[data-tint-hold="held"] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tint-hold] { transition: none; }
+}
+
+html[data-motion="reduced"] [data-tint-hold] {
+  transition: none;
+}

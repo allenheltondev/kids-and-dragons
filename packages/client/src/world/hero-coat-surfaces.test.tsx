@@ -131,6 +131,42 @@ describe("the DOM doors (useHeroArt): HeroImage and CharacterPortrait", () => {
   });
 });
 
+describe("holdUntilTinted (the Style page): hidden until her colour is ready, never for good", () => {
+  // Held by the stylesheet (hero-sparkle.css), which jsdom does not apply: read the attribute it keys on.
+  const visible = (img: Element): boolean => img.getAttribute("data-tint-hold") === "shown";
+
+  it("HeroImage: hidden while the pass runs, then shown tinted", async () => {
+    const painting = characterWorldArtUrl("unicorn", "fledgling");
+    serve(painting);
+    const { container } = render(<HeroImage hero={unicorn()} place="world" alt="" holdUntilTinted />);
+    const img = container.querySelector("img")!;
+    expect(visible(img)).toBe(false);
+    await waitFor(() => expect(img.getAttribute("src")).toMatch(/^blob:tint-/));
+    expect(visible(img)).toBe(true);
+  });
+
+  it("HeroImage: a failed pass shows her painting, not nothing", async () => {
+    const painting = characterWorldArtUrl("unicorn", "fledgling");
+    serve(painting);
+    setHeroCoats(new CoatCache({ runner: () => Promise.reject(new Error("no mask")), urls }));
+    const { container } = render(<HeroImage hero={unicorn()} place="world" alt="" holdUntilTinted />);
+    const img = container.querySelector("img")!;
+    await waitFor(() => expect(visible(img)).toBe(true));
+    expect(img.getAttribute("src")).toBe(painting);
+  });
+
+  it("HeroImage: a colour that already failed shows her painting at once", async () => {
+    const painting = characterWorldArtUrl("unicorn", "fledgling");
+    serve(painting);
+    setHeroCoats(new CoatCache({ runner: () => Promise.reject(new Error("no mask")), urls }));
+    const first = render(<HeroImage hero={unicorn()} place="world" alt="" holdUntilTinted />);
+    await waitFor(() => expect(visible(first.container.querySelector("img")!)).toBe(true));
+    const second = render(<HeroImage hero={unicorn()} place="world" alt="" holdUntilTinted />);
+    await waitFor(() => expect(visible(second.container.querySelector("img")!)).toBe(true));
+    expect(second.container.querySelector("img")!.getAttribute("src")).toBe(painting);
+  });
+});
+
 describe("the Pixi door (loadHeroTexture): the lineup, the board, the camp", () => {
   it("puts her painting on the sprite, then her tinted texture; update retints; stop lets go", async () => {
     const painting = characterWorldArtUrl("unicorn", "fledgling");
