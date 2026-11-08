@@ -59,7 +59,7 @@ afterEach(() => {
 });
 
 describe("Party Mode and the map", () => {
-  it("adds the adventure book to the tray for a kid seated on a family tablet (#299), and only there", () => {
+  it("adds the adventure book to the tray for a kid seated on a family tablet (#299), as on her own phone", () => {
     mount(null, false);
     const nav = screen.getByRole("navigation", { name: "What to look at" });
     expect([...nav.querySelectorAll("button")].map((b) => b.textContent)).toEqual(["World", "You", "Map", "Guide", "Book"]);
