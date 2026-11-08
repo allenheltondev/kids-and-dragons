@@ -142,7 +142,8 @@ function PhoneLayout(): React.JSX.Element {
   return (
     <PlayerShell.Provider value>
       <div className="kad-party kad-party--player" data-side-by-side={sideBySide || undefined} data-tv-focus={focus || undefined}>
-        {/* Four destinations on every phone; the TV stays a pure display. */}
+        {/* Four destinations on every phone, and her book while her kit and look can change
+            (BookTab.tsx); TV focus keeps only You, and World for a Starweaver. The TV stays a pure display. */}
         <nav className="kad-party__bar kad-tray" aria-label="What to look at">
           {worldTab ? <button
             type="button"
