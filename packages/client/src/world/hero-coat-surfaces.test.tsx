@@ -164,16 +164,6 @@ describe("holdUntilTinted (the Style page): hidden until her colour is ready, ne
     await waitFor(() => expect(visible(second.container.querySelector("img")!)).toBe(true));
     expect(second.container.querySelector("img")!.getAttribute("src")).toBe(painting);
   });
-
-  it("CharacterPortrait: a failed pass shows her portrait, not nothing", async () => {
-    const portrait = characterPortraitArtUrl("unicorn", "fledgling");
-    serve(portrait);
-    setHeroCoats(new CoatCache({ runner: () => Promise.reject(new Error("no mask")), urls }));
-    const { container } = render(<CharacterPortrait hero={unicorn()} holdUntilTinted />);
-    const img = container.querySelector("img")!;
-    await waitFor(() => expect(visible(img)).toBe(true));
-    expect(img.getAttribute("src")).toBe(portrait);
-  });
 });
 
 describe("the Pixi door (loadHeroTexture): the lineup, the board, the camp", () => {

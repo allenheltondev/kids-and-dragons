@@ -34,7 +34,7 @@ import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
 import { heroBase, heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtSubject, type HeroCoatRequest } from "../world/hero-art";
-import { HeroSparkles, useHeroArtState } from "../world/hero-art-dom";
+import { HeroSparkles, useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
 
@@ -106,8 +106,6 @@ interface PortraitLook {
    *     transformation cutscene.
    */
   stand?: "floor" | "centre";
-  /** Show nothing until her colour is ready, rather than her painting first (the look page's tiles). */
-  holdUntilTinted?: boolean;
   className?: string;
 }
 
@@ -132,7 +130,6 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
     backdrop = false,
     float = false,
     stand = "centre",
-    holdUntilTinted = false,
     className = "",
   } = props;
   const subject: HeroArtSubject =
@@ -149,10 +146,9 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
   // catches up. Step down to the known species art before conceding to an icon.
   const showingGear = gearPainting !== basePainting && !isMissingArt(failedGearSrc, gearPainting);
   // Only the painting shown is tinted: the other is never held or made.
-  const gear = useHeroArtState(subject, "portrait", showingGear);
-  const base = useHeroArtState(heroBase(subject), "portrait", !showingGear);
-  const { src, pending } = showingGear ? gear : base;
-  const held = holdUntilTinted && pending;
+  const gearSrc = useHeroArt(subject, "portrait", showingGear);
+  const baseSrc = useHeroArt(heroBase(subject), "portrait", !showingGear);
+  const src = showingGear ? gearSrc : baseSrc;
   const missing = !showingGear && isMissingArt(failedBaseSrc, basePainting);
   // A sparkle special (§5.5), over the painting shown: in the image's own grid
   // cell, laid on top of it, never behind (a gear portrait is opaque), clipped
@@ -183,7 +179,6 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
         <img
           className="portrait__img"
           src={src}
-          style={holdUntilTinted ? { opacity: held ? 0 : 1, transition: "opacity 160ms ease-out" } : undefined}
           alt=""
           // The art is a megabyte of 1024² PNG per species and the species grid
           // asks for six of them; below-the-fold cards on a phone should not be
@@ -202,7 +197,7 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
           }}
         />
       )}
-      {sparkle && !held ? <HeroSparkles sparkle={sparkle} className="portrait__img portrait__sparkle" /> : null}
+      {sparkle ? <HeroSparkles sparkle={sparkle} className="portrait__img portrait__sparkle" /> : null}
     </span>
   );
 }

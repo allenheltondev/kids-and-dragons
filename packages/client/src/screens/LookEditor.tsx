@@ -145,18 +145,17 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
   const requests = paintedChanges(shelf, look, hero.species).flatMap((change) =>
     portraitTintsOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }),
   );
-  const setKey = requests.map((r) => r?.key ?? "").join("\n");
-  const readyFor = useCoatsReady(requests);
+  const ready = useCoatsReady(requests);
   const [shown, setShown] = useState(look);
   const [revealed, setRevealed] = useState(requests.length === 0);
   const worn = `${look.coat ?? ""}|${look.accent ?? ""}|${look.special ?? ""}`;
   useEffect(() => {
-    if (readyFor !== setKey) return;
+    if (!ready) return;
     setShown(look);
     setRevealed(true);
     // `look` is read through `worn` (what the previews wear), not its identity.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [readyFor, setKey, worn]);
+  }, [ready, worn]);
   const pending = !revealed;
   const wearing = (change: LookChange): ReactElement => (
     <CharacterPortrait hero={{ ...hero, look: { coat: shown.coat, accent: shown.accent, special: shown.special, ...change } }} accent={hero.appearance.accent} size="100%" />

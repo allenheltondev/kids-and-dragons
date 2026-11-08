@@ -115,7 +115,6 @@ export class CoatCache {
   private readonly queue: Pass[] = [];
   private running: Pass | null = null;
   private readonly failed = new Set<string>();
-  private readonly listeners = new Set<() => void>();
 
   constructor({ runner, budget = COAT_CACHE_BUDGET, urls }: CoatCacheOptions) {
     this.runner = runner;
@@ -128,22 +127,9 @@ export class CoatCache {
     return this.entries.get(key) ?? null;
   }
 
-  /** Whether this colour could not be made: it draws as painted for the page's life. */
-  hasFailed(key: string): boolean {
-    return this.failed.has(key);
-  }
-
   /** Whether `key` is done: made, or failed for good (drawn as painted). Not waiting, not running. */
   settled(key: string): boolean {
     return this.entries.has(key) || this.failed.has(key);
-  }
-
-  /** Told after every pass ends, made or failed or cancelled. Returns the way to stop listening. */
-  subscribe(listener: () => void): () => void {
-    this.listeners.add(listener);
-    return () => {
-      this.listeners.delete(listener);
-    };
   }
 
   stats(): CoatCacheStats {
@@ -270,7 +256,6 @@ export class CoatCache {
       .finally(() => {
         if (this.passes.get(pass.request.key) === pass) this.passes.delete(pass.request.key);
         this.running = null;
-        for (const listener of [...this.listeners]) listener();
         this.pump();
       });
   }

@@ -108,36 +108,32 @@ function useTint(request: HeroCoatRequest | null): { url: string | null; pending
   // Her last look on this painting stays until the new one is ready; another painting's never shows.
   if (shown !== null && shown.key.startsWith(`${request.painting}|`)) return { url: shown.url, pending: false };
   // A colour that cannot be made draws as painted, for good (hero-coat-cache.ts).
-  return { url: null, pending: gaveUp !== request.key && !cache?.hasFailed(request.key) };
+  return { url: null, pending: gaveUp !== request.key && !cache?.settled(request.key) };
 }
 
 /**
  * Whether a whole set of tints is ready, for a shelf of tiles that should show
  * together rather than one at a time as each pass finishes. Holds every request
- * (so nothing is evicted before the tiles draw it) and returns the key of the
- * set once every one is made or has failed for good, else null. A tile then
+ * (so nothing is evicted before the tiles draw it) and is true once every one
+ * is made or has failed for good (each slot is told either way). A tile then
  * draws its entry from the cache on its first render, with no repaint.
  */
-export function useCoatsReady(requests: readonly (HeroCoatRequest | null)[]): string | null {
-  const setKey = requests.map((r) => r?.key ?? "").join("\n");
+export function useCoatsReady(requests: readonly HeroCoatRequest[]): boolean {
+  const setKey = requests.map((r) => r.key).join("\n");
   const [readyFor, setReadyFor] = useState<string | null>(null);
   useEffect(() => {
-    const wanted = requests.filter((r): r is HeroCoatRequest => r !== null);
-    if (wanted.length === 0) {
-      setReadyFor(setKey);
-      return;
-    }
     let live = true;
     let slots: CoatSlot[] = [];
-    let stop = (): void => undefined;
+    const done = (): void => {
+      if (live) setReadyFor(setKey);
+    };
     const start = (m: Coats): void => {
       if (!live) return;
       const cache = m.heroCoats();
       const check = (): void => {
-        if (live && wanted.every((r) => cache.settled(r.key))) setReadyFor(setKey);
+        if (requests.every((r) => cache.settled(r.key))) done();
       };
-      stop = cache.subscribe(check);
-      slots = wanted.map((r) => {
+      slots = requests.map((r) => {
         const slot = cache.slot(check);
         slot.want(r);
         return slot;
@@ -145,16 +141,16 @@ export function useCoatsReady(requests: readonly (HeroCoatRequest | null)[]): st
       check();
     };
     const now = heroCoatsLoaded();
-    if (now) start(now);
+    if (requests.length === 0) done();
+    else if (now) start(now);
     // A tinter that cannot load draws everything as painted: nothing to wait for.
-    else void loadHeroCoats().then(start, () => live && setReadyFor(setKey));
+    else void loadHeroCoats().then(start, done);
     return () => {
       live = false;
-      stop();
       for (const slot of slots) slot.close();
     };
   }, [setKey]);
-  return readyFor;
+  return readyFor === setKey;
 }
 
 /**
