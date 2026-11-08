@@ -75,12 +75,12 @@ describe("Party Mode and the map", () => {
     }
   });
 
-  it("offers live room mode switching in settings, outside the four-tab tray", () => {
+  it("offers live room mode switching in settings, outside the tray's five tabs", () => {
     const send = vi.fn(async () => true);
     useGameStore.setState({ send });
     mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect(nav.querySelectorAll("button")).toHaveLength(4);
+    expect(nav.querySelectorAll("button")).toHaveLength(5);
     // In the corner gear's Settings sheet, under "This game", and nowhere on the You page.
     expect(screen.queryByRole("button", { name: "No TV? Show the world on the phones" })).toBeNull();
     render(<A11yControl />);
@@ -105,10 +105,10 @@ describe("Party Mode and the map", () => {
     expect(screen.queryByRole("region", { name: "Sparklehoof's character sheet" })).toBeNull();
     expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ })).toBeTruthy();
   });
-  it("offers four destinations and returns from World to a new turn", () => {
+  it("offers five destinations, the book among them, and returns from World to a new turn", () => {
     const { container } = mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map", "Guide"]);
+    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map", "Guide", "Book"]);
     act(() => screen.getByRole("button", { name: /^world$/i }).click());
     expect(showing(container)).toEqual(["world"]);
     act(() => {

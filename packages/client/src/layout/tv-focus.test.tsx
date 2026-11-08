@@ -152,7 +152,7 @@ describe("TV focus on a Party Mode phone", () => {
   it("changes nothing while it is off", () => {
     seat();
     render(<PartyLayout surface="player" />);
-    expect(tabs()).toEqual(["World", "You", "Map", "Guide"]);
+    expect(tabs()).toEqual(["World", "You", "Map", "Guide", "Book"]);
     expect(screen.queryByTestId("tv-rest")).toBeNull();
     expect(screen.getByRole("list", { name: "Your stats" })).not.toBeNull();
   });
@@ -217,7 +217,7 @@ describe("TV focus in the lobby", () => {
     });
     applyPrefs({ ...DEFAULT_PREFS, focus: true });
     const { container } = render(<PartyLayout surface="player" />);
-    expect(tabs()).toEqual(["World", "You", "Map", "Guide"]);
+    expect(tabs()).toEqual(["World", "You", "Map", "Guide", "Book"]);
     expect(screen.queryByTestId("tv-rest")).toBeNull();
     expect(container.querySelector(".kad-party--player")?.hasAttribute("data-tv-focus")).toBe(false);
 
