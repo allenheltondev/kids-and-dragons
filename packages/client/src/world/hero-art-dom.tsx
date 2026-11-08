@@ -55,8 +55,8 @@ function useTint(request: HeroCoatRequest | null): { url: string | null; pending
   const key = request?.key ?? null;
   const [shown, setShown] = useState<{ key: string; url: string } | null>(null);
   const hold = useRef<Hold | null>(null);
-  // A pass that fails shows null again, which setShown alone would not re-render: the hold on her image must end.
-  const [, settle] = useState(0);
+  // Her colour cannot be made (the pass failed, or the tinter would not load): the hold on her image ends.
+  const [gaveUp, setGaveUp] = useState<string | null>(null);
 
   // The slot lives as long as the image: made when first needed, closed on unmount.
   useEffect(() => {
@@ -83,13 +83,19 @@ function useTint(request: HeroCoatRequest | null): { url: string | null; pending
       h.slot = m.heroCoats().slot((entry) => {
         if (!h.live) return;
         setShown(entry ? { key: entry.key, url: entry.url() } : null);
-        settle((n) => n + 1);
+        // Null for a colour that was asked for is a failed pass (a hero with none asks for nothing).
+        if (!entry && h.want) setGaveUp(h.want.key);
       });
       h.slot.want(h.want);
     };
     const now = heroCoatsLoaded();
     if (now) start(now);
-    else void loadHeroCoats().then(start, () => undefined);
+    else {
+      const asked = request.key;
+      void loadHeroCoats().then(start, () => {
+        if (h.live) setGaveUp(asked);
+      });
+    }
     // `request` is read through its key: a new object every render, the same tint.
   }, [key]);
 
@@ -102,7 +108,7 @@ function useTint(request: HeroCoatRequest | null): { url: string | null; pending
   // Her last look on this painting stays until the new one is ready; another painting's never shows.
   if (shown !== null && shown.key.startsWith(`${request.painting}|`)) return { url: shown.url, pending: false };
   // A colour that cannot be made draws as painted, for good (hero-coat-cache.ts).
-  return { url: null, pending: !cache?.hasFailed(request.key) };
+  return { url: null, pending: gaveUp !== request.key && !cache?.hasFailed(request.key) };
 }
 
 /**

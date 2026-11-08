@@ -89,7 +89,8 @@ interface Slot extends CoatSlot {
   pending: Want | null;
   current: Entry | null;
   closed: boolean;
-  show(entry: Entry | null): void;
+  /** `failed`: tell the surface even when it already shows nothing, so it can stop waiting. */
+  show(entry: Entry | null, failed?: boolean): void;
 }
 
 export interface CoatCacheStats {
@@ -151,8 +152,8 @@ export class CoatCache {
       get shown() {
         return slot.current;
       },
-      show(entry) {
-        if (entry === slot.current) return;
+      show(entry, failed = false) {
+        if (entry === slot.current && !failed) return;
         const was = slot.current;
         if (entry) cache.pin(entry);
         slot.current = entry;
@@ -165,7 +166,7 @@ export class CoatCache {
         if (request !== null && slot.pending?.key === request.key) return;
         cache.drop(slot);
         if (request === null || cache.failed.has(request.key)) {
-          slot.show(null);
+          slot.show(null, request !== null);
           return;
         }
         if (slot.current?.key === request.key) return;
@@ -248,7 +249,7 @@ export class CoatCache {
           for (const want of pass.wants) {
             if (want.slot.pending !== want || want.slot.closed) continue;
             want.slot.pending = null;
-            want.slot.show(null);
+            want.slot.show(null, true);
           }
         }
       })
