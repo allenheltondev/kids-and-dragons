@@ -109,10 +109,17 @@ interface PortraitLook {
   className?: string;
 }
 
-/** The tint a portrait of `hero` draws (or null: as painted), so a shelf of them can be made together. */
-export function portraitCoatOf(hero: HeroArtSubject): HeroCoatRequest | null {
+/**
+ * Every tint a portrait of `hero` waits on, so a shelf of them can be made
+ * together: her colour on the painting shown (none when she is drawn as
+ * painted), and the figure a sparkle special is clipped by on an opaque gear
+ * portrait (none on a cut-out, whose own alpha clips it). The painting shown
+ * is the one `CharacterPortrait` picks before any art has failed.
+ */
+export function portraitTintsOf(hero: HeroArtSubject): HeroCoatRequest[] {
   const gear = heroPaintingUrl(hero, "portrait") !== heroPaintingUrl(heroBase(hero), "portrait");
-  return heroCoatOf(gear ? hero : heroBase(hero), "portrait");
+  const shown = gear ? hero : heroBase(hero);
+  return [heroCoatOf(shown, "portrait"), heroSparkleOf(shown, "portrait")?.figure ?? null].filter((r): r is HeroCoatRequest => r !== null);
 }
 
 export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {

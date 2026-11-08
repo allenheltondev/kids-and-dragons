@@ -233,30 +233,48 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
    * told otherwise, so the music plays on until the app is force-closed.
    * Suspending the context stops every bus at once (music, ambience, cues and
    * recorded voice); coming back resumes it where it stood.
+   *
+   * Two signals, each enough on its own. `visibilitychange` is the page being
+   * seen or not. `pagehide` is the page being left (navigated away, put in the
+   * back/forward cache, or a browser that never reports it hidden), and can
+   * fire while visibility still says `visible`: it suspends regardless, and
+   * nothing wakes the context until `pageshow` brings the page back.
    */
+  let pageGone = false;
   function pageHidden(): boolean {
-    return typeof document !== "undefined" && document.visibilityState === "hidden";
+    return pageGone || (typeof document !== "undefined" && document.visibilityState === "hidden");
+  }
+  function suspend(): void {
+    const suspendable = ctx as { suspend?: () => Promise<void> } | null;
+    suspendable?.suspend?.().catch(() => undefined);
   }
   function syncToVisibility(): void {
     if (!ctx) return;
-    const suspendable = ctx as { suspend?: () => Promise<void> };
-    if (pageHidden()) suspendable.suspend?.().catch(() => undefined);
+    if (pageHidden()) suspend();
     else resume(ctx);
+  }
+  function onPageHide(): void {
+    pageGone = true;
+    suspend();
+  }
+  function onPageShow(): void {
+    pageGone = false;
+    syncToVisibility();
   }
   function watchVisibility(): void {
     if (typeof document === "undefined") return;
     document.addEventListener("visibilitychange", syncToVisibility);
     if (typeof window !== "undefined") {
-      window.addEventListener("pagehide", syncToVisibility);
-      window.addEventListener("pageshow", syncToVisibility);
+      window.addEventListener("pagehide", onPageHide);
+      window.addEventListener("pageshow", onPageShow);
     }
   }
   function unwatchVisibility(): void {
     if (typeof document === "undefined") return;
     document.removeEventListener("visibilitychange", syncToVisibility);
     if (typeof window !== "undefined") {
-      window.removeEventListener("pagehide", syncToVisibility);
-      window.removeEventListener("pageshow", syncToVisibility);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
     }
   }
 

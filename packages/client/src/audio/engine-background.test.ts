@@ -89,11 +89,29 @@ describe("the page going to the background", () => {
     engine.dispose();
   });
 
+  it("suspends on pagehide even while the page still reports itself visible, and resumes on pageshow", () => {
+    const { engine, context } = build();
+    engine.unlock();
+    show("visible");
+    const resumed = context.resumes;
+    window.dispatchEvent(new Event("pagehide"));
+    expect(context.suspends).toBe(1);
+    expect(context.resumes).toBe(resumed);
+    // Gone, not just hidden: neither a gesture nor a visibility event wakes it.
+    engine.unlock();
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(context.resumes).toBe(resumed);
+    window.dispatchEvent(new Event("pageshow"));
+    expect(context.resumes).toBe(resumed + 1);
+    engine.dispose();
+  });
+
   it("stops listening once disposed", () => {
     const { engine, context } = build();
     engine.unlock();
     engine.dispose();
     show("hidden");
+    window.dispatchEvent(new Event("pagehide"));
     expect(context.suspends).toBe(0);
   });
 });

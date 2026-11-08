@@ -37,7 +37,7 @@ import { PLAIN_NAMEPLATE } from "@kad/shared";
 import type { ClientIntent, CoatPart, HeroLookView, LookEdit, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { Icon } from "./icons";
 import { HeroName } from "./HeroName";
-import { CharacterPortrait, portraitCoatOf } from "./CharacterPortrait";
+import { CharacterPortrait, portraitTintsOf } from "./CharacterPortrait";
 import { LOOKS, heroNameStyle, lookChoices } from "../world/hero-name";
 import { HERO_ART_PLACES, heroPaintingUrl, type HeroArtSubject } from "../world/hero-art";
 import { HeroImage, useCoatsReady } from "../world/hero-art-dom";
@@ -141,13 +141,14 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
   tile: Tile;
 }): ReactElement {
   const name = hero.name;
-  const requests = paintedChanges(shelf, look, hero.species).map((change) =>
-    portraitCoatOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }),
+  // Each tile's colour and, for a sparkle special, the figure its sparkles are clipped by.
+  const requests = paintedChanges(shelf, look, hero.species).flatMap((change) =>
+    portraitTintsOf({ ...hero, look: { coat: look.coat, accent: look.accent, special: look.special, ...change } }),
   );
   const setKey = requests.map((r) => r?.key ?? "").join("\n");
   const readyFor = useCoatsReady(requests);
   const [shown, setShown] = useState(look);
-  const [revealed, setRevealed] = useState(requests.every((r) => r === null));
+  const [revealed, setRevealed] = useState(requests.length === 0);
   const worn = `${look.coat ?? ""}|${look.accent ?? ""}|${look.special ?? ""}`;
   useEffect(() => {
     if (readyFor !== setKey) return;
