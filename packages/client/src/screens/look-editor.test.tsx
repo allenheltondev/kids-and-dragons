@@ -14,6 +14,7 @@ import { makeCharacter, makeMember } from "../testing/fixtures";
 import { fakeUrls, pixelIO, servePainting } from "../testing/coat-fixture";
 import { LOOKS } from "../world/hero-name";
 import { setCoatMaskPaintings } from "../world/coat-masks";
+import { characterPortraitArtUrl } from "../world/art-paths";
 import { CoatCache, setHeroCoats } from "../world/hero-coat-cache";
 import { slicedTintRunner } from "../world/hero-coat-pass";
 import { loadHeroCoats } from "../world/hero-coat-load";
@@ -201,5 +202,39 @@ describe("the Special shelf (§5.5, §8)", () => {
     expect([...container.querySelectorAll("legend")].map((l) => l.textContent)).toEqual(["Special", "Nameplate", "Title"]);
     fireEvent.click(container.querySelector('[data-special="gold"]')!);
     expect(sent).toEqual([{ type: "LOOK_EDIT", characterId: "c_1", revision: 3, special: "gold" }]);
+  });
+});
+
+describe("a shelf's tiles appear together (one tint at a time would repaint them one by one)", () => {
+  afterEach(() => {
+    setHeroCoats(null);
+    setCoatMaskPaintings(null);
+  });
+
+  it("waits for Aurora's figure on a gear portrait, so its sparkles are there the moment the tiles show", async () => {
+    await loadHeroCoats();
+    // A classed hero whose portrait is a gear portrait: opaque, so her sparkles are clipped by a figure the tinter makes.
+    const found = (["thornguard", "duskrunner", "starweaver", "songkeeper"] as const)
+      .flatMap((cls) => (["sworn", "radiant", "mythic"] as const).map((tier) => ({ cls, tier, portrait: characterPortraitArtUrl("unicorn", tier, cls) })))
+      .find((p) => p.portrait.includes("gear-portraits/"));
+    expect(found).toBeDefined();
+    const { cls, tier, portrait } = found!;
+    const files = new Map();
+    servePainting(files, portrait, "#E2CDEC", 16);
+    setCoatMaskPaintings([portrait.slice("/assets/".length)]);
+    setHeroCoats(new CoatCache({ runner: slicedTintRunner(pixelIO(files, { delayMs: 5 })), urls: fakeUrls() }));
+
+    // No colour chosen: the None and Aurora tiles have no colour to wait for, only Aurora's figure.
+    const hero = makeCharacter({ name: "Pip", species: "unicorn", class: cls, tier });
+    const { container } = render(<BookLook hero={hero} look={look({ unlocked: ["aurora"] })} edit={() => undefined} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Special" }));
+    const art = (id: string) => container.querySelector(`[data-special="${id}"] .book-look__tile-art`)!;
+    expect(art("aurora").classList.contains("look-art--pending")).toBe(true);
+    expect(art("").classList.contains("look-art--pending")).toBe(true);
+
+    await waitFor(() => expect(art("aurora").classList.contains("look-art--pending")).toBe(false));
+    expect(art("").classList.contains("look-art--pending")).toBe(false);
+    const stars = art("aurora").querySelector<HTMLElement>(".hero-sparkle");
+    expect(stars?.dataset["sparkleClip"]).toMatch(/^blob:/);
   });
 });

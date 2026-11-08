@@ -64,7 +64,7 @@ describe("the first-session choice (§5.3)", () => {
     expect(screen.getByRole("heading", { name: "Pick your camp style!" })).toBeTruthy();
     fireEvent.click(screen.getByRole("radio", { name: "Mint" }));
     fireEvent.click(screen.getByRole("button", { name: "Quilted" }));
-    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, style: "quilted", tent: "quilted", color: "rose" }]);
+    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, style: "quilted", color: "rose" }]);
     expect(screen.queryByTestId("kit-welcome")).toBeNull();
   });
 

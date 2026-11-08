@@ -110,8 +110,15 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
   const tents = campStage(state) >= 2 && state.campMoment?.outdoor !== false;
   const pick =(style: string): void => {
     finishKitWelcome(heroId);
-    const tent = KIT_RULES.tents.some((t) => t.id === style && t.group === "catalog") ? style : undefined;
-    dispatch({ type: "KIT_EDIT", characterId: heroId, revision: kit.revision, style, ...(tent ? { tent } : {}), ...(color ? { color } : {}) });
+    /*
+     * The style and color only, never a tent. An unpicked tent already draws as
+     * the style's own (`tentArt`), so this shows exactly what the card showed.
+     * And the table reads her kit as the moment begins, so this card can still
+     * show while a tent she picked in the book since (a milestone tent, say)
+     * is stored: a tent sent here would be applied over it, the latest edit
+     * winning (server camp-edit.ts `behindEdit`), and her pick would be lost.
+     */
+    dispatch({ type: "KIT_EDIT", characterId: heroId, revision: kit.revision, style, ...(color ? { color } : {}) });
   };
   return (
     <section className="kit-welcome" aria-labelledby={headingId} data-testid="kit-welcome">
