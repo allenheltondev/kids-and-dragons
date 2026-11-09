@@ -359,6 +359,13 @@ const DIGESTS: PreEpicSave["digests"] = {
 // the opening, the jackalope scene and the wolf scene introduce the hedges, the sausage wagon and the
 // sheeple. The endings, roads, setbacks and resumed-save digests below were not re-taken: they still
 // match the pre-epic build, because each warps straight to a terminal scene or fork.
+// Re-pinned for the owner-approved chapter 3c quality pass (gemfall-03c): a graph change. Five games no
+// party could fail become games that can miss, so the ford's own stakes are real: the Brackens' cart
+// (timing), the crew's brace in the surge (precision), the stuck wagon (precision) and the marker posts
+// (relay) keep their authored costs, and holding the line against the red scarves is a timing game.
+// The soup bowls pay a honeycake and the awning pays a two coin tip, where both results were identical.
+// The goal now asks why the charms ring, and the opening introduces them. No scene, edge, stat or TN
+// moved; the endings, roads, setbacks and resumed-save digests below are unchanged.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
@@ -400,7 +407,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-02.json": "7038a91ac31f55b64db18eec8d2ae05587a61dc6c5c6623df0f493193ccd71d4",
   "chapters/gemfall-03a.json": "aa3f2e19a4db60409c4541eac8bc4277488f65f0789318b4a8556125cb5e5686",
   "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
-  "chapters/gemfall-03c.json": "b038ce1c9d7e5c94fcd56730df53e22e3638025f29e45847481018f056fb907f",
+  "chapters/gemfall-03c.json": "32da77980702ff59373b01aceb77352f42d90e969d3e3b8d8b6f6be15cf47467",
   "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
   "chapters/gemfall-04b.json": "a1852d7992f982cc47a5f29297fc2d984d77a6c7a64bbaef2077d57ebea051a5",
   "chapters/gemfall-04c.json": "17b14d20611e8d1c7361c057625f9fd49ac253b0a7d7d4b01ef80d5a04ce73ae",

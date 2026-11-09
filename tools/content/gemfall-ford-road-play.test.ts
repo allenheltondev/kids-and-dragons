@@ -85,6 +85,21 @@ it.each(sizes.flatMap(size => outcomes.flatMap(outcome => ["wagon", "markers", "
     expect(state.chapterOutcome).toBe("success");
   });
 
+const cakes = (s: RunState) => s.party.flatMap(p => p.character.inventory).filter(item => item.itemId === "honeycake").length;
+it.each(sizes.flatMap(size => outcomes.map(outcome => ({ size, outcome }))))
+  ("ford: the small line jobs can be missed, and only a clean one pays ($size seats / $outcome)", ({ size, outcome }) => {
+    const { state, trace } = walk(ford, size, { ...fordPicks, scene_queue_jumpers: "block" }, outcome, 20);
+    const paid = outcome !== "failure";
+    // Stacking Wend's bowls earns a honeycake; dropping them in the mud does not.
+    expect(cakes(trace.get("scene_soup_line")!) - cakes(trace.get("interaction_soup_bowls")!)).toBe(paid ? 1 : 0);
+    // Lifting the awning for the runner earns a two coin tip; a sagging awning does not.
+    expect(trace.get("scene_relay_message")!.coins! - trace.get("interaction_clear_lane")!.coins!).toBe(paid ? 2 : 0);
+    // Holding the line earns the scarves' respect (and two coins); missing it does not.
+    expect(state.flags.held_the_line === true).toBe(paid);
+    expect(trace.get("interaction_clear_lane")!.coins! - trace.get("check_block_jumpers")!.coins!).toBe(paid ? 2 : 0);
+    expect(state.chapterOutcome).toBe("success");
+  });
+
 it.each(sizes)("ford: the unfair number still enters the real surge and can reroute at %i seats", size => {
   const { state, trace } = walk(ford, size, { ...fordPicks, scene_three_cards: "join", choice_tolls: "markers", choice_ford: "tamsin_pebble", scene_surge: "let_go" });
   expect(trace.has("check_ford")).toBe(false);

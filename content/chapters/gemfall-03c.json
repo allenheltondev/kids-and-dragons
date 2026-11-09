@@ -36,7 +36,7 @@
     }
   ],
   "goal": {
-    "text": "Wait your turn at the river ford, then try to get across.",
+    "text": "Wait your turn at the river ford, find out why the charms ring, then get across.",
     "steps": [
       {
         "id": "runaway_goat",
@@ -80,7 +80,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "Marda's rumor board said the rush road was jammed but moving. Your job tonight: wait your turn at the river ford, then get across. Wagons fill the ruts. Centaur relay-runners weave between them. Ahead, somebody shouts, \"NUMBERS! GET YOUR NUMBERS!\"",
+      "narration": "Marda's rumor board said the rush road was jammed but moving. Your job tonight: wait your turn at the river ford, find out why the charms ring, then get across. Wagons fill the ruts, and little bell charms jingle on the ones that carry gems. Centaur relay-runners weave between them. Ahead, somebody shouts, \"NUMBERS! GET YOUR NUMBERS!\"",
       "choices": [
         {
           "id": "walk_front",
@@ -744,10 +744,12 @@
       "type": "interaction",
       "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Everybody braces.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends brace the line while someone holds the front.",
+        "kind": "timing",
+        "cue": "Link arms the moment the scarves charge.",
         "actionLabel": "Hold the line!",
-        "supportLabel": "Brace the line"
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4000
       },
       "onSuccess": {
         "goto": "interaction_clear_lane",
@@ -2454,10 +2456,19 @@
         "periodMs": 4000
       },
       "onSuccess": {
-        "goto": "scene_soup_line"
+        "goto": "scene_soup_line",
+        "narration": "Clink, clink, clink. The bowls stack up neat as a tower, and Wend slips a honeycake into your pocket. \"Kindness first,\" he says.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "scene_soup_line"
+        "goto": "scene_soup_line",
+        "narration": "One bowl lands in the mud, then three. Wend laughs, wipes them off and ladles you a bowl anyway. \"Kindness first,\" he says. No honeycake, though."
       },
       "art": "scenes/gemfall/wend-soup-tent"
     },
@@ -2465,16 +2476,26 @@
       "type": "interaction",
       "narration": "Hoofbeats race down the line. A relay-runner needs a clear lane, but a loose awning sags across the road. Hold its pole up while people duck clear.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends brace the pole while someone lifts the awning.",
+        "kind": "timing",
+        "cue": "Lift the awning when the runner shouts.",
         "actionLabel": "Lift the awning!",
-        "supportLabel": "Brace the pole"
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4000
       },
       "onSuccess": {
-        "goto": "scene_relay_message"
+        "goto": "scene_relay_message",
+        "narration": "Up goes the awning, and the runner thunders through without a scrape. She flips you two coins over her shoulder. \"Thanks, line!\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 2
+          }
+        ]
       },
       "onFailure": {
-        "goto": "scene_relay_message"
+        "goto": "scene_relay_message",
+        "narration": "The awning sags just as she passes, and she ducks, skids and bounces off a water barrel. \"Rude!\" she calls, and does not tip."
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
@@ -2551,10 +2572,12 @@
       "type": "interaction",
       "narration": "The stuck wagon leans hard into its rut. Raise or lower your side of the load until it sits level, then roll it out. The drover has named the rut. \"Do not encourage it.\"",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side until the wagon load is level.",
+        "kind": "precision",
+        "cue": "Raise or lower the load until it sits level.",
         "actionLabel": "Roll the wagon out",
-        "objectLabel": "The stuck wagon load"
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_dusk_wolves",
@@ -2620,12 +2643,12 @@
     },
     "interaction_ford_posts": {
       "type": "interaction",
-      "narration": "The marker posts have fallen flat. Brace the ropes while a friend raises them, or use the support prop. One arrow points into a cabbage stall. A relay-runner fixes that one herself.",
+      "narration": "The marker posts have fallen flat. Pass the posts hand to hand so the runner can raise them, or use the support prop. One arrow points into a cabbage stall. A relay-runner fixes that one herself.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Brace the ropes while the acting hero raises the marker line.",
-        "actionLabel": "Raise the posts",
-        "supportLabel": "Brace the ropes"
+        "kind": "relay",
+        "cue": "Pass each marker post down the line to the runner.",
+        "actionLabel": "Pass the post",
+        "objectLabel": "The marker posts"
       },
       "onSuccess": {
         "goto": "scene_markers_restored",
@@ -2677,10 +2700,12 @@
       "type": "interaction",
       "narration": "The Brackens saved you a place. Their cart rocks into the ford. Keep its load level while the lead drover calls the slow steps. The littlest Bracken holds the bread. It is an important job.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side to level the Brackens' cart.",
-        "actionLabel": "Bring the cart to the bank",
-        "objectLabel": "The Brackens' cart load"
+        "kind": "timing",
+        "cue": "Step the cart along with the drover's slow count.",
+        "actionLabel": "Slow step",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "end_forded",
@@ -2718,10 +2743,12 @@
       "type": "interaction",
       "narration": "The wagon crew you freed wades up with a long brace. Hold it steady while one of you guides the wheel upright. The drakes argue over the bread.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the brace while the acting hero rights the wagon.",
+        "kind": "precision",
+        "cue": "Hold the brace at the wheel while the acting hero rights the wagon.",
         "actionLabel": "Right the wagon",
-        "supportLabel": "Hold the brace"
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "end_forded",
