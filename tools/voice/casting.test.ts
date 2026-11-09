@@ -150,6 +150,20 @@ describe("candidates", () => {
     expect(picks.tiny).toBeUndefined();
   });
 
+  it("lets a row with nothing new share a picked voice, but only in an accent that voice does not speak yet", () => {
+    const owned = (voiceId: string) => ({ voiceId, name: voiceId, about: "" });
+    const picks = firstPicks([
+      { row: row({ id: "big" }), lines: 50, accent: "Texan", candidates: [owned("x")] },
+      { row: row({ id: "same" }), lines: 3, accent: "Texan", candidates: [owned("x")] },
+      { row: row({ id: "other" }), lines: 2, accent: "Southern American", candidates: [owned("x")] },
+      { row: row({ id: "also" }), lines: 1, accent: "Southern American", candidates: [owned("x")] },
+    ]);
+    expect(picks.big!.voiceId).toBe("x");
+    expect(picks.same).toBeUndefined();
+    expect(picks.other!.voiceId).toBe("x");
+    expect(picks.also).toBeUndefined();
+  });
+
   it("adds only library picks the account lacks, under either id or name", () => {
     const picks = { one: { voiceId: "a", name: "A", about: "", ownerId: "o" }, two: { voiceId: "b", name: "B", about: "", ownerId: "o" }, three: { voiceId: "c", name: "C", about: "", ownerId: "o" }, four: { voiceId: "d", name: "D", about: "" } };
     expect(toAdd(picks, [{ id: "b", name: "B" }, { id: "z", name: "three" }]).map(([id]) => id)).toEqual(["one"]);

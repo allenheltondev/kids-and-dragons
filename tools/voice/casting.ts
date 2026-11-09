@@ -199,8 +199,8 @@ export function candidatesFor(row: CastingVoice, account: readonly VoiceInfo[], 
   }
   const best = (list: typeof scored): Candidate[] =>
     list.sort((a, b) => b.score - a.score || b.added - a.added || a.candidate.name.localeCompare(b.candidate.name)).map(({ candidate }) => candidate);
-  // Stand-ins ride after the cut, so a row past the free slots always has one to fall back on.
-  return [...best(scored).slice(0, count), ...best(standIns).slice(0, 3)];
+  // Every stand-in rides after the cut, so a row past the free slots has all of them to fall back on.
+  return [...best(scored).slice(0, count), ...best(standIns)];
 }
 
 export type Picks = Record<string, Candidate>;
@@ -210,16 +210,31 @@ export type Picks = Record<string, Candidate>;
  * lines choose first, and spend the plan's free `slots` on library voices; once those are gone a row takes only a voice
  * the account already has.
  */
-export function firstPicks(rows: readonly { row: CastingVoice; lines: number; candidates: readonly Candidate[] }[], slots = Infinity): Picks {
+export function firstPicks(rows: readonly { row: CastingVoice; lines: number; candidates: readonly Candidate[]; accent?: string | undefined }[], slots = Infinity): Picks {
   const picks: Picks = {};
   const used = new Set<string>();
+  const ordered = [...rows].sort((a, b) => b.lines - a.lines || a.row.id.localeCompare(b.row.id));
   let free = slots;
-  for (const { row, candidates } of [...rows].sort((a, b) => b.lines - a.lines || a.row.id.localeCompare(b.row.id))) {
+  for (const { row, candidates } of ordered) {
     const pick = candidates.find((candidate) => !used.has(candidate.voiceId) && (candidate.ownerId === undefined || free > 0));
     if (pick === undefined) continue;
     picks[row.id] = pick;
     used.add(pick.voiceId);
     if (pick.ownerId !== undefined) free -= 1;
+  }
+  // A row still without one shares a voice another row already has, in an accent that row does not speak: a voice in
+  // another accent is another sound (soundOf), and it spends no slot, since the voice is coming onto the account anyway.
+  const heard = new Map<string, Set<string>>();
+  for (const { row, accent } of ordered) {
+    const pick = picks[row.id];
+    if (pick !== undefined) heard.set(pick.voiceId, new Set([...(heard.get(pick.voiceId) ?? []), accent ?? ""]));
+  }
+  for (const { row, candidates, accent } of ordered) {
+    if (picks[row.id] !== undefined) continue;
+    const pick = candidates.find((candidate) => heard.has(candidate.voiceId) && !heard.get(candidate.voiceId)!.has(accent ?? ""));
+    if (pick === undefined) continue;
+    picks[row.id] = pick;
+    heard.get(pick.voiceId)!.add(accent ?? "");
   }
   return picks;
 }
