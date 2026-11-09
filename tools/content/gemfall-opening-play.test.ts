@@ -120,13 +120,39 @@ it.each(sizes.flatMap(size=>outcomes.flatMap(outcome=>["beam","carry"].map(job=>
  const {state,trace,interactionOutcomes}=walk(fields,size,{...fieldPicks,scene_plank_bridge:job,scene_hedge_mob:job==="beam"?"bridge_brace":"hay_brushes"},outcome);
  expect(offered(trace.get("scene_hedge_mob")!,"bridge_brace")).toBe(job==="beam");
  expect(offered(trace.get("scene_hedge_mob")!,"hay_brushes")).toBe(job==="carry");
- expect(state.flags.farm_help_used).toBe(true);
+ // A missed brace sends the beam party the long way round, so the farm favor is not used; the hay brushes never miss.
+ expect(state.flags.farm_help_used===true).toBe(!(job==="beam"&&outcome==="miss-supported"));
+ expect(state.flags.let_in_properly===true).toBe(!(job==="beam"&&outcome==="miss-supported"));
  expect(state.flags.fair_prices===true).toBe(outcome!=="miss-supported");
  expect(interactionOutcomes.get("interaction_egg_prices")).toBe(outcome==="miss-supported"?"failure":outcome);
  expect(state.flags.sprites_friends).toBe(true);expect(state.flags.sprites_wronged).not.toBe(true);
  expect(state.flags.route_river).toBe(true);
  expect(state.chapterOutcome).toBe("success");
  });
+it.each(sizes)("fields: sneaking past the cinder wolves is a real risk at %i seats",size=>{
+ const sneaked=walk(fields,size,fieldPicks,"success");
+ expect(sneaked.interactionOutcomes.get("interaction_wolf_sneak")).toBe("success");
+ expect(sneaked.trace.has("encounter_wolves")).toBe(false);
+ const caught=walk(fields,size,fieldPicks,"miss-supported");
+ expect(caught.interactionOutcomes.get("interaction_wolf_sneak")).toBe("failure");
+ expect(caught.trace.has("encounter_wolves")).toBe(true);
+ expect(caught.state.chapterOutcome).toBe("success");
+});
+it.each(sizes)("fields: reading the signs pays off with Marda only when the party worked it out at %i seats",size=>{
+ const read=walk(fields,size,{...fieldPicks,rest_marda_inn:"signs"},"success",20);
+ expect(read.state.flags.read_the_signs).toBe(true);
+ expect(offered(read.trace.get("rest_marda_inn")!,"signs")).toBe(true);
+ expect(read.trace.has("rest_marda_inn_signs")).toBe(true);
+ expect(read.trace.get("choice_common_room")!.coins).toBe(read.trace.get("rest_marda_inn")!.coins!+3);
+ const asked=walk(fields,size,{...fieldPicks,rest_marda_inn:"ask_signs"},"success",1);
+ expect(asked.state.flags.read_the_signs).not.toBe(true);
+ expect(asked.trace.has("rest_marda_inn_explains")).toBe(true);
+ expect(asked.state.chapterOutcome).toBe("success");
+ const muddled=walk(fields,size,fieldPicks,"success",1);
+ expect(muddled.state.flags.read_the_signs).not.toBe(true);
+ expect(offered(muddled.trace.get("rest_marda_inn")!,"signs")).toBe(false);
+ expect(muddled.state.chapterOutcome).toBe("success");
+});
 it.each(sizes)("fields: a polite request works without either farm favor at %i seats",size=>{
  const {state,trace}=walk(fields,size,{...fieldPicks,scene_plank_bridge:"quick_beam",scene_hedge_mob:"honest"},"success",1);
  expect(offered(trace.get("scene_hedge_mob")!,"bridge_brace")).toBe(false);
@@ -194,8 +220,8 @@ it.each(sizes)("unfinished opening jobs cannot award preparation at %i seats",si
   [fields,"interaction_hedge_brace","farm_help_used"],
  ] as const){
   let state=enterScene(initial(chapter,size),id,context(chapter)).state;
-  if (promptOf(state).spec.kind === "relay") expect(promptOf(miss(chapter, state)!).outcome).toBe("failure");
-  else expect(miss(chapter, state)).toBeNull();
+  if (["cooperate", "balance", "play"].includes(promptOf(state).spec.kind)) expect(miss(chapter, state)).toBeNull();
+  else expect(promptOf(miss(chapter, state)!).outcome).toBe("failure");
   const actor=promptOf(state).actorId;
   state=act(chapter,state,{action:"start",relaxed:false},actor);
   const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(chapter));

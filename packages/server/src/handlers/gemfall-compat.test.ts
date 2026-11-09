@@ -346,6 +346,19 @@ const DIGESTS: PreEpicSave["digests"] = {
 // labels, branch and variant text only, shorter and plainer with continuity fixed at merge points.
 // The legacy checks and resumeInteractions keep their shipped words; no scene, edge, flag, effect,
 // stat or TN moved, and the gameplay digests are unchanged.
+// Re-pinned for the dialogue pass on gemfall-04b and gemfall-07r (#549): a few quoted lines in
+// narration (a warden, a faun, a mire mimic, an echo) so the recorded voices have something to say.
+// Narration text only; no scene, edge, flag, effect, stat or TN moved, and the gameplay digests are unchanged.
+// Re-pinned for the owner-approved chapter 2 quality pass (gemfall-02): a graph change. The bridge beam
+// (relay), the stuck wagon (timing) and the hedge brace (precision) become games that can miss, where
+// they were cooperate or balance games no party could fail; sneaking past the cinder wolves becomes a
+// timing game (`interaction_wolf_sneak`) whose miss reaches the existing wolf fight; one clever check
+// (`check_signs_add_up`) joins the five tremor outcomes before `scene_corner_row`, and a party that
+// passes it gets a scene with Marda (`rest_marda_inn_signs`, she pays 3 coins), and a party that misses it
+// can still ask her (`rest_marda_inn_explains`). The goal is now a question to look into, and
+// the opening, the jackalope scene and the wolf scene introduce the hedges, the sausage wagon and the
+// sheeple. The endings, roads, setbacks and resumed-save digests below were not re-taken: they still
+// match the pre-epic build, because each warps straight to a terminal scene or fork.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
@@ -384,12 +397,12 @@ const DIGESTS: PreEpicSave["digests"] = {
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
-  "chapters/gemfall-02.json": "84a970910b841e24aeb5e13844a94add026ac382fdff088b14fbc6d677389539",
+  "chapters/gemfall-02.json": "7038a91ac31f55b64db18eec8d2ae05587a61dc6c5c6623df0f493193ccd71d4",
   "chapters/gemfall-03a.json": "aa3f2e19a4db60409c4541eac8bc4277488f65f0789318b4a8556125cb5e5686",
   "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
   "chapters/gemfall-03c.json": "b038ce1c9d7e5c94fcd56730df53e22e3638025f29e45847481018f056fb907f",
   "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
-  "chapters/gemfall-04b.json": "4c577d2da79220e014b36da19875559f63d4be16b23e795770cdd7e0db28646f",
+  "chapters/gemfall-04b.json": "a1852d7992f982cc47a5f29297fc2d984d77a6c7a64bbaef2077d57ebea051a5",
   "chapters/gemfall-04c.json": "17b14d20611e8d1c7361c057625f9fd49ac253b0a7d7d4b01ef80d5a04ce73ae",
   "chapters/gemfall-05a.json": "bf36941e45e9064f050a1cc12ca06ff17454470212222d0d083ac32d5075a0bf",
   "chapters/gemfall-05b.json": "f0a16c181e23485c1c181ef91d758e5f4627bb769599cdbadc443b5a70c2bbf9",
@@ -397,7 +410,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-06.json": "b1e6c764a451e59ec39198bdffa87b0989977479682875bf5720e7f3dba360c7",
   "chapters/gemfall-07h.json": "5e247fbcfeaad63d3a3786189a551a30479dd898b256cc4d4a93235acb1753cc",
   "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
-  "chapters/gemfall-07r.json": "49476c762968ad22ef2464c1858b944e35c0e96857f51042fe4fa1c16be4d60a",
+  "chapters/gemfall-07r.json": "6555ab01bd48cb40cd944cb91c5a65b841518058d708ac943f79cfb54a13e295",
   "chapters/gemfall-08.json": "d075f2163272dc3d29b89d0d12e937691d1fe12ea4cbf9eabd3406226f372612",
 };
 

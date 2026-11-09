@@ -1535,7 +1535,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "In the night, half a hillside slid onto the road. A heap of red rocks taller than a wagon blocks it. A warden writes ROAD CLOSED on his clipboard in very small letters, as if that will help.",
+      "narration": "In the night, half a hillside slid onto the road. A heap of red rocks taller than a wagon blocks it. \"Road's closed,\" says a warden, and he writes ROAD CLOSED on his clipboard in very small letters, as if that will help.",
       "choices": [
         {
           "id": "shift",
@@ -2097,7 +2097,7 @@
           "size": "small"
         }
       ],
-      "narration": "Higher up, the whole road is coming down: wagons, wardens, a faun family with their chairs tied to a mule. Beside you, the fauns' little cart drops a wheel into a crack and sticks fast. The smallest faun starts to cry.",
+      "narration": "Higher up, the whole road is coming down: wagons, wardens, a faun family with their chairs tied to a mule. Beside you, the fauns' little cart drops a wheel into a crack and sticks fast. The smallest faun starts to cry. \"We're stuck!\" she wails.",
       "choices": [
         {
           "id": "push",
