@@ -87,8 +87,8 @@ export interface DesireOptions {
  * speaker's lines and nobody else's.
  *
  *  - ElevenLabs: the voice's id and the accent and direction that go in front of each line as tags. The speaker's
- *    description never reaches ElevenLabs, so rewording it moves nothing. `undefined` while nobody has picked a
- *    voice for them: their lines go to the device voice, not to somebody else's.
+ *    description never reaches ElevenLabs, so rewording it moves nothing. `undefined` until a person has picked and
+ *    approved a voice for them: their lines go to the device voice, not to somebody else's.
  *  - Anything else (Gemini, the fake tones): the pinned voice config, the cast's accent and the description.
  */
 export function voiceOf(cast: CastSheet, speaker: string, provider: Provider = ELEVENLABS): unknown {
@@ -96,7 +96,8 @@ export function voiceOf(cast: CastSheet, speaker: string, provider: Provider = E
   if (entry === undefined) return undefined;
   if (provider.provider === "elevenlabs") {
     const voiceId = entry.elevenlabs?.voiceId;
-    if (voiceId === undefined || voiceId === "") return undefined;
+    // Only a voice a person approved is spent on: an unapproved one is a placeholder or an audition.
+    if (voiceId === undefined || voiceId === "" || entry.elevenlabs?.approved !== true) return undefined;
     return { voiceId, accent: entry.accent, direction: entry.direction, defaultAccent: cast.accent };
   }
   return { ...entry.gemini, accent: cast.accent, who: entry.who };

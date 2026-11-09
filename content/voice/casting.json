@@ -1,0 +1,675 @@
+{
+  "$comment": "Who shares which voice (docs/voice-species.md). `npm run voice:library` reads this: `people` says whose accent a row's speakers take when canon does not place them, `speakers` are cast.json ids, and `locked` speakers are never recast.",
+  "locked": [
+    "narrator"
+  ],
+  "peopleOf": {
+    "sergeant_holloway": "skywardens",
+    "pellam": "skywardens",
+    "brask": "skywardens",
+    "captain": "skywardens",
+    "voss": "skywardens",
+    "tibbet": "skywardens",
+    "linnet": "skywardens",
+    "warden_clerk": "skywardens",
+    "warden_sergeant": "skywardens",
+    "flag_warden": "skywardens",
+    "engineers": "skywardens",
+    "apprentice": "skywardens",
+    "tamsin": "kitsune"
+  },
+  "voices": [
+    {
+      "id": "kad-pip",
+      "gender": "male",
+      "people": "manticore",
+      "prompt": "A man's voice that sounds young and still settling, a light baritone that cracks upward on excited words, some words dropping low and others jumping high. Eager, earnest and quick, a little out of breath, proud when he gets something right, desperate to impress. General American. Adult performer, warm and clear, never scary.",
+      "search": "young male eager energetic",
+      "speakers": [
+        "pip_thistledown",
+        "manticore_cubs"
+      ]
+    },
+    {
+      "id": "kad-skerry",
+      "gender": "female",
+      "people": "griffin",
+      "prompt": "A woman's voice in her thirties, bright and carrying, mid-high pitch with a clear, slightly sharp edge on stressed words, like a bird call. Brisk and warm with a flair for the dramatic, projecting as if calling down from a height. Quick pace, big expressive swings, affectionate. General American. Adult performer, warm and clear, never scary.",
+      "search": "bright female dramatic confident",
+      "speakers": [
+        "skerry"
+      ]
+    },
+    {
+      "id": "kad-puddle",
+      "gender": "female",
+      "people": "skupper",
+      "prompt": "A young woman's voice, slightly nasal and clipped, with a Slavic-tinged American accent. Pensive and slow, then abruptly blunt: short sentences that stop dead, dry deadpan humor, sudden bursts of cheerfulness. Curious and matter-of-fact about everything strange. Adult performer, warm and clear, never scary.",
+      "search": "young woman deadpan dry",
+      "speakers": [
+        "saltrot_guide",
+        "grandmother_winkle"
+      ]
+    },
+    {
+      "id": "kad-yeti-herder",
+      "gender": "female",
+      "people": "yeti",
+      "prompt": "A woman's voice in her fifties, low and raspy, like warm gravel in a cold room. Slow, patient and unhurried, dry humor delivered perfectly flat, practical and quietly caring. Comfortable with silence, never rushed. General American. Adult performer, warm and clear, never scary.",
+      "search": "raspy older woman low",
+      "speakers": [
+        "yeti_herder"
+      ]
+    },
+    {
+      "id": "kad-tally",
+      "gender": "female",
+      "people": "dragonling",
+      "prompt": "A woman's voice in her thirties, light and quick with crisp consonants and a precise bookkeeper's rhythm. Cheerful and exact, counting numbers aloud in a steady beat, speeding up and rising in pitch when upset. Brisk, proud of getting it right. General American. Adult performer, warm and clear, never scary.",
+      "search": "precise cheerful young woman",
+      "speakers": [
+        "tally",
+        "dragonling_stone_keeper"
+      ]
+    },
+    {
+      "id": "kad-seal-keeper",
+      "gender": "any",
+      "people": "legend_dragon",
+      "prompt": "A vast, very old voice, gender-neutral, deep and resonant with a dry, ashy texture. Slow, rolling cadence and long thoughtful pauses. Amused and patient, a teacher who already knows the answers and asks anyway, generous with praise. Gravelly warmth beneath, never growling or threatening. General American. Warm and clear, never scary.",
+      "search": "ancient deep resonant wise",
+      "speakers": [
+        "seal_keeper"
+      ]
+    },
+    {
+      "id": "kad-orin",
+      "gender": "male",
+      "people": "griffin",
+      "prompt": "A man's voice in his sixties, a warm baritone with a dry, dusty texture and a gentle, educated British accent. Studious and curious, delighted by small discoveries, with a quiet sadness underneath. Measured pace that quickens when excited, kind and a little absent-minded. Adult performer, warm and clear, never scary.",
+      "search": "professor warm older storyteller",
+      "speakers": [
+        "orin_vale",
+        "cloaked_griffin"
+      ]
+    },
+    {
+      "id": "kad-juniper",
+      "gender": "female",
+      "people": "kitsune",
+      "prompt": "A woman's voice in her forties, clear and bright with a musical lilt, mid-range pitch. Brisk, practical and warm, with a sing-song rise when she gives instructions, as if every task were a little song. Cheerful, confident, quick on her feet. General American. Adult performer, warm and clear, never scary.",
+      "search": "warm musical female cheerful",
+      "speakers": [
+        "keeper_juniper"
+      ]
+    },
+    {
+      "id": "kad-olivia",
+      "gender": "female",
+      "people": "unicorn",
+      "prompt": "A young woman's voice, bright and certain, with a crisp, confident edge and the quiet power of someone sure she is right, and real kindness underneath. Speeds up with excitement when imagining possibilities, softens and puzzles when she hears no. Clear mezzo, precise diction. General American. Adult performer, warm and clear, never scary.",
+      "search": "young confident female commanding",
+      "speakers": [
+        "olivia",
+        "cloaked_unicorn",
+        "flag_warden"
+      ]
+    },
+    {
+      "id": "kad-pellam",
+      "gender": "male",
+      "people": "faun",
+      "prompt": "A man's voice in his thirties, dry and precise, with a slightly nasal clerk's diction. Nervous and fast, clipped sentences, deadpan, like a pen scratching in a ledger, with a hidden flicker of delight whenever something is irregular but legal. General American. Adult performer, warm and clear, never scary.",
+      "search": "dry nervous clerk male",
+      "speakers": [
+        "pellam"
+      ]
+    },
+    {
+      "id": "kad-brask",
+      "gender": "male",
+      "people": "griffin",
+      "prompt": "A man's voice in his fifties, a gruff baritone with a strong German accent. Blunt and matter-of-fact, flat delivery of numbers and unwelcome news, pauses to work out arithmetic aloud. Honest and never unkind, with a dry warmth. Adult performer, warm and clear, never scary.",
+      "search": "gruff blunt male",
+      "speakers": [
+        "brask",
+        "prospector"
+      ]
+    },
+    {
+      "id": "kad-seren",
+      "gender": "female",
+      "people": "kitsune",
+      "prompt": "A woman's voice in her forties, soft and serene, a calm mid-low pitch. Slow, clear and steady, like a patient teacher who never raises her voice. Gentle, reassuring, with a trace of mystery, holding firm without hardness. General American. Adult performer, warm and clear, never scary.",
+      "search": "calm teacher soft female",
+      "speakers": [
+        "seren_wisp"
+      ]
+    },
+    {
+      "id": "kad-tamsin",
+      "gender": "female",
+      "people": "griffin",
+      "prompt": "A young woman's voice, playful and quick, with a husky laugh never far from the surface. Upbeat and teasing, you can hear the smile, cheeky swoops in pitch, delighted rather than sore when caught out. Mid-range, a card-sharp's easy patter. General American. Adult performer, warm and clear, never scary.",
+      "search": "playful husky young woman laughing",
+      "speakers": [
+        "tamsin"
+      ]
+    },
+    {
+      "id": "kad-ossley",
+      "gender": "male",
+      "people": "frogfolk",
+      "prompt": "An old man's voice, deep and croaky, with a slow Louisiana drawl. Very few words, long unhurried pauses, a low rumble like a bullfrog at dusk. Warm and wise, answers the question you meant rather than the one you asked, never rushed. Adult performer, warm and clear, never scary.",
+      "search": "old man southern drawl deep",
+      "speakers": [
+        "old_ossley",
+        "old_wick"
+      ]
+    },
+    {
+      "id": "kad-griffin-young",
+      "gender": "any",
+      "people": "griffin",
+      "prompt": "A light, youthful-sounding voice, any gender, bright with a slightly squawky sparkle on excited words. Eager and earnest, a little nervous, speeding up and rising when flustered, tumbling over words and then recovering with pride. Quick pace. General American. Adult performer, warm and clear, never scary.",
+      "search": "young energetic bright nervous",
+      "speakers": [
+        "pebble",
+        "tumble",
+        "fenwick",
+        "tibbet",
+        "courier_griffin",
+        "linnet",
+        "dab"
+      ]
+    },
+    {
+      "id": "kad-griffin-fussy",
+      "gender": "female",
+      "people": "griffin",
+      "prompt": "A woman in her fifties, mid-high and flustered, fussy and warm and a little dramatic. Worried, counts things under her breath and loses count, squawks on sudden worries, then begins again. Kind underneath. General American. Adult performer, warm and clear, never scary.",
+      "search": "flustered middle-aged woman dramatic",
+      "speakers": [
+        "tilly",
+        "postmaster_quill"
+      ]
+    },
+    {
+      "id": "kad-yeti-deep",
+      "gender": "male",
+      "people": "yeti",
+      "prompt": "A big, deep, slow man's voice, a rumbling bass-baritone with soft edges. A gentle giant: unhurried and kind, warm rounded vowels and long breaths, naming everything with fondness as if every rock were a friend. General American. Adult performer, warm and clear, never scary.",
+      "search": "deep gentle giant bass",
+      "speakers": [
+        "route_worker_yeti",
+        "yeti_builders",
+        "young_yeti_singer",
+        "memory_readers",
+        "orange_captain",
+        "grit_seller"
+      ]
+    },
+    {
+      "id": "kad-yeti-gentle",
+      "gender": "female",
+      "people": "yeti",
+      "prompt": "A woman's soft, low, slightly breathy voice, slow and calm, hushed like someone speaking in a snow-quiet room. Kind and quietly funny, never hurried, with a little shyness. General American. Adult performer, warm and clear, never scary.",
+      "search": "soft breathy low whisper woman",
+      "speakers": [
+        "flurry",
+        "elder_murmur",
+        "fish_seller",
+        "grandma_drift",
+        "aunt_bellow"
+      ]
+    },
+    {
+      "id": "kad-dragonling-brisk",
+      "gender": "female",
+      "people": "dragonling",
+      "prompt": "A young woman's voice, light and quick with crisp consonants, chirpy and a little sassy and proud. Brave and earnest, fast pace with sudden pauses to think, sounds younger than she is. General American. Adult performer, warm and clear, never scary.",
+      "search": "chirpy young woman sassy",
+      "speakers": [
+        "bryn",
+        "bell_courier",
+        "nim",
+        "young_gatherer",
+        "bell_code_expert",
+        "bryony",
+        "nettle",
+        "small_dragonling",
+        "dragonling_runner"
+      ]
+    },
+    {
+      "id": "kad-dragonling-grandmother",
+      "gender": "female",
+      "people": "dragonling",
+      "prompt": "An elderly woman's voice, warm and slightly creaky, brisk and cozy. Doting and a little bossy, tender but unarguable; says nothing to worry about in a way that makes you worry. General American. Warm and clear, never scary.",
+      "search": "elderly grandmother warm cozy",
+      "speakers": [
+        "grandmother",
+        "great_gran_ashby",
+        "grandmother_tull"
+      ]
+    },
+    {
+      "id": "kad-kitsune-keeper",
+      "gender": "female",
+      "people": "kitsune",
+      "prompt": "A woman's voice in her thirties or forties, clear and calm, mid pitch with a light melody. Brisk, kind and unflappable, practical and a little amused, unbothered by wind or trouble. General American. Adult performer, warm and clear, never scary.",
+      "search": "calm brisk kind woman",
+      "speakers": [
+        "keeper_sorrel",
+        "thimble"
+      ]
+    },
+    {
+      "id": "kad-centaur-brisk",
+      "gender": "female",
+      "people": "centaur",
+      "prompt": "A fast, plain-spoken woman's voice, mid pitch, slightly breathless like someone talking over her shoulder at a canter. Practical, fair and deadpan, says a lot by saying little. General American. Adult performer, warm and clear, never scary.",
+      "search": "fast practical woman breathless",
+      "speakers": [
+        "relay_runner",
+        "brisk",
+        "road_boss",
+        "centaur_drover",
+        "road_warden",
+        "fennick",
+        "centaur_relay",
+        "tour_guide",
+        "waystation_centaur"
+      ]
+    },
+    {
+      "id": "kad-centaur-unhurried",
+      "gender": "female",
+      "people": "centaur",
+      "prompt": "A woman's voice in her fifties, calm, low and unhurried, stating distances and weather and trouble in the same even tone. Few words, listens to the whole answer, kind but busy, never repeats a warning. General American. Adult performer, warm and clear, never scary.",
+      "search": "calm low woman measured",
+      "speakers": [
+        "caravan_master",
+        "hesper",
+        "marda"
+      ]
+    },
+    {
+      "id": "kad-centaur-man",
+      "gender": "male",
+      "people": "centaur",
+      "prompt": "A man's voice, a strong, carrying baritone, a road-worn singer's chest voice. Warm, brash or weary depending on the day, big and open, the kind of voice that fills a camp. Plain-spoken and good-humored. General American. Adult performer, warm and clear, never scary.",
+      "search": "strong baritone male folk singer",
+      "speakers": [
+        "drover",
+        "bracken_swiftmile",
+        "old_corran",
+        "perrin",
+        "kettle_campers"
+      ]
+    },
+    {
+      "id": "kad-bigfoot-man",
+      "gender": "male",
+      "people": "bigfoot",
+      "prompt": "An old man's voice, large and slow, a calm deep bass with a gentle, shaggy texture. Quiet and observant, kind and proud of small things, long pauses, patient as moss. General American. Warm and clear, never scary.",
+      "search": "old calm deep man kind",
+      "speakers": [
+        "bram_lock",
+        "path_keeper",
+        "dob",
+        "oldest_archivist"
+      ]
+    },
+    {
+      "id": "kad-bigfoot-woman",
+      "gender": "female",
+      "people": "bigfoot",
+      "prompt": "A woman's voice, low and large, brisk and a little fussy with a warm practical tone. Particular about details, then warm once she decides you matter. Slightly out of breath, mid-low pitch. General American. Adult performer, warm and clear, never scary.",
+      "search": "fussy warm practical woman",
+      "speakers": [
+        "archivist",
+        "runner",
+        "mosshome_runner",
+        "flood_warden",
+        "eldest",
+        "hollis",
+        "door_archivist"
+      ]
+    },
+    {
+      "id": "kad-faun-woman",
+      "gender": "female",
+      "people": "faun",
+      "prompt": "A woman's voice, warm and rhythmic, forever half-singing. Patient, cheerful and encouraging, turns any answer into a little tune or an anecdote. Mid pitch, musical lilt, open vowels. General American. Adult performer, warm and clear, never scary.",
+      "search": "musical warm female encouraging",
+      "speakers": [
+        "tansy",
+        "carter",
+        "littlest_bracken",
+        "brackens",
+        "egg_faun",
+        "flute_faun",
+        "mother_bracken"
+      ]
+    },
+    {
+      "id": "kad-faun-man",
+      "gender": "male",
+      "people": "faun",
+      "prompt": "A man's voice, warm and rhythmic, a mid baritone half-singing as he talks. Cheerful, a bit shameless and charming, turns every answer into an anecdote and every price into a verse, and can slow into something courtly and old. General American. Adult performer, warm and clear, never scary.",
+      "search": "warm baritone charming musical",
+      "speakers": [
+        "corvane",
+        "burdock",
+        "tobble",
+        "faun_claimant",
+        "faun_drover",
+        "faun_prospector",
+        "rope_shop_boy"
+      ]
+    },
+    {
+      "id": "kad-frogfolk-woman",
+      "gender": "female",
+      "people": "frogfolk",
+      "prompt": "A woman's voice, unhurried and slightly husky, humming between sentences. Few words, long pauses that are not hesitation, quietly proud, never says the worrying thing out loud. Mid-low pitch, slow, with a dry marsh warmth. General American. Adult performer, warm and clear, never scary.",
+      "search": "husky slow woman humming",
+      "speakers": [
+        "dock_worker",
+        "gullet",
+        "wend",
+        "fen",
+        "gullets_cousins",
+        "dock_workers",
+        "ferrier",
+        "frogfolk_student"
+      ]
+    },
+    {
+      "id": "kad-manticore-elder",
+      "gender": "female",
+      "people": "manticore",
+      "prompt": "An elderly woman's voice like warm gravel, formal and kind, low and slow, with the dignity of a pride elder. Quietly worried underneath; says the important thing once and stops. General American. Warm and clear, never scary.",
+      "search": "elderly woman gravelly formal",
+      "speakers": [
+        "sefa_tallgrass",
+        "granny_ash",
+        "marker_movers"
+      ]
+    },
+    {
+      "id": "kad-selkie",
+      "gender": "female",
+      "people": "selkie",
+      "prompt": "A woman's voice, easy and quick, mid pitch, switching register with the company, from scholarly to street-smart. Tells the truth in a way that sounds like a joke, talks fast when excited, smiling. General American. Adult performer, warm and clear, never scary.",
+      "search": "quick expressive woman scholar",
+      "speakers": [
+        "tidewell",
+        "noodle_seller",
+        "selkie_grandmother",
+        "soup_woman"
+      ]
+    },
+    {
+      "id": "kad-sprite",
+      "gender": "any",
+      "people": "harvest_sprite",
+      "prompt": "A tiny, earnest, high-pitched voice, any gender, a bright adult voice that sounds very small. Over-explains, offers things nobody asked for, hurt for about four seconds when refused and then offers something else. Quick, squeaky warmth. General American. Warm and clear, never scary.",
+      "search": "tiny high-pitched earnest",
+      "speakers": [
+        "hessa",
+        "pib",
+        "sprites",
+        "door_voice"
+      ]
+    },
+    {
+      "id": "kad-witch",
+      "gender": "female",
+      "people": "witch_order",
+      "prompt": "A woman's voice in her sixties, dry and careful, mid-low, peering over her glasses. Instructive and patient, kind underneath; asks one question and means it. A little crackle. General American. Warm and clear, never scary.",
+      "search": "dry older woman witch",
+      "speakers": [
+        "mother_thrum",
+        "ford_witch",
+        "stall_witch"
+      ]
+    },
+    {
+      "id": "kad-troll",
+      "gender": "male",
+      "people": "stone_troll",
+      "prompt": "A very deep, very slow man's voice, a rumbling bass like stones settling. Immensely slow to begin and then complete, weighs each question out loud, final and gentle; mostly moss and patience. General American. Warm and clear, never scary.",
+      "search": "very deep slow bass",
+      "speakers": [
+        "old_lintel",
+        "mortar",
+        "innkeeper_flint"
+      ]
+    },
+    {
+      "id": "kad-boggart",
+      "gender": "any",
+      "people": "boggart",
+      "prompt": "A sly, sidelong, delighted voice, any gender, mid pitch with a conspiratorial rasp. Never says anything straight, says it twice, trades in what it has overheard, giggling at secrets. General American. Adult performer, warm and clear, never scary.",
+      "search": "sly conspiratorial raspy",
+      "speakers": [
+        "boggart",
+        "nan_rummage",
+        "boggart_prospector"
+      ]
+    },
+    {
+      "id": "kad-sheeple",
+      "gender": "female",
+      "people": "sheeple",
+      "prompt": "A warm, agreeable, gracious voice, mid-high, genteel and thrilled by everything, a little prim. Always checking in with the others, repeating the last good thing approvingly, with a soft bleat of a lilt. Never sore about losing. General American. Adult performer, warm and clear, never scary.",
+      "search": "genteel gracious upbeat woman",
+      "speakers": [
+        "lady_fleecewick",
+        "mrs_tuft",
+        "sheeple"
+      ]
+    },
+    {
+      "id": "kad-burrowfolk-man",
+      "gender": "male",
+      "people": "burrowfolk",
+      "prompt": "A man's voice, earthy and warm, mid-low, a gruff-cozy roll. Easily delighted, embarrassed, stubborn and polite, means well; practical and companionable. General American. Adult performer, warm and clear, never scary.",
+      "search": "earthy warm male gruff cozy",
+      "speakers": [
+        "dunmore",
+        "odo",
+        "burrowfolk_prospector",
+        "brassbuckles",
+        "prospectors",
+        "travelers",
+        "brassbuckle_scout",
+        "burrowfolk_claimant",
+        "cart_driver",
+        "claim_pair",
+        "feathered_hat",
+        "hedge_prospectors",
+        "tib"
+      ]
+    },
+    {
+      "id": "kad-burrowfolk-woman",
+      "gender": "female",
+      "people": "burrowfolk",
+      "prompt": "A woman's voice, earthy and warm, mid pitch, plainspoken and companionable. Tired, blunt or brave depending on the day, and able to sound small and serious when asked. General American. Adult performer, warm and clear, never scary.",
+      "search": "earthy plainspoken woman",
+      "speakers": [
+        "posy",
+        "ma_ruddle",
+        "masked_choir_singer",
+        "rook"
+      ]
+    },
+    {
+      "id": "kad-wisp",
+      "gender": "any",
+      "people": "will_o_wisp",
+      "prompt": "A tiny, squeaky voice, any gender, high and quick, boastful and bright, speaking in little bursts. A terrible loser for about two seconds, then delighted again; stutters or rhymes when excited. General American. Adult performer, warm and clear, never scary.",
+      "search": "tiny squeaky boastful",
+      "speakers": [
+        "flick",
+        "wisp"
+      ]
+    },
+    {
+      "id": "kad-skywarden-captain",
+      "gender": "female",
+      "people": "skywardens",
+      "prompt": "A woman's voice in her forties, rigid and honest, low-mid, with a crisp military cadence. Never wastes a word, says acceptable losses as calmly as ordering lunch; stern with a thread of fairness. General American. Adult performer, warm and clear, never scary.",
+      "search": "stern fair woman commander",
+      "speakers": [
+        "voss",
+        "apprentice",
+        "captain"
+      ]
+    },
+    {
+      "id": "kad-folk-man-dry",
+      "gender": "male",
+      "prompt": "A man's voice, dry and flat, mid pitch, precise and tired. Rigid and honest, counts everything, stamps things; deadpan with tiny hints of feeling. General American. Adult performer, warm and clear, never scary.",
+      "search": "dry flat deadpan male",
+      "speakers": [
+        "sergeant_holloway",
+        "skywardens",
+        "clerk_pennywhistle",
+        "dunnick",
+        "warden_clerk",
+        "engineers",
+        "warden_sergeant",
+        "fishmonger",
+        "brassbuckle_recordkeeper"
+      ]
+    },
+    {
+      "id": "kad-folk-man-warm",
+      "gender": "male",
+      "prompt": "A man's voice, warm and expressive, mid baritone, friendly and a little fussy. Chatty and kind, brave when it counts, talks to animals and barges; easy to like. General American. Adult performer, warm and clear, never scary.",
+      "search": "warm friendly male expressive",
+      "speakers": [
+        "barge_pilot",
+        "keeper_clove",
+        "farmer_gourd",
+        "alder",
+        "red_scarves",
+        "sausage_seller",
+        "map_seller",
+        "parsnip_driver",
+        "rumor_ring",
+        "wagon_driver",
+        "hob",
+        "muddy_prospector"
+      ]
+    },
+    {
+      "id": "kad-folk-woman-brisk",
+      "gender": "female",
+      "prompt": "A woman's voice, brisk and expressive, mid pitch, grand or dramatic when she wants to be. Practical and quick, talks in bursts, warm and a little theatrical. General American. Adult performer, warm and clear, never scary.",
+      "search": "theatrical brisk woman",
+      "speakers": [
+        "troupe_leader",
+        "cook",
+        "dilly"
+      ]
+    },
+    {
+      "id": "kad-party",
+      "gender": "any",
+      "prompt": "",
+      "search": "bright friendly young adult storyteller",
+      "speakers": [
+        "party"
+      ]
+    },
+    {
+      "id": "kad-merchant-grand",
+      "gender": "female",
+      "people": "merfolk",
+      "prompt": "",
+      "search": "grand theatrical older woman",
+      "speakers": [
+        "coralie_fenn",
+        "exchange_merchant",
+        "lighthouse_keeper",
+        "crying_gem_buyer"
+      ]
+    },
+    {
+      "id": "kad-unicorn-elder",
+      "gender": "female",
+      "people": "unicorn",
+      "prompt": "",
+      "search": "calm older woman gentle authority",
+      "speakers": [
+        "elder_unicorn"
+      ]
+    },
+    {
+      "id": "kad-tree",
+      "gender": "any",
+      "prompt": "",
+      "search": "old whispery slow breathy",
+      "speakers": [
+        "beech_tree"
+      ]
+    },
+    {
+      "id": "kad-gull",
+      "gender": "any",
+      "people": "quay_gull",
+      "prompt": "",
+      "search": "nasal deadpan comic",
+      "speakers": [
+        "the_gull"
+      ]
+    },
+    {
+      "id": "kad-crows",
+      "gender": "any",
+      "people": "rookery_crows",
+      "prompt": "",
+      "search": "gruff raspy comic",
+      "speakers": [
+        "the_crows"
+      ]
+    },
+    {
+      "id": "kad-small-comic",
+      "gender": "any",
+      "people": "snowhorn_goat",
+      "prompt": "",
+      "search": "small squeaky comic character",
+      "speakers": [
+        "goat_kid",
+        "mustard",
+        "ducklings"
+      ]
+    }
+  ],
+  "noVoice": [
+    "bun",
+    "drake",
+    "silver_otter",
+    "mire_mimic",
+    "echo_hunter",
+    "bones",
+    "titan",
+    "gull",
+    "cart_donkey",
+    "tibs_pony",
+    "dumpling",
+    "carters_mule",
+    "road_mule",
+    "duckling",
+    "spotted_kid",
+    "frost_wyrm",
+    "young_river_drake",
+    "cloud_whale"
+  ]
+}

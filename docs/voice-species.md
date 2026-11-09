@@ -1,6 +1,6 @@
 # Species casting for ElevenLabs
 
-**Status: a pass to react to, not a decision.** Nothing in `content/voice/cast.json` was changed. Every voice, tag and fix below is a suggestion to try on the [cast pages](./voice-cast.md#elevenlabs-mode). Built from the sheet as it stands (202 speakers, 2,208 lines for characters, not counting the narrator's or the party's). The ElevenLabs behaviour described here comes from this repo's own notes and general knowledge, not a live call: [the test at the end](#try-this-first) is how to find out what holds.
+**Status: the accents are decided, the voices are being cast.** Everyone's accent now comes from where their people live ([Accents by region](#accents-by-region)), whatever was typed by hand, and only the narrator's voice is locked. `content/voice/casting.json` holds who shares which voice, and `npm run voice:library` does the casting ([Casting with the tool](#casting-with-the-tool)). The prompts below are for rows the library cannot fill; try them on the [cast pages](./voice-cast.md#elevenlabs-mode). Built from the sheet as it stood (202 speakers then, 206 now: the four new ones do not speak, 2,208 lines for characters, not counting the narrator's or the party's). The ElevenLabs behaviour described here comes from this repo's own notes and general knowledge, not a live call: [the test at the end](#try-this-first) is how to find out what holds.
 
 ## The short version
 
@@ -22,6 +22,55 @@ That is **44 designed voices in three stopping points**: 14 principals carry 57%
 1. **A voice made from a Voice Design prompt.** The principals each get one. Every species gets one or two, named `kad-<species>-<kind>` so the voice picker's search box finds them (search `kad-yeti`).
 2. **A short tag per character**, in the sheet's existing `direction` field (80 characters or fewer, no brackets). On Eleven v3 and later the cast tool wraps it as `[slow, rumbling, kind]` in front of each of their lines. 57 are written below, and none overwrites a direction you already wrote.
 3. **An accent**, in the sheet's `accent` field. You have already been doing this by hand for 34 characters, which is the same idea as this plan. Keep the *shared species* voices accent-neutral (General American) and put each character's accent in their `accent` field, so the two stack cleanly. The principals are the exception: their prompts bake in the accent you already chose, because the voice is theirs alone, so clear their `accent` field to avoid saying it twice.
+
+## Accents by region
+
+One accent per place, so a place is recognisable by ear. A people takes the accent of the first place canon gives them. It lives in `REGION_ACCENTS` in `tools/voice/cast/accents.ts`, so changing a place is one line, then `npm run voice:library -- accents --write`.
+
+| Place | Accent | Who |
+|---|---|---|
+| Glacier of Origins | Alaskan Inuit English | yeti |
+| Frostfang Peaks | Pacific Northwest American | griffins |
+| Sky Islands | Californian American | kitsune |
+| Red Sky Foothills | Appalachian American | dragonlings |
+| The Plains | Texan | centaurs, sheeple |
+| Eastern Plains | Southwestern American | manticores, stone trolls |
+| Sunward Fields | Midwestern American | fauns, burrowfolk, harvest sprites |
+| Whispering Marsh | Southern American | frogfolk, boggarts, witches |
+| Enchanted Woods | New England American | unicorns, and bigfoot (MossHome is inside the Woods) |
+| Sallow Wastelands | Cockney (London) | skupper |
+| Mermaid Cove, Open Sea | Australian | merfolk, selkies |
+| An order, not a place | New York American | Skywardens |
+
+Whoever canon cannot place gets a varied American, the same one every time (`americanFor`). The narrator and the party take no accent. An accent is a tag in front of each line, so it steers a voice rather than replaces it; for Cockney and Australian the shortlist also looks for voices that have it natively.
+
+## Casting with the tool
+
+```bash
+npm run voice:library -- slots
+```
+
+```bash
+npm run voice:library -- shortlist
+```
+
+`shortlist` reads your account and the library, spends nothing, and writes `test-results/voice-shortlist/`: a page to hear each row's candidates, and `picks.json` with the first pick for every row. Change any on the page and save over that file, or keep them.
+
+It asks the library for each search word on its own, since a whole phrase mostly finds nothing, and ranks what comes back: a point per word the voice's description shares, one for a voice made for stories or characters, one off for an ad or social voice, two off for the wrong age. Horror, ASMR and anything seductive never show. A voice already on your account counts only in the row's accent (George is British, so he never voices a Pacific Northwest griffin), and one that shares none of the row's words waits at the end as a free stand-in. Rows with most lines pick first and spend the free slots; after that a row takes a voice already on your account, and its accent and direction tags carry it. When those run out too, a row shares a voice another row already has, in an accent that voice does not speak yet (another accent is another sound, and it spends no slot). Listen to those shares: a voice that ignores its accent tag sounds like the row it borrowed from. A row left with nothing is designed on the cast page, which needs a slot.
+
+```bash
+npm run voice:library -- add --yes
+```
+
+```bash
+npm run voice:library -- assign
+```
+
+```bash
+npm run voice:library -- listen
+```
+
+`add` puts the library picks on your account, which uses voice slots; a voice two rows share takes one. It knows a voice by its id, never its name: a pick already on the account (an add that stopped halfway) is saved as the account's copy instead of added again, and a new pick for a row whose name an old voice holds is added beside it, with a note that the old one still takes a slot. When the picks need more slots than are free, `add --fit` keeps the library voices for the rows with most lines and moves each row past the slots to a free voice from its own shortlist (one on your account no row uses, or a kept voice in an accent it does not speak yet), and prints every move. It writes the trimmed picks only with `--yes`. `assign` gives each pick to everyone on its row, unapproved. `listen` renders one real line per speaker to `test-results/voice-listen/`, with no manifest and no bucket; `--row a,b` keeps it to those rows, `--per-row 1` to the speaker with most lines on each, and `--speaker a,b` to those speakers, for a handful of clips. When they sound right, `assign --approve` approves them: `voice:generate` renders only approved voices.
 
 ## How ElevenLabs lets you vary a voice
 

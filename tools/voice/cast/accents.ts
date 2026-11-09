@@ -28,6 +28,9 @@ export const ACCENTS: readonly Accent[] = [
   { label: "New England American", group: "American", note: "clipped, dry, with softened r sounds" },
   { label: "New York American", group: "American", note: "quick, bright and direct" },
   { label: "Pacific Northwest American", group: "American", note: "soft, level and calm" },
+  { label: "Californian American", group: "American", note: "sunny, easy and open" },
+  { label: "Southwestern American", group: "American", note: "dry, unhurried and wide open" },
+  { label: "Alaskan Inuit English", group: "American", note: "soft, even and unhurried, the English of the far north" },
   { label: "Received Pronunciation (BBC English)", group: "British and Irish", note: "the classic storyteller: precise and warm" },
   { label: "West Country English", group: "British and Irish", note: "rural, rolling and cheerful" },
   { label: "Cockney (London)", group: "British and Irish", note: "quick and cheeky, with dropped consonants" },
@@ -61,6 +64,61 @@ export const REGION_IDEAS: Readonly<Record<string, { why: string; accents: reado
   "biome.open_sea": { why: "sailors and the wide water", accents: ["Irish", "West Country English", "Scottish (Lowland)"] },
   "biome.sallow_wastelands": { why: "brackish mudflats where the river meets the sea", accents: ["Cockney (London)", "Southern American"] },
 };
+
+/**
+ * The accent of each place, decided (docs/voice-species.md, "Accents by region"): everyone from one place sounds like
+ * it, whatever was typed for them by hand. One accent per place, so a place is recognisable by ear.
+ */
+export const REGION_ACCENTS: Readonly<Record<string, string>> = {
+  "biome.sky_islands": "Californian American",
+  "biome.enchanted_woods": "New England American",
+  "biome.whispering_marsh": "Southern American",
+  "biome.red_sky_foothills": "Appalachian American",
+  "biome.plains": "Texan",
+  "biome.sunward_fields": "Midwestern American",
+  "biome.glacier_of_origins": "Alaskan Inuit English",
+  "biome.frostfang_peaks": "Pacific Northwest American",
+  "biome.eastern_plains": "Southwestern American",
+  "biome.mermaid_cove": "Australian",
+  "biome.open_sea": "Australian",
+  "biome.sallow_wastelands": "Cockney (London)",
+};
+
+/**
+ * Peoples the map does not settle by their first place: bigfoot live in MossHome, inside the Woods, and canon gives
+ * them no biome; harvest sprites work the Sunward Fields; the Skywardens are an order, not a place.
+ */
+export const PEOPLE_ACCENTS: Readonly<Record<string, string>> = {
+  bigfoot: "New England American",
+  harvest_sprite: "Midwestern American",
+  skywardens: "New York American",
+};
+
+/** Who a place cannot place gets one of these, the same one every time: when in doubt, American, but not all one American. */
+export const AMERICAN_VARIETY: readonly string[] = [
+  "Midwestern American",
+  "Southern American",
+  "Californian American",
+  "New York American",
+  "New England American",
+  "Texan",
+  "Pacific Northwest American",
+  "Appalachian American",
+];
+
+/** A stable pick from AMERICAN_VARIETY: it depends only on the speaker's id, so adding a speaker moves nobody else. */
+export function americanFor(id: string): string {
+  let hash = 0;
+  for (const letter of id) hash = (hash * 31 + letter.charCodeAt(0)) >>> 0;
+  return AMERICAN_VARIETY[hash % AMERICAN_VARIETY.length]!;
+}
+
+/** A speaker's accent: their people's, else their people's first place's, else a varied American. */
+export function accentFor(id: string, people: string | null | undefined, biomeIds: readonly string[]): string {
+  if (people && PEOPLE_ACCENTS[people]) return PEOPLE_ACCENTS[people]!;
+  const home = biomeIds.find((biome) => REGION_ACCENTS[biome]);
+  return home ? REGION_ACCENTS[home]! : americanFor(id);
+}
 
 export interface AccentIdea {
   accent: Accent;

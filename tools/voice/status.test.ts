@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from "vitest";
 import { clipKey, spokenForm } from "./clip-key";
-import { desiredClips, type CastSheet } from "./desired";
+import { desiredClips, ELEVENLABS, voiceOf, type CastSheet } from "./desired";
 import { classify } from "./lines";
 import { clipStatus, countByState, toRender, type Lock, type Manifest } from "./manifest";
 import { sourceHash, type ScriptFile } from "./script";
@@ -15,8 +15,8 @@ const OPTIONS = { facetsMax: 2 };
 const CAST: CastSheet = {
   accent: "General American",
   speakers: {
-    narrator: { who: "A warm storyteller.", elevenlabs: { voiceId: "voice-narrator" } },
-    pib: { who: "A bramble sprite.", elevenlabs: { voiceId: "voice-pib" } },
+    narrator: { who: "A warm storyteller.", elevenlabs: { voiceId: "voice-narrator", approved: true } },
+    pib: { who: "A bramble sprite.", elevenlabs: { voiceId: "voice-pib", approved: true } },
   },
 };
 
@@ -28,6 +28,14 @@ const keysOf = (lines: VoiceLine[], cast = CAST, scripts = new Map<string, Scrip
 
 const A = line("ch-01/a/narration", "The door is shut.");
 const B = line("ch-01/b/narration", "The path ends at a wall of thorns.");
+
+describe("an ElevenLabs voice nobody approved", () => {
+  it("is not spent on: a placeholder or an audition stays with the device voice", () => {
+    const cast: CastSheet = { speakers: { a: { elevenlabs: { voiceId: "v" } }, b: { elevenlabs: { voiceId: "v", approved: true } } } };
+    expect(voiceOf(cast, "a", ELEVENLABS)).toBeUndefined();
+    expect(voiceOf(cast, "b", ELEVENLABS)).toBeDefined();
+  });
+});
 
 describe("the clip key", () => {
   it("changes for exactly the line whose text was edited", () => {
@@ -48,7 +56,7 @@ describe("the clip key", () => {
       },
     };
     const scripts = new Map([["ch-01", script]]);
-    const retuned: CastSheet = { ...CAST, speakers: { ...CAST.speakers, pib: { who: "A bramble sprite.", elevenlabs: { voiceId: "voice-pib-two" } } } };
+    const retuned: CastSheet = { ...CAST, speakers: { ...CAST.speakers, pib: { who: "A bramble sprite.", elevenlabs: { voiceId: "voice-pib-two", approved: true } } } };
     const [narratorBefore, pibBefore] = keysOf([A, B], CAST, scripts)["ch-01/b/narration|"]!;
     const [narratorAfter, pibAfter] = keysOf([A, B], retuned, scripts)["ch-01/b/narration|"]!;
     expect(narratorAfter).toBe(narratorBefore);

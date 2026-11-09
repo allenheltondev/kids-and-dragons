@@ -59,6 +59,20 @@ describe("the sheet, in ElevenLabs mode", () => {
     expect(voiceClashes(sheet, "elevenlabs")).toContainEqual({ chapter: "c", voice: VOICE_B, speakers: ["narrator", "bun"] });
   });
 
+  it("hears one voice with a different accent or direction as a different sound, but never the narrator's", () => {
+    const sheet = sheetOf();
+    sheet.speakers.wick!.elevenlabs = { voiceId: VOICE_A };
+    sheet.speakers.bun!.elevenlabs = { voiceId: VOICE_A };
+    sheet.speakers.bun!.direction = "slow, rumbling";
+    expect(voiceClashes(sheet, "elevenlabs")).toEqual([]);
+    sheet.speakers.wick!.direction = "slow, rumbling";
+    expect(voiceClashes(sheet, "elevenlabs")).toEqual([{ chapter: "c", voice: VOICE_A, speakers: ["wick", "bun"] }]);
+    sheet.speakers.wick!.accent = "Texan";
+    expect(voiceClashes(sheet, "elevenlabs")).toEqual([]);
+    sheet.speakers.narrator!.elevenlabs = { voiceId: VOICE_A };
+    expect(voiceClashes(sheet, "elevenlabs")).toContainEqual({ chapter: "c", voice: VOICE_A, speakers: ["narrator", "bun"] });
+  });
+
   it("approves an ElevenLabs voice without touching the Gemini approval, and clears one that is rejected", () => {
     const sheet = sheetOf();
     sheet.speakers.wick!.elevenlabs = { voiceId: VOICE_A, name: "Rachel" };
