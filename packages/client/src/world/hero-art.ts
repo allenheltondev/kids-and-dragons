@@ -107,8 +107,25 @@ export interface HeroCoatRequest {
   /** Her RGB coat mask; null for gold on a cut-out with no mask, read by its own alpha. */
   mask: string | null;
   paint: TintPaint;
-  /** Its identity in the tinter's cache: the painting and the paint (both colours, or the gold). */
+  /**
+   * Made no bigger than this on its longer side, for a preview (a shelf's tile): a fraction of
+   * the pixels to recolour, encode and hold. Absent: at the painting's own size.
+   */
+  size?: number;
+  /** Its identity in the tinter's cache: the painting and the paint (both colours, or the gold), and its size. */
   key: string;
+}
+
+/**
+ * The longest side a preview tint is made at: a look shelf's tile, about 5rem across, sharp at
+ * three device pixels to one. The figure she stands as on the page is tinted at full size.
+ */
+export const PREVIEW_TINT_PX = 320;
+
+/** `request`, made no bigger than `size` (a preview); itself for no size, or none. */
+export function sizedTint(request: HeroCoatRequest | null, size: number | undefined): HeroCoatRequest | null {
+  if (!request || size === undefined) return request;
+  return { ...request, size, key: `${request.key}@${String(size)}` };
 }
 
 /**
