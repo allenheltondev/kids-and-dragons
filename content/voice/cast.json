@@ -58,7 +58,8 @@
       "lineCount": 63,
       "elevenlabs": {
         "voiceId": "tAtHhBlA3E0eKZJKNSKE",
-        "name": "kad-party"
+        "name": "kad-party",
+        "approved": true
       },
       "history": [
         {
@@ -129,7 +130,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "ocZQ262SsZb9RIxcQBOj",
-        "name": "kad-sprite"
+        "name": "kad-sprite",
+        "approved": true
       }
     },
     "wisp": {
@@ -179,7 +181,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "N2lVS1w4EtoT3dr4eOWO",
-        "name": "Callum - Husky Trickster"
+        "name": "Callum - Husky Trickster",
+        "approved": true
       }
     },
     "door_voice": {
@@ -208,7 +211,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "ocZQ262SsZb9RIxcQBOj",
-        "name": "kad-sprite"
+        "name": "kad-sprite",
+        "approved": true
       }
     },
     "tansy": {
@@ -267,7 +271,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "flick": {
@@ -313,7 +318,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "N2lVS1w4EtoT3dr4eOWO",
-        "name": "Callum - Husky Trickster"
+        "name": "Callum - Husky Trickster",
+        "approved": true
       }
     },
     "bun": {
@@ -400,7 +406,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "eR40ATw9ArzDf9h3v7t7",
-        "name": "kad-selkie"
+        "name": "kad-selkie",
+        "approved": true
       }
     },
     "coralie_fenn": {
@@ -459,7 +466,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "tobble": {
@@ -497,7 +505,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "hesper": {
@@ -543,7 +552,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "bD9maNcCuQQS75DGuteM",
-        "name": "kad-centaur-unhurried"
+        "name": "kad-centaur-unhurried",
+        "approved": true
       }
     },
     "boggart": {
@@ -601,7 +611,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "HIGUfNOdjuWQwwapnTRW",
-        "name": "kad-boggart"
+        "name": "kad-boggart",
+        "approved": true
       }
     },
     "lighthouse_keeper": {
@@ -638,7 +649,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "tour_guide": {
@@ -668,7 +680,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "mortar": {
@@ -715,7 +728,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "cQrSgU1CeOOz73lBM5Cb",
-        "name": "kad-troll"
+        "name": "kad-troll",
+        "approved": true
       }
     },
     "old_wick": {
@@ -746,7 +760,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "pNInz6obpgDQGcFmaJgB",
-        "name": "Adam - Dominant, Firm"
+        "name": "Adam - Dominant, Firm",
+        "approved": true
       }
     },
     "orange_captain": {
@@ -783,7 +798,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "name": "kad-yeti-deep",
+        "approved": true
       }
     },
     "postmaster_quill": {
@@ -820,7 +836,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "FGY2WhTYpPnrIDTdsKH5",
-        "name": "Laura - Enthusiast, Quirky Attitude"
+        "name": "Laura - Enthusiast, Quirky Attitude",
+        "approved": true
       }
     },
     "courier_griffin": {
@@ -858,7 +875,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "mrs_tuft": {
@@ -904,7 +922,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "selkie_grandmother": {
@@ -947,7 +966,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "eR40ATw9ArzDf9h3v7t7",
-        "name": "kad-selkie"
+        "name": "kad-selkie",
+        "approved": true
       }
     },
     "innkeeper_flint": {
@@ -984,7 +1004,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "cQrSgU1CeOOz73lBM5Cb",
-        "name": "kad-troll"
+        "name": "kad-troll",
+        "approved": true
       }
     },
     "hob": {
@@ -1026,7 +1047,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "sprites": {
@@ -1060,7 +1082,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "ocZQ262SsZb9RIxcQBOj",
-        "name": "kad-sprite"
+        "name": "kad-sprite",
+        "approved": true
       }
     },
     "marda": {
@@ -1107,7 +1130,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "bD9maNcCuQQS75DGuteM",
-        "name": "kad-centaur-unhurried"
+        "name": "kad-centaur-unhurried",
+        "approved": true
       }
     },
     "drover": {
@@ -1176,7 +1200,8 @@
       ],
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man"
+        "name": "kad-centaur-man",
+        "approved": true
       }
     },
     "sheeple": {
@@ -1216,7 +1241,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "flute_faun": {
@@ -1247,7 +1273,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "egg_faun": {
@@ -1278,7 +1305,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "cook": {
@@ -1312,7 +1340,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "ferrier": {
@@ -1343,7 +1372,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "relay_runner": {
@@ -1406,7 +1436,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "fennick": {
@@ -1445,7 +1476,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "old_lintel": {
@@ -1491,7 +1523,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "cQrSgU1CeOOz73lBM5Cb",
-        "name": "kad-troll"
+        "name": "kad-troll",
+        "approved": true
       }
     },
     "drake": {
@@ -1560,7 +1593,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "old_ossley": {
@@ -1646,7 +1680,8 @@
       ],
       "elevenlabs": {
         "voiceId": "pNInz6obpgDQGcFmaJgB",
-        "name": "Adam - Dominant, Firm"
+        "name": "Adam - Dominant, Firm",
+        "approved": true
       }
     },
     "kettle_campers": {
@@ -1677,7 +1712,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man"
+        "name": "kad-centaur-man",
+        "approved": true
       }
     },
     "wagon_driver": {
@@ -1706,7 +1742,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "dilly": {
@@ -1742,7 +1779,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "prospector": {
@@ -1793,7 +1831,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "OYWwCdDHouzDwiZJWOOu",
-        "name": "kad-brask"
+        "name": "kad-brask",
+        "approved": true
       }
     },
     "parsnip_driver": {
@@ -1822,7 +1861,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "gullet": {
@@ -1869,7 +1909,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "silver_otter": {
@@ -1937,7 +1978,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "HIGUfNOdjuWQwwapnTRW",
-        "name": "kad-boggart"
+        "name": "kad-boggart",
+        "approved": true
       }
     },
     "mire_mimic": {
@@ -2007,7 +2049,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "prospectors": {
@@ -2041,7 +2084,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "sausage_seller": {
@@ -2075,7 +2119,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "burdock": {
@@ -2130,7 +2175,8 @@
       ],
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "tamsin": {
@@ -2192,7 +2238,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "thfYL0Elyru2qqTtNQsE",
-        "name": "kad-tamsin"
+        "name": "kad-tamsin",
+        "approved": true
       }
     },
     "wend": {
@@ -2253,7 +2300,8 @@
       ],
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "mother_thrum": {
@@ -2299,7 +2347,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "brackens": {
@@ -2336,7 +2385,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "troupe_leader": {
@@ -2380,7 +2430,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "red_scarves": {
@@ -2416,7 +2467,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "sefa_tallgrass": {
@@ -2465,7 +2517,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "wGcFBfKz5yUQqhqr0mVy",
-        "name": "kad-yeti-herder"
+        "name": "kad-yeti-herder",
+        "approved": true
       }
     },
     "cart_driver": {
@@ -2497,7 +2550,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "waystation_centaur": {
@@ -2528,7 +2582,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "bracken_swiftmile": {
@@ -2590,7 +2645,8 @@
       ],
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man"
+        "name": "kad-centaur-man",
+        "approved": true
       }
     },
     "manticore_cubs": {
@@ -2624,7 +2680,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "S0ypc51SmsvcKXTWvjqJ",
-        "name": "kad-pip"
+        "name": "kad-pip",
+        "approved": true
       }
     },
     "granny_ash": {
@@ -2670,7 +2727,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "wGcFBfKz5yUQqhqr0mVy",
-        "name": "kad-yeti-herder"
+        "name": "kad-yeti-herder",
+        "approved": true
       }
     },
     "marker_movers": {
@@ -2701,7 +2759,8 @@
       "accent": "Southwestern American",
       "elevenlabs": {
         "voiceId": "wGcFBfKz5yUQqhqr0mVy",
-        "name": "kad-yeti-herder"
+        "name": "kad-yeti-herder",
+        "approved": true
       }
     },
     "beech_tree": {
@@ -2752,7 +2811,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "SAz9YHcvj6GT2YYXdXww",
-        "name": "River - Relaxed, Neutral, Informative"
+        "name": "River - Relaxed, Neutral, Informative",
+        "approved": true
       }
     },
     "elder_unicorn": {
@@ -2797,7 +2857,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "wGcFBfKz5yUQqhqr0mVy",
-        "name": "kad-yeti-herder"
+        "name": "kad-yeti-herder",
+        "approved": true
       }
     },
     "flood_warden": {
@@ -2859,7 +2920,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "echo_hunter": {
@@ -2952,7 +3014,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "hedge_prospectors": {
@@ -2981,7 +3044,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "ma_ruddle": {
@@ -3025,7 +3089,8 @@
       "status": "provisional",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       },
       "accent": "Midwestern American"
     },
@@ -3056,7 +3121,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "sergeant_holloway": {
@@ -3116,7 +3182,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "clerk_pennywhistle": {
@@ -3161,7 +3228,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "old_corran": {
@@ -3207,7 +3275,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man"
+        "name": "kad-centaur-man",
+        "approved": true
       }
     },
     "road_boss": {
@@ -3253,7 +3322,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "map_seller": {
@@ -3282,7 +3352,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "rumor_ring": {
@@ -3311,7 +3382,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "hollis": {
@@ -3356,7 +3428,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "pellam": {
@@ -3422,7 +3495,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "SOYHLrjzK2X1ezoPC6cr",
-        "name": "Harry - Fierce Warrior"
+        "name": "Harry - Fierce Warrior",
+        "approved": true
       }
     },
     "brask": {
@@ -3484,7 +3558,8 @@
       ],
       "elevenlabs": {
         "voiceId": "OYWwCdDHouzDwiZJWOOu",
-        "name": "kad-brask"
+        "name": "kad-brask",
+        "approved": true
       }
     },
     "carter": {
@@ -3532,7 +3607,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "nim": {
@@ -3578,7 +3654,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "tibbet": {
@@ -3620,7 +3697,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "apprentice": {
@@ -3664,7 +3742,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "flag_warden": {
@@ -3704,7 +3783,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "m3p6KEeXfVR68KjgMGgi",
-        "name": "kad-olivia"
+        "name": "kad-olivia",
+        "approved": true
       }
     },
     "door_archivist": {
@@ -3733,7 +3813,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "oldest_archivist": {
@@ -3774,7 +3855,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "S75jVZ0i3J6Xa5BbK8CE",
-        "name": "kad-bigfoot-man"
+        "name": "kad-bigfoot-man",
+        "approved": true
       }
     },
     "eldest": {
@@ -3824,7 +3906,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "soup_woman": {
@@ -3871,7 +3954,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "eR40ATw9ArzDf9h3v7t7",
-        "name": "kad-selkie"
+        "name": "kad-selkie",
+        "approved": true
       }
     },
     "path_keeper": {
@@ -3920,7 +4004,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "S75jVZ0i3J6Xa5BbK8CE",
-        "name": "kad-bigfoot-man"
+        "name": "kad-bigfoot-man",
+        "approved": true
       }
     },
     "young_gatherer": {
@@ -3967,7 +4052,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "great_gran_ashby": {
@@ -4017,7 +4103,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       }
     },
     "grandmother": {
@@ -4084,7 +4171,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       }
     },
     "small_dragonling": {
@@ -4128,7 +4216,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "perrin": {
@@ -4173,7 +4262,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man"
+        "name": "kad-centaur-man",
+        "approved": true
       }
     },
     "feathered_hat": {
@@ -4202,7 +4292,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "hessa": {
@@ -4277,7 +4368,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "ocZQ262SsZb9RIxcQBOj",
-        "name": "kad-sprite"
+        "name": "kad-sprite",
+        "approved": true
       }
     },
     "captain": {
@@ -4335,7 +4427,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "grandmother_tull": {
@@ -4382,7 +4475,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       }
     },
     "dunmore": {
@@ -4419,7 +4513,8 @@
       "status": "provisional",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       },
       "accent": "Midwestern American"
     },
@@ -4449,7 +4544,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "warden_clerk": {
@@ -4492,7 +4588,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "mosshome_runner": {
@@ -4559,7 +4656,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "ford_witch": {
@@ -4624,7 +4722,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "centaur_relay": {
@@ -4665,7 +4764,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "exchange_merchant": {
@@ -4720,7 +4820,8 @@
       ],
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "caravan_master": {
@@ -4784,7 +4885,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "bD9maNcCuQQS75DGuteM",
-        "name": "kad-centaur-unhurried"
+        "name": "kad-centaur-unhurried",
+        "approved": true
       }
     },
     "brisk": {
@@ -4840,7 +4942,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "bryony": {
@@ -4884,7 +4987,8 @@
       "status": "provisional",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       },
       "accent": "Appalachian American",
       "history": [
@@ -4942,7 +5046,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "alder": {
@@ -4978,7 +5083,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "stall_witch": {
@@ -5025,7 +5131,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "linnet": {
@@ -5061,7 +5168,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "rook": {
@@ -5101,7 +5209,8 @@
       "status": "provisional",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       },
       "accent": "Midwestern American"
     },
@@ -5132,7 +5241,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "odo": {
@@ -5177,7 +5287,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "posy": {
@@ -5226,7 +5337,8 @@
       "status": "provisional",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       },
       "accent": "Midwestern American",
       "history": [
@@ -5284,7 +5396,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "kqVT88a5QfII1HNAEPTJ",
-        "name": "kad-seal-keeper"
+        "name": "kad-seal-keeper",
+        "approved": true
       }
     },
     "bones": {
@@ -5395,7 +5508,8 @@
       ],
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "tilly": {
@@ -5441,7 +5555,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "FGY2WhTYpPnrIDTdsKH5",
-        "name": "Laura - Enthusiast, Quirky Attitude"
+        "name": "Laura - Enthusiast, Quirky Attitude",
+        "approved": true
       }
     },
     "saltrot_guide": {
@@ -5519,7 +5634,8 @@
       ],
       "elevenlabs": {
         "voiceId": "Xb7hH8MSUJpSbSDYk0k2",
-        "name": "Alice - Clear, Engaging Educator"
+        "name": "Alice - Clear, Engaging Educator",
+        "approved": true
       }
     },
     "pip_thistledown": {
@@ -5641,7 +5757,8 @@
       ],
       "elevenlabs": {
         "voiceId": "S0ypc51SmsvcKXTWvjqJ",
-        "name": "kad-pip"
+        "name": "kad-pip",
+        "approved": true
       },
       "accent": "Southwestern American"
     },
@@ -5689,7 +5806,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "vGQNBgLaiM3EdZtxIiuY",
-        "name": "kad-tally"
+        "name": "kad-tally",
+        "approved": true
       }
     },
     "orin_vale": {
@@ -5760,7 +5878,8 @@
       ],
       "elevenlabs": {
         "voiceId": "nPczCjzI2devNBz1zQrb",
-        "name": "Brian - Deep, Resonant and Comforting"
+        "name": "Brian - Deep, Resonant and Comforting",
+        "approved": true
       }
     },
     "pebble": {
@@ -5806,7 +5925,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "olivia": {
@@ -5876,7 +5996,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "m3p6KEeXfVR68KjgMGgi",
-        "name": "kad-olivia"
+        "name": "kad-olivia",
+        "approved": true
       }
     },
     "bram_lock": {
@@ -5936,7 +6057,8 @@
       "notes": "Re-audition required: Charon was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Orus is a provisional alternative.",
       "elevenlabs": {
         "voiceId": "S75jVZ0i3J6Xa5BbK8CE",
-        "name": "kad-bigfoot-man"
+        "name": "kad-bigfoot-man",
+        "approved": true
       }
     },
     "seren_wisp": {
@@ -6011,7 +6133,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "c6oCzzGT2jTaguC3680F",
-        "name": "kad-seren"
+        "name": "kad-seren",
+        "approved": true
       }
     },
     "thimble": {
@@ -6065,7 +6188,8 @@
       ],
       "elevenlabs": {
         "voiceId": "XrExE9yKIg1WjnnlVkGX",
-        "name": "Matilda - Knowledgable, Professional"
+        "name": "Matilda - Knowledgable, Professional",
+        "approved": true
       }
     },
     "the_gull": {
@@ -6111,7 +6235,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "iP95p4xoKVk53GoZ742B",
-        "name": "Chris - Charming, Down-to-Earth"
+        "name": "Chris - Charming, Down-to-Earth",
+        "approved": true
       }
     },
     "gull": {
@@ -6177,7 +6302,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "barge_pilot": {
@@ -6232,7 +6358,8 @@
       ],
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "noodle_seller": {
@@ -6278,7 +6405,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "eR40ATw9ArzDf9h3v7t7",
-        "name": "kad-selkie"
+        "name": "kad-selkie",
+        "approved": true
       }
     },
     "corvane": {
@@ -6325,7 +6453,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "yeti_herder": {
@@ -6400,7 +6529,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "wGcFBfKz5yUQqhqr0mVy",
-        "name": "kad-yeti-herder"
+        "name": "kad-yeti-herder",
+        "approved": true
       }
     },
     "young_yeti_singer": {
@@ -6439,7 +6569,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "name": "kad-yeti-deep",
+        "approved": true
       }
     },
     "skerry": {
@@ -6490,7 +6621,8 @@
       "direction": "brisk, warm, a little dramatic, calling from above",
       "elevenlabs": {
         "voiceId": "WtA85syCrJwasGeHGH2p",
-        "name": "kad-skerry"
+        "name": "kad-skerry",
+        "approved": true
       },
       "accent": "Pacific Northwest American",
       "history": [
@@ -6552,7 +6684,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "flurry": {
@@ -6603,7 +6736,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "grandmother_winkle": {
@@ -6648,7 +6782,8 @@
       "accent": "Cockney (London)",
       "elevenlabs": {
         "voiceId": "Xb7hH8MSUJpSbSDYk0k2",
-        "name": "Alice - Clear, Engaging Educator"
+        "name": "Alice - Clear, Engaging Educator",
+        "approved": true
       }
     },
     "dab": {
@@ -6687,7 +6822,8 @@
       "accent": "Cockney (London)",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "fen": {
@@ -6738,7 +6874,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "keeper_sorrel": {
@@ -6784,7 +6921,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "XrExE9yKIg1WjnnlVkGX",
-        "name": "Matilda - Knowledgable, Professional"
+        "name": "Matilda - Knowledgable, Professional",
+        "approved": true
       }
     },
     "keeper_clove": {
@@ -6830,7 +6968,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "tumble": {
@@ -6881,7 +7020,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "dragonling_stone_keeper": {
@@ -6927,7 +7067,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "vGQNBgLaiM3EdZtxIiuY",
-        "name": "kad-tally"
+        "name": "kad-tally",
+        "approved": true
       }
     },
     "farmer_gourd": {
@@ -6973,7 +7114,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "keeper_juniper": {
@@ -7024,7 +7166,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "dsigZNN9uZvzbZVKvb6a",
-        "name": "kad-juniper"
+        "name": "kad-juniper",
+        "approved": true
       }
     },
     "route_worker_yeti": {
@@ -7070,7 +7213,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "name": "kad-yeti-deep",
+        "approved": true
       }
     },
     "grandma_drift": {
@@ -7115,7 +7259,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "yeti_builders": {
@@ -7159,7 +7304,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "name": "kad-yeti-deep",
+        "approved": true
       }
     },
     "fishmonger": {
@@ -7192,7 +7338,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "rope_shop_boy": {
@@ -7216,7 +7363,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "brassbuckle_scout": {
@@ -7250,7 +7398,8 @@
       ],
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "brassbuckle_recordkeeper": {
@@ -7276,7 +7425,8 @@
       "status": "approved",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       },
       "history": [
         {
@@ -7310,7 +7460,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "littlest_bracken": {
@@ -7339,7 +7490,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman"
+        "name": "kad-faun-woman",
+        "approved": true
       }
     },
     "cart_donkey": {
@@ -7398,7 +7550,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "burrowfolk_prospector": {
@@ -7439,7 +7592,8 @@
       ],
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "faun_prospector": {
@@ -7463,7 +7617,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "boggart_prospector": {
@@ -7501,7 +7656,8 @@
       ],
       "elevenlabs": {
         "voiceId": "HIGUfNOdjuWQwwapnTRW",
-        "name": "kad-boggart"
+        "name": "kad-boggart",
+        "approved": true
       }
     },
     "tibs_pony": {
@@ -7570,7 +7726,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "dumpling": {
@@ -7620,7 +7777,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "eVzrG2iFY0Fkas3bIdWy",
-        "name": "kad-folk-man-warm"
+        "name": "kad-folk-man-warm",
+        "approved": true
       }
     },
     "carters_mule": {
@@ -7688,7 +7846,8 @@
       ],
       "elevenlabs": {
         "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman"
+        "name": "kad-bigfoot-woman",
+        "approved": true
       }
     },
     "bell_code_expert": {
@@ -7735,7 +7894,8 @@
       ],
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "engineers": {
@@ -7759,7 +7919,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "centaur_drover": {
@@ -7796,7 +7957,8 @@
       "accent": "Texan",
       "elevenlabs": {
         "voiceId": "LyJdFqe4G1teMZetsPSx",
-        "name": "kad-centaur-brisk"
+        "name": "kad-centaur-brisk",
+        "approved": true
       }
     },
     "faun_drover": {
@@ -7820,7 +7982,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "burrowfolk_claimant": {
@@ -7844,7 +8007,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       }
     },
     "faun_claimant": {
@@ -7868,7 +8032,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "name": "kad-faun-man",
+        "approved": true
       }
     },
     "skywardens": {
@@ -7907,7 +8072,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "dragonling_runner": {
@@ -7931,7 +8097,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "masked_choir_singer": {
@@ -7974,7 +8141,8 @@
       "accent": "Midwestern American",
       "elevenlabs": {
         "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior"
+        "name": "Grandma Rachel - Wise Southern Senior",
+        "approved": true
       }
     },
     "crying_gem_buyer": {
@@ -7998,7 +8166,8 @@
       "accent": "Australian",
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "road_mule": {
@@ -8057,7 +8226,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "name": "kad-skywarden-captain",
+        "approved": true
       }
     },
     "travelers": {
@@ -8087,7 +8257,8 @@
       "status": "provisional",
       "elevenlabs": {
         "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "name": "kad-burrowfolk-man",
+        "approved": true
       },
       "accent": "Midwestern American"
     },
@@ -8117,7 +8288,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "cjVigY5qzO86Huf0OWal",
-        "name": "Eric - Smooth, Trustworthy"
+        "name": "Eric - Smooth, Trustworthy",
+        "approved": true
       }
     },
     "duckling": {
@@ -8173,7 +8345,8 @@
       "accent": "Appalachian American",
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       }
     },
     "the_crows": {
@@ -8206,7 +8379,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
-        "name": "Liam - Energetic, Social Media Creator"
+        "name": "Liam - Energetic, Social Media Creator",
+        "approved": true
       }
     },
     "dock_workers": {
@@ -8238,7 +8412,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "goat_kid": {
@@ -8284,7 +8459,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "cjVigY5qzO86Huf0OWal",
-        "name": "Eric - Smooth, Trustworthy"
+        "name": "Eric - Smooth, Trustworthy",
+        "approved": true
       }
     },
     "spotted_kid": {
@@ -8345,7 +8521,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "frost_wyrm": {
@@ -8423,7 +8600,8 @@
       ],
       "elevenlabs": {
         "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident"
+        "name": "Sarah - Mature, Reassuring, Confident",
+        "approved": true
       }
     },
     "frogfolk_student": {
@@ -8447,7 +8625,8 @@
       "accent": "Southern American",
       "elevenlabs": {
         "voiceId": "gOZRcEzY40chlRuMDmLV",
-        "name": "kad-frogfolk-woman"
+        "name": "kad-frogfolk-woman",
+        "approved": true
       }
     },
     "cloaked_griffin": {
@@ -8471,7 +8650,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "nPczCjzI2devNBz1zQrb",
-        "name": "Brian - Deep, Resonant and Comforting"
+        "name": "Brian - Deep, Resonant and Comforting",
+        "approved": true
       }
     },
     "cloaked_unicorn": {
@@ -8502,7 +8682,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "m3p6KEeXfVR68KjgMGgi",
-        "name": "kad-olivia"
+        "name": "kad-olivia",
+        "approved": true
       }
     },
     "young_river_drake": {
@@ -8545,7 +8726,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "name": "kad-yeti-deep",
+        "approved": true
       }
     },
     "memory_readers": {
@@ -8575,7 +8757,8 @@
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
         "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "name": "kad-yeti-deep",
+        "approved": true
       }
     },
     "dob": {
@@ -8610,7 +8793,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "S75jVZ0i3J6Xa5BbK8CE",
-        "name": "kad-bigfoot-man"
+        "name": "kad-bigfoot-man",
+        "approved": true
       }
     },
     "fenwick": {
@@ -8649,7 +8833,8 @@
       "accent": "Pacific Northwest American",
       "elevenlabs": {
         "voiceId": "d8WcCpplp8meHt10UhL8",
-        "name": "kad-griffin-young"
+        "name": "kad-griffin-young",
+        "approved": true
       }
     },
     "dunnick": {
@@ -8689,7 +8874,8 @@
       "accent": "New England American",
       "elevenlabs": {
         "voiceId": "AOLUVLMs1jzrUpQeAea8",
-        "name": "kad-folk-man-dry"
+        "name": "kad-folk-man-dry",
+        "approved": true
       }
     },
     "mustard": {
@@ -8724,7 +8910,8 @@
       "accent": "Californian American",
       "elevenlabs": {
         "voiceId": "cjVigY5qzO86Huf0OWal",
-        "name": "Eric - Smooth, Trustworthy"
+        "name": "Eric - Smooth, Trustworthy",
+        "approved": true
       }
     },
     "cloud_whale": {
