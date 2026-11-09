@@ -936,20 +936,32 @@ export function decide(sheet: CastSheet, id: string, decision: Decision["decisio
   return entry;
 }
 
-/** Two speakers with one voice in the same chapter: what the sheet warns about. Someone with no voice yet on the provider clashes with nobody. */
+/**
+ * What a listener hears as one sound. On ElevenLabs a shared species voice is told apart by the accent and direction
+ * in front of each line, so only the same voice with the same accent and direction is one sound. Gemini: the voice.
+ */
+export function soundOf(entry: CastEntry, provider: VoiceProvider = "gemini"): string {
+  const voice = voiceOf(entry, provider);
+  return provider === "elevenlabs" && voice !== "" ? JSON.stringify([voice, entry.accent ?? "", entry.direction ?? ""]) : voice;
+}
+
+/** Two speakers with one sound in the same chapter: what the sheet warns about. Someone with no voice yet on the provider clashes with nobody. */
 export function voiceClashes(sheet: CastSheet, provider: VoiceProvider = "gemini"): { chapter: string; voice: string; speakers: string[] }[] {
   const clashes: { chapter: string; voice: string; speakers: string[] }[] = [];
-  const byChapter = new Map<string, Map<string, string[]>>();
+  const byChapter = new Map<string, Map<string, { voice: string; speakers: string[] }>>();
   for (const [id, entry] of Object.entries(sheet.speakers)) {
     const voice = voiceOf(entry, provider);
     if (entry.kind === "narrator" || entry.kind === "party" || (provider !== "gemini" && voice === "")) continue;
+    const sound = soundOf(entry, provider);
     for (const chapter of entry.chapters) {
-      const voices = byChapter.get(chapter) ?? new Map<string, string[]>();
-      voices.set(voice, [...(voices.get(voice) ?? []), id]);
-      byChapter.set(chapter, voices);
+      const sounds = byChapter.get(chapter) ?? new Map<string, { voice: string; speakers: string[] }>();
+      const found = sounds.get(sound) ?? { voice, speakers: [] };
+      found.speakers.push(id);
+      sounds.set(sound, found);
+      byChapter.set(chapter, sounds);
     }
   }
-  for (const [chapter, voices] of byChapter) for (const [voice, speakers] of voices) if (speakers.length > 1) clashes.push({ chapter, voice, speakers });
+  for (const [chapter, sounds] of byChapter) for (const { voice, speakers } of sounds.values()) if (speakers.length > 1) clashes.push({ chapter, voice, speakers });
   // The narrator speaks everywhere, so a character with the narrator's voice clashes in each of their chapters.
   const narrator = sheet.speakers.narrator === undefined ? "" : voiceOf(sheet.speakers.narrator, provider);
   for (const [id, entry] of Object.entries(sheet.speakers)) {

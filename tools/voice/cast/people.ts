@@ -9,7 +9,7 @@
  * Pure: a sheet in, a sheet changed and what happened out.
  */
 
-import { approvedOn, voiceOf, type CastEntry, type CastSheet, type VoiceProvider } from "./sheet.ts";
+import { approvedOn, soundOf, voiceOf, type CastEntry, type CastSheet, type VoiceProvider } from "./sheet.ts";
 
 export interface SharedVoice {
   /** Who now has the voice. */
@@ -35,8 +35,10 @@ function clashWith(sheet: CastSheet, id: string, voice: string, provider: VoiceP
   const entry = sheet.speakers[id]!;
   const narrator = sheet.speakers.narrator;
   if (narrator && voiceOf(narrator, provider) === voice) return { who: narrator.name, chapter: entry.chapters[0] ?? "every chapter" };
+  // What they would sound like on it: their own accent and direction can keep a shared voice apart.
+  const mine = soundOf(provider === "elevenlabs" ? { ...entry, elevenlabs: { voiceId: voice } } : { ...entry, gemini: { voice } }, provider);
   for (const [other, theirs] of Object.entries(sheet.speakers)) {
-    if (other === id || theirs.kind === "narrator" || theirs.kind === "party" || voiceOf(theirs, provider) !== voice) continue;
+    if (other === id || theirs.kind === "narrator" || theirs.kind === "party" || soundOf(theirs, provider) !== mine) continue;
     const together = entry.chapters.find((chapter) => theirs.chapters.includes(chapter));
     if (together) return { who: theirs.name, chapter: together };
   }
