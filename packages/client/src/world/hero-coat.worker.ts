@@ -9,7 +9,7 @@
  * painting and mask saved for offline (§5.4) are read from there.
  */
 
-import { runTint, type PixelIO, type TintJob } from "./hero-coat-pass";
+import { cachedIO, decodedSize, runTint, type PixelIO, type TintJob } from "./hero-coat-pass";
 
 interface Scope {
   onmessage: ((event: MessageEvent<{ id?: number; job?: TintJob; cancel?: number }>) => void) | null;
@@ -18,15 +18,18 @@ interface Scope {
 
 const scope = self as unknown as Scope;
 
-const io: PixelIO = {
-  async decode(url, signal) {
+// Decoded paintings and masks are kept for the next passes (a shelf of colours on one painting).
+const io: PixelIO = cachedIO({
+  async decode(url, signal, size) {
     const response = await fetch(url, { signal });
     if (!response.ok) throw new Error(`${url}: ${response.status}`);
     const bitmap = await createImageBitmap(await response.blob(), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
-    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+    const { width, height } = decodedSize(bitmap.width, bitmap.height, size);
+    const canvas = new OffscreenCanvas(width, height);
     const context = canvas.getContext("2d", { willReadFrequently: true });
     if (!context) throw new Error("no 2d canvas");
-    context.drawImage(bitmap, 0, 0);
+    context.imageSmoothingQuality = "high";
+    context.drawImage(bitmap, 0, 0, width, height);
     bitmap.close();
     const image = context.getImageData(0, 0, canvas.width, canvas.height);
     return { width: image.width, height: image.height, data: image.data };
@@ -41,7 +44,7 @@ const io: PixelIO = {
   },
   // A macrotask between slices, so a cancel message is heard.
   pause: () => new Promise((resolve) => setTimeout(resolve, 0)),
-};
+});
 
 const running = new Map<number, AbortController>();
 

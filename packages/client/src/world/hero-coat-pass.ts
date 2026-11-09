@@ -42,6 +42,8 @@ export interface TintJob {
   /** Her RGB coat mask, or null for a gilded cut-out read by its own alpha. */
   mask: string | null;
   paint: TintPaint;
+  /** Made no bigger than this on its longer side (a preview); absent, at the painting's size. */
+  size?: number;
 }
 
 /** RGBA pixels, as a canvas's `ImageData` holds them. */
@@ -65,7 +67,8 @@ export type TintRunner = (job: TintJob, signal: AbortSignal) => Promise<TintImag
 
 /** How pixels come in and go out: a canvas in the page, an `OffscreenCanvas` in the worker, plain arrays in tests. */
 export interface PixelIO {
-  decode(url: string, signal: AbortSignal): Promise<Pixels>;
+  /** A painting's pixels, made no bigger than `size` on its longer side when one is given. */
+  decode(url: string, signal: AbortSignal, size?: number): Promise<Pixels>;
   encode(pixels: Pixels): Promise<{ source: unknown; blob: Blob }>;
   /** Wait before the next slice (a frame, a macrotask). */
   pause(): Promise<void>;
@@ -92,7 +95,7 @@ export async function runTint(job: TintJob, io: PixelIO, signal: AbortSignal, sl
   check(signal);
   if (job.paint.kind === "figure") return runFigure(job, io, signal, slice);
   const paint = job.paint;
-  const [painting, mask] = await Promise.all([io.decode(job.painting, signal), job.mask ? io.decode(job.mask, signal) : Promise.resolve(null)]);
+  const [painting, mask] = await Promise.all([io.decode(job.painting, signal, job.size), job.mask ? io.decode(job.mask, signal, job.size) : Promise.resolve(null)]);
   check(signal);
   let view: HeroMask;
   if (mask) {
@@ -106,7 +109,7 @@ export async function runTint(job: TintJob, io: PixelIO, signal: AbortSignal, sl
     if (!hasTransparency(painting.data)) throw new Error(`${job.painting} is opaque: her figure needs its mask`);
     view = { data: painting.data, ...FIGURE_FROM_ALPHA };
   }
-  const stats = heroRegionStats(painting.data, view);
+  const stats = statsOf(painting, mask, view);
   const total = painting.width * painting.height;
   const out = new Uint8ClampedArray(painting.data.length);
   for (let from = 0; from < total; from += slice) {
@@ -121,6 +124,83 @@ export async function runTint(job: TintJob, io: PixelIO, signal: AbortSignal, sl
   return { width: painting.width, height: painting.height, ...encoded };
 }
 
+/**
+ * Her parts' means on a painting and its mask, worked out once for the pair: every colour a
+ * shelf tries on one painting shares them, and decoded pixels are shared (`cachedIO`).
+ */
+const STATS = new WeakMap<Pixels, WeakMap<Pixels, ReturnType<typeof heroRegionStats>>>();
+function statsOf(painting: Pixels, mask: Pixels | null, view: HeroMask): ReturnType<typeof heroRegionStats> {
+  const key = mask ?? painting;
+  const byPainting = STATS.get(key) ?? new WeakMap<Pixels, ReturnType<typeof heroRegionStats>>();
+  STATS.set(key, byPainting);
+  let stats = byPainting.get(painting);
+  if (!stats) {
+    stats = heroRegionStats(painting.data, view);
+    byPainting.set(painting, stats);
+  }
+  return stats;
+}
+
+/** How many decoded paintings and masks a page keeps for its next passes. */
+export const DECODED_KEPT = 4;
+
+/**
+ * `io`, keeping its last few decodes (by URL and size), so a shelf of colours on one painting
+ * fetches and decodes that painting and its mask once, not once a tile, and the figure she stands
+ * as reuses them on every tap. A decode is shared, so it is not cancelled with the pass that
+ * asked first; each pass waits for it only until its own signal is cancelled, so a cancelled
+ * pass ends at once and the next one starts (`untilCancelled`). A failure is not kept. The pixels
+ * are only read by a pass, never written.
+ */
+export function cachedIO(io: PixelIO, kept = DECODED_KEPT): PixelIO {
+  const decodes = new Map<string, Promise<Pixels>>();
+  const never = new AbortController().signal;
+  return {
+    ...io,
+    decode(url, signal, size) {
+      const key = `${url}@${String(size ?? "")}`;
+      let decoded = decodes.get(key);
+      if (decoded) {
+        // Most recently used last.
+        decodes.delete(key);
+      } else {
+        decoded = io.decode(url, never, size);
+        decoded.catch(() => {
+          if (decodes.get(key) === decoded) decodes.delete(key);
+        });
+      }
+      decodes.set(key, decoded);
+      while (decodes.size > kept) decodes.delete(decodes.keys().next().value!);
+      return untilCancelled(decoded, signal);
+    },
+  };
+}
+
+/** `shared`, for one pass: it rejects as cancelled the moment `signal` is, whatever `shared` is still doing. */
+function untilCancelled<T>(shared: Promise<T>, signal: AbortSignal): Promise<T> {
+  if (signal.aborted) return Promise.reject(new TintCancelled("cancelled"));
+  return new Promise<T>((resolve, reject) => {
+    const cancelled = (): void => reject(new TintCancelled("cancelled"));
+    signal.addEventListener("abort", cancelled, { once: true });
+    shared.then(
+      (value) => {
+        signal.removeEventListener("abort", cancelled);
+        resolve(value);
+      },
+      (error: unknown) => {
+        signal.removeEventListener("abort", cancelled);
+        reject(error);
+      },
+    );
+  });
+}
+
+/** The size a painting of `width` × `height` is decoded at for a longest side of `size` (never larger). */
+export function decodedSize(width: number, height: number, size: number | undefined): { width: number; height: number } {
+  const scale = size === undefined ? 1 : Math.min(1, size / Math.max(width, height));
+  return { width: Math.max(1, Math.round(width * scale)), height: Math.max(1, Math.round(height * scale)) };
+}
+
 /** Whether a painting has any see-through pixel: a cut-out, not an opaque portrait. */
 function hasTransparency(rgba: Uint8ClampedArray): boolean {
   for (let i = 3; i < rgba.length; i += 4) if (rgba[i]! < 255) return true;
@@ -130,7 +210,7 @@ function hasTransparency(rgba: Uint8ClampedArray): boolean {
 /** Her figure as an alpha mask: white, its alpha the mask's blue channel. */
 async function runFigure(job: TintJob, io: PixelIO, signal: AbortSignal, slice: number): Promise<TintImage> {
   if (!job.mask) throw new Error(`no coat mask for ${job.painting}`);
-  const mask = await io.decode(job.mask, signal);
+  const mask = await io.decode(job.mask, signal, job.size);
   check(signal);
   const total = mask.width * mask.height;
   const out = new Uint8ClampedArray(mask.data.length);
@@ -171,14 +251,16 @@ export function canvasIO(): PixelIO {
     return canvas;
   };
   return {
-    async decode(url, signal) {
+    async decode(url, signal, size) {
       const response = await fetch(url, { signal });
       if (!response.ok) throw new Error(`${url}: ${response.status}`);
       const bitmap = await createImageBitmap(await response.blob(), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
-      const canvas = canvasOf(bitmap.width, bitmap.height);
+      const { width, height } = decodedSize(bitmap.width, bitmap.height, size);
+      const canvas = canvasOf(width, height);
       const context = canvas.getContext("2d", { willReadFrequently: true });
       if (!context) throw new Error("no 2d canvas");
-      context.drawImage(bitmap, 0, 0);
+      context.imageSmoothingQuality = "high";
+      context.drawImage(bitmap, 0, 0, width, height);
       bitmap.close();
       const image = context.getImageData(0, 0, canvas.width, canvas.height);
       return { width: image.width, height: image.height, data: image.data };
@@ -269,7 +351,7 @@ export function workerTintRunner(make: () => Worker, fallback: TintRunner): Tint
 
 /** The page's runner: the worker where it can run, else slices on this thread. */
 export function defaultTintRunner(): TintRunner {
-  const sliced = slicedTintRunner(canvasIO());
+  const sliced = slicedTintRunner(cachedIO(canvasIO()));
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined") return sliced;
   return workerTintRunner(() => new Worker(new URL("./hero-coat.worker.ts", import.meta.url), { type: "module" }), sliced);
 }

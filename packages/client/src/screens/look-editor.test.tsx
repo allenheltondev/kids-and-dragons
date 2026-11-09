@@ -16,7 +16,8 @@ import { LOOKS } from "../world/hero-name";
 import { setCoatMaskPaintings } from "../world/coat-masks";
 import { characterPortraitArtUrl } from "../world/art-paths";
 import { CoatCache, setHeroCoats } from "../world/hero-coat-cache";
-import { slicedTintRunner } from "../world/hero-coat-pass";
+import { slicedTintRunner, type TintJob } from "../world/hero-coat-pass";
+import { PREVIEW_TINT_PX, heroPaintingUrl } from "../world/hero-art";
 import { loadHeroCoats } from "../world/hero-coat-load";
 import { BookLook, LookEditor } from "./LookEditor";
 import { HeroName } from "./HeroName";
@@ -258,5 +259,58 @@ describe("a shelf whose colours cannot be made", () => {
     await waitFor(() => expect(arts().every((a) => !a.classList.contains("look-art--pending"))).toBe(true));
     const srcs = [...container.querySelectorAll("[data-coat] img")].map((i) => i.getAttribute("src"));
     expect(srcs.every((src) => src === portrait)).toBe(true);
+  });
+});
+
+describe("a quick shelf, and a figure that keeps her colour (docs/hero-looks.md §5.3)", () => {
+  afterEach(() => {
+    setHeroCoats(null);
+    setCoatMaskPaintings(null);
+  });
+
+  /** Her painting in both places served and masked, and every pass counted. */
+  async function serving(hero: ReturnType<typeof makeCharacter>): Promise<{ jobs: TintJob[]; world: string }> {
+    await loadHeroCoats();
+    const world = heroPaintingUrl(hero, "world");
+    const portrait = heroPaintingUrl(hero, "portrait");
+    const files = new Map();
+    for (const url of new Set([world, portrait])) servePainting(files, url, "#E2CDEC", 16);
+    setCoatMaskPaintings([...new Set([world, portrait])].map((u) => u.slice("/assets/".length)));
+    const jobs: TintJob[] = [];
+    const run = slicedTintRunner(pixelIO(files));
+    setHeroCoats(new CoatCache({ runner: (job, signal) => (jobs.push(job), run(job, signal)), urls: fakeUrls() }));
+    return { jobs, world };
+  }
+
+  it("tints a shelf's tiles at preview size, one pass a tile: the shelf and its tiles ask for the same", async () => {
+    const hero = makeCharacter({ name: "Pip", look: look() });
+    const { jobs } = await serving(hero);
+    const { container } = render(<LookEditor member={makeMember({ character: hero })} held={false} dispatch={() => undefined} />);
+    const arts = () => [...container.querySelectorAll("[data-coat] .look-option__art, [data-accent] .look-option__art")];
+    await waitFor(() => expect(arts().every((a) => !a.classList.contains("look-art--pending"))).toBe(true));
+    expect(jobs.length).toBeGreaterThan(1);
+    expect(jobs.every((j) => j.size === PREVIEW_TINT_PX)).toBe(true);
+    const keys = jobs.map((j) => `${j.painting}|${JSON.stringify(j.paint)}`);
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  it("keeps her last colour on the figure while the next is made, never her painting between", async () => {
+    const hero = makeCharacter({ name: "Pip", species: "unicorn" });
+    const { world } = await serving(hero);
+    const mains = LOOKS.coats.filter((c) => c.species.includes("unicorn") && c.part === "main" && c.unlock.from === "starter").map((c) => c.id);
+    const figure = () => screen.getByTestId("book-look-figure");
+    const view = render(<BookLook hero={hero} look={look({ coat: mains[0]! })} edit={() => undefined} />);
+    await waitFor(() => expect(figure().getAttribute("src")).toMatch(/^blob:/));
+    const first = figure().getAttribute("src");
+    const stage = figure().parentElement;
+
+    view.rerender(<BookLook hero={hero} look={look({ coat: mains[1]! })} edit={() => undefined} />);
+    // The same stage and figure, still wearing the first colour: not her painting, not hidden.
+    expect(figure().parentElement).toBe(stage);
+    expect(figure().getAttribute("src")).toBe(first);
+    expect(figure().getAttribute("src")).not.toBe(world);
+    expect(figure().getAttribute("data-tint-hold")).toBe("shown");
+    await waitFor(() => expect(figure().getAttribute("src")).not.toBe(first));
+    expect(figure().getAttribute("src")).toMatch(/^blob:/);
   });
 });

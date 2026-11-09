@@ -343,8 +343,16 @@ and his mane, before and after:
 - **What is on screen is kept.** An entry in use, by a Pixi sprite or by a mounted DOM image
   (`useHeroArt` holds it while the image is mounted), is never evicted; the cache goes over its
   bound before it pulls art out from under the screen, and settles back once those let go. An
-  evicted entry revokes its object URL and destroys its Pixi texture. The source painting and mask are not held
-  once the pass is done; the region's means are, as numbers.
+  evicted entry revokes its object URL and destroys its Pixi texture.
+- **Previews are small** (*decided*, owner 2026-11-08). A look shelf's tile is tinted at no more
+  than `PREVIEW_TINT_PX` (320) on its longer side (`HeroCoatRequest.size`, part of its key), not at
+  its painting's 1024 or 1254: about a tenth of the pixels to recolour, encode and hold. The shelf
+  and its tiles ask for the very same sized tints. The figure she stands as is tinted at full size.
+- **A painting is decoded once for its passes.** The pass keeps its last few decoded paintings and
+  masks (`cachedIO`, by URL and size) and the region's means for each pair, so a shelf of colours
+  on one painting fetches and decodes it once, and the figure reuses them on every tap.
+- **A new colour never shows her painting first.** Her figure keeps the colour she wears until
+  the next is ready; nothing that bounces or redraws her stage may draw a new figure for it.
 - **A test switches colour ten times in a row,** quickly, on a throttled midrange phone profile:
   the last colour shows, no earlier one flashes after it, and the evictable entries (those
   nothing on screen holds) never total more than the bound. Entries held on screen may take the
