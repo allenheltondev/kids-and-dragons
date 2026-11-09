@@ -74,15 +74,31 @@ const forestPicks = {
 };
 it.each(sizes.flatMap(size => outcomes.map(outcome => ({size,outcome}))))
  ("pride: $size seats / $outcome carries the brace and sash lesson through a complete evening", ({size,outcome}) => {
- const {state,trace}=walk(pride,size,pridePicks,outcome);
+ // A missed marker post (a precision game now) teaches no brace, so the fire has no windbreak and the
+ // wolves are chased off instead.
+ const learned=outcome!=="failure";
+ const {state,trace}=walk(pride,size,{...pridePicks,scene_wolves:learned?"brace_fire":"chase_off"},outcome);
  expect(trace.has("interaction_cub_lullaby")).toBe(true);
  expect(trace.has("interaction_sash_frame")).toBe(true);
- expect(state.flags.pride_brace_learned).toBe(true);
- expect(state.flags.pride_windbreak_used).toBe(true);
- expect(trace.has("interaction_pride_windbreak")).toBe(true);
+ expect(state.flags.pride_brace_learned===true).toBe(learned);
+ expect(offered(trace.get("scene_wolves")!,"brace_fire")).toBe(learned);
+ expect(state.flags.pride_windbreak_used===true).toBe(learned);
+ expect(trace.has("interaction_pride_windbreak")).toBe(learned);
  expect(state.flags.read_the_sashes === true).toBe(outcome !== "failure");
  expect(state.chapterOutcome).toBe("success");
  });
+it.each(sizes)("pride: a missed windbreak brings the wolves, and a missed sash goes to the lanterns at %i seats", size => {
+ const land=(id:string,how:"miss"|"solve")=>{
+  const opened=enterScene(initial(pride,size),id,context(pride)).state;
+  const done=how==="miss"?miss(pride,opened)!:solve(pride,opened);
+  expect(promptOf(done).outcome).toBe(how==="miss"?"failure":"success");
+  return landed(pride,done,promptOf(done).resolvedActorId ?? promptOf(done).actorId).sceneId;
+ };
+ expect(land("interaction_pride_windbreak","miss")).toBe("encounter_wolves");
+ expect(land("interaction_pride_windbreak","solve")).toBe("rest_wolf_fire");
+ expect(land("interaction_sash_frame","miss")).toBe("check_sashes");
+ expect(land("interaction_sash_frame","solve")).toBe("interaction_sashes_pinned");
+});
 it.each(sizes)("pride: checking the line changes the later route at %i seats", size => {
  const {state,trace}=walk(pride,size,{...pridePicks,choice_cub_nap:"packs_away",scene_wolf_sign:"checked_line"});
  expect(trace.has("interaction_wolf_trail")).toBe(false);

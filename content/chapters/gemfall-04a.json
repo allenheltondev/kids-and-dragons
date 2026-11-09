@@ -773,7 +773,7 @@
         },
         {
           "id": "brace_fire",
-          "label": "Brace a windbreak",
+          "label": "Try to set a windbreak",
           "goto": "interaction_pride_windbreak",
           "icon": "hand",
           "requiresFlag": "pride_brace_learned"
@@ -1517,7 +1517,7 @@
     },
     "scene_moving_marker": {
       "type": "story",
-      "narration": "Near camp, two manticores are moving a heavy pride marker farther from the caravan road. \"Hands welcome,\" puffs one. Carry it, and they will teach you to brace a long load. Or ask where the new line goes.",
+      "narration": "Near camp, two manticores are moving a heavy pride marker farther from the caravan road. \"Hands welcome,\" puffs one. Carry it well, and they will teach you to brace a long load. Or ask where the new line goes.",
       "choices": [
         {
           "id": "carry_post",
@@ -1613,7 +1613,7 @@
     },
     "scene_waystation_stitch_first": {
       "type": "story",
-      "narration": "You help pin a sash flat on a frame first. Then the clues stay where everyone can see them. The warden takes out a spool, so nobody mistakes it for a button.",
+      "narration": "You try pinning a sash flat on a frame first. If the pins hold, the clues stay where everyone can see them. The warden takes out a spool, so nobody mistakes it for a button.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -2192,12 +2192,14 @@
     },
     "interaction_marker_load": {
       "type": "interaction",
-      "narration": "Raise or lower your end until the post is level. Then carry it to the new hole. A tuft of tail-fur tickles somebody's nose.",
+      "narration": "Lift together just as the post swings level, then carry it to the new hole. A tuft of tail-fur tickles somebody's nose.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side to level the marker post.",
-        "actionLabel": "Carry it to the hole",
-        "objectLabel": "The pride marker post"
+        "kind": "precision",
+        "cue": "Tap to lift when the marker is in the gold.",
+        "actionLabel": "Lift the post",
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "interaction_post_hole",
@@ -2229,12 +2231,14 @@
     },
     "interaction_sash_frame": {
       "type": "interaction",
-      "narration": "Hold the sash flat while the acting hero pins its tags. Alone, use the frame. The warden calls out landmarks.",
+      "narration": "Pin each tag just as the sash lies flat in the breeze. The warden calls out landmarks.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the sash flat while the acting hero pins its tags.",
+        "kind": "precision",
+        "cue": "Tap to pin when the marker is in the gold, while the sash lies flat.",
         "actionLabel": "Pin the route tags",
-        "supportLabel": "Hold the cloth"
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "interaction_sashes_pinned",
@@ -2389,12 +2393,14 @@
     },
     "interaction_pride_windbreak": {
       "type": "interaction",
-      "narration": "A cart cover keeps flopping into the fire. Hold the long brace while the acting hero fixes it. Leave the wolves a warm patch, away from the humming packs.",
+      "narration": "A cart cover keeps flopping into the fire. Set the long brace just as the cover swings up. Leave the wolves a warm patch, away from the humming packs.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the long brace while the acting hero fixes the windbreak.",
-        "actionLabel": "Fix the cover",
-        "supportLabel": "Hold the brace"
+        "kind": "timing",
+        "cue": "Tap to set the brace when the marker is in the gold, as the cover swings up.",
+        "actionLabel": "Set the brace",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "rest_wolf_fire",

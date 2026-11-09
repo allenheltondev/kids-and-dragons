@@ -1604,7 +1604,7 @@
       "choices": [
         {
           "id": "push_on",
-          "label": "Balance the load together",
+          "label": "Walk through between gusts",
           "icon": "might",
           "goto": "interaction_ash_load"
         },
@@ -2488,12 +2488,14 @@
     },
     "interaction_ash_load": {
       "type": "interaction",
-      "narration": "Link up around the shared load. Raise or lower your side until the marker sits in the middle, then walk. Ash piles up like gray snow.",
+      "narration": "Link up around the shared load and walk on each lull between the gusts. Ash piles up like gray snow.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side to level the shared load.",
+        "kind": "timing",
+        "cue": "Tap to walk when the marker is in the gold, in the lull between gusts.",
         "actionLabel": "Walk through together",
-        "objectLabel": "The shared pack load"
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_road_bend",
@@ -2501,7 +2503,13 @@
       },
       "onFailure": {
         "goto": "scene_road_bend",
-        "narration": "The wind bowls you into a hedge. You wait it out, sneezing ash. Then on to the bend."
+        "narration": "The wind bowls you into a prickly hedge, scratches and all. You wait it out, sneezing ash. Then on to the bend.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_road_bend",
@@ -2511,12 +2519,14 @@
     },
     "interaction_crew_screen": {
       "type": "interaction",
-      "narration": "The crew you helped parks its supply wagon across the wind. Hold the screen steady while the acting hero guides everyone through.",
+      "narration": "The crew you helped parks its supply wagon across the wind. Swing the screen into the wind just as the next gust comes.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Brace the wind screen while the acting hero guides the crossing.",
-        "actionLabel": "Guide the sheltered crossing",
-        "supportLabel": "Brace the screen"
+        "kind": "timing",
+        "cue": "Tap to swing the screen when the marker is in the gold, as the gust comes.",
+        "actionLabel": "Swing the screen",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_road_bend",
@@ -2531,12 +2541,16 @@
       },
       "onFailure": {
         "goto": "scene_road_bend",
-        "narration": "The screen flaps loose. The crew shelters everyone behind the wagon until the gust passes.",
+        "narration": "The screen flaps loose, and the ash gets everyone first. The crew pulls you behind the wagon, coughing, eyes stinging, until the gust passes.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "road_crew_sheltered",
             "value": true
+          },
+          {
+            "type": "damage",
+            "amount": 1
           }
         ]
       },
