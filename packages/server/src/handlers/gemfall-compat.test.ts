@@ -397,6 +397,12 @@ const DIGESTS: PreEpicSave["digests"] = {
 // miss settles no queue). Each cue, and the choice that leads to it, names the tap it asks for and
 // offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and resumed-save
 // digests below are unchanged.
+// Re-pinned for the owner-approved chapter 6 and 7h quality pass: a graph change. Games no party could
+// fail now can, so their authored costs are reachable. 6: Dunmore at the doorstep (timing, a miss makes no
+// friend of him) and the stuck wagon (timing, a miss earns no toll refund). 7h: Lady Fleecewick's cabinet
+// (precision, a miss earns no coins). Each cue, and the choice that leads to it, names the tap it asks for
+// and offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and resumed-save
+// digests below are unchanged.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
@@ -445,8 +451,8 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "6158555dba9c779162530effc81a014f11e439f24b6b541e69cc68ec95671d50",
   "chapters/gemfall-05b.json": "209214528a9453b93d89c1010124e156da82a2157651050a05b9f473bb76892d",
   "chapters/gemfall-05c.json": "c70c4a4472c6f60cf306db1056684bdc541201f0f44c5959d2cbe7989d965385",
-  "chapters/gemfall-06.json": "b1e6c764a451e59ec39198bdffa87b0989977479682875bf5720e7f3dba360c7",
-  "chapters/gemfall-07h.json": "5e247fbcfeaad63d3a3786189a551a30479dd898b256cc4d4a93235acb1753cc",
+  "chapters/gemfall-06.json": "1c846bc02227787027e3e1d886dd66cad97c762a6feb495f4891c939c929b8c9",
+  "chapters/gemfall-07h.json": "0245f102c501fa6c434589ee68c2eb2befd1398e6e178e229910fdafd51f1fce",
   "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
   "chapters/gemfall-07r.json": "6555ab01bd48cb40cd944cb91c5a65b841518058d708ac943f79cfb54a13e295",
   "chapters/gemfall-08.json": "d075f2163272dc3d29b89d0d12e937691d1fe12ea4cbf9eabd3406226f372612",

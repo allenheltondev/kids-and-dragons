@@ -154,9 +154,9 @@ it.each(sizes)("Ashfall: unfinished support and discussion do not grant completi
  expect(landed(ashfall,failed,actor).flags.dunmore_friend).not.toBe(true);
  state=act(ashfall,state,{action:"start",relaxed:false,rulesVersion:2},actor);
  const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(ashfall));
- expect(result.error).toBeUndefined();expect(result.state.sceneId).toBe(id);expect(promptOf(result.state).outcome).toBeUndefined();
- expect(promptOf(result.state).compatibility).toBe("legacy-controls");
- expect(result.state.flags.dunmore_friend).not.toBe(true);
+ // The doorstep is a timing game now: a bare "complete" is not a tap, so it is refused and nothing is granted.
+ expect(result.error).toBeDefined();expect(state.sceneId).toBe(id);expect(promptOf(state).outcome).toBeUndefined();
+ expect(state.flags.dunmore_friend).not.toBe(true);
  }
 });
 it("Ashfall art exists and the major reveal stays at its original scenes",()=>{
@@ -200,4 +200,20 @@ it.each(sizes.flatMap(size=>["restore","hoard","leash","refuse"].map(purpose=>({
  resumed=send(resumed,{type:"CHOOSE",choiceId:"on"},ashfall);
  expect(resumed.sceneId).toBe("rest_end_shut_out");
  expect(resumed.flags[expected]).toBe(true);expect(resumed.chapterOutcome).toBe("setback");
+});
+
+it.each(sizes)("Ashfall and the high road: the wagon and the cabinet pay only when the tap lands at %i seats", size => {
+ const highRoad=read<Chapter>("content/chapters/gemfall-07h.json");
+ for (const [chapter,id,next] of [[ashfall,"interaction_wagons","scene_claim_boulder"],[highRoad,"interaction_cabinet","scene_road_gifts"]] as const) {
+  const opened=enterScene(initial(chapter,size),id,context(chapter)).state;
+  const missed=miss(chapter,opened)!;
+  expect(promptOf(missed).outcome,id).toBe("failure");
+  const unpaid=landed(chapter,missed,promptOf(missed).resolvedActorId ?? promptOf(missed).actorId);
+  expect(unpaid.sceneId,id).toBe(next);
+  expect(unpaid.coins,id).toBe(opened.coins);
+  const solved=solve(chapter,opened);
+  const paid=landed(chapter,solved,promptOf(solved).resolvedActorId ?? promptOf(solved).actorId);
+  expect(paid.sceneId,id).toBe(next);
+  expect(paid.coins,id).toBe((opened.coins ?? 0)+3);
+ }
 });
