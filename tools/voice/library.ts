@@ -10,7 +10,8 @@
  *   assign [--approve]    writes the picks to every speaker on their row, in content/voice/cast.json
  *   listen                renders one real line per speaker to a local folder, to hear the tags on the voice (spends a little)
  *
- * Options: --picks FILE (default test-results/voice-shortlist/picks.json), --row ID (listen to one row),
+ * Options: --picks FILE (default test-results/voice-shortlist/picks.json), --row ID[,ID...] (listen to those rows only),
+ * --per-row N (listen to the N speakers with most lines on each row),
  * --max-chars N (listen's cap, default 20000), --model ID.
  *
  * `listen` writes nothing but its own folder: no manifest, no bucket. `voice:generate` only renders approved voices.
@@ -41,6 +42,7 @@ const { values, positionals } = parseArgs({
     approve: { type: "boolean", default: false },
     picks: { type: "string", default: path.join(SHORTLIST, "picks.json") },
     row: { type: "string" },
+    "per-row": { type: "string" },
     "max-chars": { type: "string", default: "20000" },
     model: { type: "string", default: ELEVENLABS.model },
   },
@@ -174,14 +176,23 @@ async function listen(): Promise<void> {
   const options: SynthOptions = { provider: provider as never, cast: sheet as unknown as CastSheet, tables: { delivery: tables.delivery, beats: tables.beats }, keys, fetch: http };
   const synth = makeSynthesizer(options);
   const billed = makeBilledChars(options);
+  const wanted = values.row?.split(",").map((id) => id.trim()).filter(Boolean);
+  const unknown = (wanted ?? []).filter((id) => !casting.voices.some((row) => row.id === id));
+  if (unknown.length > 0) fail(`No such row: ${unknown.join(", ")}. The rows are the ids in content/voice/casting.json.`);
+  const perRow = values["per-row"] === undefined ? Infinity : Number(values["per-row"]);
+  if (!(perRow >= 1)) fail("--per-row takes a number of speakers, 1 or more.");
   let chars = 0;
   let made = 0;
   for (const row of casting.voices) {
-    if (values.row !== undefined && row.id !== values.row) continue;
-    for (const id of row.speakers) {
+    if (wanted !== undefined && !wanted.includes(row.id)) continue;
+    let fromRow = 0;
+    // Most lines first, so --per-row 1 hears the speaker the row was cast for.
+    for (const id of [...row.speakers].sort((a, b) => (sheet.speakers[b]?.lineCount ?? 0) - (sheet.speakers[a]?.lineCount ?? 0))) {
+      if (fromRow >= perRow) break;
       const entry = sheet.speakers[id];
       const text = entry?.lines?.find((line) => !/\{\w+\}/.test(line.text))?.text;
       if (entry?.elevenlabs?.voiceId === undefined || text === undefined) continue;
+      fromRow += 1;
       const segment = { key: `listen-${id}`, by: id, text };
       chars += billed(segment);
       if (chars > maxChars) fail(`Stopped at the ${String(maxChars)} character cap after ${String(made)} clips.`);
