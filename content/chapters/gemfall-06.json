@@ -178,7 +178,7 @@
       "choices": [
         {
           "id": "talk",
-          "label": "Stand on the step with her",
+          "label": "Step up beside her",
           "icon": "heart",
           "goto": "interaction_doorstep"
         },
@@ -3023,12 +3023,14 @@
     },
     "interaction_wagons": {
       "type": "interaction",
-      "narration": "A wagon wheel is stuck in a rut, blocking the road again. Push while someone steers. \"I'll pull!\" says the centaur drover. Everybody behind you offers excellent advice.",
+      "narration": "A wagon wheel is stuck in a rut, blocking the road again. \"I'll pull, you push!\" says the centaur drover. \"On my heave!\" Everybody behind you offers excellent advice.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends push the wagon while someone steers.",
-        "actionLabel": "Steer the wagon",
-        "supportLabel": "Push the wagon"
+        "kind": "timing",
+        "cue": "Tap to push when the marker is in the gold, right on the drover's heave.",
+        "actionLabel": "Push the wagon",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_claim_boulder",
@@ -3308,12 +3310,14 @@
     },
     "interaction_doorstep": {
       "type": "interaction",
-      "narration": "Stand with the grandmother while one hero guides Dunmore's pick away from her step. On your own, lean on the doorpost. Her cookie tin is safe behind the door.",
+      "narration": "Step up beside the grandmother just as Dunmore's pick swings toward her step. Her cookie tin is safe behind the door.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the doorstep clear while the pick is guided aside.",
-        "actionLabel": "Guide the pick away",
-        "supportLabel": "Stand with the grandmother"
+        "kind": "timing",
+        "cue": "Tap to step up when the marker is in the gold, as the pick swings in.",
+        "actionLabel": "Step up beside her",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_moths",
