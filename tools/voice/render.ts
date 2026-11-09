@@ -41,7 +41,13 @@ export interface RawAudio {
   drop: (key: string) => void;
 }
 
-/** Raw provider audio in a folder, one file per clip key. Never shipped: it is what a failed run already paid for. */
+/**
+ * Where raw provider audio waits between a paid call and a stored clip: the repository's `.voice-raw/` (git-ignored).
+ * Never under `test-results/`, which Playwright empties at the start of every end-to-end run.
+ */
+export const RAW_AUDIO_DIR = path.resolve(import.meta.dirname, "..", "..", ".voice-raw");
+
+/** Raw provider audio in a folder, one file per clip key. Never shipped: it is what a run already paid for. */
 export function dirRawAudio(dir: string): RawAudio & { count: () => number } {
   const file = (key: string, ext: "wav" | "mp3"): string => path.join(dir, `${key}.${ext}`);
   return {
@@ -153,7 +159,7 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       return;
     }
     // Audio a provider already billed for, kept from a run that failed after it: no second request.
-    let got = deps.raw?.get(segment.key) ?? null;
+    let got: { audio: Buffer; ext: "wav" | "mp3"; fresh?: true } | null = deps.raw?.get(segment.key) ?? null;
     let lastError = "";
     for (let attempt = 1; got === null && attempt <= attempts; attempt += 1) {
       // Every try is a request the provider may bill, so each one is reserved against the cap
@@ -175,7 +181,7 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
           report.measured.clips += 1;
           report.measured.tokensPerSecond = report.measured.audioTokens / report.measured.seconds;
         }
-        got = { audio, ext };
+        got = { audio, ext, fresh: true };
       } catch (error) {
         lastError = (error as Error).message;
         if (attempt < attempts) await sleep(backoff * 2 ** (attempt - 1));
@@ -185,10 +191,12 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       report.failed.push({ key: segment.key, error: lastError });
       return;
     }
-    // Only the provider call is retried. What fails after it (encoding, the upload) is this machine or its
-    // credentials, and would fail the same for every clip: the audio is kept for the next run and the run stops,
-    // rather than paying for every clip again only to throw each away.
+    // Only the provider call is retried. What fails after it (keeping the audio, encoding, the upload) is this
+    // machine or its credentials, and would fail the same for every clip: the run stops, rather than paying for
+    // every clip again only to throw each away.
     try {
+      // Kept on disk the moment it is paid for, so nothing after this (a failure, or the process being killed) loses it.
+      if (got.fresh === true) deps.raw?.put(segment.key, got.audio, got.ext);
       const encoded = deps.encode(got.audio, got.ext);
       await deps.store.put(segment.key, encoded.bytes, { ms: encoded.ms });
       deps.raw?.drop(segment.key);
@@ -196,7 +204,6 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       report.lengths.set(segment.key, encoded.ms);
       deps.log?.(`rendered ${segment.key.slice(0, 10)} (${segment.by}, ${String(chars)} chars, ${String(encoded.ms)} ms)`);
     } catch (error) {
-      deps.raw?.put(segment.key, got.audio, got.ext);
       report.failed.push({ key: segment.key, error: (error as Error).message });
       report.stoppedBy ??= "local";
     }

@@ -1,7 +1,10 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import type { DesiredSegment } from "./desired";
 import { missingEncoders } from "./encode";
-import { candidates, renderOwed, type RawAudio, type RenderDeps } from "./render";
+import { candidates, dirRawAudio, RAW_AUDIO_DIR, renderOwed, type RawAudio, type RenderDeps } from "./render";
 import { MemoryClipStore, StoreSet } from "./store";
 
 const segment = (n: number, chars = 100): DesiredSegment => ({ key: String(n).padStart(64, "0"), by: "narrator", text: "x".repeat(chars) });
@@ -169,6 +172,53 @@ describe("when the provider fails", () => {
     expect(report.chars).toBe(100);
     expect(report.rendered).toHaveLength(2);
     expect(raw.get(segment(1).key)).toBeNull();
+  });
+});
+
+describe("keeping audio that was paid for", () => {
+  it("saves it before encoding, so a process killed mid-encode loses nothing, and lets it go once stored", async () => {
+    const raw = memoryRaw();
+    const savedWhenEncoding: boolean[] = [];
+    const encode = vi.fn(() => {
+      savedWhenEncoding.push(raw.get(segment(1).key) !== null);
+      return { bytes: Buffer.from("webm"), ms: 900 };
+    });
+    const { made } = deps({ raw, encode });
+    const report = await renderOwed(owed(1), made, live);
+    expect(savedWhenEncoding).toEqual([true]);
+    expect(report.rendered).toHaveLength(1);
+    expect(raw.get(segment(1).key)).toBeNull();
+  });
+
+  it("never asks the provider again when saving the audio fails: that is this machine, and the run stops", async () => {
+    const raw = { ...memoryRaw(), put: () => { throw new Error("ENOSPC"); } };
+    const { made, synth } = deps({ raw });
+    const report = await renderOwed(owed(3), made, { ...live, concurrency: 1 });
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(report.failed).toEqual([{ key: segment(1).key, error: "ENOSPC" }]);
+    expect(report.stoppedBy).toBe("local");
+  });
+
+  it("keeps it outside test-results/, which Playwright empties on every run, in a folder git ignores", () => {
+    const root = path.resolve(import.meta.dirname, "..", "..");
+    expect(path.relative(path.join(root, "test-results"), RAW_AUDIO_DIR).startsWith("..")).toBe(true);
+    for (const config of ["playwright.config.ts", "playwright.prod.config.ts"]) {
+      const file = path.join(root, config);
+      if (!fs.existsSync(file)) continue;
+      // An outputDir would move Playwright's emptied folder; if one is ever set, it must not hold the raw audio either.
+      const outputDir = /outputDir:\s*["'`]([^"'`]+)["'`]/.exec(fs.readFileSync(file, "utf8"))?.[1];
+      if (outputDir !== undefined) expect(path.relative(path.resolve(root, outputDir), RAW_AUDIO_DIR).startsWith("..")).toBe(true);
+    }
+    expect(fs.readFileSync(path.join(root, ".gitignore"), "utf8").split(/\r?\n/)).toContain(`${path.relative(root, RAW_AUDIO_DIR)}/`);
+  });
+
+  it("survives a reread from its folder: what one run kept, the next finds", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kad-voice-raw-"));
+    dirRawAudio(dir).put("abc", Buffer.from("paid"), "mp3");
+    expect(dirRawAudio(dir).get("abc")).toEqual({ audio: Buffer.from("paid"), ext: "mp3" });
+    dirRawAudio(dir).drop("abc");
+    expect(dirRawAudio(dir).get("abc")).toBeNull();
+    fs.rmSync(dir, { recursive: true, force: true });
   });
 });
 

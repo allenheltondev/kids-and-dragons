@@ -43,7 +43,7 @@ import { ELEVENLABS } from "./desired";
 import { encodeVoice, missingEncoders } from "./encode";
 import { readJson } from "./load";
 import { mergeManifest, type Manifest } from "./manifest";
-import { candidates, dirRawAudio, renderOwed } from "./render";
+import { candidates, dirRawAudio, RAW_AUDIO_DIR, renderOwed } from "./render";
 import { DirClipStore, MemoryClipStore, S3ClipStore, StoreSet, type ClipStore } from "./store";
 import { makeBilledChars, makeSynthesizer, type SynthOptions } from "./synth";
 import { desire, loadWorld, MANIFEST_DIR } from "./world";
@@ -142,7 +142,7 @@ if (values.render) {
   if (missing.length > 0) fail(`${missing.join(" and ")} not found, and every clip is encoded with them after it is paid for. Install FFmpeg (on Windows: winget install Gyan.FFmpeg), open a new terminal so it is on PATH, and run this again. Nothing was rendered.`);
 }
 // Provider audio a failed run already paid for, waiting to be encoded: a rerun uses it instead of asking again.
-const raw = values.fake ? undefined : dirRawAudio(path.resolve(import.meta.dirname, "..", "..", "test-results", "voice-raw"));
+const raw = values.fake ? undefined : dirRawAudio(RAW_AUDIO_DIR);
 const synthOptions: SynthOptions = {
   provider: provider as never,
   cast: world.cast,
@@ -197,7 +197,7 @@ if (report.failed.length > 0) {
   console.log(`  FAILED          ${num(report.failed.length)}`);
   for (const f of report.failed.slice(0, 5)) console.log(`    ${f.key.slice(0, 10)}: ${f.error}`);
 }
-if (report.stoppedBy === "local") console.log(`  STOPPED         encoding or the upload failed after the provider answered (above), so nothing more was asked for; ${num(report.deferred.length)} clips left. The audio already paid for is kept in ${path.relative(process.cwd(), path.resolve(import.meta.dirname, "..", "..", "test-results", "voice-raw"))} and the next run uses it.`);
+if (report.stoppedBy === "local") console.log(`  STOPPED         encoding or the upload failed after the provider answered (above), so nothing more was asked for; ${num(report.deferred.length)} clips left. The audio already paid for is kept in ${path.relative(process.cwd(), RAW_AUDIO_DIR)} and the next run uses it.`);
 else if (report.stoppedBy !== null) console.log(`  STOPPED         at the ${report.stoppedBy === "dollars" ? `${dollars(maxDollars)} spend` : `${num(maxChars ?? 0)}-character`} cap; ${num(report.deferred.length)} clips left for the next run`);
 if (written > 0 && values.fake) console.log(`  manifests       ${num(written)} written under ${manifestDir!}/ (fake tones, never commit; play them with KAD_VOICE_DIR=${path.resolve(values.dir ?? ".")} npm run dev)`);
 else if (written > 0) console.log(`  manifests       ${num(written)} written under content/voice/manifest/ (commit them: they deploy with content/)`);

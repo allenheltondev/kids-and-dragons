@@ -336,10 +336,11 @@ ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stag
 
 Steps 3 and 4 happen after the provider has billed for the clip, so a paid run checks for `ffmpeg`
 and `ffprobe` before its first request and refuses without them (on Windows,
-`winget install Gyan.FFmpeg`, then a new terminal). Only step 2 is retried. If encoding or the upload
-fails, the run keeps that clip's provider audio in `test-results/voice-raw/` and stops: the failure
-is this machine or its credentials and would repeat for every clip. The next run encodes the kept
-audio without asking the provider again.
+`winget install Gyan.FFmpeg`, then a new terminal). Only step 2 is retried. Its audio is saved to `.voice-raw/` (git-ignored, and never under
+`test-results/`, which Playwright empties on every end-to-end run) the moment it arrives, and deleted
+once the clip is stored. If encoding or the upload fails, the run stops: the failure is this machine
+or its credentials and would repeat for every clip. The next run, even after a crash, encodes the
+kept audio without asking the provider again.
 
 ---
 
