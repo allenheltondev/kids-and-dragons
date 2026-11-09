@@ -13,7 +13,7 @@ import type { Pricing } from "../cost-model.ts";
 import type { CastFile, Fetch, ModelInfo } from "../bakeoff/providers.ts";
 import { castPageData, createCastRoutes, providerOf, sheetCast, toldFor } from "./routes.ts";
 import { reviewJson, reviewMarkdown } from "./review.ts";
-import { buildSheet, decide, nextVoice, voiceClashes, voiceOf, type CastSheet, type ChapterLike } from "./sheet.ts";
+import { buildSheet, checkedClashes, decide, nextVoice, ONE_CHARACTER, voiceClashes, voiceOf, type CastSheet, type ChapterLike } from "./sheet.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
 const VOICE_A = "21m00Tcm4TlvDq8ikWAM";
@@ -149,6 +149,83 @@ describe("the sheet, in ElevenLabs mode", () => {
     expect(providerOf("gemini")).toBe("gemini");
     expect(providerOf(undefined)).toBe("gemini");
     expect(providerOf("openai")).toBe("gemini");
+  });
+});
+
+describe("voice:cast --check, on ElevenLabs", () => {
+  const talking = (): CastSheet => {
+    const sheet = sheetOf();
+    sheet.speakers.wick!.elevenlabs = { voiceId: VOICE_A };
+    sheet.speakers.bun!.elevenlabs = { voiceId: VOICE_A };
+    sheet.speakers.wick!.lineCount = 4;
+    sheet.speakers.bun!.lineCount = 2;
+    return sheet;
+  };
+
+  it("fails two talking speakers on one voice, accent and direction in a chapter", () => {
+    expect(checkedClashes(talking(), "elevenlabs")).toEqual([{ chapter: "c", voice: VOICE_A, speakers: ["wick", "bun"] }]);
+    // A Gemini check of the same sheet sees nothing: their Gemini voices differ.
+    expect(checkedClashes(talking())).toEqual([]);
+  });
+
+  it("passes the same voice told apart by accent or direction", () => {
+    const sheet = talking();
+    sheet.speakers.bun!.accent = "Texan";
+    expect(checkedClashes(sheet, "elevenlabs")).toEqual([]);
+  });
+
+  it("passes a shared sound when at most one of its speakers talks", () => {
+    const sheet = talking();
+    sheet.speakers.bun!.lineCount = 0;
+    expect(voiceClashes(sheet, "elevenlabs")).toHaveLength(1);
+    expect(checkedClashes(sheet, "elevenlabs")).toEqual([]);
+    delete sheet.speakers.bun!.lineCount;
+    expect(checkedClashes(sheet, "elevenlabs")).toEqual([]);
+  });
+
+  it("fails a talking speaker on the narrator's sound", () => {
+    const sheet = talking();
+    sheet.speakers.narrator!.elevenlabs = { voiceId: VOICE_B };
+    sheet.speakers.bun!.elevenlabs = { voiceId: VOICE_B };
+    expect(checkedClashes(sheet, "elevenlabs")).toEqual([{ chapter: "c", voice: VOICE_B, speakers: ["narrator", "bun"] }]);
+    sheet.speakers.bun!.lineCount = 0;
+    expect(checkedClashes(sheet, "elevenlabs")).toEqual([]);
+  });
+
+  it("counts one character under two ids as one speaker, only in the chapter that says so", () => {
+    const [one] = ONE_CHARACTER;
+    const [first, second] = one!.ids;
+    const sheet = talking();
+    const pair = (chapter: string): CastSheet => ({
+      ...sheet,
+      speakers: {
+        narrator: sheet.speakers.narrator!,
+        [first!]: { ...sheet.speakers.wick!, chapters: [chapter] },
+        [second!]: { ...sheet.speakers.bun!, chapters: [chapter] },
+      },
+    });
+    expect(voiceClashes(pair(one!.chapter), "elevenlabs")).toHaveLength(1);
+    expect(checkedClashes(pair(one!.chapter), "elevenlabs")).toEqual([]);
+    expect(checkedClashes(pair("elsewhere"), "elevenlabs")).toHaveLength(1);
+    // A third talking speaker on the sound is still a clash.
+    const crowded = pair(one!.chapter);
+    crowded.speakers.wick = { ...sheet.speakers.wick!, chapters: [one!.chapter] };
+    expect(checkedClashes(crowded, "elevenlabs")).toHaveLength(1);
+  });
+
+  it("allows only ids the sheet has, in the chapter named, each with a reason", () => {
+    const sheet = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "voice", "cast.json"), "utf8")) as CastSheet;
+    for (const { chapter, ids, reason } of ONE_CHARACTER) {
+      expect(reason).not.toBe("");
+      expect(ids.length).toBeGreaterThan(1);
+      for (const id of ids) expect(sheet.speakers[id]?.chapters, id).toContain(chapter);
+    }
+  });
+
+  it("passes today's cast sheet on both providers", () => {
+    const sheet = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "voice", "cast.json"), "utf8")) as CastSheet;
+    expect(checkedClashes(sheet)).toEqual([]);
+    expect(checkedClashes(sheet, "elevenlabs")).toEqual([]);
   });
 });
 

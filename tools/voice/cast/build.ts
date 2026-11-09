@@ -9,7 +9,7 @@
  * chose on the cast page (or by hand) is kept.
  *
  *   npm run voice:cast              # build or refresh the sheet
- *   npm run voice:cast -- --check   # report only; exit 1 on a voice clash
+ *   npm run voice:cast -- --check   # report only; exit 1 on a Gemini voice clash or two talking speakers on one ElevenLabs sound
  *   npm run voice:cast -- --review  # the approvals and rejections so far, as Markdown
  *   npm run voice:cast -- --review --out review.json
  *
@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { reviewJson, reviewMarkdown } from "./review.ts";
-import { buildSheet, voiceClashes, type CastSheet } from "./sheet.ts";
+import { buildSheet, checkedClashes, voiceClashes, type CastSheet } from "./sheet.ts";
 import { loadSources, SHEET_COMMENT, writeSheet } from "./sources.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
@@ -50,7 +50,9 @@ const sheet = buildSheet(loadSources(ROOT), previous);
 const out: CastSheet = { $comment: SHEET_COMMENT, accent: sheet.accent, speakers: sheet.speakers };
 
 const entries = Object.values(out.speakers);
-const clashes = voiceClashes(out);
+const clashes = checkedClashes(out);
+const elevenClashes = checkedClashes(out, "elevenlabs");
+const quietEleven = voiceClashes(out, "elevenlabs").length - elevenClashes.length;
 const silent = entries.filter((e) => e.kind !== "narrator" && e.kind !== "party" && e.speaks && e.lines.length === 0);
 console.log(`${String(entries.length)} speakers: ${String(entries.filter((e) => e.status === "approved").length)} approved, ${String(entries.filter((e) => e.status === "provisional").length)} provisional.`);
 console.log(`${String(entries.filter((e) => e.lines.length > 0).length)} have lines from the game to audition; ${String(silent.length)} speak but have none found yet.`);
@@ -58,14 +60,22 @@ const used = new Map<string, number>();
 for (const e of entries) used.set(e.gemini.voice, (used.get(e.gemini.voice) ?? 0) + 1);
 console.log(`Voices: ${[...used].sort((a, b) => b[1] - a[1]).map(([v, n]) => `${v} ${String(n)}`).join(", ")}`);
 if (clashes.length > 0) {
-  console.log(`\n${String(clashes.length)} chapters have two speakers on one voice:`);
+  console.log(`\n${String(clashes.length)} chapters have two speakers on one Gemini voice:`);
   for (const clash of clashes.slice(0, 20)) console.log(`  ${clash.chapter}: ${clash.voice} — ${clash.speakers.join(", ")}`);
 } else {
-  console.log("No chapter has two speakers on one voice.");
+  console.log("No chapter has two speakers on one Gemini voice.");
 }
+// ElevenLabs: one voice, accent and direction is one sound; only speakers with lines can be confused for each other.
+if (elevenClashes.length > 0) {
+  console.log(`\n${String(elevenClashes.length)} chapters have two talking speakers on one ElevenLabs sound (voice, accent and direction):`);
+  for (const clash of elevenClashes.slice(0, 20)) console.log(`  ${clash.chapter}: ${clash.voice} — ${clash.speakers.join(", ")}`);
+} else {
+  console.log("No chapter has two talking speakers on one ElevenLabs sound.");
+}
+if (quietEleven > 0) console.log(`(${String(quietEleven)} more share an ElevenLabs sound with at most one of them talking, or are one character under two ids: fine.)`);
 
 if (values.check) {
-  process.exit(clashes.length > 0 ? 1 : 0);
+  process.exit(clashes.length > 0 || elevenClashes.length > 0 ? 1 : 0);
 }
 writeSheet(SHEET, out);
 console.log(`\nWrote ${path.relative(ROOT, SHEET)}.`);

@@ -973,6 +973,35 @@ export function voiceClashes(sheet: CastSheet, provider: VoiceProvider = "gemini
   return clashes.sort((a, b) => a.chapter.localeCompare(b.chapter) || a.voice.localeCompare(b.voice));
 }
 
+/**
+ * Ids the sheet keeps apart that are one character, so sharing a sound is right. The builder makes an id per name
+ * the content uses, and when a chapter's narration names one person two ways with no cast entry tying them, both
+ * names become speakers. Each pair here needs a reason a reader can check against the chapter.
+ */
+export const ONE_CHARACTER: readonly { chapter: string; ids: readonly string[]; reason: string }[] = [
+  {
+    chapter: "gemfall-05c",
+    ids: ["small_dragonling", "bell_code_expert"],
+    reason: 'The narration introduces her as "A small dragonling, the town\'s bell-code expert" and tags her lines by either name.',
+  },
+];
+
+/**
+ * The clashes `voice:cast -- --check` fails on. Gemini: every clash, since the builder gives everyone their own voice.
+ * ElevenLabs: a sound is shared on purpose (a species voice, a crowd, a group name beside its members), so a clash
+ * counts only when two or more of its speakers have lines to say (`lineCount`), counting the ids in
+ * {@link ONE_CHARACTER} as one speaker. The narrator always talks.
+ */
+export function checkedClashes(sheet: CastSheet, provider: VoiceProvider = "gemini"): { chapter: string; voice: string; speakers: string[] }[] {
+  const clashes = voiceClashes(sheet, provider);
+  if (provider === "gemini") return clashes;
+  return clashes.filter(({ chapter, speakers }) => {
+    const talking = speakers.filter((id) => id === "narrator" || (sheet.speakers[id]?.lineCount ?? 0) > 0);
+    const characters = new Set(talking.map((id) => ONE_CHARACTER.find((one) => one.chapter === chapter && one.ids.includes(id))?.ids[0] ?? id));
+    return characters.size > 1;
+  });
+}
+
 const NARRATOR_LINES: AuditionLine[] = [
   { address: "bramblewood-01/scene_hedge_wall/narration", text: "The path ends at a wall of thorns twice your height. Somewhere on the other side, something is humming a little tune, and it is definitely not a bird." },
 ];
