@@ -379,7 +379,8 @@ const DIGESTS: PreEpicSave["digests"] = {
 // fail now can, so their authored costs are reachable. 3a: Old Ossley's ferry (timing, a miss sweeps
 // the party south) and the night rope (timing, a miss loses the morning's rope). 3b: the Gate rubbing
 // (precision, a miss is no checked record), the stump (timing, a miss now costs 1 health) and the
-// tussock raft (precision, a miss loses the honeycake). Each cue names the tap it asks for. No scene,
+// tussock raft (precision, a miss loses the honeycake). Each cue, and the choice that leads to it, names
+// the tap it asks for; a party Ossley's boat tipped is fished out by Ossley himself. No scene,
 // edge, stat or TN moved; the endings, roads, setbacks and resumed-save digests below are unchanged.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
@@ -420,8 +421,8 @@ const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
   "chapters/gemfall-02.json": "04ce7ad2b710baf5767df3a528341f79b71b156bed0b8d9e31994853a1980a78",
-  "chapters/gemfall-03a.json": "7e543fda69f748514ba1766cf3824c376441c6349ede47ac9804a6083b5adfc4",
-  "chapters/gemfall-03b.json": "5a1d346fab037087c1a5d269023d476308856995220b19f39cb0a1dbc951657f",
+  "chapters/gemfall-03a.json": "0671e7da5b33d85a4ad822568b250f5d8e37de465ceb738fc7ab0286425b6804",
+  "chapters/gemfall-03b.json": "51b0a27ee6b3efd36db1786dc88ced9a13898cf7bba3e9f2dc2f7116d0af786c",
   "chapters/gemfall-03c.json": "50ba95c1a4ac5f6c700abbc433b38b617b677799f6364818f90d0e03e8d9006b",
   "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
   "chapters/gemfall-04b.json": "26106d947ee299951e7e195c916a27defb87e2cf5866f3f390a3a753f040cd13",

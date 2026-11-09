@@ -900,7 +900,16 @@
           "goto": "scene_mouth_shore"
         }
       ],
-      "art": "scenes/gemfall/river-mouth-shore"
+      "art": "scenes/gemfall/river-mouth-shore",
+      "variants": [
+        {
+          "when": {
+            "flag": "ossley_ferry_tipped"
+          },
+          "replace": true,
+          "text": "At last the river lets you go on the eastern shore. Far off, haze hangs over the Bone Yard. Old Ossley poles up in his empty boat and fishes you out, one by one. \"Rough wake,\" he says. \"Your promise still counts.\" He hands you a reed knot. It stays wet."
+        }
+      ]
     },
     "scene_crawlers": {
       "type": "story",
@@ -1608,11 +1617,11 @@
     },
     "scene_night_rope": {
       "type": "story",
-      "narration": "A midnight splash! The Brassbuckles are sneaking across with a rope, and the black river tugs at the first one. Brace the rope together, or wake the troll.",
+      "narration": "A midnight splash! The Brassbuckles are sneaking across with a rope, and the black river tugs at the first one. Pull them in on the rope, or wake the troll.",
       "choices": [
         {
           "id": "grab_rope",
-          "label": "Brace the rope together",
+          "label": "Pull them in on the rope",
           "icon": "hand",
           "goto": "interaction_night_rope"
         },
@@ -2478,7 +2487,14 @@
       },
       "onFailure": {
         "goto": "scene_swept",
-        "narration": "A wake tips the low boat. The current sweeps everyone south."
+        "narration": "A wake tips the low boat. The current sweeps everyone south.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "ossley_ferry_tipped",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_east_landing",

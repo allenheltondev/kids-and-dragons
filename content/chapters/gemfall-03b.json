@@ -1187,7 +1187,7 @@
       "choices": [
         {
           "id": "haul",
-          "label": "Balance them aboard",
+          "label": "Pull them aboard",
           "icon": "might",
           "goto": "interaction_tussock_balance"
         },
@@ -1612,12 +1612,12 @@
     },
     "choice_gate_record": {
       "type": "choice_point",
-      "narration": "How will you remember the Gate? A braced rubbing keeps a checked shape. A shared note helps with the frogfolk's crossing song, but leaves no paper. Or count the reeds, or risk a quick rubbing.",
+      "narration": "How will you remember the Gate? A careful rubbing keeps a checked shape, if it doesn't smudge. A shared note helps with the frogfolk's crossing song, but leaves no paper. Or count the reeds, or risk a quick rubbing.",
       "art": "scenes/gemfall/hollow-gate",
       "choices": [
         {
           "id": "rubbing",
-          "label": "Take a checked rubbing",
+          "label": "Try a careful rubbing",
           "icon": "scroll",
           "goto": "interaction_gate_rubbing"
         },
@@ -2319,7 +2319,7 @@
       },
       "onFailure": {
         "goto": "scene_tussock",
-        "narration": "The stump shoves the raft. Everyone sits down at once, and a frog lands in someone's lap.",
+        "narration": "The stump shoves the raft. Everyone sits down at once, somebody bumps an elbow on the pole (ow), and a frog lands in someone's lap.",
         "effects": [
           {
             "type": "damage",

@@ -204,3 +204,27 @@ it.each([1, 2, 4])("Marsh: the stump and the tussock cost something when missed 
   const hauled = play(marsh, "interaction_tussock_balance", size, "solve");
   expect(cakes(hauled.landed)).toBe(cakes(hauled.opened) + 1);
 });
+
+it.each([1, 2, 4])("Long Mile: a tipped Ossley ferry is fished out by Ossley himself, not met again as a stranger (%i seats)", size => {
+  const picks = {
+    scene_east_road: "restore", scene_kettle_camp: "swap_kindling", scene_stuck_wagon: "unload",
+    scene_river_view: "watch_heron", scene_queue: "let_it_go", scene_skip_passes: "no_thanks",
+    scene_first_story: "help_ending", scene_troll: "tell_story", scene_gem_toll: "lift_gem",
+    scene_troll_hum: "answer_honest", choice_camp_spot: "by_brass", rest_queue_camp: "to_bank",
+    scene_night_rope: "sit_on_rope", scene_wake_fee: "pay_fish",
+    scene_crossing_bank: "ask_frog", scene_ossley_price: "pay_ossley", scene_swept: "hold_on",
+  };
+  const tipped = walk(road, size, picks, "failure");
+  expect(tipped.trace.has("interaction_ferry")).toBe(true);
+  expect(tipped.trace.has("scene_swept")).toBe(true);
+  expect(tipped.state.flags.river_took_us).toBe(true);
+  // The narration on entering the mouth is what the table hears there.
+  const atMouth = tipped.trace.get("scene_mouth")!;
+  expect(atMouth.narration).toContain("Your promise still counts");
+  expect(atMouth.narration).not.toContain("When I'm going your way");
+  // A party swept from the bank (no ferry) still meets him for the first time.
+  const waded = walk(road, size, { ...picks, scene_crossing_bank: "wade" }, "failure");
+  expect(waded.trace.has("interaction_ferry")).toBe(false);
+  const metAtMouth = waded.trace.get("scene_mouth")!;
+  expect(metAtMouth.narration).toContain("When I'm going your way");
+});
