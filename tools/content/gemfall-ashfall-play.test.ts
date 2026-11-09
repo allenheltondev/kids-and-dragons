@@ -217,3 +217,14 @@ it.each(sizes)("Ashfall and the high road: the wagon and the cabinet pay only wh
   expect(paid.coins,id).toBe((opened.coins ?? 0)+3);
  }
 });
+
+it.each(sizes)("Ashfall: a missed doorstep makes no friend of Dunmore, so the crab cannot be called off by his name at %i seats",size=>{
+ const missed=walk(ashfall,size,{...picks,scene_crab:"read_it"},"success",20,false,{},"manticore","duskrunner",false,{interaction_doorstep:"miss-supported"});
+ expect(missed.interactionOutcomes.get("interaction_doorstep")).toBe("failure");
+ expect(missed.state.flags.dunmore_friend).not.toBe(true);
+ expect(offered(missed.trace.get("scene_crab")!,"dunmore")).toBe(false);
+ expect(missed.state.chapterOutcome).toBe("success");
+ const kept=walk(ashfall,size,picks);
+ expect(kept.state.flags.dunmore_friend).toBe(true);
+ expect(offered(kept.trace.get("scene_crab")!,"dunmore")).toBe(true);
+});
