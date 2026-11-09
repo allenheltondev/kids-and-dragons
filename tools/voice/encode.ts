@@ -27,6 +27,21 @@ export interface Encoded {
 const TRIM_LEADING = "silenceremove=start_periods=1:start_duration=0.02:start_threshold=-50dB";
 export const VOICE_FILTER = [TRIM_LEADING, "areverse", TRIM_LEADING, "areverse", "loudnorm=I=-16:TP=-1.5:LRA=11"].join(",");
 
+/**
+ * The programs encoding needs that this machine cannot run, by name: empty when ffmpeg and ffprobe both answer.
+ * Asked before any paid render, since every clip is encoded after the provider has billed for it.
+ */
+export function missingEncoders(run: (program: string) => void = (program) => void execFileSync(program, ["-version"], { stdio: "ignore" })): string[] {
+  return ["ffmpeg", "ffprobe"].filter((program) => {
+    try {
+      run(program);
+      return false;
+    } catch {
+      return true;
+    }
+  });
+}
+
 /** `audio` is what the provider sent: WAV (the default) or the MP3 ElevenLabs returns. */
 export function encodeVoice(audio: Buffer, ext: "wav" | "mp3" = "wav"): Encoded {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kad-voice-"));

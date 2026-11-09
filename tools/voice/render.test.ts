@@ -1,6 +1,10 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import type { DesiredSegment } from "./desired";
-import { candidates, renderOwed, type RenderDeps } from "./render";
+import { missingEncoders } from "./encode";
+import { candidates, dirRawAudio, RAW_AUDIO_DIR, renderOwed, type RawAudio, type RenderDeps } from "./render";
 import { MemoryClipStore, StoreSet } from "./store";
 
 const segment = (n: number, chars = 100): DesiredSegment => ({ key: String(n).padStart(64, "0"), by: "narrator", text: "x".repeat(chars) });
@@ -131,15 +135,104 @@ describe("when the provider fails", () => {
     expect(report.failed[0]?.error).toMatch(/retry stopped by the spend cap/);
   });
 
-  it("counts a try whose audio could not be kept: encode or upload failing is still a billed call", async () => {
+  it("never asks again for audio it was given: an encode that fails keeps the audio and stops the run", async () => {
     const encode = vi.fn(() => {
-      throw new Error("ffmpeg failed");
+      throw new Error("ffmpeg failed: spawnSync ffmpeg ENOENT");
     });
-    const { made, synth } = deps({ encode });
-    const report = await renderOwed(owed(1), made, { ...live, attempts: 3 });
-    expect(synth).toHaveBeenCalledTimes(3);
-    expect(report.dollars).toBeCloseTo(3);
-    expect(report.rendered).toHaveLength(0);
+    const raw = memoryRaw();
+    const { made, synth } = deps({ encode, raw });
+    const report = await renderOwed(owed(5), made, { ...live, attempts: 3, concurrency: 1 });
+    // One billed call for the first clip, none for the rest: the machine cannot encode, so nothing more is bought.
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(report.dollars).toBeCloseTo(1);
+    expect(report.failed).toEqual([{ key: segment(1).key, error: "ffmpeg failed: spawnSync ffmpeg ENOENT" }]);
+    expect(report.stoppedBy).toBe("local");
+    expect(report.deferred).toHaveLength(4);
+    expect(raw.get(segment(1).key)).toEqual({ audio: Buffer.from("wav"), ext: "wav" });
+  });
+
+  it("stops on a failed upload the same way", async () => {
+    const raw = memoryRaw();
+    const { made, synth, store } = deps({ raw });
+    vi.spyOn(store, "put").mockRejectedValue(new Error("AccessDenied"));
+    const report = await renderOwed(owed(3), made, { ...live, concurrency: 1 });
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(report.stoppedBy).toBe("local");
+    expect(raw.get(segment(1).key)).not.toBeNull();
+  });
+
+  it("encodes audio a failed run already paid for without asking the provider again, then lets it go", async () => {
+    const raw = memoryRaw();
+    raw.put(segment(1).key, Buffer.from("paid"), "mp3");
+    const encode = vi.fn(() => ({ bytes: Buffer.from("webm"), ms: 900 }));
+    const { made, synth } = deps({ raw, encode });
+    const report = await renderOwed(owed(2), made, live);
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(encode).toHaveBeenCalledWith(Buffer.from("paid"), "mp3");
+    expect(report.chars).toBe(100);
+    expect(report.rendered).toHaveLength(2);
+    expect(raw.get(segment(1).key)).toBeNull();
+  });
+});
+
+describe("keeping audio that was paid for", () => {
+  it("saves it before encoding, so a process killed mid-encode loses nothing, and lets it go once stored", async () => {
+    const raw = memoryRaw();
+    const savedWhenEncoding: boolean[] = [];
+    const encode = vi.fn(() => {
+      savedWhenEncoding.push(raw.get(segment(1).key) !== null);
+      return { bytes: Buffer.from("webm"), ms: 900 };
+    });
+    const { made } = deps({ raw, encode });
+    const report = await renderOwed(owed(1), made, live);
+    expect(savedWhenEncoding).toEqual([true]);
+    expect(report.rendered).toHaveLength(1);
+    expect(raw.get(segment(1).key)).toBeNull();
+  });
+
+  it("never asks the provider again when saving the audio fails: that is this machine, and the run stops", async () => {
+    const raw = { ...memoryRaw(), put: () => { throw new Error("ENOSPC"); } };
+    const { made, synth } = deps({ raw });
+    const report = await renderOwed(owed(3), made, { ...live, concurrency: 1 });
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(report.failed).toEqual([{ key: segment(1).key, error: "ENOSPC" }]);
+    expect(report.stoppedBy).toBe("local");
+  });
+
+  it("keeps it outside test-results/, which Playwright empties on every run, in a folder git ignores", () => {
+    const root = path.resolve(import.meta.dirname, "..", "..");
+    expect(path.relative(path.join(root, "test-results"), RAW_AUDIO_DIR).startsWith("..")).toBe(true);
+    for (const config of ["playwright.config.ts", "playwright.prod.config.ts"]) {
+      const file = path.join(root, config);
+      if (!fs.existsSync(file)) continue;
+      // An outputDir would move Playwright's emptied folder; if one is ever set, it must not hold the raw audio either.
+      const outputDir = /outputDir:\s*["'`]([^"'`]+)["'`]/.exec(fs.readFileSync(file, "utf8"))?.[1];
+      if (outputDir !== undefined) expect(path.relative(path.resolve(root, outputDir), RAW_AUDIO_DIR).startsWith("..")).toBe(true);
+    }
+    expect(fs.readFileSync(path.join(root, ".gitignore"), "utf8").split(/\r?\n/)).toContain(`${path.relative(root, RAW_AUDIO_DIR)}/`);
+  });
+
+  it("survives a reread from its folder: what one run kept, the next finds", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kad-voice-raw-"));
+    dirRawAudio(dir).put("abc", Buffer.from("paid"), "mp3");
+    expect(dirRawAudio(dir).get("abc")).toEqual({ audio: Buffer.from("paid"), ext: "mp3" });
+    dirRawAudio(dir).drop("abc");
+    expect(dirRawAudio(dir).get("abc")).toBeNull();
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+});
+
+function memoryRaw(): RawAudio {
+  const kept = new Map<string, { audio: Buffer; ext: "wav" | "mp3" }>();
+  return { get: (key) => kept.get(key) ?? null, put: (key, audio, ext) => void kept.set(key, { audio, ext }), drop: (key) => void kept.delete(key) };
+}
+
+describe("before a paid render", () => {
+  it("names the encoders this machine cannot run", () => {
+    expect(missingEncoders(() => {})).toEqual([]);
+    expect(missingEncoders((program) => {
+      if (program === "ffmpeg") throw new Error("ENOENT");
+    })).toEqual(["ffmpeg"]);
   });
 });
 

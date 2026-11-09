@@ -38,6 +38,10 @@ infra/.build/
 .kiro
 .vscode
 
+# Provider audio a voice:generate run paid for and has not stored yet (tools/voice/render.ts RAW_AUDIO_DIR).
+# Never under test-results/, which Playwright empties on every run.
+.voice-raw/
+
 # playwright
 test-results/
 playwright-report/
