@@ -57,14 +57,17 @@ it.each(sizes.flatMap(size => outcomes.flatMap(outcome => ["by_water", "by_goat"
       scene_first_story: "help_ending", scene_troll: "tell_story", scene_gem_toll: "lift_gem",
       scene_troll_hum: "answer_honest", choice_camp_spot: camp, rest_queue_camp: "to_bank",
       scene_night_rope: camp === "by_brass" ? "sit_on_rope" : "grab_rope", scene_wake_fee: "pay_fish",
-      scene_crossing_bank: camp === "by_water" ? "slow_line" : camp === "by_goat" ? "night_line" : "wade",
+      // A missed night rope (a timing game now) leaves no rope for the morning, so that camp wades.
+      scene_crossing_bank: camp === "by_water" ? "slow_line" : camp === "by_goat" && outcome !== "failure" ? "night_line" : "wade",
     }, outcome);
     const wet = outcome === "failure";
+    const ropeLost = camp === "by_goat" && outcome === "failure";
+    if (camp === "by_goat") expect(state.flags.night_rope_ready === true).toBe(!ropeLost);
     expect(state.flags.river_took_us === true).toBe(wet);
     expect(state.flags.crossed_dry === true).toBe(!wet);
     expect(trace.has("scene_mouth")).toBe(wet);
     expect(state.party.flatMap(p => p.character.questItems).includes("ossley_reed_knot")).toBe(wet);
-    expect(trace.has("interaction_crossing_prepared")).toBe(camp !== "by_brass");
+    expect(trace.has("interaction_crossing_prepared")).toBe(camp !== "by_brass" && !ropeLost);
     expect(trace.has("scene_night_rope_sit_on_rope")).toBe(camp === "by_brass");
     expect(state.flags.markers_helped === true).toBe(outcome === "assisted");
     expect(state.flags.heron_line === true).toBe(outcome !== "failure");
@@ -89,9 +92,12 @@ it.each(sizes.flatMap(size => outcomes.flatMap(outcome => ["north", "road"].flat
     expect(state.flags.named_the_mimic).toBe(true);
     expect(trace.has("interaction_tussock_balance")).toBe(true);
     expect(state.flags.rescued_prospectors).toBe(true);
-    expect(state.flags.gate_record_checked === true).toBe(record === "rubbing");
+    // A smudged rubbing (a precision game now) is not a checked record.
+    const checked = record === "rubbing" && outcome !== "failure";
+    expect(state.flags.gate_record_checked === true).toBe(checked);
     expect(state.flags.gate_record_helped === true).toBe(record === "rubbing" && outcome === "assisted");
-    if (record === "rubbing") expect(state.narration).toContain(outcome === "assisted" ? "Gullet's help" : "checked rubbing");
+    if (checked) expect(state.narration).toContain(outcome === "assisted" ? "Gullet's help" : "checked rubbing");
+    else if (record === "rubbing") expect(state.narration).not.toContain("checked rubbing");
     else expect(state.narration).toContain("without a paper rubbing");
     expect(state.flags.walked_over === true).toBe(exit === "road");
     expect(state.flags.route_rush === true).toBe(exit === "road");
@@ -169,4 +175,56 @@ it.each([road, marsh])("$id resumes every shipped roll prompt with its original 
       expect(state.sceneId).toBe((face === 20 ? oldScene.onSuccess : oldScene.onFailure).goto);
     }
   }
+});
+
+/** Opens one interaction scene at a table of `size` and lands the given result. */
+function play(chapter: Chapter, id: string, size: number, result: "miss" | "solve") {
+  let opened = start(chapter, "manticore", "duskrunner", {}, size);
+  opened.campaignId = "gemfall";
+  opened = enterScene(opened, id, context(chapter)).state;
+  const done = result === "miss" ? miss(chapter, opened)! : solve(chapter, opened);
+  expect(promptOf(done).outcome).toBe(result === "miss" ? "failure" : "success");
+  return { opened, landed: landed(chapter, done, promptOf(done).resolvedActorId ?? promptOf(done).actorId) };
+}
+const health = (s: RunState) => s.party.reduce((sum, p) => sum + p.hp, 0);
+
+it.each([1, 2, 4])("Long Mile: a missed ferry stroke sweeps the party south, a clean one lands east (%i seats)", size => {
+  expect(play(road, "interaction_ferry", size, "miss").landed.sceneId).toBe("scene_swept");
+  expect(play(road, "interaction_ferry", size, "solve").landed.sceneId).toBe("scene_east_landing");
+});
+it.each([1, 2, 4])("Marsh: the stump and the tussock cost something when missed (%i seats)", size => {
+  const bumped = play(marsh, "interaction_stumps", size, "miss");
+  expect(health(bumped.landed)).toBeLessThan(health(bumped.opened));
+  const pushed = play(marsh, "interaction_stumps", size, "solve");
+  expect(health(pushed.landed)).toBe(health(pushed.opened));
+  const cakes = (s: RunState) => s.party.flatMap(p => p.character.inventory).filter(i => i.itemId === "honeycake").length;
+  const dunked = play(marsh, "interaction_tussock_balance", size, "miss");
+  expect(cakes(dunked.landed)).toBe(cakes(dunked.opened));
+  expect(dunked.landed.flags.rescued_prospectors).toBe(true);
+  const hauled = play(marsh, "interaction_tussock_balance", size, "solve");
+  expect(cakes(hauled.landed)).toBe(cakes(hauled.opened) + 1);
+});
+
+it.each([1, 2, 4])("Long Mile: a tipped Ossley ferry is fished out by Ossley himself, not met again as a stranger (%i seats)", size => {
+  const picks = {
+    scene_east_road: "restore", scene_kettle_camp: "swap_kindling", scene_stuck_wagon: "unload",
+    scene_river_view: "watch_heron", scene_queue: "let_it_go", scene_skip_passes: "no_thanks",
+    scene_first_story: "help_ending", scene_troll: "tell_story", scene_gem_toll: "lift_gem",
+    scene_troll_hum: "answer_honest", choice_camp_spot: "by_brass", rest_queue_camp: "to_bank",
+    scene_night_rope: "sit_on_rope", scene_wake_fee: "pay_fish",
+    scene_crossing_bank: "ask_frog", scene_ossley_price: "pay_ossley", scene_swept: "hold_on",
+  };
+  const tipped = walk(road, size, picks, "failure");
+  expect(tipped.trace.has("interaction_ferry")).toBe(true);
+  expect(tipped.trace.has("scene_swept")).toBe(true);
+  expect(tipped.state.flags.river_took_us).toBe(true);
+  // The narration on entering the mouth is what the table hears there.
+  const atMouth = tipped.trace.get("scene_mouth")!;
+  expect(atMouth.narration).toContain("Your promise still counts");
+  expect(atMouth.narration).not.toContain("When I'm going your way");
+  // A party swept from the bank (no ferry) still meets him for the first time.
+  const waded = walk(road, size, { ...picks, scene_crossing_bank: "wade" }, "failure");
+  expect(waded.trace.has("interaction_ferry")).toBe(false);
+  const metAtMouth = waded.trace.get("scene_mouth")!;
+  expect(metAtMouth.narration).toContain("When I'm going your way");
 });

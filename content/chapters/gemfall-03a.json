@@ -900,7 +900,16 @@
           "goto": "scene_mouth_shore"
         }
       ],
-      "art": "scenes/gemfall/river-mouth-shore"
+      "art": "scenes/gemfall/river-mouth-shore",
+      "variants": [
+        {
+          "when": {
+            "flag": "ossley_ferry_tipped"
+          },
+          "replace": true,
+          "text": "At last the river lets you go on the eastern shore. Far off, haze hangs over the Bone Yard. Old Ossley poles up in his empty boat and fishes you out, one by one. \"Rough wake,\" he says. \"Your promise still counts.\" He hands you a reed knot. It stays wet."
+        }
+      ]
     },
     "scene_crawlers": {
       "type": "story",
@@ -1608,11 +1617,11 @@
     },
     "scene_night_rope": {
       "type": "story",
-      "narration": "A midnight splash! The Brassbuckles are sneaking across with a rope, and the black river tugs at the first one. Brace the rope together, or wake the troll.",
+      "narration": "A midnight splash! The Brassbuckles are sneaking across with a rope, and the black river tugs at the first one. Pull them in on the rope, or wake the troll.",
       "choices": [
         {
           "id": "grab_rope",
-          "label": "Brace the rope together",
+          "label": "Pull them in on the rope",
           "icon": "hand",
           "goto": "interaction_night_rope"
         },
@@ -2355,12 +2364,14 @@
     },
     "interaction_night_rope": {
       "type": "interaction",
-      "narration": "A brass hat bobs in the black water, then its owner. Keep the bank end of the rope steady while the Brassbuckles climb out. Pull together, not just harder.",
+      "narration": "A brass hat bobs in the black water, then its owner. Pull the rope in the moment a hand grabs it. Pull together, not just harder.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side until the rope marker is in the middle.",
-        "actionLabel": "Draw the rope in",
-        "objectLabel": "The Brassbuckles' rescue rope"
+        "kind": "timing",
+        "cue": "Tap to pull when the marker is in the gold, just as a hand grabs the rope.",
+        "actionLabel": "Pull the rope in",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_wake_fee",
@@ -2461,12 +2472,14 @@
     },
     "interaction_ferry": {
       "type": "interaction",
-      "narration": "You give your song, a proud memory and a promise. Old Ossley nods. Keep the load level while he poles through the fast water. His hat does not wobble.",
+      "narration": "You give your song, a proud memory and a promise. Old Ossley nods. Lean with the boat each time his pole bites into the fast water. His hat does not wobble.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side to level the ferry load.",
-        "actionLabel": "Carry the load across",
-        "objectLabel": "The ferry's load"
+        "kind": "timing",
+        "cue": "Tap to lean when the marker is in the gold, just as the pole bites.",
+        "actionLabel": "Lean with the boat",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_east_landing",
@@ -2474,7 +2487,14 @@
       },
       "onFailure": {
         "goto": "scene_swept",
-        "narration": "A wake tips the low boat. The current sweeps everyone south."
+        "narration": "A wake tips the low boat. The current sweeps everyone south.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "ossley_ferry_tipped",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_east_landing",
