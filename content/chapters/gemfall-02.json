@@ -2757,7 +2757,7 @@
       ],
       "interaction": {
         "kind": "timing",
-        "cue": "Push the wagon when the drover pulls.",
+        "cue": "Tap to push when the marker is in the gold, just as the drover pulls.",
         "actionLabel": "Push!",
         "target": 0.5,
         "width": 0.26,
@@ -2854,7 +2854,7 @@
     },
     "interaction_bridge_load": {
       "type": "interaction",
-      "narration": "The fauns show you how to level a long beam, then set it in. \"We'll lend you our brace at the hedges, if you need it,\" they say. The duck inspects both banks.",
+      "narration": "The fauns line up along the bank to pass a long new beam down to the bridge. \"We'll lend you our brace at the hedges, if you need it,\" they say. The duck inspects both banks.",
       "interaction": {
         "kind": "relay",
         "cue": "Pass the beam hand to hand down the bank, then drop it into the bridge supports.",
@@ -2929,7 +2929,7 @@
       "narration": "The fauns from the canal bridge catch up with their long brace pole. \"You helped our bridge,\" they say. One branch is tangled. Hold the brace where the branch can slip free.",
       "interaction": {
         "kind": "precision",
-        "cue": "Guide the brace to the gap while Pib frees the branch.",
+        "cue": "Tap when the marker is in the gold to set the brace while Pib frees the branch.",
         "actionLabel": "Guide the branch",
         "target": 0.5,
         "width": 0.28,
@@ -3148,7 +3148,7 @@
       ],
       "interaction": {
         "kind": "timing",
-        "cue": "Creep past the wolves when the bell rattles.",
+        "cue": "Tap to creep past when the marker is in the gold, just as the bell rattles.",
         "actionLabel": "Slip past",
         "target": 0.5,
         "width": 0.24,

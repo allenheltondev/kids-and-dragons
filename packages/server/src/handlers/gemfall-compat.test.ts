@@ -367,6 +367,42 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Their cues and narration describe the tap each game really asks for. The goal now asks why the charms
 // ring, and the opening introduces them. No scene, edge, stat or TN
 // moved; the endings, roads, setbacks and resumed-save digests below are unchanged.
+// Re-pinned for the owner-approved chapter 4b quality pass (gemfall-04b): a graph change. Five games that
+// could not fail now can, so their authored costs are reachable: the hedge latch (timing, the coins),
+// the mending circle (relay, the quiet-moss lesson the crater uses), the calf's sling (precision, the
+// herd's company), the quiet moss (timing) and the woodland chorus (memory, was a play game), whose misses
+// both wake the echo hunter; the unicorns' offer and the guard lesson describe those games. No scene,
+// edge, stat or TN moved; the endings, roads, setbacks and
+// resumed-save digests below are unchanged. Also gemfall-02, text only: its converted games' cues
+// name the tap they ask for, and the bridge beam no longer talks about leveling.
+// Re-pinned for the owner-approved chapter 3a and 3b quality pass: a graph change. Games no party could
+// fail now can, so their authored costs are reachable. 3a: Old Ossley's ferry (timing, a miss sweeps
+// the party south) and the night rope (timing, a miss loses the morning's rope). 3b: the Gate rubbing
+// (precision, a miss is no checked record), the stump (timing, a miss now costs 1 health) and the
+// tussock raft (precision, a miss loses the honeycake). Each cue, and the choice that leads to it, names
+// the tap it asks for; a party Ossley's boat tipped is fished out by Ossley himself. No scene,
+// edge, stat or TN moved; the endings, roads, setbacks and resumed-save digests below are unchanged.
+// Re-pinned for the owner-approved chapter 4a and 4c quality pass: a graph change. Games no party could
+// fail now can, so their authored costs are reachable. 4a: the pride marker post (precision, a miss
+// teaches no brace), the windbreak (timing, a miss brings the wolf fight) and the sash frame (precision,
+// a miss goes to the lantern check). 4c: the ash load and the crew's wind screen (timing, a miss costs
+// 1 health, which the story shows). Each cue, and the choice that leads to it, names the tap it asks
+// for and offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and
+// resumed-save digests below are unchanged.
+// Re-pinned for the owner-approved chapter 5a, 5b and 5c quality pass: a graph change. Games no party could
+// fail now can, so their authored costs are reachable. 5a: the measuring string (precision, a miss teaches
+// no rope brace) and the survey rope (timing, a miss closes the span). 5b: the ivy ledge (timing, a miss
+// meets the wolves). 5c: the dawn bell rope and the bell cart (timing), the Unassigned Stone's wrapping
+// (precision, a miss leaves the stone with Ashby) and the hand-bell chorus (memory, was a play game; a
+// miss settles no queue). Each cue, and the choice that leads to it, names the tap it asks for and
+// offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and resumed-save
+// digests below are unchanged.
+// Re-pinned for the owner-approved chapter 6 and 7h quality pass: a graph change. Games no party could
+// fail now can, so their authored costs are reachable. 6: Dunmore at the doorstep (timing, a miss makes no
+// friend of him) and the stuck wagon (timing, a miss earns no toll refund). 7h: Lady Fleecewick's cabinet
+// (precision, a miss earns no coins). Each cue, and the choice that leads to it, names the tap it asks for
+// and offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and resumed-save
+// digests below are unchanged.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
@@ -405,18 +441,18 @@ const DIGESTS: PreEpicSave["digests"] = {
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
-  "chapters/gemfall-02.json": "7038a91ac31f55b64db18eec8d2ae05587a61dc6c5c6623df0f493193ccd71d4",
-  "chapters/gemfall-03a.json": "aa3f2e19a4db60409c4541eac8bc4277488f65f0789318b4a8556125cb5e5686",
-  "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
+  "chapters/gemfall-02.json": "04ce7ad2b710baf5767df3a528341f79b71b156bed0b8d9e31994853a1980a78",
+  "chapters/gemfall-03a.json": "0671e7da5b33d85a4ad822568b250f5d8e37de465ceb738fc7ab0286425b6804",
+  "chapters/gemfall-03b.json": "51b0a27ee6b3efd36db1786dc88ced9a13898cf7bba3e9f2dc2f7116d0af786c",
   "chapters/gemfall-03c.json": "50ba95c1a4ac5f6c700abbc433b38b617b677799f6364818f90d0e03e8d9006b",
-  "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
-  "chapters/gemfall-04b.json": "a1852d7992f982cc47a5f29297fc2d984d77a6c7a64bbaef2077d57ebea051a5",
-  "chapters/gemfall-04c.json": "17b14d20611e8d1c7361c057625f9fd49ac253b0a7d7d4b01ef80d5a04ce73ae",
-  "chapters/gemfall-05a.json": "bf36941e45e9064f050a1cc12ca06ff17454470212222d0d083ac32d5075a0bf",
-  "chapters/gemfall-05b.json": "f0a16c181e23485c1c181ef91d758e5f4627bb769599cdbadc443b5a70c2bbf9",
-  "chapters/gemfall-05c.json": "da75ade067bc5769638c58401e2dd4876c2704553cb1ba182761057ef87a853d",
-  "chapters/gemfall-06.json": "b1e6c764a451e59ec39198bdffa87b0989977479682875bf5720e7f3dba360c7",
-  "chapters/gemfall-07h.json": "5e247fbcfeaad63d3a3786189a551a30479dd898b256cc4d4a93235acb1753cc",
+  "chapters/gemfall-04a.json": "daf9da4bbcfa5d81e54d72b9e4d72f5e5206f877d1c2ece9c6b791dddf2c1432",
+  "chapters/gemfall-04b.json": "26106d947ee299951e7e195c916a27defb87e2cf5866f3f390a3a753f040cd13",
+  "chapters/gemfall-04c.json": "e281173e60c3373859184caa7a76924946811a8059333b7f890bcf3ee920de3f",
+  "chapters/gemfall-05a.json": "6158555dba9c779162530effc81a014f11e439f24b6b541e69cc68ec95671d50",
+  "chapters/gemfall-05b.json": "209214528a9453b93d89c1010124e156da82a2157651050a05b9f473bb76892d",
+  "chapters/gemfall-05c.json": "c70c4a4472c6f60cf306db1056684bdc541201f0f44c5959d2cbe7989d965385",
+  "chapters/gemfall-06.json": "1c846bc02227787027e3e1d886dd66cad97c762a6feb495f4891c939c929b8c9",
+  "chapters/gemfall-07h.json": "0245f102c501fa6c434589ee68c2eb2befd1398e6e178e229910fdafd51f1fce",
   "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
   "chapters/gemfall-07r.json": "6555ab01bd48cb40cd944cb91c5a65b841518058d708ac943f79cfb54a13e295",
   "chapters/gemfall-08.json": "d075f2163272dc3d29b89d0d12e937691d1fe12ea4cbf9eabd3406226f372612",

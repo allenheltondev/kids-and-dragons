@@ -2864,12 +2864,14 @@
     },
     "interaction_cabinet": {
       "type": "interaction",
-      "narration": "One wheel of Lady Fleecewick's cabinet sticks in a rut. Forty stones slide toward the low corner. \"Lift, dears! Gently! They bruise!\"",
+      "narration": "One wheel of Lady Fleecewick's cabinet sticks in a rut. Forty stones slide toward the low corner. \"Lift, dears, just as it sits level! Gently! They bruise!\"",
       "interaction": {
-        "kind": "balance",
-        "cue": "Everyone lift or lower your side until the cushions are flat, then carry the cabinet.",
-        "actionLabel": "Carry the cabinet",
-        "objectLabel": "A glass cabinet of forty stones"
+        "kind": "precision",
+        "cue": "Tap to lift when the marker is in the gold, while the cushions lie flat.",
+        "actionLabel": "Lift the cabinet",
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_road_gifts",

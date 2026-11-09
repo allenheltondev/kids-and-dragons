@@ -231,3 +231,19 @@ it.each([ford, road])("$id still resumes every shipped roll prompt to its origin
     }
   }
 });
+
+it.each(sizes)("road: walking through the ash costs health only when the gust is missed at %i seats", size => {
+  const health = (s: RunState) => s.party.reduce((sum, p) => sum + p.hp, 0);
+  for (const id of ["interaction_ash_load", "interaction_crew_screen"]) {
+    const opened = enterScene(initial(road, size), id, context(road)).state;
+    const missed = miss(road, opened)!;
+    expect(promptOf(missed).outcome, id).toBe("failure");
+    const bowled = landed(road, missed, promptOf(missed).resolvedActorId ?? promptOf(missed).actorId);
+    expect(bowled.sceneId, id).toBe("scene_road_bend");
+    expect(health(bowled), id).toBeLessThan(health(opened));
+    const solved = solve(road, opened);
+    const through = landed(road, solved, promptOf(solved).resolvedActorId ?? promptOf(solved).actorId);
+    expect(through.sceneId, id).toBe("scene_road_bend");
+    expect(health(through), id).toBe(health(opened));
+  }
+});

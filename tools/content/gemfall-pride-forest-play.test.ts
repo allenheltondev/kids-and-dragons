@@ -74,15 +74,31 @@ const forestPicks = {
 };
 it.each(sizes.flatMap(size => outcomes.map(outcome => ({size,outcome}))))
  ("pride: $size seats / $outcome carries the brace and sash lesson through a complete evening", ({size,outcome}) => {
- const {state,trace}=walk(pride,size,pridePicks,outcome);
+ // A missed marker post (a precision game now) teaches no brace, so the fire has no windbreak and the
+ // wolves are chased off instead.
+ const learned=outcome!=="failure";
+ const {state,trace}=walk(pride,size,{...pridePicks,scene_wolves:learned?"brace_fire":"chase_off"},outcome);
  expect(trace.has("interaction_cub_lullaby")).toBe(true);
  expect(trace.has("interaction_sash_frame")).toBe(true);
- expect(state.flags.pride_brace_learned).toBe(true);
- expect(state.flags.pride_windbreak_used).toBe(true);
- expect(trace.has("interaction_pride_windbreak")).toBe(true);
+ expect(state.flags.pride_brace_learned===true).toBe(learned);
+ expect(offered(trace.get("scene_wolves")!,"brace_fire")).toBe(learned);
+ expect(state.flags.pride_windbreak_used===true).toBe(learned);
+ expect(trace.has("interaction_pride_windbreak")).toBe(learned);
  expect(state.flags.read_the_sashes === true).toBe(outcome !== "failure");
  expect(state.chapterOutcome).toBe("success");
  });
+it.each(sizes)("pride: a missed windbreak brings the wolves, and a missed sash goes to the lanterns at %i seats", size => {
+ const land=(id:string,how:"miss"|"solve")=>{
+  const opened=enterScene(initial(pride,size),id,context(pride)).state;
+  const done=how==="miss"?miss(pride,opened)!:solve(pride,opened);
+  expect(promptOf(done).outcome).toBe(how==="miss"?"failure":"success");
+  return landed(pride,done,promptOf(done).resolvedActorId ?? promptOf(done).actorId).sceneId;
+ };
+ expect(land("interaction_pride_windbreak","miss")).toBe("encounter_wolves");
+ expect(land("interaction_pride_windbreak","solve")).toBe("rest_wolf_fire");
+ expect(land("interaction_sash_frame","miss")).toBe("check_sashes");
+ expect(land("interaction_sash_frame","solve")).toBe("interaction_sashes_pinned");
+});
 it.each(sizes)("pride: checking the line changes the later route at %i seats", size => {
  const {state,trace}=walk(pride,size,{...pridePicks,choice_cub_nap:"packs_away",scene_wolf_sign:"checked_line"});
  expect(trace.has("interaction_wolf_trail")).toBe(false);
@@ -98,14 +114,26 @@ it.each(sizes)("pride: leaving the stone avoids the wolf approach at %i seats", 
 });
 it.each(sizes.flatMap(size => outcomes.map(outcome => ({size,outcome}))))
  ("forest: $size seats / $outcome makes the mending lesson useful at the crater", ({size,outcome}) => {
- const {state,trace}=walk(forest,size,forestPicks,outcome);
+ // A missed mending relay loses the lesson, so the crater no longer offers the moss strip.
+ const mended=outcome!=="failure";
+ const {state,trace}=walk(forest,size,{...forestPicks,scene_crater:mended?"moss_strip":"stand"},outcome);
  expect(state.flags.told_forest_truth).toBe(true);
- expect(state.flags.helped_mend).toBe(true);
- expect(state.flags.forest_moss_used).toBe(true);
+ expect(state.flags.helped_mend===true).toBe(mended);
+ expect(offered(trace.get("scene_crater")!,"moss_strip")).toBe(mended);
+ expect(state.flags.forest_moss_used===true).toBe(mended);
  expect(offered(trace.get("scene_crater")!,"woodland_chorus")).toBe(false);
  expect(trace.has("interaction_mending_circle")).toBe(true);
  expect(state.flags.glade_mended).toBe(true);
  expect(state.chapterOutcome).toBe("success");
+});
+it.each(sizes.flatMap(size => (["interaction_quiet_moss", "interaction_guard_chorus"] as const).map(id => ({size,id}))))
+ ("forest: a missed $id wakes the echo hunter at $size seats", ({size,id}) => {
+ const opened=enterScene(initial(forest,size),id,context(forest)).state;
+ const missed=miss(forest,opened)!;
+ expect(promptOf(missed).outcome).toBe("failure");
+ expect(landed(forest,missed,promptOf(missed).resolvedActorId ?? promptOf(missed).actorId).sceneId).toBe("encounter_echo");
+ const solved=solve(forest,opened);
+ expect(landed(forest,solved,promptOf(solved).resolvedActorId ?? promptOf(solved).actorId).sceneId).toBe("scene_glade_heart");
 });
 it.each(sizes)("forest: standing guard unlocks a different approach at %i seats", size => {
  const {state,trace}=walk(forest,size,{...forestPicks,scene_unicorns:"guard",scene_crater:"woodland_chorus",scene_glade_heart:"pocket",scene_pile_glimpsed:"on"},"assisted");
