@@ -239,6 +239,51 @@ export function firstPicks(rows: readonly { row: CastingVoice; lines: number; ca
   return picks;
 }
 
+/**
+ * Trims picks to the plan's free `slots`: rows with most lines keep their library voice (a voice two rows share costs
+ * one slot), and each row past the slots takes, from its own shortlist, a voice already on the account that no row
+ * uses, or else a voice another row keeps, in an accent that voice does not speak yet. Returns the trimmed picks and
+ * what each trimmed row moved to (`to` is missing when nothing would do; that row is then left unpicked).
+ */
+export function fitPicks(
+  picks: Picks,
+  rows: readonly { row: CastingVoice; lines: number; candidates: readonly Candidate[]; accent?: string | undefined }[],
+  slots: number,
+): { picks: Picks; trimmed: { id: string; from: string; to?: string }[] } {
+  const ordered = [...rows].filter(({ row }) => picks[row.id] !== undefined).sort((a, b) => b.lines - a.lines || a.row.id.localeCompare(b.row.id));
+  const kept: Picks = {};
+  const heard = new Map<string, Set<string>>();
+  const hear = (voiceId: string, accent: string | undefined): void => void heard.set(voiceId, new Set([...(heard.get(voiceId) ?? []), accent ?? ""]));
+  const adding = new Set<string>();
+  let free = slots;
+  const past: typeof ordered = [];
+  for (const entry of ordered) {
+    const pick = picks[entry.row.id]!;
+    if (pick.ownerId !== undefined && !adding.has(pick.voiceId)) {
+      if (free <= 0) {
+        past.push(entry);
+        continue;
+      }
+      adding.add(pick.voiceId);
+      free -= 1;
+    }
+    kept[entry.row.id] = pick;
+    hear(pick.voiceId, entry.accent);
+  }
+  const trimmed: { id: string; from: string; to?: string }[] = [];
+  for (const { row, candidates, accent } of past) {
+    const unused = candidates.find((candidate) => candidate.ownerId === undefined && !heard.has(candidate.voiceId));
+    const shared = candidates.find((candidate) => heard.has(candidate.voiceId) && !heard.get(candidate.voiceId)!.has(accent ?? ""));
+    const to = unused ?? shared;
+    trimmed.push({ id: row.id, from: picks[row.id]!.name, ...(to ? { to: to.name } : {}) });
+    if (to === undefined) continue;
+    // A shared library voice is the copy its keeper's row will add, so this row takes that pick as it stands.
+    kept[row.id] = to.ownerId === undefined ? to : Object.values(kept).find((pick) => pick.voiceId === to.voiceId)!;
+    hear(to.voiceId, accent);
+  }
+  return { picks: kept, trimmed };
+}
+
 /** The picks not on the account yet, once each: each one takes a voice slot, however many rows share it. */
 export function toAdd(picks: Picks, account: readonly VoiceInfo[]): [string, Candidate][] {
   const have = new Set(account.map((voice) => voice.id));

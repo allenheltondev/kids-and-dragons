@@ -5,7 +5,8 @@
  *   accents [--write]     everyone's accent from where their people live (free, offline; shows the changes unless --write)
  *   slots                 custom voices the plan allows and has in use
  *   shortlist             candidates for each row of the bank, a page to hear them, and first picks (read only, free)
- *   add [--yes]           puts the picks that are not on the account yet onto it (uses voice slots)
+ *   add [--fit] [--yes]   puts the picks that are not on the account yet onto it (uses voice slots); --fit trims the
+ *                         rows with fewest lines to stand-ins when the picks need more slots than are free
  *   assign [--approve]    writes the picks to every speaker on their row, in content/voice/cast.json
  *   listen                renders one real line per speaker to a local folder, to hear the tags on the voice (spends a little)
  *
@@ -20,7 +21,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { addLibraryVoice, keysFromEnv, listVoices, searchLibrary, voiceSlots, type Fetch, type LibraryVoice } from "./bakeoff/providers";
 import { loadProfiles } from "./cast/profile.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, fitPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
 import { ELEVENLABS, type CastSheet, type Provider } from "./desired";
 import { readJson } from "./load";
 import { makeBilledChars, makeSynthesizer, type DeliveryTables, type SynthOptions } from "./synth";
@@ -36,6 +37,7 @@ const { values, positionals } = parseArgs({
   options: {
     write: { type: "boolean", default: false },
     yes: { type: "boolean", default: false },
+    fit: { type: "boolean", default: false },
     approve: { type: "boolean", default: false },
     picks: { type: "string", default: path.join(SHORTLIST, "picks.json") },
     row: { type: "string" },
@@ -123,16 +125,26 @@ async function shortlist(): Promise<void> {
 
 async function add(): Promise<void> {
   needKey();
-  const picks = readPicks();
-  const wanted = toAdd(picks, await listVoices("elevenlabs", keys, http));
+  let picks = readPicks();
+  const account = await listVoices("elevenlabs", keys, http);
   const { used, limit } = await voiceSlots(keys, http);
+  if (values.fit && toAdd(picks, account).length > limit - used) {
+    const shortlisted = path.join(SHORTLIST, "shortlist.json");
+    if (!fs.existsSync(shortlisted)) fail(`--fit chooses stand-ins from ${shortlisted}. Run the shortlist step first.`);
+    const fitted = fitPicks(picks, JSON.parse(fs.readFileSync(shortlisted, "utf8")) as Parameters<typeof fitPicks>[1], limit - used);
+    console.log(`Trimmed ${String(fitted.trimmed.length)} rows with the fewest lines to fit the plan:`);
+    for (const { id, from, to } of fitted.trimmed) console.log(`  ${id.padEnd(30)} ${from}  ->  ${to ?? "(nothing: design it, or leave it to the device voice)"}`);
+    picks = fitted.picks;
+  }
+  const wanted = toAdd(picks, account);
   console.log(`${String(wanted.length)} voices to add; ${String(limit - used)} slots free.`);
   for (const [id, pick] of wanted) console.log(`  ${id.padEnd(30)} ${pick.name}`);
-  if (wanted.length > limit - used) fail("That is more than the plan has room for. Pick account voices for some rows, or raise the plan.");
+  if (wanted.length > limit - used) fail("That is more than the plan has room for. Add --fit to trim the rows with fewest lines, pick account voices for some rows, or raise the plan.");
   if (!values.yes) {
     console.log("Nothing added. Add --yes to put them on the account.");
     return;
   }
+  fs.writeFileSync(values.picks, `${JSON.stringify(picks, null, 2)}\n`);
   for (const [id, pick] of wanted) {
     const voiceId = await addLibraryVoice(keys, { ownerId: pick.ownerId!, voiceId: pick.voiceId, name: id }, http);
     settleAdded(picks, pick.voiceId, { voiceId, name: id });

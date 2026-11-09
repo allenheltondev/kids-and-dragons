@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ACCENT_LABELS, AMERICAN_VARIETY, PEOPLE_ACCENTS, REGION_ACCENTS, REGION_IDEAS, accentFor, americanFor } from "./cast/accents.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, fitPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
 
 const row = (over: Partial<CastingVoice> = {}): CastingVoice => ({ id: "kad-yeti-deep", gender: "male", people: "yeti", prompt: "", search: "deep slow gentle", speakers: ["hummock"], ...over });
 
@@ -167,6 +167,27 @@ describe("candidates", () => {
   it("adds only library picks the account lacks, under either id or name", () => {
     const picks = { one: { voiceId: "a", name: "A", about: "", ownerId: "o" }, two: { voiceId: "b", name: "B", about: "", ownerId: "o" }, three: { voiceId: "c", name: "C", about: "", ownerId: "o" }, four: { voiceId: "d", name: "D", about: "" } };
     expect(toAdd(picks, [{ id: "b", name: "B" }, { id: "z", name: "three" }]).map(([id]) => id)).toEqual(["one"]);
+  });
+
+  it("trims the rows with fewest lines to the free slots, onto an unused account voice or a kept voice in another accent", () => {
+    const library = (voiceId: string) => ({ voiceId, name: voiceId, about: "", ownerId: "o" });
+    const owned = (voiceId: string) => ({ voiceId, name: voiceId, about: "" });
+    const picks = { big: library("x"), twin: library("x"), mid: library("y"), small: library("z"), tiny: library("w"), last: library("v") };
+    const rows = [
+      { row: row({ id: "big" }), lines: 90, accent: "Texan", candidates: [library("x")] },
+      { row: row({ id: "twin" }), lines: 80, accent: "Southern American", candidates: [library("x")] },
+      { row: row({ id: "mid" }), lines: 50, accent: "Texan", candidates: [library("y")] },
+      { row: row({ id: "small" }), lines: 9, accent: "Texan", candidates: [library("z"), owned("brian")] },
+      { row: row({ id: "tiny" }), lines: 5, accent: "Midwestern American", candidates: [library("w"), library("x"), owned("brian")] },
+      { row: row({ id: "last" }), lines: 2, accent: "Texan", candidates: [library("v"), library("x")] },
+    ];
+    const { picks: fitted, trimmed } = fitPicks(picks, rows, 2);
+    expect(toAdd(fitted, []).map(([id]) => id)).toEqual(["big", "mid"]);
+    expect(fitted.twin).toEqual(picks.big);
+    expect(fitted.small!.voiceId).toBe("brian");
+    expect(fitted.tiny!.voiceId).toBe("x");
+    expect(fitted.last).toBeUndefined();
+    expect(trimmed).toEqual([{ id: "small", from: "z", to: "brian" }, { id: "tiny", from: "w", to: "x" }, { id: "last", from: "v" }]);
   });
 
   it("adds a voice two rows share once, and gives both rows the account's copy", () => {

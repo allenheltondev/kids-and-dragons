@@ -70,7 +70,7 @@ npm run voice:library -- assign
 npm run voice:library -- listen
 ```
 
-`add` puts the library picks on your account, which uses voice slots. `assign` gives each pick to everyone on its row, unapproved. `listen` renders one real line per speaker to `test-results/voice-listen/`, with no manifest and no bucket. When they sound right, `assign --approve` approves them: `voice:generate` renders only approved voices.
+`add` puts the library picks on your account, which uses voice slots; a voice two rows share takes one. When the picks need more slots than are free, `add --fit` keeps the library voices for the rows with most lines and moves each row past the slots to a free voice from its own shortlist (one on your account no row uses, or a kept voice in an accent it does not speak yet), and prints every move. It writes the trimmed picks only with `--yes`. `assign` gives each pick to everyone on its row, unapproved. `listen` renders one real line per speaker to `test-results/voice-listen/`, with no manifest and no bucket. When they sound right, `assign --approve` approves them: `voice:generate` renders only approved voices.
 
 ## How ElevenLabs lets you vary a voice
 
