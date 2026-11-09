@@ -456,7 +456,11 @@
           "at": "2026-10-30T18:16:39.825Z"
         }
       ],
-      "accent": "Australian"
+      "accent": "Australian",
+      "elevenlabs": {
+        "voiceId": "sssn4wp3AspuK2kvy3Ym",
+        "name": "kad-skywarden-captain"
+      }
     },
     "tobble": {
       "name": "Tobble Reedpipe",
@@ -631,7 +635,11 @@
       "lineCount": 1,
       "speaks": true,
       "status": "provisional",
-      "accent": "Australian"
+      "accent": "Australian",
+      "elevenlabs": {
+        "voiceId": "sssn4wp3AspuK2kvy3Ym",
+        "name": "kad-skywarden-captain"
+      }
     },
     "tour_guide": {
       "name": "Tour Guide",
@@ -4709,7 +4717,11 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:27:46.648Z"
         }
-      ]
+      ],
+      "elevenlabs": {
+        "voiceId": "sssn4wp3AspuK2kvy3Ym",
+        "name": "kad-skywarden-captain"
+      }
     },
     "caravan_master": {
       "name": "Caravan Master",
@@ -7983,7 +7995,11 @@
       "lineCount": 0,
       "speaks": true,
       "status": "provisional",
-      "accent": "Australian"
+      "accent": "Australian",
+      "elevenlabs": {
+        "voiceId": "sssn4wp3AspuK2kvy3Ym",
+        "name": "kad-skywarden-captain"
+      }
     },
     "road_mule": {
       "name": "Road mule",
