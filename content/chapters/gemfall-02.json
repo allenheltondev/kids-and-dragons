@@ -33,7 +33,7 @@
     }
   ],
   "goal": {
-    "text": "Find out what has the Sunward Fields spooked, and choose your road north.",
+    "text": "Look into what has the Sunward Fields spooked, and choose your road north.",
     "steps": [
       {
         "id": "egg_stall",
@@ -77,7 +77,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "Tonight's job: find out what has the Sunward Fields spooked, and choose your road north at Bramblewood, the town behind the tall hedges. Hesper's cook packs you a supper bundle, and the sausage wagon rumbles on ahead. Fauns sing in every field. Then every song stops. One faun's watering flute keeps pouring onto her own hoof.",
+      "narration": "Tonight's job: look into what has the Sunward Fields spooked, and choose your road north at Bramblewood, the town behind the tall hedges. Hesper's cook packs you a supper bundle, and the sausage wagon rumbles on ahead. Fauns sing in every field. Then every song stops. One faun's watering flute keeps pouring onto her own hoof.",
       "choices": [
         {
           "id": "look",
@@ -2094,6 +2094,12 @@
           "icon": "eye",
           "requiresFlag": "read_the_signs",
           "goto": "rest_marda_inn_signs"
+        },
+        {
+          "id": "ask_signs",
+          "label": "Ask Marda what the fields are saying",
+          "icon": "ear",
+          "goto": "rest_marda_inn_explains"
         }
       ]
     },
@@ -3185,7 +3191,7 @@
     },
     "rest_marda_inn_signs": {
       "type": "story",
-      "narration": "You count it out for Marda: the moths, the wolves, the watching jackalopes, the shiver. She stops wiping the table. \"So the fields have noticed too,\" she says, and sets down an extra bowl of stew that nobody ordered. \"Go carefully, whichever road you pick.\"",
+      "narration": "You count it out for Marda: the moths, the wolves, the watching jackalopes, the shiver. She stops wiping the table. \"So the fields have noticed too,\" she says. She sets down an extra bowl of stew, then presses three coins into your hand. \"For saying it out loud. Go carefully, whichever road you pick.\"",
       "cast": [
         {
           "figure": "cast/marda_thorn",
@@ -3197,6 +3203,25 @@
         {
           "type": "grantCoins",
           "amount": 3
+        }
+      ],
+      "choices": [
+        {
+          "id": "to_board",
+          "label": "Eat and listen",
+          "icon": "scroll",
+          "goto": "choice_common_room"
+        }
+      ]
+    },
+    "rest_marda_inn_explains": {
+      "type": "story",
+      "narration": "You count the moths, the wolves and the shiver on your fingers and ask Marda what it adds up to. She stops wiping the table. \"Everything that can leave Mount Red Sky is leaving it,\" she says. \"The fields noticed before I did. Go carefully, whichever road you pick.\"",
+      "cast": [
+        {
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "choices": [

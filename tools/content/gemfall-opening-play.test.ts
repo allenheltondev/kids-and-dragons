@@ -144,6 +144,10 @@ it.each(sizes)("fields: reading the signs pays off with Marda only when the part
  expect(offered(read.trace.get("rest_marda_inn")!,"signs")).toBe(true);
  expect(read.trace.has("rest_marda_inn_signs")).toBe(true);
  expect(read.trace.get("choice_common_room")!.coins).toBe(read.trace.get("rest_marda_inn")!.coins!+3);
+ const asked=walk(fields,size,{...fieldPicks,rest_marda_inn:"ask_signs"},"success",1);
+ expect(asked.state.flags.read_the_signs).not.toBe(true);
+ expect(asked.trace.has("rest_marda_inn_explains")).toBe(true);
+ expect(asked.state.chapterOutcome).toBe("success");
  const muddled=walk(fields,size,fieldPicks,"success",1);
  expect(muddled.state.flags.read_the_signs).not.toBe(true);
  expect(offered(muddled.trace.get("rest_marda_inn")!,"signs")).toBe(false);
