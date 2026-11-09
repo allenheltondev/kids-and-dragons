@@ -1626,7 +1626,7 @@
         },
         {
           "id": "ivy_ledge",
-          "label": "Rig the ivy handline",
+          "label": "Edge along the ivy ledge",
           "goto": "interaction_ivy_ledge",
           "icon": "hand",
           "requiresFlag": "high_path_brace"
@@ -2197,12 +2197,14 @@
     },
     "interaction_ivy_ledge": {
       "type": "interaction",
-      "narration": "Use the ivy brace you practiced at the falls. Hold the line tight while one hero guides the way along the ledge. Alone, use the rock post.",
+      "narration": "Use the ivy brace you practiced at the falls. Take each step along the ledge just as the wind drops.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Keep the ivy line taut while the acting hero guides the ledge.",
-        "actionLabel": "Guide the side ledge",
-        "supportLabel": "Brace the ivy line"
+        "kind": "timing",
+        "cue": "Tap to step when the marker is in the gold, while the wind drops.",
+        "actionLabel": "Step along the ledge",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_foothills_view",

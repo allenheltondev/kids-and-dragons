@@ -1348,7 +1348,7 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "At dawn, the bell-code expert has jobs. \"Learn the big-bell crew's passing line,\" she says, very fast, \"or polish hand bells for a chorus. Both help at the stones!\" The bell in the corner hangs untouched, its rope tied high.",
+      "narration": "At dawn, the bell-code expert has jobs. \"Learn the big-bell crew's passing line,\" she says, very fast, \"or polish hand bells for a chorus. Both help at the stones, if you get them right!\" The bell in the corner hangs untouched, its rope tied high.",
       "choices": [
         {
           "id": "pull_rope",
@@ -1480,7 +1480,7 @@
         },
         {
           "id": "hand_chorus",
-          "label": "Ring the hand-bell chorus",
+          "label": "Ring back the grandmothers' pattern",
           "goto": "interaction_crowd_hand_bells",
           "icon": "hand",
           "requiresFlag": "hand_bells_ready"
@@ -1936,12 +1936,14 @@
     },
     "interaction_bell_cart": {
       "type": "interaction",
-      "narration": "The grandmothers wheel their loudest hand bell down to the stones on a little cart. A wheel sticks in a rut. \"Somebody steer!\" calls the bell-code expert. \"Everybody push!\"",
+      "narration": "The grandmothers wheel their loudest hand bell down to the stones on a little cart. A wheel sticks in a rut. \"Push on the count!\" calls the bell-code expert. \"One, two, NOW!\"",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends push the cart while someone steers it out of the rut.",
-        "actionLabel": "Steer the cart",
-        "supportLabel": "Push the cart"
+        "kind": "timing",
+        "cue": "Tap to push when the marker is in the gold, right on NOW.",
+        "actionLabel": "Push the cart",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_crowd_at_stones",
@@ -2268,12 +2270,14 @@
     },
     "interaction_kept_stone": {
       "type": "interaction",
-      "narration": "Ashby will let you carry the stone if you keep its wrapping level. Raise or lower your side, then lift it gently.",
+      "narration": "Ashby will let you carry the stone if you keep its wrapping level. Lift it gently, just as the wrapping hangs level.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Level the wrapped stone before lifting it from the list.",
+        "kind": "precision",
+        "cue": "Tap to lift when the marker is in the gold, while the wrapping hangs level.",
         "actionLabel": "Lift the wrapped stone",
-        "objectLabel": "The Unassigned Stone in its wrapping"
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_crawlers_porch",
@@ -2319,12 +2323,14 @@
     },
     "interaction_dawn_rope": {
       "type": "interaction",
-      "narration": "Brace the big bell's rope and guide the pull. Alone, use the cleat. The expert teaches the crew's hand-to-hand passing line. Her clipboard is nearly as tall as she is.",
+      "narration": "Pull the big bell's rope just as it swings down to you. The expert teaches the crew's hand-to-hand passing line. Her clipboard is nearly as tall as she is.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the rope supports while the acting hero guides the dawn pull.",
-        "actionLabel": "Guide the dawn pull",
-        "supportLabel": "Hold the rope steady"
+        "kind": "timing",
+        "cue": "Tap to pull when the marker is in the gold, as the rope swings down.",
+        "actionLabel": "Pull the dawn bell",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "interaction_bell_cart",
@@ -2405,31 +2411,34 @@
     },
     "interaction_crowd_hand_bells": {
       "type": "interaction",
-      "narration": "Fit your polished bells between the grandmothers' notes, a turn each. Each chime calls a row forward. The feathered hat has to stop shouting to hear his row.",
+      "narration": "The grandmothers ring a pattern on their bells. Ring it back with your polished bells, note for note. Each chime calls a row forward. The feathered hat has to stop shouting to hear his row.",
       "interaction": {
-        "kind": "play",
-        "cue": "Each hero adds a hand-bell answer to the prepared chorus.",
-        "actionLabel": "Finish the answering chorus",
-        "participation": "everyone",
+        "kind": "memory",
+        "cue": "Watch the grandmothers' bells, then ring them back in the same order.",
+        "actionLabel": "Ring the answer",
+        "stepMs": 1300,
         "options": [
           {
-            "id": "low",
-            "label": "Answer after the low bell",
-            "icon": "note",
-            "reaction": "Your answer follows the low bell. The next row waits for its turn."
+            "id": "little",
+            "label": "Little bell",
+            "icon": "glyph_bell_little"
           },
           {
-            "id": "high",
-            "label": "Answer after the high bell",
-            "icon": "note",
-            "reaction": "Your answer follows the high bell. The expert waves one row forward."
+            "id": "big",
+            "label": "Big bell",
+            "icon": "glyph_bell_big"
           },
           {
-            "id": "space",
-            "label": "Leave a space for the next answer",
-            "icon": "ear",
-            "reaction": "You leave a clear space. The waiting crowd hears the next little bell."
+            "id": "brass",
+            "label": "Brass bell",
+            "icon": "glyph_bell_brass"
           }
+        ],
+        "answer": [
+          "little",
+          "big",
+          "brass",
+          "big"
         ]
       },
       "onSuccess": {
