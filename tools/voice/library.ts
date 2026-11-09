@@ -11,7 +11,7 @@
  *   listen                renders one real line per speaker to a local folder, to hear the tags on the voice (spends a little)
  *
  * Options: --picks FILE (default test-results/voice-shortlist/picks.json), --row ID[,ID...] (listen to those rows only),
- * --per-row N (listen to the N speakers with most lines on each row),
+ * --per-row N (listen to the N speakers with most lines on each row), --speaker ID[,ID...] (listen to those speakers only),
  * --max-chars N (listen's cap, default 20000), --model ID.
  *
  * `listen` writes nothing but its own folder: no manifest, no bucket. `voice:generate` only renders approved voices.
@@ -43,6 +43,7 @@ const { values, positionals } = parseArgs({
     picks: { type: "string", default: path.join(SHORTLIST, "picks.json") },
     row: { type: "string" },
     "per-row": { type: "string" },
+    speaker: { type: "string" },
     "max-chars": { type: "string", default: "20000" },
     model: { type: "string", default: ELEVENLABS.model },
   },
@@ -179,6 +180,9 @@ async function listen(): Promise<void> {
   const wanted = values.row?.split(",").map((id) => id.trim()).filter(Boolean);
   const unknown = (wanted ?? []).filter((id) => !casting.voices.some((row) => row.id === id));
   if (unknown.length > 0) fail(`No such row: ${unknown.join(", ")}. The rows are the ids in content/voice/casting.json.`);
+  const only = values.speaker?.split(",").map((id) => id.trim()).filter(Boolean);
+  const stranger = (only ?? []).filter((id) => !casting.voices.some((row) => row.speakers.includes(id)));
+  if (stranger.length > 0) fail(`On no row of content/voice/casting.json: ${stranger.join(", ")}.`);
   const perRow = values["per-row"] === undefined ? Infinity : Number(values["per-row"]);
   if (!(perRow >= 1)) fail("--per-row takes a number of speakers, 1 or more.");
   let chars = 0;
@@ -189,6 +193,7 @@ async function listen(): Promise<void> {
     // Most lines first, so --per-row 1 hears the speaker the row was cast for.
     for (const id of [...row.speakers].sort((a, b) => (sheet.speakers[b]?.lineCount ?? 0) - (sheet.speakers[a]?.lineCount ?? 0))) {
       if (fromRow >= perRow) break;
+      if (only !== undefined && !only.includes(id)) continue;
       const entry = sheet.speakers[id];
       const text = entry?.lines?.find((line) => !/\{\w+\}/.test(line.text))?.text;
       if (entry?.elevenlabs?.voiceId === undefined || text === undefined) continue;
