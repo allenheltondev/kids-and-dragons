@@ -747,7 +747,7 @@
       "discovers": [
         "character.unicorn"
       ],
-      "narration": "Two unicorns tend a gray glade. \"We are mending,\" says the elder. \"Will you help?\" Hold the moss for the hum, or guard the edge and learn the woodland sounds. The worst glade, farther north, will need one or the other.",
+      "narration": "Two unicorns tend a gray glade. \"We are mending,\" says the elder. \"Will you help?\" Pass the mending hum along the moss, or guard the edge and learn the woodland's pattern of sounds. The worst glade, farther north, will need one or the other.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -761,7 +761,7 @@
       "choices": [
         {
           "id": "help",
-          "label": "Hold the moss steady",
+          "label": "Pass the hum along the moss",
           "icon": "heart",
           "goto": "interaction_mending_circle"
         },
@@ -831,7 +831,7 @@
     },
     "scene_unicorns_guard": {
       "type": "story",
-      "narration": "You guard the edge while they mend. Squirrels rustle, a branch taps, a bird answers. You learn to leave gaps between sounds, so no one beat can be followed. That could help at the worst glade.",
+      "narration": "You guard the edge while they mend. Squirrels rustle, a branch taps, a bird answers. They answer each other in a pattern, the same way every time. You learn to listen for it and echo it back, sound for sound. That could help at the worst glade.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1363,7 +1363,7 @@
         },
         {
           "id": "woodland_chorus",
-          "label": "Sing the woodland chorus",
+          "label": "Echo the woodland's pattern",
           "goto": "interaction_guard_chorus",
           "icon": "note",
           "requiresFlag": "forest_guard_plan"
@@ -1821,12 +1821,14 @@
     },
     "interaction_hedge_gate": {
       "type": "interaction",
-      "narration": "Now the hedge knits its branches into a green gate with one thorny latch. It sits there looking innocent.",
+      "narration": "Now the hedge knits its branches into a green gate with one thorny latch. It sits there looking innocent. Slip the latch just as the branches part.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends hold the branches apart while someone slips the latch.",
+        "kind": "timing",
+        "cue": "Tap to slip the latch when the marker is in the gold.",
         "actionLabel": "Slip the latch",
-        "supportLabel": "Hold the branches apart"
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4000
       },
       "onSuccess": {
         "goto": "scene_mosshorns",
@@ -2320,12 +2322,12 @@
     },
     "interaction_mending_circle": {
       "type": "interaction",
-      "narration": "Hold the loose moss while the acting hero carries the hum across. Alone, use the support prop. Flowers turn to check your work.",
+      "narration": "Pass the mending hum from hand to hand across the loose moss, and the green follows it. Flowers turn to check your work.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the moss steady while the acting hero carries the hum.",
-        "actionLabel": "Carry the mending hum",
-        "supportLabel": "Hold the moss"
+        "kind": "relay",
+        "cue": "Catch the mending hum and pass it on across the moss.",
+        "actionLabel": "Pass the hum",
+        "objectLabel": "The mending hum"
       },
       "onSuccess": {
         "goto": "scene_finding",
@@ -2367,12 +2369,14 @@
     },
     "interaction_calf_load": {
       "type": "interaction",
-      "narration": "A broad cloth holds the calf. Raise or lower your end until it is level, then carry it home. The calf tastes the cloth. Disappointing.",
+      "narration": "A broad cloth holds the calf. Lift together just as the sling swings level, then carry it home. The calf tastes the cloth. Disappointing.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side to level the calf's sling.",
-        "actionLabel": "Carry the calf home",
-        "objectLabel": "The calf's supported sling"
+        "kind": "precision",
+        "cue": "Tap to lift when the marker is in the gold.",
+        "actionLabel": "Lift the sling",
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_lost_calf_carry",
@@ -2396,12 +2400,14 @@
     },
     "interaction_quiet_moss": {
       "type": "interaction",
-      "narration": "Hold the moss strip flat, the way the unicorns taught you, while the acting hero guides the crossing. The echo hunter listens hard.",
+      "narration": "Lay the moss strip flat, the way the unicorns taught you, and step only when the echo hunter turns its ear away. It listens hard.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the moss strip flat while the acting hero guides the crossing.",
-        "actionLabel": "Guide the quiet crossing",
-        "supportLabel": "Hold the moss flat"
+        "kind": "timing",
+        "cue": "Tap to step when the marker is in the gold, while its ear is turned away.",
+        "actionLabel": "Step softly",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_glade_heart",
@@ -2438,31 +2444,34 @@
     },
     "interaction_guard_chorus": {
       "type": "interaction",
-      "narration": "Leave room for the woodland: a clap between squirrel rustles, a stamp after a birdcall. Choose your sound, and make it out loud if you like.",
+      "narration": "Leave room for the woodland: a clap between squirrel rustles, a stamp after a birdcall, a rustle of leaves under a tapping branch. Listen to its pattern, then answer it sound for sound, out loud if you like.",
       "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Each hero adds a sound between the woodland's answers.",
-        "actionLabel": "Finish the mixed chorus",
+        "kind": "memory",
+        "cue": "Watch the woodland's pattern, then answer it in the same order.",
+        "actionLabel": "Answer the woodland",
+        "stepMs": 1300,
         "options": [
           {
             "id": "clap",
-            "label": "Clap between the rustles",
-            "icon": "hand",
-            "reaction": "Squirrels rustle around your clap."
+            "label": "Clap",
+            "icon": "hand"
           },
           {
             "id": "stamp",
-            "label": "Stamp after the birdcall",
-            "icon": "boot",
-            "reaction": "A bird answers before your stamp can repeat."
+            "label": "Stamp",
+            "icon": "boot"
           },
           {
             "id": "leaf",
-            "label": "Brush leaves under the tapping branch",
-            "icon": "leaf",
-            "reaction": "The branch taps across your leaf-rustle."
+            "label": "Rustle leaves",
+            "icon": "leaf"
           }
+        ],
+        "answer": [
+          "clap",
+          "stamp",
+          "leaf",
+          "clap"
         ]
       },
       "onSuccess": {
@@ -2477,15 +2486,8 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_glade_heart",
-        "narration": "The woodland fills in your sounds, and the hunter backs away.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "forest_chorus_used",
-            "value": true
-          }
-        ]
+        "goto": "encounter_echo",
+        "narration": "You lose the pattern, and one clap rings out all alone. The echo hunter turns toward it."
       },
       "onAssisted": {
         "goto": "scene_glade_heart",
