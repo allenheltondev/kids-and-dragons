@@ -98,14 +98,26 @@ it.each(sizes)("pride: leaving the stone avoids the wolf approach at %i seats", 
 });
 it.each(sizes.flatMap(size => outcomes.map(outcome => ({size,outcome}))))
  ("forest: $size seats / $outcome makes the mending lesson useful at the crater", ({size,outcome}) => {
- const {state,trace}=walk(forest,size,forestPicks,outcome);
+ // A missed mending relay loses the lesson, so the crater no longer offers the moss strip.
+ const mended=outcome!=="failure";
+ const {state,trace}=walk(forest,size,{...forestPicks,scene_crater:mended?"moss_strip":"stand"},outcome);
  expect(state.flags.told_forest_truth).toBe(true);
- expect(state.flags.helped_mend).toBe(true);
- expect(state.flags.forest_moss_used).toBe(true);
+ expect(state.flags.helped_mend===true).toBe(mended);
+ expect(offered(trace.get("scene_crater")!,"moss_strip")).toBe(mended);
+ expect(state.flags.forest_moss_used===true).toBe(mended);
  expect(offered(trace.get("scene_crater")!,"woodland_chorus")).toBe(false);
  expect(trace.has("interaction_mending_circle")).toBe(true);
  expect(state.flags.glade_mended).toBe(true);
  expect(state.chapterOutcome).toBe("success");
+});
+it.each(sizes.flatMap(size => (["interaction_quiet_moss", "interaction_guard_chorus"] as const).map(id => ({size,id}))))
+ ("forest: a missed $id wakes the echo hunter at $size seats", ({size,id}) => {
+ const opened=enterScene(initial(forest,size),id,context(forest)).state;
+ const missed=miss(forest,opened)!;
+ expect(promptOf(missed).outcome).toBe("failure");
+ expect(landed(forest,missed,promptOf(missed).resolvedActorId ?? promptOf(missed).actorId).sceneId).toBe("encounter_echo");
+ const solved=solve(forest,opened);
+ expect(landed(forest,solved,promptOf(solved).resolvedActorId ?? promptOf(solved).actorId).sceneId).toBe("scene_glade_heart");
 });
 it.each(sizes)("forest: standing guard unlocks a different approach at %i seats", size => {
  const {state,trace}=walk(forest,size,{...forestPicks,scene_unicorns:"guard",scene_crater:"woodland_chorus",scene_glade_heart:"pocket",scene_pile_glimpsed:"on"},"assisted");
