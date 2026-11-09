@@ -56,6 +56,8 @@ npm run voice:library -- shortlist
 
 `shortlist` reads your account and the library, spends nothing, and writes `test-results/voice-shortlist/`: a page to hear each row's candidates, and `picks.json` with the first pick for every row. Change any on the page and save over that file, or keep them.
 
+It asks the library for each search word on its own, since a whole phrase mostly finds nothing, and ranks what comes back: a point per word the voice's description shares, one for a voice made for stories or characters, one off for an ad or social voice, two off for the wrong age. Horror, ASMR and anything seductive never show. Rows with most lines pick first and spend the free slots; after that a row takes only a voice already on your account, and a row left with nothing is designed on the cast page.
+
 ```bash
 npm run voice:library -- add --yes
 ```

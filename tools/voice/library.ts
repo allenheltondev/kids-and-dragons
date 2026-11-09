@@ -20,7 +20,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { addLibraryVoice, keysFromEnv, listVoices, searchLibrary, voiceSlots, type Fetch, type LibraryVoice } from "./bakeoff/providers";
 import { loadProfiles } from "./cast/profile.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
 import { ELEVENLABS, type CastSheet, type Provider } from "./desired";
 import { readJson } from "./load";
 import { makeBilledChars, makeSynthesizer, type DeliveryTables, type SynthOptions } from "./synth";
@@ -91,20 +91,27 @@ async function shortlist(): Promise<void> {
   const accentOf = accentsFor(sheet, casting, placed());
   const account = await listVoices("elevenlabs", keys, http);
   const barred = new Set(casting.locked.flatMap((id) => sheet.speakers[id]?.elevenlabs?.voiceId ?? []));
+  // The library reads a phrase as one wish and mostly finds nothing for it, so each word is asked on its own (once per
+  // gender and accent, however many rows share it) and the ranking does the choosing.
+  const asked = new Map<string, LibraryVoice[]>();
+  const ask = async (search: string, gender: string, accent: string): Promise<LibraryVoice[]> => {
+    const key = `${search}|${gender}|${accent}`;
+    if (!asked.has(key)) asked.set(key, (await searchLibrary(keys, { search, gender, accent, language: "en", pageSize: 100 }, http)).voices);
+    return asked.get(key)!;
+  };
   const rows = [];
   for (const row of casting.voices) {
     const accent = rowAccent(row, sheet, accentOf);
     const gender = row.gender === "any" ? "" : row.gender;
-    const query = { search: row.search, gender, accent: libraryAccent(accent), language: "en" };
-    let library: LibraryVoice[] = (await searchLibrary(keys, query, http)).voices;
-    // Search words are a wish, not a filter: a row that finds nothing asks again with the accent and gender alone.
-    if (library.length === 0) library = (await searchLibrary(keys, { gender, accent: query.accent, language: "en" }, http)).voices;
+    const library: LibraryVoice[] = [];
+    for (const search of [row.search, ...searchWords(row), ""]) library.push(...(await ask(search, gender, libraryAccent(accent))));
     const candidates = candidatesFor(row, account, library, barred);
     const lines = row.speakers.reduce((sum, id) => sum + (sheet.speakers[id]?.lineCount ?? 0), 0);
     rows.push({ row, accent, lines, candidates, names: row.speakers.map((id) => sheet.speakers[id]?.name ?? id) });
     console.log(`  ${row.id.padEnd(30)} ${String(candidates.length)} candidates`);
   }
-  const picks = firstPicks(rows);
+  const { used, limit } = await voiceSlots(keys, http);
+  const picks = firstPicks(rows, limit - used);
   fs.mkdirSync(SHORTLIST, { recursive: true });
   fs.writeFileSync(path.join(SHORTLIST, "shortlist.json"), `${JSON.stringify(rows, null, 2)}\n`);
   fs.writeFileSync(path.join(SHORTLIST, "picks.json"), `${JSON.stringify(picks, null, 2)}\n`);

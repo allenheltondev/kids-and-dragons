@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ACCENT_LABELS, AMERICAN_VARIETY, PEOPLE_ACCENTS, REGION_ACCENTS, REGION_IDEAS, accentFor, americanFor } from "./cast/accents.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
 
 const row = (over: Partial<CastingVoice> = {}): CastingVoice => ({ id: "kad-yeti-deep", gender: "male", people: "yeti", prompt: "", search: "deep slow gentle", speakers: ["hummock"], ...over });
 
@@ -91,10 +91,22 @@ describe("candidates", () => {
     expect(candidatesFor(row(), [], library, new Set(["jessica"])).map((c) => c.voiceId)).toEqual(["b", "a"]);
   });
 
-  it("puts a fitting account voice first, since it costs no slot", () => {
-    const found = candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep", gender: "m" }], library, new Set());
+  it("puts an account voice first when it fits as well, since it costs no slot, and behind a better library voice", () => {
+    const found = candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep slow gentle", gender: "m" }], library, new Set());
     expect(found[0]).toMatchObject({ voiceId: "brian" });
     expect(found[0]!.ownerId).toBeUndefined();
+    expect(candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep", gender: "m" }], library, new Set())[0]).toMatchObject({ voiceId: "b" });
+  });
+
+  it("never offers a voice unfit for children, favors storytellers over ads, and marks down the wrong age", () => {
+    const voices = [
+      { id: "horror", ownerId: "o", name: "Jack - Deep Dark Horror Narrator", about: "deep slow gentle", gender: "m" as const },
+      { id: "ad", ownerId: "o", name: "Deep", about: "advertisement", gender: "m" as const },
+      { id: "story", ownerId: "o", name: "Deep", about: "slow, narrative_story", gender: "m" as const },
+      { id: "kid", ownerId: "o", name: "Deep", about: "slow, gentle, young", gender: "m" as const },
+    ];
+    expect(candidatesFor(row({ search: "deep slow gentle old" }), [], voices, new Set()).map((c) => c.voiceId)).toEqual(["story", "kid", "ad"]);
+    expect(searchWords(row({ search: "elderly woman gravelly formal" }))).toEqual(["old", "gravelly", "formal"]);
   });
 
   it("never picks one voice for two rows, and the row with most lines chooses first", () => {
@@ -107,6 +119,22 @@ describe("candidates", () => {
     expect(picks.big!.voiceId).toBe("x");
     expect(picks.small!.voiceId).toBe("y");
     expect(picks.stuck).toBeUndefined();
+  });
+
+  it("spends the free slots on the rows with most lines, then takes only voices the account has", () => {
+    const library = (voiceId: string) => ({ voiceId, name: voiceId, about: "", ownerId: "o" });
+    const owned = { voiceId: "brian", name: "Brian", about: "" };
+    const picks = firstPicks(
+      [
+        { row: row({ id: "big" }), lines: 50, candidates: [library("x"), owned] },
+        { row: row({ id: "small" }), lines: 3, candidates: [library("y"), owned] },
+        { row: row({ id: "tiny" }), lines: 1, candidates: [library("z")] },
+      ],
+      1,
+    );
+    expect(picks.big!.voiceId).toBe("x");
+    expect(picks.small!.voiceId).toBe("brian");
+    expect(picks.tiny).toBeUndefined();
   });
 
   it("adds only library picks the account lacks, under either id or name", () => {

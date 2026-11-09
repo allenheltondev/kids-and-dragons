@@ -578,8 +578,8 @@ export interface LibraryPage {
 }
 
 /** Searches the public Voice Library (read only: nothing on the account changes). */
-export async function searchLibrary(keys: Keys, query: { search?: string; gender?: string; accent?: string; language?: string; page?: number }, fetch: Fetch): Promise<LibraryPage> {
-  const params = new URLSearchParams({ page_size: "30", page: String(query.page ?? 0) });
+export async function searchLibrary(keys: Keys, query: { search?: string; gender?: string; accent?: string; language?: string; page?: number; pageSize?: number }, fetch: Fetch): Promise<LibraryPage> {
+  const params = new URLSearchParams({ page_size: String(query.pageSize ?? 30), page: String(query.page ?? 0) });
   if (query.search?.trim()) params.set("search", query.search.trim());
   if (query.gender === "female" || query.gender === "male") params.set("gender", query.gender);
   if (query.accent?.trim()) params.set("accent", query.accent.trim());

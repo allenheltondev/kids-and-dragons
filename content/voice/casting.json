@@ -45,7 +45,7 @@
       "gender": "female",
       "people": "skupper",
       "prompt": "A young woman's voice, slightly nasal and clipped, with a Slavic-tinged American accent. Pensive and slow, then abruptly blunt: short sentences that stop dead, dry deadpan humor, sudden bursts of cheerfulness. Curious and matter-of-fact about everything strange. Adult performer, warm and clear, never scary.",
-      "search": "young woman deadpan slavic",
+      "search": "young woman deadpan dry",
       "speakers": [
         "saltrot_guide",
         "grandmother_winkle",
@@ -88,7 +88,7 @@
       "gender": "male",
       "people": "griffin",
       "prompt": "A man's voice in his sixties, a warm baritone with a dry, dusty texture and a gentle, educated British accent. Studious and curious, delighted by small discoveries, with a quiet sadness underneath. Measured pace that quickens when excited, kind and a little absent-minded. Adult performer, warm and clear, never scary.",
-      "search": "british professor warm older",
+      "search": "professor warm older storyteller",
       "speakers": [
         "orin_vale",
         "cloaked_griffin"
@@ -130,7 +130,7 @@
       "gender": "male",
       "people": "griffin",
       "prompt": "A man's voice in his fifties, a gruff baritone with a strong German accent. Blunt and matter-of-fact, flat delivery of numbers and unwelcome news, pauses to work out arithmetic aloud. Honest and never unkind, with a dry warmth. Adult performer, warm and clear, never scary.",
-      "search": "gruff german male",
+      "search": "gruff blunt male",
       "speakers": [
         "brask"
       ]

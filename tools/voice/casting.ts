@@ -115,55 +115,95 @@ export interface Candidate {
   noticeDays?: number;
 }
 
-const wordsOf = (text: string): string[] => text.toLowerCase().match(/[a-z]+/g) ?? [];
+/** Words that say one thing: the library says `old` and `middle_aged` where a row says elderly or middle-aged. */
+const SAME: Record<string, string> = { older: "old", elderly: "old", ancient: "old", grandmother: "old", youthful: "young", middle: "middle_aged", aged: "middle_aged" };
+const wordsOf = (text: string): string[] => (text.toLowerCase().match(/[a-z_]+/g) ?? []).map((word) => SAME[word] ?? word);
 
-/** How many of the row's search words a voice's own description has. */
-function fit(row: CastingVoice, voice: { name: string; about?: string }): number {
-  const said = new Set(wordsOf(`${voice.name} ${voice.about ?? ""}`));
-  return wordsOf(row.search).filter((word) => said.has(word)).length;
+/** The search words a row asks for, one at a time: the library reads a whole phrase as one wish and mostly finds nothing. */
+export const searchWords = (row: CastingVoice): string[] => [...new Set(wordsOf(row.search).filter((word) => !["male", "female", "man", "woman", "middle_aged"].includes(word)))];
+
+/** Never for a table of eight-year-olds, whatever else fits. */
+const UNFIT = /horror|scary|creepy|terrif|asmr|seduct|sensual|sexy|erotic|demon|villain/i;
+/** Voices made to sell or to post: they read stories flat. */
+const SALES = /advertis|commercial|\bugc\b|\bads?\b|sales|news/i;
+/** Voices made to tell stories or play characters. */
+const STORY = /characters_animation|narrative_story|storytell|character/i;
+
+const ageOf = (words: Set<string>): "young" | "old" | undefined => (words.has("young") ? "young" : words.has("old") ? "old" : undefined);
+
+/**
+ * How well a voice suits a row: a point per search word its own description has, a point for being made for stories or
+ * characters, a point off for being made for ads, two off for the wrong age. A voice unfit for children scores nothing.
+ */
+export function fit(row: CastingVoice, voice: { name: string; about?: string }): number {
+  const description = `${voice.name} ${voice.about ?? ""}`;
+  if (UNFIT.test(description)) return -Infinity;
+  const said = new Set(wordsOf(description));
+  const wanted = new Set(wordsOf(row.search));
+  let score = [...wanted].filter((word) => said.has(word)).length;
+  if (STORY.test(description)) score += 1;
+  if (SALES.test(description)) score -= 1;
+  const want = ageOf(wanted);
+  const is = ageOf(said);
+  if (want !== undefined && is !== undefined && want !== is) score -= 2;
+  return score;
 }
 
 const genderFits = (row: CastingVoice, gender: VoiceInfo["gender"]): boolean => row.gender === "any" || gender === undefined || gender === (row.gender === "male" ? "m" : "f");
 
 /**
- * The voices worth hearing for a row, best first: what the account already has when it fits (no slot spent), then the
- * library by how well it matches and how many people added it. Never a voice in `barred` (the narrator's).
+ * The voices worth hearing for a row, best first, by how well each fits; an account voice wins a tie, since it spends
+ * no slot, then the library voice most people added. Never a voice in `barred` (the narrator's), nor one unfit for children.
  */
-export function candidatesFor(row: CastingVoice, account: readonly VoiceInfo[], library: readonly LibraryVoice[], barred: ReadonlySet<string>, count = 3): Candidate[] {
-  const fromAccount = account
-    .filter((voice) => !barred.has(voice.id) && genderFits(row, voice.gender) && fit(row, voice) > 0)
-    .sort((a, b) => fit(row, b) - fit(row, a) || a.name.localeCompare(b.name))
-    .slice(0, 1)
-    .map((voice): Candidate => ({ voiceId: voice.id, name: voice.name, about: voice.about ?? "", ...(voice.preview ? { preview: voice.preview } : {}) }));
-  const taken = new Set(fromAccount.map((voice) => voice.voiceId));
-  const fromLibrary = library
-    .filter((voice) => !barred.has(voice.id) && !taken.has(voice.id) && genderFits(row, voice.gender))
-    .sort((a, b) => fit(row, b) - fit(row, a) || (b.added ?? 0) - (a.added ?? 0) || a.name.localeCompare(b.name))
-    .map(
-      (voice): Candidate => ({
-        voiceId: voice.id,
-        name: voice.name,
-        about: voice.about ?? "",
-        ownerId: voice.ownerId,
-        ...(voice.preview ? { preview: voice.preview } : {}),
-        ...(voice.added === undefined ? {} : { added: voice.added }),
-        ...(voice.noticeDays === undefined ? {} : { noticeDays: voice.noticeDays }),
-      }),
-    );
-  return [...fromAccount, ...fromLibrary].slice(0, count);
+export function candidatesFor(row: CastingVoice, account: readonly VoiceInfo[], library: readonly LibraryVoice[], barred: ReadonlySet<string>, count = 8): Candidate[] {
+  const scored: { candidate: Candidate; score: number; added: number }[] = [];
+  const seen = new Set<string>(barred);
+  for (const voice of account) {
+    if (seen.has(voice.id) || !genderFits(row, voice.gender)) continue;
+    const score = fit(row, voice);
+    if (score <= 0) continue;
+    seen.add(voice.id);
+    scored.push({ candidate: { voiceId: voice.id, name: voice.name, about: voice.about ?? "", ...(voice.preview ? { preview: voice.preview } : {}) }, score: score + 0.5, added: Infinity });
+  }
+  for (const voice of library) {
+    if (seen.has(voice.id) || !genderFits(row, voice.gender)) continue;
+    const score = fit(row, voice);
+    if (score === -Infinity) continue;
+    seen.add(voice.id);
+    const candidate: Candidate = {
+      voiceId: voice.id,
+      name: voice.name,
+      about: voice.about ?? "",
+      ownerId: voice.ownerId,
+      ...(voice.preview ? { preview: voice.preview } : {}),
+      ...(voice.added === undefined ? {} : { added: voice.added }),
+      ...(voice.noticeDays === undefined ? {} : { noticeDays: voice.noticeDays }),
+    };
+    scored.push({ candidate, score, added: voice.added ?? 0 });
+  }
+  return scored
+    .sort((a, b) => b.score - a.score || b.added - a.added || a.candidate.name.localeCompare(b.candidate.name))
+    .slice(0, count)
+    .map(({ candidate }) => candidate);
 }
 
 export type Picks = Record<string, Candidate>;
 
-/** One pick per row, the best candidate no earlier row has: two rows on one voice would be one sound. Rows with most lines choose first. */
-export function firstPicks(rows: readonly { row: CastingVoice; lines: number; candidates: readonly Candidate[] }[]): Picks {
+/**
+ * One pick per row, the best candidate no earlier row has: two rows on one voice would be one sound. Rows with most
+ * lines choose first, and spend the plan's free `slots` on library voices; once those are gone a row takes only a voice
+ * the account already has.
+ */
+export function firstPicks(rows: readonly { row: CastingVoice; lines: number; candidates: readonly Candidate[] }[], slots = Infinity): Picks {
   const picks: Picks = {};
   const used = new Set<string>();
+  let free = slots;
   for (const { row, candidates } of [...rows].sort((a, b) => b.lines - a.lines || a.row.id.localeCompare(b.row.id))) {
-    const pick = candidates.find((candidate) => !used.has(candidate.voiceId));
+    const pick = candidates.find((candidate) => !used.has(candidate.voiceId) && (candidate.ownerId === undefined || free > 0));
     if (pick === undefined) continue;
     picks[row.id] = pick;
     used.add(pick.voiceId);
+    if (pick.ownerId !== undefined) free -= 1;
   }
   return picks;
 }
