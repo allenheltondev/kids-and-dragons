@@ -49,6 +49,10 @@ test.describe("the practice", () => {
     await solo.locator(".prompt button").filter({ hasText: /open the gate/i }).first().click(TAP);
     const confirm = solo.getByRole("button", { name: /do it!/i });
     await expect(confirm).toBeInViewport({ ratio: 1 });
+    // Choosing plays two short entrance animations inside the prompt (the chosen answer's spring and
+    // the Do it! bar sliding up). Transforms count toward a scroll box's overflow, so mid-animation the
+    // prompt is a few pixels taller than it settles at. Measure the settled layout, which is what fits.
+    await solo.locator(".player__prompt").evaluate(el => Promise.all(el.getAnimations({ subtree: true }).map(a => a.finished)));
     expect(await solo.locator(".player__prompt").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     await confirm.tap(TAP);
 
