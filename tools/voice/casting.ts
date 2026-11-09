@@ -123,7 +123,19 @@ const wordsOf = (text: string): string[] => (text.toLowerCase().match(/[a-z_]+/g
 export const searchWords = (row: CastingVoice): string[] => [...new Set(wordsOf(row.search).filter((word) => !["male", "female", "man", "woman", "middle_aged"].includes(word)))];
 
 /** Never for a table of eight-year-olds, whatever else fits. */
-const UNFIT = /horror|scary|creepy|terrif|asmr|seduct|sensual|sexy|erotic|demon|villain/i;
+const UNFIT = /horror|scary|creepy|terrif|haunt|asmr|seduct|sensual|sexy|sultry|erotic|alluring|femme fatale|flirt|romantic|late night|intimate|demon|villain/i;
+
+/** The words an account voice's labels use for each library accent: the library search filters by accent, the account does not. */
+const ACCENT_SAYS: Record<string, RegExp> = { american: /american|\bus\b/i, british: /british|english|london|cockney/i, australian: /australian/i };
+
+/** Whether an account voice is labeled with the accent a row asks the library for. One with no such label is left out. */
+export const accentFits = (accent: string, voice: { about?: string }): boolean => (ACCENT_SAYS[accent] ?? new RegExp(accent, "i")).test(voice.about ?? "");
+
+/** How many of the row's search words a voice's own description has. */
+const wordsMatched = (row: CastingVoice, voice: { name: string; about?: string }): number => {
+  const said = new Set(wordsOf(`${voice.name} ${voice.about ?? ""}`));
+  return [...new Set(wordsOf(row.search))].filter((word) => said.has(word)).length;
+};
 /** Voices made to sell or to post: they read stories flat. */
 const SALES = /advertis|commercial|\bugc\b|\bads?\b|sales|news/i;
 /** Voices made to tell stories or play characters. */
@@ -153,17 +165,21 @@ const genderFits = (row: CastingVoice, gender: VoiceInfo["gender"]): boolean => 
 
 /**
  * The voices worth hearing for a row, best first, by how well each fits; an account voice wins a tie, since it spends
- * no slot, then the library voice most people added. Never a voice in `barred` (the narrator's), nor one unfit for children.
+ * no slot, then the library voice most people added. Never a voice in `barred` (the narrator's), nor one unfit for
+ * children, nor an account voice in another accent than `accent` (the library's own word, as the search asked it).
+ * An account voice that shares none of the row's words still comes last, as a free stand-in once the slots are spent.
  */
-export function candidatesFor(row: CastingVoice, account: readonly VoiceInfo[], library: readonly LibraryVoice[], barred: ReadonlySet<string>, count = 8): Candidate[] {
+export function candidatesFor(row: CastingVoice, account: readonly VoiceInfo[], library: readonly LibraryVoice[], barred: ReadonlySet<string>, accent = "american", count = 8): Candidate[] {
   const scored: { candidate: Candidate; score: number; added: number }[] = [];
   const seen = new Set<string>(barred);
+  const standIns: { candidate: Candidate; score: number; added: number }[] = [];
   for (const voice of account) {
-    if (seen.has(voice.id) || !genderFits(row, voice.gender)) continue;
+    if (seen.has(voice.id) || !genderFits(row, voice.gender) || !accentFits(accent, voice)) continue;
     const score = fit(row, voice);
-    if (score <= 0) continue;
+    if (score === -Infinity) continue;
     seen.add(voice.id);
-    scored.push({ candidate: { voiceId: voice.id, name: voice.name, about: voice.about ?? "", ...(voice.preview ? { preview: voice.preview } : {}) }, score: score + 0.5, added: Infinity });
+    const candidate: Candidate = { voiceId: voice.id, name: voice.name, about: voice.about ?? "", ...(voice.preview ? { preview: voice.preview } : {}) };
+    (wordsMatched(row, voice) > 0 ? scored : standIns).push({ candidate, score: score + 0.5, added: Infinity });
   }
   for (const voice of library) {
     if (seen.has(voice.id) || !genderFits(row, voice.gender)) continue;
@@ -181,10 +197,10 @@ export function candidatesFor(row: CastingVoice, account: readonly VoiceInfo[], 
     };
     scored.push({ candidate, score, added: voice.added ?? 0 });
   }
-  return scored
-    .sort((a, b) => b.score - a.score || b.added - a.added || a.candidate.name.localeCompare(b.candidate.name))
-    .slice(0, count)
-    .map(({ candidate }) => candidate);
+  const best = (list: typeof scored): Candidate[] =>
+    list.sort((a, b) => b.score - a.score || b.added - a.added || a.candidate.name.localeCompare(b.candidate.name)).map(({ candidate }) => candidate);
+  // Stand-ins ride after the cut, so a row past the free slots always has one to fall back on.
+  return [...best(scored).slice(0, count), ...best(standIns).slice(0, 3)];
 }
 
 export type Picks = Record<string, Candidate>;

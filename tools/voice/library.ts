@@ -105,7 +105,7 @@ async function shortlist(): Promise<void> {
     const gender = row.gender === "any" ? "" : row.gender;
     const library: LibraryVoice[] = [];
     for (const search of [row.search, ...searchWords(row), ""]) library.push(...(await ask(search, gender, libraryAccent(accent))));
-    const candidates = candidatesFor(row, account, library, barred);
+    const candidates = candidatesFor(row, account, library, barred, libraryAccent(accent));
     const lines = row.speakers.reduce((sum, id) => sum + (sheet.speakers[id]?.lineCount ?? 0), 0);
     rows.push({ row, accent, lines, candidates, names: row.speakers.map((id) => sheet.speakers[id]?.name ?? id) });
     console.log(`  ${row.id.padEnd(30)} ${String(candidates.length)} candidates`);

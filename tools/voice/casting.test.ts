@@ -92,10 +92,10 @@ describe("candidates", () => {
   });
 
   it("puts an account voice first when it fits as well, since it costs no slot, and behind a better library voice", () => {
-    const found = candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep slow gentle", gender: "m" }], library, new Set());
+    const found = candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep slow gentle, american", gender: "m" }], library, new Set());
     expect(found[0]).toMatchObject({ voiceId: "brian" });
     expect(found[0]!.ownerId).toBeUndefined();
-    expect(candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep", gender: "m" }], library, new Set())[0]).toMatchObject({ voiceId: "b" });
+    expect(candidatesFor(row(), [{ id: "brian", name: "Brian", about: "deep, american", gender: "m" }], library, new Set())[0]).toMatchObject({ voiceId: "b" });
   });
 
   it("never offers a voice unfit for children, favors storytellers over ads, and marks down the wrong age", () => {
@@ -107,6 +107,19 @@ describe("candidates", () => {
     ];
     expect(candidatesFor(row({ search: "deep slow gentle old" }), [], voices, new Set()).map((c) => c.voiceId)).toEqual(["story", "kid", "ad"]);
     expect(searchWords(row({ search: "elderly woman gravelly formal" }))).toEqual(["old", "gravelly", "formal"]);
+    const tempting = [{ id: "jean", ownerId: "o", name: "Jean - Alluring and Playful Femme Fatale", about: "deep slow gentle", gender: "m" as const }];
+    expect(candidatesFor(row(), [], tempting, new Set())).toEqual([]);
+  });
+
+  it("keeps account voices to the row's accent, and puts one that shares no words last, as a stand-in", () => {
+    const account = [
+      { id: "george", name: "George - Warm Storyteller", about: "deep, british, narrative_story", gender: "m" as const },
+      { id: "rachel", name: "Grandma Rachel", about: "wise, us southern, narrative_story", gender: "m" as const },
+      { id: "brian", name: "Brian", about: "deep, american", gender: "m" as const },
+    ];
+    const plain = [{ id: "lib", ownerId: "o", name: "Plain", about: "", gender: "m" as const }];
+    expect(candidatesFor(row(), account, plain, new Set(), "american").map((c) => c.voiceId)).toEqual(["brian", "lib", "rachel"]);
+    expect(candidatesFor(row(), account, [], new Set(), "british").map((c) => c.voiceId)).toEqual(["george"]);
   });
 
   it("never picks one voice for two rows, and the row with most lines chooses first", () => {
