@@ -10,7 +10,7 @@ function view(id: string, overrides: Partial<OrganizerHouseholdView> = {}): Orga
     displayName: id === "h_club" ? "Thursday Club" : "Home",
     owners: [{ id: "sub_ana", email: "ana@example.com", you: true, founding: true }],
     players: [],
-    retentionDays: null,
+    retentionDays: 365,
     ...overrides,
   };
 }

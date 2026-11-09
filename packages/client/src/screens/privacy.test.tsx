@@ -16,6 +16,7 @@ import { COPYRIGHT_HOLDER, PrivacyFooter } from "../ui/PrivacyFooter";
 import { OPERATOR } from "./operator";
 import { PRIVACY_LEDE, PRIVACY_SECTIONS } from "./privacy-policy";
 import { DELETING, ELSEWHERE, STORED } from "./what-we-store";
+import { DEFAULT_RETENTION_DAYS, RETENTION_CHOICES } from "@kad/shared";
 
 const SRC = path.resolve(import.meta.dirname, "..");
 
@@ -163,9 +164,21 @@ describe("what it must never claim again", () => {
     expect(grownUps.what).toMatch(/Cognito/);
   });
 
-  it("does not promise a retention limit that is not enforced", () => {
-    const howLong = PRIVACY_SECTIONS.find((s) => s.id === "how-long")!;
-    expect(howLong.bullets!.join(" ")).toMatch(/no automatic end today/i);
-    expect(howLong.bullets!.join(" ")).toMatch(/no warning before a household is deleted/i);
+  it("states the retention limits the server enforces (#524), and no 'keep forever'", () => {
+    const howLong = PRIVACY_SECTIONS.find((s) => s.id === "how-long")!.bullets!.join(" ");
+    // The default window is the server's, and the longest an owner may pick.
+    expect(DEFAULT_RETENTION_DAYS).toBe(365);
+    expect(Math.max(...RETENTION_CHOICES)).toBe(DEFAULT_RETENTION_DAYS);
+    expect(howLong).toMatch(/a year after she last played/i);
+    expect(howLong).toMatch(/\(30, 90 or 180 days\)/);
+    // Gone for good: the old "no automatic end" and "until a grown-up deletes it".
+    expect(allWords()).not.toMatch(/no automatic end/i);
+    expect(allWords()).not.toMatch(/until (a grown-up|you) deletes? (it|them)/i);
+    // The rows a TTL deletes are said to expire, not to be deleted on the day.
+    expect(howLong).toMatch(/set to expire 30 days after it is written/);
+    expect(howLong).toMatch(/push address is set to expire 30 days/);
+    // The log sweeper runs monthly: up to about two months, not "30 days".
+    expect(howLong).toMatch(/up to about two months/);
+    expect(howLong).toMatch(/no warning before a household or a kid is deleted/i);
   });
 });

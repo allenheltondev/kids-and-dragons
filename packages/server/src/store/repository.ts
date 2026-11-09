@@ -45,6 +45,13 @@ export interface ForgetJob {
    */
   reason: "kid" | "household" | "guest" | "idle";
   idleBefore?: string;
+  /**
+   * Set on an `idle` job once the sweep has decided her home goes with her,
+   * the last kid in it (#524): the owners whose sign-ins it may delete,
+   * read before the household's rows go. A retry finishes the retirement
+   * from here, so it never depends on finding the household again.
+   */
+  retiring?: { owners: string[] };
   /** The names to take out. */
   nicknames: string[];
   heroes: string[];
@@ -355,6 +362,41 @@ export interface EventRecord extends Omit<ServerMessage, "discovered"> {
 }
 
 /**
+ * How long an event row is kept after the store writes it (#524): 30 days,
+ * on the table's `ttl`. Nothing reads an old event. The log is only a
+ * reconnect's catch-up (at most `MAX_REPLAY_EVENTS`, with a snapshot when
+ * the run's events are not all there, `handlers/state.ts`) and what a
+ * forget scrubs. A run's save is its `STATE` row, which is untouched, so a
+ * game stopped to resume another day resumes all the same. Counted from the
+ * write, not from the event's `at`, and kept when a forget rewrites the row.
+ */
+export const EVENT_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+/**
+ * How long a push subscription is kept after it was last confirmed (#524):
+ * 30 days on the table's `ttl`, renewed when a push to it is accepted
+ * (`touchPushSubscription`) or the phone subscribes again, which the push
+ * switch does whenever it is shown.
+ */
+export const PUSH_SUBSCRIPTION_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+/**
+ * How long a sign-in's retiring mark (`beginRetiringAccount`, #524) blocks
+ * new household pointers: long enough for the daily sweep to finish or call
+ * off the delete on a retry, short enough that a mark left behind by a crash
+ * does not lock a grown-up out of making a household for long.
+ */
+export const ACCOUNT_RETIRING_TTL_SECONDS = 7 * 24 * 60 * 60;
+
+/** A household pointer refused because the sweep is retiring that household or sign-in (#524). */
+export class AccountRetiringError extends Error {
+  constructor(message = "This sign-in or household is being removed after a long time unused.") {
+    super(message);
+    this.name = "AccountRetiringError";
+  }
+}
+
+/**
  * One write to a hero's row under her claim (#282, architecture §4.5, "One
  * game at a time per hero: the claim"). The row lands only if it still stands
  * as it was read: its `version` is `expectedVersion` and its claim
@@ -623,20 +665,78 @@ export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
   getHousehold(householdId: string): Promise<Household | null>;
-  /** `ACCT#<sub>` → households. Sign-in lookup; an account may own more than one. */
+  /**
+   * `ACCT#<sub>` → households. Sign-in lookup; an account may own more than
+   * one. Refused, by throwing `AccountRetiringError`, while the sweep is
+   * deciding whether to delete this sign-in (`beginRetiringAccount`, #524).
+   */
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
+
+  /**
+   * Make a new kept household with its first grown-up, all at once (#524):
+   * its `META`, the grown-up's `ACCT#` pointer and, when given, their
+   * `OWNER#` row, in one transaction under the sign-in's retiring check. A
+   * kept household is only ever found through a pointer or a kid, so one
+   * written without its pointer would be kept forever. `false`, and nothing
+   * written, while the sweep is retiring that sign-in (or the id is taken).
+   */
+  createOwnedHousehold(
+    household: Household,
+    first: { cognitoSub: string; owner?: HouseholdOwnerRecord },
+  ): Promise<boolean>;
+
+  // --- retiring a kept household and its sign-ins (#524) ---------------------
+  /**
+   * Mark a household as being retired by the retention sweep, so no kid can
+   * be added to it (`createPlayer`, a move in) and no owner added
+   * (`putOwner`) from here on. Idempotent. `false` when it is gone or already
+   * being deleted.
+   */
+  beginRetiring(householdId: string): Promise<boolean>;
+  /** Take the mark off: retiring was called off because a kid is there after all. */
+  endRetiring(householdId: string): Promise<void>;
+  /**
+   * Delete a household the sweep is retiring, as `deleteHousehold` does, but
+   * only while its `retiring` mark still stands (or a delete of it already
+   * began): `unmarked` when a write replaced `META` since and took the mark,
+   * so the caller must check again; `gone` when there is nothing left.
+   */
+  deleteRetiringHousehold(householdId: string): Promise<"deleted" | "gone" | "unmarked">;
+  /**
+   * Whether any kid not being deleted lives in the household, read strongly
+   * consistent: the decision to retire it, made after `beginRetiring`, stands
+   * on this read and nothing older.
+   */
+  hasPlayers(householdId: string): Promise<boolean>;
+  /**
+   * Mark a sign-in as one the sweep may delete: from here on no household
+   * pointer can be written for it (`putAccountPointer`, `putOwner`,
+   * `claimHousehold`). Idempotent. The mark expires by itself after
+   * `ACCOUNT_RETIRING_TTL_SECONDS`, so one left behind blocks nobody for long.
+   */
+  beginRetiringAccount(cognitoSub: string): Promise<void>;
+  /** Take the mark off: the sign-in still owns a household. */
+  endRetiringAccount(cognitoSub: string): Promise<void>;
+  /** Whether the sign-in owns any household, read strongly consistent (#524). */
+  ownsAnyHousehold(cognitoSub: string): Promise<boolean>;
 
   /**
    * Make `owner.cognitoSub` an owner of the household (#248): its `ACCT#`
    * pointer, which is the authority every guard reads, and an `OWNER#` row in
    * the household, which is how the household lists its owners. One
    * transaction, so neither exists without the other. Idempotent; a second
-   * call refreshes the row (an email learned later).
+   * call refreshes the row (an email learned later). Throws
+   * `AccountRetiringError`, and writes nothing, while the household or the
+   * sign-in is being retired (#524).
    */
   putOwner(owner: HouseholdOwnerRecord): Promise<void>;
-  /** The household's `OWNER#` rows. A founding owner from before #248 has none. */
-  listOwners(householdId: string): Promise<HouseholdOwnerRecord[]>;
+  /**
+   * The household's `OWNER#` rows. A founding owner from before #248 has none.
+   * `consistent` reads them strongly consistent, for a decision that must not
+   * miss one just added (retiring a household, #524).
+   */
+  listOwners(householdId: string, options?: { consistent?: boolean }): Promise<HouseholdOwnerRecord[]>;
   /** Both halves of `putOwner`, together. A no-op for somebody who is not an owner. */
   removeOwner(householdId: string, cognitoSub: string): Promise<void>;
 
@@ -718,7 +818,9 @@ export interface GameRepository {
    * `deviceId` is not the household's founder (`Household.founderDeviceId`,
    * #265). A household with no founder (absent, awaiting or `""`) is claimable
    * by nobody (#272). The founder is checked in the same write as the claim, so a founder
-   * dropped a moment ago (`dropFounder`) cannot claim on a stale read.
+   * dropped a moment ago (`dropFounder`) cannot claim on a stale read. The
+   * account's pointer is written in the same transaction, which is also
+   * refused while the sweep is retiring that sign-in (#524).
    */
   claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean>;
   /**
@@ -833,7 +935,8 @@ export interface GameRepository {
   /**
    * Put an event back with its contents changed and its seq unchanged: a
    * deleted kid's names taken out of a table's log (#252). Only an event
-   * that is there; the log never grows by this.
+   * that is there; the log never grows by this, and the row keeps the
+   * expiry it was written with (`EVENT_TTL_SECONDS`).
    */
   rewriteEvent(event: EventRecord): Promise<void>;
   /**
@@ -860,6 +963,12 @@ export interface GameRepository {
    * a profile; a change to one that exists goes through `updatePlayer`.
    */
   putPlayer(player: PlayerProfile): Promise<void>;
+  /**
+   * Make a new kid, only while her household is not being retired or
+   * deleted (#524) and nothing has her key yet: one transaction with a check
+   * on the household's `META`. `false`, and nothing written, otherwise.
+   */
+  createPlayer(player: PlayerProfile): Promise<boolean>;
   /**
    * Change a profile that is there and not being deleted (#252): a rename,
    * retiring, bringing back. `false`, and nothing written, otherwise, so a
@@ -1060,10 +1169,17 @@ export interface GameRepository {
   // --- push subscriptions (#466) ---------------------------------------------
   /**
    * Write (or replace) the subscription for one of a kid's own phones. One per
-   * phone: a phone that subscribes again replaces what it had.
+   * phone: a phone that subscribes again replaces what it had. Kept for
+   * `PUSH_SUBSCRIPTION_TTL_SECONDS` from now (#524).
    */
   putPushSubscription(subscription: PushSubscriptionRecord): Promise<void>;
-  /** Every phone of hers that takes pushes. Empty when none does. */
+  /**
+   * A push to this phone was accepted (#524): it is kept another
+   * `PUSH_SUBSCRIPTION_TTL_SECONDS` from now. A missing one is a no-op; this
+   * never brings one back.
+   */
+  touchPushSubscription(playerId: string, deviceId: string): Promise<void>;
+  /** Every phone of hers that takes pushes and has not expired. Empty when none does. */
   listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]>;
   /** The phone stops taking pushes. A missing one is a no-op. */
   deletePushSubscription(playerId: string, deviceId: string): Promise<void>;

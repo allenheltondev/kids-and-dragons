@@ -500,10 +500,8 @@ export function Atlas({ world, place, party, scope, here }: AtlasProps): ReactEl
                     <span className="atlas__face" key={member.playerId}>
                       <CharacterPortrait
                         backdrop
-                        species={member.character.species}
+                        hero={member.character}
                         accent={member.character.appearance.accent}
-                        characterClass={member.character.class}
-                        tier={member.character.tier}
                         lit={false}
                         className="atlas__face-art"
                       />

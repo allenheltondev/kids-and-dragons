@@ -9,10 +9,10 @@
 .relay-world__path { position: absolute; inset-inline: 10%; inset-block-start: 67%; border-block-end: 0.2em dashed rgb(var(--kad-gold-rgb, 245 200 108) / 30%); }
 .relay-world__heroes { list-style: none; margin: 0; padding: 0; }
 .relay-world__hero { position: absolute; inset-block-start: 64%; translate: -50% -60%; block-size: clamp(4em, 9cqw, 7em); inline-size: 17%; max-inline-size: 8em; display: flex; flex-direction: column; align-items: center; text-align: center; }
-.relay-world__hero > img { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center bottom; transform-origin: 50% 100%; }
+.relay-world__hero > :is(img, .hero-sparkle-host) { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center bottom; transform-origin: 50% 100%; }
 .relay-world__hero > strong { position: absolute; inset-block-start: calc(100% + 1em); inline-size: 100%; max-inline-size: 100%; overflow-wrap: anywhere; line-height: 1.1; margin-block-start: 0.3em; }
 .relay-world__hero > small { position: absolute; inset-block-start: calc(100% + 3.7em); inline-size: 100%; font-size: 0.8em; color: var(--kad-ink-dim, #b9b0d8); }
-.relay-world__hero[data-active="true"] > img { filter: drop-shadow(0 0 0.7em rgb(var(--kad-gold-rgb, 245 200 108) / 40%)); }
+.relay-world__hero[data-active="true"] > :is(img, .hero-sparkle-host) { filter: drop-shadow(0 0 0.7em rgb(var(--kad-gold-rgb, 245 200 108) / 40%)); }
 .relay-world__hero[data-done="true"] > small { color: var(--kad-success, #5fd6a0); }
 .relay-world__hands { position: absolute; inset-block-start: 60%; inset-inline-start: 50%; translate: -50% -50%; font-size: 1.8em; color: var(--kad-gold, #f5c86c); opacity: 0.8; }
 .relay-world__hero[data-active="true"] .relay-world__hands { animation: relay-reach 0.65s ease-out; }
@@ -22,7 +22,7 @@
 .relay-world__flight { position: absolute; z-index: 2; left: var(--to-x); top: var(--to-y); translate: -50% -50%; inline-size: clamp(3em, 9cqw, 6em); block-size: clamp(3em, 9cqw, 6em); transition: top 0.25s ease-out, translate 0.25s ease-out; animation: relay-journey 0.65s cubic-bezier(0.25, 0.6, 0.35, 1); }
 .relay-world__shadow { position: absolute; z-index: -1; inset-inline: 15%; inset-block-end: -0.15em; block-size: 0.4em; border-radius: 50%; background: rgba(0, 0, 0, 0.35); filter: blur(0.15em); }
 .relay-world[data-phase="ready"] .relay-world__flight { animation: none; }
-.relay-world[data-caught="true"] .relay-world__hero[data-active="true"] > img { animation: relay-receive 0.3s ease-out; }
+.relay-world[data-caught="true"] .relay-world__hero[data-active="true"] > :is(img, .hero-sparkle-host) { animation: relay-receive 0.3s ease-out; }
 @keyframes relay-journey { from { left: var(--from-x); top: var(--from-y); rotate: -12deg; scale: 0.85; } 45% { top: 8%; rotate: 12deg; scale: 1.08; } to { left: var(--to-x); top: var(--to-y); rotate: 0deg; scale: 1; } }
 @keyframes relay-reach { from { translate: -50% 0; } 65% { translate: -50% -80%; } to { translate: -50% -50%; } }
 @keyframes relay-receive { 40% { scale: 1.05 0.95; } to { scale: 1; } }
@@ -111,7 +111,7 @@
 .game--tv .relay-score { flex: 0 0 auto; margin: 0; padding: 0.3em 0.5em; font-size: 0.85em; gap: 0.15em 0.6em; }
 .game--tv .relay-world > .game-note { display: none; }
 .game--tv .relay-world__hero { inset-block-start: 57%; block-size: 4.6em; max-inline-size: 7em; }
-.relay-world__hero > img { position: relative; z-index: 1; filter: drop-shadow(0 0.2em 0.15em #13282780); }
+.relay-world__hero > :is(img, .hero-sparkle-host) { position: relative; z-index: 1; filter: drop-shadow(0 0.2em 0.15em #13282780); }
 .relay-world__footlight { position: absolute; inset-inline: 15%; inset-block-end: -0.05em; block-size: 0.7em; border-radius: 50%; background: #12211755; box-shadow: 0 0 0.35em #12211755; }
 .relay-world__hero[data-active="true"] .relay-world__footlight { background: #ffe09b7a; box-shadow: 0 0 0.8em 0.3em #ffe09b77, 0 0 0 0.12em #ffe09ba1; }
 .game--tv .relay-world__hero > strong { inset-block-start: 100%; margin-block-start: 0.2em; padding: 0.15em 0.35em; border-radius: 1em; background: #15252be6; color: #fff6e3; font-size: 0.65em; white-space: nowrap; }

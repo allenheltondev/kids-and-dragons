@@ -17,6 +17,7 @@ export * from "./types/protocol.js";
 export * from "./types/world.js";
 export * from "./types/matchups.js";
 export * from "./types/camp.js";
+export * from "./types/look.js";
 
 export * from "./rules.js";
 export * from "./character.js";
@@ -31,6 +32,9 @@ export * from "./camp-record.js";
 export * from "./camp-shop.js";
 export * from "./camp-edit.js";
 export * from "./camp-friends.js";
+export * from "./camp-book.js";
+export * from "./hero-look.js";
+export * from "./look-unlocks.js";
 export * from "./kid-profile.js";
 export * from "./crews.js";
 export * from "./dice.js";

@@ -112,6 +112,9 @@ describe("the stage-up moment (§4.1)", () => {
     ["whispering_marsh", "whispering_marsh", "alpha"],
     ["exchange", "cliffside_exchange", "height"],
     ["sky_islands", "sky_islands", "angle"],
+    ["stone_crossing", "great_river", "alpha"],
+    ["enchanted_woods", "enchanted_forest", "x"],
+    ["bone_yard", "bone_yard", "angle"],
   ] as const)("animates the %s chapter-end accent and holds it still on request", async (biome, family, property) => {
     const app = fakeApp();
     const loaded: string[] = [];
@@ -191,5 +194,114 @@ describe("the stage-up moment (§4.1)", () => {
     expect(lobby.camp()).toBeNull();
     expect(covered.at(-1)).toBe(false);
     lobby.destroy();
+  });
+});
+
+describe("the crew's pieces' shadows (camp-light.ts, ground-shadows.ts)", () => {
+  it("casts each from its ground contact, where its art stands: the banner's under its pole, not under its flag", async () => {
+    const layout = campLayoutFor(2)!;
+    const app = fakeApp();
+    // Every painting loads, so each piece casts its outline.
+    const camp = createCamp(app as unknown as Application, layout, { still: true, loadTexture: () => Promise.resolve(Texture.WHITE) });
+    camp.resize(1600, 900);
+    const state = makeState({ phase: "lobby", party: [member(1)] }) as RunState;
+    camp.setDressing(campDressing({ ...state, camp: view() }, layout));
+    await settle();
+    app.ticker.frame(16);
+    const shadows = camp.view.getChildByLabel("camp-shadows") as Container;
+    const banner = shadows.getChildByLabel("cast:dress:spot:banner_pole") as Container;
+    const piece = (camp.view.getChildByLabel("camp-ground") as Container).getChildByLabel("dress:spot:banner_pole") as Container;
+    // On the piece's own ground contact, with the art.
+    expect(banner.x).toBeCloseTo(piece.x);
+    const shadow = banner.children[0] as Container;
+    expect(shadow.x).toBe(0);
+    const art = (piece.children.at(-1) as Container).children[0] as Sprite;
+    const cast = shadow.getChildByLabel("camp-cast-body", true) as Sprite;
+    expect(cast.x).toBe(art.x);
+    expect(cast.y).toBe(art.y);
+    // The contact shade is under the pole (leaning a touch toward its cast), as wide as the paint reaches both sides of it.
+    const contact = shadow.getChildByLabel("camp-ground-contact") as Container;
+    const bounds = contact.getLocalBounds();
+    expect(Math.abs((bounds.minX + bounds.maxX) / 2)).toBeLessThan((bounds.maxX - bounds.minX) * 0.1);
+    // The banner casts toward the viewer; a tent casts back from its pegs, under itself.
+    const castY = (holder: Container) => {
+      const projection = holder.getChildByLabel("camp-cast-body", true)!.parent!;
+      projection.updateLocalTransform();
+      return projection.localTransform.apply({ x: 0, y: -1 }).y;
+    };
+    expect(castY(banner)).toBeGreaterThan(0);
+    expect(castY(shadows.getChildByLabel("cast:piece:tent_0") as Container)).toBeLessThan(0);
+    camp.destroy();
+  });
+});
+
+describe("the air over a camp with no painted accent (camp-air.ts)", () => {
+  it("drifts snow over the frozen north, and shows none when the camp is still", () => {
+    for (const still of [false, true]) {
+      const layout = { ...campLayoutFor(2)!, backdrop: { ...campLayoutFor(2)!.backdrop, family: "frozen_north" } };
+      const app = fakeApp();
+      const camp = createCamp(app as unknown as Application, layout, { still, loadTexture: noArt });
+      camp.resize(1600, 900);
+      const air = camp.view.getChildByLabel("camp-air") as Container;
+      // Over the camp, under its names.
+      const layers = camp.view.children.map((c) => c.label);
+      expect(layers.indexOf("camp-air")).toBe(layers.indexOf("camp-ground") + 1);
+      expect(layers.indexOf("camp-labels")).toBeGreaterThan(layers.indexOf("camp-air"));
+      app.ticker.frame(16);
+      const before = air.children.map((m) => m.y);
+      for (let i = 0; i < 60; i++) app.ticker.frame(16);
+      if (still) expect(air.visible).toBe(false);
+      else {
+        expect(air.visible).toBe(true);
+        expect(air.children.length).toBeGreaterThan(10);
+        // Falling.
+        expect(air.children.filter((m, i) => m.y > before[i]!).length).toBeGreaterThan(air.children.length / 2);
+      }
+      camp.destroy();
+    }
+  });
+});
+
+describe("the air and a tent's shadow, whatever happens (#658 review)", () => {
+  const frozen = () => ({ ...campLayoutFor(2)!, backdrop: { ...campLayoutFor(2)!.backdrop, family: "frozen_north" } });
+  const motes = (camp: ReturnType<typeof createCamp>, app: FakeApp) => {
+    app.ticker.frame(16);
+    return (camp.view.getChildByLabel("camp-air") as Container).children.map((m) => [Math.round(m.x), Math.round(m.y), Math.round(m.getLocalBounds().width)]);
+  };
+
+  it("lays the motes out again on a new seed, as a camp built with that seed lays them", () => {
+    const appA = fakeApp();
+    const reseeded = createCamp(appA as unknown as Application, frozen(), { seed: 3, loadTexture: noArt });
+    reseeded.resize(1600, 900);
+    const before = motes(reseeded, appA);
+    reseeded.setSeed(11);
+    const appB = fakeApp();
+    const fresh = createCamp(appB as unknown as Application, frozen(), { seed: 11, loadTexture: noArt });
+    fresh.resize(1600, 900);
+    // The same clock on both, and the same dots: no new ones drawn.
+    const count = (reseeded.view.getChildByLabel("camp-air") as Container).children.length;
+    const after = motes(reseeded, appA);
+    expect(after).not.toEqual(before);
+    expect((reseeded.view.getChildByLabel("camp-air") as Container).children).toHaveLength(count);
+    const freshAt = motes(fresh, appB);
+    // Each mote's size and lane come from the seed alone; positions differ only by the two camps' clocks.
+    expect(after.map((m) => m[2])).toEqual(freshAt.map((m) => m[2]));
+    reseeded.destroy();
+    fresh.destroy();
+  });
+
+  it("puts a tent's contact shade inside its pegs before its painting loads, and when it never does", async () => {
+    const app = fakeApp();
+    const camp = createCamp(app as unknown as Application, campLayoutFor(2)!, { still: true, loadTexture: noArt });
+    camp.resize(1600, 900);
+    await settle();
+    app.ticker.frame(16);
+    const shadows = camp.view.getChildByLabel("camp-shadows") as Container;
+    const tent = shadows.getChildByLabel("cast:piece:tent_0") as Container;
+    expect(tent.getChildByLabel("camp-cast-body", true)).toBeNull();
+    const contact = tent.getChildByLabel("camp-ground-contact", true)!;
+    // Up from the ground line, not hanging in front of the pegs.
+    expect(contact.getLocalBounds().maxY).toBeLessThanOrEqual(2);
+    camp.destroy();
   });
 });

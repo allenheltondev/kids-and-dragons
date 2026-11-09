@@ -18,11 +18,11 @@ import { createRoom, joinRoom } from "./room.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
 
-function chapter(id: string, index: number, title: string, setback = false): Chapter {
+function chapter(id: string, index: number, title: string, setback = false, biome?: string): Chapter {
   const base = makeChapter();
   const scenes = structuredClone(base.scenes);
   if (setback) (scenes.scene_ending as { outcome?: string }).outcome = "setback";
-  return { ...base, id, index, title, scenes };
+  return { ...base, id, index, title, scenes, ...(biome ? { biome } : {}) };
 }
 
 async function table(campaign: Campaign, chapters: Chapter[]) {
@@ -90,6 +90,24 @@ describe("the campaign, as the table sees it", () => {
     await playChapter();
     expect((await state()).campaign).toMatchObject({ next: { index: 2, title: "The Door" } });
     expect((await state()).campaign?.ended).toBeUndefined();
+  });
+
+  it("names the chapter the crew last finished, where the lobby pitches its camp (docs/camp.md §3.1)", async () => {
+    const { state, playChapter, toLobby } = await table(TWO, [
+      chapter("bramblewood-01", 1, "The Path", false, "sunward_fields"),
+      chapter("bramblewood-02", 2, "The Door", false, "frostfang_peaks"),
+    ]);
+    // Nothing finished yet: no last camp, only where it is headed.
+    expect((await state()).campaign?.last).toBeUndefined();
+    await playChapter();
+    await toLobby();
+    expect((await state()).campaign).toMatchObject({
+      last: { index: 1, title: "The Path", biome: "sunward_fields" },
+      next: { index: 2, title: "The Door", biome: "frostfang_peaks" },
+    });
+    // The campaign finished: its last camp is still where it ended, while a replay would start again.
+    await playChapter();
+    expect((await state()).campaign).toMatchObject({ ended: "complete", last: { index: 2, biome: "frostfang_peaks" }, next: { index: 1 } });
   });
 
   it("says the campaign is complete when its last chapter finishes, and offers it again", async () => {

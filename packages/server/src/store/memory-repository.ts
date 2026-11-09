@@ -61,8 +61,15 @@ import type {
   RunRecord,
   TransferCodeRecord,
 } from "./repository.ts";
+import {
+  ACCOUNT_RETIRING_TTL_SECONDS,
+  AccountRetiringError,
+  EVENT_TTL_SECONDS,
+  PUSH_SUBSCRIPTION_TTL_SECONDS,
+} from "./repository.ts";
 import { collectMove, fieldGuideItem, planMove } from "./profile-move.ts";
 import {
+  ACCOUNT_RETIRING,
   ACCT,
   CAMP_SK,
   CAMPAIGN_SK,
@@ -126,6 +133,8 @@ interface TableItem {
    * than a field on `data` so the domain type stays free of storage bookkeeping.
    */
   sweeping?: boolean;
+  /** On a household `META` row while the retention sweep decides whether to retire it (#524). */
+  retiring?: boolean;
   /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping, like `sweeping`. */
   lastPlayedAt?: string;
   entity: string;
@@ -236,6 +245,11 @@ export class MemoryRepository implements GameRepository {
     return item.ttl !== undefined && item.ttl * 1000 <= this.now();
   }
 
+  /** Epoch seconds `seconds` from now, for a row's `ttl`. */
+  private expiresIn(seconds: number): number {
+    return Math.floor(this.now() / 1000) + seconds;
+  }
+
   private persist(): void {
     if (!this.filePath) return;
     if (this.flushTimer) return;
@@ -301,6 +315,9 @@ export class MemoryRepository implements GameRepository {
     // No founder (absent, awaiting or dropped) means nobody may claim it.
     const founder = household.founderDeviceId;
     if (household.ownerSub !== cognitoSub && (!founder || founder !== deviceId)) return false;
+
+    // The pointer goes in the same transaction, refused while the sweep is retiring this sign-in (#524).
+    if (this.accountRetiring(cognitoSub)) return false;
 
     const { expiresAt: _dropped, ...rest } = household;
     // Dropping GSI1PK/GSI1SK is the whole promotion: no sweep entry, no sweep.
@@ -371,6 +388,76 @@ export class MemoryRepository implements GameRepository {
     this.put({ ...meta, sweeping: true });
     await this.purge(householdId);
     return true;
+  }
+
+  async deleteRetiringHousehold(householdId: string): Promise<"deleted" | "gone" | "unmarked"> {
+    // Only while the sweep's mark still stands, as the real store's condition says (#524).
+    const meta = this.get(HH(householdId), META);
+    if (!meta) return "gone";
+    if (!meta.retiring && !meta.sweeping) return "unmarked";
+    this.put({ ...meta, sweeping: true });
+    await this.purge(householdId);
+    return "deleted";
+  }
+
+  async createOwnedHousehold(
+    household: Household,
+    first: { cognitoSub: string; owner?: HouseholdOwnerRecord },
+  ): Promise<boolean> {
+    if (household.guest) throw new Error("createOwnedHousehold makes a kept household, never a guest one");
+    // Every condition the real transaction carries, before anything is written.
+    if (this.get(HH(household.id), META) || this.accountRetiring(first.cognitoSub)) return false;
+    // No await from the check to the last write: one transaction. A kept
+    // household carries no GUEST entry, so `META` is the plain row.
+    this.put({ PK: HH(household.id), SK: META, entity: "household", data: household });
+    if (first.owner) {
+      this.put({ PK: HH(household.id), SK: OWNER_SK(first.owner.cognitoSub), entity: "owner", data: first.owner });
+    }
+    this.put({ PK: ACCT(first.cognitoSub), SK: HH(household.id), entity: "account", data: { cognitoSub: first.cognitoSub, householdId: household.id } });
+    return true;
+  }
+
+  // --- retiring a kept household and its sign-ins (#524) ---------------------
+
+  async beginRetiring(householdId: string): Promise<boolean> {
+    const meta = this.get(HH(householdId), META);
+    if (!meta || meta.sweeping) return false;
+    this.put({ ...meta, retiring: true });
+    return true;
+  }
+
+  async endRetiring(householdId: string): Promise<void> {
+    const meta = this.get(HH(householdId), META);
+    if (!meta) return;
+    const { retiring: _mark, ...rest } = meta;
+    this.put(rest);
+  }
+
+  async hasPlayers(householdId: string): Promise<boolean> {
+    return this.query(HH(householdId), PREFIX.player).some((i) => !i.sweeping);
+  }
+
+  async beginRetiringAccount(cognitoSub: string): Promise<void> {
+    this.put({
+      PK: ACCT(cognitoSub),
+      SK: ACCOUNT_RETIRING,
+      ttl: this.expiresIn(ACCOUNT_RETIRING_TTL_SECONDS),
+      entity: "account-retiring",
+      data: { cognitoSub },
+    });
+  }
+
+  async endRetiringAccount(cognitoSub: string): Promise<void> {
+    if (this.items.delete(rowKey(ACCT(cognitoSub), ACCOUNT_RETIRING))) this.persist();
+  }
+
+  async ownsAnyHousehold(cognitoSub: string): Promise<boolean> {
+    return this.query(ACCT(cognitoSub), "HH#").length > 0;
+  }
+
+  /** The sweep is retiring this sign-in (#524), and its mark has not expired. */
+  private accountRetiring(cognitoSub: string): boolean {
+    return this.get(ACCT(cognitoSub), ACCOUNT_RETIRING) !== undefined;
   }
 
   /** Everything under a marked household, in the order that keeps an interrupted delete findable. */
@@ -463,8 +550,10 @@ export class MemoryRepository implements GameRepository {
   }
 
   async rewriteEvent(event: EventRecord): Promise<void> {
-    if (!this.get(RUN(event.runId), EVT_SK(event.seq))) return;
-    this.put({ PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event });
+    const row = this.get(RUN(event.runId), EVT_SK(event.seq));
+    if (!row) return;
+    // The row keeps the expiry it was written with (#524), as DynamoDB's update does.
+    this.put({ PK: RUN(event.runId), SK: EVT_SK(event.seq), ...(row.ttl !== undefined ? { ttl: row.ttl } : {}), entity: "event", data: event });
   }
 
   async forgetFinder(householdId: string, playerId: string): Promise<number> {
@@ -511,6 +600,8 @@ export class MemoryRepository implements GameRepository {
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
+    // Under the sign-in's retiring check, as the real store's transaction (#524).
+    if (this.accountRetiring(cognitoSub)) throw new AccountRetiringError();
     this.put({
       PK: ACCT(cognitoSub),
       SK: HH(householdId),
@@ -524,6 +615,12 @@ export class MemoryRepository implements GameRepository {
   }
 
   async putOwner(owner: HouseholdOwnerRecord): Promise<void> {
+    // A household that is there and neither being retired nor deleted, and a
+    // sign-in not being retired (#524), as the real store's transaction says.
+    const meta = this.get(HH(owner.householdId), META);
+    if (!meta || meta.retiring || meta.sweeping || this.accountRetiring(owner.cognitoSub)) {
+      throw new AccountRetiringError();
+    }
     // No await between the two: one transaction, as in the real store.
     this.put({ PK: HH(owner.householdId), SK: OWNER_SK(owner.cognitoSub), entity: "owner", data: owner });
     this.put({
@@ -534,7 +631,7 @@ export class MemoryRepository implements GameRepository {
     });
   }
 
-  async listOwners(householdId: string): Promise<HouseholdOwnerRecord[]> {
+  async listOwners(householdId: string, _options?: { consistent?: boolean }): Promise<HouseholdOwnerRecord[]> {
     return this.query(HH(householdId), PREFIX.owner).map((i) => i.data as HouseholdOwnerRecord);
   }
 
@@ -562,8 +659,10 @@ export class MemoryRepository implements GameRepository {
     if (!invite || invite.expiresAt <= nowIso) return null;
     // The real store's condition check on the household (#252): a code made
     // before its household was deleted hands out nothing.
+    // Nor one the sweep is retiring, nor to a sign-in it is about to delete (#524).
     const household = this.get(HH(invite.householdId), META);
-    if (!household || household.sweeping) return null;
+    if (!household || household.sweeping || household.retiring) return null;
+    if (this.accountRetiring(owner.cognitoSub)) return null;
     this.items.delete(rowKey(INVITE(code), META));
     await this.putOwner({ ...owner, householdId: invite.householdId });
     return invite;
@@ -635,7 +734,12 @@ export class MemoryRepository implements GameRepository {
           code.playerId === step.playerId;
         if (!good) return "spent";
       } else if (step.op === "check") {
-        if (!this.get(step.PK, step.SK)) return "changed";
+        // There, and nobody retiring or deleting it (#524).
+        const home = this.get(step.PK, step.SK);
+        if (!home || home.retiring || home.sweeping) return "changed";
+      } else if (step.op === "account-open") {
+        // A new home's grown-up is not a sign-in being retired (#524).
+        if (this.accountRetiring(step.cognitoSub)) return "changed";
       } else if (step.op === "delete") {
         const row = this.get(step.PK, step.SK);
         if (!row || !isDeepStrictEqual(row.data, step.data)) return "changed";
@@ -674,6 +778,15 @@ export class MemoryRepository implements GameRepository {
     // Never over a profile being deleted, as the real store's condition says.
     if (row?.sweeping) return;
     this.writePlayer(row, player);
+  }
+
+  async createPlayer(player: PlayerProfile): Promise<boolean> {
+    // As the real store's transaction: a new row, in a household nobody is retiring or deleting (#524).
+    const meta = this.get(HH(player.householdId), META);
+    if (!meta || meta.retiring || meta.sweeping) return false;
+    if (this.items.has(rowKey(HH(player.householdId), PLAYER_SK(player.id)))) return false;
+    this.writePlayer(undefined, player);
+    return true;
   }
 
   async updatePlayer(player: PlayerProfile): Promise<boolean> {
@@ -993,7 +1106,7 @@ export class MemoryRepository implements GameRepository {
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
-    this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
+    this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), ttl: this.expiresIn(EVENT_TTL_SECONDS), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
     if (input.founder && founding) {
       const { awaitingFounder: _taken, ...rest } = founding.data as Household;
@@ -1166,9 +1279,16 @@ export class MemoryRepository implements GameRepository {
     this.put({
       PK: PUSH(subscription.playerId),
       SK: DEVICE_SK(subscription.deviceId),
+      ttl: this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS),
       entity: "push-subscription",
       data: subscription,
     });
+  }
+
+  async touchPushSubscription(playerId: string, deviceId: string): Promise<void> {
+    const row = this.get(PUSH(playerId), DEVICE_SK(deviceId));
+    if (!row) return;
+    this.put({ ...row, ttl: this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS) });
   }
 
   async listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]> {

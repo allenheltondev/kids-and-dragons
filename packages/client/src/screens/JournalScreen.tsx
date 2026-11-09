@@ -3,9 +3,12 @@
  *
  * A phone that is not in a game can still open the things a game leaves
  * behind and just look: your hero, the bag they carry, the atlas with every
- * country the household has found, the story so far, and the Field Guide.
- * Nothing here sends an intent or can change anything, so there is nothing
- * to get wrong — it is the book you leaf through in the car, not the table.
+ * country the household has found, the story so far, the Field Guide, and the
+ * crew's camp. Nothing here sends an intent or can change anything anybody
+ * else owns, so there is nothing to get wrong — it is the book you leaf
+ * through in the car, not the table. The one thing a kid changes here is her
+ * own hero's kit and buddy, in Camp (CampPane.tsx; docs/camp.md §7), queued on
+ * the phone when there is no signal and sent when it returns.
  *
  * Shaped like Travel Mode on purpose (layout/TravelLayout.tsx): one surface at
  * a time over the same tray of objects, so the journal and the game feel like
@@ -19,15 +22,21 @@
  * open there too.
  */
 
+import { HeroName } from "./HeroName";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
-import { useGameStore, useItems, useWorld } from "../store";
+import { isPromptForPlayer, useGameStore, useItems, useWorld } from "../store";
+import { usePresenceBeat } from "../sync/presence-beat";
+import { useReconnectOnWake } from "../sync/wake-reconnect";
+import { isMyCombatTurn } from "../store/combat";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
-import { loadPlayerDeviceToken } from "../store/persistence";
+import { dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
+import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
+import { ApiError } from "../sync/client";
 import { useBackStep } from "../store/back-steps";
 import { selectGuideEntry } from "../store/player-navigation";
 import { Button } from "../ui/Button";
@@ -40,6 +49,7 @@ import { TrayObject } from "./TrayObjects";
 import { Atlas, AtlasUnrolling, placeOf } from "./WorldMapPanel";
 import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
 import { offlineArtFor, warm } from "../sw/warm";
+import { heroOfflineArt } from "../world/hero-art";
 import { usePersistStorage } from "../storage/persist";
 import "./shared.css";
 import "./JournalScreen.css";
@@ -48,7 +58,7 @@ import "../styles/chrome.css";
 import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 /** `story` and `me` are the hero's own, opened from the Hero page rather than from the shelf. */
-export type JournalPane = "hero" | "map" | "story" | "guide" | "me";
+export type JournalPane = "hero" | "map" | "story" | "guide" | "me" | "camp" | "look";
 
 /**
  * Her own page (#299) is a chunk of its own, fetched the first time "My page" is
@@ -59,6 +69,12 @@ const ProfilePane = lazyChunk(() => import("./ProfilePane"), (module) => module.
 
 /** The story so far (#358): its own chunk too, fetched the first time "Story" is opened. */
 const StoryPane = lazyChunk(() => import("./StoryPane"), (module) => module.default);
+
+/** The crew's camp (#629; docs/camp.md §7): its own chunk, fetched the first time "Camp" is opened. */
+const CampPane = lazyChunk(() => import("./CampPane"), (module) => module.default);
+
+/** Her hero's look (docs/hero-looks.md §8.1; #664): its own chunk, fetched the first time "Style" is opened. */
+const LookPane = lazyChunk(() => import("./LookPane"), (module) => module.default);
 
 /**
  * A saved hero as the sheet and the atlas want them: a party member at full
@@ -78,7 +94,7 @@ export function restingMember(hero: ResolvedCharacter): PartyMember {
 type Load =
   | { status: "loading" }
   /** `savedAt` set: last time's book, because the server could not be reached. */
-  | { status: "ready"; journal: JournalResponse; savedAt: string | null }
+  | { status: "ready"; journal: JournalResponse; savedAt: string | null; campSavedAt?: string }
   /** This phone has never played: no binding, so nobody to look at. */
   | { status: "new" }
   | { status: "failed" };
@@ -116,9 +132,13 @@ export function JournalScreen(): ReactElement {
     setLoad((was) => (was.status === "ready" ? was : { status: "loading" }));
     loadJournal().then(
       (found) => {
+        // No binding, so nobody's queued kit changes to send (#629).
+        if (found === null) dropKitQueue();
         if (live) setLoad(found === null ? { status: "new" } : { status: "ready", ...found });
       },
-      () => {
+      (error: unknown) => {
+        // The server said no: the binding is revoked, and queued kit changes go unsent (docs/camp.md §7).
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) dropKitQueue();
         if (live) setLoad({ status: "failed" });
       },
     );
@@ -130,19 +150,24 @@ export function JournalScreen(): ReactElement {
   /*
    * The guide reads the household's book from its own store, which a room
    * normally feeds. Out of a room the journal feeds it, and takes it away
-   * again on the way out so the next room starts from its own book.
+   * again on the way out so the next room starts from its own book. Seated
+   * at a live game (the tray's Book), the room still feeds it, live: the
+   * journal's copy is older, and taking it away on the way back would leave
+   * the game's guide empty until its next patch.
    */
   const journal = load.status === "ready" ? load.journal : null;
+  const seated = useGameStore((store) => Boolean(store.session?.playerId && store.state?.roomCode === store.session.roomCode));
   useEffect(() => {
     if (journal === null) return;
-    setFieldGuideDiscoveries(journal.fieldGuide);
+    const lent = !seated;
+    if (lent) setFieldGuideDiscoveries(journal.fieldGuide);
     setJournalFinders(journal.finders);
     return () => {
-      setFieldGuideDiscoveries(null);
+      if (lent) setFieldGuideDiscoveries(null);
       setJournalFinders(null);
       selectGuideEntry(null);
     };
-  }, [journal]);
+  }, [journal, seated]);
 
   /*
    * A fresh read means a signal: save the art the book shows offline while
@@ -156,18 +181,64 @@ export function JournalScreen(): ReactElement {
     const loadWorld = useGameStore.getState().loadWorld;
     void Promise.all([loadWorld(), loadFieldGuide().catch(() => null)]).then(([, guide]) => {
       if (!live) return;
-      void warm(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), { essential: true });
+      // And her heroes, with their coat masks (docs/hero-looks.md §5.4): her colour, and the Look
+      // page's Color shelf, are tinted from what is saved here when there is no signal.
+      const heroes = journal.heroes.flatMap((h) => heroOfflineArt(h));
+      void warm([...offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), ...heroes], { essential: true });
     });
     return () => {
       live = false;
     };
   }, [fresh, journal]);
 
-  // Back to the game she is seated in, if a family tablet seated her; home for a phone (#299).
+  /*
+   * Her kit as the server last answered (#629): into the open book, so every
+   * pane and the next look at Camp show it. The saved copy is kept by the
+   * sender (store/book-kit-sync.ts).
+   */
+  const applyKit = useCallback<ApplyKit>((characterId, kit, look) => {
+    setLoad((was) => {
+      if (was.status !== "ready") return was;
+      // Her look (docs/hero-looks.md §3.2), on the hero the book shows.
+      const heroes = look ? was.journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : was.journal.heroes;
+      if (!was.journal.camp) return look ? { ...was, journal: { ...was.journal, heroes } } : was;
+      const camp = { ...was.journal.camp, kits: { ...was.journal.camp.kits, [characterId]: kit } };
+      return { ...was, journal: { ...was.journal, heroes, camp } };
+    });
+  }, []);
+  /*
+   * Kit changes queued with no signal go as the book opens and whenever the
+   * signal comes back (docs/camp.md §7). Opened from the saved copy, the first
+   * try finds no signal and says so ("Saved on this phone").
+   */
+  const ready = load.status === "ready";
+  useEffect(() => {
+    if (!ready) return;
+    const send = (): void => {
+      if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
+    };
+    send();
+    window.addEventListener("online", send);
+    return () => window.removeEventListener("online", send);
+  }, [ready, fresh, applyKit]);
+
+  // Back to the game she is seated in (a phone's or a family tablet's seat, #299); home with none.
   const play = useCallback(() => {
     const seat = useGameStore.getState().session;
-    navigate(seat?.playerId && loadPlayerDeviceToken() === null ? { name: "player", code: seat.roomCode } : { name: "home" });
-  }, []);
+    navigate(seated && seat ? { name: "player", code: seat.roomCode } : { name: "home" });
+  }, [seated]);
+  // Seated, she is still at the table while she reads (docs/camp.md §7): her phone keeps saying so
+  // (sync/presence-beat.ts), wakes the game's stream as the game's pages do (sync/wake-reconnect.ts),
+  // and the game wanting her, a question or her turn in a fight, says so here with the way back. Not
+  // from a mirror still catching up (`synced`): a stale question is no reason to leave the book.
+  usePresenceBeat();
+  useReconnectOnWake();
+  const asked = useGameStore((store) => {
+    const { state, session } = store;
+    if (!seated || !state || !store.synced) return false;
+    const me = session?.playerId ?? "";
+    return isPromptForPlayer(state.prompt, me, state.party) || isMyCombatTurn(state, me);
+  });
 
   if (load.status !== "ready") {
     return (
@@ -213,8 +284,19 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "hero" || pane === "story" || pane === "me"} object="satchel" label="Hero" onClick={() => setPane("hero")} />
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
+        <TrayTab on={pane === "camp"} object="rest" label="Camp" onClick={() => setPane("camp")} />
+        <TrayTab on={pane === "look"} object="crown" label="Style" onClick={() => setPane("look")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
+      {asked ? (
+        <p className="journal__turn" role="status" data-testid="journal-turn">
+          <Icon name="hand" />
+          <span>The game is waiting for you!</span>
+          <button type="button" className="journal__stale-retry kad-focusable" onClick={play}>
+            Back to the game
+          </button>
+        </p>
+      ) : null}
       {load.savedAt !== null ? (
         <p className="journal__stale" role="status">
           <Icon name="waiting" />
@@ -241,6 +323,10 @@ export function JournalScreen(): ReactElement {
             </Suspense>
           </ChunkBoundary>
         ) : null}
+        {pane === "camp" ? (
+          <CampTray journal={load.journal} fresh={load.savedAt === null} onKit={applyKit} />
+        ) : null}
+        {pane === "look" ? <LookTray journal={load.journal} onKit={applyKit} /> : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
             <FieldGuide backToBag={false} />
@@ -261,6 +347,30 @@ export function savedWhen(savedAt: string, now: Date = new Date()): string {
   if (days <= 0) return "earlier today";
   if (days === 1) return "yesterday";
   return saved.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+}
+
+/** The Camp tray (#629), for the hero the book has open. */
+function CampTray({ journal, fresh, onKit }: { journal: JournalResponse; fresh: boolean; onKit: ApplyKit }): ReactElement {
+  const [hero, choose] = useChosenHero(journal.heroes);
+  return (
+    <ChunkBoundary inline message="Your camp couldn’t open.">
+      <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your camp…</span></div>}>
+        <CampPane journal={journal} fresh={fresh} hero={hero} onHero={choose} onKit={onKit} />
+      </Suspense>
+    </ChunkBoundary>
+  );
+}
+
+/** The Look tray (#664), for the hero the book has open. */
+function LookTray({ journal, onKit }: { journal: JournalResponse; onKit: ApplyKit }): ReactElement {
+  const [hero, choose] = useChosenHero(journal.heroes);
+  return (
+    <ChunkBoundary inline message="Your hero's look couldn’t open.">
+      <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your look…</span></div>}>
+        <LookPane journal={journal} hero={hero} onHero={choose} onKit={onKit} />
+      </Suspense>
+    </ChunkBoundary>
+  );
 }
 
 function TrayTab({ on, object, label, onClick }: {
@@ -329,10 +439,9 @@ function HeroPane({ journal, onPlay, onOpen }: { journal: JournalResponse; onPla
                   <button type="button" className={`journal__pick kad-tap kad-focusable${on ? " journal__pick--on" : ""}`}
                     aria-pressed={on} onClick={() => choose(h.id)}>
                     <span className="journal__pick-art" aria-hidden="true">
-                      <CharacterPortrait backdrop species={h.species} accent={h.appearance.accent}
-                        tier={h.tier} characterClass={h.class} lit={on} />
+                      <CharacterPortrait backdrop hero={h} accent={h.appearance.accent} lit={on} />
                     </span>
-                    <span className="journal__pick-name">{h.name}</span>
+                    <span className="journal__pick-name"><HeroName name={h.name} look={h.look} /></span>
                   </button>
                 </li>
               );

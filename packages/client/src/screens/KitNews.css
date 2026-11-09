@@ -5,3 +5,23 @@
 .guide-news.kit-news {
   inset-block-start: 4.2em;
 }
+
+/* Tried on at once in downtime (KitNews.tsx `KitNewsToast`): Camp opens at her new piece or look. */
+.kit-news__try {
+  flex: none;
+  min-block-size: 44px;
+  padding: 0 0.9em;
+  border-radius: 999px;
+  border: 0;
+  background: #ffd36e;
+  color: #1d1430;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* In a scene, a check or a fight: Camp waits for the next rest. */
+.kit-news__later {
+  font-size: 0.8em;
+  opacity: 0.85;
+}

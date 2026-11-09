@@ -233,3 +233,25 @@
 .kit-welcome__art { display: block; inline-size: 4.5rem; block-size: 3.4rem; overflow: hidden; }
 .kit-welcome__art > svg { inline-size: 100%; block-size: 100%; transform: scale(1.3) translateY(-8%); }
 .camp-button { flex: none; }
+
+/* Something new to try (CampPanel.tsx `CampButton`): a gold "New!", the shared spots' badge colours. */
+.camp-button__new {
+  margin-inline-start: 0.45em;
+  padding: 0.05em 0.45em;
+  border-radius: 999px;
+  background: #ffd36e;
+  color: #1d1430;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+.camp-button--new {
+  animation: camp-button-new 1.6s ease-in-out 3;
+}
+@keyframes camp-button-new {
+  50% { box-shadow: 0 0 0 0.25em rgb(255 211 110 / 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camp-button--new { animation: none; }
+}
+html[data-motion="reduced"] .camp-button--new { animation: none; }

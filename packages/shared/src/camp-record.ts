@@ -29,9 +29,9 @@ import type {
 export const CAMP_VERSION = 1;
 /**
  * Bump together with a new step in `KIT_STEPS`. v2: `tent`, and the catalog's
- * milestone ids (#618). v3: `buddies` (#624).
+ * milestone ids (#618). v3: `buddies` (#624). v4: `crews` (#629).
  */
-export const KIT_VERSION = 3;
+export const KIT_VERSION = 4;
 
 /** The grand camp (§4.1). Finished campaigns past it are trophies. */
 export const MAX_FRAME_STAGE: FrameStage = 4;
@@ -282,6 +282,14 @@ const KIT_STEPS: Record<number, Step> = {
    * than narrowing her buddies away when it rewrites her row.
    */
   2: (raw) => ({ ...raw, buddies: raw["buddies"] ?? {} }),
+  /*
+   * v3 → v4 (#629). The crews she has been seated with (`crews`), for the
+   * adventure book. Nothing to fill in: absent means never recorded, which the
+   * book backfills from the household's runs, and the next run commit that
+   * writes her row records the crew she is seated with. The bump is so a v3
+   * build refuses a v4 kit rather than narrowing her crews away.
+   */
+  3: (raw) => raw,
 };
 
 /** Storage → domain for a camp row. `version` is the envelope's `v`; `undefined` is v0. */
@@ -374,8 +382,26 @@ function assertKit(raw: Record<string, unknown>): HeroKit {
       return { from, ...optionalString(e, "rewardId"), ...optionalString(e, "at") };
     }),
     buddies: entries(raw["buddies"], "kit.buddies", undefined),
+    ...crewsOf(raw["crews"]),
     ...highestTierOf(raw["highestTier"]),
   };
+}
+
+/** `HeroKit.crews` as stored: absent (never recorded), or a list of `campKey`s. */
+function crewsOf(value: unknown): Pick<HeroKit, "crews"> {
+  if (value === undefined) return {};
+  if (!Array.isArray(value) || value.some((k) => typeof k !== "string" || k === "")) throw fail("kit.crews", "a list of camp keys");
+  return { crews: [...new Set(value as string[])] };
+}
+
+/**
+ * The kit with `key` (a `campKey`) among her crews (#629), or the kit itself
+ * when it is already there. Never bumps `revision`: it is not a pick she made,
+ * so a screen showing her kit is not made stale by it.
+ */
+export function withKitCrew(kit: HeroKit, key: string): HeroKit {
+  if (kit.crews?.includes(key)) return kit;
+  return { ...kit, crews: [...(kit.crews ?? []), key] };
 }
 
 /** `HeroKit.highestTier` as stored: absent, or one of the ladder's tiers (#621). */

@@ -122,6 +122,12 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // add 1KB to the entry graph (329KB measured). Combat surfaces remain lazy.
 // 330 -> 332 for Phase 2 camp. Its base branch measures 331KB at first
 // paint, and #623's artwork and tent tinting leave that measurement unchanged.
+// Down to 327KB measured, cap still 332, after Phase 3 sat at 332 exactly: the start
+// screens imported `randomName` from creationContent.ts, which put the creation cards'
+// matchup lines and the whole shared matchups chunk (3KB) in every first paint; the names
+// are their own module now (screens/hero-names.ts). And the display dock reads the plate's
+// height and the head's reach from world/story-inset.ts, so the framing maths in
+// stage-inset.ts (the camp's cover top among them) stays with the lazy stage.
 const FIRST_PAINT_BUDGET_KB = 332;
 
 /**
@@ -245,7 +251,81 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // without WebGL (still-friend-taps.ts). All of it in the lazy scene and still
 // stage chunks: the merged build measures 1675KB locally, first paint 332KB,
 // unchanged at its budget. Keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1677;
+// 1677 -> 1694 for the adventure book's Camp tray (#629): the tray is its own
+// lazy chunk (CampPane, about 9KB with its CSS), and the book's kit queue and
+// its sender (store/kit-queue.ts, store/book-kit-sync.ts) ride the lazy journal
+// chunk. 1692KB measured, first paint 332KB, unchanged at its budget. 2KB of slack.
+// 1694 -> 1696 for the #656 review fixes (the book's memory-only queue, the
+// camp-read marker): 1694KB measured, first paint 328KB. 2KB of slack again.
+// 1696 -> 1707 for the camp's light (Pixi's blur filter for the shadow layer)
+// and the last three terrain accents' paintings: 1705KB measured, first paint
+// 328KB. 2KB of slack again.
+// 1707 -> 1709 for the fire's glow, the back lanes' haze and the indoor rest's
+// shadows (ground-shadows.ts shared with the story stage): 1707KB measured,
+// first paint 328KB. 2KB of slack again.
+// 1709 -> 1711 for the camp's air (camp-air.ts: snow, embers and seeds over the
+// three backdrops with no painted accent): 1709KB measured, first paint 328KB.
+// 2KB of slack again.
+// 1711 -> 1716 for the book's kit dressing room (BookKit.tsx: her pitch, the
+// shelves of painted tiles) in the lazy Camp chunk: 1714KB measured, first
+// paint 328KB unchanged. 2KB of slack again.
+// 1716 -> 1717 for the #661 review fixes (every shelf's art warmed for offline,
+// a family tablet's taps shown at once and sent in order): 1715KB measured,
+// first paint 328KB. 2KB of slack again.
+// 1717 -> 1735 for the hero's name style (#664, docs/hero-looks.md §7.2): the
+// looks catalog (content/looks.json) and the name's title and frame on every
+// surface that shows a hero's name (HeroName, world/nameplate.ts with a small
+// nine-slice of its own rather than Pixi's), the table's Look editor in the
+// camp panel, and the book's Look page in its own lazy chunk. 1733KB measured
+// (main measured 1715KB), first paint 328KB unchanged. 2KB of slack again.
+// 1735 -> 1756 for the hero's colour (#666, docs/hero-looks.md §5): 1754KB measured,
+// first paint 328KB unchanged. The tinter is never in the first paint, and is not
+// fetched at all until a hero with a colour stands on a painting with a mask: its
+// cache and sliced pass are their own lazy chunk (about 8KB), and the worker that
+// runs the pass off the main thread is a separate file (about 5KB) that repeats the
+// colour swap, because a worker cannot share the page's chunk. The rest is the 36
+// starter colours in the looks catalog (content/looks.json, about 5KB, with the
+// name style's chunk), the Color shelf and the stages' retint and release. 2KB of
+// slack again.
+// 1756 -> 1764 for earned looks and the special coats (#669, docs/hero-looks.md
+// §5.5, §6): 1762KB measured, first paint 329KB (cap 332 unchanged). The shimmer's
+// Pixi layer is in the stage chunk and its DOM overlay and stylesheet with the
+// portraits' chunk; neither is in the first paint. The first paint gains only the
+// channel's well-formed check of the broadcast's `lookUnlocks` and its hand-off to
+// the kit's news, beside `kitUnlocks` (a few hundred bytes). The rest is the 12
+// earned colours and their effects in the looks catalog (bundled where #666's 36
+// are), the two-tone case in the tinter and its worker, the look news' words, and
+// the book's receipts. 2KB of slack again.
+// 1764 -> 1773 for two colours per hero and whole-figure specials (#662,
+// docs/hero-looks.md §4.2, §5.2, §5.5): 1771KB measured, first paint 329KB unchanged
+// (cap 332). Nothing new is in the first paint: the sparkle overlay and its
+// stylesheet ride the portraits' chunk, the Pixi sparkle layer the stage chunk,
+// and the tinter's two-part and gold passes its own lazy chunk and worker as
+// before. Most of it is the 42 accent colours and the specials in the looks
+// catalog, bundled where #666's colours are; the rest the second colour shelf
+// and the Special shelf, and the swap's lightness and chroma histograms. 2KB of slack again.
+// 1773 -> 1776 for the 24 base paintings' colour masks (#667): 1774KB measured with
+// main's retention work (#681) in, first paint 329KB unchanged. The growth is the
+// mask list in assets/manifest.json (coatMasks.paintings), which the client bundles
+// so it never asks for a mask that doesn't exist: with the list emptied the total is
+// 1773KB. The masks themselves are fetched assets, not bundle. 2KB of slack again.
+// 1776 -> 1784 for the 72 class paintings' and 72 gear portraits' colour masks (#668):
+// 1782KB measured, first paint 329KB unchanged. The growth is again only the mask
+// list (144 more paths in coatMasks.paintings): with just the 24 base entries the
+// total is 1774KB. 2KB of slack again.
+// 1784 -> 1788 for making new pieces and looks hard to miss (#688): the Camp button's
+// New!, kept across a reload (store/kit-news.ts `useCampNew`), the news toast's Try it on
+// that opens Camp at the piece, and the look editor at the chapter's end. 1786KB measured,
+// first paint 329KB unchanged. 2KB of slack again. (#686 had trimmed main to exactly
+// 1784KB, so there was none to spend.)
+// 1788 -> 1792 for the book in the game (#689): the tray's Book on every seated phone, and
+// the book, while its kid is seated, keeping her presence beat, saying when the game waits for
+// her and handing her kit and Style taps to the game's Camp in downtime (screens/book-table.tsx).
+// 1790KB measured, first paint 330KB (cap 332 unchanged). About half is the new code; the rest
+// is the bundler regrouping what the book's lazy chunks now share with the game's (the camp
+// panel's store, the presence beat, book-table) into four more small chunks, and 12KB of the
+// entry into two chunks it imports, the same code. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1792;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

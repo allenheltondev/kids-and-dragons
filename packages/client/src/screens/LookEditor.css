@@ -1,0 +1,114 @@
+/* Her look in the book (LookPane.tsx, LookEditor.tsx `BookLook`): the kit's
+   dressing room (BookKit.css), her hero standing on her pitch's stage. */
+
+/* Her world figure, full size, standing on the stage's ground as her tent does. */
+.book-look__figure {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  block-size: 100%;
+  inline-size: auto;
+  /* Her paintings are square: the box has its size before the image has loaded or swapped to her colour. */
+  aspect-ratio: 1;
+  max-inline-size: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0.2em 0.25em #0007);
+}
+
+/* Her nameplate and title as the pitch's caption: her name style, at the caption's size. */
+.book-look__caption {
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.book-look__tile-art {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding-inline: 0.4rem;
+  text-align: center;
+  container-type: inline-size;
+}
+
+/* A name on a tile, plain or styled (LookEditor.tsx `NamePreview`), stays whole on
+   one line, made smaller to fit its tile, never broken or cut off. */
+.book-look__tile-art .look-name-preview {
+  display: block;
+  max-inline-size: 100%;
+  font-size: min(1.05rem, calc(155cqi / var(--name-len, 8)));
+  white-space: nowrap;
+}
+
+.look-name-preview .hero-name__name {
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
+/* The table's compact editor (LookEditor.tsx `LookEditor`). */
+.look-option__art {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  text-align: center;
+  padding-inline: 0.25rem;
+}
+
+/* The Color shelf (#666): her hero on every tile, tinted, with a dot naming the colour. */
+.book-look__tile--color .book-look__tile-art {
+  padding: 0;
+}
+
+.look-option__art--color {
+  inline-size: 4.2rem;
+  block-size: 4.2rem;
+  padding: 0;
+}
+
+.look-swatch {
+  display: inline-block;
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  margin-inline-end: 0.3em;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 0.45);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6);
+  vertical-align: -0.05em;
+}
+
+/* Where an earned look came from (#669): "Finished The Gemfall", small, under its name. */
+.book-look__source {
+  display: block;
+  font-size: 0.75em;
+  line-height: 1.2;
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* A shelf's tiles of her hero wait together, then appear together (LookEditor.tsx `ShelfTiles`):
+   never one at a time as each tint finishes. */
+.book-look__tile-art > *,
+.look-option__art > * {
+  transition: opacity 0.25s ease-out;
+}
+
+.look-art--pending > * {
+  opacity: 0;
+}
+
+.look-art--pending {
+  background: radial-gradient(circle at 50% 55%, rgb(255 255 255 / 0.14), transparent 62%);
+  animation: look-art-wait 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes look-art-wait {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .look-art--pending { animation: none; }
+  .book-look__tile-art > *,
+  .look-option__art > * { transition: none; }
+}

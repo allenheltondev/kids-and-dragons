@@ -1,3 +1,4 @@
+import { HeroName } from "./HeroName";
 import { SceneReading } from "../ui/SceneReading";
 import { StoryInteractionControls } from "./StoryInteraction";
 import { PagedOptions } from "../ui/PagedOptions";
@@ -24,7 +25,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  * and the inventory scroll under the strip.
  */
 
-import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 import {
@@ -99,6 +100,7 @@ import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { CampShopVote, shopLine } from "./CampChapterEnd";
 import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
+import { campPanelOpen, onCampPanel } from "./camp-panel";
 import { ClassPlaceChoice } from "./ClassPlace";
 import {
   beginLabel,
@@ -312,10 +314,8 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
   const portrait = (
     <CharacterPortrait
       backdrop
-      species={character.species}
+      hero={character}
       accent={character.appearance.accent}
-      tier={character.tier}
-      characterClass={character.class}
       className="sheet__art"
     />
   );
@@ -338,7 +338,7 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
       {stats ? <HpBar hp={me.hp} max={character.maxHp} down={me.down} className="hp-bar--card" /> : null}
       <span className="sheet__id">
         <span className="sheet__name">
-          {character.name}
+          <HeroName name={character.name} look={character.look} />
           {myTurn ? <span className="kad-sr-only" role="status">: your turn!</span> : null}
         </span>
         {/* Knocked down (spec §7.3) takes the level line's place rather than
@@ -680,6 +680,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * so it is legal to read one whenever there is a phone to read it on.
    */
   const [sheetFor, setSheetFor] = useState<string | null>(null);
+  // Camp asked to open (a Camp button, or the news toast's Try it on) closes an open sheet: the
+  // panel is drawn over the pane the sheet replaces, so it would otherwise wait unseen behind it.
+  const campOpen = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
+  useEffect(() => {
+    if (campOpen) setSheetFor(null);
+  }, [campOpen]);
   const navigationRevision = usePlayerNavigation((navigation) => navigation.revision);
   const section = usePlayerNavigation((navigation) => navigation.section);
   useEffect(() => { setSheetFor(null); }, [navigationRevision]);
@@ -2208,17 +2214,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   <span className="party-strip__portrait" aria-hidden="true">
                     <CharacterPortrait
                       backdrop
-                      species={member.character.species}
+                      hero={member.character}
                       accent={member.character.appearance.accent}
-                      characterClass={member.character.class}
-                      tier={member.character.tier}
                       className="party-strip__art"
                     />
                   </span>
                   {/* Sized to fit its longest word in the card: a long name shrinks rather
                       than spilling into the next card or breaking mid-word. */}
                   <span className="party-strip__name" style={{ "--name-word": longestWord(member.character.name) } as CSSProperties}>
-                    {member.character.name}
+                    <HeroName name={member.character.name} look={member.character.look} />
                   </span>
                   {/* Their health, so who is hurt is seen at a glance (who needs a potion, who to help up). */}
                   <HpBar hp={member.hp} max={member.character.maxHp} down={member.down} className="hp-bar--friend" />

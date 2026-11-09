@@ -49,7 +49,8 @@ import { CampBedroll, CampTent } from "../world/CampBedroll";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
 import { campFamilyFor, campLayoutFor, campStage } from "../world/lobby-camp";
 import { packedKits } from "../world/packed-camp";
-import { useChapter } from "../store";
+import { useChapter, useSession } from "../store";
+import { seeCampNews, useCampNew } from "../store/kit-news";
 import {
   KIT_RULES,
   campBeside,
@@ -63,12 +64,13 @@ import {
   tentArt,
   waitingPieces,
 } from "../world/camp-scene";
-import { campPanelOpen, closeCampPanel, finishKitWelcome, kitWelcomeDone, onCampPanel, openCampPanel } from "./camp-panel";
+import { campPanelOpen, closeCampPanel, finishKitWelcome, kitWelcomeDone, onCampPanel, openCampPanel, takeCampFocus } from "./camp-panel";
+import { LookEditor } from "./LookEditor";
 import "./CampPanel.css";
 
 type Dispatch = (intent: ClientIntent) => void;
 
-const COLOR_NAMES: Record<string, string> = {
+export const COLOR_NAMES: Record<string, string> = {
   orchid: "Gold",
   meadow: "Blue",
   tide: "Orange",
@@ -77,21 +79,30 @@ const COLOR_NAMES: Record<string, string> = {
   rose: "Mint",
 };
 
-/** The Camp button. Only while the table is in downtime: a scene, a check or a fight has no camp (§3). */
+/**
+ * The Camp button. Only while the table is in downtime: a scene, a check or a fight has no camp (§3).
+ * It says "New!" while one of this kid's heroes has something new she has not opened Camp to see
+ * (store/kit-news.ts `useCampNew`): a piece or a look told in a fight is waiting at the next rest.
+ */
 export function CampButton({ state, block = false }: { state: RunState; block?: boolean }): ReactElement | null {
+  const playerId = useSession()?.playerId;
+  const fresh = useCampNew();
   if (campMomentKind(state) === null) return null;
+  const isNew = state.party.some((m) => m.playerId === playerId && fresh.includes(m.character.id));
   return (
     <Button
       variant="secondary"
       size="md"
       block={block}
-      className="camp-button"
+      className={`camp-button${isNew ? " camp-button--new" : ""}`}
       icon={<Icon name="rest" />}
-      onClick={openCampPanel}
+      onClick={() => openCampPanel()}
       aria-haspopup="dialog"
+      aria-label={isNew ? "Camp: something new to try" : undefined}
       data-testid="camp-button"
     >
       Camp
+      {isNew ? <span className="camp-button__new" aria-hidden="true" data-testid="camp-button-new">New!</span> : null}
     </Button>
   );
 }
@@ -109,8 +120,15 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
   const tents = campStage(state) >= 2 && state.campMoment?.outdoor !== false;
   const pick =(style: string): void => {
     finishKitWelcome(heroId);
-    const tent = KIT_RULES.tents.some((t) => t.id === style && t.group === "catalog") ? style : undefined;
-    dispatch({ type: "KIT_EDIT", characterId: heroId, revision: kit.revision, style, ...(tent ? { tent } : {}), ...(color ? { color } : {}) });
+    /*
+     * The style and color only, never a tent. An unpicked tent already draws as
+     * the style's own (`tentArt`), so this shows exactly what the card showed.
+     * And the table reads her kit as the moment begins, so this card can still
+     * show while a tent she picked in the book since (a milestone tent, say)
+     * is stored: a tent sent here would be applied over it, the latest edit
+     * winning (server camp-edit.ts `behindEdit`), and her pick would be lost.
+     */
+    dispatch({ type: "KIT_EDIT", characterId: heroId, revision: kit.revision, style, ...(color ? { color } : {}) });
   };
   return (
     <section className="kit-welcome" aria-labelledby={headingId} data-testid="kit-welcome">
@@ -155,7 +173,7 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
 }
 
 /** A friend's picture, its figure's own art (#624). */
-function FriendArt({ card }: { card: CampFriendCard }): ReactElement | null {
+export function FriendArt({ card }: { card: CampFriendCard }): ReactElement | null {
   const url = castArtUrl(card.figure);
   const [failed, setFailed] = useState(false);
   if (!url || failed) return null;
@@ -254,7 +272,7 @@ function CampFriends({ state }: { state: RunState }): ReactElement | null {
 }
 
 /** One hero's kit, changed by her own player (§4.5): no limit, indoors or out. */
-function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
+export function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
   const hero = member.character;
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);
@@ -272,7 +290,7 @@ function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: Part
       </h3>
       <p className="camp-panel__note kad-muted">Only you change your own kit, as often as you like.</p>
 
-      <fieldset className="camp-panel__group">
+      <fieldset className="camp-panel__group" data-camp-focus="tent">
         <legend>Tent</legend>
         <div className="camp-panel__options">
           {kitTentChoices(KIT_RULES, kit.unlocked).map((id) => (
@@ -321,7 +339,7 @@ function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: Part
         </div>
       </fieldset>
 
-      <fieldset className="camp-panel__group">
+      <fieldset className="camp-panel__group" data-camp-focus="decor">
         <legend>Decorations on your tent</legend>
         <div className="camp-panel__slots">
           {slots.map((slot, i) => (
@@ -524,13 +542,19 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
   const kind = campMomentKind(state);
   const [active, setActive] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const titleId = useId();
   // Begin, Go on, back to the lobby: the panel goes with the downtime (§3, §12.6).
   useEffect(() => {
     if (kind === null) closeCampPanel();
   }, [kind]);
   useEffect(() => {
-    if (open) headingRef.current?.focus();
+    if (!open) return;
+    // Opened: whatever was new is seen. Opened from a piece's news ("Try it on"), at that part.
+    seeCampNews();
+    const at = takeCampFocus();
+    headingRef.current?.focus({ preventScroll: at !== null });
+    if (at) panelRef.current?.querySelector(`[data-camp-hero="${at.hero}"] [data-camp-focus="${at.part}"]`)?.scrollIntoView?.({ block: "start" });
   }, [open]);
   useEffect(() => {
     if (!open) return;
@@ -547,7 +571,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
   const layout = indoors ? null : campLayoutFor(campStage(state), campFamilyFor(state, chapter));
   const mine = state.party.filter((m) => m.playerId === me.playerId);
   return (
-    <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel">
+    <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel" ref={panelRef}>
       <header className="camp-panel__head">
         <h2 className="camp-panel__title" id={titleId} tabIndex={-1} ref={headingRef}>
           <Icon name="rest" />
@@ -568,7 +592,13 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
         {indoors ? <PackedCamp state={state} /> : null}
         {mine.map((member) => {
           const kit = state.kits?.[member.character.id];
-          return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null;
+          return (
+            <div key={member.character.id} style={{ display: "contents" }} data-camp-hero={member.character.id}>
+              {kit ? <KitEditor member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null}
+              {/* Her look (docs/hero-looks.md §8.2; #664), in every downtime moment, as her kit. */}
+              <LookEditor member={member} held={held} dispatch={dispatch} />
+            </div>
+          );
         })}
         <CampFriends state={state} />
         <SharedSpots state={state} me={me} held={held} dispatch={dispatch} active={active} setActive={setActive} />

@@ -45,10 +45,21 @@ describe("the scenes ahead", () => {
     ] } } } };
     expect(chapterAssets(wagon, [])).toContain("/assets/story-props/sausage-wagon.webp");
   });
-  it("starts with the party's own figures — every scene needs them", () => {
-    const urls = upcomingAssets(null, null, PARTY);
-    expect(urls).toHaveLength(1);
-    expect(urls[0]).toBe("/assets/characters/unicorn/fledgling/assembled.png");
+  it("starts with the party's own figures — every scene needs them — each with its coat mask when she wears a look", () => {
+    const look = { revision: 1, coat: "unicorn_sky", accent: null, special: null, nameplate: null, title: null, unlocked: [] };
+    const dressed = [makeMember({ character: { ...makeCharacter({ species: "unicorn", tier: "fledgling", class: "songkeeper" }), look } })];
+    expect(upcomingAssets(null, null, dressed)).toEqual([
+      "/assets/characters/unicorn/fledgling/assembled.png",
+      "/assets/characters/unicorn/fledgling/coat-mask.png",
+    ]);
+  });
+
+  it("asks for no mask for a hero drawn as painted: it would only spend the phone's data", () => {
+    // A hero who has never chosen a look, and one whose look has no colour or special.
+    expect(upcomingAssets(null, null, PARTY)).toEqual(["/assets/characters/unicorn/fledgling/assembled.png"]);
+    const plain = { revision: 3, coat: null, accent: null, special: null, nameplate: "plain", title: "the_bold", unlocked: [] };
+    const named = [makeMember({ character: { ...makeCharacter({ species: "unicorn", tier: "fledgling", class: "songkeeper" }), look: plain } })];
+    expect(upcomingAssets(null, null, named)).toEqual(["/assets/characters/unicorn/fledgling/assembled.png"]);
   });
 
   it("before the chapter begins, fetches its entry and what follows it", () => {

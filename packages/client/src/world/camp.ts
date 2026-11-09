@@ -36,12 +36,15 @@ import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Applicati
 import leafArt from "../assets/painted/leaf.webp";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
+import { campDepthShade, campLight, type CampLight } from "./camp-light";
+import { createShadowLayer, groundShadow } from "./ground-shadows";
 import { campPieceOwner } from "./camp-ownership";
 import { bannerName, friendWords, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
 import { REACT_S, WORDS_S, createTapQueue, type FriendTap, type TapVerdict } from "./camp-taps";
 import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
 import { campPaint } from "./camp-paint";
 import { campAccent, campAccentPose } from "./camp-accents";
+import { campAir, campMotes, motePose } from "./camp-air";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
@@ -53,6 +56,8 @@ import {
   drawPlaceholder,
   measurePaint,
 } from "./actor-art";
+import type { HeroArtSubject } from "./hero-art";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 import {
   campRoute,
   campRoutes,
@@ -116,6 +121,12 @@ export interface CampFigure {
   habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
+  /**
+   * A player's hero, whose figure is loaded through hero-art (`loadHeroTexture`)
+   * rather than from `url`, so she wears her look (docs/hero-looks.md §9).
+   * `url` is still hers (`heroArtUrl`): it is what a change of figure is noticed by.
+   */
+  hero?: HeroArtSubject;
   /** True height (figure-scale.ts `figureSize`). */
   heightCm: number;
   stance: CastStance;
@@ -270,39 +281,10 @@ const AWAY_ALPHA = 0.5;
 const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
-/** One upper-left sun for the camp: soft brown contact and a faint lower-right cast. */
-function campGroundShadow(width: number, height: number, texture?: Texture, canvas = height, mirrored = false): Container {
-  const shadow = new Container();
-  shadow.label = "camp-ground-shadow";
-  if (texture) {
-    const projection = new Container();
-    projection.scale.set(.9, -.18);
-    projection.skew.x = .9;
-    projection.x = width * .08;
-    projection.y = height * .015;
-    const cast = new Sprite(texture);
-    cast.label = "camp-cast-body";
-    cast.anchor.set(ANCHOR_X, ANCHOR_Y);
-    cast.width = cast.height = canvas;
-    if (mirrored) cast.scale.x *= -1;
-    cast.tint = 0x302b20;
-    cast.alpha = .16;
-    projection.addChild(cast);
-    shadow.addChild(projection);
-  }
-  const contact = new Graphics();
-  for (let ring = 12; ring > 0; ring--) {
-    const spread = ring / 12;
-    contact.ellipse(width * .22, height * .035, width * .62 * spread, height * .065 * spread)
-      .fill({ color: 0x51452c, alpha: .014 });
-    contact.ellipse(0, 0, width * .48 * spread, height * .025 * spread)
-      .fill({ color: 0x302b20, alpha: .022 });
-  }
-  shadow.addChild(contact);
-  return shadow;
+/** A shadow on the ground, cast by the backdrop's own light (ground-shadows.ts). */
+function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = false): Container {
+  return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY, behind });
 }
-
-const CAMP_AMBIENT_TINT = 0xfff7ec;
 /** How fast the camp eases to a new frame when the panels over it change height. */
 const FRAME_RATE = 4;
 /**
@@ -332,6 +314,8 @@ type Place = WanderPlace;
 
 interface Actor {
   def: CampFigure;
+  /** A hero's figure texture (hero-art-pixi.ts): her colour, let go of when she leaves or the camp comes down. */
+  heroArt?: HeroTextureHandle;
   container: Container;
   body: Container;
   art: Container;
@@ -453,6 +437,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const view = new Container();
   view.label = "camp";
   app.stage.addChild(view);
+  /* The light the backdrop is painted in (camp-light.ts): every shadow and tint follows it. */
+  const light = campLight(layout.backdrop.family);
 
   // The backdrop: painted art when it loads, a plain dusk until then, so a
   // missing file never leaves the stage blank.
@@ -537,11 +523,60 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
     .catch(() => undefined);
 
+  /*
+   * Every shadow on one layer under the camp, drawn solid and then laid down
+   * at the light's depth and softness as one: two that overlap merge, as real
+   * shadows do, rather than one darkening the other. Each follows what casts
+   * it (`syncCasts`, every frame).
+   */
+  const shadows = createShadowLayer(light);
+  view.addChild(shadows.layer);
+  const castShadow = shadows.cast;
+  const recast = shadows.recast;
+  const syncCasts = shadows.sync;
+
   // Pieces and figures share one depth-sorted layer: the nearer the feet,
   // the later drawn. A piece sorts just behind figures on its own lane.
   const ground = new Container();
+  ground.label = "camp-ground";
   ground.sortableChildren = true;
   view.addChild(ground);
+
+  /*
+   * The air (camp-air.ts): on a backdrop with no painted accent, snow, embers
+   * or seeds drifting over the camp, under the names. None when the camp is
+   * still (reduced motion).
+   */
+  const air = campAir(layout.backdrop.family);
+  const airLayer = new Container();
+  airLayer.label = "camp-air";
+  view.addChild(airLayer);
+  let motes = air ? campMotes(air, seed + 1) : [];
+  const drawMote = (dot: Graphics, size: number): void => {
+    dot.clear().circle(0, 0, size * 1.9).fill({ color: air!.color, alpha: 0.28 }).circle(0, 0, size).fill({ color: air!.color });
+  };
+  const moteViews = motes.map((mote) => {
+    const dot = new Graphics();
+    drawMote(dot, mote.size);
+    if (air!.glow) dot.blendMode = "add";
+    airLayer.addChild(dot);
+    return dot;
+  });
+  /** A new seed lays the motes out again, as a camp first built with it would (`setSeed`); the same dots, redrawn. */
+  function reseedAir(): void {
+    if (!air) return;
+    motes = campMotes(air, seed + 1);
+    motes.forEach((mote, i) => drawMote(moteViews[i]!, mote.size));
+  }
+  function updateAir(): void {
+    airLayer.visible = air !== undefined && !still;
+    if (!airLayer.visible) return;
+    motes.forEach((mote, i) => {
+      const pose = motePose(air!, mote, elapsed, W);
+      moteViews[i]!.position.set(pose.x, pose.y);
+      moteViews[i]!.alpha = pose.alpha;
+    });
+  }
 
   /*
    * Pieces are cutouts on the figures' contract: a 1024 canvas with the
@@ -552,21 +587,62 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
    * about the piece's own ground contact.
    */
   const pieces = new Map<string, PieceView>();
+  /*
+   * The fire's warm light on the ground round it, added over the painting and
+   * flickering (`tick`); steady when the camp is still.
+   */
+  const fireGlows: Graphics[] = [];
+  function fireGlow(heightPx: number): Graphics {
+    const glow = new Graphics();
+    glow.label = "camp-ground-firelight";
+    const rings = 14;
+    for (let ring = rings; ring > 0; ring--) {
+      const spread = ring / rings;
+      glow.ellipse(0, -heightPx * 0.02, heightPx * 1.5 * spread, heightPx * 0.34 * spread).fill({ color: 0xff9448, alpha: 0.034 });
+    }
+    glow.blendMode = "add";
+    fireGlows.push(glow);
+    return glow;
+  }
+  function flickerFires(): void {
+    for (let i = fireGlows.length - 1; i >= 0; i--) {
+      const glow = fireGlows[i]!;
+      if (glow.destroyed) {
+        fireGlows.splice(i, 1);
+        continue;
+      }
+      glow.alpha = still ? 1 : 0.84 + 0.1 * Math.sin(elapsed * 7.3 + i) + 0.06 * Math.sin(elapsed * 13.1 + 2 * i);
+    }
+  }
   const pieceDefs = new Map(layout.frame.pieces.map((piece) => [piece.id, piece]));
-  const fitSprite = (sprite: Sprite, fit: { canvas: number; offsetY: number }, mirrored = false): void => {
+  /*
+   * The camp's depth: what stands on the back lanes leans toward the
+   * painting's haze and lets a touch of it through (camp-light.ts
+   * `campDepthShade`), 0 on the nearest lane and 1 on the farthest.
+   */
+  const laneYs = [...layout.lanes.values()].map((lane) => lane.y * H);
+  const nearY = Math.max(...laneYs);
+  const farY = Math.min(...laneYs);
+  const depthAt = (y: number): number => (nearY > farY ? (nearY - y) / (nearY - farY) : 0);
+  const shadeAt = (sprite: Sprite, y: number): void => {
+    const shade = campDepthShade(light, depthAt(y));
+    sprite.tint = shade.tint;
+    sprite.alpha = shade.alpha;
+  };
+  const fitSprite = (sprite: Sprite, fit: { canvas: number; offsetY: number }, y: number, mirrored = false): void => {
     sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
     sprite.width = fit.canvas;
     sprite.height = fit.canvas;
     sprite.y = fit.offsetY;
     sprite.scale.x = Math.abs(sprite.scale.x) * (mirrored ? -1 : 1);
-    sprite.tint = CAMP_AMBIENT_TINT;
+    shadeAt(sprite, y);
   };
   const fitPieceShadow = (piece: PieceView, texture: Texture): void => {
     const paint = measurePaint(texture);
     const width = paint ? piece.fit.canvas * (paint.right - paint.left) : piece.heightPx;
-    const shadow = campGroundShadow(width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored);
-    piece.container.addChildAt(shadow, piece.container.getChildIndex(piece.shadow));
-    piece.shadow.destroy({ children: true });
+    // A tent's shadow lies under it, cast back from its pegs (ground-shadows.ts `behind`).
+    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY, piece.id.startsWith("tent_"));
+    recast(piece.shadow, shadow);
     piece.shadow = shadow;
   };
   const showPieceArt = (piece: PieceView, texture: Texture, path = piece.path): void => {
@@ -574,8 +650,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     // The table's footprint (camp-paint.ts), the one the boxes were laid out by; measured only for art it lacks.
     piece.fit = fitCanvas(piece.heightPx, campPaint(path) ?? measurePaint(texture));
     fitPieceShadow(piece, texture);
-    fitSprite(sprite, piece.fit, piece.mirrored);
-    if (piece.partSprite) fitSprite(piece.partSprite, piece.fit);
+    fitSprite(sprite, piece.fit, piece.container.y, piece.mirrored);
+    if (piece.partSprite) fitSprite(piece.partSprite, piece.fit, piece.container.y);
     piece.sprite?.destroy();
     piece.sprite = sprite;
     for (const child of [...piece.container.children]) {
@@ -592,18 +668,10 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     container.zIndex = lane.y * H - 0.5;
     container.scale.set(lane.scale);
     const heightPx = campHeightPx(pieceHeightCm(piece), measure);
-    if (piece.id === "campfire") {
-      const light = new Graphics();
-      light.label = "camp-ground-firelight";
-      for (let ring = 12; ring > 0; ring--) {
-        const spread = ring / 12;
-        light.ellipse(0, 0, heightPx * 1.4 * spread, heightPx * .3 * spread)
-          .fill({ color: 0xf7be67, alpha: .008 });
-      }
-      container.addChild(light);
-    }
-    const shadow = campGroundShadow(heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx);
-    container.addChild(shadow);
+    if (piece.id === "campfire") container.addChild(fireGlow(heightPx));
+    // Until its painting loads (or if it never does), a tent's contact shade already sits inside its pegs.
+    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0, piece.id.startsWith("tent_"));
+    castShadow(container, shadow);
     const groundCount = container.children.length;
     const pending = new Graphics()
       .roundRect(-0.4 * heightPx, -heightPx, 0.8 * heightPx, heightPx, 0.1 * heightPx)
@@ -704,7 +772,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       .then((texture) => {
         if (destroyed) return;
         const sprite = new Sprite(texture);
-        fitSprite(sprite, piece.fit);
+        fitSprite(sprite, piece.fit, piece.container.y);
         piece.partSprite = sprite;
         part.addChild(sprite);
       })
@@ -1104,30 +1172,37 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actor.placeholder.scale.set(actor.heightPx / 100);
     const paint = actor.sprite ? measurePaint(actor.sprite.texture) : null;
     const width = paint ? canvas * (paint.right - paint.left) * .72 : canvas * .3;
-    const shadow = campGroundShadow(width, actor.heightPx, actor.sprite?.texture, canvas);
-    actor.container.addChildAt(shadow, actor.container.getChildIndex(actor.shadow));
-    actor.shadow.destroy({ children: true });
+    const shadow = campGroundShadow(light, width, actor.heightPx, actor.sprite?.texture, canvas);
+    recast(actor.shadow, shadow);
     actor.shadow = shadow;
   }
 
   function loadArt(actor: Actor): void {
     const url = actor.def.url;
     if (!url) return;
-    void load(url)
-      .then((texture) => {
-        if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
-        const sprite = new Sprite(texture);
-        sprite.tint = CAMP_AMBIENT_TINT;
-        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-        actor.sprite?.destroy();
-        actor.sprite = sprite;
-        actor.placeholder.visible = false;
-        actor.art.addChild(sprite);
-        fitArt(actor);
-      })
-      .catch(() => {
-        /* keep the placeholder: a to-do, not a broken image */
-      });
+    const show = (texture: Texture): void => {
+      if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
+      // A hero's colour, arriving after her painting: the same figure, a new texture.
+      if (actor.sprite && actor.def.hero) {
+        actor.sprite.texture = texture;
+        return;
+      }
+      const sprite = new Sprite(texture);
+      shadeAt(sprite, actor.y);
+      sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+      actor.sprite?.destroy();
+      actor.sprite = sprite;
+      actor.placeholder.visible = false;
+      actor.art.addChild(sprite);
+      // A hero's sparkle special twinkles over her sprite, a child of it (§5.5).
+      actor.heroArt?.dress(sprite);
+      fitArt(actor);
+    };
+    // A failed load keeps the placeholder: a to-do, not a broken image.
+    actor.heroArt?.();
+    actor.heroArt = undefined;
+    if (actor.def.hero) actor.heroArt = loadHeroTexture(actor.def.hero, "world", show, { load });
+    else void load(url).then(show).catch(() => undefined);
   }
 
   function placeAt(actor: Actor, place: Place, face: 1 | -1 | null): void {
@@ -1154,8 +1229,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     art.addChild(placeholder);
     body.addChild(art);
     const shadow = new Graphics();
-    container.addChild(shadow, body);
+    container.addChild(body);
     ground.addChild(container);
+    castShadow(container, shadow);
     const { heightPx, gait } = sizeOf(def);
     const actor: Actor = {
       def,
@@ -1420,6 +1496,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     // factor; its feet stay on the ground point, which the factor never moves.
     actor.container.scale.set(laneScale * figureScale);
     actor.container.alpha = actor.alpha;
+    // Further back, hazier: as it walks between lanes too.
+    if (actor.sprite) shadeAt(actor.sprite, actor.y);
     actor.body.y = -(lift + actor.carryLift + stanceLiftPx);
     actor.body.rotation = rotation + actor.carryRotation;
     actor.body.scale.y = scaleY;
@@ -1450,6 +1528,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const dt = frameSeconds(app.ticker.deltaMS);
     elapsed += dt;
     updateAccent();
+    updateAir();
     easeFrame(dt);
 
     if (!still) {
@@ -1482,6 +1561,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actors.delete(actor.def.id);
         planner.remove(actor.def.id);
         tapQueue.forget(actor.def.id);
+        actor.heroArt?.();
         actor.words?.destroy({ children: true });
         actor.container.destroy({ children: true });
       }
@@ -1501,6 +1581,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       piece.part.scale.set(pose.scaleX, pose.scaleY);
       piece.part.alpha = pose.alpha;
     }
+    flickerFires();
+    syncCasts();
   }
   app.ticker.add(tick);
 
@@ -1538,7 +1620,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
           const texture = await load(assetUrl(tent.flap));
           if (destroyed || piece.kitRevision !== revision) return;
           piece.partSprite = new Sprite(tintCloth(texture, cloth, accent));
-          fitSprite(piece.partSprite, piece.fit);
+          fitSprite(piece.partSprite, piece.fit, piece.container.y);
           piece.part.addChild(piece.partSprite);
         }).catch(() => undefined);
         continue;
@@ -1598,6 +1680,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actor.sprite = null;
         actor.placeholder.visible = true;
         loadArt(actor);
+      } else if (def.hero) {
+        // Her colour (#666), changed at a rest or from the book: the same figure, retinted.
+        actor.heroArt?.update(def.hero);
       }
     }
     friendsOut = [];
@@ -1611,6 +1696,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function setSeed(next: number): void {
     if (destroyed || next === seed) return;
     seed = next;
+    reseedAir();
     const old = planner;
     planner = makePlanner(seed);
     for (const actor of actors.values()) {
@@ -1835,6 +1921,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function place(at: CampFraming): void {
     framed = at;
     view.scale.set(at.scale);
+    // The blur works in screen pixels: as soft at every size of the camp.
+    shadows.setScale(at.scale);
     view.x = at.x;
     view.y = at.y;
     if (bleedTop && bleedBottom) {
@@ -1917,7 +2005,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     return { heroes, spots: dressing.spots, beside: dressing.beside, friends: friendsOut };
   }
 
-  function dressPiece(key: string, box: CampBox, piece: { path: string | null; heightCm: number; banner?: string | null; glow?: boolean }): DressView {
+  function dressPiece(key: string, box: CampBox, piece: { path: string | null; heightCm: number; banner?: string | null; glow?: boolean; fire?: boolean }): DressView {
     const lane = laneOf(layout, box.lane);
     const container = new Container();
     container.label = `dress:${key}`;
@@ -1931,6 +2019,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const view: DressView = { key, container, laneScale: lane.scale, heightPx, pitch: 1, missing: false };
     // Where its paint's middle is, off its ground contact.
     const middle = (box.x - box.anchor) / lane.scale;
+    if (piece.fire) {
+      const fire = fireGlow(heightPx);
+      fire.x = middle;
+      container.addChild(fire);
+    }
     if (piece.glow) {
       const glow = hotspotGlow(Math.max(widthPx, campHeightPx(120, measure)));
       glow.x = middle;
@@ -1938,6 +2031,13 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }
     const body = new Container();
     container.addChild(body);
+    // Its contact shade until its art loads, then its cast too: both at its
+    // ground contact (x 0), where the art stands, not at its paint's middle; a
+    // shade only as wide as the paint reaches both sides of it (a banner's
+    // flag flies off to one side of its pole).
+    const footWidth = Math.max(widthPx * 0.2, (2 * Math.min(box.anchor - (box.x - box.width / 2), box.x + box.width / 2 - box.anchor)) / lane.scale) * 0.8;
+    let shadow: Container = campGroundShadow(light, footWidth, heightPx);
+    castShadow(container, shadow);
     const standIn = (): void => {
       if (destroyed || body.destroyed) return;
       body.removeChildren().forEach((c) => c.destroy({ children: true }));
@@ -1952,7 +2052,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         .then((texture) => {
           if (destroyed || body.destroyed) return;
           const sprite = new Sprite(texture);
-          fitSprite(sprite, fitCanvas(heightPx, campPaint(piece.path) ?? measurePaint(texture)));
+          const fit = fitCanvas(heightPx, campPaint(piece.path) ?? measurePaint(texture));
+          fitSprite(sprite, fit, box.ground);
+          const cast = campGroundShadow(light, footWidth, heightPx, texture, fit.canvas, false, fit.offsetY);
+          recast(shadow, cast);
+          shadow = cast;
           body.removeChildren().forEach((c) => c.destroy({ children: true }));
           body.addChild(sprite);
           view.missing = false;
@@ -1979,7 +2083,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       const key = `${spot.pieceId ?? "-"}|${spot.banner ?? ""}|${spot.highlighted ? "lit" : ""}|${String(Math.round(box.x))}`;
       want.set(`spot:${spot.id}`, {
         key,
-        make: () => dressPiece(`spot:${spot.id}`, box, { path: spot.pieceId ? spot.path : null, heightCm: spot.heightCm, banner: spot.banner, glow: spot.highlighted }),
+        make: () => dressPiece(`spot:${spot.id}`, box, { path: spot.pieceId ? spot.path : null, heightCm: spot.heightCm, banner: spot.banner, glow: spot.highlighted, fire: spot.kind === "cookfire" }),
       });
     }
     for (const piece of next.beside) {
@@ -2244,6 +2348,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     destroyed = true;
     app.ticker.remove(tick);
+    for (const actor of actors.values()) actor.heroArt?.();
     actors.clear();
     view.destroy({ children: true });
   }

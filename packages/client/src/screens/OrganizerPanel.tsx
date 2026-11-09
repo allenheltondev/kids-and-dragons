@@ -557,13 +557,10 @@ function KeepingSection({ view, busy }: { view: OrganizerHouseholdView; busy: bo
       <select
         className="keepsake__input organizer__select"
         id={fieldId}
-        value={view.retentionDays === null ? "" : String(view.retentionDays)}
+        value={String(view.retentionDays)}
         disabled={busy}
-        onChange={(e) =>
-          void edit({ action: "set-retention", retentionDays: e.target.value === "" ? null : Number(e.target.value) })
-        }
+        onChange={(e) => void edit({ action: "set-retention", retentionDays: Number(e.target.value) })}
       >
-        <option value="">Until a grown-up deletes them</option>
         {RETENTION_CHOICES.map((days) => (
           <option key={days} value={String(days)}>
             {RETENTION_LABEL[days]} without playing
@@ -571,7 +568,8 @@ function KeepingSection({ view, busy }: { view: OrganizerHouseholdView; busy: bo
         ))}
       </select>
       <p className="keepsake__fine kad-muted">
-        Counted from the last time each kid played, anywhere. A kid deleted this way goes with their heroes.
+        Counted from the last time each kid played, anywhere, or from when they were added if they never have. A kid
+        deleted this way goes with their heroes. Once the last kid is gone, the household and its sign-in go too.
       </p>
       <WhatWeStoreLink />
 

@@ -79,6 +79,7 @@ import {
 } from "./encounter.js";
 import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch, resolveEnvironment } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
+import { lookIntentProblem } from "./hero-look.js";
 import { choiceAhead, type ChoiceAhead } from "./choice-ahead.js";
 import { enemyPlanFor } from "./combat-intent.js";
 import type {
@@ -698,6 +699,27 @@ function recordFind(draft: RunState, effect: Extract<Effect, { type: "findForCam
 }
 
 /**
+ * A look find (docs/hero-looks.md §6; #669), recorded on the run and nothing
+ * more, exactly as a kit find is (`recordFind`): once per `rewardId` a
+ * chapter, naming who was seated. The server writes each hero's receipt after
+ * the step commits (handlers/look-unlocks.ts). Cosmetic: nothing in play
+ * reads it.
+ */
+function recordLookFind(draft: RunState, effect: Extract<Effect, { type: "findLook" }>): void {
+  const finds = draft.lookFinds ?? [];
+  if (finds.some((find) => find.rewardId === effect.rewardId)) return;
+  draft.lookFinds = [
+    ...finds,
+    {
+      looks: [...effect.looks],
+      rewardId: effect.rewardId,
+      sceneId: draft.sceneId ?? "",
+      heroes: seatedMembers(draft).map((m) => m.character.id),
+    },
+  ];
+}
+
+/**
  * A lucky drop (docs/camp.md §5.2): after a mini-game the party succeeded at
  * or a fight it won in this step, a 1 in 8 chance of 1 Dash Cash, drawn from
  * this step's seeded rng (port.ts), so replaying the log draws the same. Read
@@ -804,6 +826,10 @@ function applyEffectsDraft(
       case "findForKit":
       case "befriend":
         recordFind(draft, effect);
+        break;
+
+      case "findLook":
+        recordLookFind(draft, effect);
         break;
 
       case "grantItem": {
@@ -1646,6 +1672,11 @@ function checkIntentShape(intent: ClientIntent): void {
       if (problem !== null) malformed(problem);
       return;
     }
+    case "LOOK_EDIT": {
+      const problem = lookIntentProblem(intent as unknown as Record<string, unknown>);
+      if (problem !== null) malformed(problem);
+      return;
+    }
   }
 }
 
@@ -1811,6 +1842,10 @@ function dispatch(
       // They write the crew's camp or a hero's kit, store writes the engine
       // never sees (server handlers/camp-edit.ts), like CAMP_VOTE above.
       throw new Illegal("ILLEGAL", "the camp is changed through the authoritative run handler");
+
+    case "LOOK_EDIT":
+      // A hero's own look, on her row (server handlers/look-edit.ts), like KIT_EDIT.
+      throw new Illegal("ILLEGAL", "a look is changed through the authoritative run handler");
 
     case "KEEP_CLASS":
       return doKeepClass(draft, playerId, intent.classId, intent.stall === true);
@@ -2153,6 +2188,7 @@ function doStartChapter(
   draft.bonuses = [];
   // Last chapter's finds were claimed when they were found (docs/camp.md §12.2).
   delete draft.campFinds;
+  delete draft.lookFinds;
   // Lucky drops were claimed as they landed; the tally and shop were the last summary's.
   delete draft.campLuck;
   delete draft.campTally;

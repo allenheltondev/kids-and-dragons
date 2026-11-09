@@ -14,6 +14,7 @@ import { resolveCharacter, storyChapters, type Character, type JournalResponse, 
 import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { listHeroes } from "./heroes.ts";
 import { viewOf } from "./profile.ts";
+import { journalCamp } from "./camp-book.ts";
 import type { CampaignProgressRecord } from "../store/repository.ts";
 
 export interface JournalInput {
@@ -43,7 +44,11 @@ export async function getJournal(
   ]);
   if (!heroes.ok) return heroes;
   const finders = findersOf(players, characters, deps);
-  const finished = finishedOf(characters.filter((c) => c.ownerPlayerId === input.playerId), deps);
+  const mine = characters.filter((c) => c.ownerPlayerId === input.playerId);
+  const finished = finishedOf(mine, deps);
+  // The Camp tray (docs/camp.md §7; #629): the crews' camps, and her heroes' kits.
+  // A failed read says so (`campError`): the phone keeps the camp it saved.
+  const camp = await journalCamp(input.householdId, mine, deps);
   const me = players.find((p) => p.id === input.playerId);
   const profile = me ? viewOf(input, me, characters, book.entries, deps) : undefined;
   return ok({
@@ -54,6 +59,7 @@ export async function getJournal(
     finished,
     ...(profile ? { profile } : {}),
     story: storyOf(attempts, deps),
+    ...camp,
   });
 }
 

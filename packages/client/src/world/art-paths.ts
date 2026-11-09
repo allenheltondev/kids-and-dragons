@@ -134,6 +134,43 @@ export function characterPortraitArtUrl(
 }
 
 /**
+ * Where a painting's coat mask would be (docs/hero-looks.md §4.2), whether or
+ * not it has one: `x/assembled.png` → `x/coat-mask.png`, a gear portrait's
+ * `x/<species>.png` → `x/<species>.coat-mask.png`.
+ */
+export function maskPathBeside(painting: string): string {
+  return painting.endsWith("/assembled.png")
+    ? painting.slice(0, -"assembled.png".length) + "coat-mask.png"
+    : painting.replace(/\.png$/, ".coat-mask.png");
+}
+
+/**
+ * Whether a hero's look draws on her coat mask: a colour on either part, or a
+ * special. A hero wearing none is drawn as painted, so prefetching her mask
+ * ahead of play would only spend a phone's data; the book's own offline warm
+ * (hero-art.ts `heroOfflineArt`) still fetches it, since a colour can be picked
+ * there offline. Pure, so the service worker can call it.
+ */
+export function wearsLook(look: { coat?: string | null; accent?: string | null; special?: string | null } | null | undefined): boolean {
+  return Boolean(look && (look.coat || look.accent || look.special));
+}
+
+/**
+ * A painting's coat mask URL, or null when `masked` (the art manifest's
+ * `coatMasks.paintings`, paths under `assets/`) does not list it: a painting
+ * with no mask draws as painted, and nothing asks for a file that is not
+ * there. Here rather than in coat-masks.ts because the service worker, which
+ * cannot import the manifest, prefetches masks too (§5.4): sw-build.ts hands
+ * it the list as `__KAD_COAT_MASKS__`.
+ */
+export function coatMaskFor(paintingUrl: string, masked: ReadonlySet<string> | readonly string[]): string | null {
+  if (!paintingUrl.startsWith("/assets/")) return null;
+  const path = paintingUrl.slice("/assets/".length);
+  const listed = Array.isArray(masked) ? masked.includes(path) : (masked as ReadonlySet<string>).has(path);
+  return listed ? maskPathBeside(paintingUrl) : null;
+}
+
+/**
  * Enemy cutouts. A chapter authors `art: "enemies/will_o_wisp"`; the files
  * live in `assets/entities/<id>/assembled.png`, so the prefix is convention,
  * not a directory — strip it if present, trust the rest.

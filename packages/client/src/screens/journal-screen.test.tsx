@@ -9,12 +9,13 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ItemCatalog, JournalResponse, WorldMap } from "@kad/shared";
-import { makeCharacter } from "../testing/fixtures";
+import { beginEncounter, parseBoard, type EncounterState, type ItemCatalog, type JournalResponse, type RunState, type WorldMap } from "@kad/shared";
+import { makeRules } from "../../../shared/src/test-fixtures";
+import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
-import { getFieldGuideDiscoveries } from "../store/field-guide-discoveries";
+import { getFieldGuideDiscoveries, setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { currentRoute, navigate } from "../router";
 import { JournalScreen, savedWhen } from "./JournalScreen";
 
@@ -147,6 +148,95 @@ describe("JournalScreen", () => {
     expect(currentRoute()).toEqual({ name: "home" });
   });
 
+  describe("seated at a live game (docs/camp.md §7)", () => {
+    const reconnect = vi.fn();
+    const seat = (prompt: RunState["prompt"] = null, over: Partial<RunState> = {}, synced = true) => {
+      const beat = vi.fn();
+      reconnect.mockClear();
+      useGameStore.setState({
+        session: { runId: "r_1", roomCode: "WXYZ", playerId: "p_1", mode: "party", sessionToken: "t" },
+        state: makeState({ roomCode: "WXYZ", phase: "scene", party: [makeMember({ playerId: "p_1", character: SPARKLEHOOF })], prompt, ...over }),
+        synced,
+        beat,
+        reconnect,
+      });
+      return beat;
+    };
+    /** A fight on Sparklehoof's turn: the game wants her with no prompt at all. */
+    const herTurn = (): EncounterState => {
+      const encounter = beginEncounter(
+        {
+          board: parseBoard([".....", ".....", ".....", ".....", "....."]),
+          party: [{ character: SPARKLEHOOF, at: { x: 1, y: 1 } }],
+          enemies: [{ spec: { id: "wisp", name: "Bramblewisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }, at: { x: 3, y: 2 } }],
+        },
+        { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+      );
+      return { ...encounter, turnIndex: encounter.order.indexOf("c_1") };
+    };
+    afterEach(() => {
+      useGameStore.setState({ session: null, state: null });
+      setFieldGuideDiscoveries(null);
+    });
+
+    it("leaves the game's own guide as it is, and as it is on the way back to the game", async () => {
+      const live = { "biome.mossy_hollow": { firstFoundBy: "p_2", foundAt: "2026-11-08T18:00:00.000Z" } };
+      setFieldGuideDiscoveries(live);
+      seat();
+      const { unmount } = mount(journal());
+      expect(await screen.findByRole("button", { name: "Play" })).toBeTruthy();
+      expect(getFieldGuideDiscoveries()).toEqual(live);
+      // A live patch while the book is open stands; the journal's older copy never replaces it.
+      const later = { ...live, "creature.bramblewisp": { firstFoundBy: "p_1", foundAt: "2026-11-08T18:05:00.000Z" } };
+      act(() => setFieldGuideDiscoveries(later));
+      expect(getFieldGuideDiscoveries()).toEqual(later);
+      unmount();
+      expect(getFieldGuideDiscoveries()).toEqual(later);
+    });
+
+    it("wakes the game's stream when the signal goes, as the game's own pages do", async () => {
+      seat();
+      mount(journal());
+      expect(await screen.findByRole("button", { name: "Play" })).toBeTruthy();
+      act(() => { window.dispatchEvent(new Event("offline")); });
+      expect(reconnect).toHaveBeenCalled();
+    });
+
+    it("says so on her turn in a fight, where there is no prompt", async () => {
+      seat(null, { sceneType: "encounter", encounter: herTurn() });
+      mount(journal());
+      expect((await screen.findByTestId("journal-turn")).textContent).toContain("The game is waiting for you!");
+    });
+
+    it("says nothing from a mirror still catching up", async () => {
+      seat({ kind: "ready", forPlayerIds: ["p_1"] }, {}, false);
+      mount(journal());
+      expect(await screen.findByRole("button", { name: "Play" })).toBeTruthy();
+      expect(screen.queryByTestId("journal-turn")).toBeNull();
+    });
+
+    it("goes back to the game from the tray, and keeps saying she is there", async () => {
+      const user = userEvent.setup();
+      const beat = seat();
+      navigate({ name: "journal" });
+      mount(journal());
+      expect(beat).toHaveBeenCalled();
+      expect(screen.queryByTestId("journal-turn")).toBeNull();
+      await user.click(await screen.findByRole("button", { name: "Play" }));
+      expect(currentRoute()).toEqual({ name: "player", code: "WXYZ" });
+    });
+
+    it("says when the game is waiting for her, with the way back", async () => {
+      const user = userEvent.setup();
+      seat({ kind: "ready", forPlayerIds: ["p_1"] });
+      navigate({ name: "journal" });
+      mount(journal());
+      expect((await screen.findByTestId("journal-turn")).textContent).toContain("The game is waiting for you!");
+      await user.click(screen.getByRole("button", { name: "Back to the game" }));
+      expect(currentRoute()).toEqual({ name: "player", code: "WXYZ" });
+    });
+  });
+
   it("says the book is empty on a phone that has never played, and offers a game", async () => {
     mount(null);
     expect(await screen.findByText(/your adventure book is empty/i)).toBeTruthy();
@@ -186,3 +276,4 @@ describe("savedWhen", () => {
     expect(savedWhen("not a date", now)).toBe("last time");
   });
 });
+

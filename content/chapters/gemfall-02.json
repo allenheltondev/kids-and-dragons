@@ -33,7 +33,7 @@
     }
   ],
   "goal": {
-    "text": "Travel the Sunward Fields and choose your road north.",
+    "text": "Look into what has the Sunward Fields spooked, and choose your road north.",
     "steps": [
       {
         "id": "egg_stall",
@@ -77,7 +77,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "Tonight's job: travel the Sunward Fields and choose your road north at Bramblewood. Hesper's cook packs you a supper bundle. Fauns sing in every field. Then every song stops. One faun's watering flute keeps pouring onto her own hoof.",
+      "narration": "Tonight's job: look into what has the Sunward Fields spooked, and choose your road north at Bramblewood, the town behind the tall hedges. Hesper's cook packs you a supper bundle, and the sausage wagon rumbles on ahead. Fauns sing in every field. Then every song stops. One faun's watering flute keeps pouring onto her own hoof.",
       "choices": [
         {
           "id": "look",
@@ -572,7 +572,7 @@
       "discovers": [
         "creature.jackalope"
       ],
-      "narration": "Jackalopes pack the road, ears turned toward the long grass. Usually they race wagons. Today they are watching something. Up on a ridge, a woolly knot of sheeple is watching too.",
+      "narration": "Jackalopes pack the road, ears turned toward the long grass. Usually they race wagons. Today they are watching something. Up on a ridge, a woolly knot of sheeple is watching too, the way sheeple do everything: all together, copying each other.",
       "cast": [
         {
           "figure": "entities/jackalope",
@@ -755,7 +755,7 @@
           "id": "hurry",
           "label": "Sneak the caravan past",
           "icon": "boot",
-          "goto": "scene_plank_bridge"
+          "goto": "interaction_wolf_sneak"
         }
       ]
     },
@@ -1200,7 +1200,7 @@
           "id": "sleep",
           "label": "Try to sleep",
           "icon": "moon",
-          "goto": "scene_corner_row"
+          "goto": "check_signs_add_up"
         }
       ]
     },
@@ -1212,7 +1212,7 @@
           "id": "sleep",
           "label": "Get some sleep",
           "icon": "moon",
-          "goto": "scene_corner_row"
+          "goto": "check_signs_add_up"
         }
       ]
     },
@@ -1224,7 +1224,7 @@
           "id": "on",
           "label": "Pack up and go",
           "icon": "travel",
-          "goto": "scene_corner_row"
+          "goto": "check_signs_add_up"
         }
       ]
     },
@@ -1237,7 +1237,7 @@
           "id": "sleep",
           "label": "Try to sleep",
           "icon": "moon",
-          "goto": "scene_corner_row"
+          "goto": "check_signs_add_up"
         }
       ]
     },
@@ -1254,7 +1254,7 @@
           "id": "sleep",
           "label": "Get some sleep",
           "icon": "moon",
-          "goto": "scene_corner_row"
+          "goto": "check_signs_add_up"
         }
       ]
     },
@@ -2087,6 +2087,19 @@
           "icon": "eye",
           "requiresFlag": "motive_curiosity",
           "goto": "scene_marda_question"
+        },
+        {
+          "id": "signs",
+          "label": "Tell Marda what the fields are saying",
+          "icon": "eye",
+          "requiresFlag": "read_the_signs",
+          "goto": "rest_marda_inn_signs"
+        },
+        {
+          "id": "ask_signs",
+          "label": "Ask Marda what the fields are saying",
+          "icon": "ear",
+          "goto": "rest_marda_inn_explains"
         }
       ]
     },
@@ -2735,7 +2748,7 @@
     },
     "interaction_stuck_wagon": {
       "type": "interaction",
-      "narration": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a very polite centaur, waves you over. \"Steer the pole and push, and I will pull. I tip well.\"",
+      "narration": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a very polite centaur, waves you over. \"Wait for my pull, then push,\" she says. \"I tip well.\"",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -2743,10 +2756,12 @@
         }
       ],
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends push the wagon while someone steers the pole.",
-        "actionLabel": "Steer the pole",
-        "supportLabel": "Push the wagon"
+        "kind": "timing",
+        "cue": "Push the wagon when the drover pulls.",
+        "actionLabel": "Push!",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4000
       },
       "onSuccess": {
         "goto": "scene_hedge_mob",
@@ -2760,7 +2775,7 @@
       },
       "onFailure": {
         "goto": "scene_hedge_mob",
-        "narration": "The wheel slides back in with a squelch, then pops out by itself. \"Next time I'll ask the oxen,\" says the drover, and trots off."
+        "narration": "You push a heartbeat too early. The wheel slides back in with a squelch, then pops out by itself. \"Next time I'll ask the oxen,\" says the drover, and trots off without a coin for anyone."
       },
       "onAssisted": {
         "goto": "scene_hedge_mob",
@@ -2841,9 +2856,9 @@
       "type": "interaction",
       "narration": "The fauns show you how to level a long beam, then set it in. \"We'll lend you our brace at the hedges, if you need it,\" they say. The duck inspects both banks.",
       "interaction": {
-        "kind": "balance",
-        "cue": "Level the beam, then carry it into the bridge supports.",
-        "actionLabel": "Set the bridge beam",
+        "kind": "relay",
+        "cue": "Pass the beam hand to hand down the bank, then drop it into the bridge supports.",
+        "actionLabel": "Pass the beam",
         "objectLabel": "The replacement bridge beam"
       },
       "onSuccess": {
@@ -2859,11 +2874,11 @@
       },
       "onFailure": {
         "goto": "scene_bridge_ferry",
-        "narration": "Heave. Shove. Splash. The beam slides into the canal and floats there. The fauns look at each other."
+        "narration": "Pass. Pass. Splash. The beam slips out of the last pair of hands and floats off down the canal. The fauns look at each other."
       },
       "onAssisted": {
         "goto": "scene_bridge_mended",
-        "narration": "A faun steadies one end while you level the beam. Together you set it in place.",
+        "narration": "A faun catches the beam when it wobbles, and passes it on. Together you set it in place.",
         "effects": [
           {
             "type": "setFlag",
@@ -2911,12 +2926,14 @@
     },
     "interaction_hedge_brace": {
       "type": "interaction",
-      "narration": "The fauns from the canal bridge catch up with their long brace pole. \"You helped our bridge,\" they say. One branch is tangled. Hold the brace steady while Pib frees it. Alone, lean it on the prop post.",
+      "narration": "The fauns from the canal bridge catch up with their long brace pole. \"You helped our bridge,\" they say. One branch is tangled. Hold the brace where the branch can slip free.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the borrowed brace while the branch is guided aside.",
+        "kind": "precision",
+        "cue": "Guide the brace to the gap while Pib frees the branch.",
         "actionLabel": "Guide the branch",
-        "supportLabel": "Hold the long brace"
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "choice_pib_gift",
@@ -2936,7 +2953,7 @@
       },
       "onFailure": {
         "goto": "scene_long_path",
-        "narration": "The branch slips back. Pib leads you the long way while the hedge untangles itself."
+        "narration": "The brace is a little off, and the branch slips back. Pib leads you the long way while the hedge untangles itself."
       },
       "onAssisted": {
         "goto": "choice_pib_gift",
@@ -3119,6 +3136,102 @@
         }
       ],
       "art": "scenes/gemfall/ditch-plank-mimics"
+    },
+    "interaction_wolf_sneak": {
+      "type": "interaction",
+      "narration": "The wolves watch the sausage wagon, not the lane. Wait for the wagon bell to rattle, then slip the caravan past while the wolves flinch.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 2
+        }
+      ],
+      "interaction": {
+        "kind": "timing",
+        "cue": "Creep past the wolves when the bell rattles.",
+        "actionLabel": "Slip past",
+        "target": 0.5,
+        "width": 0.24,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_plank_bridge",
+        "narration": "Bell. Step. Bell. Step. The caravan creeps by, and the wolves never look up from the sausages."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "A hoof lands in a bucket. Clang! Two heads swing around, and two sets of glowing eyes find the sausage wagon."
+      },
+      "onAssisted": {
+        "goto": "scene_plank_bridge",
+        "narration": "The drover rattles the bell for you, right on time, and the caravan slips past."
+      }
+    },
+    "check_signs_add_up": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 10,
+      "roller": "best",
+      "prompt": "Moths flying south. Wolves far from home. Jackalopes watching the grass. A shiver in the night. Work out what it all adds up to",
+      "onSuccess": {
+        "goto": "scene_corner_row",
+        "narration": "You line them up like cups on a table. Every one of them is leaving the mountain, or listening to it. Whatever is happening is happening at Mount Red Sky, and the whole countryside noticed before anyone told you.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_signs",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_corner_row",
+        "narration": "You line them up, and they will not line up. A moth, a wolf, a shiver. It is all one puzzle with half its pieces missing. Somebody in Bramblewood must know more."
+      }
+    },
+    "rest_marda_inn_signs": {
+      "type": "story",
+      "narration": "You count it out for Marda: the moths, the wolves, the watching jackalopes, the shiver. She stops wiping the table. \"So the fields have noticed too,\" she says. She sets down an extra bowl of stew, then presses three coins into your hand. \"For saying it out loud. Go carefully, whichever road you pick.\"",
+      "cast": [
+        {
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 3
+        }
+      ],
+      "choices": [
+        {
+          "id": "to_board",
+          "label": "Eat and listen",
+          "icon": "scroll",
+          "goto": "choice_common_room"
+        }
+      ]
+    },
+    "rest_marda_inn_explains": {
+      "type": "story",
+      "narration": "You count the moths, the wolves and the shiver on your fingers and ask Marda what it adds up to. She stops wiping the table. \"Everything that can leave Mount Red Sky is leaving it,\" she says. \"The fields noticed before I did. Go carefully, whichever road you pick.\"",
+      "cast": [
+        {
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "to_board",
+          "label": "Eat and listen",
+          "icon": "scroll",
+          "goto": "choice_common_room"
+        }
+      ]
     }
   },
   "voiceGuide": {

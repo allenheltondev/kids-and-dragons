@@ -37,6 +37,7 @@ import leafArt from "../assets/painted/leaf.webp";
 import { campAccent } from "./camp-accents";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
+import { HeroImage } from "./hero-art-dom";
 import { NOMINAL_PAINT } from "./figure-scale";
 import { CampBedroll, CampClothArt } from "./CampBedroll";
 import { Campfire } from "./Campfire";
@@ -138,9 +139,15 @@ export interface StillCampProps {
   fit?: "cover" | "width";
   /** A tapped friend's words (#624), by friend id, shown over its head (still-friend-taps.ts). */
   friendWords?: ReadonlyMap<string, string>;
+  /**
+   * With `fit="width"`: px of the painting's own grass drawn on below the camp's
+   * band, so name labels under the figures at its foot stay whole (the book's
+   * Camp tray, #629). The chips' rows get the same room of their own.
+   */
+  footRoom?: number;
 }
 
-export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover", friendWords }: StillCampProps): React.JSX.Element {
+export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover", friendWords, footRoom = 0 }: StillCampProps): React.JSX.Element {
   const host = useRef<HTMLDivElement | null>(null);
   const [pane, setPane] = useState({ width: 0, height: 0 });
   const lobbyBottom = useSyncExternalStore(onLobbyInset, lobbyInsetBottom, lobbyInsetBottom);
@@ -239,7 +246,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
     : [];
   const chipRowsCount = chips.reduce((n, chip) => Math.max(n, chip.row + 1), 0);
   if (mode === "width") {
-    rootHeight = Math.max(120, bandPx + chipRowsCount * CHIP_ROW + (chipRowsCount > 0 ? 8 : 0));
+    rootHeight = Math.max(120, bandPx + chipRowsCount * CHIP_ROW + (chipRowsCount > 0 ? 8 : footRoom));
     // The chips stand on the painting's own grass, drawn on past its foot when they reach that far.
     if (at) bleed = campBleed(rootHeight, at, layout.canvas);
   }
@@ -333,7 +340,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
               zIndex: Math.round(figure.y * 1000),
             }}
           >
-            {figure.url ? <img src={figure.url} alt="" /> : null}
+            {figure.hero ? <HeroImage hero={figure.hero} place="world" alt="" /> : figure.url ? <img src={figure.url} alt="" /> : null}
             {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
             <span className="kad-static-camp__name">{figure.friend ?? state.party.find(member => member.character.id === figure.id)?.character.name}</span>
             {figure.friend !== undefined && friendWords?.has(figure.id.slice("friend:".length)) ? (

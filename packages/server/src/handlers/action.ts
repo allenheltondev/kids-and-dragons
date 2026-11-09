@@ -69,9 +69,12 @@ import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
 import { claimMilestones, stepMilestones } from "./camp-milestones.ts";
+import { claimLookUnlocks, stepLookFinds } from "./look-unlocks.ts";
 import { claimCampDrops, prepareChapterEndCamp, settleChapterEndCamp, stepCampDrops, type ChapterEndCamp } from "./camp-pay.ts";
 import { prepareCampVote } from "./camp-shop.ts";
+import { recordCrews } from "./camp-book.ts";
 import { prepareCampPlace, prepareCampUndo, prepareKitEdit, recordOuting, stepOuting, syncCampDowntime, syncCampFriends } from "./camp-edit.ts";
+import { prepareLookEdit } from "./look-edit.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -365,6 +368,10 @@ async function applyActionOnce(
   // the commit and written by it, never before it (#645).
   let campWrite: CampWrite | undefined;
   let kitWrite: CharacterWrite | undefined;
+  // A hero's own look (look-edit.ts, #664): the row write, or a stale refusal
+  // that still commits the refreshed view so the refused phone shows it.
+  let lookWrite: CharacterWrite | undefined;
+  let refusal: NonNullable<ActionResponse["error"]> | undefined;
   let result: ApplyIntentResult;
   if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
     // A journey transition, not a run one: the engine never sees it, exactly
@@ -459,6 +466,17 @@ async function applyActionOnce(
     result = { state: edit.state };
     campWrite = edit.writes.camp;
     kitWrite = edit.writes.kit;
+  } else if (input.intent.type === "LOOK_EDIT") {
+    // A hero's own look (docs/hero-looks.md §3.2; #664), written by this commit.
+    const edit = await prepareLookEdit(state, input.intent, input.playerId, auth.run, deps);
+    if (!edit.ok) {
+      if (!edit.refresh) return { ok: false, seq: state.seq, error: edit.error };
+      result = { state: edit.refresh };
+      refusal = edit.error;
+    } else {
+      result = { state: edit.state };
+      lookWrite = edit.write;
+    }
   } else {
     // A returning hero is a household row the engine cannot reach, so it is
     // loaded here and handed in; whether this player may bring it is the
@@ -593,6 +611,7 @@ async function applyActionOnce(
   const characters: CharacterWrite[] = [...riftDeeds];
   if (spentCharacter) characters.push(spentCharacter);
   if (kitWrite) characters.push(kitWrite);
+  if (lookWrite) characters.push(lookWrite);
   if (seated) {
     const hero = seated.character;
     characters.push(seated);
@@ -783,7 +802,7 @@ async function applyActionOnce(
   // A taken exit is never trivial, even when this room shows nothing of the
   // campaign it moved: the household's journey changed and must be written.
   if (!result.presentation && trivial && !exitTaken) {
-    return { ok: true, seq: state.seq };
+    return refusal ? { ok: false, seq: state.seq, error: refusal } : { ok: true, seq: state.seq };
   }
 
   const event: EventRecord = {
@@ -799,6 +818,11 @@ async function applyActionOnce(
     // otherwise be accepted and stored as sent.
     intent: JSON.stringify(input.intent).length <= MAX_LOGGED_INTENT_CHARS ? input.intent : ({ type: input.intent.type } as ClientIntent),
   };
+
+  // Each seated hero whose row this commit writes keeps the crew she is
+  // seated with on her kit (#629, camp-book.ts): no write of its own. A hero
+  // with no record yet is seeded from the runs she sat in (one read, once).
+  await recordCrews(characters, next, auth.run.householdId, deps);
 
   // State and event land together or not at all — the log can never disagree
   // with the snapshot it is supposed to explain.
@@ -838,7 +862,7 @@ async function applyActionOnce(
     // The run is where this intent read it: what refused the commit was the
     // camp or kit it changed, which moved on underneath. Nothing landed;
     // apply it again to what is there now.
-    if ((campWrite || kitWrite) && mayRetryCamp && current?.seq === state.seq) return RETRY_CAMP;
+    if ((campWrite || kitWrite || lookWrite) && mayRetryCamp && current?.seq === state.seq) return RETRY_CAMP;
     logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,
@@ -878,7 +902,8 @@ async function applyActionOnce(
   const campClaims = await claimCampFinds(stepFinds, { run: auth.run, state: next }, deps);
   // A tier or distinction this step landed writes its kit piece now (#621,
   // camp-milestones.ts); her phone says so after the transformation.
-  const kitUnlocks = await claimMilestones(stepMilestones(state, next), { run: auth.run }, deps);
+  const milestoneSteps = stepMilestones(state, next);
+  const kitUnlocks = await claimMilestones(milestoneSteps, { run: auth.run }, deps);
   /*
    * Lucky drops (§5.2), saved when they land, the same way and for the same
    * reasons: claimed once by run and scene, and only what paid rides this
@@ -892,6 +917,24 @@ async function applyActionOnce(
   if (chapterEndCamp) {
     campClaims.push(...(await settleChapterEndCamp(chapterEndCamp, { run: auth.run, state: next, stepFinds }, deps)));
   }
+  /*
+   * Earned looks (docs/hero-looks.md §6; #669), after the kit's and the camp's
+   * so a friend this step made and a campaign it finished are on the record:
+   * a look find, a tier or rank, a finished campaign, the crew's camp. Written
+   * to each hero's look once, and what was new rides this broadcast as
+   * `lookUnlocks`, live only (look-unlocks.ts). Cosmetic: nothing in play moves.
+   */
+  const lookUnlocks = await claimLookUnlocks(
+    {
+      milestones: milestoneSteps,
+      tiers: Object.fromEntries((settlement?.awards ?? []).flatMap((a) => (a.newTier ? [[a.characterId, a.newTier]] : []))),
+      finishedCampaign: settlement?.campaignView?.ended === "complete" ? settlement.campaignView.id : null,
+      finds: stepLookFinds(state, next, input.intent.type === "START_CHAPTER"),
+      friendJoined: campClaims.some((c) => c.kind === "friend" && c.result === "friend"),
+    },
+    { run: auth.run, before: state, state: next },
+    deps,
+  );
 
   // The session clock's mark (#511), written alongside the broadcast and
   // awaited with the other after-commit work. It cannot fail the turn.
@@ -907,6 +950,7 @@ async function applyActionOnce(
     ...(discovered.length > 0 ? { discovered } : {}),
     ...(campClaims.length > 0 ? { campClaims } : {}),
     ...(kitUnlocks.length > 0 ? { kitUnlocks } : {}),
+    ...(lookUnlocks.length > 0 ? { lookUnlocks } : {}),
     ...(campDrops.length > 0 ? { campDrops } : {}),
   };
   try {
@@ -942,6 +986,8 @@ async function applyActionOnce(
   // (`DISPATCH_WAIT_MS`); nothing about presence, phones or push services is.
   await dispatchTurnPush({ before: state, after: next, actorId: input.playerId }, deps);
 
+  // A stale look edit committed only the refreshed view of her look: still refused.
+  if (refusal) return { ok: false, seq: nextSeq, error: refusal };
   return { ok: true, seq: nextSeq };
 }
 

@@ -206,6 +206,16 @@ export interface HeroKit {
    */
   buddies: Record<string, FriendId>;
   /**
+   * Every crew's camp she has been seated at a table of (#629), by `campKey`
+   * (the table's household, and the crew when it is not its first): what the
+   * adventure book's crew picker lists. Added by the run commit that writes
+   * her row while she is seated (server action.ts `recordCrews`), never by a
+   * write of its own. Absent until the first such commit: a hero from before
+   * kit v4, whom the book backfills from the household's recent runs. Since
+   * kit v4.
+   */
+  crews?: string[];
+  /**
    * The highest unpainted appearance tier she has ever reached (Ascendant and
    * up, spec §8.1), kept here because the kit is outside the commitment rule
    * and her tier is not: a failed campaign puts the tier back, and this

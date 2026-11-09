@@ -20,7 +20,7 @@
 import { campMomentKind, lobbyCampaign } from "@kad/shared";
 import type { CastStance, Chapter, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
 import { CAMP_FALLBACK_FAMILY, campBackdropFamily } from "./camp-backdrop";
-import { characterWorldArtUrl } from "./art-paths";
+import { heroArtUrl, type HeroArtSubject } from "./hero-art";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
@@ -80,11 +80,12 @@ export function campLayoutFor(stage: number, family: string = LOBBY_CAMP_FAMILY)
 }
 
 /**
- * The biome the camp is pitched in now (§3.1; #627): in the lobby, the next
- * chapter of the campaign the lobby would begin (`CampaignView.next.biome`,
- * the chapter the crew would pick up from); anywhere else, the chapter being
- * played, once this screen has it. Null when nobody can say (a lobby before
- * any campaign, a chapter still loading).
+ * The biome the camp is pitched in now (§3.1; #627): in the lobby, the
+ * chapter the crew last finished in the campaign the lobby would begin
+ * (`CampaignView.last.biome`, where it last made camp; owner, 2026-11-06),
+ * or before any is finished the chapter it would begin (`next`); anywhere
+ * else, the chapter being played, once this screen has it. Null when nobody
+ * can say (a lobby before any campaign, a chapter still loading).
  */
 export function campBiome(
   state: Pick<RunState, "phase" | "chapterId" | "campaign" | "campaignOptions" | "party" | "campaignVotes" | "storyTurn"> | null | undefined,
@@ -92,7 +93,10 @@ export function campBiome(
 ): string | null {
   if (!state) return null;
   const phase = state.phase ?? "lobby";
-  if (phase === "lobby" || phase === "creation") return lobbyCampaign(state as RunState).leader?.next?.biome ?? null;
+  if (phase === "lobby" || phase === "creation") {
+    const leader = lobbyCampaign(state as RunState).leader;
+    return leader?.last?.biome ?? leader?.next?.biome ?? null;
+  }
   return chapter && chapter.id === state.chapterId ? chapter.biome : null;
 }
 
@@ -202,7 +206,8 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
   const look = kitLook(kit, character.appearance.accent);
   return {
     id: character.id,
-    url: characterWorldArtUrl(character.species, character.tier, character.class),
+    url: heroArtUrl(character, "world"),
+    hero: character,
     accent: look.accent,
     kitStyle: look.style,
     tent: look.tent,
@@ -233,6 +238,8 @@ export function campDressing(
 export interface StillCampFigure {
   id: string;
   url: string | null;
+  /** A player's hero, drawn through hero-art (`HeroImage`) rather than from `url`. */
+  hero?: HeroArtSubject;
   /** Feet on the ground, as fractions of the backdrop canvas. */
   x: number;
   y: number;
@@ -271,6 +278,7 @@ export function stillCampFigures(
     out.push({
       id: hero.figure.id,
       url: hero.figure.url,
+      ...(hero.figure.hero ? { hero: hero.figure.hero } : {}),
       // Moved in from an edge the pane crops, as the moving camp stands them (camp.ts `pointX`).
       x: campStandX(bed.x, campStandRange(lane, visible, (heightPx * paintAspect(NOMINAL_PAINT)) / layout.canvas.width)),
       y: lane.y,

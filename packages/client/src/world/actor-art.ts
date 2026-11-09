@@ -17,7 +17,9 @@
  * The canvas constants and the URL helpers themselves live in `art-paths.ts`,
  * which imports no Pixi: `screens/` draws the same art as `<img>` and must not
  * pull the renderer into the main bundle. They are re-exported here so the two
- * stages keep importing one module.
+ * stages keep importing one module. A player's hero is the exception: her
+ * painting comes from `hero-art.ts` (the texture from `hero-art-pixi.ts`), so
+ * the hero helpers are not re-exported here.
  */
 
 import { Graphics, type Texture } from "pixi.js";
@@ -31,8 +33,6 @@ export {
   STARTING_TIER,
   biomeBackdropUrl,
   biomeTilesUrl,
-  characterArtUrl,
-  characterWorldArtUrl,
   enemyArtUrl,
 } from "./art-paths";
 

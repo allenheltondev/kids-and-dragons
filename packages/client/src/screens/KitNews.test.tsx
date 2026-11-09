@@ -5,10 +5,11 @@
  * transformation cutscene (or the rank-up moment) it belongs to has played.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { RunState } from "@kad/shared";
 import { useGameStore } from "../store";
-import { announceKitNews, clearKitNews, getKitNews } from "../store/kit-news";
+import { announceKitNews, announceLookNews, clearKitNews, getKitNews } from "../store/kit-news";
+import { campPanelOpen, closeCampPanel, takeCampFocus } from "./camp-panel";
 import { DISTINCTION_HOLD_MS, KIT_NEWS_GAP_MS, KitNewsToast, kitNewsReadyAt, kitNewsWords } from "./KitNews";
 import { RANK_UP_MS } from "./RankUpMoment";
 import { TRANSFORM_BEAT_MS } from "./TransformCutscene";
@@ -88,10 +89,58 @@ describe("the phone's notice", () => {
     expect(screen.getByTestId("kit-news").textContent).toContain("Songkeeper Apprentice");
   });
 
+  it("in downtime, offers to try it on: Camp opens at her new piece", () => {
+    render(<KitNewsToast />);
+    act(() => announceKitNews("r_1", 10, [{ characterId: "c_pip", pieceId: "sworn", kind: "tent" }], 1));
+    act(() => { vi.advanceTimersByTime(TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS + 1); });
+    fireEvent.click(screen.getByRole("button", { name: "Try it on" }));
+    expect(campPanelOpen()).toBe(true);
+    expect(takeCampFocus()).toEqual({ hero: "c_pip", part: "tent" });
+    expect(screen.queryByTestId("kit-news")).toBeNull();
+    act(() => closeCampPanel());
+  });
+
+  it("in a scene, says it waits for the next rest, with nothing to tap", () => {
+    useGameStore.setState((s) => ({ state: { ...s.state!, phase: "scene", sceneType: "story" } }));
+    render(<KitNewsToast />);
+    act(() => announceKitNews("r_1", 11, [{ characterId: "c_pip", pieceId: "sworn", kind: "tent" }], 1));
+    act(() => { vi.advanceTimersByTime(TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS + 1); });
+    expect(screen.getByTestId("kit-news").textContent).toContain("Try it on at your next rest!");
+    expect(screen.queryByRole("button", { name: "Try it on" })).toBeNull();
+  });
+
   it("tells only this phone's own hero", () => {
     render(<KitNewsToast />);
     act(() => announceKitNews("r_1", 9, [{ characterId: "c_wren", pieceId: "radiant", kind: "tent" }], 1));
     act(() => { vi.advanceTimersByTime(TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS + 1); });
     expect(screen.queryByTestId("kit-news")).toBeNull();
+  });
+});
+
+describe("her earned looks, told where her kit's news is (#669)", () => {
+  it("takes a look message once, beside the same message's kit news, and a look once per hero", () => {
+    announceKitNews("r_1", 10, [{ characterId: "c_pip", pieceId: "sworn", kind: "tent" }], 1, 0);
+    announceLookNews("r_1", 10, [{ characterId: "c_pip", lookId: "the_sworn", kind: "title", cause: "tier" }], 1, 0);
+    announceLookNews("r_1", 10, [{ characterId: "c_pip", lookId: "the_sworn", kind: "title", cause: "tier" }], 1, 0);
+    announceLookNews("r_1", 11, [{ characterId: "c_pip", lookId: "the_sworn", kind: "title", cause: "tier" }], 1, 0);
+    expect(getKitNews().map((i) => [i.kind, i.pieceId])).toEqual([["tent", "sworn"], ["title", "the_sworn"]]);
+  });
+
+  it("waits for the moment that earned it, and says it in a kid's words", () => {
+    expect(kitNewsReadyAt({ kind: "title", cause: "tier", arrivedAt: 0, crossings: 2 })).toBe(2 * TRANSFORM_BEAT_MS + KIT_NEWS_GAP_MS);
+    expect(kitNewsReadyAt({ kind: "title", cause: "rank", arrivedAt: 0, crossings: 0 })).toBe(DISTINCTION_HOLD_MS + KIT_NEWS_GAP_MS);
+    expect(kitNewsReadyAt({ kind: "coat", cause: "found", arrivedAt: 0, crossings: 0 })).toBe(KIT_NEWS_GAP_MS);
+    expect(kitNewsWords([{ kind: "title", pieceId: "the_tracker" }])).toBe("New title for you: the Tracker");
+    expect(kitNewsWords([{ kind: "coat", pieceId: "unicorn_accent_bluebell" }])).toBe("New color for you: Bluebell");
+    expect(kitNewsWords([{ kind: "special", pieceId: "aurora" }])).toBe("New special for you: Aurora");
+    expect(kitNewsWords([{ kind: "nameplate", pieceId: "songbird" }, { kind: "title", pieceId: "the_tracker" }])).toBe("New looks for you: Songbird, the Tracker");
+  });
+
+  it("tells a find on her own phone after a breath, once", () => {
+    render(<KitNewsToast />);
+    act(() => announceLookNews("r_1", 12, [{ characterId: "c_pip", lookId: "the_tracker", kind: "title", cause: "found" }], 0));
+    act(() => { vi.advanceTimersByTime(KIT_NEWS_GAP_MS + 1); });
+    expect(screen.getByTestId("kit-news").textContent).toContain("the Tracker");
+    expect(getKitNews()).toEqual([]);
   });
 });

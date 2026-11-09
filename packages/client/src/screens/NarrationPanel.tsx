@@ -36,6 +36,7 @@ import { steppedAwayLine } from "./presence-copy";
 // Required alongside an interaction prompt. The room itself is already lazy;
 // a second, empty Suspense boundary can leave the story visible without its game.
 import { StoryInteractionWorld } from "./StoryInteraction";
+import { setStoryDock } from "../ui/story-dock";
 import "./shared.css";
 import "./NarrationPanel.css";
 
@@ -389,8 +390,9 @@ export function NarrationPanel(): ReactElement | null {
     const watch = (): void => {
       sizes.disconnect();
       sizes.observe(element.parentElement ?? element);
-      // What drives the fit: each part of the story (the paragraph, the hint, rank-up lines) and the choices.
-      element.querySelectorAll(".narration__story > *, .narration__choices").forEach((part) => sizes.observe(part));
+      // What drives the fit: each part of the story (the paragraph, the hint, rank-up lines), the choices
+      // and a stop offer beside them.
+      element.querySelectorAll(".narration__story > *, .narration__choices, .narration__dock").forEach((part) => sizes.observe(part));
     };
     watch();
     // Parts arriving or leaving after the first fit (a class place's roll, the stall's words).
@@ -457,6 +459,11 @@ export function NarrationPanel(): ReactElement | null {
     };
   }, [fighting, state === null]);
 
+  const goalRow = useRef<HTMLDivElement | null>(null);
+  const headDock = useRef<HTMLDivElement | null>(null);
+  const plateDock = useRef<HTMLDivElement | null>(null);
+  useStoryDockPick(goalRow, headDock, plateDock, !fighting && state !== null);
+
   if (state === null) return null;
 
   return (
@@ -474,7 +481,14 @@ export function NarrationPanel(): ReactElement | null {
         )}
         {/* What the party is trying to do (#356), under the name, on the sky and never on the
             plate. In a fight the board is the picture, and WorldView folds it out of the way. */}
-        {fighting ? null : <ChapterGoalCard place="world" />}
+        {/* Beside it, where the head has room, a slot for the host's own stop offer at a rest
+            (ui/story-dock.ts, the host controls' and not the story's); the other is on the plate. */}
+        {fighting ? null : (
+          <div className="narration__goal-row" ref={goalRow}>
+            <ChapterGoalCard place="world" />
+            <div className="narration__dock" ref={headDock} />
+          </div>
+        )}
 
         {/*
           Hand-offs in the air (spec §9.4). On the shared screen for the same
@@ -548,10 +562,8 @@ export function NarrationPanel(): ReactElement | null {
                 <>
                   <CharacterPortrait
                     backdrop
-                    species={owner.character.species}
+                    hero={owner.character}
                     accent={owner.character.appearance.accent}
-                    tier={owner.character.tier}
-                    characterClass={owner.character.class}
                     className="narration__turn-face"
                   />
                   <span>
@@ -604,53 +616,59 @@ export function NarrationPanel(): ReactElement | null {
         {/*
           The shared screen shows *what* the choices are; the buttons live on the
           phones (spec §2). Read-only here — nothing on WorldView is tappable.
+
+          At the row's end, the host's stop offer when the head has no room for it beside the goal
+          card (ui/story-dock.ts): on the plate, which the stage is framed above.
         */}
-        {choices !== null && choices.length > 0 ? (
-          <ul className="narration__choices" data-count={choices.length > 6 ? "many" : choices.length}>
-            {choices.map((choice) => {
-              // A hover is a light, not a name: it only lights the option, so a
-              // name appearing and disappearing cannot rewrap the label. A group
-              // vote never lights (see `voting`); a single kid's pick does.
-              const leaningNow = !voting && (leaning.choices[choice.id] ?? []).length > 0;
-              const ahead = aheadBadge(choice.ahead);
-              // A locked vote is a tick in the voter's color, the same as on
-              // the phones (PlayerPanel): a seat per voter, drawn from the
-              // start, so a vote landing cannot grow the pill and rewrap the row.
-              const votedIds =
-                prompt?.kind === "choice"
-                  ? Object.entries(prompt.votes ?? {})
-                      .filter(([, choiceId]) => choiceId === choice.id)
-                      .map(([playerId]) => playerId)
-                  : [];
-              return (
-                <li
-                  className={`narration__choice${leaningNow ? " narration__choice--picked" : ""}`}
-                  key={choice.id}
-                >
-                  <Icon name={choice.icon} />
-                  <span>{choice.label}</span>
-                  {/* What picking it leads to: a roll, a game or a fight. */}
-                  {ahead === null ? null : (
-                    <span className="narration__ahead" data-testid="choice-ahead">
-                      <Icon name={ahead.icon} />
-                      <span>{ahead.text}</span>
-                    </span>
-                  )}
-                  {prompt?.kind === "choice" && prompt.vote ? (
-                    <VoteTicks
-                      className="narration__voters"
-                      voterIds={
-                        prompt.forPlayerIds.length > 0 ? prompt.forPlayerIds : party.map((m) => m.playerId)
-                      }
-                      votedIds={votedIds}
-                      party={party}
-                    />
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
-        ) : null}
+        <div className="narration__actions">
+          {choices !== null && choices.length > 0 ? (
+            <ul className="narration__choices" data-count={choices.length > 6 ? "many" : choices.length}>
+              {choices.map((choice) => {
+                // A hover is a light, not a name: it only lights the option, so a
+                // name appearing and disappearing cannot rewrap the label. A group
+                // vote never lights (see `voting`); a single kid's pick does.
+                const leaningNow = !voting && (leaning.choices[choice.id] ?? []).length > 0;
+                const ahead = aheadBadge(choice.ahead);
+                // A locked vote is a tick in the voter's color, the same as on
+                // the phones (PlayerPanel): a seat per voter, drawn from the
+                // start, so a vote landing cannot grow the pill and rewrap the row.
+                const votedIds =
+                  prompt?.kind === "choice"
+                    ? Object.entries(prompt.votes ?? {})
+                        .filter(([, choiceId]) => choiceId === choice.id)
+                        .map(([playerId]) => playerId)
+                    : [];
+                return (
+                  <li
+                    className={`narration__choice${leaningNow ? " narration__choice--picked" : ""}`}
+                    key={choice.id}
+                  >
+                    <Icon name={choice.icon} />
+                    <span>{choice.label}</span>
+                    {/* What picking it leads to: a roll, a game or a fight. */}
+                    {ahead === null ? null : (
+                      <span className="narration__ahead" data-testid="choice-ahead">
+                        <Icon name={ahead.icon} />
+                        <span>{ahead.text}</span>
+                      </span>
+                    )}
+                    {prompt?.kind === "choice" && prompt.vote ? (
+                      <VoteTicks
+                        className="narration__voters"
+                        voterIds={
+                          prompt.forPlayerIds.length > 0 ? prompt.forPlayerIds : party.map((m) => m.playerId)
+                        }
+                        votedIds={votedIds}
+                        party={party}
+                      />
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+          {fighting ? null : <div className="narration__dock" ref={plateDock} />}
+        </div>
 
         {/*
           The fighter whose turn it is, mid-pick: the board rings what they are
@@ -694,6 +712,60 @@ export function NarrationPanel(): ReactElement | null {
       </div>
     </section>
   );
+}
+
+/** What the stop offer needs beside the goal card, in rem: its two buttons and a few words. */
+const HEAD_DOCK_REM = 34;
+
+/**
+ * Which of the narration's two slots the host's stop offer is drawn in (ui/story-dock.ts): the
+ * head's, beside the goal card, when the head's row leaves it HEAD_DOCK_REM beside the card, and
+ * the plate's otherwise. Measured from the card and the row, never from the offer, so drawing the
+ * offer cannot change the pick; it is measured again whenever either changes size.
+ */
+function useStoryDockPick(
+  row: { readonly current: HTMLElement | null },
+  head: { readonly current: HTMLElement | null },
+  plate: { readonly current: HTMLElement | null },
+  live: boolean,
+): void {
+  useLayoutEffect(() => {
+    const element = row.current;
+    if (!live || element === null) {
+      setStoryDock(null);
+      return;
+    }
+    const pick = (): void => {
+      const card = element.querySelector<HTMLElement>("[data-testid='chapter-goal']");
+      const style = getComputedStyle(element);
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const gap = parseFloat(style.columnGap) || 0;
+      const room = element.clientWidth - (card ? card.getBoundingClientRect().width + gap : 0);
+      setStoryDock(room >= HEAD_DOCK_REM * rem ? head.current : plate.current);
+    };
+    pick();
+    if (typeof ResizeObserver === "undefined") return () => setStoryDock(null);
+    const sizes = new ResizeObserver(pick);
+    const watch = (): void => {
+      sizes.disconnect();
+      sizes.observe(element);
+      const card = element.querySelector("[data-testid='chapter-goal']");
+      if (card) sizes.observe(card);
+    };
+    watch();
+    // The card can be drawn anew (folded, a step ticking), and the text size can change.
+    const parts = new MutationObserver(() => {
+      watch();
+      pick();
+    });
+    parts.observe(element, { childList: true });
+    parts.observe(document.documentElement, { attributes: true, attributeFilter: ["data-text"] });
+    return () => {
+      sizes.disconnect();
+      parts.disconnect();
+      setStoryDock(null);
+    };
+  }, [live, row, head, plate]);
 }
 
 /** A waiting check's sum and target, under its question (see `checkPlan`). */

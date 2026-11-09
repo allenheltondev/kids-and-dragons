@@ -84,7 +84,6 @@ import {
   WALK_RATE,
   approach,
   biomeTilesUrl,
-  characterWorldArtUrl,
   drawContactShadow,
   drawPlaceholder,
   enemyArtUrl,
@@ -95,6 +94,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 
 import {
   createNameplate,
@@ -103,7 +103,16 @@ import {
   nameplateGap,
   nameplateLabel,
   type NameplateBox,
+  crowdedTitles,
+  destroyNameDress,
+  dressNameplate,
+  fitNameDress,
+  hideNameTitle,
+  titleBoxOf,
+  titleMinFont,
+  type NameDress,
 } from "./nameplate";
+import { heroNameStyle } from "./hero-name";
 import { BOARD_TILE_PX, beatOffsetsMs, facingFor, naturalPath, tileVariant } from "./board-math";
 import { combatMarkerArt } from "./combat-art";
 import { dashedSquare, environmentOverlay, type OverlayTile } from "./environment-overlay";
@@ -202,6 +211,16 @@ const NAMEPLATE_TYPE_HEIGHT = BOARD_TILE_PX * 2.4;
     was built with. `nameplateGap` is the one place that formula lives. */
 const NAMEPLATE_OFFSET_Y = nameplateGap(ACTOR_HEIGHT);
 
+/**
+ * A title on the board (docs/hero-looks.md §7.2) is held to the TV's 14px at
+ * 720p as the fight camera frames it closest: a seven-tile window (camera.ts,
+ * three tiles of context round the figure in focus), so 720 / 7 px a tile.
+ * At the board's type sizes that hides the title line in a fight, which is
+ * the rule working: the board is the most crowded thing the TV draws, and a
+ * title there is hidden, never shortened. Titles stay in the lineup.
+ */
+const BOARD_TITLE_MIN_FONT = titleMinFont(720 / 7 / BOARD_TILE_PX);
+
 /** A hero whose player stepped away (#258): the story lineup's fade (scene.ts). */
 const AWAY_ALPHA = 0.5;
 
@@ -250,6 +269,8 @@ export interface BoardLayer {
   /** The party names currently drawn, as boxes in board pixels. See
       `NameplateBox` for why this is readable at all. */
   nameplateBoxes(): NameplateBox[];
+  /** The title lines drawn under the names (#664), in the same space: only those that show. */
+  titleBoxes(): NameplateBox[];
   /** Each figure's drawn `art.scale.x`, by id: 1 as drawn (facing left),
       -1 turned to face right, in between while turning. For tests. */
   facings(): Record<string, number>;
@@ -261,6 +282,8 @@ export interface BoardLayer {
 }
 
 interface BoardActor {
+  /** A hero's figure texture (hero-art-pixi.ts), let go of when the actor is: her colour's cache entry. */
+  heroArt?: HeroTextureHandle;
   charging: boolean;
   slam: boolean;
   slamAge: number;
@@ -315,6 +338,8 @@ interface BoardActor {
   /** What `label` is currently saying, so a renamed character is spotted
       without measuring a Text every patch. */
   labelText: string | null;
+  /** Her frame and title beside `label` in `nameLayer` (#664), or null: exactly as before looks. */
+  dress: NameDress | null;
   /**
    * `art.scale.x`'s target: 1 as drawn (facing left), -1 turned to face
    * right. Set from `facingFor` on every patch, so a figure squares up to
@@ -566,16 +591,8 @@ export function createBoardLayer(): BoardLayer {
     }
   }
 
-  function artUrlFor(combatant: Combatant, current: BoardViewState): string | null {
-    if (combatant.side === "party") {
-      const member = current.party.find((m) => m.character.id === combatant.id);
-      if (!member) return null;
-      return characterWorldArtUrl(
-        member.character.species,
-        member.character.tier,
-        member.character.class,
-      );
-    }
+  /** An enemy's cutout. A hero's comes from hero-art (`loadCutout`). */
+  function enemyArtUrlFor(combatant: Combatant, current: BoardViewState): string | null {
     // Enemy ids are `<specId>#<n>` (encounter.ts); the art hangs off the spec.
     const specId = combatant.id.split("#")[0] ?? combatant.id;
     const art = current.enemyArt[specId];
@@ -621,6 +638,8 @@ export function createBoardLayer(): BoardLayer {
       label.y = feet.y + NAMEPLATE_OFFSET_Y;
       nameLayer.addChild(label);
     }
+    const look = combatant.side === "party" ? current.party.find((m) => m.character.id === combatant.id)?.character.look : undefined;
+    const dress = label ? dressNameplate(nameLayer, label, heroNameStyle(look)) : null;
 
     // How tall this figure really is (#362): a hero's species, or the canon
     // creature behind the enemy's art.
@@ -656,6 +675,7 @@ export function createBoardLayer(): BoardLayer {
       label,
       puffBadge: null,
       labelText: nameplateLabel(named),
+      dress,
       phase: Math.random() * Math.PI * 2,
       facing: facingFor(current.encounter, combatant.id) === "right" ? -1 : 1,
       route: [],
@@ -671,46 +691,58 @@ export function createBoardLayer(): BoardLayer {
     // placeholder when it is not there. A list of "delivered art" goes stale;
     // a 404 cannot.
     const loadCutout = (): void => {
-      const url = artUrlFor(combatant, current);
+      const show = (texture: Texture): void => {
+        // Identity, not id — a stale resolve must not draw into a destroyed
+        // container after the fight rebuilt this figure.
+        if (destroyed || actors.get(combatant.id) !== actor) return;
+        // A hero's colour, arriving after her painting: the same figure, a new texture.
+        if (actor.sprite) {
+          actor.sprite.texture = texture;
+          return;
+        }
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+        clearTimeout(reveal);
+        art.removeChildren();
+        placeholder.destroy();
+        art.addChild(sprite);
+        // Some art fills a fifth of its canvas (a will-o'-wisp is a small
+        // flame by design): the painting is measured, and the canvas scaled
+        // so the painting is the figure's true height (sizeActors).
+        actor.sprite = sprite;
+        // A hero's sparkle special twinkles over her sprite, a child of it (§5.5).
+        actor.heroArt?.dress(sprite);
+        actor.paint = measurePaint(texture);
+        actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+        sizeActors();
+        // Refit the shadow to where this figure's feet really are: most art
+        // does not stand on the canvas centre line, and a shadow beside the
+        // feet is what made figures look like they were hovering.
+        const fitted = drawShadow(combatant.side, actor.canvas, actor.footprint);
+        actorContainer.addChildAt(fitted, actorContainer.getChildIndex(actor.shadow));
+        actor.shadow.destroy();
+        actor.shadow = fitted;
+        actor.shadowCanvas = actor.canvas;
+        fitted.x = actor.shadowX * art.scale.x;
+        // Fades up through the same easing that stands a fallen figure back
+        // up (tick), so a figure arrives rather than appearing.
+        if (!actor.down) art.alpha = 0;
+      };
+      const missing = (): void => {
+        // Keep the placeholder, and show it now: a missing figure must never
+        // blank the board.
+        clearTimeout(reveal);
+        if (!placeholder.destroyed) placeholder.visible = true;
+        if (!actor.shadow.destroyed) actor.shadow.visible = true;
+      };
+      if (combatant.side === "party") {
+        const member = current.party.find((m) => m.character.id === combatant.id);
+        if (member) actor.heroArt = loadHeroTexture(member.character, "world", show, { missing });
+        return;
+      }
+      const url = enemyArtUrlFor(combatant, current);
       if (!url) return;
-      void Assets.load<Texture>(url)
-        .then((texture) => {
-          // Identity, not id — a stale resolve must not draw into a destroyed
-          // container after the fight rebuilt this figure.
-          if (destroyed || actors.get(combatant.id) !== actor) return;
-          const sprite = new Sprite(texture);
-          sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          clearTimeout(reveal);
-          art.removeChildren();
-          placeholder.destroy();
-          art.addChild(sprite);
-          // Some art fills a fifth of its canvas (a will-o'-wisp is a small
-          // flame by design): the painting is measured, and the canvas scaled
-          // so the painting is the figure's true height (sizeActors).
-          actor.sprite = sprite;
-          actor.paint = measurePaint(texture);
-          actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
-          sizeActors();
-          // Refit the shadow to where this figure's feet really are: most art
-          // does not stand on the canvas centre line, and a shadow beside the
-          // feet is what made figures look like they were hovering.
-          const fitted = drawShadow(combatant.side, actor.canvas, actor.footprint);
-          actorContainer.addChildAt(fitted, actorContainer.getChildIndex(actor.shadow));
-          actor.shadow.destroy();
-          actor.shadow = fitted;
-          actor.shadowCanvas = actor.canvas;
-          fitted.x = actor.shadowX * art.scale.x;
-          // Fades up through the same easing that stands a fallen figure back
-          // up (tick), so a figure arrives rather than appearing.
-          if (!actor.down) art.alpha = 0;
-        })
-        .catch(() => {
-          // Keep the placeholder, and show it now: a missing enemy must never
-          // blank the board.
-          clearTimeout(reveal);
-          if (!placeholder.destroyed) placeholder.visible = true;
-          if (!actor.shadow.destroyed) actor.shadow.visible = true;
-        });
+      void Assets.load<Texture>(url).then(show).catch(missing);
     };
 
     if(actor.retreatUrl)void Assets.load<Texture>(actor.retreatUrl).catch(()=>{});
@@ -779,7 +811,13 @@ export function createBoardLayer(): BoardLayer {
             existing.label.text = name;
             fitNameplate(existing.label, NAMEPLATE_MAX_WIDTH);
           }
+          // Her look, changed between fights (#664): a new frame or title.
+          const look = current.party.find((m) => m.character.id === combatant.id)?.character.look;
+          existing.dress = dressNameplate(nameLayer, existing.label, heroNameStyle(look), existing.dress);
         }
+        // And her colour (#666): the same figure, retinted.
+        const member = current.party.find((m) => m.character.id === combatant.id);
+        if (member) existing.heroArt?.update(member.character);
         continue;
       }
       const made = makeActor(combatant, gridActor, current);
@@ -789,10 +827,12 @@ export function createBoardLayer(): BoardLayer {
 
     for (const [id, actor] of [...actors.entries()]) {
       if (seen.has(id)) continue;
+      actor.heroArt?.();
       actor.container.destroy({ children: true });
       // The name is not in that container (see `nameLayer`), so it does not
       // come down with it — a beaten figure would leave its label on the grid.
       actor.label?.destroy();
+      destroyNameDress(actor.dress);
       actors.delete(id);
     }
     // Who is on the board decides how big everybody is drawn.
@@ -1256,6 +1296,8 @@ export function createBoardLayer(): BoardLayer {
         if (actor.label) {
           actor.label.x = actor.container.x;
           actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y - lift;
+          fitNameDress(actor.dress, actor.label, { maxWidth: NAMEPLATE_MAX_WIDTH, minFont: BOARD_TITLE_MIN_FONT });
+          if (actor.dress?.title) actor.dress.title.alpha = actor.label.alpha;
         }
         // Turning to face the nearest opponent: a quick squash through
         // edge-on, which reads as the figure turning round rather than
@@ -1298,6 +1340,15 @@ export function createBoardLayer(): BoardLayer {
           actor.art.rotation = still ? rotation : approach(actor.art.rotation, rotation, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
         }
+      }
+
+      // A title that would run into a neighbour's plate is hidden (§7.2).
+      const plated = [...actors.values()].filter((a) => a.label !== null && a.label.visible);
+      if (plated.some((a) => a.dress?.title?.visible)) {
+        const crowded = crowdedTitles(plated.map((a) => ({ name: nameplateBoxOf(a.label!), title: titleBoxOf(a.dress) })));
+        plated.forEach((a, i) => {
+          if (crowded[i]) hideNameTitle(a.dress);
+        });
       }
 
       // The turn marker: a pulsing ring under whoever the clock is on.
@@ -1352,6 +1403,13 @@ export function createBoardLayer(): BoardLayer {
         .map((a) => nameplateBoxOf(a.label!));
     },
 
+    titleBoxes() {
+      return [...actors.values()].flatMap((a) => {
+        const box = titleBoxOf(a.dress);
+        return box ? [box] : [];
+      });
+    },
+
     facings() {
       return Object.fromEntries([...actors.values()].map((a) => [a.id, a.art.scale.x]));
     },
@@ -1372,12 +1430,14 @@ export function createBoardLayer(): BoardLayer {
       for (const floater of floaters) floater.text.destroy();
       floaters.length = 0;
       for (const actor of actors.values()) {
+        actor.heroArt?.();
         actor.container.destroy({ children: true });
         // Released here rather than left to `container.destroy` below, so the
         // one thing an actor owns outside its own subtree is owned in the
         // same place as everything else it owns. Destroying detaches it from
         // `nameLayer`, so the sweep below cannot reach it twice.
         actor.label?.destroy();
+        destroyNameDress(actor.dress);
       }
       actors.clear();
       container.destroy({ children: true });

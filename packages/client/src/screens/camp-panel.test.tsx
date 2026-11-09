@@ -15,6 +15,7 @@ import type { CampMoment, CampView, ClientIntent, HeroKitView, PartyMember, RunS
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
 import { closeCampPanel, openCampPanel } from "./camp-panel";
+import { announceKitNews, announceLookNews, clearKitNews, seeCampNews } from "../store/kit-news";
 import { kitAccent } from "@kad/shared";
 import { campClothMatrix } from "../world/camp-kit-art";
 import { useGameStore } from "../store";
@@ -64,7 +65,7 @@ describe("the first-session choice (§5.3)", () => {
     expect(screen.getByRole("heading", { name: "Pick your camp style!" })).toBeTruthy();
     fireEvent.click(screen.getByRole("radio", { name: "Mint" }));
     fireEvent.click(screen.getByRole("button", { name: "Quilted" }));
-    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, style: "quilted", tent: "quilted", color: "rose" }]);
+    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, style: "quilted", color: "rose" }]);
     expect(screen.queryByTestId("kit-welcome")).toBeNull();
   });
 
@@ -308,5 +309,102 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
     openPanel(table());
     expect(screen.queryByTestId("camp-friends")).toBeNull();
     expect(screen.queryByTestId("buddy-picker")).toBeNull();
+  });
+});
+
+describe("her look at the chapter's end (docs/hero-looks.md §8.2)", () => {
+  it("is in the panel, beside her kit, where what the chapter earned is first hers to try on", () => {
+    openPanel(table({ phase: "chapter_complete", campMoment: moment({ id: "chapterEnd|r:c:9", kind: "chapterEnd" }) }));
+    expect(screen.getByRole("group", { name: "Tent" })).toBeTruthy();
+    expect(screen.getByTestId("look-editor")).toBeTruthy();
+  });
+});
+
+describe("New! on the Camp button", () => {
+  beforeEach(() => {
+    clearKitNews();
+    seeCampNews();
+    useGameStore.setState({ session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "party", sessionToken: "t" } as never });
+  });
+  afterEach(() => {
+    clearKitNews();
+    seeCampNews();
+    useGameStore.setState({ session: null });
+  });
+
+  const view = (state: RunState) =>
+    render(
+      <>
+        <CampButton state={state} />
+        <CampPanel state={state} me={me} held={false} dispatch={dispatch} />
+      </>,
+    );
+
+  it("says New! for her own hero's news, not another kid's, until she opens Camp", () => {
+    view(table());
+    act(() => announceKitNews("r_1", 3, [{ characterId: "c_2", pieceId: "sworn", kind: "tent" }], 1));
+    expect(screen.queryByTestId("camp-button-new")).toBeNull();
+    act(() => announceLookNews("r_1", 4, [{ characterId: "c_1", lookId: "the_bold", kind: "title", cause: "campaign" }], 0));
+    expect(screen.getByTestId("camp-button-new").textContent).toBe("New!");
+    const button = screen.getByRole("button", { name: "Camp: something new to try" });
+    fireEvent.click(button);
+    expect(screen.getByTestId("camp-panel")).toBeTruthy();
+    expect(screen.queryByTestId("camp-button-new")).toBeNull();
+  });
+
+  it("keeps it across a reload, and only while there is a Camp to open", () => {
+    act(() => announceKitNews("r_1", 5, [{ characterId: "c_1", pieceId: "sworn", kind: "tent" }], 1));
+    expect(JSON.parse(globalThis.localStorage.getItem("kad.campNew") ?? "[]")).toEqual(["c_1"]);
+    // Mid-scene there is no Camp button at all; it says New! at the next rest.
+    const scene = view(table({ phase: "scene", campMoment: undefined }));
+    expect(screen.queryByTestId("camp-button")).toBeNull();
+    scene.unmount();
+    view(table({ phase: "scene", sceneType: "rest", campMoment: moment({ id: "rest:s|x", kind: "rest" }) }));
+    expect(screen.getByTestId("camp-button-new")).toBeTruthy();
+  });
+
+  it("opens at the part a piece's news names, its heading still focused", () => {
+    const scrolled: Element[] = [];
+    const before = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    try {
+      view(table());
+      act(() => openCampPanel({ hero: "c_1", part: "look" }));
+      expect(scrolled).toEqual([screen.getByTestId("look-editor")]);
+      expect(document.activeElement?.id).toBe(screen.getByRole("dialog").getAttribute("aria-labelledby"));
+      // Opened again from the button: the top, nowhere else.
+      fireEvent.click(screen.getByRole("button", { name: "Done" }));
+      fireEvent.click(screen.getByRole("button", { name: "Camp" }));
+      expect(scrolled).toHaveLength(1);
+    } finally {
+      Element.prototype.scrollIntoView = before;
+    }
+  });
+
+  it("opens at the hero who earned it, when one kid plays two", () => {
+    const scrolled: Element[] = [];
+    const before = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    try {
+      const second = makeMember({ playerId: "p_1", character: makeCharacter({ id: "c_3", ownerPlayerId: "p_1", name: "Moss" }) });
+      const state = table({ party: [me, friend, second], kits: { c_1: kit(), c_2: kit(), c_3: kit() } });
+      view(state);
+      act(() => openCampPanel({ hero: "c_3", part: "tent" }));
+      expect(scrolled).toHaveLength(1);
+      const tents = [...document.querySelectorAll('[data-camp-focus="tent"]')];
+      expect(tents).toHaveLength(2);
+      expect(scrolled[0]).toBe(tents[1]);
+      expect(scrolled[0]!.closest("[data-camp-hero]")?.getAttribute("data-camp-hero")).toBe("c_3");
+      fireEvent.click(screen.getByRole("button", { name: "Done" }));
+      act(() => openCampPanel({ hero: "c_3", part: "look" }));
+      expect(scrolled[1]!.closest("[data-camp-hero]")?.getAttribute("data-camp-hero")).toBe("c_3");
+      expect(scrolled[1]!.getAttribute("data-testid")).toBe("look-editor");
+    } finally {
+      Element.prototype.scrollIntoView = before;
+    }
   });
 });

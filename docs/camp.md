@@ -85,17 +85,19 @@ in the chapter's terrain), and nowhere else (`travel-layout.test.tsx`; #627).
 Each terrain family (`assets/manifest.json` → `biomeFamilies`, twelve of them) gets one camp
 backdrop: a wide, calm campsite painting with a wide clearing for the camp, across about the
 middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
-backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
-show the full, outdoor camp. (As built, #625: the lobby pitches in the chapter the room last
-played, which the run state still names after a chapter; a lobby before any chapter, or a screen
-that has not loaded the chapter yet, pitches on the plains. The run state does not yet name the
-next chapter's id, so "would pick up from" waits on that.)
+backdrop from the chapter's biome, and in the lobby from the chapter the crew last finished: where it
+last made camp (owner, 2026-11-06). The lobby and the chapter's end always show the full, outdoor
+camp. The campaign view names that chapter (`CampaignView.last`, read from the attempt's story,
+which every settlement appends to, replays included, so it holds across evenings and rooms and
+names the chapter actually played even where its roads moved after it); before the crew has finished one, the lobby pitches
+in the chapter it would begin (`next`), and with neither, on the plains.
 
 One function decides it for every screen (`campFamilyFor` in
 `packages/client/src/world/lobby-camp.ts`, through camp-backdrop.ts `campBackdropFamily`; #625, #627): the chapter's biome, through `biomeFamilies`, to
 its family's backdrop where one is painted, else `open_plains`. In the lobby the biome is the
-next chapter of the campaign the lobby would begin (`CampaignView.next.biome`, sent by the
-server); at a rest scene and the chapter's end it is the chapter being played. Every frame stage
+chapter the crew last finished in the campaign the lobby would begin (`CampaignView.last.biome`,
+sent by the server), or before it has finished one the chapter it would begin (`next.biome`); at a
+rest scene and the chapter's end it is the chapter being played. Every frame stage
 is laid over every backdrop (§8.3), and the first-wave backdrops share `open_plains`'s lanes, so
 the camp stands the same on each and only the painting changes (`camp-boxes.test.ts` runs the
 full matrix once per distinct set of lanes and holds every backdrop to it).
@@ -168,6 +170,10 @@ How it shows:
   its painting mirrored out to the pane's sides (`campShrunkScale`, #625). The heroes rest at their
   bedrolls or tents; nobody lines up at the trailhead, since Ready is the lobby's. Go on fades it
   off with the next scene already drawn under it. Shared spots can change (`campMoment.outdoor`).
+  The host's "Stop here for today?" offer, up for its fifteen seconds at every rest, stands off
+  the camp too: beside the goal card where the TV is wide enough, else at the end of the choices'
+  row on the plate (`ui/story-dock.ts`). It used to stand in the TV's right-hand column, over the
+  camp's heroes, banner pole and crew name (e2e/layout-fit.spec.ts checks it at every TV size).
 - **Indoors.** The scene's picture and lineup stay; each hero's bedroll and pack lie on the
   ground at her side, a step behind her feet, in her color (`packed-camp.ts`). Indoors nobody
   sleeps in it, so the bedroll is always rolled up beside the pack, whatever style the kid picked
@@ -524,6 +530,11 @@ A hero's kit (§4.5) fills from three places, none of them Dash Cash, which stay
   The unlock lands when the tier or distinction does, and the phone says so after the
   transformation, never during it. A tier whose art isn't painted yet (spec §8.1 draws Ascendant
   and above as Mythic until it is) unlocks its tent style when that art ships.
+- **Something new is never missed** (*decided*, owner 2026-11-08). In downtime the phone's notice
+  of a new piece or look has **Try it on**, which opens Camp at it (her tent, her decorations, her
+  look); in a scene, a check or a fight it says it waits for the next rest. Either way the phone's
+  Camp button says **New!** until its kid opens Camp, after a reload too
+  (`store/kit-news.ts` `useCampNew`), so a notice missed mid-fight is waiting at the next rest.
 
 ## 6. Who changes what
 
@@ -610,6 +621,22 @@ Everything shared stays at the table: shared hotspots, purchases and votes. The 
 narrows rather than breaks: nothing in it can change anything **anybody else** owns, so nothing a
 kid does there can upset another kid's game.
 
+**The book is in the game too, and hands off to Camp in downtime** (*decided*, owner 2026-11-08).
+A seated kid's own phone has the book on the game's tray **only while her kit and look can change**
+(the lobby, a rest, the chapter's end; `layout/BookTab.tsx`), so the place her hero is dressed is
+found from inside a game, and the tray stays the game's four in a scene, a check or a fight. A
+family tablet, whose kid has no other way to her book, has it on the tray always. The game stays live
+behind it: her phone keeps saying she is there, a question for her says so at the top of the book
+("The game is waiting for you!", with the way back), and Play goes back to the game. For a hero
+seated at that table (`screens/book-table.tsx`), her kit and Style pages are never read-only:
+
+- **In a scene, a check or a fight** (a book still open as the game moves on, or a family tablet's)
+  a pick saves as anywhere else in the book, and the page says she wears it from the next rest,
+  when the table reads her kit and look afresh.
+- **In downtime** (the lobby, a rest, the chapter's end) the table's Camp panel is her editor, so
+  the two never hold different copies of her: a tap hands her back to the game with Camp open at
+  that hero's tent, decorations or look, and the page offers "Change it at camp".
+
 **They work offline too** (*decided*). With a signal, an edit goes straight to the server through a
 small write path authorized by the phone's device binding, like the book's read (§12.6). Without
 one, the book makes the change on screen at once, keeps it in a queue on the phone, says "Saved
@@ -619,16 +646,101 @@ on this phone, will share when you're back online", and sends it when the signal
   book, so nothing shared can queue.
 - **Each change says what it replaced.** A queued edit records, field by field (style, color, each
   slot, the buddy for each crew), the value it was made over.
-- **Merging, field by field.** When the queue is sent, each field applies only if the server
-  still has the value the edit was made over. If that same field was changed elsewhere in the
-  meantime (at a table, or on the kid's other phone), the newer server value stays, and the book
-  shows the kit as it now is with a short note. Fields nobody else touched always apply, so a long
-  car ride's worth of changes is never thrown away because of one clash.
+- **The device wins** (*decided*, #629, replacing the earlier field-by-field merge). A kid's own
+  kit is only ever edited on her one phone, so, as most offline-first apps do, every field a book
+  edit changed applies over whatever the server has by then, a table's pick of the same field
+  included, whether it is sent at once or long after from the queue. Nothing is said about it: what
+  she picked is what she has. The write itself is still conditional on her row as read and retried
+  on a lost race, so nothing written in between (a table's other fields, a milestone) is lost.
 - **Only real pieces.** The server rechecks every queued change: a piece the hero doesn't have, or
   a buddy the crew doesn't have, is skipped, as it would be online.
 - **The queue is the phone's.** It lives in the phone's own storage and is sent with the phone's
   binding. If the binding is revoked or the kid is moved off the phone, the queue is dropped
   unsent.
+
+*As built (#629):*
+
+- **The tray.** "Camp" is the book's fifth tray object (the campfire), between Guide and Play
+  (`screens/CampPane.tsx`, its own lazy chunk, so nothing of it is in the journal chunk or the first
+  paint). It draws the phone Camp panel's still camp (`StillCamp`, `fit="width"`) from a run state
+  made of the book: her open hero seated alone at her tent, her kit, the crew's camp, and its
+  friends out as a table would choose them (her buddy first, then `friendRotation`), pitched in the
+  terrain of the household's last adventure (`whereabouts.biome` through `campBackdropFamily`).
+  Under it: the friends, the kit editor and buddy picker (the Camp panel's own `KitEditor`), and
+  "In your crew's camp", every piece with where it came from. On a phone-width strip the picture
+  shows no name labels or words bubbles (they would cover the figures or be cut short); every name
+  and word is in full in the controls under it.
+- **Where things came from** is the server's, in the journal (`JournalCrewCamp.sources`,
+  `JournalFriend.source`): a find "Found at the Ashspan Bridge" (a graph campaign's place, its map
+  label) or "Found in “Green Roads North”" (a chapter of a campaign told in order), "Bought with
+  Dash Cash", "Your crew's very own" (the banner), "Came with your camp" (a frame's own piece),
+  "For finishing Gemfall" (a trophy), and a friend "Met at …" the same way. An offer the content
+  no longer has reads "on an adventure".
+- **A friend tap** has no TV: it shows one of the friend's reactions (`CatalogFriend.reactions`,
+  carried in the journal so it works offline), round and round, in the words line under the friend
+  buttons and, on a wide screen, over its head in the picture. Nothing is sent or relayed.
+- **The crews** (*decided*, §11) are every crew any of the kid's heroes is part of at her
+  household (`heroCrews`). Each hero's kit records them (`HeroKit.crews`, by `campKey`, kit v4):
+  every run commit that writes her row while she is seated at a table (her seat, her creation, a
+  chapter's start or end, a kit edit) adds that table's crew (action.ts, camp-book.ts
+  `recordCrews`), with no write of its own, and it is never pruned, so a crew from long ago stays.
+  Her claim and her buddies count too. A hero from before kit v4 has no record yet, and only for
+  her the household's last 40 runs are read as a backfill, until her row is next written at a
+  table. That first write seeds her record with the same backfill (the runs she sat in, her claim
+  and her buddies) before it adds the table's crew, so no crew the book listed is lost (#656); if
+  those runs cannot be read then, the write leaves her unrecorded and a later one tries again. A
+  hero made at a table has no past, and her record starts with that table's crew. The first crew
+  comes first, then the others oldest first; a hero who has sat with nobody
+  yet gets the first crew. With more
+  than one, a picker names them, and the heading names the one open ("The Otter Crew's camp"). A
+  buddy picked there is kept under that crew's `campKey`.
+- **The read** rides `GET /api/journal` as `JournalResponse.camp` (`handlers/camp-book.ts`
+  `journalCamp`): each crew's `CampView`, friends and sources, and each of her heroes' kits with a
+  buddy per crew (`JournalKit.buddies`, by crew id, "" for the first). A failed camp read leaves the
+  rest of the book whole and says so (`JournalResponse.campError`, with no `camp`), so the phone
+  keeps the camp its saved book has, saves it with the fresh rest, and the tray says when that camp
+  was read (`SavedJournal.campSavedAt`, "Last synced yesterday"); a book with no camp and no marker
+  (content with no camp) clears it (#656). Saved with the book in IndexedDB, and on a read with a signal the tray
+  has the service worker keep every picture it draws (`sw/warm.ts`: the backdrop, her tent and
+  gear, the pieces, the friends and the kit's choices), so it opens offline; it says when
+  it last synced ("Synced at 4:05 PM", or "Last synced yesterday" from the saved copy).
+- **The write** is `POST /api/journal/kit` (`editKitFromBook`), resolved like the journal read
+  (her device token, or a family tablet's picked kid's room session), refused unless the hero's
+  `ownerPlayerId` is the bound kid, by the table's own rule (`kitEditProblem`) and with a buddy
+  only from that crew's friends. It carries field changes (`BookKitChange`: `style`, `tent`,
+  `color`, `slot0`–`slot2`, `buddy`, each with `before` and `after`), and every one applies over
+  the kit as it is now (shared `mergeBookKit`; the device wins). Sent straight away, one pick that
+  is not hers refuses the whole change, as `KIT_EDIT` does; from the queue (`merge`) that pick is
+  skipped (`refused`) and the rest apply. The decoration slots are checked as one arrangement, as
+  `KIT_EDIT` checks them: every queued slot laid over the stored ones, so a swap or rotation of
+  pieces already hung lands from the queue just as it does straight away (#656). Where that
+  arrangement is not hers to have, only the queued slots causing it keep their stored value: a
+  piece she has not unlocked, then a piece a queued slot would hang twice. Written with `mutateKit`, conditional on the hero's row
+  as read and retried on a lost race, so a book edit and a table edit never lose a write.
+- **A table behind the book.** A table that read her kit as its moment began, before a book edit,
+  shows an older revision. Her phone's `KIT_EDIT` made over what the table showed is applied over
+  her kit as it is now (camp-edit.ts `behindEdit`): every field it changed takes the table's pick,
+  the latest edit winning, and every field it did not change keeps what is stored, the book's
+  changes included, so nothing is lost. The table's view is refreshed in the same run commit. A
+  revision the table itself has left is refused as stale, as before.
+- **The queue** (`store/kit-queue.ts`) is in localStorage (`kad.kitQueue`), tied to the device
+  token, one entry per hero (and one per crew for a buddy). Every book edit is queued first, so it
+  shows at once and survives the book closing mid-send; `store/book-kit-sync.ts` then sends it. An
+  entry made with a signal and alone for her is sent straight away; once a send of it finds no
+  signal, or it is changed again while queued, it is sent `merge`. A field queued twice keeps the
+  value it was first made over. It is sent as the book opens and on the browser's `online`; a 401
+  drops the whole queue, and so does a journal read the server refuses or a phone with no binding.
+  A change that can never land (a hero gone) is let go with "One of your changes could not be
+  saved.", and a pick the server skips "Your buddy pick could not be saved." If the phone's storage
+  will not take the queue (out of quota, a private window), it is kept in the page's memory
+  instead (`kitQueueUnsaved`), so the change still shows and is sent while the page is open; with
+  no signal to send it, the book says "This phone couldn't save that. Try again when you're back
+  online." in place of "Saved on this phone", and the note goes once it is sent (#656). A family
+  tablet keeps no queue: its change is sent at once or not at all.
+- **A live room** reads her kit afresh as its next downtime moment begins (`syncCampDowntime`).
+- **First visit.** With no camp in the saved book (a copy from before the camp, or a first read
+  that failed), the tray says to open the book once with a signal; with no hero, to make one in the
+  next game; a camp with nothing in it yet says finds and friends show up there.
 
 ## 8. Movement: a camp that is alive
 
@@ -1129,7 +1241,7 @@ Settled by the product owner:
 | What it is | A **camp**, not a caravan: carried on the heroes' backs, and clear of Gemfall's story caravan (intro) |
 | The currency's name | **Dash Cash** (§5.2) |
 | Rest scenes | Every rest scene is marked indoor or outdoor. Outdoor crossfades to the camp, with its narration on the camp screen; indoor keeps its picture with bedrolls and packs (§3, §3.2) |
-| Editing from the adventure book | Each kid can change their own hero's kit and buddy from the book, online or queued offline and merged field by field (§7); the crew's camp stays look-only there (§7) |
+| Editing from the adventure book | Each kid can change their own hero's kit and buddy from the book, online or queued offline (§7); the crew's camp stays look-only there (§7) |
 | Who owns what | The crew owns the camp's shared parts and friends; each hero owns their kit (tent, bedroll, pack, decorations, souvenirs), which goes wherever the hero goes (§4, §4.5) |
 | A crew with no finished campaign | The shop is enough; the frame still grows only on a finished full campaign (§4.1) |
 | The tutorial and The Hollow Crown | Neither grows the frame; only `growsCamp` campaigns do (§4.1) |
@@ -1147,7 +1259,8 @@ Settled by the product owner:
 | Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server. Never from `play` interactions, at most 2 a chapter, none in a chapter already paid for (§5.2) |
 | What a chapter pays | 2 for finishing, any ending, plus 1 per optional objective met (§5.2) |
 | Milestone kit pieces | A tent style for each new appearance tier and a decoration for each class distinction, kept even if a failed campaign puts the tier back (§5.4) |
-| Offline kit edits | Queued on the phone and merged field by field when the signal returns (§7) |
+| Offline kit edits | Queued on the phone and sent when the signal returns (§7) |
+| Book edits: the device wins (#629) | The kid's own kit and buddy edits from the adventure book apply over newer values; the server still checks they are valid (§7). The latest edit of a field wins, whether it was made in the book or at a table, and the fields it did not touch keep what is stored, so nothing is lost. This replaces the field-by-field merge |
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
@@ -1173,6 +1286,10 @@ Settled by the product owner:
 | The kid goat is a different kid from the herd, given by the herder (#626) | The goat kid of Exchange Rift goes home and is met again, so it is never offered; the friend is a younger spotted kid the herder gives away in Glacier of Origins, always named "the spotted kid goat" (§4.4) |
 | One harbor gull for both campaigns (#626) | Gemfall 1's dawn gull and Riftlight's frosty Exchange gull are one friend, `harbor_gull`, with two offers: the same bird at the same quay, never two friends that read as one animal (§4.4) |
 | Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
+| The book's crews (#629) | The adventure book lists every crew any of the kid's heroes is part of, recorded on each hero's kit whenever she is seated at a crew's table (§7). A hero who only sits in a crew's lobby and leaves, without making, seating, starting or editing anything, is not recorded for that crew; the owner confirmed that is the right behavior. For a hero from before the record (kit v4), the one-time backfill reads each past run's last snapshot and counts only runs that left the lobby with her still seated, so a lobby visit is not found there either; it cannot see a lobby where she made or edited something without a chapter starting, which the record counts from then on |
+| The lobby's camp | The lobby pitches the camp where the crew last made camp: the terrain of the chapter it last finished in the campaign the lobby would begin, on any evening and in any room; before it has finished one, the chapter it would begin (owner, 2026-11-06) |
+| The book's kit | In the adventure book her kit is a dressing room, not a form: her pitch up top (her tent in her colour with its decorations hung on it, her bedroll and pack, her buddy) changes the moment she taps, and one shelf at a time below it (Tent, Bedroll, Color, Decorate, Buddy, gold pills like the Field Guide's) holds big painted tiles; decorations hang by spot, never from a dropdown. Every tap saves itself, behind the scenes: nothing says saving, saved or synced, only a pick that could not be kept (owner, 2026-11-07). Her kit comes first on the page, the crew's camp (its picture, friends and things, as cards) under it |
+| The camp's light | Every backdrop has its own light (`world/camp-light.ts`): the sun always high at the upper right, so a shadow comes off a thing's left-hand corner and its bottom and falls to the lower left (owner, 2026-11-06); and from its painting, the shadows' colour, depth, softness and length, and a tint over everything standing in it. Every piece and figure, the crew's own pieces included, casts from that light onto one blurred shadow layer under the camp, so shadows merge where they overlap and follow the figures as they walk. The fire throws a flickering warm glow on the ground round it (steady with reduced motion), and what stands on the back lanes leans toward the painting's own haze and lets a touch of it through, so the back of the camp sits in its distance. At an indoor rest, the heroes, their packed bedrolls and the friends out cast short, soft, warm shadows in one neutral room light, since the scene's picture says nothing of where its lamp is; the story lineup elsewhere keeps its contact shadows (owner, 2026-11-06). Every backdrop has one thing that moves: a painted accent (`world/camp-accents.ts`) or, where none is painted, drawn air (`world/camp-air.ts`): snow falling on the frozen north, embers rising off the volcanic plain, dandelion seeds drifting across the open plains; none with reduced motion |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.
@@ -1310,9 +1427,10 @@ reach more than one crew, name the selected crew explicitly in the book.
 
 The book's kit and buddy edits (§7) use a write path authorized by the phone's device binding, as
 its read is: the server accepts `kitPlace` and `buddyPick` only for heroes that belong to the kid
-the phone is bound to, refuses everything else, and applies the same `revision` check as the
-table, so an edit in the book and one at a live table resolve cleanly. A live room picks up a kit
-change at its next downtime moment.
+the phone is bound to and refuses everything else. Its writes are conditional on the hero's row
+as read, so an edit in the book and one at a live table never lose a write; where both pick the
+same field, the latest edit wins, book or table (§7, §11). A live room picks up a kit change at its
+next downtime moment, or at once when her phone next edits her kit there.
 
 ## 13. Acceptance criteria and playtest questions
 
@@ -1341,8 +1459,8 @@ lives under.
   more (§5.4).
 - A buddy is always out while its hero is seated; the other seats rotate (§4.4).
 - From the book, a kid can change only their own hero's kit and buddy; nothing shared can change
-  there (§7, §12.6). Offline changes queue, survive closing the book, and merge field by field when
-  sent; a field changed elsewhere in the meantime keeps the newer value (§7).
+  there (§7, §12.6). Offline changes queue, survive closing the book, and apply when sent, over
+  anything changed meanwhile (the device wins, §11), each still checked for validity (§7).
 - A new tier or class distinction unlocks its kit piece once, and a failed campaign that puts the
   tier back leaves the piece unlocked (§5.4).
 - Begin, Go on and return to lobby remain available with panels open and during every animation

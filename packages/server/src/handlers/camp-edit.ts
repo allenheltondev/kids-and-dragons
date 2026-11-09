@@ -44,6 +44,10 @@
  */
 
 import {
+  bookKitChanges,
+  bookKitEdit,
+  bookKitState,
+  withBookKitValue,
   campIntentProblem,
   campKey,
   campMomentKind,
@@ -56,6 +60,7 @@ import {
   freshPieces,
   kitEditProblem,
   kitView,
+  lookView,
   placeProblem,
   placeRefusalText,
   readKit,
@@ -74,6 +79,8 @@ import type {
   ClientIntent,
   HeroKitView,
   HotspotRule,
+  BookKitState,
+  KitEdit,
   PieceRule,
   PlaceRefusal,
   RunState,
@@ -81,6 +88,7 @@ import type {
 import type { CampWrite, CharacterWrite, RunRecord } from "../store/repository.ts";
 import { mutateCamp, planCamp, planKit, readCamp, readCampView, type CampDeps } from "./camp.ts";
 import { discoveryHousehold } from "./field-guide.ts";
+import { campStanding, heroLookOf } from "./look-unlocks.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
 
@@ -284,30 +292,74 @@ export async function prepareKitEdit(
       return illegal("Your kit could not be saved. Try again.");
     }
   }
-  const seen: { problem: string | null } = { problem: null };
+  /*
+   * The table reads her kit as a moment begins, so a change from the book
+   * (#629) mid-moment leaves `state.kits` behind her row. A phone that sent
+   * what the table showed is not stale, only behind: the fields it changed are
+   * applied over her kit as it is now (`behindEdit`), the latest edit winning
+   * (docs/camp.md §11), and every other field the book changed is kept, so
+   * nothing is lost; the table's view is refreshed with it. A revision the
+   * table itself has left is stale, as ever.
+   */
+  const shown = state.kits?.[intent.characterId];
+  const seen: { problem: string | null; stale: boolean } = { problem: null, stale: false };
   const plan = await planKit(
     member.homeHouseholdId ?? run.householdId,
     intent.characterId,
     (kit) => {
-      seen.problem = kitEditProblem(catalog.kit, Object.keys(kit.unlocked), edit, friends);
-      return seen.problem === null ? withKitEdit(kit, edit, key) : null;
+      seen.problem = null;
+      seen.stale = false;
+      let wanted: KitEdit = edit;
+      if (kit.revision !== intent.revision) {
+        if (!shown || shown.revision !== intent.revision || kit.revision < intent.revision) {
+          seen.stale = true;
+          return null;
+        }
+        wanted = behindEdit(edit, shown, bookKitState(kit, key));
+        if (Object.keys(wanted).length === 0) return null;
+      }
+      seen.problem = kitEditProblem(catalog.kit, Object.keys(kit.unlocked), wanted, friends);
+      return seen.problem === null ? withKitEdit(kit, wanted, key) : null;
     },
     deps,
-    { expectedRevision: intent.revision },
   );
   if (seen.problem !== null) return illegal(seen.problem);
-  if (!plan.ok) {
-    // Changed elsewhere since (the book, another phone): the newer kit stands.
-    return plan.reason === "stale"
-      ? { ok: false, error: { code: "STALE_DECISION", message: "Your kit changed on another screen. Look again." } }
-      : { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } };
+  if (!plan.ok || seen.stale) {
+    // Changed elsewhere since, and not what this table showed: the newer kit stands.
+    return !plan.ok && plan.reason === "missing"
+      ? { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } }
+      : { ok: false, error: { code: "STALE_DECISION", message: "Your kit changed on another screen. Look again." } };
   }
-  if (plan.write === null) return illegal("Your kit could not be saved. Try again.");
-  return {
-    ok: true,
-    state: withFriendsOut({ ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value, key) } }),
-    writes: { kit: plan.write },
+  const refreshed = withFriendsOut({ ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value, key) } });
+  if (plan.write === null) {
+    // Every field she picked was changed in the book first: nothing to write, but the table now shows it.
+    if (plan.read.revision !== intent.revision) return { ok: true, state: refreshed, writes: {} };
+    return illegal("Your kit could not be saved. Try again.");
+  }
+  return { ok: true, state: refreshed, writes: { kit: plan.write } };
+}
+
+/**
+ * A table's `KIT_EDIT`, made over the kit the table showed (`shown`), as it
+ * applies to her kit as stored (`stored`) once something else (the book) has
+ * changed it: every field the table changed takes the table's pick, since the
+ * latest edit wins, book or table (docs/camp.md §11); every field it did not
+ * change keeps what is stored, the book's changes included, so none is lost.
+ */
+export function behindEdit(edit: KitEdit, shown: HeroKitView, stored: BookKitState): KitEdit {
+  const before: BookKitState = { style: shown.style, tent: shown.tent, color: shown.color, slots: [...shown.slots], buddy: shown.buddy ?? null };
+  const after: BookKitState = {
+    style: edit.style ?? before.style,
+    tent: edit.tent ?? before.tent,
+    color: edit.color !== undefined ? edit.color : before.color,
+    slots: edit.slots ? [...edit.slots] : before.slots,
+    buddy: edit.buddy !== undefined ? edit.buddy : before.buddy,
   };
+  let state = stored;
+  for (const change of bookKitChanges(before, after)) {
+    state = withBookKitValue(state, change.field, change.after);
+  }
+  return bookKitEdit(stored, state);
 }
 
 // ---------------------------------------------------------------------------
@@ -372,7 +424,8 @@ export async function syncCampDowntime(
     want.filter((m) => m.character.id !== input.created).map(async (m) => {
       try {
         const row = await deps.repo.getCharacter(m.homeHouseholdId ?? input.run.householdId, m.character.id);
-        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key)] as const;
+        // Her look with every milestone she holds (look-unlocks.ts), her crew's included.
+        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key), row ? heroLookOf(row, deps, { camp: campStanding(next.camp) }) : null] as const;
       } catch (err) {
         console.error(`camp: could not read hero ${m.character.id}'s kit:`, err);
         return null;
@@ -382,6 +435,19 @@ export async function syncCampDowntime(
   for (const entry of read) if (entry) kits[entry[0]] = entry[1];
   if (Object.keys(kits).length > 0) next.kits = kits;
   else delete next.kits;
+  // Her look, the same way (docs/hero-looks.md §3.2; #664): a change made in
+  // the book shows on the TV's nameplate as the next downtime moment begins.
+  const looks = new Map(read.flatMap((entry) => (entry && entry[2] ? [[entry[0], entry[2]] as const] : [])));
+  if (looks.size > 0) {
+    next.party = next.party.map((m) => {
+      const look = looks.get(m.character.id);
+      if (!look) return m;
+      const view = lookView(look);
+      const shown = m.character.look;
+      if (shown && shown.revision === view.revision && shown.unlocked.join() === view.unlocked.join()) return m;
+      return { ...m, character: { ...m.character, look: view } };
+    });
+  }
   return syncCampFriends(next, input.run.householdId, deps);
 }
 

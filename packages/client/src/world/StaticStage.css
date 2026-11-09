@@ -40,12 +40,13 @@
   text-shadow: 0 0 0.4em #000;
   font-size: 0.9rem;
 }
-.kad-static-stage__figure img {
+/* A hero's image, or HeroImage's sparkle host in its place (world/hero-sparkle.css). */
+.kad-static-stage__figure > :is(img, .hero-sparkle-host) {
   max-inline-size: 100%;
   max-block-size: 26cqh;
   object-fit: contain;
 }
-.kad-static-stage__figure.is-down img { transform: rotate(80deg); opacity: 0.6; }
+.kad-static-stage__figure.is-down > :is(img, .hero-sparkle-host) { transform: rotate(80deg); opacity: 0.6; }
 .kad-static-stage__figure meter { inline-size: 100%; }
 /* An indoor rest (docs/camp.md §3.2, #625): her bedroll and pack on the ground at her side, behind
    her, as the moving stage lays it (packed-camp.ts). No tents, no campfire. */
@@ -136,10 +137,11 @@
   aspect-ratio: 1;
   transform: translate(-50%, -87.89%);
 }
-.kad-static-camp__hero > img { display: block; inline-size: 100%; block-size: 100%; }
+.kad-static-camp__hero > :is(img, .hero-sparkle-host) { display: block; inline-size: 100%; block-size: 100%; }
+.kad-static-camp__hero > .hero-sparkle-host { display: grid; }
 .kad-static-camp__piece > :is(img, svg) { display: block; inline-size: 100%; block-size: 100%; }
 .kad-static-camp__piece[data-mirrored="true"] > :is(img, svg) { transform: scaleX(-1); }
-.kad-static-camp__hero > img, .kad-static-camp__piece > :is(img, svg) { filter: sepia(.06) saturate(.96); }
+.kad-static-camp__hero > :is(img, .hero-sparkle-host), .kad-static-camp__piece > :is(img, svg) { filter: sepia(.06) saturate(.96); }
 .kad-static-camp__hero::before, .kad-static-camp__piece::before {
   content: "";
   position: absolute;

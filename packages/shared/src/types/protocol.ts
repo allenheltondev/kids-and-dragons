@@ -19,7 +19,9 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
-import type { CampClaimResult, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
+import type { CampClaimResult, CampFriendCard, CampView, HeroKitView, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
+import type { BookEditField, BookKitChange } from "../camp-book.js";
+import type { HeroLookView, LookUnlockNews } from "./look.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -268,6 +270,28 @@ export type ClientIntent =
       buddy?: string | null;
     }
   /**
+   * Change a seated hero's own look (docs/hero-looks.md §3.2, §8.2; #664):
+   * her two colours (main and accent), special, nameplate frame and title. Only her own player, in
+   * downtime (the lobby and rests), with no limit. `revision` echoes
+   * `HeroLookView.revision` (0 for a hero with no look yet); a look changed
+   * since (from the book, another phone) refuses it as stale, and the table's
+   * view of her look is refreshed so the editor shows it as it now stands.
+   * Every look named must be hers. Written to her own row by the server.
+   */
+  | {
+      type: "LOOK_EDIT";
+      characterId: string;
+      revision: number;
+      /** Her main part's colour. */
+      coat?: string | null;
+      /** Her accent part's colour (owner, 2026-11-07). */
+      accent?: string | null;
+      /** A whole-figure special she has earned. */
+      special?: string | null;
+      nameplate?: string | null;
+      title?: string | null;
+    }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no
@@ -429,6 +453,14 @@ export interface ServerMessage {
    * it. Live only, exactly as `discovered`: a replay never announces one twice.
    */
   kitUnlocks?: KitMilestoneUnlock[];
+  /**
+   * Looks this step earned a seated hero (docs/hero-looks.md §6; #669): a
+   * find, a tier, a class rank, a finished campaign or her crew's camp, each
+   * receipt already on her row. Her own phone says so once, where her kit's
+   * news is. Live only, exactly as `kitUnlocks`: a replay never announces one
+   * twice.
+   */
+  lookUnlocks?: LookUnlockNews[];
   /**
    * The lucky drops this step paid (docs/camp.md §5.2): 1 Dash Cash each, saved
    * to the crew's camp as they landed. The TV sparkles "Dash Cash!" and the
@@ -758,10 +790,11 @@ export interface OrganizerHouseholdView {
   owners: OrganizerOwner[];
   players: OrganizerPlayer[];
   /**
-   * How long a kid who stops playing is kept, in days (#252), or `null`:
-   * until an owner deletes them, which is the default.
+   * How long a kid who stops playing is kept, in days (#252): one of
+   * `RETENTION_CHOICES`, `DEFAULT_RETENTION_DAYS` unless an owner chose
+   * another (#524).
    */
-  retentionDays: number | null;
+  retentionDays: number;
   /**
    * Answering a delete (#252): the kid is gone from here, but another
    * household's game or Field Guide still says her name. The cleanup is
@@ -771,11 +804,19 @@ export interface OrganizerHouseholdView {
 }
 
 /**
- * The retention windows an owner may pick (#252), in days, beside "until I
- * delete them" (`null`). The shortest is a month: anything less would forget a
- * kid who missed two club meetings.
+ * The retention windows an owner may pick (#252), in days. The shortest is a
+ * month: anything less would forget a kid who missed two club meetings.
+ * There is no "until I delete them" (#524): kids' data may not be kept
+ * indefinitely, so the longest is a year, which is also the default.
  */
 export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
+
+/**
+ * How long a kept household keeps a kid who stops playing when its owner has
+ * not chosen (#524, owner decision 2026-10-27): a year, counted per kid from
+ * the last time she played, or from when she was added if she never has.
+ */
+export const DEFAULT_RETENTION_DAYS = 365;
 
 /**
  * What a deleted kid is called in what other people keep (#252): her seat
@@ -923,7 +964,8 @@ export interface HeroesResponse {
  *
  * Authorised by the device token alone, not a room session: between games
  * there is no room, and the journal is the household's and this player's, not
- * a run's. Read-only by construction; nothing here can be changed from it.
+ * a run's. Read-only; the one write beside it is a kid's own kit and buddy
+ * (`BookKitRequest`, docs/camp.md §7).
  */
 export interface JournalResponse {
   /** This player's own heroes, furthest-taken first — the same list WelcomeBack offers. */
@@ -957,6 +999,97 @@ export interface JournalResponse {
    * because a server from before it sends none.
    */
   story?: JournalStoryCampaign[];
+  /**
+   * The Camp tray (docs/camp.md §7; #629): each crew's camp to look at, and
+   * each of her heroes' kits to change. Saved with the book, so it opens
+   * offline. Optional because a server from before it sends none.
+   */
+  camp?: JournalCamp;
+  /**
+   * Set, with no `camp`, when the server could not read the camp just now
+   * (#656): the rest of the book is fresh, and the phone keeps the camp its
+   * saved copy has, with when that was read. Absent with no `camp`: the
+   * content has no camp, so there is none to keep.
+   */
+  campError?: true;
+}
+
+/** The book's Camp tray (docs/camp.md §7, §12.6; #629). */
+export interface JournalCamp {
+  /**
+   * The crews her heroes sit with: the household's first crew, then each other
+   * crew that has played (a save or a camp of its own), oldest first.
+   */
+  crews: JournalCrewCamp[];
+  /** Each of her heroes' kits, by character id. */
+  kits: Record<string, JournalKit>;
+}
+
+/** One crew's camp, look-only in the book. */
+export interface JournalCrewCamp {
+  /** The crew's id; null for the household's first crew. */
+  crew: string | null;
+  /** "The Otter Crew", or what the first crew is called. */
+  name: string;
+  camp: CampView;
+  /** Every friend, in the order spare seats fill (`friendRotation`), with its words and where it was met. */
+  friends: JournalFriend[];
+  /**
+   * Where each piece came from, by piece id, in a kid's words: "Found at the
+   * Ashspan Bridge", "Bought with Dash Cash". Every owned piece and every
+   * trophy has one.
+   */
+  sources: Record<string, string>;
+}
+
+/** A friend in the book: its card, what it says when tapped, and where the crew met it. */
+export interface JournalFriend extends CampFriendCard {
+  reactions: string[];
+  /** "Met at the Ashspan Bridge". */
+  source: string;
+}
+
+/**
+ * One hero's kit as the book shows and edits it: the table's view
+ * (`HeroKitView`), with her buddy in each of this household's crews' camps,
+ * by crew id ("" for the first crew) instead of one.
+ */
+export interface JournalKit extends Omit<HeroKitView, "buddy"> {
+  buddies: Record<string, string>;
+}
+
+/**
+ * `POST /api/journal/kit` (docs/camp.md §7, §12.6; #629): a kid's own kit or
+ * buddy, changed from the adventure book, outside any room. Authorised as the
+ * book's read is, by the phone's device binding, and only for her own heroes.
+ */
+export interface BookKitRequest {
+  characterId: string;
+  /** The crew whose camp a buddy change is for: its id, or null (or absent) for the first crew. */
+  crew?: string | null;
+  /**
+   * Sent from the phone's queue: a field that is not the hero's to pick is
+   * skipped (`BookKitResponse.refused`) and the rest apply. Absent (sent
+   * straight away), one such field refuses the whole change, as the table's
+   * `KIT_EDIT` does. Either way the change applies over whatever the server
+   * has now: the device wins (docs/camp.md §7, §11).
+   */
+  merge?: true;
+  changes: BookKitChange[];
+}
+
+/** What a book edit did, and the kit (and, for a look change, the look) as it now stands. */
+export interface BookKitResponse {
+  kit: JournalKit;
+  /**
+   * Her look as it now stands (docs/hero-looks.md §3.2; #664), when the change
+   * named a look field (`nameplate`, `title`, `coat`). The same view the
+   * journal's heroes carry (`ResolvedCharacter.look`).
+   */
+  look?: HeroLookView;
+  applied: BookEditField[];
+  /** Not the hero's to pick (merge only; sent straight away, one refusal refuses the whole change). */
+  refused: BookEditField[];
 }
 
 /** One campaign on the Story page (#358). */

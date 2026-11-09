@@ -41,6 +41,7 @@
  * they wasted a sitting. There is no red anywhere in this file.
  */
 
+import { HeroName } from "./HeroName";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { revelationsOf, speak } from "@kad/shared";
@@ -406,16 +407,14 @@ export function ChapterCompletePanel(): ReactElement {
               <span className="complete-card__portrait" aria-hidden="true">
                 <CharacterPortrait
                   backdrop
-                  species={member.character.species}
+                  hero={{ ...member.character, tier: (newTier as TierId | undefined) ?? member.character.tier }}
                   accent={member.character.appearance.accent}
-                  tier={(newTier as TierId | undefined) ?? member.character.tier}
-                  characterClass={member.character.class}
                   className="complete-card__art"
                   lit={newTier !== undefined}
                 />
               </span>
               <span className="complete-card__text">
-                <span className="complete-card__name">{member.character.name}</span>
+                <span className="complete-card__name"><HeroName name={member.character.name} look={member.character.look} /></span>
                 <span className="complete-card__chips">
                   <span className="kad-chip">
                     <Icon name="levelup" />

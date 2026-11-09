@@ -1,0 +1,288 @@
+/**
+ * Sending the adventure book's kit and buddy changes (docs/camp.md §7; #629).
+ *
+ * Every change is queued first (kit-queue.ts), then sent here, one queued
+ * entry at a time, to `POST /api/journal/kit` with the phone's device token,
+ * as the book's read is authorised. Every field it changed applies over
+ * whatever the server has by then: the device wins (docs/camp.md §11). The
+ * server only checks each pick is hers: an entry made with a signal, alone in
+ * the queue for her, is refused whole by one that is not, as the table's
+ * `KIT_EDIT` is; anything else (`merge`) skips that pick and applies the rest,
+ * and the book says "could not be saved".
+ *
+ * With no signal the entry stays queued and the book says so ("Saved on this
+ * phone"); it is sent when the signal returns (`flushKitQueue`, which the book
+ * runs as it opens and on the browser's `online`). A refused binding (401)
+ * drops the whole queue unsent. Every kit the server answers with is written
+ * into the saved book (journal-db.ts), so it opens offline as it now is.
+ *
+ * When the phone's storage will not keep the queue (kit-queue.ts
+ * `kitQueueUnsaved`), it is kept in memory while the page is open: sent as
+ * usual with a signal, and with none the book says so plainly
+ * (`UNSAVED_NOTE`), since closing the page would lose it (#656).
+ *
+ * A family tablet's picked kid has no device token, and nothing of hers is
+ * kept on the tablet (store/index.ts `loadJournal`): her change is sent with
+ * her room session straight away, or not at all.
+ */
+
+import { bookFieldNames, type BookKitChange, type BookKitRequest, type BookKitResponse, type HeroLookView, type JournalKit } from "@kad/shared";
+import { ApiError, request } from "../sync/client";
+import { loadPlayerDeviceToken } from "./persistence";
+import { useGameStore } from "./index";
+import {
+  demoteQueuedKitChange,
+  dropKitQueue,
+  enqueueKitChanges,
+  kitQueueUnsaved,
+  loadKitQueue,
+  onKitQueue,
+  removeQueuedKitChange,
+  type QueuedKitChange,
+} from "./kit-queue";
+
+/** Where the book's kit edits stand, for the book to say. */
+export interface BookKitStatus {
+  /** The last send found no signal: what is queued waits for one. */
+  offline: boolean;
+  /** Short, kid-readable notes about what a send did, newest last, until she closes them. */
+  notes: string[];
+}
+
+let status: BookKitStatus = { offline: false, notes: [] };
+let busy: string | null = null;
+const listeners = new Set<() => void>();
+
+function emit(): void {
+  for (const listener of listeners) listener();
+}
+
+/** Hear the queue or the status change. */
+export function onBookKit(listener: () => void): () => void {
+  listeners.add(listener);
+  const off = onKitQueue(listener);
+  return () => {
+    listeners.delete(listener);
+    off();
+  };
+}
+
+export function bookKitStatus(): BookKitStatus {
+  return status;
+}
+
+function setStatus(next: Partial<BookKitStatus>): void {
+  status = { ...status, ...next };
+  emit();
+}
+
+/** What the book says when a change is kept only in memory and there is no signal to send it. */
+export const UNSAVED_NOTE = "This phone couldn't save that. Try again when you're back online.";
+
+/**
+ * No signal: what is queued waits for one. If the phone's storage would not
+ * keep it, it is only in this page's memory, and the book says so.
+ */
+function waitForSignal(): void {
+  const note = kitQueueUnsaved() && !status.notes.includes(UNSAVED_NOTE);
+  setStatus({ offline: true, ...(note ? { notes: [...status.notes, UNSAVED_NOTE] } : {}) });
+}
+
+/** Close the notes. */
+export function clearBookKitNotes(): void {
+  if (status.notes.length > 0) setStatus({ notes: [] });
+}
+
+/** Note what a send did, if it needs saying. */
+function noteOf(response: BookKitResponse): string | null {
+  return response.refused.length > 0 ? `Your ${bookFieldNames(response.refused)} pick could not be saved.` : null;
+}
+
+/** No signal: the fetch never got there, or the browser says it is offline. */
+function noSignal(error: unknown): boolean {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return true;
+  return error instanceof TypeError || (error instanceof ApiError && error.status === 0);
+}
+
+function bodyOf(entry: Pick<QueuedKitChange, "characterId" | "crew" | "direct"> & { changes: readonly BookKitChange[] }): BookKitRequest {
+  return {
+    characterId: entry.characterId,
+    ...(entry.crew !== undefined ? { crew: entry.crew } : {}),
+    ...(entry.direct ? {} : { merge: true as const }),
+    changes: [...entry.changes],
+  };
+}
+
+function send(body: BookKitRequest, auth: { deviceToken: string } | { sessionToken: string }): Promise<BookKitResponse> {
+  return request<BookKitResponse>("/api/journal/kit", {
+    method: "POST",
+    headers: { "content-type": "application/json", ...("deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : {}) },
+    ...("sessionToken" in auth ? { token: auth.sessionToken } : {}),
+    body: JSON.stringify(body),
+  });
+}
+
+/**
+ * Put the kit (and look, docs/hero-looks.md §3.2) the server answered with
+ * into the saved book, so it opens offline as it now is.
+ */
+async function saveKit(deviceToken: string, characterId: string, kit: JournalKit, look?: HeroLookView): Promise<void> {
+  try {
+    const db = await import("./journal-db");
+    const saved = await db.loadSavedJournal(deviceToken);
+    if (!saved) return;
+    const camp = saved.journal.camp ? { ...saved.journal.camp, kits: { ...saved.journal.camp.kits, [characterId]: kit } } : undefined;
+    const heroes = look ? saved.journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : saved.journal.heroes;
+    if (!camp && !look) return;
+    await db.saveJournal({ ...saved, journal: { ...saved.journal, heroes, ...(camp ? { camp } : {}) } });
+  } catch {
+    /* the next read with a signal saves it */
+  }
+}
+
+/**
+ * Where what the server answered with goes: the open book's copy. `look` is
+ * her look as it now stands, when the change named a look field (#664).
+ */
+export type ApplyKit = (characterId: string, kit: JournalKit, look?: HeroLookView) => void;
+
+let running: Promise<void> | null = null;
+let again = false;
+
+/**
+ * Send everything queued, oldest first, until the queue is empty, a send finds
+ * no signal, or the server is not answering. One run at a time; asked again
+ * while running, it runs once more after.
+ */
+export function flushKitQueue(apply: ApplyKit): Promise<void> {
+  if (running) {
+    again = true;
+    return running;
+  }
+  running = (async () => {
+    do {
+      again = false;
+      await drain(apply);
+    } while (again);
+  })().finally(() => {
+    running = null;
+  });
+  return running;
+}
+
+/** A 4xx that says "not now" rather than "never": a timeout or a throttle. The change waits and is sent again. */
+const RETRYABLE: ReadonlySet<number> = new Set([408, 425, 429]);
+
+async function drain(apply: ApplyKit): Promise<void> {
+  const deviceToken = loadPlayerDeviceToken();
+  if (!deviceToken) return;
+  for (;;) {
+    const entry = loadKitQueue(deviceToken)[0];
+    if (!entry) {
+      // Everything is sent: a note that it was only in memory no longer holds.
+      const notes = status.notes.filter((n) => n !== UNSAVED_NOTE);
+      if (status.offline || notes.length !== status.notes.length) setStatus({ offline: false, notes });
+      return;
+    }
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      demoteQueuedKitChange(deviceToken, entry.id);
+      waitForSignal();
+      return;
+    }
+    busy = entry.id;
+    try {
+      const response = await send(bodyOf(entry), { deviceToken });
+      removeQueuedKitChange(deviceToken, entry.id);
+      apply(entry.characterId, response.kit, response.look);
+      await saveKit(deviceToken, entry.characterId, response.kit, response.look);
+      const note = noteOf(response);
+      setStatus({ offline: false, notes: note ? [...status.notes, note] : status.notes });
+    } catch (error) {
+      if (noSignal(error)) {
+        demoteQueuedKitChange(deviceToken, entry.id);
+        waitForSignal();
+        return;
+      }
+      if (error instanceof ApiError && error.status === 401) {
+        // The binding is gone (revoked, or the kid moved off this phone): nothing here is hers to send.
+        dropKitQueue();
+        setStatus({ offline: false });
+        return;
+      }
+      if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.code !== "STALE_DECISION" && !RETRYABLE.has(error.status)) {
+        // It can never land (not her hero any more, not a pick she has): let it go, and say so.
+        removeQueuedKitChange(deviceToken, entry.id);
+        setStatus({ notes: [...status.notes, "One of your changes could not be saved."] });
+        continue;
+      }
+      // The server is busy, down or throttling: it waits, as it would with no signal.
+      setStatus({ offline: true });
+      return;
+    } finally {
+      busy = null;
+    }
+  }
+}
+
+/**
+ * The book's edit: queue it (so it shows at once and outlives the book being
+ * closed), then send what is queued. A tablet with no device token sends it straight away instead, with
+ * the picked kid's room session; the answer is the kit as it now stands, or
+ * an error to say.
+ */
+export async function editBookKit(
+  input: { characterId: string; crew: string | null; changes: readonly BookKitChange[] },
+  apply: ApplyKit,
+): Promise<void> {
+  if (input.changes.length === 0) return;
+  const deviceToken = loadPlayerDeviceToken();
+  if (deviceToken) {
+    const online = typeof navigator === "undefined" || navigator.onLine !== false;
+    enqueueKitChanges(deviceToken, { ...input, direct: online, busy });
+    if (!online) waitForSignal();
+    await flushKitQueue(apply);
+    return;
+  }
+  const sessionToken = useGameStore.getState().session?.sessionToken;
+  if (!sessionToken) throw new ApiError(401, "This phone is not signed in as anyone yet.");
+  // A seat with no binding of its own (a family tablet): no queue to keep it in, so the
+  // change shows at once from memory (`pendingKitEdits`), and the sends go one at a
+  // time, in the order she tapped, so the last tap is the one that stands.
+  const entry: QueuedKitChange = { id: `pending-${String(++pendingSeq)}`, ...input, changes: [...input.changes], direct: true, at: new Date().toISOString() };
+  pending = [...pending, entry];
+  emit();
+  const sent = chain.then(async () => {
+    try {
+      const response = await send(bodyOf({ ...input, direct: true }), { sessionToken });
+      apply(input.characterId, response.kit, response.look);
+      const note = noteOf(response);
+      if (note) setStatus({ notes: [...status.notes, note] });
+    } finally {
+      // Landed, or refused: either way it no longer shows from memory (a refusal rolls back).
+      pending = pending.filter((e) => e !== entry);
+      emit();
+    }
+  });
+  chain = sent.catch(() => undefined);
+  await sent;
+}
+
+/** A seat with no binding: changes sent but not yet answered, shown as if they had landed. */
+let pending: readonly QueuedKitChange[] = [];
+let pendingSeq = 0;
+/** Their sends, one after another. */
+let chain: Promise<void> = Promise.resolve();
+
+/** The changes a seat without a binding has sent and is waiting on (`withQueuedKit` shows them). */
+export function pendingKitEdits(): readonly QueuedKitChange[] {
+  return pending;
+}
+
+/** Test seam: forget the status. */
+export function resetBookKitSync(): void {
+  status = { offline: false, notes: [] };
+  pending = [];
+  chain = Promise.resolve();
+  busy = null;
+  again = false;
+}

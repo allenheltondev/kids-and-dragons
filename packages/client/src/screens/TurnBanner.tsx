@@ -34,10 +34,8 @@ export function TurnBanner(): ReactElement | null {
       {member ? (
         <CharacterPortrait
           backdrop
-          species={member.character.species}
+          hero={member.character}
           accent={member.character.appearance.accent}
-          tier={member.character.tier}
-          characterClass={member.character.class}
           className="turn-banner__face"
         />
       ) : null}
