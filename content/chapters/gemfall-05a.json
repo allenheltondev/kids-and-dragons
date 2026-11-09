@@ -713,7 +713,7 @@
         },
         {
           "id": "measured_line",
-          "label": "Use your rope brace",
+          "label": "Try your rope brace",
           "goto": "interaction_survey_line",
           "icon": "hand",
           "requiresFlag": "bridge_line_practiced"
@@ -1507,11 +1507,11 @@
     },
     "scene_crack_string": {
       "type": "story",
-      "narration": "Behind the tent, two apprentices measure a crack with knotted string. One has chalk on both eyebrows. You have time for one job: hold the string to learn rope bracing, or read the chalk to learn when the span goes still.",
+      "narration": "Behind the tent, two apprentices measure a crack with knotted string. One has chalk on both eyebrows. You have time for one job: pull the string tight to learn rope bracing, or read the chalk to learn when the span goes still.",
       "choices": [
         {
           "id": "hold_string",
-          "label": "Hold the string still",
+          "label": "Pull the string tight",
           "icon": "quick",
           "goto": "check_string"
         },
@@ -1526,12 +1526,14 @@
     },
     "check_string": {
       "type": "interaction",
-      "narration": "The apprentice stretches the knotted string along the crack. \"Hold this end? It only reads true when it's tight. One hero reads the knots. Everyone else pulls.\"",
+      "narration": "The apprentice stretches the knotted string along the crack. \"Pull your end tight just as the knot lines up with the edge. It only reads true when it's tight.\"",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends pull the string tight while someone reads the knots.",
-        "actionLabel": "Read the knots",
-        "supportLabel": "Pull the string tight"
+        "kind": "precision",
+        "cue": "Tap to pull tight when the marker is in the gold, as the knot lines up.",
+        "actionLabel": "Pull it tight",
+        "target": 0.5,
+        "width": 0.28,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_engineers",
@@ -2316,12 +2318,14 @@
     },
     "interaction_survey_line": {
       "type": "interaction",
-      "narration": "The warden has checked the crossing rope. Hold it tight, the way you practiced, while one hero guides the crossing. Alone, use the fixed post.",
+      "narration": "The warden has checked the crossing rope. Brace it the way you practiced, just as the span sways back toward you.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Brace the checked rope while the acting hero guides the crossing.",
-        "actionLabel": "Guide the crossing",
-        "supportLabel": "Keep the rope taut"
+        "kind": "timing",
+        "cue": "Tap to brace the rope when the marker is in the gold, as the span sways back.",
+        "actionLabel": "Brace and cross",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "scene_far_rim",
