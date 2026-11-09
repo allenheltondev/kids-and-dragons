@@ -1025,8 +1025,8 @@
       "status": "provisional",
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "AFkIMdmeB0MMrr1tgGds",
-        "name": "kad-faun-man"
+        "voiceId": "eVzrG2iFY0Fkas3bIdWy",
+        "name": "kad-folk-man-warm"
       }
     },
     "sprites": {
@@ -1792,8 +1792,8 @@
       ],
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "voiceId": "OYWwCdDHouzDwiZJWOOu",
+        "name": "kad-brask"
       }
     },
     "parsnip_driver": {
@@ -3703,8 +3703,8 @@
       "status": "provisional",
       "accent": "New York American",
       "elevenlabs": {
-        "voiceId": "sssn4wp3AspuK2kvy3Ym",
-        "name": "kad-skywarden-captain"
+        "voiceId": "m3p6KEeXfVR68KjgMGgi",
+        "name": "kad-olivia"
       }
     },
     "door_archivist": {
@@ -6686,8 +6686,8 @@
       "status": "provisional",
       "accent": "Cockney (London)",
       "elevenlabs": {
-        "voiceId": "Xb7hH8MSUJpSbSDYk0k2",
-        "name": "Alice - Clear, Engaging Educator"
+        "voiceId": "d8WcCpplp8meHt10UhL8",
+        "name": "kad-griffin-young"
       }
     },
     "fen": {
@@ -7191,8 +7191,8 @@
       "status": "provisional",
       "accent": "Alaskan Inuit English",
       "elevenlabs": {
-        "voiceId": "lP1EpPqqTU5DCn2ga6OD",
-        "name": "kad-yeti-deep"
+        "voiceId": "AOLUVLMs1jzrUpQeAea8",
+        "name": "kad-folk-man-dry"
       }
     },
     "rope_shop_boy": {
@@ -7275,8 +7275,8 @@
       "speaks": true,
       "status": "approved",
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "voiceId": "AOLUVLMs1jzrUpQeAea8",
+        "name": "kad-folk-man-dry"
       },
       "history": [
         {
@@ -7619,8 +7619,8 @@
       "status": "provisional",
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man"
+        "voiceId": "eVzrG2iFY0Fkas3bIdWy",
+        "name": "kad-folk-man-warm"
       }
     },
     "carters_mule": {
