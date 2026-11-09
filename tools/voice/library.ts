@@ -22,7 +22,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { addLibraryVoice, keysFromEnv, listVoices, searchLibrary, voiceSlots, type Fetch, type LibraryVoice } from "./bakeoff/providers";
 import { loadProfiles } from "./cast/profile.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, fitPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, fitPicks, libraryAccent, namesTaken, rowAccent, searchWords, settleAdded, settleInstalled, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
 import { ELEVENLABS, type CastSheet, type Provider } from "./desired";
 import { readJson } from "./load";
 import { makeBilledChars, makeSynthesizer, type DeliveryTables, type SynthOptions } from "./synth";
@@ -131,6 +131,9 @@ async function add(): Promise<void> {
   let picks = readPicks();
   const account = await listVoices("elevenlabs", keys, http);
   const { used, limit } = await voiceSlots(keys, http);
+  // A pick already on the account (an add that stopped before saving its pick) needs no slot, only the account's copy.
+  const settled = settleInstalled(picks, account);
+  if (settled.length > 0) console.log(`${String(settled.length)} picks are on the account already: ${settled.join(", ")}.`);
   if (values.fit && toAdd(picks, account).length > limit - used) {
     const shortlisted = path.join(SHORTLIST, "shortlist.json");
     if (!fs.existsSync(shortlisted)) fail(`--fit chooses stand-ins from ${shortlisted}. Run the shortlist step first.`);
@@ -142,9 +145,12 @@ async function add(): Promise<void> {
   const wanted = toAdd(picks, account);
   console.log(`${String(wanted.length)} voices to add; ${String(limit - used)} slots free.`);
   for (const [id, pick] of wanted) console.log(`  ${id.padEnd(30)} ${pick.name}`);
+  for (const { row, other } of namesTaken(wanted, account)) {
+    console.log(`  note: "${row}" already names another voice (${other.id}) on the account. Both will be there, and the old one keeps its slot until you delete it.`);
+  }
   if (wanted.length > limit - used) fail("That is more than the plan has room for. Add --fit to trim the rows with fewest lines, pick account voices for some rows, or raise the plan.");
   if (!values.yes) {
-    console.log("Nothing added. Add --yes to put them on the account.");
+    console.log(`Nothing added${settled.length > 0 ? " or saved" : ""}. Add --yes to put them on the account${settled.length > 0 ? " and save the picks already there" : ""}.`);
     return;
   }
   fs.writeFileSync(values.picks, `${JSON.stringify(picks, null, 2)}\n`);
@@ -161,7 +167,7 @@ async function add(): Promise<void> {
 async function assignPicks(): Promise<void> {
   const picks = readPicks();
   const waiting = Object.entries(picks).filter(([, pick]) => pick.ownerId !== undefined).map(([id]) => id);
-  if (waiting.length > 0) fail(`Not on the account yet, so nothing can speak with them: ${waiting.join(", ")}. Run the add step first.`);
+  if (waiting.length > 0) fail(`Not on the account yet, so nothing can speak with them: ${waiting.join(", ")}. Run the add step: it adds them, or saves the ones already on the account.`);
   const { assigned, unpicked } = assign(sheet, casting, picks, { approve: values.approve });
   writeSheet();
   console.log(`${String(assigned.length)} speakers given a voice${values.approve ? " and approved" : ", unapproved"}.`);

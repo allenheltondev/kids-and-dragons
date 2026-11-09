@@ -284,16 +284,40 @@ export function fitPicks(
   return { picks: kept, trimmed };
 }
 
-/** The picks not on the account yet, once each: each one takes a voice slot, however many rows share it. */
+/**
+ * The picks not on the account yet, once each: each one takes a voice slot, however many rows share it. A voice is
+ * on the account when its id is (ElevenLabs keeps a library voice's id when it is added); a name says nothing, so an
+ * old voice saved as `kad-pip` never stands in for a new pick for that row.
+ */
 export function toAdd(picks: Picks, account: readonly VoiceInfo[]): [string, Candidate][] {
   const have = new Set(account.map((voice) => voice.id));
-  const names = new Map(account.map((voice) => [voice.name, voice.id]));
   const seen = new Set<string>();
-  return Object.entries(picks).filter(([id, pick]) => {
-    if (pick.ownerId === undefined || have.has(pick.voiceId) || names.has(id) || seen.has(pick.voiceId)) return false;
+  return Object.entries(picks).filter(([, pick]) => {
+    if (pick.ownerId === undefined || have.has(pick.voiceId) || seen.has(pick.voiceId)) return false;
     seen.add(pick.voiceId);
     return true;
   });
+}
+
+/**
+ * Library picks that are on the account already (an add that stopped before its pick was saved, or a voice added by
+ * hand) become the account's copy, so `assign` can use them. Changes the picks in place and returns the rows it settled.
+ */
+export function settleInstalled(picks: Picks, account: readonly VoiceInfo[]): string[] {
+  const settled: string[] = [];
+  for (const [row, pick] of Object.entries(picks)) {
+    const there = pick.ownerId === undefined ? undefined : account.find((voice) => voice.id === pick.voiceId);
+    if (there === undefined) continue;
+    const { ownerId: _, ...rest } = pick;
+    picks[row] = { ...rest, voiceId: there.id, name: there.name };
+    settled.push(row);
+  }
+  return settled;
+}
+
+/** Picks about to be added under a row name that a different voice on the account already has: both will be there. */
+export function namesTaken(wanted: readonly [string, Candidate][], account: readonly VoiceInfo[]): { row: string; other: VoiceInfo }[] {
+  return wanted.flatMap(([row, pick]) => account.filter((voice) => voice.name === row && voice.id !== pick.voiceId).map((other) => ({ row, other })));
 }
 
 /** After a library voice is added under a new id, every row that picked it speaks with the account's copy. */

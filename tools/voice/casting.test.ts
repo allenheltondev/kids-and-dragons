@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ACCENT_LABELS, AMERICAN_VARIETY, PEOPLE_ACCENTS, REGION_ACCENTS, REGION_IDEAS, accentFor, americanFor } from "./cast/accents.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, fitPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, fitPicks, libraryAccent, namesTaken, rowAccent, searchWords, settleAdded, settleInstalled, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
 
 const row = (over: Partial<CastingVoice> = {}): CastingVoice => ({ id: "kad-yeti-deep", gender: "male", people: "yeti", prompt: "", search: "deep slow gentle", speakers: ["hummock"], ...over });
 
@@ -164,9 +164,27 @@ describe("candidates", () => {
     expect(picks.also).toBeUndefined();
   });
 
-  it("adds only library picks the account lacks, under either id or name", () => {
+  it("adds only library picks the account lacks, by id: a voice already named for the row is another voice", () => {
     const picks = { one: { voiceId: "a", name: "A", about: "", ownerId: "o" }, two: { voiceId: "b", name: "B", about: "", ownerId: "o" }, three: { voiceId: "c", name: "C", about: "", ownerId: "o" }, four: { voiceId: "d", name: "D", about: "" } };
-    expect(toAdd(picks, [{ id: "b", name: "B" }, { id: "z", name: "three" }]).map(([id]) => id)).toEqual(["one"]);
+    expect(toAdd(picks, [{ id: "b", name: "B" }, { id: "z", name: "three" }]).map(([id]) => id)).toEqual(["one", "three"]);
+  });
+
+  it("recasts a row whose name an old account voice holds: the new pick is added, and the old one named", () => {
+    const account = [{ id: "voice-a", name: "kad-pip" }];
+    const picks = { "kad-pip": { voiceId: "voice-b", name: "Kai", about: "", ownerId: "o" } };
+    const wanted = toAdd(picks, account);
+    expect(wanted.map(([id, pick]) => [id, pick.voiceId])).toEqual([["kad-pip", "voice-b"]]);
+    expect(namesTaken(wanted, account)).toEqual([{ row: "kad-pip", other: { id: "voice-a", name: "kad-pip" } }]);
+    expect(settleInstalled(picks, account)).toEqual([]);
+  });
+
+  it("resumes an add that stopped before saving its pick: the voice on the account is used, not added again", () => {
+    const account = [{ id: "voice-b", name: "kad-pip" }];
+    const picks = { "kad-pip": { voiceId: "voice-b", name: "Kai", about: "", ownerId: "o" }, "kad-gull": { voiceId: "voice-b", name: "Kai", about: "", ownerId: "o" } };
+    expect(toAdd(picks, account)).toEqual([]);
+    expect(settleInstalled(picks, account)).toEqual(["kad-pip", "kad-gull"]);
+    expect(picks["kad-pip"]).toEqual({ voiceId: "voice-b", name: "kad-pip", about: "" });
+    expect(picks["kad-gull"]!.ownerId).toBeUndefined();
   });
 
   it("trims the rows with fewest lines to the free slots, onto an unused account voice or a kept voice in another accent", () => {
