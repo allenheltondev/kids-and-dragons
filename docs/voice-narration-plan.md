@@ -334,6 +334,13 @@ ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stag
    The upload is idempotent: a key that already exists is skipped without calling the provider.
    **That check is the generation cache.**
 
+Steps 3 and 4 happen after the provider has billed for the clip, so a paid run checks for `ffmpeg`
+and `ffprobe` before its first request and refuses without them (on Windows,
+`winget install Gyan.FFmpeg`, then a new terminal). Only step 2 is retried. If encoding or the upload
+fails, the run keeps that clip's provider audio in `test-results/voice-raw/` and stops: the failure
+is this machine or its credentials and would repeat for every clip. The next run encodes the kept
+audio without asking the provider again.
+
 ---
 
 ## 5. Caching, layer by layer
