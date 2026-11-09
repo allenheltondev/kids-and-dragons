@@ -87,7 +87,12 @@ genders there are as best known, so check them by ear). Recurring characters are
   everyone. Run it again after writing a chapter, and only the new people are placed.
 
 `npm run voice:cast -- --check` reports without writing, and exits 1 if any chapter has two
-speakers on one voice.
+speakers on one Gemini voice, or two talking speakers on one ElevenLabs sound. On ElevenLabs a
+sound is the voice plus its accent and direction, so a shared species voice in another accent or
+direction is a different sound. A shared sound counts only when two or more of its speakers have
+lines (`lineCount` above 0); crowds, group names and lineless ids may share. An id pair that is one
+person (the chapter names them two ways) is allowed in `ONE_CHARACTER` in
+`tools/voice/cast/sheet.ts`, with its reason; never loosen the rule for a real pair of people.
 
 The first build: 207 speakers, 127 with lines from the game, no voice clashes.
 
@@ -284,7 +289,8 @@ voice, and nothing there touches the Gemini one:
   unchanged. **Reject** records the voice and your note and takes the choice back, so you can pick
   another; a voice you rejected for a character is left out of their picker.
 - **History and clash warnings** are per mode: a decision with no `provider` is a Gemini one, and
-  two characters on one ElevenLabs voice in a chapter are warned about only in ElevenLabs mode.
+  two characters on one ElevenLabs sound (voice, accent and direction) in a chapter are warned about
+  only in ElevenLabs mode. `voice:cast -- --check` checks both modes.
   The review export still lists Gemini's decisions.
 
 **What ships:** since 2026-11-05 `voice:generate`, `voice:status` and `voice:verify` render and key
