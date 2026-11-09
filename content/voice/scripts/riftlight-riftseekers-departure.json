@@ -1,0 +1,1441 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-riftseekers-departure/map/narration": {
+    "source": "sha256:f32912434ca3692a0f51ed6186cfe33699a2a9f6ab661534ec2453debde1d201",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Outside the singing hall, the griffin is still fighting his map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Olivia. Your hoof.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The unicorn steps aside."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"I'm Orin Vale,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the griffin."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I'm Lady Olivia,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the unicorn. A kitsune waves from a sled piled with cases:"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Seren Wisp.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin looks at your wet boots."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"You came through that fold in the air. Then help us. What are we looking for out here, and where do we start? We cannot agree.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/arrival_story/narration": {
+    "source": "sha256:e4e1c5116391f1b7114380ba08ecb0030cdd3512c210bd5376e3b9b0326e8a63",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell them about the snow on the quay, the kid, and the harbor vanishing behind you. Orin writes down"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"goat\""
+      },
+      {
+        "by": "narrator",
+        "text": "and underlines it twice. Olivia's eyes go wide."
+      },
+      {
+        "by": "olivia",
+        "text": "\"A harbor, joined to a mountain? Just like that?\""
+      },
+      {
+        "by": "narrator",
+        "text": "She stamps a hoof in delight."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Imagine what else could be joined!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin does not write that down."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/arrival_question/narration": {
+    "source": "sha256:b17f7b3e69f9f4228b1c839ca90d22ac1b8328dee385aa0a788ff01c0b3d6e8c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seren_wisp",
+        "text": "\"We saw your opening close from up here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"We call them rifts.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin opens his notebook to a fresh page."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"How long was it open? Which way did the wind blow?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia leans right in."
+      },
+      {
+        "by": "olivia",
+        "text": "\"And could you open it again?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin coughs."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/seren/variants/0": {
+    "source": "sha256:48942d0f363958e4f857fa89a80f0ddcab2b59b0f1466c62d62a8346ec86a51c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "When you tell her about the light around the opening, Seren turns to the hero who saw it."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"You saw the light. Keep looking. Later I can show you how to listen, too.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/seren/variants/1": {
+    "source": "sha256:d5106335b238f145bea29b31de843f30acd4c8ee855d351c35fdec2ecf8ac3f3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seren_wisp",
+        "text": "\"You can learn a lot without seeing what I see,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/fellowship/narration": {
+    "source": "sha256:276694f7870e20de310fc3a2bd34ff371960aee5362634651b6448bbcccc71f2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "orin_vale",
+        "text": "\"Riftseekers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin, touching the broken-circle clasp on his cloak."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"We follow rifts and write down what they do.\""
+      },
+      {
+        "by": "olivia",
+        "text": "\"And one day we will do more than write,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Lady Olivia. The travelers' sled leans like a sleepy goat, and one corner of Orin's map is trapped under the load."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"We leave when it stops leaning,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And when I have my corner back.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_lift/narration": {
+    "source": "sha256:62fd1958da6f7efb51581b17f49674e18c85f41c371b327c3de4e949502976a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Heavy things low,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Hand to hand,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_lift/onSuccess/narration": {
+    "source": "sha256:c9a498c12f86ecb48315b88f7f2df322f76dc5a0e6cdd4dbc8d5df39d483070e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up it all goes. The sled sits level as a loaf. Olivia hands you a small clay jar."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Mosslight, for the road. You earned it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_lift/onFailure/narration": {
+    "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It has character,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_lift/onAssisted/narration": {
+    "source": "sha256:8206ebcc0f288bc801ce9b6b092d30d9b1fecc6aa514ee04dc68a8bcb67ad544",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin steadies the line with a pole. The sled sits level as a loaf. Olivia hands you a small clay jar."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Mosslight, for the road. You earned it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_pole/narration": {
+    "source": "sha256:3c8cb33adfb9773c4042b90c269164bbe40e9a34c006350182cebdbf0f8efefb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "orin_vale",
+        "text": "\"A long pole and a small stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"and you can lift a mountain. Or at least a sled.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_pole/onSuccess/narration": {
+    "source": "sha256:746b6500b68909b29e6a10afc108a1a0475a37181469e8ed49d12798889c99fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lean, and the whole sled rises with a creak. The sled sits level as a loaf. Olivia hands you a small clay jar."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Mosslight, for the road. You earned it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_pole/onFailure/narration": {
+    "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It has character,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_brace/onSuccess/narration": {
+    "source": "sha256:66a5f054a59968f5cbdde2ebe0d15347c8b8ccd82afe56cc9577caec8215d81d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Not one runner wobbles. The sled sits level as a loaf. Olivia hands you a small clay jar."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Mosslight, for the road. You earned it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_brace/onFailure/narration": {
+    "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It has character,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_smash/onSuccess/narration": {
+    "source": "sha256:27bc98c5c52209f6bdf2d95e50907a2ff0c6b731377f4f40161fa897b048b972",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Crack! Ice flies off like glitter, and the sled rocks upright. The sled sits level as a loaf. Olivia hands you a small clay jar."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Mosslight, for the road. You earned it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/sledge_smash/onFailure/narration": {
+    "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It has character,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/corner_hunt/narration": {
+    "source": "sha256:f301bbcaced95bc4713fc6d0fdf9cd0b8a7228371bdd2fcdeb91d13277a98fab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The corner of the map pokes out from under a barrel. Orin hops from foot to foot."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Gently. Gently! That corner has the whole north on it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/map_spread/narration": {
+    "source": "sha256:b9a0c414818921c7546890bc935b132b8356028130f85d37f7ac8f89d8b8faee",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin spreads the map across a trunk and pins it with four teacups."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"The Glacier of Origins and the Great River. I drew it last spring and checked every line twice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He taps a dotted line."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"The herder's path to her grazing ledge.\""
+      },
+      {
+        "by": "narrator",
+        "text": "But that path is water now. You saw it. Orin looks at you."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Then tell me what else does not match. Anything at all.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/map_wrong/narration": {
+    "source": "sha256:7f2c6d520cfb7e309f0fbc23c513240f92cea94804d36a3ff50c01c78d292a23",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin sets down his pencil."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"A path that is water now. A pass where there was a cliff. The griffins at Frostfang call that pass the Cairnstep. Last season, it was not there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren looks at you."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"And snow fell on a harbor, out of a clear sky.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin nods slowly."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Places are turning up where they do not belong. Something is moving the land. What is it? And can we put things right?\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at each of you."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"That is what we are looking for. Anything you see that does not match my map, remember it, and tell me. Every piece.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/map_wrong/variants/0": {
+    "source": "sha256:b31f42ffea90cd8c7c40db491f1bcd34cb50a92fba1f6da7295b0323b2787b03",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He taps the word"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"goat\""
+      },
+      {
+        "by": "narrator",
+        "text": "in his notebook."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And a goat walked through the air.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/olivia/narration": {
+    "source": "sha256:ddaf6a44bba4ab8bc770675d157ff2f6380de390d710cabf9bcbe6028c57b7bc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia's eyes shine."
+      },
+      {
+        "by": "olivia",
+        "text": "\"A whole pass, moved in one night! If we could use the openings, we could carry hay anywhere in a blink. Imagine if we could use them!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She taps the drowned path."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I have hay-cakes in my pack. The herd is hungry now. We could rush them across the soft ice today.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin frowns."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Ice nobody has tested? Let us mark a safe bank first, even if it takes till dark.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren looks at you."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"What comes first?\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/haul_supper/narration": {
+    "source": "sha256:14859a70fba330ac3295f6b1ca6066754f110b301fe45f48a8792f887412b543",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia piles her hay-cakes onto the herder's little sled."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Quick is kind,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Go, go!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin covers his eyes with one wing."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/haul_supper/onSuccess/narration": {
+    "source": "sha256:9a4879e8dd660e73c111dbac3c45c831583c3b05e8ce1c856378b66e5657c3d2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sled skims the soft ice like a skipping stone, and the herd mobs it."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Fed!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Fed today!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia tosses her mane."
+      },
+      {
+        "by": "olivia",
+        "text": "\"See? Quick is kind.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The herder presses a honeycake on you. Orin pays four coins from the Riftseekers' helper fund, frowning a little."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/haul_supper/onFailure/narration": {
+    "source": "sha256:24c48a22f053b017a025362d6016d78c0ea55abac95e4a2a89ca7a12b70cd331",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Halfway across, the soft ice sags with a groan. You leap back to the bank, soaked to the knees, and the sled slides the last bit on its own. The herd gets its supper. You get wet."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia, a little less sure."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Quick was kind. Mostly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin counts out two coins without a word."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/chalk_route/narration": {
+    "source": "sha256:012401882cf3d9621fe59d680a24bb0d3bf52457e2aa8a1429b66c75988671b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin hands you a stick of chalk."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Mark the bank where my goats can walk,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder,"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"and mark it right. They can wait for supper.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The goats do not look like they can wait. Olivia sighs at them."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/chalk_route/onSuccess/narration": {
+    "source": "sha256:d77003f4fa4bed949ac5f93707997c501894c90e6249051cec078ca52675e500",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your chalk line runs straight, steady stone to steady stone, all the way to the drowned path."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Now hay can come by a road anyone can trust,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin, and pays four coins from the Riftseekers' helper fund. The goats watch you with big, hungry eyes."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/chalk_route/onFailure/narration": {
+    "source": "sha256:5607fe8883abfb0a7bde949a042bd6a212fb190b8a2f93052664dc47167f7f7e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You chalk a wobbly stone, and a goat proves it by sitting on it. Splash. The line is no good, and the herder rubs it out."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Tomorrow, then.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin counts two coins."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"For honesty.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The goats look hungrier than ever."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/chime/narration": {
+    "source": "sha256:866126e61467f0bdc01874dae8df36188b254c95e5207c26ff3d0a885c4fe86a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin takes a little chime from his bag."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"A Listening Chime, for you. You will be looking for things that do not match, and this hears what eyes miss. Strike it near an opening. A sour note means it cannot open yet. An echo means it will stay open and let you come back. No echo? Then promise nobody a trip home.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/test_chime/narration": {
+    "source": "sha256:363fbaf870a6cd86513bb77f439275fb536327274a8369ab5956bb34f51f3a0a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"Ring it at the hall wall, where the seam hums!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Loud! Make it answer!\""
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Or hold it still,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren,"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"and listen first.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin says nothing. He only watches you, pencil ready."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/ring_hard/narration": {
+    "source": "sha256:38e8ab02d830d297bb969fbf2d81aac59a9846ae2306e5e638da1982918665e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "CLANG! The note bangs off the hall wall like a dropped pot. Inside, the yetis' song stops dead. A slab of snow slides off the roof and lands on all of you, flump. The herder pokes her head out, frost in her fur."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Who rang?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia is already laughing."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Did you feel that? It answered! Look at it!\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/listen_chime/onFailure/narration": {
+    "source": "sha256:7fd8d67c4e673c8584bcab9dd3c8d9f2f20635af8a7a2c4f060c02bdae9aa089",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hear only wind. And more wind. Olivia cannot bear it."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Here, let me!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She flicks the chime, hard, at the hall wall."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/chime_jar/narration": {
+    "source": "sha256:776b6d64210571d45e5d0f2c7573100f65f1701497473ccdc2aa0774ef5fcd01",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the mosslight jar close. The chime throws a shivery shadow across the snow, and the shadow is not hanging straight down."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Now you can find it in the dark,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"And see which way it hangs.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/chime_lean/narration": {
+    "source": "sha256:c4a5fa63842c03e773183b92a549de7dd3c166ea029fd9e1fc82533d2d587627",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then the chime does something odd. Nobody is touching it, and it leans. Its cord tilts, slow and sure, like a nose toward supper, and it points up at the high glacier. Seren's ears go flat."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There is no opening here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And still it listens that way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin writes in his notebook and holds it up: CHIME LEANS TOWARD GLACIER. WHY? Olivia laughs."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It wants to go somewhere!\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_intro/narration": {
+    "source": "sha256:dd018455900e8327bebf17ce5886e11b9b8349d0d2566a7f3d6f2723f5bf5f22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren sets three rings on a flat stone and turns her back. Olivia flaps a blanket. Orin plays a squeaky note on a little brass horn."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"A rift will not be quiet for you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Two rings ring true. One rings sour. Find the sour one through all this noise.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_read/narration": {
+    "source": "sha256:6a5a64f460f5bc84cb2f9a3ad3954fa73fc5c5ed5d61d837f1eca4194cb6a3ed",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rings sit in a row. The blanket flaps. The horn squeaks."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Louder, Orin!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Olivia, enjoying herself. Which ring is sour, and how will you find out?"
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_ear/onFailure/narration": {
+    "source": "sha256:6985110f9cee646937257e17a2ccb8f1a42e73f0acd9505db07ee51c43083623",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You point at the first ring. It is true, and it says so, loudly. Seren turns it over and shows you the middle ring's crooked edge."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There. Now you will know it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_chime/onFailure/narration": {
+    "source": "sha256:6985110f9cee646937257e17a2ccb8f1a42e73f0acd9505db07ee51c43083623",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You point at the first ring. It is true, and it says so, loudly. Seren turns it over and shows you the middle ring's crooked edge."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There. Now you will know it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_hum/onFailure/narration": {
+    "source": "sha256:6985110f9cee646937257e17a2ccb8f1a42e73f0acd9505db07ee51c43083623",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You point at the first ring. It is true, and it says so, loudly. Seren turns it over and shows you the middle ring's crooked edge."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There. Now you will know it.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_report/narration": {
+    "source": "sha256:8a0fa2d7a2714ca25e9af1128669622dc5ae2627e2c0d13163e5c177af812c0a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren turns around."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"The middle ring was sour. A rift warns you the same way: one wrong note among right ones. Hear it, and you do not walk in. Hear the echo, and a door stays open behind you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin writes it down, then crosses it out."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Too wordy.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He writes: LISTEN FIRST."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/trial_report/variants/0": {
+    "source": "sha256:e5330db3d4d533662e134e26ffab9df632081167092a420cc817fecea0d8f2bd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She glances at the hall roof, still bare of snow."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"That is why we listen before we ring.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/route/narration": {
+    "source": "sha256:4c60570e82997a5e96a0fb58c8e60a5ce8586de0445648942ffe101a540a0eed",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin points below the ice shelf, where melt channels join into a broad river."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"The Great River starts here. Three roads leave this hall. The shelf above the headwaters goes east to Frostfang and the Cairnstep. Test the ice. If it gives, let the river carry you somewhere you can climb out.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren points back at the glacier."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Or look for the hidden openings in the ice. That seam answered your song. Learning what they need might help you find a way home.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin traces a longer line."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Or take the marked bank road to a ferry at a place called Ashspan Bridge. Slower, but it stays off the ice. From the bridge, an upper bank road goes back north to Frostfang Shore.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/lookout/narration": {
+    "source": "sha256:692367739deff3da78d1e570ab8c024a4ab48e911652f42ff0d013f151f92557",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From the ledge by the hall, melt channels braid down toward the Great River. Above them, the ice shelf shines. Orin hands you his spyglass, then takes it back to find the right end."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Look first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Then walk.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/lookout_climb/narration": {
+    "source": "sha256:b8e3fc2b3cb0f6e54b48dc67badc965d744d89a740eebafbfe068e25d317fa85",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rock stair is more of a rumor than a stair, glued together with frost."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Mind the third step,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Orin."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"It is not a step.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/lookout_sky/narration": {
+    "source": "sha256:db3234817cf999e0ad448352f2018cd97973e168820dc59835d27b091c059c91",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind drags snow across the ice."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Watch the snow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"and you see what the ice is doing.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/lookout_chalk/narration": {
+    "source": "sha256:1e81f085de0ba67e592f0f6cc391a2b93801dc2e4a09546ae8c70c6ca81cf2a7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You walk your own chalk line, steady stone to steady stone, right out to the edge of the shelf. From the last stone you can see one dark patch where the ice is thin."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"A safe road shows you more than a fast one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/tarp/narration": {
+    "source": "sha256:703749007af46975b01963eb49697262b09467194d45284668540897069ae2e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The gust slides under the sled cover and lifts it high."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Our cover thinks it is a sail!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Grab it before it flies to Frostfang!\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/tea/narration": {
+    "source": "sha256:8345c3baa5128786438af2fab51ea3e32f7fd8fe2038f33451532ca3c0f8a800",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren builds a small stove from a tin and a candle. Steam fogs Orin's glasses. He leaves them fogged."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Hands first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Questions after.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Whose story do you ask for?"
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/tea_seren/narration": {
+    "source": "sha256:96a485174d084c53b292cccb20ba158964c721a96a7526e54ae2765a2c9af070",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren holds her cup in both paws."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"I heard a hum like a kettle, behind a barn. I followed it in my slippers.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sips."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Never follow a kettle in slippers. Bring boots. Bring somebody who will pull you back.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/tea_olivia/narration": {
+    "source": "sha256:d44cc4eb9920350938d3db9e63039d19f8891ba1ab9778b9632d9bb6fee3bbf7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia swirls her tea."
+      },
+      {
+        "by": "olivia",
+        "text": "\"A door that opens by itself? I want to know whose hand is on it. And I want to borrow it. No herd hungry, no road too long, ever again. Wouldn't that be wonderful?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin coughs."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Ask. Do not borrow.\""
+      },
+      {
+        "by": "olivia",
+        "text": "\"I always ask,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Loudly.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/tea_olivia/variants/0": {
+    "source": "sha256:ff1ba94a93e6cc6431bc8e2e644dd924b22b2f73bf5f8c0b1a31063d68459d9c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She grins at you over her cup."
+      },
+      {
+        "by": "olivia",
+        "text": "\"You rang it like a dinner gong. I liked that.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/supplies/narration": {
+    "source": "sha256:bba33f2512395a52eb417526b61d32c4fe43a0dfbebe31b5aa0e0cb346b1797f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren opens a battered tin of spares: cord, a very small spoon, and a brass whistle on a loop."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"A brave whistle costs three coins.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind the sled, the herder has come out to see you off, with her goats trailing behind her."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/supplies_buy/narration": {
+    "source": "sha256:0249a8c7603ffb898acc9cfaffe075aaa22f9b8a5826bb9144e2c06d347b4d3d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three coins clink into Seren's tin. She hands over the whistle."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"One loud note. Use it when you need to be heard, not when you want to be.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/herder_thanks/narration": {
+    "source": "sha256:d8bc97010119b56e108a7385fdda49a16729ed91dbfdc7f9b1abad85aa6f6ab5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder presses a river charm into your hand."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Found it in a melt channel. My herd ate today because of you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She glances at the soft ice and lowers her voice."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Quick was kind. But do not tell Lady Olivia I said lucky, too.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/supplies_feed/narration": {
+    "source": "sha256:4f22d8c7ca1c0d276b8da5fd72f41bf16c4538d6d44e6dfb7da19f02512a7c15",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goats bundle around you, soft noses everywhere, and the crumbs vanish. One licks your ear to say thank you."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"They will remember that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Goats remember everyone who feeds them.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/prep/narration": {
+    "source": "sha256:08137c1b4fd9abf06d7d5c8750ae840f85eebaedab0cd807c3221ded94ec9219",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sled is packed. Orin taps the shelf on his map, where the Cairnstep climbs. Seren glances back at the singing hall. The chime, on its cord, still leans toward the glacier."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Three roads,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"The shelf toward the Cairnstep. The glacier, looking for openings. Or the long bank road to Ashspan Bridge, off the ice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Which road do you get ready for?"
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/prep_ice/narration": {
+    "source": "sha256:4ff173a11a8fadb0740976ce4dd2a64a5feda1b4640e298691918e6005e7fd0f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin lays a slab of old ice on the snow."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Thick ice rings when you tap it. Thin ice thuds.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ring, ring, thud! You find the thin spot. Orin cheers very quietly, so as not to wake the ice."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/prep_seam/narration": {
+    "source": "sha256:cce094cb206579148b5ea37a2f8eaf86a8d3425ddcc6e792b1db6c29bcb0f280",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren presses an ear to the glacier wall."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Listen for a tick. Listen for a hum.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You find where the seam hums clearest and mark it with a pebble."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"A hum that holds still can be learned,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/prep_dash/narration": {
+    "source": "sha256:a0d19ddbc262c1a7e8ac432dc8bca3ef33573acd9206dc1b21ed9c8a4a875704",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A duskrunner's feet know the quiet way. One hero runs the bank road and comes back breathless: no gaps, no drifts, only a goat on a rock. Orin writes down"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"goat on rock.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/prep_jar/narration": {
+    "source": "sha256:7a4c05afddfc17a3db92e18f6147c5c34c5e403ff80856d8547c780f5e3eb094",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold up the mosslight jar, and the glacier wall glows like a lantern. One frost line runs straight to the sealed seam and stops."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"The ice remembers where the seam is,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/parting/narration": {
+    "source": "sha256:7a30c1004015c16be792a700a7fb2ecfffd952c12fc08ec257585c1fe7b31cde",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia shoulders her pack. Seren counts the cases twice. Orin leads the way down the path, holding up the map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"We go ahead to scout,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls back."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Follow when you are ready. And remember: anything that does not match!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia turns at the bend."
+      },
+      {
+        "by": "olivia",
+        "text": "\"And if you find a way to use them, come and find me first!\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/parting/variants/0": {
+    "source": "sha256:48c42ad6239dc06f3f9c174d21ff8db8b213b145dedf89c56cb6ebfc4cda62e8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sled still leans a little. Olivia pats it."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Character.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/parting/variants/1": {
+    "source": "sha256:b68fb86e02103aa5fe45e6a033b09efd88538a772f52ed620f64fbfe9ebfefe4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin adds, very gently,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Next time, listen first.\""
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/send_off/narration": {
+    "source": "sha256:2e8770b660a80fc3847adb05d5870346d3be590b2947118664daa69cfa1d31bc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Riftseekers are gone down the path. The yetis lean out of the hall door and hum the low note you learned, long and warm."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Nobody leaves the hall without a send-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      }
+    ]
+  },
+  "riftlight-riftseekers-departure/send_off/variants/1": {
+    "source": "sha256:420048d491aafdf851fc9c2255f9e48b14a82abe7d4879cc92b4b49f4055c0d3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Her goats are still chewing the tow rope."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"They will eat tonight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"the slow, safe way. Hungry goats, but no wet ones.\""
+      }
+    ]
+  }
+}

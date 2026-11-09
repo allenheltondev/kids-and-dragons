@@ -1,0 +1,637 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-04a/scene_caravan_dry/narration": {
+    "source": "sha256:35028f2c2decd457194085bc31609f018a5ca3d01706e6a3e0b4decc7e841731",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You join the caravans from Stone Crossing. Parsnip the donkey's driver is furious."
+      },
+      {
+        "by": "cart_driver",
+        "text": "\"The pride escort won't camp at the usual rest stop!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Parsnip sleeps by the gem crates. She agrees with the prides."
+      }
+    ]
+  },
+  "gemfall-04a/scene_pride_greeting/narration": {
+    "source": "sha256:8605e57d97a992b54c95e32ec5d83b7340ab8490b28c226800549f90c75422ba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A manticore elder named Sefa greets you, her tail curled politely away."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"Welcome, travelers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"Greet us back properly, and you may sit at our fire.\""
+      }
+    ]
+  },
+  "gemfall-04a/scene_hospitality/narration": {
+    "source": "sha256:87c04e666b173132821e64bbc4ae1df3dd7c027c5350fef3543a7c1ddf9e91b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The elder sees you and drops the formal greeting."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"Look who's come home the front way!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Cubs pile on you. Somebody's grandmother hands you a honeycake, whether you want one or not."
+      }
+    ]
+  },
+  "gemfall-04a/scene_pride_camp/narration": {
+    "source": "sha256:dc7a5ce86dd55f7572da23a1ada3e4356fc7ac23a904b074ecd80a053d391b86",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"My cubs dream of humming near gem wagons,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Elder Sefa Tallgrass."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"So we den farther away. The centaur wardens at the waystation map every road. After nap time, I will send you there.\""
+      }
+    ]
+  },
+  "gemfall-04a/check_old_riddle/onFailure/narration": {
+    "source": "sha256:fc02daee6e5fa9aac7f103619f02bf36094a69333f827b28005c191ad0f4b33b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You guess"
+      },
+      {
+        "by": "party",
+        "text": "\"a teapot.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It is not a teapot. Several famous careers have ended on that riddle, so you are in very good company."
+      }
+    ]
+  },
+  "gemfall-04a/scene_waystation/narration": {
+    "source": "sha256:245c9296accf67f67f110ed2dfdce4d0cf931ba00fae7ed770efd1ab922078f3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the centaur waystation, road maps are stitched onto long sashes. A road-warden waves you over, spools in her mouth."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"Every sash needs changing this season,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she mutters."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"Help me see why.\""
+      }
+    ]
+  },
+  "gemfall-04a/check_sashes/narration": {
+    "source": "sha256:011d1f56967d8c4df93283f2f0fc39537c4a6962b60394053cae50941c7818bf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The warden lights a lantern behind each sash."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"The new detours glow in the order the stones fell,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"Watch, then put them back in order.\""
+      }
+    ]
+  },
+  "gemfall-04a/check_sashes/onSuccess/narration": {
+    "source": "sha256:c688bba54bbc452933669a37c7a9c581c1261e9628c309a1ce2237c26432a143",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sash by sash, you line them up. The warden drops her spools."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"Oh.\""
+      }
+    ]
+  },
+  "gemfall-04a/rest_waystation/narration": {
+    "source": "sha256:2b0345c32f3f5ffec81238795d0e694f6312fe34e8d789db39f03ef480e87169",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The centaurs feed you oat-cakes and pack you a supper bundle. Then they argue about whose stitching is neatest."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"Mine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sniffs the warden. Rest a while in the hay."
+      }
+    ]
+  },
+  "gemfall-04a/rest_waystation_with_escort/narration": {
+    "source": "sha256:a5406c3e74a45b8bf5aab7527b6048991894581660a36ec9ab6a6581692ca598",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At dawn, Elder Sefa walks out with you, and two cubs, because nobody told them not to. Ahead, the grass leans away from something. Sefa stops."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"We always wait here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "gemfall-04a/scene_leave_stone/narration": {
+    "source": "sha256:d4231de1ad15420e23219fbf121a05ae035a47907676185bc37069e2df7f80fc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You leave it humming in its crater. When you turn around, Elder Sefa is on the ridge. She bows, slow and deep."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"Come to the fire,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "gemfall-04a/scene_brass_rope/narration": {
+    "source": "sha256:4610324e84c02ecd9e881e0687538ce0e8ce47afa238104fed22a0cefed42e31",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Six people in brass hats have stretched a rope across the road."
+      },
+      {
+        "by": "brassbuckle_scout",
+        "text": "\"Brassbuckle Expedition toll,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says their scout."
+      },
+      {
+        "by": "brassbuckle_scout",
+        "text": "\"Brand new. Very official.\""
+      },
+      {
+        "by": "narrator",
+        "text": "They want your coins. The rope is tied to nothing much."
+      }
+    ]
+  },
+  "gemfall-04a/scene_brass_rope_ask_question/narration": {
+    "source": "sha256:ff0c4df515610d74d43f6689ab37ddafc6d145fdd078ae787f78a271ad77cc36",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Where did you get that rope?\""
+      },
+      {
+        "by": "narrator",
+        "text": "you ask, the way Old Lintel would."
+      },
+      {
+        "by": "party",
+        "text": "\"And where is this road going?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nobody knows."
+      },
+      {
+        "by": "brassbuckle_recordkeeper",
+        "text": "\"Tuesday?\""
+      },
+      {
+        "by": "narrator",
+        "text": "says their recordkeeper. They take the rope down quietly."
+      }
+    ]
+  },
+  "gemfall-04a/scene_brass_rope_whose_road/narration": {
+    "source": "sha256:8cc99fb5e38b3335f9642f2a5fd513de49700dc5f69ce3a626f3e31270f23a09",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"This is a pride road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say, tail curled politely away."
+      },
+      {
+        "by": "party",
+        "text": "\"It was here before your hats.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Manticore ears pop up all along the ridge. The rope comes down very fast."
+      }
+    ]
+  },
+  "gemfall-04a/scene_relay_runner/narration": {
+    "source": "sha256:b90cabccd87acdbdbefe1448b5121c307f46adbcd7943d7c5614e0852fc7dc18",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A centaur skids up, her sash stuffed with letters."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Bracken Swiftmile, relay runner!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she pants."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"News from the west? News going north? Quick. The relay waits for nobody.\""
+      }
+    ]
+  },
+  "gemfall-04a/scene_relay_runner_news_west/narration": {
+    "source": "sha256:e2a99bb33804695eb6e8f65a7d581432046568a88817d7a8c5f8179b04556515",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"West road's strange,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bracken."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Marsh lights gossip about a humming gate. Witches' bells ring when a gem goes by. Every stone is humming!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she is gone in a cloud of dust."
+      }
+    ]
+  },
+  "gemfall-04a/check_race/onSuccess/narration": {
+    "source": "sha256:25af7481058337cbb1f14b16be3f29ceb0d92212020bee9481c5ed56b76d4fdf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You run like the wind, and the wind is impressed. You touch the post one breath before Bracken does, mostly because she was laughing too hard to run properly."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Fair's fair,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and tells you all the relay news for free: on every road in the realm, the stones are humming."
+      }
+    ]
+  },
+  "gemfall-04a/check_race/onFailure/narration": {
+    "source": "sha256:c5b0d029481804aafb39bae9618b2139d7e4a7cdb5dedde708157972e001cf0f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bracken is a centaur. She reaches the post, reads her letters, eats an apple, and waves you in."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Not bad for two legs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says kindly, and tells you the relay news anyway: on every road in the realm, the stones are humming."
+      }
+    ]
+  },
+  "gemfall-04a/scene_cub_scouts/narration": {
+    "source": "sha256:1171bd4e5ccaed4501cf2195475ef71cebd1b7a2295989e1450b30f6e11d8e0f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two rocks on the ridge are breathing. They have ears and tufted tails. They are manticore cubs, pretending very hard. One giggles."
+      },
+      {
+        "by": "manticore_cubs",
+        "text": "\"We are rocks,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it whispers."
+      }
+    ]
+  },
+  "gemfall-04a/scene_cub_scouts_play_rocks/narration": {
+    "source": "sha256:fe88b5e7812eea8683b1bc89e526bacde0012f13c46f552d45b1aaf044edaf2c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You become rocks too. A beetle crosses your boot."
+      },
+      {
+        "by": "manticore_cubs",
+        "text": "\"You moved!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts a cub. You did not. The cubs win anyway, because they made the rules."
+      }
+    ]
+  },
+  "gemfall-04a/scene_cub_scouts_ask_why/narration": {
+    "source": "sha256:cf4d4d0e7a6f2940336363d131a61bfd9767df86a14ec24b082ee4d5d07c60c5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Why does the road go the long way?\""
+      },
+      {
+        "by": "narrator",
+        "text": "you ask. The rocks forget to be rocks."
+      },
+      {
+        "by": "party",
+        "text": "\"Because of the humming,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the big one."
+      },
+      {
+        "by": "party",
+        "text": "\"It makes us dream the ground sings.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then they freeze again."
+      }
+    ]
+  },
+  "gemfall-04a/scene_pride_greeting_cubs_introduce/narration": {
+    "source": "sha256:7c86bfd81c03c4bde04dabec2f62c98f172226097a34c32a542aabc366789a8b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cubs march you up to the elder like prizes."
+      },
+      {
+        "by": "manticore_cubs",
+        "text": "\"We caught them!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the big one. You and the elder keep perfectly straight faces."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"Then they had better come to the fire,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "gemfall-04a/scene_granny_cake/narration": {
+    "source": "sha256:ec13f0c8fbe79cc79b79a1838efddda56c78712dc2e552bfa538aacb5013fb15",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Granny Ash, a manticore grandmother, blocks the fire with a plate of spiced grass-cake."
+      },
+      {
+        "by": "granny_ash",
+        "text": "\"Nobody has ever finished a slice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says proudly. The cubs want to see you try."
+      }
+    ]
+  },
+  "gemfall-04a/scene_granny_cake_share_back/narration": {
+    "source": "sha256:82563aa2d6102bcaa0f9ec826dd91c5749fc8a83aa116f59a3535cc37809dec6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You open your packs to find her a gift. The humming gets louder, and Granny Ash steps back without meaning to."
+      },
+      {
+        "by": "granny_ash",
+        "text": "\"It's not you, dear,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "granny_ash",
+        "text": "\"It's whatever is singing in there.\""
+      }
+    ]
+  },
+  "gemfall-04a/choice_cub_nap/narration": {
+    "source": "sha256:51d11efd330f38b565bf0553b74862c8db2e1a722d81bc75d00b3f2b4b4c362b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nap time. But the cubs stare at your humming packs and cannot sleep."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"I have tried counting cubs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Sefa sighs."
+      },
+      {
+        "by": "sefa_tallgrass",
+        "text": "\"They keep changing places.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you help them sleep?"
+      }
+    ]
+  },
+  "gemfall-04a/scene_moving_marker/narration": {
+    "source": "sha256:cdb1ec1a56385ca37a2557e116e741ea4fc86256004c8b2e528cff597a0d2d4a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Near camp, two manticores are moving a heavy pride marker farther from the caravan road."
+      },
+      {
+        "by": "marker_movers",
+        "text": "\"Hands welcome,\""
+      },
+      {
+        "by": "narrator",
+        "text": "puffs one. Carry it well, and they will teach you to brace a long load. Or ask where the new line goes."
+      }
+    ]
+  },
+  "gemfall-04a/scene_moving_marker_ask_where/narration": {
+    "source": "sha256:ce439aa4ed92e14910f0af277f8f1c93efb61e6d2f59745b50b840d5fd3f9ed4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "marker_movers",
+        "text": "\"Farther from the caravans,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a mover. She walks you along the old holes. Between them, the grass leans outward, a line you could follow tomorrow. The post still needs planting."
+      }
+    ]
+  },
+  "gemfall-04a/check_jackalopes/onSuccess/narration": {
+    "source": "sha256:f6210d921508ded67e34a50a7c29f27ae1622e67216043d44873529af254a2e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hands, knees, hands, knees, and"
+      },
+      {
+        "by": "party",
+        "text": "\"excuse me\""
+      },
+      {
+        "by": "narrator",
+        "text": "fifty times. Not one toe is stepped on. When you come out the far side, every jackalope turns its head to watch you go, the way you watch someone walk into a cold sea."
+      }
+    ]
+  },
+  "gemfall-04a/scene_waystation_lesson/narration": {
+    "source": "sha256:11c256e6496499310f8c2771b4c975b3f63cf8aa2a19f34ffb2ba7c8e77d6f9c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your coin buys the warden's ready-made tags."
+      },
+      {
+        "by": "road_warden",
+        "text": "\"River first, then pride, bridge, pride,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, pinning them up. Now you can compare clues instead of remembering lantern flashes."
+      }
+    ]
+  },
+  "gemfall-04a/interaction_plates/narration": {
+    "source": "sha256:98710cc0ef00acaa70454293cff30fd045cfd4f6e8e239723e73482ecc801d95",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You help Granny Ash carry plates down the long table. A cub guards each slice until its owner sits down. Granny Ash tucks a honeycake into your pack."
+      },
+      {
+        "by": "granny_ash",
+        "text": "\"For later,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "granny_ash",
+        "text": "\"Something normal.\""
+      }
+    ]
+  },
+  "gemfall-04a/interaction_post_hole/narration": {
+    "source": "sha256:2857fc57ff4e778a9f74efe29d0e82bea38fc7d477c53dc1791387ed90cff543",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The movers hold the post while you guide it in. It goes in straight. The smaller one pays you three coins."
+      },
+      {
+        "by": "marker_movers",
+        "text": "\"Hole-digging wages,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "marker_movers",
+        "text": "\"Do not tell the Brassbuckles.\""
+      }
+    ]
+  }
+}

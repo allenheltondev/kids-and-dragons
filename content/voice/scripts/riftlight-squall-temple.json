@@ -1,0 +1,903 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-squall-temple/arrival/narration": {
+    "source": "sha256:929e8964649626a114bb00bd1e16c75a57710b055f2a4919d53814680850a640",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A cloud skiff from Juniper's lookout bucks toward a temple island in the rain, all red roofs and ringing bells. Pip Thistledown clings to the mast. On the landing, a kitsune in a brown apron waves a teapot like a lantern."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Keeper Clove, of the Squall Temple!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he shouts."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Notchbrow is drifting straight at us, with a storm behind it. Can we keep the temple safe as the island drifts in? Jump, quick!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/arrival/variants/0": {
+    "source": "sha256:79f98994275b2004f83f347f3137ec17ee9594e1c3616a1e889eba814f1e3e29",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Your warning came in time. My keepers are safe inside!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/arrival/variants/1": {
+    "source": "sha256:f7bd011703603f6533d5a102b8933bc0abf054e4e0c8884c7326cc517f4cc485",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Your warning only just got here. Half my keepers are still outside!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/arrival/variants/2": {
+    "source": "sha256:2bc106725c2da996b779d60f7d2c1d502fb9ca6db84dab802615abe3cfbe99de",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"We heard the welcome song! My keepers are all out on the landing with lanterns, to greet it!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/check_skiff/onFailure/narration": {
+    "source": "sha256:ebdd77d053d6b5e2711194393f615c0393a9981392a7ab2d4e7838ef49b19be9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You land in a rain barrel. Splash! Clove fishes you out by the collar, and your snacks float away."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Welcome,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"You are wet.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/tear/narration": {
+    "source": "sha256:cdfe5fe864aee6a2014a3e795bdb2beb7f9e7ba8dfcc5098c129f47f3f59639f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Something is wrong by the bell tower. A tear in the air flickers at its door, and little pale creatures clatter out of it, in shells made of old bone chips. Bone crawlers! They live far away on the coast, in a mudflat full of giant old bones. Clove has never seen one."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"What are they doing in the sky?\""
+      },
+      {
+        "by": "narrator",
+        "text": "They swarm toward the bells' hum, and toward your humming chime. The chime leans hard toward the glacier. Whatever is pulling Notchbrow is pulling these too."
+      }
+    ]
+  },
+  "riftlight-squall-temple/tear/variants/0": {
+    "source": "sha256:700d3768834e91353524c67889ebe4cbc0f922e3c82e8db1d5333c62e77ed5a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up on the temple roof, Tumble the courier waves a wing."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Flew ahead!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Landed on a goose.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/first/narration": {
+    "source": "sha256:3db6f974db77cbd18292c6a4f1b50cb3d04bff09c0850f2e0fb10c3fdfc2ae3c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clove wrings his paws."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"The weather bell must ring before the squall hits, so every island ties down its washing and its little ones. But the crawlers are climbing the tower to nibble its hum!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Down on the landing, the littlest keeper, a kitsune called Fig, has climbed the tallest lantern post to watch for the island. The rain is getting heavier. What first?"
+      }
+    ]
+  },
+  "riftlight-squall-temple/first/variants/0": {
+    "source": "sha256:45eec27705b081b0f1c7efabca2be136bc5bfdbdbb85739d23adb6ab4c8d5b23",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_clove",
+        "text": "\"Everyone else is inside, thanks to your warning. Fig sneaked out.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/first/variants/1": {
+    "source": "sha256:bbcb60efa22e89949bffc74e8fed7373442ea4e9803eb1df03e3d7694525b81a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_clove",
+        "text": "\"And half my keepers are still out there with her!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/first/variants/2": {
+    "source": "sha256:dc3b86875dff8a1ec1ca1a7eabb31f59bb132af77dee0d473d5fff1c1af054f7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_clove",
+        "text": "\"And all my keepers are out there with her, holding welcome lanterns!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/bell_rung/narration": {
+    "source": "sha256:08f6e1cd59df24e9c414639bd723cabb266577ec16de62889308989bfcaf6ace",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bong! The weather bell rolls out across the sky. Far away, another island's bell answers, and another, and another, until the whole sky is ringing. Everywhere, keepers are tying down their washing. Clove wipes his foggy glasses."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Every island heard that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-squall-temple/clapper_gone/narration": {
+    "source": "sha256:c16755edd3da49c2dde370e2c262ee0b60c45bf6e16cfd59d19e63cc59c86fe4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crawlers pile on and push you back down the stairs. When you climb up again, the bell is still there, but its clapper is gone. Three crawlers are carrying it off across the roof like a prize. Pip bangs the bell with his spoon. Tink."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I heard it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "No other island will."
+      }
+    ]
+  },
+  "riftlight-squall-temple/keepers_soaked/narration": {
+    "source": "sha256:24d5ac90f84223185025cf64bdc1061a36f595bb7e4bdaea59f38655f542a868",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Down on the landing, the squall got there first. The keepers stagger in, soaked to the fur, their lanterns blown out. Clove climbs the lantern post himself to fetch Fig down, and he loses his teapot on the way. Fig sneezes."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Never mind,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Clove says bravely."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Teapots can be found. Bells can't be late.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/keepers_soaked/variants/0": {
+    "source": "sha256:d5a20ce6cc81793f80d6a1902f570f377a89fc359fdac0fc149e2b07d3e2de81",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Down on the landing, there is nobody to fetch. Your warning got everyone inside, and Fig came down by herself. Clove pats your arm."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"You thought of everything,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-squall-temple/landing/narration": {
+    "source": "sha256:f886aae27a99a5e4bbd4fecd910bf68e3a1ba0ac2edbfff16059c8e1dff0dddb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Out on the landing, the rain comes sideways. Fig clings to the top of the swaying lantern post, and she won't let go."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Fig!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Clove calls."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Down, please!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, up on the tower, the crawlers are nibbling the bell rope."
+      }
+    ]
+  },
+  "riftlight-squall-temple/tumble_lift/narration": {
+    "source": "sha256:5c06a7409db5c6fd2d7f635b6214770ff5782a61d879da457c156d60833a7c84",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble swoops low, scoops Fig off the post and drops her, very gently, into Clove's arms. Then Tumble lands in a rain barrel."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Meant to,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, from inside it. Everyone hurries in."
+      }
+    ]
+  },
+  "riftlight-squall-temple/keepers_in/narration": {
+    "source": "sha256:7294cd9dc6f223e9942510153eca356ba68193c8854cc341c26f788afbd81187",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last keeper is in. Clove counts tails, wings and dripping hats, twice. Then, up on the tower, the bell rope snaps. The crawlers have chewed it through, and the weather bell falls silent. Clove looks up at it."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"The other islands won't hear our warning tonight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says quietly."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"But my keepers are dry.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/stay_together/narration": {
+    "source": "sha256:c7ef390c5b297a16e4caf03cb06a00674b6ddb16f40c549e1ea411e79accef48",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You stay. Fig climbs into Clove's apron pocket, which is a very big pocket. Clove pats it."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"A bell is a bell,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"These are my keepers.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Up on the tower, the crawlers click and nibble the silent bell."
+      }
+    ]
+  },
+  "riftlight-squall-temple/pip_gone/narration": {
+    "source": "sha256:5bdc4539df12ac58ba51df1337f86b9f01e1d6e0e9194d41764dc12aa828cb59",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then Clove looks around."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Where's your manticore?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip's teacup is empty, and a long push pole is missing from the rack. Out in the rain, Notchbrow has drifted close to the landing. A small figure stands on its edge, shoving at it with the pole."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says one good shove!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip yells. The island does not notice."
+      }
+    ]
+  },
+  "riftlight-squall-temple/tumble_fly/narration": {
+    "source": "sha256:a0cf1b7282e100601a774b58375cf1e9c0ba460d09698c38ba019ddd390efed8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble flaps you over the gap a few at a time, and lands, for once, perfectly."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Did you see that?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she shouts."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Somebody tell Juniper!\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/pip_found/narration": {
+    "source": "sha256:f801185eb2d38d2c859782fb1a612613ac502f5c7e0f9adaee89f6c58390a3ff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow does not move one inch. Rain drips off Pip's ears."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia would push it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he puffs."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I wanted to show her I could do it by myself.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Beside him, the mooring stone hums along with your chime. What do you do?"
+      }
+    ]
+  },
+  "riftlight-squall-temple/pip_shove/narration": {
+    "source": "sha256:9f5948f2684f4ab8351d06429abba4d1d740371eac43556da3468b845dff598b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone grabs the pole. Pip counts to three, and then to three again, louder. You heave. The pole bends like a noodle, and everyone sits down hard in the wet grass. Notchbrow does not notice at all. Pip stares at the pole."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Oh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"An island is bigger than a shove.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then he laughs until he hiccups."
+      }
+    ]
+  },
+  "riftlight-squall-temple/pip_watch/narration": {
+    "source": "sha256:9951cac376ad3957458f57c0c12f518d277122f114abf42f23edef1a6445d0e0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You sit beside Pip in the rain. Notchbrow creaks toward the glacier, and your chime leans with it. Pip watches for a long time."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It isn't wandering,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says slowly."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It's being pulled. Pushing can't fix being pulled.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He lays the pole down in the grass."
+      }
+    ]
+  },
+  "riftlight-squall-temple/towels/narration": {
+    "source": "sha256:3fe59f214bbe741462b9facb47ba3ec000238a579740a2f57ded7978e7427553",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clove throws towels over everyone."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Never do that again,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he tells Pip,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"or I'll tie a bell to your tail.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip peeks out from under his towel."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he mumbles."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I just wanted Lady Olivia to say I did something big.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What do you tell him?"
+      }
+    ]
+  },
+  "riftlight-squall-temple/pip_brave/narration": {
+    "source": "sha256:e6a1368f82de50ea4e41422d814bbed29741ea08a9ffd5a86152925e8d7598b1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip grins under his towel."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Brave and silly,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he repeats."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says those go together.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He writes it on his paw so he won't forget, and the ink runs down his wrist."
+      }
+    ]
+  },
+  "riftlight-squall-temple/pip_asks/narration": {
+    "source": "sha256:70e2d52b81dc0bd018b45128784fbce8d6537b27680792c29fd77d3d70e0657f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip thinks about it. Then he holds out his paw to shake on it, very seriously, like a grown-up."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Next time I'll tell you first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Then we can all be silly together.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/weather_book/narration": {
+    "source": "sha256:c9342711e08e6011a801f7cd31f3e979f7d0356cec6959accaa9afffec338ff2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "By the fire, Clove opens a huge book of weather and islands."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Every year we write down who drifts past,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"This year, three islands came early, all leaning the same way. And now crawlers, from a field of old bones on the coast, so far away I've never seen it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He taps the page. Your chime leans the same way, toward the glacier. Whatever is pulling Notchbrow reaches everywhere."
+      }
+    ]
+  },
+  "riftlight-squall-temple/rest/narration": {
+    "source": "sha256:fad5ad1247cc6b5da24f1d55c03369c83cc4da6b8e040df06591c3f66dc33617",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clove's keepers bring rice buns, hot and sticky. Through the window, Notchbrow fills the sky."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Now we choose,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Clove."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Push it clear with the long poles, and the temple is safe, but Notchbrow drifts on into the storm, still pulled. Or clear the landing and let it settle against us. It can rest at last, but it will bring the crawlers right to our door and squash my landing rail.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/rest/variants/0": {
+    "source": "sha256:160e925f0f1099c48119d7660f6552a644c8f8aef9a7ac2c6eb925353d3d991e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Let it settle,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip quietly."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It's tired.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/rest/variants/1": {
+    "source": "sha256:f6fb7aa88090b7b71b4e93fbe15eea7417969475c1b7be379d696d4cfe9046b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Push it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"All together this time.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/push_plan/narration": {
+    "source": "sha256:9ce495bc9c1bf57fcd07a147103697364792bc22eda6dae7b2a78d7d82163fe9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You'll push. Clove's keepers fetch the long push poles from the rack."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"A small turn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Clove says."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Not a shove across the sky.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip spits on his paws, then wipes them on Clove's apron."
+      }
+    ]
+  },
+  "riftlight-squall-temple/shelter_plan/narration": {
+    "source": "sha256:582a4eaaf653c5bc2a5d521d1ad750cd502c7aacf5e321a1d8a062549efee183",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You'll let it settle. Clove's keepers drag out every cushion in the temple to pad the landing."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Gently,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Clove tells the island, as if it can hear. Pip carries a cushion bigger than he is."
+      }
+    ]
+  },
+  "riftlight-squall-temple/approach_push/narration": {
+    "source": "sha256:3161da19b300aa18643357c083d820313d1d695c9d538969ed099dbbaadba0b0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow's edge looms out of the rain, right at the landing. Out of the tear by the tower pour the bone crawlers, rushing toward the island's fresh magic and your humming chime."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Poles!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Clove."
+      }
+    ]
+  },
+  "riftlight-squall-temple/approach_shelter/narration": {
+    "source": "sha256:b42eaa037063fbd57453063c54efecac133476712fa0e3d22cc1e1eada51e23e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow's edge looms out of the rain, right at the landing. Out of the tear by the tower pour the bone crawlers, rushing toward the island's fresh magic and your humming chime."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Hold the landing!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Clove."
+      }
+    ]
+  },
+  "riftlight-squall-temple/pushed/narration": {
+    "source": "sha256:8ebb108f7b352b66f0417066986c13778ccf5b156c4ce198029095dd81bde0e6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The poles bite. Slowly, slowly, Notchbrow's edge turns past the landing, and the island drifts away into the rain, still leaning toward the glacier. The temple is safe. Clove sits down on a wet cushion."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Goodbye, old thing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"I hope you find wherever you're going.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip waves his towel at it."
+      }
+    ]
+  },
+  "riftlight-squall-temple/settled/variants/1": {
+    "source": "sha256:b4bcdaccf758feec4eda6817958d0bf0dd35754ef1b4b617cc64d22f314843a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Crunch. The landing rail bends flat. Clove sighs, then grins."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Rails can be mended. Islands can't be hurried.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/damaged/narration": {
+    "source": "sha256:20befe445d1510d18b85f5ab1de3ab87bf98b17af60a54ac653a76bfad1bd801",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crawlers drive everyone back inside the hall. Outside, Notchbrow bumps the empty landing, hard. Boards crack, a lantern post topples, and the landing breaks in two. Then the island swings away into the rain. Everyone is safe and dry, but the landing is gone."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Closed for repairs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Clove says bravely, and hangs the sign upside down. The crawlers have the yard to themselves."
+      }
+    ]
+  },
+  "riftlight-squall-temple/crawlers_home/narration": {
+    "source": "sha256:ac0131ad6c30d1a58e17680b0994e58d1b7153c082bc98bc0f7cb619273a7f3b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The squall begins to ease. By the tower, the tear in the air is shrinking. But crawlers still cling to the warm bells, clicking sadly. They are a very long way from home. Pip holds out his spoon to one."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"They want to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Everything does.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you get them through before the tear closes?"
+      }
+    ]
+  },
+  "riftlight-squall-temple/tear_shut/variants/0": {
+    "source": "sha256:4f1a4667a0e8feb7c929348a31bf823e6bb6a47f4d7e5fdf67181d39bc20ed11",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From inside the bell comes a small click. Clove sighs."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Fine. You can be the temple's bell crawler. No chewing.\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/farewell/narration": {
+    "source": "sha256:8baec8a1c5f5cd5a12038fc311c1d86756ee72227b90c9641570f0602d0229f2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clove opens his weather book to a fresh page and dips his pen."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"I write one line about every storm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"What should tonight's line be?\""
+      }
+    ]
+  },
+  "riftlight-squall-temple/clove_pulled/narration": {
+    "source": "sha256:eff41e436101f5941bf611d7f9802e224169ce71fea71f7544a3a4ddced9f978",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clove writes it slowly: Something is pulling the land. Then he underlines it twice."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"Every keeper who reads this book will watch the sky a little harder now,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-squall-temple/clove_home/narration": {
+    "source": "sha256:7d47def80d2f28cb40ab099995c1278a9fc73f973cbc19d8b19cbe9cb8d77f77",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clove writes it, smiling: Even crawlers want to go home."
+      },
+      {
+        "by": "keeper_clove",
+        "text": "\"That's the truest line in this whole book,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Pip copies it onto the back of his paw."
+      }
+    ]
+  },
+  "riftlight-squall-temple/ending/narration": {
+    "source": "sha256:3f7296def1f01f04ca1a3fa2cf54321a6637de60d32303c2b5103bb5c1cc3630",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble lands on the shining landing, almost gracefully."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Griffin flight down to a mountain pass called the Cairnstep?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she offers."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Or back to Juniper's lookout. I'll try very hard to land.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is your piece: the pull reaches everywhere. It drags islands across the sky, and crawlers all the way from the far-off coast. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1045 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-buried-bridge/walk_out/narration": {
+    "source": "sha256:8e0dd1deef712160599a61fbe2fde1e58a26813de010c8ec7141a145891f40e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle leads you upriver from Tidepocket, pool to pool."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Grandmother says there's a bridge out here with no river under it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"A bridge needs a river. So where did this one's river go?\""
+      },
+      {
+        "by": "narrator",
+        "text": "She stops where the brown mud ends. Ahead lies cold gray silt, soft as porridge, and past it, the old bank."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I swim. You don't. Pick your way.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/check_hop/narration": {
+    "source": "sha256:f316dc84dd3265ad21727fd3c973ef66fa5f88f545fa2980c8d9fcf6daa21dc0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"That one. That one. Not that one!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle points with a fin from the channel. The stones are small and far apart."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/check_posts/onSuccess/narration": {
+    "source": "sha256:8389638dff9c2d53704ab277654e25d031eba5311368c237091fb37ddde65640",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Post to post, firm all the way."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They used to mark a riverbank,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, surprised."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/fly_rope/narration": {
+    "source": "sha256:2ffca9ab5b3dd233207dec91af6dbc9871483490a05d1caf556c8f81bc8853ef",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your flier hops the silt in two flaps and ties a rope to a post on the far side. Everyone else crosses hand over hand. Puddle swims underneath, cheering."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Do it again!\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/walk_stuck/narration": {
+    "source": "sha256:7b2a9a5321e1f7a2209318c9e8c76374e6b4f478523ec78552444e4917dd146c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The silt swallows you to the knees and holds on. Puddle puffs up like a ball and floats beside you. You grab her, carefully, and she tows you out."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. Spines. You're welcome.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You reach the bank wet to the waist."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/bank/narration": {
+    "source": "sha256:a78246e07ff5ebd2b5535c8635ace6da4148d8fcbaa6e93ff4ba10e56743a4af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From the bank, you finally see it. A bridge stands over a dry riverbed. Its arches are gray stone with white specks, like salt on bread, with a waterline carved high up. Not a drop of water under them. A little snow falls on the far end, from a clear sky. Master Orin Vale is here already, brushing an arch. Most of the dust lands on him."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Ah! You've come about the river too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/orin/narration": {
+    "source": "sha256:105e119426c1d3cf1f35d67ea5556400ccd69e465250e81f6479b721656fc2e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin holds up a jar of pale grit."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Glacier silt, under a bridge with no river. And my map has no river here at all.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at your pack, where the Listening Chime hums."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Lend me your chime while we work, and I can measure which way it leans all day. But it will be on my pole, not with you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle flicks her crest."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Or keep it, and he measures that waterline by hand. Up there.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/share/narration": {
+    "source": "sha256:a5ea27481c03609fe0f4df36ea39c600cc142d002b8b6ef98c20abd135de0c01",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hand Orin the Listening Chime. He hangs it from his measuring pole, and at once it leans north, up the dry riverbed, toward the glacier. It stays leaning. Orin writes very fast."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Thank you. You'll have it back before supper. Probably.\""
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"He means definitely,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle tells you."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Right, Orin?\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/keep/narration": {
+    "source": "sha256:87e21d7bb5ed95580bd2e64c98bd296d8f8794c79da2e53de6c6e5c4f88e6534",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You keep the chime in your pack, where it hums to itself. Orin nods, only a little sad."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Then I'll measure the old waterline by hand.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks up at it. It is very high."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Hm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Hm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "agrees Puddle."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/pip_runs/narration": {
+    "source": "sha256:40707453ae67e9f59828fa8b90e2869a7ed19423dc128cc12c184e4e4c630d26",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Feet thump along the bank. It's Pip Thistledown, the young manticore scout, notebook flapping. He doesn't stop. He runs onto the first arch, toward a round stone door sealed shut at the far end."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says rules are for people who haven't looked yet!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The old stone creaks. Puddle's crest shoots up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Off the stone! Show the bank, never the stone!\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/check_call/onSuccess/narration": {
+    "source": "sha256:e0e6f897920b68b4d18d0fa141bf0d9135f50a2c0e935f084dbbd730a7376311",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Okay. Okay! Bank.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip tiptoes back the way he came."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/pip_back/narration": {
+    "source": "sha256:609121596345bcc77484a91933ca325f080be7fd8aed7099d6a713c3aa13ba5f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind Pip, a loose stone slides off the arch and plops into the riverbed. Puddle lets her crest down, slowly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells you."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Grandmother would have puffed so hard she floated away.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip draws the sealed door instead."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia would want to know what's behind it.\""
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Nobody knows,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And today, nobody will.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/pip_falls/narration": {
+    "source": "sha256:abcebbbe3da0ddd3ecdcdbc7b9025d195d6bc3eec8c267c1e6a01b0d060eff13",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The arch shrugs. Pip slides off it, and you slide after him, down into the dry riverbed in a shower of silt. Pip sits up with a pebble in each ear."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"River pebbles!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Up on the bank, Puddle's crest lies flat."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"You walked on the stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says quietly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I'll have to tell Grandmother.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/silt_choice/narration": {
+    "source": "sha256:c0823daae24b9ff60c9db19750c23ba779e8339adfaee44ddaab48926a393c4e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Under the lowest arch, silt is packed to the top like stuffing in a pillow."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Dig it out!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a good shove saves a whole day.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle shakes her head."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The tide scours that groove twice a day. Open the little dam and let the water wash it. Slower, and wetter.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin looks from one to the other."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Shovels scrape old stone. Waves soak old scholars.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/dug_out/narration": {
+    "source": "sha256:b089660bffe762ca7af307607686969e58bbbe08f735cf6c10af9709627fac55",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The silt flies. In no time the arch is clear. But a shovel scraped the stone, and a row of old carvings under the arch is scratched to gray dust. Orin winces."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Fast,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And sad.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/dug_slow/narration": {
+    "source": "sha256:3d238047c23060c1f26becf8a2f3532ff9658d70506ff2c80ed2f690866411bf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The silt slumps back twice. You dig with your hands in the end, and your arms ache. When the arch is finally clear, a row of old carvings under it is scratched to gray dust where the shovels hit. Orin winces."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Slow, and sad,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/bigfoot_smash/narration": {
+    "source": "sha256:a74bdaaae88ccbb77778335991f68b8d151cd0387bf3c2860b55583927fd6e95",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot scoops silt out in huge armfuls, like a bear at a honey pot. The arch is clear in no time. But one big paw scraped the stone, and a row of old carvings is rubbed to gray dust."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Strong,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And sad.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/thornguard_brace/narration": {
+    "source": "sha256:0dc51716bee786f3cc7a77b66a26f2443d687d48bbf5fa94d5596598cf8767bf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your thornguard braces the arch with a shield while everyone digs around it, gently. Not one shovel touches the stone."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Now that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"is how you dig.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip digs with his spoon, very carefully, to prove he can."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/wash_out/narration": {
+    "source": "sha256:1a3ad16c0fc868c5ccc1efd34511a5d0c7ea906658fdbecac47af67790646c15",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle sits on the little dam of shells across the groove."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"When the wave reaches me, shout NOW and I pull. Too soon, and it only splashes.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/washed/narration": {
+    "source": "sha256:e8c03c2295a63f2c2836edf937c021b1a1aabb2d10c53c438a60a99052c55ab2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "WHOOSH. The wave races under the arch, and the silt slides out like porridge from a pot. The old carvings underneath come out clean. So do you. Everyone is soaked to the ears."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Told you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wetter.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/under_arch/narration": {
+    "source": "sha256:1565c21462343c60aa3c802cad486b709c7afd2feeb329800677f613e16003e6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Under the arch, smooth river pebbles cover the bottom, round as eggs. Dry water weed hangs from the stone like an old wet beard. And high up, higher than Orin's head, the waterline is carved deep."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That's no tide mark,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Tides don't reach that high. Not even angry ones.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/measure/narration": {
+    "source": "sha256:3b8d425aa9b301855a2efef6a93bfe9b0c752efbe0fedf40fe1fd0334397c766",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin wants to know exactly how high that waterline is, to set beside his map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"How deep was the river?\""
+      },
+      {
+        "by": "narrator",
+        "text": "he asks the arch. The arch does not answer."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/check_pole/onSuccess/narration": {
+    "source": "sha256:11a48389fc66d67e9c4c9300c3b3e311a8851a1c9694ed48d5b3eb393ef121b2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "orin_vale",
+        "text": "\"Two griffins and a beak high,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin reads, and writes it down."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/check_spot/onSuccess/narration": {
+    "source": "sha256:97795a300d3256c611df57a2a28493fa2962766b8921f032568222762be46256",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He reads the mark, slips on the way down, and lands in your arms."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Thank you. Two griffins and a beak high.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/measured/narration": {
+    "source": "sha256:09fcdbf7d02fbcbc3e2d1adc11da24bdf840493aa5c89b8aa2e1f25d8bd2ea08",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin writes the number in big letters."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"A river ran this deep, under this bridge. Deeper than the tallest yeti.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes it down too, then draws a yeti for scale."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/measured_rough/narration": {
+    "source": "sha256:a601803af8dd048918a3ecf59bbd1b24f562d99f270e3bc10aaba174251cd42c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin writes the number with a question mark."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Near enough,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, though his face says it isn't."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"A deep river ran here, deeper than a yeti is tall.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip draws a yeti, then a question mark."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/samples/narration": {
+    "source": "sha256:3e0ac0db33fe68d3f4e45289de1d2512046f5b9ab3e532938b4dfc68cf195448",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin lines up three jars: brown Saltrot mud, pale glacier silt, and dust from the arch, gray with white specks. Puddle licks the arch dust."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Not Saltrot stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Not glacier, either. I've licked most things, and I've never tasted this.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin writes: stone from nowhere near here."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/follow/narration": {
+    "source": "sha256:aa3f6692b02eaf60d7c05fe2deb40e63847c3be6490962783afcfc72b43ebc84",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"Where did it go, though?\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, and points a fin up the dry riverbed."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Follow it and see. From the bank.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The bank upstream is crumbly and steep. Pip has already started, of course."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/riverbed_end/narration": {
+    "source": "sha256:fbea88334ef6c9a1a9aed1c66c5415ae71ad5efa04356cec08a3a22b4b68d88b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A little way upstream, the dry riverbed runs straight into a grassy hill and stops. No pond. No waterfall. Just a hill, sitting where the river ran, as if it sat down there after."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Rivers don't do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Neither do hills,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin, frowning. Pip writes HILL? and underlines it."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/tide/narration": {
+    "source": "sha256:08dd9334c9b6df7df4aae9e8f9c7457f2e40d3c927b8bd1fb04018cc8ff41c07",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back at the bridge, the groove gurgles. The tide is coming in down the dry riverbed. Orin's drawings lie drying on the low shelf. Pip's notebook, full of drawings for Lady Olivia, sits open on a rock below."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"There's time to reach one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I can't carry paper. I'm a fish. Mostly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin looks at his drawings. Pip looks at his notebook."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/drawings_saved/narration": {
+    "source": "sha256:4e183c22659315bd2907267b7f819880871af72e5a1e04bb4046822e7c1655a5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every page, dry. Orin hugs them like a baby bird. Below, the water lifts Pip's notebook off its rock and carries it away, pages flapping. Pip watches it go."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"My drawings for Lady Olivia,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, very small."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/drawings_soaked/narration": {
+    "source": "sha256:56db1a71d0497ec0ed21f55ed08da29db7f561e3597e4566549c48fb63a27c47",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You grab the pages, but a wave grabs half of them back. Orin wrings out what's left."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Useful,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Just less exact.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Below, Pip's notebook floats away too. Pip doesn't say anything at all."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/notebook_saved/narration": {
+    "source": "sha256:b52d3c2c4e60940201e08f6c30aac8642cd3d1fb6b9415c1037edaf9a44b4f74",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the notebook over your head, dry as toast. Pip hugs it, and then you. Up on the shelf, Orin's drawings float off one by one. He fishes out a soggy page."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Redrawn from memory, then,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he sighs."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Useful. Just less exact.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/notebook_soggy/narration": {
+    "source": "sha256:069e4e53ef8e6e9a48ffc3a50cc3daf4806e3b5ee7c40c7f701b7f2546de9871",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You come up dripping, with Pip's notebook in your teeth. Half his drawings have run into inky smudges."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia likes smudges,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip says bravely. Orin's drawings are gone downstream."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"From memory, then,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he sighs."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Less exact.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/both_saved/narration": {
+    "source": "sha256:cd66e249a4c0836f4c9459584e1fe18f5b36939f2796e6817bae42fc6a4cdd72",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hum, step, hum, step. You run the hidden footing, scoop up Orin's pages and Pip's notebook, and run back with water at your heels."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"The chime knew the old stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin, amazed."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"It knew where the bridge stood.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/flood/narration": {
+    "source": "sha256:7ccdfa0305ce4f74109c77ad90774090a55dd8e458e0fc944233a27b95a45d04",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tide fills the old riverbed, just for a while. For the first time in who knows how long, water runs under the arches. The bridge stands in it, gray and speckled, looking exactly right. Puddle swims under the middle arch and back, grinning."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"It fits,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Like a puddle.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/pip_after/narration": {
+    "source": "sha256:410fa84c3bf3b618f9441bfbe0111af07cf4a194b146400b9af89971649c51ad",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip flips through his notebook, page after page of pebbles and arches."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will see what this place used to be!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Orin raises an eyebrow, and lets it go."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/pip_after/variants/0": {
+    "source": "sha256:e7b3ee7a430721eef7b109f9e440268538f7b1d7e0c487e9185b6389f1154ff1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip sits on the bank with his chin in his paws."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will think I found nothing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle pokes him with one fin, gently."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"You found a bridge. Draw it again.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He sniffs, and starts."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/rest/narration": {
+    "source": "sha256:934544ff67597a7e84746569dc675b1803dd8dda772fd36a050fb1845e002d2f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the high bank, Puddle opens her floating lunch box: kelp rolls wrapped in leaves."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Guides eat first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and does. Orin shares his sandwiches, slightly squashed. Across the water, the round stone door at the far end of the bridge sits sealed with silt and shells."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin, wiping his beak."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Shall I tell you what I think?\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/old_river/narration": {
+    "source": "sha256:a8a42ed496a4b4a5cfac4c03e4e0ffeba68c4c2d9d71ff70e3dac64fef6c8b5e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin unrolls his map, the one with places that don't fit. He lays your findings beside it: the waterline, the river pebbles, the gray stone with white specks from nowhere near here, the riverbed that runs into a hill."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"My map has no river here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"But this bridge stood over one. A river ran right here, long ago, when the land was a different shape.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle stares."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The land had a different shape?\""
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"One more piece that doesn't match today's map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin softly."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"But matches something older.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/north/narration": {
+    "source": "sha256:7e1188d46f260f8d676a39a788f2a406697107e783a55e84f45f6d45f466e41c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin follows the lean with his eyes."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Glacier silt. Snow from a clear sky. Something up north is draining this way, through an opening somewhere. Something is moving things, and the land remembers where it used to be.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip's eyes shine."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Imagine if we could use...\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle puffs up a little, and he stops."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/home/narration": {
+    "source": "sha256:836daf3f461c4e6f13b165aab4ec37adae8926acb9eac1f4bd8d8f309a3ac819",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tide slides back out and leaves the riverbed shining. Puddle hops into the groove."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Home. Bank all the way. Nobody touch the stone.\""
+      }
+    ]
+  },
+  "riftlight-buried-bridge/check_low/onFailure/narration": {
+    "source": "sha256:80ad24a2af46cbe36dddc079d76116bd60c014975e3ed9a5e2da7be1d3dba53f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The silt grabs your boots. Puddle puffs up round, and you ride the last bit on her."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. Every time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-buried-bridge/ending/narration": {
+    "source": "sha256:c63015c263d43a5f0827b0001d7c0be8161615fd42678294fbf68a78530b630a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the edge of the flats, Puddle scratches the bridge into the mud for the guides' account: one bridge, one waterline, no river. Then she stops. Far out on the flats, something blinks: snow, nothing, snow."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"is new.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is your piece: this bridge stands where a river ran when the land was a different shape. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  },
+  "riftlight-buried-bridge/ending/variants/1": {
+    "source": "sha256:5374a63bc944564c5e355633c1b722a143555bc7ff18caede11273477137a822",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin has his notes, and a lot of questions."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"I'll take your word for the lean,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  }
+}

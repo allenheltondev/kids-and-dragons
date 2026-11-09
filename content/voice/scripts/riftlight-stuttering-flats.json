@@ -1,0 +1,1151 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-stuttering-flats/arrival/narration": {
+    "source": "sha256:fe238b8314d3069962e6f0cf3e2491f3eb9a66b6881597522ed829eb713e2c67",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Out on the flats, a patch of snow lies on the mud, and more snow is falling on it, just there. Above it, an opening in the air blinks: snow, nothing, a sliver of snow, nothing. Beside it, a snowhorn goat stands belly-deep in mud, bleating at the blink."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That goat's from your glacier,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, popping up in a pool that fits her exactly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"It wants to go home, and that door won't hold still. How do we get it through?\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/herder_blink/narration": {
+    "source": "sha256:32b00320cc04215bd12ad53dc07f866999c99efd64888495d8b0465109f3260b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On a long blink you see snow, and a yeti with a crook: the herder from the glacier. She sees you too."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"You brought my kid home!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she booms."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That's its mother out there. She went looking for her kid and walked through a crack in the air. Send her back to me!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then the blink shuts. The goat leans toward it, and sinks a little deeper."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read/narration": {
+    "source": "sha256:e44639b3b680c18cf1160ebd8fb33299e3e556dba0302280f8cedf5dfd47be75",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The opening never blinks the same way twice. Short, short, long. Long, short, nothing."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Grandmother calls these stutterers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Master Orin would say unstable. You can't trust one. You can only watch it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you learn its blink?"
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/watch_blink/narration": {
+    "source": "sha256:58cbd4883896d2ca48d2a394c1fe75b6ade99ef8a4d50eb823a806e751bc99e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle lies flat in her pool and counts under her breath."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Watch it blink. Then tell me what you saw, in order.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read_star/narration": {
+    "source": "sha256:5540a368ade47710c9694efdb7e9a1fb276c57e075926a75c9fbb0a8e53c7d6f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your starweaver watches the way Seren taught and feels each blink before it comes: two short, then a long one, most of the time."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"How did you do that?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Teach me. No, don't. I'd only lick it.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read_done/narration": {
+    "source": "sha256:2276c9c341bf59bc465713ac299af2cedb215f6c0856aeb6fbcd4d2294671cf9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two short blinks, then a long one. Most of the time."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Most of the time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle repeats, crest twitching."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That's the trouble with stutterers.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A snowflake drifts out of the long blink and lands on her nose."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/chime/narration": {
+    "source": "sha256:71d5840e4c1b5812316036f497557a36d4e1f693b2f1689dc2b660a21c8ae191",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In your pack, the Listening Chime is humming at the opening, like a cat purring at a door."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ring it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Maybe it holds the door for us.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she looks at the goat, who flinches at every sound."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Or maybe it scares her silly.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/chime_rung/narration": {
+    "source": "sha256:799f7223594f58fe9ceedb9f4bdb573359192f50893f6ced0376ca5b56a530b8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You ring it. The opening holds wide open for three whole heartbeats, snow pouring through, and the herder's mouth falls open on the other side. But the goat panics at the ring, kicks, and sinks to her chest."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Now we know it listens. So does she.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/chime_quiet/narration": {
+    "source": "sha256:beaeda3ee6a2e1fd4d9ba706468c26026fef26c6054455c99a2ab4afdba55b61",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You keep it still. It hums on by itself, and leans in your hand, past the opening, north toward the glacier, as if it already knows where that snow comes from. The goat chews a reed and stays where she is."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Patient,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I like patient.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read_rough/narration": {
+    "source": "sha256:a7310d685c6bc19eec64b96495b255e07ccbd769fb70b89861b654f39bfb2fae",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You can't catch the pattern."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Then watch my crest,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Up for a long blink. I'll do my best.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A snowflake drifts out and lands on her nose. She sneezes, and her crest shoots up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That wasn't a signal,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Mostly.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/reach/narration": {
+    "source": "sha256:a4ace542b4ab129faffaf9db31fe44b0e30f40324b4b2ada73b5ffdba9cf56c6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Between you and the goat lies cold gray mud, the glacier kind, turned to slush by the falling snow. Puddle can swim the channel beside it. You can't."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Shells or slush,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Both are rude.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_wade/narration": {
+    "source": "sha256:ec6d2d507b75c0c38a83c54155352d293d68dd228f62d5d44a689f98684ffd96",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The slush is cold enough to make your teeth sing."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Lean in,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Don't stop.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/fly_goat/narration": {
+    "source": "sha256:179f5be0238c9c5cf6c913c6e2083214150c01197a44cb0ee3f6b918885c41f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your flier swoops over the slush and lands by the goat, then drops a rope back for everyone else. The goat tries to eat the rope."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"She's from the glacier,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Manners didn't come with her.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/boot_lost/narration": {
+    "source": "sha256:900b465f0701279500978a97517c976482e7897997d3426c8496adc371fda988",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Halfway there, the slush takes your boot and keeps it. You hop the rest in one sock, which is now gray and very cold. Puddle fishes the boot out later. It's full of snow."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Free snow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Lucky.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/at_goat/narration": {
+    "source": "sha256:468a2d39fc17434d508463301a6112a4f4e722610760a8a1b725d6445238f7ff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up close, the goat is a grown snowhorn with a chewed ear and a very rude opinion of mud. She tries to eat your sleeve. Then she leans toward the blink, and sinks a little more."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Every time she tries to go home, she sinks,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Calm her first.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/calm/narration": {
+    "source": "sha256:6a78bd3d6274d701209754ed6007c0c5dd372419384727fd890c6cc1f218328c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goat stamps, bleats at the blink and leans again. Snow lands on her horns."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Steady her,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Soft, or strong. Your pick.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/calm_song/narration": {
+    "source": "sha256:e6837a89583b2d5418ae856094fe76305ed944f01479759b21198c576f881c55",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your songkeeper hums the low song from the glacier hall. The goat's ears turn. She stops leaning, and her eyes go soft."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"She knows that song,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"She's homesick.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/calmed/narration": {
+    "source": "sha256:b507b3de5cfe737a6d0e6627c106782dd1cb1a0d664b34b4af6d4804afb4d945",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She lets out a long goat sigh and stops leaning. Then she eats the tip of Puddle's crest."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Calm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, pulling it back."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Very calm. Good.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/kicked/narration": {
+    "source": "sha256:a59981873cc1593a660ed738d4b74335594ebe88fe23100cdad92b1f69273c9d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goat bucks, and one hoof catches you on the shin. Then she wears herself out and stands still, panting."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Calm-ish,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"We'll take it.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/free_choice/narration": {
+    "source": "sha256:62df3ace60fef317c348eaa0f4bb067c93566ab5a652e101bb67eb72aa0937e8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Her back legs are stuck fast. You could haul her out now. Quick, but those legs are cold and stiff, and hauling twists them."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Or,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"dig around her legs, wave by wave, and let the tide float her out. Gentle. But slow, and the water will be high when she crosses.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_haul/narration": {
+    "source": "sha256:e9a1363dda9222e3bfcbd7d3e2bfc03a6e2380dee2693b7659998ab1c1373582",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A rope around her middle, everyone on the end of it."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"On three,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"One. Two. Hm. Three!\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hauled/narration": {
+    "source": "sha256:a4e60c6135efbba6547caf01bdca6fc5b91099c66194b31138294fbc3c8eb00d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "HEAVE. The goat comes out with a pop like a cork and stands on the shells, shaking. But she holds one back leg up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Twisted it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"She'll be slow at the crossing.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/haul_slip/narration": {
+    "source": "sha256:93db7f28cb5b52455ac217303bc5c84def7e04a813d72b1244d11588cea6034a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rope slips, and everyone sits down in the slush. The goat kicks free on her own, right over your shoulder, and stands on the shells holding one back leg up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Twisted,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"And you're muddier than the goat.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/bigfoot_lift/narration": {
+    "source": "sha256:12fed6beeb6a08950df6ec2618627dabfa32eeb79dd27c78d469da2dc08e31d7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot hugs the goat and stands up. She comes out with a pop and a very surprised bleat. But one back leg twisted on the way out. She limps."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Strong hug,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"A bit too strong.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/float_dig/narration": {
+    "source": "sha256:71ce82242a7ad9c96b763e53da11f786557b04b60985e4f2a41a06d52c16b8f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle hands you a flat shell."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"When a wave rolls under the mud, wiggle. Not before. Not after.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/floated/narration": {
+    "source": "sha256:9e34ae53d1a9befaa6b7546923dc2313af525412f2c37b7b1089dfcbcb5f3207",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Wave by wave, the mud lets go. With a long sucking sound, the goat floats out, unhurt, and paddles to the shells. But the water keeps rising behind her."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wet crossing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Good thing I like wet.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/floated_late/narration": {
+    "source": "sha256:df737436ac78edde8c805a8de59dad6a00c618a9b6daaec40aef402fcb466ac8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wiggle on the wrong waves, and the mud only lets go when the tide is up to your middle. At last the goat floats out, unhurt and furious. You are soaked and shivering."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wet crossing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, through a chattering beak."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/caught/narration": {
+    "source": "sha256:c0debeb0a9b6de09130a5c35538f7e5e3584d01322cabdbd7dfefa1b7c753e90",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You catch her by the collar of shaggy fur just as the short blink snaps shut in front of her nose. She sulks."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Moved things always want home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Even when the door is the wrong size.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/goat_ran/narration": {
+    "source": "sha256:4fd80548b94f0b6e4d01b6d93388b22c7064ca0c82800b01f74e2421e798429e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She jumps the short blink, and it shuts in her face. BOING. She bounces back onto the flats in a puff of snow, sneezing, spins around and eats the nearest thing to hand: Puddle's floating lunch box, lid and all."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"My lunch,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle faintly."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/rest/narration": {
+    "source": "sha256:823ba4641ef28ef27b91e041d77171f8343cd1970932165425b5398b22d66794",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle leads you all to a high shell bank. She opens her floating lunch box: kelp rolls. The goat eats the lid. Then a frogfolk fisher comes wading straight toward the blinking opening with a net. It's Fen."
+      },
+      {
+        "by": "fen",
+        "text": "\"Snow fish!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls."
+      },
+      {
+        "by": "fen",
+        "text": "\"I've never caught a snow fish!\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/rest/variants/0": {
+    "source": "sha256:797f5df8937597e6f14855bc4c8c716487f0c383b830a088d06025c2bed7f04b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle leads you all to a high shell bank. There is no lunch, because the goat ate it, box and all. The goat looks very pleased. Then a frogfolk fisher comes wading straight toward the blinking opening with a net. It's Fen."
+      },
+      {
+        "by": "fen",
+        "text": "\"Snow fish!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls."
+      },
+      {
+        "by": "fen",
+        "text": "\"I've never caught a snow fish!\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/fen_back/narration": {
+    "source": "sha256:f5548e5572da265650982220b5f479c564b2b69dcebf6ca7b622394ea0983962",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fen stops at the edge, grumbling."
+      },
+      {
+        "by": "fen",
+        "text": "\"Snow fish don't exist anyway,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "fen",
+        "text": "\"Probably.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest stands straight up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"is exactly why these flats need a warning sign.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/fen_net/narration": {
+    "source": "sha256:718e8df5ff8c112472d14622c288d3ff1a0dfb93916c6a26596b9de6f2b3a72b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fen swings her net through a long blink. Whoosh. Her arm comes back covered in snow. Her net doesn't come back at all. On the other side, the herder holds it up, puzzled."
+      },
+      {
+        "by": "fen",
+        "text": "\"My best net!\""
+      },
+      {
+        "by": "narrator",
+        "text": "wails Fen. Puddle's crest flops."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That is exactly why these flats need a warning sign.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/crossing/narration": {
+    "source": "sha256:10925064007b0ff5e46bfe3eb0e9218bfe011ea02c3dc8d35ff7d4961b7b9b23",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder waits on the snowy side, crook ready, whenever the opening shows her."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Send her over on a long blink!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The goat leans toward home. Snow drifts out across the mud. The pull runs both ways here."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_jump/narration": {
+    "source": "sha256:7384126fec8aab9015311ce7b302ac631711c42bf7cee262ffbbad0cefc7fc48",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She's heavy, she's wriggly and she smells of wet goat."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Long blink,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Then throw. Gently. Throw gently.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_float/narration": {
+    "source": "sha256:37e02ff0ef6c6ef235d25876040c8951c8555c76127eb7d1428d3a40906a62ae",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle puffs up round. The goat climbs on top of her, very rudely."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wait for a long one. Then push.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/goat_home/narration": {
+    "source": "sha256:eff1d7d9630ae21dcb8163f5e66ecf06ad3ddef63c062effa8bc5185254481af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goat leaps through and lands in the snow with a happy crunch. A small goat kid comes running across the snow, and the two of them bump heads."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That's the kid you brought home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the herder calls."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Now it has its mother back.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/goat_bolts/narration": {
+    "source": "sha256:0aba7caac49a3e20222f8e8f37a268ee080be37d7b1237b281e29399340f1955",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The blink changes its mind. The goat skids, spins and bolts back across the flats. Then, on a long blink, the herder steps right through onto the mud, up to her knees."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Got you!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She scoops the goat under one arm. The opening shuts behind her."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Oh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder. A yeti on a mudflat is a lot of yeti, sinking."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_push/narration": {
+    "source": "sha256:793886724bb6fa28d7a259be2cac962e295cf64d5d1eaf74f7fb095054c4de3f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Next long blink,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Shove me at it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She is very large."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_call_blink/narration": {
+    "source": "sha256:cc6ddc0df932346810f9ca58542f14184929bf9fba38d7b863b0bf0f26cf3510",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"You watch,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"I'll jump.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/herder_home/narration": {
+    "source": "sha256:2821fb45ff7a28c33d76edd29c89c1edeff9b4fbc844675516bf2285e210d490",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "\"NOW!\" The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the herder calls, brushing off mud."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"I'll never complain about snow again.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/herder_boot/narration": {
+    "source": "sha256:34a6efed0f7da20923974108ccbadbc67ff18435d3815702f98606415a83f924",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder lunges through on a long blink with the goat, but her big boot stays stuck in the Saltrot mud. A small goat kid runs to them both. The herder waves a bare yeti foot from the snow."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Keep it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she booms. Puddle looks at the boot. It is bigger than she is."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hare/narration": {
+    "source": "sha256:5d69f345f55e0a738cc588a81ffea97cb415401ecadf553ba248a7e1991ca3b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A gust of snow blows the other way, and something small and white tumbles out onto the mud: a snow hare, ears flat, very lost. The pull runs both ways."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Oh no,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Not another one.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The hare sniffs at the blink and shivers."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hare_home/narration": {
+    "source": "sha256:087c14dda6b5276a43af4fd86f5ed3f79299ebab2f24b48490efd4844b4a07a8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the far side, the hare flicks its tail and is gone into the snow."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Moved things want home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, crest up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Goats. Hares. Snow. All of it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sounds as if she's working something out."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hare_wild/narration": {
+    "source": "sha256:8f2302bbe4565a0eee0b0c6adcf23ddfe9af4a2d521b167374f32221db318014",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The hare kicks, wriggles and bounces off your head into the slush. Then it hops through on a long blink all by itself, as if it knew the way. You have hare prints on your face."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Moved things want home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Even when you're helping.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/last_blink/narration": {
+    "source": "sha256:7e610d8a3d69882834e5a970bda75a6c48264ba292514b7cf0a1dca968fd4a22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Things keep going missing up here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the herder calls through the blink."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"A sled. A snowdrift. Half a ridge last week. Where do they go?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then the opening stutters, small and fast, and shuts for good. In your pack, the Listening Chime keeps leaning north, toward the glacier. Far off, past the flats, something big lands with a thump you feel in your boots."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/warning/narration": {
+    "source": "sha256:76d40d0f4a8f8f5f050a1e6b208a76ace11efb1ba94cdc6f6ebde6e66fd12267",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle's crest is straight up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That came down by the Bone Yard, where old bones lie in the mud and whatever you take comes back. My home channel runs out there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She drags over a flat piece of driftwood."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"First, nobody else gets caught by an opening like that. Not goats. Not Fen. What should the sign show?\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/warning_picture/narration": {
+    "source": "sha256:4e91d47677a60622b93e7f5de82c7526bb6af31538b2aa848aec4a46203271f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You draw the opening with a big bite out of the middle, and a goat with a very surprised face. Puddle props it on a pole."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Clear as a crab,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/warning_bank/narration": {
+    "source": "sha256:776c82d3fff16231290e9992e209e27779ba5982617199f3a655f24588636d0d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You draw the firm bank and a little waiting spot, with a goat sitting politely in it. Puddle props it on a pole."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wait here, it says. I like a sign that says wait.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/narration": {
+    "source": "sha256:aaf61216739f4fd9c6d3a0d7b9a601ea47b1988ac472355f2916aa7af582cc7b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle looks out toward the Bone Yard, where the thump came from."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Tomorrow I'm checking my channel,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Come with me?\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is your piece: openings like this one stutter and pull both ways, and moved things try to go home. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/0": {
+    "source": "sha256:bdb51f071523114592f4b79385e1c708690946805c958733d7a2bc3e7982b075",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fen squelches by, stops at your sign and studies the bite."
+      },
+      {
+        "by": "fen",
+        "text": "\"Not going near that, then.\""
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/2": {
+    "source": "sha256:bc9d1f7a7d5d60a3df12f4e78684cbcdbab4dde114477b3f6eebe83082458324",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"Somewhere up there, a yeti has my net,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she grumbles."
+      }
+    ]
+  }
+}

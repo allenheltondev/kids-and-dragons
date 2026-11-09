@@ -1,0 +1,1231 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-cairnstep-pass/cairns/narration": {
+    "source": "sha256:d6e6bdf887703ccfc312e800628462d2693aaca053f12e1929744cbf349237d1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Stone cairns climb a slope toward a notch in the Frostfang Peaks. By the lowest one sits a griffin keeper called Brask, from the aerie on the cliffs. He licks his pencil and writes something down."
+      },
+      {
+        "by": "brask",
+        "text": "\"Visitors. Good. I need witnesses.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He pats a heavy pass ledger."
+      },
+      {
+        "by": "brask",
+        "text": "\"This path was not in my book last season. Is this pass real? Does it belong on the map? A wrong page sends a herd off a cliff. Climb it with me, and help me decide.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/steps/narration": {
+    "source": "sha256:45e378ed99467c48f5f506ccb7c6b5fdece15c554bef5d31ef6e1d9d3597e886",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cairns climb in steps of old snow over loose stone. Brask flaps ahead."
+      },
+      {
+        "by": "brask",
+        "text": "\"Touch every cairn as you pass,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls."
+      },
+      {
+        "by": "brask",
+        "text": "\"It is polite, and it helps you balance.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you climb?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_line/narration": {
+    "source": "sha256:3978a7e5a42682abc912112b765b1ba5620e69367825570803e33db0f23e2de0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One cairn is so neat you want to give it a medal."
+      },
+      {
+        "by": "brask",
+        "text": "\"Don't,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"It will get ideas.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/notch/narration": {
+    "source": "sha256:6422bbd33fb8bb9f3644e07e9e2a0d94bd66a57b58104433767b905002d4084d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the notch, the wind combs your ears. Then the Listening Chime on your pack begins to hum. It swings on its cord and leans, not down the pass, but back the way the river comes, toward the glacier far away. Then it is still. Brask licks his pencil and writes: \"Bell. Pointing.\" He frowns at the words."
+      },
+      {
+        "by": "brask",
+        "text": "\"I will ask about that later.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/ledger/narration": {
+    "source": "sha256:e9a5302a61b805d1d4f190437f4eb9b09175b2b74a73d011ceb3735d150ac35c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask opens his ledger on a flat rock. Last season's drawing shows a smooth ridge. This season's shows the notch you stand in. A pencil line marks the herders' grazing route, cut by floodwater in three places."
+      },
+      {
+        "by": "brask",
+        "text": "\"One drawing is wrong,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"My witnesses will tell me which.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/ridge/narration": {
+    "source": "sha256:5fc043ee388b3367e21c74c67a94ca9afcd785bccc682138c3f088128fdf434a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the old page up against the real mountain. The cairns line up. The ridge does not. A slab of stone has stepped sideways, like someone making room in a crowded room."
+      },
+      {
+        "by": "brask",
+        "text": "\"Where, exactly?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks Brask, pencil ready."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/supplies/narration": {
+    "source": "sha256:151a343a777f2dc1242d97731379f8b769775188ce6d2011ccae25848dd832de",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lay the herders' route over the new drawing. The new path runs above the three flooded spots, along a high, dry shelf."
+      },
+      {
+        "by": "brask",
+        "text": "\"So the herd could use it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask,"
+      },
+      {
+        "by": "brask",
+        "text": "\"if the shelf is real. Where does it meet the cairns?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Your finger lands right where the ridge has a new step in it."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/ledger_sky/narration": {
+    "source": "sha256:0849729b989815b852d5a247ff5bfb3f83d42b767dd169f0d9bd84a2e3258d72",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your flyer goes up for a look. From above, the two drawings fit together like halves of a cracker, and the step in the ridge is as plain as a nose."
+      },
+      {
+        "by": "brask",
+        "text": "\"Show-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask, fondly."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/compared/narration": {
+    "source": "sha256:fe3423641e2aec3e4061070c239a1416b4de5d37f4f74448dc8ba8bdd131b510",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The pages agree on all but one thing: a step in the ridge, where stone slid sideways after the first snow."
+      },
+      {
+        "by": "brask",
+        "text": "\"So the drawing was right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask,"
+      },
+      {
+        "by": "brask",
+        "text": "\"and the mountain changed.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He writes it down, then stops."
+      },
+      {
+        "by": "brask",
+        "text": "\"But my apprentice thinks she drew it wrong. She has been crying on the page.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble/narration": {
+    "source": "sha256:ff43c446d6bfa2f65667650164acb6e86ebaa40b24287ba209dcca1bcde1125a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A young griffin skids up the slope, hugging a rolled page. Her beak is inky."
+      },
+      {
+        "by": "brask",
+        "text": "\"This is Pebble,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"My apprentice. She draws the new page each season.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pebble's feathers droop."
+      },
+      {
+        "by": "pebble",
+        "text": "\"I drew the ridge in the first snow, and it was whole! Did I draw it wrong? Will you help me fix the page?\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_help/narration": {
+    "source": "sha256:17a57858abde8a7fdfdd78f0010c38006d87804ed14167b6e5e426dc833b2e2f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pebble holds out her page. It has a smudge where a tear fell, and a flap that keeps blowing up. She scraped her wing on the climb, too."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Brask says a page is a promise,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sniffs. How will you help?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_walk/narration": {
+    "source": "sha256:8b679baf5e64a0ac7919e73feb4a0704ed16313f4d9c834dedece550e173d310",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pebble keeps stopping to look at her feet."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Griffins don't fall,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Mostly.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_walk/onSuccess/narration": {
+    "source": "sha256:9060bd2dc7e161b8fa12d705d2a0fb32afbb33724d8c622db1b8d42de3871287",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She sees the step and gasps."
+      },
+      {
+        "by": "pebble",
+        "text": "\"It's not my mistake. It's the mountain's!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She draws it in at once."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_page/narration": {
+    "source": "sha256:40c4c70a0e84b25952389888f22776262c4c5b7c63116f4d9f062657d7ffce33",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind keeps grabbing the page. You pin it down with a stone on each corner. The wind sulks and gives up. Pebble draws the step in three quick strokes."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Oh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Oh! It moved after I drew it.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_mend/narration": {
+    "source": "sha256:262c13722bc0d6288ea48ae684dbad51661161a976bc2964f7d5c5ff14a512c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your unicorn strokes Pebble's wing once, softly. The scrape fades."
+      },
+      {
+        "by": "pebble",
+        "text": "\"It stopped hurting!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and draws the step in three quick strokes."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_done/narration": {
+    "source": "sha256:70a3be192004b8e2a2118aa79a5d98fe194a6b7cb92cee7e2a04adb9b65d8006",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pebble blows the ink dry. The new page shows the notch, the step, and a tiny signature: Pebble."
+      },
+      {
+        "by": "pebble",
+        "text": "\"It was true when I drew it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Now it's true again.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She hands you a squashed supper bundle."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Nervous packing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask clears his throat."
+      },
+      {
+        "by": "brask",
+        "text": "\"Now, witnesses. Something older.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/old_page/narration": {
+    "source": "sha256:44bd112cb9a24b67cf34fdb8e5cd91fe4648d4ed73b24da476677ebcf981dd1b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask opens the ledger to its very first page. The paper is brown as toast and soft as cloth."
+      },
+      {
+        "by": "brask",
+        "text": "\"My grandmother's grandmother's page,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "brask",
+        "text": "\"Older than the aerie.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It shows a path through this very notch, dotted in old ink. Beside it are things to steer by: a lake shaped like a boot, and a peak with two horns. You look out. There is no lake. There is no two-horned peak."
+      },
+      {
+        "by": "brask",
+        "text": "\"A path here, long ago,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask says slowly,"
+      },
+      {
+        "by": "brask",
+        "text": "\"and nothing around it that is here now.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/narration": {
+    "source": "sha256:502862bdd72ab90e07f09c923a0592387900e9405d2dcaf8175984563f89d846",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pebble",
+        "text": "\"Griffins learn a page by heart,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pebble,"
+      },
+      {
+        "by": "pebble",
+        "text": "\"in case the book gets wet.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She taps the old marks on a rock, one by one."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Watch twice, then tap it back.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/onSuccess/narration": {
+    "source": "sha256:ccc8d2f67db1fa60555c0a612d245074498c659b0a0c935718a3502b736ba491",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pebble beams."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Now the old page lives in all our heads. Lake and horns and all.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/onFailure/narration": {
+    "source": "sha256:eb24025a80375ffa8c81ef20e937cabc9930d57a16ea93321701272ba6b42bd7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The lake and the horns slip away from you. Only the dotted path stays."
+      },
+      {
+        "by": "pebble",
+        "text": "\"That's the important part,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pebble, kindly. It is not the only important part."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/moved/narration": {
+    "source": "sha256:62e3c14b64981fc535bddf986efc1a08245e3d0203dc60866d6af3a6876907fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Now the big question: is the new ridge settled, or will it move again? The slab that stepped sideways is as big as a barn."
+      },
+      {
+        "by": "pebble",
+        "text": "\"We could all lean on it and see,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pebble."
+      },
+      {
+        "by": "brask",
+        "text": "\"Or roll a stone along it and listen,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"That takes longer. Listening always does.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you test it?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tested/narration": {
+    "source": "sha256:3cd21e9133c19e6e8cd10b0ab0b74c9e2ab2d94a0c14dfa60c766cb892b945fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The slab is steady, settled like a cat on a cushion. But at its far edge, a little stone drops through a gap and falls a long way."
+      },
+      {
+        "by": "brask",
+        "text": "\"The neck,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask quietly."
+      },
+      {
+        "by": "brask",
+        "text": "\"The narrow bridge of rock at the top of the pass. It is hollow underneath.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tested/variants/1": {
+    "source": "sha256:890890558005dca75ca4c6c082426b06433f3485a3647cdadccf417091c8738f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pebble",
+        "text": "\"You heard where,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pebble."
+      },
+      {
+        "by": "pebble",
+        "text": "\"I'll draw it in.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/survey_done/narration": {
+    "source": "sha256:4a3681a0874cb98f9ad063939ecd0aa9cd6255a8fd048719552fd6d28bccaf88",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask pulls out a long knotted cord, and everyone walks a stretch of it along the shelf. It hums in the wind like a harp. Pebble counts in griffin, which has different numbers."
+      },
+      {
+        "by": "brask",
+        "text": "\"Four hundred steps long,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask writes."
+      },
+      {
+        "by": "brask",
+        "text": "\"Two goats wide. One hollow neck.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He pays you six coins from the aerie's purse and an owlfeather clasp."
+      },
+      {
+        "by": "brask",
+        "text": "\"Fee and badge.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/rest_tea/narration": {
+    "source": "sha256:366684ff9ee3aa91ce40c6ceb31b3e180b525149f33210f610b4466f2f8dd7ea",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask lights a tiny stove that hisses like a cat. His tea tastes of pine needles and warm stones. Everyone gets a mug. Pebble gets a thimble. Brask writes:"
+      },
+      {
+        "by": "brask",
+        "text": "\"Tea. Good.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The neck can wait a minute."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tea_share/narration": {
+    "source": "sha256:5d1333d6dd59ed3a0b0c9eb253f07e471f724e6ebfe5c9904bdb95301ba65d42",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask gets the cheese, Pebble the bread, and the wind the crumbs. Pebble gives you a lace from her satchel."
+      },
+      {
+        "by": "pebble",
+        "text": "\"It makes feet quick.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Far below, tiny dots move along the valley."
+      },
+      {
+        "by": "brask",
+        "text": "\"Herders,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"They will want to know if this path is real.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tea_x/narration": {
+    "source": "sha256:e6cc751dcc13ee4ecdcd2a05cc86f69aba7c015e17a399d0c62e5fd6b460184a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tea is terrible and wonderful. Far below, tiny dots move along the valley."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Herders, with their goats,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pebble."
+      },
+      {
+        "by": "pebble",
+        "text": "\"They'll want to know if this path is real.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask nods."
+      },
+      {
+        "by": "brask",
+        "text": "\"Then let us finish.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pages_x/narration": {
+    "source": "sha256:22ecba81ceccf2ada65d9c919147b2680eabf286700d9014301f8fe7a8a0c1a8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The old pages smell of dust and pencil. Some passes are crossed out. A few have a tiny star."
+      },
+      {
+        "by": "brask",
+        "text": "\"Every road in this book was new once,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask. He turns back to the first page and taps it."
+      },
+      {
+        "by": "brask",
+        "text": "\"Except this one. This one was old when the book was new.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter/narration": {
+    "source": "sha256:a9891d87b8657f2b92a067a6988c0dd2159e97d8493036fb99ac48cda6a641f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask taps the ledger."
+      },
+      {
+        "by": "brask",
+        "text": "\"If herders come this way, where can their grain sacks wait out the weather?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Along the shelf, the cliff leans out in overhangs, and snow piles deep. Where will you look?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_drip/narration": {
+    "source": "sha256:a3b1ca43ca7490dc7114d688b2e49771af479e338a968d61a1325ffc91b5f9c9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Drips mean wet. Dust means dry."
+      },
+      {
+        "by": "brask",
+        "text": "\"Write that down,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask tells Pebble."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_found/narration": {
+    "source": "sha256:b9818b4b505cb543076188e119f5fedf8c01497117c8c15d9aea75cf51523a91",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pebble draws a tiny roof on the map. Then a yip floats over the rocks. A cinder wolf, gray as ash and glowing at the edges, is nosing at the little cairn where the aerie keeps its hay and bread. A second wolf trots up."
+      },
+      {
+        "by": "brask",
+        "text": "\"Hungry, not wicked,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"But that is my winter hay.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_found/variants/0": {
+    "source": "sha256:a3e4d762c620a18c9b8a8c4c019febaf9b4e1b2100dc852dde53afe689a0e4d6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You took your time at the slab, and the wolves did not. One already has a loaf in its jaws."
+      },
+      {
+        "by": "brask",
+        "text": "\"That loaf is gone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sighs Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"Save the rest.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cache_fight/onDefeat/narration": {
+    "source": "sha256:f1095f8b977de58669d19a766e3d30422b6268bdd948881f887f00055a642c35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wolves dart off with a loaf and some hay."
+      },
+      {
+        "by": "brask",
+        "text": "\"Hay can be bought,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"Friends are harder.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck/narration": {
+    "source": "sha256:41acab0aa4d462c0fbb98dfb9a50bbaf62fb32c9785aa9b5a6832e2db47bba5b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The neck is a narrow bridge of rock. Below it is a gap you could drop a house into."
+      },
+      {
+        "by": "brask",
+        "text": "\"Travelers will cross here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"They need to know how. So do we.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you check it?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck/variants/0": {
+    "source": "sha256:40066816ebd8e0c6eb2d600b719f52d0abb62cf2766282515e415c3e305b592a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A fresh crack runs across it."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Carefully,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pebble."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Very, very carefully.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_tap/narration": {
+    "source": "sha256:a92857fcbf059bfe5019ebcea622c7136ba06232c7584ee3df1e836b7bb786c3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Solid rock says tock. Hollow rock says donk."
+      },
+      {
+        "by": "pebble",
+        "text": "\"Donk is bad,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pebble whispers."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_heard/narration": {
+    "source": "sha256:3e5bba79f50c47ce9a4104e96b0bd1b6122cbe384ab5c211bf8d39ce67a6d94e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You remember the hollow donk from the slab, and where it was. You walk around it, and across the solid strip beside it, one goat wide. Pebble follows in your footprints."
+      },
+      {
+        "by": "brask",
+        "text": "\"Listening,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask,"
+      },
+      {
+        "by": "brask",
+        "text": "\"is quicker in the end.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_done/narration": {
+    "source": "sha256:ef12b4bb711d3fbdd9b7d8a77b7dee184e6480dfcc2bb4fd46a97b22a150a9f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The safe way runs down the middle, one traveler wide. Brask draws it as a dotted line."
+      },
+      {
+        "by": "brask",
+        "text": "\"A goat could walk it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "brask",
+        "text": "\"A goat should walk it on a rope.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He licks his pencil."
+      },
+      {
+        "by": "brask",
+        "text": "\"Now. What do we write?\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark/narration": {
+    "source": "sha256:e598876f324e111603bbdedf61c32c16ee050e35e5d4a27093742a5f6e1ae95b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask holds his pencil over a clean page."
+      },
+      {
+        "by": "brask",
+        "text": "\"A ledger is a promise to the next traveler. The herd's old route is under water, and they are hungry.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pebble holds her breath. What goes on the page?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark/variants/0": {
+    "source": "sha256:f1318f2bae7ab7b1b13bdb93b8adc291bc7b1d2b0368606679e89361a78e4e52",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "brask",
+        "text": "\"Not open,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"Not with that crack. Not in my book.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark_open/narration": {
+    "source": "sha256:1b8d1b4f8b84c21800201dbd481405a6f406ff44341d49e6ce6519c7a69d1d9e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask writes OPEN in big letters."
+      },
+      {
+        "by": "brask",
+        "text": "\"The herd will be glad,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, a little too quickly. Pebble clears her throat."
+      },
+      {
+        "by": "pebble",
+        "text": "\"And the neck?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask looks at it a long moment."
+      },
+      {
+        "by": "brask",
+        "text": "\"Then a good cairn at least, so they can find the safe line.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark_warn/narration": {
+    "source": "sha256:6159f1286a1623ce02135e31e14c339a8f09ab3d8c37951597a012238d81fa61",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask writes OPEN, WITH CARE, and draws a tiny hat on the neck. That is how griffins mark a place that needs respect."
+      },
+      {
+        "by": "brask",
+        "text": "\"Travelers read warnings,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "brask",
+        "text": "\"Mostly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pebble copies the hat."
+      },
+      {
+        "by": "pebble",
+        "text": "\"And a tall cairn to go with it.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark_closed/narration": {
+    "source": "sha256:cb1b6d1c06cc238f434e9f955fe1dfbffb99d31b7a52818ce7a422a20db636a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask writes UNSETTLED in small letters."
+      },
+      {
+        "by": "brask",
+        "text": "\"The ridge moved once. I will not send a herd over a thing that might move twice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It is a careful answer, and a bit sad."
+      },
+      {
+        "by": "brask",
+        "text": "\"We will still raise a cairn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "brask",
+        "text": "\"A closed road deserves a good marker.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone/narration": {
+    "source": "sha256:a00d11411f09ac884668e52deed680f3871499557143c9a1fa46bfa332f0b903",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last cairn goes up at the neck, where travelers will see it. Brask scratches a mark in the middle of it."
+      },
+      {
+        "by": "brask",
+        "text": "\"The capstone goes there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "brask",
+        "text": "\"Exactly there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The wind keeps nudging your hands."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone_fall/narration": {
+    "source": "sha256:f082edaf7b0360dc620e53b65fa6a15f30d18e5f7bec7860db13f3232ed97d83",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Down it goes, into the gap. You count to five before it lands. Pebble counts to seven, in griffin. The cairn stands, but it is short now, too short to see from the valley."
+      },
+      {
+        "by": "brask",
+        "text": "\"I will stand here myself and wave at the herd,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask,"
+      },
+      {
+        "by": "brask",
+        "text": "\"until we find a new top.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone_done/narration": {
+    "source": "sha256:db36473f50a2663c5e469c758316826ccdbc165823873085e7987cb803ee80b0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind whistles politely around the new cairn. Pebble gives you a brass whistle from her satchel."
+      },
+      {
+        "by": "pebble",
+        "text": "\"For a moment that needs one loud note.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask lifts his flag toward the sky. Far off, a little island floats in the air, small as a loaf in a pond, and a tiny flag waves from it."
+      },
+      {
+        "by": "brask",
+        "text": "\"Our neighbors,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "brask",
+        "text": "\"They watch the weather. We watch the stones.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal/narration": {
+    "source": "sha256:a7b6ea27dea5aa766f8ae7bdd6172ec58da9e1a540455032a3c018f546017e57",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "brask",
+        "text": "\"Our neighbors will want to hear what we found,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"What shall we tell them?\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_wave/narration": {
+    "source": "sha256:453ef0730de0f9d340210e1a7c6fc41f41b0642ed8b366785aa0208da22aa788",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask hands you a flag. Big wave, little wave, circle, pause. It is like a dance with a very strict teacher. Across the sky, a tiny figure waves back."
+      },
+      {
+        "by": "brask",
+        "text": "\"Oh, nicely done,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Brask."
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_back/narration": {
+    "source": "sha256:a79f5d2c1c329db30b53c828c82c2b9b252056c3dc5d2143c5e25e67ee5ae58a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The island's flags answer."
+      },
+      {
+        "by": "brask",
+        "text": "\"They say thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask reads."
+      },
+      {
+        "by": "brask",
+        "text": "\"And the ridge is not the only thing that moved. Their old landing route now points into empty sky.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He licks his pencil and does not write."
+      },
+      {
+        "by": "brask",
+        "text": "\"I would like to know how.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_back/variants/0": {
+    "source": "sha256:f45626beabad0a25e73f01658de7033cc1577097db01d0a2b0f2b6f4789304aa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The island's flags answer."
+      },
+      {
+        "by": "brask",
+        "text": "\"They say yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Brask reads."
+      },
+      {
+        "by": "brask",
+        "text": "\"Their old landing route now points into empty sky.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He licks his pencil and does not write."
+      },
+      {
+        "by": "brask",
+        "text": "\"I would like to know how.\""
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/narration": {
+    "source": "sha256:c4e8c5542bfcd9e32e2d235657a49a1559dcb990d0ba4ba35e736bad6cd5141c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask ties the ledger shut."
+      },
+      {
+        "by": "brask",
+        "text": "\"You walked it first, so the aerie owes you a flight. Griffins pay their debts.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at the island."
+      },
+      {
+        "by": "brask",
+        "text": "\"Our neighbors have route trouble too. We can fly you over to them, whenever you say.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is tonight's piece: the pass is real and new, yet the oldest page shows a path here long ago, among landmarks that are gone. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/5": {
+    "source": "sha256:9f22591aa7323218800f089b9c6dcc47abc118b66ffd6d04c1143b50001130c1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The aerie is a loaf short, because you stopped to listen."
+      },
+      {
+        "by": "brask",
+        "text": "\"Worth a loaf,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      }
+    ]
+  }
+}

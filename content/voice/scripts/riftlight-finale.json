@@ -1,0 +1,1167 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-finale/arrival/narration": {
+    "source": "sha256:9c832642dfc841f6205c43a3db1c375d52f7032d5b5f7be9c77e73cc8fb199ab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The walking passage winds down into the glacier where all of this began. Snow is falling from a clear sky, and drifting uphill. Your Listening Chime has stopped leaning. Now it points straight down into the ice, and hums. Orin taps the joining lines on his map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Whoever is moving the land is down there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Tonight we find out who. And we keep today's places where they are.\""
+      }
+    ]
+  },
+  "riftlight-finale/herder/narration": {
+    "source": "sha256:aa46602b84dc076fe0df4fef126f6f7cfdbd0f4eca742713059345af5220873c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A big yeti comes up the ice with a lamp: the herder who took you in on your very first night. Behind her trots the goat kid, the very same one, chewing on Orin's map case."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"What you want is under the oldest ice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The ice stair is quick, and slippery. The crevasse is slower, but I have a rope.\""
+      }
+    ]
+  },
+  "riftlight-finale/check_rope/narration": {
+    "source": "sha256:09fafa6e184656977385ce183479ef885fa37d90385cdef6fd9791ee48f3a80f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder drives a hook into the crevasse wall and ties her rope to it."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hand over hand,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"And don't let the kid chew it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The kid is already chewing it."
+      }
+    ]
+  },
+  "riftlight-finale/kid_bridge/narration": {
+    "source": "sha256:1828522139abc3a98e560e1ef52fef15442e457ce33693ab712b4444abb8a452",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the bottom, the goat kid bounces past everyone and out onto a thin snow bridge over a crack. Halfway across, the bridge creaks. The kid stops and bleats, the same enormous bleat you heard at the Exchange."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Not again,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sighs the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"I'll fetch it and take it home. Or you can, and I'll stay with you.\""
+      }
+    ]
+  },
+  "riftlight-finale/check_kid/onSuccess/narration": {
+    "source": "sha256:5ab77d1afec60b8ef037f30ffa776782c8b48c71b8d54a923beea95c46272bb2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You scoop up the kid and tiptoe back. Behind you, the bridge sighs and drops into the crack. The kid licks your ear."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, and ties it to her belt with a string."
+      }
+    ]
+  },
+  "riftlight-finale/herder_goes/narration": {
+    "source": "sha256:1ad956b5518255494d9cbcdad8f20d574924f14700fcff16639445a812b17632",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder steps out onto the bridge, light as a cloud for someone so big, and tucks the kid under her arm."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"I'll take this one home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Then I'll come back with blankets. Go on. Follow your chime.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her lamp bobs away, back up the crevasse."
+      }
+    ]
+  },
+  "riftlight-finale/ridge_look/narration": {
+    "source": "sha256:5562b3f04a35c40a9e428db3c314608a2053126f328d4544c211cb771f0ade68",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You climb the ice rib with Seren and peer over the top. Far across the deep ice, a ridge stands beside a great shimmer."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"See that ridge?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren whispers."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Brace it, and anything open beside it closes faster.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Your fingers are freezing, but now you know where to go."
+      }
+    ]
+  },
+  "riftlight-finale/broth/narration": {
+    "source": "sha256:f7033684fc4e26685e453bd5376173ef6dff0928925faff2550dece3b4d53171",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder's broth tastes of smoke and onions, and it warms you right down to your toes. She looks back the way you came."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Warm feet climb better,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and pours you seconds."
+      }
+    ]
+  },
+  "riftlight-finale/old_ice/narration": {
+    "source": "sha256:bf8a25a21ec347a050d57f318df69881739c84114d8a126b8f8487f64cd3b1a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The passage opens into a chamber of old ice, so old it is nearly black. It is quiet as a held breath. The snow that slid down from the ledge drifts across the floor, all of it going the same way. Seren puts a finger to her lips."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"This ice is very old,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Walk softly.\""
+      }
+    ]
+  },
+  "riftlight-finale/frozen/narration": {
+    "source": "sha256:7d60347486204ac394a2704e4695a0b7320652e0caa8ffa7c5ab88fa0f9be553",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the way to the ridge, things are frozen into the old ice, caught in the middle of sliding: a fence post, a wheelbarrow, a little rowboat with its oars still in. Every one of them leans the same way, toward the shimmer. Bram taps a painted board stuck in the ice. It says FRESH NOODLES."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"That's from the Exchange,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"From the quay.\""
+      }
+    ]
+  },
+  "riftlight-finale/figure/narration": {
+    "source": "sha256:36fc884985a05532302fb19558cba8a12b40ee29fb57d6ae023907609c4f8696",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You peek over the ridge. Below, a great tear hangs in the air, wider than a house. Through it, faraway ground slides past: a valley, a river, a hill, all moving. Under it, a tall figure bends over an old map on the ice."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Why is the river on the wrong side of the mountain?\""
+      },
+      {
+        "by": "narrator",
+        "text": "he asks the map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"It was never on that side.\""
+      },
+      {
+        "by": "narrator",
+        "text": "In your pack, the chime rings all by itself."
+      }
+    ]
+  },
+  "riftlight-finale/reveal/narration": {
+    "source": "sha256:82d25122c9d1d5c82f32e743e51be3e75dcfd85e4a6d60a9f70869cea8879385",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He straightens up, and up. He is an enormous faun with a long mustache tied back with a faded ribbon. He bows, slow and courtly."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I am Corvane. I was king here, when the land lay in its proper places. My kingdom was called Pangea: all the lands, joined in one. Do you know how long I have waited to see my rivers run the right way again?\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is the truth. Corvane is the one moving the land. He slept in this ice for a thousand years, until the mountain woke and let him go. Now he is putting every place back where it was in his day."
+      }
+    ]
+  },
+  "riftlight-finale/his_story/narration": {
+    "source": "sha256:88320509d5a43eb275eca6abbd7384bd18253509d989e63e89c7250f5dc4f16e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane smooths his old map with one huge, careful hand. Orin looks from it to his own joining lines, and his beak drops open. They are the same shape."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I have been setting things right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"My bridge. My river. My island in the sky. One by one, home again. You have walked my land. You know how it should be. Will you help me finish?\""
+      }
+    ]
+  },
+  "riftlight-finale/why_home/narration": {
+    "source": "sha256:36ef059619d2c894a6ee5edf6c4c053baa1f23787d36c28e13d206a6a9bf3c93",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane is quiet for a long moment."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Because everything I loved is in the old places,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"My river is where I learned to swim. My bridge is where my people waved me home. I went to sleep, and when I woke, it was all moved, and nobody asked me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at you, surprised."
+      },
+      {
+        "by": "corvane",
+        "text": "\"You are the first to ask me anything.\""
+      }
+    ]
+  },
+  "riftlight-finale/told_no/narration": {
+    "source": "sha256:638d3fc858ce7cb08c92b22acbae94753b63f484319897f24bf97d5042b0f2fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane blinks down at you, as if a pebble had spoken."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Stop?\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"But it is nearly right.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bram steps up beside you, big and steady, and plants his feet."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"They said no,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bram rumbles."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"I'm with them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane looks at Bram's big feet, then back at his map, puzzled."
+      }
+    ]
+  },
+  "riftlight-finale/his_map/narration": {
+    "source": "sha256:6e8c1785f258356860f1c6d2f657b0c8403d48190674fba8dd7f8695c240ad8f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane lifts his hands, and the great tear widens. Through it, a whole valley tips, ready to slide, homes and all."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Please stand aside,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says kindly."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I am nearly home.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin's feathers stand on end. There is no time to talk it over. What will you do?"
+      }
+    ]
+  },
+  "riftlight-finale/check_force/narration": {
+    "source": "sha256:fc7cb9acedae8deda56ab391cce18fc2fdb3fa5ad4f6d05e9db62b7be0d5227a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You grab one edge of the tear, and Bram grabs the other. It feels like holding a curtain in a gale. Corvane gasps."
+      },
+      {
+        "by": "corvane",
+        "text": "\"No, no, you will tear it!\""
+      }
+    ]
+  },
+  "riftlight-finale/check_force_bram/narration": {
+    "source": "sha256:213abef9f7dac06f274d5cfb86b21d57bccfd1a4ee71b5c923a4488415ed433c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bram is already moving."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"You take the top, I take the bottom,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and grabs the tear's edge like a tent flap in a storm."
+      }
+    ]
+  },
+  "riftlight-finale/check_force_bram/onSuccess/narration": {
+    "source": "sha256:6e61ac324aeca4378fa520c2bec8cff7320e4b30f76d04c9914902ff36a53f84",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Top meets bottom with a snap like a sail. Bram jams an ice rib across the gap."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Pinned,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he grunts."
+      }
+    ]
+  },
+  "riftlight-finale/check_show/narration": {
+    "source": "sha256:dcb1a5249317d12aa603d283c3bbd93fbffdf87d1a9d858a0329acb41718ee61",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold up Orin's map, today's map, with all its towns and roads and little houses."
+      },
+      {
+        "by": "party",
+        "text": "\"Look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"People live there now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane bends down, very low, to see."
+      }
+    ]
+  },
+  "riftlight-finale/check_show/onSuccess/narration": {
+    "source": "sha256:3ab9678add9f3e467cba294a601c47a347447009892b45d178dad86945115c41",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He looks for a long time. He touches one little house with the tip of his finger."
+      },
+      {
+        "by": "corvane",
+        "text": "\"My old map left those out,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he murmurs. His hands lower, just a little."
+      }
+    ]
+  },
+  "riftlight-finale/check_show/onFailure/narration": {
+    "source": "sha256:5784fb28554cc150aee426f1df7b0da235babc22e24a29962a4da4abb10cdadc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "corvane",
+        "text": "\"Those are not on my map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, puzzled, and turns back to his tear. While you talked, a far valley slid one hill farther from home."
+      }
+    ]
+  },
+  "riftlight-finale/asked_home/narration": {
+    "source": "sha256:b2241450cd86642f374fafd21ef0934ed10e3759712dea654add48502c8476de",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"What did home look like?\""
+      },
+      {
+        "by": "narrator",
+        "text": "you ask. Corvane's hands stop."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Reeds,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"A wooden bridge. My mother's boat.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then he looks through the tear at a village sliding past, with its washing still on the line."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Someone else's mother,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says slowly. His hands lower, just a little."
+      }
+    ]
+  },
+  "riftlight-finale/olivia_tells/narration": {
+    "source": "sha256:994622b0dfdcb05cfc81d3f9833a81566c96b22b3950a3dd5e4f702744fe3e0f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia steps up, quite pale."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I called an opening once,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells him."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Only to ask. It didn't do one thing I wanted. The colors were wrong, and it pulled at everything.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane stares at her."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says slowly."
+      },
+      {
+        "by": "corvane",
+        "text": "\"They do that now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "His hands lower, just a little."
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/narration": {
+    "source": "sha256:de8b0bd396aa04258c95c9281ef7c2065e630d5a6b2e338ed51ca6e70ca89906",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane raises his hands to pull harder. The tear flares, and colors pour out of it, colors nobody chose, sliding like oil on a puddle. Corvane stares."
+      },
+      {
+        "by": "corvane",
+        "text": "\"That is not the color I asked for,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and suddenly he looks very old."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"He can open them, but he can't tell them what to do,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren whispers."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Nobody can. Now, while he's surprised. Your pieces. Show the land where it belongs today.\""
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/variants/0": {
+    "source": "sha256:82920d8b0d28be2c3affc1b9fd8f3d9337626c446863820399654bd6d24de838",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"That's exactly what happened to me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia whispers."
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/variants/1": {
+    "source": "sha256:82920d8b0d28be2c3affc1b9fd8f3d9337626c446863820399654bd6d24de838",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"That's exactly what happened to me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia whispers."
+      }
+    ]
+  },
+  "riftlight-finale/corvane_one/narration": {
+    "source": "sha256:f947d643f7f4806f2c5589fd82d8c043cdc02dec21abf3ab14c5340fe9402b37",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane spins around, his cloak swirling."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Those stones are mine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I set them there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He pulls, hard. The land in the tear does not move for him. It stays where today put it. He frowns at his hands, as if they had forgotten how."
+      }
+    ]
+  },
+  "riftlight-finale/corvane_two/narration": {
+    "source": "sha256:295f0452b302e5c51c5c727cbfd310865f17d31f7d364689a1ecedd70c57d443",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane stares at you, and at the land in the tear, holding still."
+      },
+      {
+        "by": "corvane",
+        "text": "\"It listens to you?\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. He sounds amazed, not angry. Then he grabs the last seam of his broken tear with both hands and holds it open."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Two places hold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Orin and I can wait on a rescue lane, in case anything goes wrong. Or we can stand at the ridge with you. Is there anything else?\""
+      }
+    ]
+  },
+  "riftlight-finale/corvane_two/variants/2": {
+    "source": "sha256:f9c9e2d452b03dc2714853244deaaa685e15c52a715d48e320b9b311a6f68d22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia steps up beside you."
+      },
+      {
+        "by": "olivia",
+        "text": "\"A condition,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "olivia",
+        "text": "\"not a command. I can help hold.\""
+      }
+    ]
+  },
+  "riftlight-finale/olivia_anchor/narration": {
+    "source": "sha256:6dd94c3a18c9e37f86e98032a9456e7d18226b1a2765121ce3a5497d501d4655",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia puts her hoof on the ice beside your hand."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Tell me what to hold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I won't push. I promise.\""
+      }
+    ]
+  },
+  "riftlight-finale/olivia_anchor/onSuccess/narration": {
+    "source": "sha256:10647b7bf13802064be6075c44a943126248d94abb2247999bb5448e09664a93",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold it together, and she does not push once. The land goes still under both of you. Olivia laughs out loud, surprised."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It listened!\""
+      }
+    ]
+  },
+  "riftlight-finale/seam/narration": {
+    "source": "sha256:a59490bf05360c7b87ecea330bbfccd53d3ab2c834d4f96cc6bc620e9d6aed01",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Only one seam is left of the great tear, glowing beside the ridge. Corvane holds it open with both hands. Two bone crawlers tumble out of it, pulled from somewhere very far away, and blink in the cold."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Please,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I only want to go home.\""
+      }
+    ]
+  },
+  "riftlight-finale/seam_weak/narration": {
+    "source": "sha256:86e3e5cb455097f187ee6f5585b2512cfff13fa966d28eca1791f1fe5b4c4e52",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three places hold. Only one thin seam is left of the great tear, flickering beside the ridge. Corvane holds it open with both hands, but his arms are shaking. One bone crawler tumbles out, pulled from somewhere very far away, and blinks in the cold."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Please,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I only want to go home.\""
+      }
+    ]
+  },
+  "riftlight-finale/fight_standard/narration": {
+    "source": "sha256:0c9659a6f28989e267db47f5a3a5dcdadf06d00a471a676a4c971cc9e3f438e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane holds the last seam open."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I only want to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Beside him, two bone crawlers scuttle out of its light. Drive them off, or hold the ridge for four turns to close the seam. The seam's pull bites anyone who stops on it."
+      }
+    ]
+  },
+  "riftlight-finale/fight_standard_braced/narration": {
+    "source": "sha256:0729611832857ec8d04a0ae117e64b12ad02d133538f0f4910eb41430aec0fee",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane holds the last seam open."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I only want to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Beside him, two bone crawlers scuttle out of its light. Drive them off, or hold the ridge for three turns to close the seam. The seam's pull bites anyone who stops on it."
+      }
+    ]
+  },
+  "riftlight-finale/fight_weakened/narration": {
+    "source": "sha256:f89a28237a7aad8bf65c585727bc43b430c2642f15d14ccf0ad99c5a7b2b1604",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane holds the last seam open."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I only want to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Beside him, one bone crawler scuttles out of its light. Drive them off, or hold the ridge for four turns to close the seam. The seam's pull bites anyone who stops on it."
+      }
+    ]
+  },
+  "riftlight-finale/fight_weakened_braced/narration": {
+    "source": "sha256:fbdf2c8956767e227918b3f4d2f5ec39aa647ea9809d16bd5f959fabe02774a1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane holds the last seam open."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I only want to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Beside him, one bone crawler scuttles out of its light. Drive them off, or hold the ridge for three turns to close the seam. The seam's pull bites anyone who stops on it."
+      }
+    ]
+  },
+  "riftlight-finale/spent/narration": {
+    "source": "sha256:54cd0511bf9da54febef1b6ed14a212d766278831c971260484c67426091c7e0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last seam folds shut with a soft pop, like a bubble. Corvane's hands drop. The crawlers turn around and scuttle off into the ice, looking for the way home. The glacier goes so quiet you can hear the ribbon fall onto his old map. Corvane sits down on the ice, very slowly."
+      },
+      {
+        "by": "corvane",
+        "text": "\"It was a very good map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-finale/help_him/narration": {
+    "source": "sha256:ab6a994f5dcb0f38ae16a042515c993270f5462dcac818f71236d4ec5dac1db9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane looks at the blanket, and then at all of you, as if he does not know what to do. The goat kid starts chewing the corner of his old map."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Ask before you wrap him,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the herder whispers. What will you do?"
+      }
+    ]
+  },
+  "riftlight-finale/wrap/narration": {
+    "source": "sha256:d88d802c0c0efa8c7b1f3529239ed1c784fecc4afd1cda4956fe301c85b8aaa9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold out the blanket, and wait. After a long moment, Corvane bows his head and lets you put it around his shoulders. He pulls it tight."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "corvane",
+        "text": "\"It has been a very long time since anyone asked me anything.\""
+      }
+    ]
+  },
+  "riftlight-finale/maps_side/narration": {
+    "source": "sha256:f04c4f2fca296e99c3278424c275045c09d4e4b5b141707ab7576b7dda81bc19",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You rescue his old map from the goat and lay it on the ice. Then you put Orin's map right beside it, joining lines and little houses and all. Corvane looks from one to the other. For the first time, he looks longest at the new one."
+      },
+      {
+        "by": "corvane",
+        "text": "\"So many roofs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says softly."
+      },
+      {
+        "by": "corvane",
+        "text": "\"I did not put those there.\""
+      }
+    ]
+  },
+  "riftlight-finale/chime_straight/narration": {
+    "source": "sha256:5960adc7ae8f1636206eb3cbe201dc2a7aa22d3f8a1cb754f96139e81de0f4cf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In your pack, the Listening Chime gives one last soft ring, and stops. You take it out. For the first time since the travelers gave it to you, it hangs straight down. It does not lean anywhere at all. The snow drifting across the floor settles, and stays."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Moved things go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin says quietly."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And so must he. But which home?\""
+      }
+    ]
+  },
+  "riftlight-finale/fate/narration": {
+    "source": "sha256:b3fd4462dfa5164e265a6e8c56f26a1b76285bfcd4468356e7a42b43cc69420a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder sets down her lamp."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The ice can keep him,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"asleep, with his memories safe. Or he can live with us, and learn the names of things as they are now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane looks at the deep ice, and then at the plain walking door the yetis cut in the wall long ago."
+      },
+      {
+        "by": "corvane",
+        "text": "\"You found my places,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says to you."
+      },
+      {
+        "by": "corvane",
+        "text": "\"You choose.\""
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/narration": {
+    "source": "sha256:a8497894ca3f0b5d1b1e9f931a8a16e87f36a8a22e9958f0900b500797156734",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The yetis make a quiet place deep in the ice. Corvane folds his old map and lies down beneath his blanket, with the map on his chest."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Wake me if the rivers ever forget their way,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and closes his eyes. The ice keeps him, and he keeps the memory. The land stays where it is, today's land, with all its roofs, and the Riftseekers write it all down. In the records of the glacier, your party is called the Glacier Keepers."
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/narration": {
+    "source": "sha256:938d61682f7897bc8e16bcfc0a9fab34b3b0b1d3d4fb8fb545df06c47a6cb258",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Corvane goes with the herder through the plain walking door, to the yetis' broad table. They spread the present map in front of him, with all its roofs and roads. He points to a valley."
+      },
+      {
+        "by": "corvane",
+        "text": "\"Then tell me what you call this valley now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The herder, who keeps watch on the old ice, tells him. He writes it down, very carefully. The land stays where it is. In the records of the glacier, your party is called the Ones Who Listened."
+      }
+    ]
+  },
+  "riftlight-finale/loss_plan/narration": {
+    "source": "sha256:4070e7cf1325d1c53f1f9668859e46706fd01ddba19e84be2314c73e8bf7eda8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren counts the breaths of the pull. In, out. In, out."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"On the next one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Or never.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you get back to the ridge?"
+      }
+    ]
+  },
+  "riftlight-finale/recover_ask/onSuccess/narration": {
+    "source": "sha256:c7816ed8fdcbb2b6817ed8d7a7dcd79012a33d43dccc0e89f2683611d15bc834",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Let it go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"Please.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corvane looks at his hands for a long moment. Then he opens them."
+      }
+    ]
+  },
+  "riftlight-finale/recover_reserve/narration": {
+    "source": "sha256:d6cdaafc890f896103a73b0f7de15a59fb1b12990d6cb580c2fc42e491612008",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin and Seren have been waiting on the rescue lane for exactly this."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Together,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin. You run for the ridge, all of you at once."
+      }
+    ]
+  },
+  "riftlight-finale/recover_pip/narration": {
+    "source": "sha256:0b91f8a1d7470db76ea29b68bf97ab56c207118a9f3dbfeea0ee47879a9551af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip grabs the end of Bram's rope in his teeth and scampers for the ridge on the breath out, small and fast, under the pull."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Real scouts go first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"when it's their turn!\""
+      }
+    ]
+  },
+  "riftlight-finale/loss_second_failed/narration": {
+    "source": "sha256:06ef1da40eba765c1202ec7a63cf31a0ffc3857e4fc453aaa316eefd7b09dd91",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then, all at once, the pull stops. Corvane's strength is spent, and the seam folds shut on its own. But in its last flicker you see rivers in new beds and a valley turned around. They stay that way. Corvane sits down on the ice, holding a map that does not fit anything anymore."
+      },
+      {
+        "by": "corvane",
+        "text": "\"It was a very good map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/narration": {
+    "source": "sha256:584f9e8324ae3ec5a97a21696379bf5728b6c8090c5a7338a870c4ef2dfc8909",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder wraps Corvane in her biggest blanket and leads him up toward the yetis' door. Some rivers have wandered. Some valleys have swapped places. Nothing is broken that cannot be mended, but everything needs drawing again, and the Riftseekers will draw it. Orin smooths out a fresh page and folds the old joining lines under it."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Then we learn the new map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. In the records of the glacier, this story is called Rivers Wander."
+      }
+    ]
+  }
+}

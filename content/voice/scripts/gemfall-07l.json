@@ -1,0 +1,987 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-07l/scene_the_table/narration": {
+    "source": "sha256:021d86097e73a9caf9de350f487cfd66bb00695a2b5885966d2afbd789bd2efb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pellam the clerk walks you down to the Pinch, a gap between two red hills."
+      },
+      {
+        "by": "pellam",
+        "text": "\"You said hold it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Not break it. So: gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The stone rides in tomorrow's caravan, so loud the mules wear earmuffs. The chord belongs to Hessa's friends, the Deep Hollow, who sing in bark masks."
+      }
+    ]
+  },
+  "gemfall-07l/scene_the_table_grandmothers_chair/narration": {
+    "source": "sha256:ca94f6e6b3047f8c95295f429ee544244170dfd51fe7170f6955554d79dadcf4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A grandmother brings her knitting and a stool, and says nothing at all. Soon a warden and a mask stop shouting. It is very hard to shout near a knitting grandmother."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Well?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Build it.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_ledger/narration": {
+    "source": "sha256:148aa8c0dd1fd497764fb919fd5fb6e0f6d95d2aa9fd1e250d811e754635abc9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the wardens' camp, Pellam sits behind a desk. The wardens' ledger holds all their rules and plans. It is as thick as a doorstep and chained to the desk."
+      },
+      {
+        "by": "pellam",
+        "text": "\"It never leaves this desk,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Then he looks at the desk, as if he said something more useful than he meant."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ledger_friend/narration": {
+    "source": "sha256:82847501d5661a6e8323c85c41a933c37a45df72bf98a95f9c70e03398a7f2e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We're asking as friends,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Pellam looks at the chain a long time. Then he unlocks it and writes LENT in a column never used before."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Bring it back. I shall know if a page is bent.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_two_scouts/narration": {
+    "source": "sha256:c949015b46ad8cba48cbff0866281c15d5dab4bc118002ef5c67a2cbd52500e0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up the valley, two young people play tug-of-war with a choir sash. A warden cadet called Linnet pulls one end. A young mask called Rook pulls the other."
+      },
+      {
+        "by": "rook",
+        "text": "\"Tell her it's ours!\""
+      },
+      {
+        "by": "narrator",
+        "text": "puffs Rook."
+      },
+      {
+        "by": "linnet",
+        "text": "\"Tell him it's evidence!\""
+      },
+      {
+        "by": "narrator",
+        "text": "puffs Linnet. They both want you to decide."
+      }
+    ]
+  },
+  "gemfall-07l/scene_two_scouts_table_stone/narration": {
+    "source": "sha256:fb13724ba879814d13b4ae67e608f0f0fe879d29b83aad2336d04455f5d26e0b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You set down the Table Stone from the truth-table at Redspire. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They drop the rope to listen."
+      },
+      {
+        "by": "rook",
+        "text": "\"It's the same stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "they say together."
+      }
+    ]
+  },
+  "gemfall-07l/scene_choir/narration": {
+    "source": "sha256:8d07d171b0001d8ced877708885857682655d287bfcef7e16afa5b08f50f0342",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up the valley, Hessa's soup-tent people, the Deep Hollow, hum in a ring with their bark masks pushed up."
+      },
+      {
+        "by": "hessa",
+        "text": "\"We wake the mountain gently, so it can fix things,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hessa whispers. Their chord is three notes long, and they never teach it to strangers."
+      }
+    ]
+  },
+  "gemfall-07l/scene_choir_sell_secrets/narration": {
+    "source": "sha256:45b9412d6d648d12a81ff46c87348eb65e53bed53dd94a9aada24ff863f8b07f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You trade them the wardens' plans, page by page."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Pellam will know,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hessa, not unkindly, and teaches you the chord. The ledger feels lighter, and that is not a good feeling."
+      }
+    ]
+  },
+  "gemfall-07l/scene_choir_vouch/narration": {
+    "source": "sha256:dc45c0ada7d15681810c6c0e71b8cc69b8ceeda6c67decc65bc34030b7114daf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The grandmother hums with them, a low knitting sort of hum. The choir softens, the way a room does when a grandma walks in."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Teach them,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. And they do."
+      }
+    ]
+  },
+  "gemfall-07l/check_chord/onSuccess/narration": {
+    "source": "sha256:ac3d02d2c42599bdc51c2a3e77a04bf274a48f8e46e53f89d3a5fbb183df83ea",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hessa hums the first note. You hum it back. She hums the second. You hum it back, wobbly. The third is so low it buzzes in your teeth, and you hold it anyway. The whole choir goes quiet."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Don't make me sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hessa."
+      }
+    ]
+  },
+  "gemfall-07l/scene_road_gifts/narration": {
+    "source": "sha256:f5a93c74ea64087508b586258e1ef6f32438693e4a96b6b017d3c7950bfa4b44",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pellam reads from his notebook."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Hold it. That is what you told me at the citadel. Still your word?\""
+      },
+      {
+        "by": "narrator",
+        "text": "It is. Then the road starts bringing back things you did on the way here, as if the realm kept your receipts."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ossley/narration": {
+    "source": "sha256:d4edccff8cfbb4dea2dfdd0151cd1df5799685d7b54e0c691748f8692d9724fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A frog in a very old hat poles a flat boat up a dry creek: Old Ossley, the frog from the reeds of the Great River. He looks at your packs."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Leashes are for things that want to run,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Then nothing for quite a while."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ossley_debt/narration": {
+    "source": "sha256:4a1c753fc678ddbda277d11eb90e3caaeb0d34775dc4352593980cf510fb859e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ossley's price was never coin."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Whatever you tie,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"tie it with a knot you can undo.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He makes you show him, right there, on his boat rope. It takes three tries."
+      }
+    ]
+  },
+  "gemfall-07l/scene_mosshome_runner/narration": {
+    "source": "sha256:3bbe806a9f0865335c2e833a884bc48e7c5a5ea010e27f7a8bba35e74aa2b0b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A MossHome runner jogs up with mules, carrying things the Woods took from careless hunters. Your knotted cord says some are yours. She unloads it all with a message:"
+      },
+      {
+        "by": "mosshome_runner",
+        "text": "\"Whatever you are tying, tie it loose.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_boggart/narration": {
+    "source": "sha256:938e15bbfa973c347a2f146318666ce675e4fb420809c93456c3793b49adba75",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A boggart with a satchel of scribbled paper sidles up, not looking at you."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Catalog,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it tells nobody."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Who bought what. Who sold to who. Costs one really good sentence you overheard.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_boggart_choir_said/narration": {
+    "source": "sha256:9292563b243dff8bc2ba669a45579100e50cd60f71e8a137732338f7259872b8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hum what the choir hums when nobody is listening: the same three notes, only sadder. The boggart goes completely still."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Sidelong,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says at last, approvingly, and hands over the catalog without looking at you."
+      }
+    ]
+  },
+  "gemfall-07l/scene_boggart_brisk_said/narration": {
+    "source": "sha256:2167547d3c4d997571461f1fd65b861666fdd51fa66733988cb227f6b51f926f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You repeat what Pellam mutters to his ledger, which is mostly numbers and one quiet \"oh dear.\" The boggart hugs itself."
+      },
+      {
+        "by": "boggart",
+        "text": "\"A clerk's oh dear,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it tells nobody."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Rarer than rubies.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It hands over the catalog."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ford_witch/narration": {
+    "source": "sha256:8c35483bba9aec90e101075c192766d95c4d46e7e03470a6f0bbb8a7ac4bf1c5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum, the witch from the ford, has come up the road with a ringing wool sock."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"I always ask twice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"Answer true, and I'll lend you my question. What do you actually want?\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_ford_witch_flatter/narration": {
+    "source": "sha256:0f511e64e8e0b1e799c3c250d49bf777cdba2e0422e4938b951d77aedb02395b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You say whatever might get you the question."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"No,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Mother Thrum pleasantly."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"That's not a want. That's a wish for a want.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her charms ring once, amused."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ford_witch_hold_power/narration": {
+    "source": "sha256:88c2c1b72c2bf95039f1cedd75fc4afdd4666c4d3dfe07acee0eb7020d02667f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum does not look away."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"Honest. I'll give you honest.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lends you the question, but holds it a heartbeat longer than she needs to."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"Ask it of yourselves first.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_ford_witch_hold_safe/narration": {
+    "source": "sha256:689acbc0c7659bfe0ef588aa53016cb8f6fb00bd8f6b4897a493b5819a2c9360",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum nods once."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"That one I'll lend.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She presses the question into your hands like a small warm coin."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"Ask it of anything. Even me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she tips a stone from the ford out of her sock."
+      }
+    ]
+  },
+  "gemfall-07l/scene_stall_witch/narration": {
+    "source": "sha256:d57f1726c012efab6d37db1f1934c4afe54d363a99359944dfc973b2c88b0849",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the end of the road, a witch in a patched hat runs a remedy stall. Every charm on it rings by itself."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"Answer my question first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"and I'll lend it to you. What do you actually want?\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_stall_witch_flatter/narration": {
+    "source": "sha256:8cb34a0f64602b0ae4dfbf7a7e636a53bd74fb4b1298d3d979a11c1f75e7adb5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You say whatever might get you the question."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"No,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the stall witch pleasantly."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"That's not a want. That's a wish for a want.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her charms ring once, amused."
+      }
+    ]
+  },
+  "gemfall-07l/scene_stall_witch_hold_power/narration": {
+    "source": "sha256:6f49f0a24cb79bd39567cc9698c122cfefd949599204f699dc3b0ededcc93629",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stall witch does not look away."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"Honest. I'll give you honest.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lends you the question, but holds it a heartbeat longer than she needs to."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"Ask it of yourselves first.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_stall_witch_hold_safe/narration": {
+    "source": "sha256:e4baf6b0a0473831be41bb6c8745a7e90f8569bd71a793ded36a4cee7b163ec2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stall witch nods once."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"That one I'll lend,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and presses the question into your hands like a small warm coin."
+      },
+      {
+        "by": "stall_witch",
+        "text": "\"Ask it of anything. Even me.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_returning_cart/narration": {
+    "source": "sha256:b0cefef3dc61eca097683eb8c114b9bd31d6c8c64a74b393674e245ab912ebc5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the way back, a grandmother's cart of stones going home is stuck on the steep bit."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Only a little stuck, dear,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs. But tomorrow is the test, and you have never held a hum still. One afternoon left. Help, or practice?"
+      }
+    ]
+  },
+  "gemfall-07l/check_returning_cart/onSuccess/narration": {
+    "source": "sha256:2536f577331d8096e589b5eeb08ebcd33782c97ac8fdd179bec18da167d6740b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Shoulders down, everybody push. The cart groans up the steep bit and over the top. The grandmother hands a warm bead from her apron to every hand, and says,"
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Practice tonight, dears. You'll need it.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_centaur_relay/narration": {
+    "source": "sha256:c048eda42a245d3dddcdea10022e60a13966231420b826df00c53c6490eb3457",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A centaur relay pulls up and unrolls a sash-map."
+      },
+      {
+        "by": "centaur_relay",
+        "text": "\"Fat caravan tomorrow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the lead runner."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"Where do you want it?\""
+      },
+      {
+        "by": "narrator",
+        "text": "You point at the worst bend. She nods, as if that is the most sensible thing all day."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ember/narration": {
+    "source": "sha256:eb38dea913dd30f85675378041fda77607b9d0b05cac6459532b671daf19c379",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "coralie_fenn",
+        "text": "\"Darlings!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Madame Coralie Fenn from her barrel on wheels, tied to a caravan roof. She has the warm red stone you sold her on the quay, your very first. It sits in a velvet box, and its price has gone way up."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ember_wave/narration": {
+    "source": "sha256:2ed03d3eb54676df7a106e7801f5fab87c9f512af881bb4aaf7fef5e9a85589b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wave. Madame Fenn waves back with both arms, and her barrel wobbles."
+      },
+      {
+        "by": "coralie_fenn",
+        "text": "\"Next time, darlings!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The caravan rolls on, with your very first stone humming on top."
+      }
+    ]
+  },
+  "gemfall-07l/scene_ember_buy_back/narration": {
+    "source": "sha256:fe2a7f752c80988c239ab0e6d8b54bb081660301e13154bc320721067d0e4707",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You pay. Madame Fenn hugs the velvet box before handing it over."
+      },
+      {
+        "by": "coralie_fenn",
+        "text": "\"I always hoped it would be you, darlings.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Ember Facet is warm as toast, and it hums as if it remembers you."
+      }
+    ]
+  },
+  "gemfall-07l/scene_night_visitor/narration": {
+    "source": "sha256:975a1d4d8c40e66445a79f22e38a0be0df073f743ee9240787765c625ba03064",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Late at night, Pellam comes to your table alone."
+      },
+      {
+        "by": "pellam",
+        "text": "\"One question,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says quietly."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Where does the choir sing at night? I only want to know.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Across the road, by a mask's fire, somebody goes very still."
+      }
+    ]
+  },
+  "gemfall-07l/scene_night_visitor_not_mine/narration": {
+    "source": "sha256:074315c58cbb65cc7bea0f73bfeab320f7a89a8555f48a3aa048d0ad609686eb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"That isn't ours to tell,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Pellam nods and writes one word in his notebook: FAIR. He underlines it twice and goes back to bed."
+      }
+    ]
+  },
+  "gemfall-07l/check_night_visitor/onFailure/narration": {
+    "source": "sha256:9aea1e2c81c71966b0b6c18b0f16d951eaf6ccfbc52a25081d06cd89c01b13df",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hessa comes over, but she and Pellam sit at opposite ends and only talk to you."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Ask him why,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hessa."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Ask her what for,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pellam. You pass the questions back and forth until midnight. It is slow. It is still talking."
+      }
+    ]
+  },
+  "gemfall-07l/scene_bend_crowds_chalk_line/narration": {
+    "source": "sha256:2f0d457aa1d8918d0add2b756e39e9e4820e0a0a3010521ef2c6f56b376af7d3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You draw a chalk line across the road and stand on it."
+      },
+      {
+        "by": "party",
+        "text": "\"Give us one breath to try,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"Then you can argue.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nobody wants to cross first, so nobody does."
+      }
+    ]
+  },
+  "gemfall-07l/scene_tether_holds/narration": {
+    "source": "sha256:e686a3b9a0fc746ade147676be7507a98c5d826c170818af189098e33bf1f972",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The caravan master climbs down and hands you the Caravan Stone."
+      },
+      {
+        "by": "caravan_master",
+        "text": "\"Please keep it. It's been humming at me for a month.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A mask takes off her mask. For a moment, everyone is looking at you."
+      }
+    ]
+  },
+  "gemfall-07l/scene_who_keeps_table/narration": {
+    "source": "sha256:d3413ef7587c7a1b93ec4f644cf9a66c0532bd9f5689defce2d4cd54488195b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Before you climb, you go back to the Pinch. Your old door still sits on its barrels, chalk and all. People are packing up and running."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Somebody must keep the table while you're up the mountain,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pellam,"
+      },
+      {
+        "by": "pellam",
+        "text": "\"or there will be nothing to come back to.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Who?"
+      }
+    ]
+  },
+  "gemfall-07l/check_who_keeps_table/onSuccess/narration": {
+    "source": "sha256:02c285d4dcc4449582c2697b88c1606ff0c1f0b8c06cfdb9f1947e32de139e07",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pellam looks at Hessa. Hessa looks at Pellam. Then they each take one end of the old door and lift it together."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Mind the short leg,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hessa."
+      },
+      {
+        "by": "pellam",
+        "text": "\"I've logged the short leg,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pellam. They carry it down the hill side by side."
+      }
+    ]
+  },
+  "gemfall-07l/scene_who_keeps_table_grandmother/narration": {
+    "source": "sha256:d4007dce92736eb8627e0f3bcf111023ad7e42bb3ba26e8fdc520004aa72ab8f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two grandmothers tuck the table under their arms like a tray and carry it downhill, still knitting."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"We'll keep your chalk on it, dear. Somebody will want reminding.\""
+      }
+    ]
+  },
+  "gemfall-07l/scene_who_keeps_table_ossley/narration": {
+    "source": "sha256:66c10d2b6de987df239d58d454a07f986c08cae6da1d9b86b855308bfa38b07b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old Ossley, the frog from the reeds of the Great River, poles his flat boat up the dry creek as if he had been waiting. He lays your table across his boat like a roof."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Tables float,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. That is all."
+      }
+    ]
+  },
+  "gemfall-07l/interaction_set_table/narration": {
+    "source": "sha256:0391123e20d2d4a875f7bb70d20d3a235c9c1c6c4d724688f23aa903e7fa75fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the middle of the Pinch lie an old door and two barrels of different heights."
+      },
+      {
+        "by": "pellam",
+        "text": "\"A table,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pellam, tapping it with his pencil."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Level, please. I will be measuring.\""
+      }
+    ]
+  },
+  "gemfall-07l/interaction_set_table/onSuccess/narration": {
+    "source": "sha256:eebb4306a60d62f53f3d6406dc1eafd7163cedb6abe286ed1a4d544c4c26f6c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The door settles, almost flat. Pellam's pencil rolls only a little."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Acceptable,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, which from Pellam is a cheer."
+      }
+    ]
+  },
+  "gemfall-07l/interaction_set_table/onFailure/narration": {
+    "source": "sha256:5abd5d3d30813202de6942ed6cbdf73548c7966f66cf960554cabc1fe759e6a1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The door slides off with a thump."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Almost level,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pellam kindly."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Nobody will notice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Everybody notices."
+      }
+    ]
+  },
+  "gemfall-07l/interaction_set_table/onAssisted/narration": {
+    "source": "sha256:07a83f6c3a2a962aafb7a24859a239fd1d158282bd14bcad964f4eb9825f3be0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pellam props one corner with his boot. The door settles onto the barrels, almost flat."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Acceptable,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-07l/interaction_choir_warmup/narration": {
+    "source": "sha256:8894775031b0dc270e6cff196431c2a831b79c7cf231e1eac9b7b8126f5b0b49",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Before you leave, Hessa taps her mask."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Warm-up,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "hessa",
+        "text": "\"I hum, you hum back. No giggling at the low one.\""
+      }
+    ]
+  },
+  "gemfall-07l/interaction_choir_warmup/onSuccess/narration": {
+    "source": "sha256:91e3eba520fc4cf13c064521563fdb1292a4c763eccbdde34dbbd0759e7888a8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last note hangs in the air. A singer ties a ribbon to your pack."
+      },
+      {
+        "by": "masked_choir_singer",
+        "text": "\"For luck. Don't tell the others I'm soft.\""
+      }
+    ]
+  },
+  "gemfall-07l/interaction_choir_warmup/onAssisted/narration": {
+    "source": "sha256:5cb9228058c009d723d3334a997f8f76f0469bd878014b80939acb98b448b66c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The choir hums under you until the last note comes out right. A singer ties a ribbon to your pack."
+      },
+      {
+        "by": "masked_choir_singer",
+        "text": "\"For luck,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      }
+    ]
+  },
+  "gemfall-07l/interaction_tea_cups/narration": {
+    "source": "sha256:c72cf1c6859f5c3b1961e7959e72b616a08917bb35c349a18a937cefb488cb4c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You carry the tea across with helpers from both camps. A warden turns his cup to hide the words NOT SOUP. Not a drop spills. Hessa sends back a honeycake. Pellam counts out three coins."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Courier's pay. I'll log it as tea.\""
+      }
+    ]
+  }
+}

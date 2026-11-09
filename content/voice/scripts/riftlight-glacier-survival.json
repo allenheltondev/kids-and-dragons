@@ -1,0 +1,1459 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-glacier-survival/arrival/narration": {
+    "source": "sha256:96b552bbc2ee609e5d75f162d8c760e6c96c08cdac4b9a75ce420a0217dcf4fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The bell rings again, and the kid answers with an enormous bleat. You brush snow off its knees, scraped in the scramble on the quay. So this is where the snow on the quay came from: a whole white mountainside. Across the slope, a herd of snowhorn goats waits on a ledge. Between you, a melt channel cuts through the snow. Far off, a deep voice calls,"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up! Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Can you get the little goat home to its herd, and find somewhere warm for everyone?"
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelter/narration": {
+    "source": "sha256:cfe6b176cf110bd7d3eded6bba3478e1a1ffc78be7283bcf5d1dfc29266e7b26",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Wind presses your wet clothes to your knees. The kid is shivering. A bank of packed snow would block the wind. Or you could follow a row of dark rocks nearer the bell. What do you do first?"
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the kid, which clearly means hurry up."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/windbreak/narration": {
+    "source": "sha256:fa7e3f661a728634379a79cedb018ea97f88b1aace3ea688891ba06dff6db4a9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You scrape a hollow behind the bank and huddle close. The kid noses under the warmest arm. From here you can see footprints between the dark rocks, each wider than your head."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the far voice. The kid's ears swivel toward it."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/rocks/narration": {
+    "source": "sha256:22e8c2198b57449265527385fc0cda95ff972951f1138ec6b40aaee9652f6f28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rocks give your feet something firm under the snow. Beside them are deep footprints. A broad wooden sled has scraped a track toward the bell."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the far voice, somewhere ahead."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/mend/narration": {
+    "source": "sha256:7b4a4ef307ee1b166dbf5c1366f055dccd9e06de46ab13415159291282de3389",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Gentle light settles over the kid's scraped knees. It stops shaking long enough to chew your sleeve. Between the rocks, you spot broad footprints."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh-heh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the kid, which sounds a lot like thank you."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wind_warm/narration": {
+    "source": "sha256:cbad2f69e3840c3e9cd6bf646c752f7b4f06a3f8d576e38735d2ddf878fdd3fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind finds every wet seam, and your sleeves crackle with ice. You stamp and rub until the ice cracks off in crumbs. Damp now, not frozen. The kid sneezes a tiny cloud."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the far voice again, closer."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints/narration": {
+    "source": "sha256:18dbff9196dbf55275cb46da5c97c496875f09cb6667f01140c749e52c823a3d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the rocks, the snow is stamped with footprints wide as dinner plates. The wind is filling them in. Some lead toward the bell. Some wander off, as if the walker forgot where they were going. Which line do you trust?"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up! Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The voice is closer now, and very deep."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_read/narration": {
+    "source": "sha256:de8141667de070dd9036f5aebbae1bc9e2d81fd1293b54af38aec1f5c15eb476",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fresh prints have sharp edges. Old ones are soft as pillows."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the far voice."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_march/narration": {
+    "source": "sha256:6b29b2812127e431c121f36979c9bcebf9dcb2ee99e95bff7a7be19a0b7032bb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The prints are far apart. It is like hopping across a giant's stepping stones."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the far voice."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_air/narration": {
+    "source": "sha256:7e1e962174f53f2dcd764cc07cf4525dd26c3c53e0e7687faa26d0b1fd51e6cb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Wings lift you above the wind, where the whole trail shows at once. Far below, someone calls,"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/narration": {
+    "source": "sha256:2bb5a3d98d76048a739d60ddd3a30a04216db69cac8f429b6e5305e5e7225463",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A yeti herder comes around the ridge, pulling an empty sled."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls, and then she stops at the sight of the kid."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"There you are, you little snowball.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The kid is from her herd. Then she sees the rest of you."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Did you come with the weather?\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/variants/0": {
+    "source": "sha256:47f633606bb01e83b6ee82a1ab648c58b8cb2a9b50419275eb24dea8471b32e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She looks back at your line of stones."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"You marked the hollow. That helps the next person through.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/variants/1": {
+    "source": "sha256:97ccf5d25a3e29f5b77775f4c00ef14539c66237f6cf7f36ef66f549a1907fd2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She checks the kid with one broad hand."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Still warm. That long way around was well chosen.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/variants/2": {
+    "source": "sha256:1f1a95058e3a4b1b8b73b99aef30bf8499223b9428972d2696ce835644951271",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You point out the hollow behind you. She nods."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"You found your own way out. Keep that rope.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tell_rift/narration": {
+    "source": "sha256:a03789e3bf91f539fda4a6f7f405a43ade466131486960447e562d7800faeac6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell her about the snow on the quay and the tear in the air. The yeti looks at your wet boots and harbor rope."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Snow on a harbor, from a clear sky?\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks up at the high field, which is bare as a plate."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"So that is where my snow went.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She digs a honeycake out of her apron."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"For the news. Now, walk on the dark ice when I say. Never the white.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lays a folded blanket on the sled."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ask_help/narration": {
+    "source": "sha256:156ef4eb35ddcafa8dc677b90014ff66cd96cbaabebade4470cd380ffdaa136a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"First, we get you warm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the yeti. She wraps a folded blanket around the kid and your arms together, and it is warm as toast. She sniffs your coats."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Harbor slush? Then that is where my snow went. The glacier keeps surprising me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She turns the sled toward the melt channel."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/herder_gift/narration": {
+    "source": "sha256:284bf68c3af99fd106a71afa36fa3d5522fc06c636802f31749de56f89a94f37",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the channel, the herder looks you over."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"You kept that kid warm all the way here. Good.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She hands you a bundle wrapped in a cloth."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Bread, cheese, and a sausage that has not made up its mind.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She points across the water."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The herd is over there. First, we read the ice.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/read_water/narration": {
+    "source": "sha256:30525f9f2d2fce8b4ed9129e9b0c648b98a945eaae13db18ad98d55945a89c9b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ice comes in two kinds. Dark ice holds a boot. Sugary white ice holds nothing."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Tell me what you see,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/read_water/onFailure/narration": {
+    "source": "sha256:a5b0ccb7c623a9ab27dba2283eb0f1f475b5d93d7d6a8b6b52dae89967f45eb5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You pick a sugar patch. The herder's boot crunches through."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That taught us both.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You look again and find the dark line."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/channel/narration": {
+    "source": "sha256:8ab0ebb1f508b92b9f6b25ad386571ada9571d240e24ef347756b1a6f85147f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Meltwater gurgles through a narrow gap. The snow bridge sags when the herder tests it. A flat stone sticks out upstream. The herder points out dark patches of ice."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Those will hold a careful foot.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The herd waits on the far side."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/step/narration": {
+    "source": "sha256:ded0e1a299fe26a690cc13f88b2d087e4c6edb49e552640d47b46d1d274c1fbd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"One foot on the stone, one foot on me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, holding out a huge hand."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/sledge/narration": {
+    "source": "sha256:89d25aace4c6e82b8936b82038514bff2b1bace9fe47e93ff3078ba417d25b27",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Hold her steady,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, patting the sled."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"She is old, and she wobbles.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wing_line/narration": {
+    "source": "sha256:647a0834ca2b938a10bab3de1016952dc19678b12999fb69fe2cfaae48187073",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Show-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, grinning."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Go on, then.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/song_step/narration": {
+    "source": "sha256:928278552a0eb85a7d841ecc658e7ddf82e69feadfc3541e8cf69b25b110c7ac",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Sing it slow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Goats like slow.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/dry_bank/narration": {
+    "source": "sha256:df16e7cabc94a8bb5817dbd47270a29f69c9e398e32fbf2a3f5a4bc6c9022748",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The kid sees the herd and wriggles free. A shaggy goat sniffs it nose to tail, then tucks it between her front legs. The herder checks on everyone."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"All back. Good.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wet_bank/narration": {
+    "source": "sha256:a7a043fd2a69ec2b4d2b4908319dcb8323721992c0be8fec290d842007dc943c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder wrings out your sleeve over the channel."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"We will dry that indoors.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The kid has already run to a shaggy goat, who sniffs it all over and will not let it move."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle/narration": {
+    "source": "sha256:c8c02a12a9505f348eaa83542df7eda856dd493bb4551f4978b865e9d8056a59",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herd crowds around the kid, bells clanking like a kitchen drawer. A shaggy lead goat with one chipped horn sniffs everyone in turn."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"They won't go indoors while they are upset,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Settle them first.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_count/narration": {
+    "source": "sha256:197cb5f68f6613e8f50316d997796969456e30d704cd4c40bb39719b242640a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every goat wears a different bell: a clank, a tink, a cowbell, a spoon on a pot. Counting moving goats is like counting raindrops, but every bell is here. The goats calm down. Someone finally knows who they are."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Twenty-two,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, pleased."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"And one small snowball makes twenty-three.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_brush/narration": {
+    "source": "sha256:6107f6b0ededdb4cbbe5e1130fe6b8f8626efdd9abe16abaf8808af1b42ed34a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goats' wool has frozen into ice beads that rattle as they walk. They hold still for brushing, if you find the itchy spot. Soon the herd sounds like a rattle full of calm."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Behind the ears,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That is where they keep their worries.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_feed/narration": {
+    "source": "sha256:9b615db07a5a72bb8cad1a999604a08decc5ae487810f14057ae242274e249e0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You unwrap the supper. The lead goat sniffs the cheese and sneezes. Then she eats the crust, gives you a forgiving look, and leads the herd to the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Spoiled,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder fondly."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_lull/narration": {
+    "source": "sha256:f9760140836f02a534e858de8bb33c1e95a86eba35ab49fb19f6125a1b08f746",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hum a slow tune that sounds like a blanket. The lead goat's ears droop. The spoon bell goes quiet. One by one, the goats stop stamping and follow the tune."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Now you are showing off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, smiling."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/herd/narration": {
+    "source": "sha256:72d6617b6521b791e7ac52dd7c4b55e27fcb279729b8fcaac0a2779e192b03cb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"In you go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the herder, waving the goats toward a low opening in the ice. The kid plants its feet. From inside comes a deep note that trembles through your boots, and the kid tilts its head to listen. Do you pick it up and carry it in? Or hum along with the note it is listening to?"
+      }
+    ]
+  },
+  "riftlight-glacier-survival/carry/narration": {
+    "source": "sha256:3d41e6896a080e977c0b63536dd68c2e0ceab721423020650d8f0ef70ae36e52",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You scoop the kid up. It kicks like a drum solo, and every hoof finds a shin."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That works,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, rubbing her own shin."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Once.\""
+      },
+      {
+        "by": "narrator",
+        "text": "In you all go, bruised but quick."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/narration": {
+    "source": "sha256:78117df41f248aecc8bad8935607690c916b8a7edb1d964986fcdbdb45a5fab7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Gently,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"It is listening for its own.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/onSuccess/narration": {
+    "source": "sha256:f9cc9b1f3299a92e19c72dedce8a46df2630144ff5cf7b80381b122d61797f7d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hum low, under the deep note. The kid tilts its head. From inside the ice, another voice hums back, right at you. The kid follows the sound, and you follow the kid."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Huh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The hall answered you.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/onFailure/narration": {
+    "source": "sha256:20e92d3c6bc50020ea6e7f0999e0c77e444fda34013d0fbed90cc41756a26a1f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your hum comes out as a squeak. The kid sits down in the snow, offended, and so do you. It takes a long, cold time. At last it butts your elbow and trots inside."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Patience is cold work,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"But it works.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall/narration": {
+    "source": "sha256:0b550fd928e4b2cba04e845b734661fc6eb9992e9a86c95430e4ced1c21d08fe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Inside is a singing hall carved from ice. Yetis sit on benches with warm cups, humming one low note together. The herder hangs your wet things by a row of warm stones. Damp blankets hang over a rail."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Glacier of Origins,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"You may stop arriving now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "At the back, warm air drifts from a glass door."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall/variants/0": {
+    "source": "sha256:e43d83054d1d05de8eb07aaf9e8819380daac2b72f4a7eaa103910d7287841fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A young yeti singer points at you."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"You hummed at the door! I heard you. You are halfway to the low song already.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_table/narration": {
+    "source": "sha256:accd91510ac6eed7629b7b71509030d0aa28f4221d16e592aa2dbc8d281d37a7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the long table, a round yeti knitter is making a scarf so long it runs under the bench and out the other side. She holds up goat-wool boot laces."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Three coins a pair. Quickest laces on the glacier. Or sit and be warm for free.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_buy/narration": {
+    "source": "sha256:092d5447b11c2e9bbab6f779a3c272e67372eb665a4f9f77ba6871a0feb88d16",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You count three coins into the knitter's mitten. She ties the laces into your boots with a speedy bow."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Go on, run. Do not trip. They are fast laces.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/conservatory/narration": {
+    "source": "sha256:a1bd8d1f9367c46adb5c4e408e33bb014929d2046551ac74de75f884e9b3e2ed",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind the glass door is a warm greenhouse full of song. This school is called the Conservatory. Here students learn to be a Songkeeper, a hero who heals with songs. A yeti named Aunt Bellow conducts with a carrot, and every plant leans toward whoever sings best. Above the door hangs a song bell on a cord. It holds a Songkeeper's songs, and it will not ring near a thorn bracer."
+      },
+      {
+        "by": "aunt_bellow",
+        "text": "\"Anyone may try it on,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Aunt Bellow."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/conservatory/variants/0": {
+    "source": "sha256:6b61786de9732125cbb857fbbc7f20d4f91827a71934ebc2d1f817e5b7dc93dc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Aunt Bellow waves her carrot."
+      },
+      {
+        "by": "aunt_bellow",
+        "text": "\"Back to the Conservatory? Good.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Every plant turns to see who came in. The song bell waits above the door for anyone who wants it."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/conservatory_sing/narration": {
+    "source": "sha256:da12b38fb670d8266a5cca40e0ab88615d28038161cf1b6c217bf7820c772cd9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Aunt Bellow points her carrot at you. You sing. A sunflower turns to look. Then a fern. Then, very slowly, a shy little cactus."
+      },
+      {
+        "by": "aunt_bellow",
+        "text": "\"The cactus never turns,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Aunt Bellow whispers."
+      },
+      {
+        "by": "aunt_bellow",
+        "text": "\"Keep singing.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/listen/narration": {
+    "source": "sha256:1c27390b16ed6e12114950a513f3c57ee217f01af371d93b188b45394a2e120c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A young yeti stops singing to turn a page in an open songbook. The note thins, then another singer fills it."
+      },
+      {
+        "by": "party",
+        "text": "\"What is it for?\""
+      },
+      {
+        "by": "narrator",
+        "text": "you ask."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"For listening,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"A crack makes one sound. Running water makes another. The song helps us hear the difference.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She pats the bench."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Low and steady. Try it. Nobody here learned by already knowing.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/note_try/narration": {
+    "source": "sha256:5279f53ce39904a77a14b807af3284233584a0bd7051dba1acdc2eb1e180a050",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The low note is lower than your voice wants to go."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"Stand here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the young yeti singer."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"Hum from your boots.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/learn_note/narration": {
+    "source": "sha256:994c4df71aaed89ac36d36c202f0caac57befa96e1855ad97da3b2e286665899",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You find the note together. It shakes at first, then settles. Across the hall, frost trembles off a sealed seam in the wall. The herder lays a palm on it."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That seam was quiet yesterday.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/learn_note/variants/0": {
+    "source": "sha256:5681f3d23e990a7d53c1b3d8c1aeb8ca70ebf81967b35455904bd873f02c2f21",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder brushes frost out of her fur."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Low and steady. Not loud and wobbly. The ice listens to both.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/changing/narration": {
+    "source": "sha256:b094981bff39e6142bdfc1a0c53d85fefd136e5e6fa0efaaf4ff0bb69471dae1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"The melt has been strange since the mountain woke,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"A path we used last week is water now. It led to the herd's sheltered grazing ledge. Now we eat stored hay, and the pile shrinks every day.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She frowns at the window."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"And some nights the snow blows uphill. Snow does not do that.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Outside, a bell rings twice. Three travelers in dark cloaks are packing up camp beside the hall."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/changing/variants/0": {
+    "source": "sha256:dd35d070bdae8cb9b87423f662bb64a321c8c83ae3dc0bf67f77e6f3e6c586a7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Your windbreak is useful too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she adds."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"I can tell travelers where to shelter.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/changing/variants/1": {
+    "source": "sha256:33fadd1810a15015a9b15bc7b13e0f44d3a0719f191ea862b391a63f8ebd76e8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"And thank you for keeping everyone steady at the channel.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/blankets/narration": {
+    "source": "sha256:9b44f64fbdbda7d8162411154d23305f5dd510ad58eb75baee79ef3d5d30141c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You spread the last blanket over the rail."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Bring yourselves back if you pass this way,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder. The kid bumps your knee, then trots back to the herd."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_look/narration": {
+    "source": "sha256:2937f4da7619393bf7ab7aa0a53c8e749591f5d452eff64640c11958b29411a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder leads you past the hall to a stream. Last week a path ran here. Now meltwater nibbles the snow shelf along the bank."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The herd won't walk where it can't see poles,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"And the hay must reach the lower pen by dark. Two jobs, one sled.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_poles/narration": {
+    "source": "sha256:e0032f923729bc372c5a0e1827b35e3a75660867e23469e69de2f63268f98856",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Each pole must go in straight, or the goats will follow it into the stream."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Straight as a yeti's whiskers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_hay/narration": {
+    "source": "sha256:df861fbfa56d6564e73884f9a11ccd1900176b1affa63fd8159a87bb2b2d8340",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The hay sled is heavy as a sleeping bear and slides like a happy one."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Push from the back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder,"
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"and do not ride it.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_brace/narration": {
+    "source": "sha256:1a88bba9c760c792803e367dac134e438bdb4705fa1f4d59b35062bb34963a9e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A thornguard plants both feet. The snow shelf creaks. The thornguard does not."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hold, hold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_whistle/narration": {
+    "source": "sha256:9897af43128bab96b488ac92b55f530c0ffe8bc3a056f2a51d10e3f7ee2d0642",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You blow one loud note. Every goat lifts its head and trots off the thin snow in a line."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That is a better whistle than mine.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She plants the poles herself."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/narration": {
+    "source": "sha256:1135a119616e4f02f507eb2639432d52376c3842668a5f91d271c3c3862d565f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One last pole goes across the snow shelf."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The stream pauses between gulps,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Step across when it goes quiet.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The stream gulps. Then it goes quiet."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/onFailure/narration": {
+    "source": "sha256:096e5b7380341378ff7bf68d5744afc0ba88f6cc736943e909fb3b8371a52ee4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stream gulps early and splashes you to the knees. You skip back, dripping."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"My turn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, and plants the pole herself."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_done/narration": {
+    "source": "sha256:ec10951f614fd123f34de91c435a2c4ba3d3f1e8f3aedfeba4d2235dbeb18d2c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder looks over the herd, the hay and the line of safe ground."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"The glacier is changing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"But it will not catch us today. Thank you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at you a long moment."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"You brought my kid home through the weather. You are welcome in the hall, always.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Past the hall, the travelers wave from their camp."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_friend/narration": {
+    "source": "sha256:61c73718a6506a25adb7fc85430c460b83ddf767010233b86d4b35e486cbbcda",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "As you turn to go, something bumps the back of your knees. It is not the little goat you brought home. That one is asleep in a heap of goats. This kid goat is even smaller, white with brown spots, and so wiggly that her whole back end wags."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That spotted one has taken a shine to you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"She is mine to give, and I give her gladly. The herd will be quieter.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Do you ask the spotted kid goat along?"
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_along/narration": {
+    "source": "sha256:0d84d88648743f46785ece5eb3ddae4a26331c5aa005074a58872f9f1568ec46",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The spotted kid goat springs straight up like popcorn, then trots at your heels."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Mind your bootlaces,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"She eats them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Too late. One lace is already half gone."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_goodbye/narration": {
+    "source": "sha256:e01392fb2837d375a63402b74f58c278b6047f679565786800e90e14d1bf2286",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You scratch the spotted kid goat behind the ears. She wiggles one last wiggle, sneezes on your boot, and bounces back to the herd."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"She will tell them all about you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/departure/narration": {
+    "source": "sha256:ee662a7d5fd512b7ac445be3f00bfd8eb54a62cf57414b4e81376199044e5402",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Warm and dry, you step outside. The little goat you brought home stays with its herd, already asleep in a heap of goats. You know now where the snow on the quay came from: right here. But why is a glacier spilling onto a harbor, and why does its snow walk uphill? A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner."
+      },
+      {
+        "by": "cloaked_unicorn",
+        "text": "\"It will not fold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he mutters. Neither has noticed that the corner is under her hoof."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/departure/variants/0": {
+    "source": "sha256:232628e13b2cbdb576436efca7f4845f794ab98a3584c85fbe2d890459ba4e95",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder waves from the blanket rail."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Dry blankets for the next arrivals. That matters.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift_probe/narration": {
+    "source": "sha256:82cec26f8aa07c23dcd6b1d6082ffc9f4ee170b9ea208af565f71f5e0d25b8b8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tie the rope to a rock and inch forward. Under a thin crust, the drift is hollow! You back out and leave small stones marking the safe way along its edge."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the kid from your arms, impressed."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift_detour/narration": {
+    "source": "sha256:9264fa0419a91a7df109f1d2d2d43276c8c646d88a93a7f5c4cbe45fa3e4f8b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You take turns sheltering the kid in your coats and follow the rocks around the drift. The walk is longer, but nobody falls in."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the kid grumbles, warm and sleepy in your coat."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift_slip/narration": {
+    "source": "sha256:b58a3509fa4681ef5d54e56437198f044e1f7bce50347460c316971c5ac91167",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crust gives under your first step! You sink to your knees, holding the kid up high. Your party lays the rope across firm rock, and you pull yourself back. Now you can see the hollow, and you skirt its edge."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"MEH!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the kid, outraged, from high above your head."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn/narration": {
+    "source": "sha256:7ec80877a0e1b5c64d8f43e12c2b41e825cf7a38da77ee1413558de45b3b1215",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the drift, a tall pile of stones stands at the foot of the ridge. A flat tin lid peeks out of the snow beneath it, stamped with a little bell. Somebody left it here on purpose. It is frozen hard into the ground."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Hoo-up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the far voice, just over the ridge now."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_dig/narration": {
+    "source": "sha256:ade9d51a4b77b0ac8172d4aa366fbfc5688f11852d35eebdd8320481780e8779",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tin is frozen hard to the ground. The kid helps by digging, badly."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says, proud of its work."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_smash/narration": {
+    "source": "sha256:0f677a89be24e57867e57e30401ff774093373f63ea9569e14ab63ad07af0d61",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One good bigfoot whack, and the ice falls off in plates. The lid rattles loose."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the kid, and hides behind your boots."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_response/variants/0": {
+    "source": "sha256:bd537268c76a1b5b53b0affe06d8aec948f68eb8b9119b56cbd5a8d8cdf913f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "yeti_herder",
+        "text": "\"Not you, not yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder, kindly."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"Let the ice settle after that crack.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_hum/narration": {
+    "source": "sha256:431ca6d5a02e3de907af11f31bd1b920b066af2f42b1e4834330125690f05908",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hum, and frost ticks down the seam in time. You stop, and it stops. You start again, and it answers again. The ice stays shut."
+      },
+      {
+        "by": "yeti_herder",
+        "text": "\"That was no accident,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the herder."
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_touch/narration": {
+    "source": "sha256:054d6dc752d2b08ce46cb58bc54c92a9618571bc37e9d43add20e73282ff5d39",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lay your hand on the ice while the yetis hum. A faint tremble reaches your palm, then fades when they stop. You try twice more. Same answer. The seam stays shut."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"Funny,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the young singer."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"It only does that when we sing.\""
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_listen/narration": {
+    "source": "sha256:96a1a2f820566818d9c4825069432aa55adc2681f973548bfbf5648f51a4178d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The herder kneels beside you. You take turns humming and listening. Each time the note sounds, a low ticking answers from the seam. The ice stays shut."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"Tick,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers the young singer."
+      },
+      {
+        "by": "young_yeti_singer",
+        "text": "\"Tick. Hear it?\""
+      }
+    ]
+  }
+}

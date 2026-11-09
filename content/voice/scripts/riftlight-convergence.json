@@ -1,0 +1,1497 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-convergence/arrival/narration": {
+    "source": "sha256:e07a637fc48e589e171b9ce3c484805c6594809974adac920c8e46a740f41e99",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The walking path climbs to a sheltered ledge above the glacier, where all of this began. Snow is falling out of a clear sky again. It lands, then slides uphill toward the deep ice, as if it wants to go home. On an upturned sled, Orin Vale has spread out his big map, the one with places that do not fit."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"You found pieces that don't match it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Tonight we put them together and see what they show.\""
+      }
+    ]
+  },
+  "riftlight-convergence/bram/narration": {
+    "source": "sha256:49dea342a94c759f2e64a1824346a8cd6a85559b3e7f67a0b256708da6c5cc49",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A bigfoot as tall as a door stomps past with a lantern on a pole. He is painting a line across the ledge with a sooty broom."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Bram Lock,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"I keep Master Orin safe. Mostly from his own ideas.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Across the camp, Lady Olivia paces and hums."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"She means to try something tonight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bram rumbles."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"When she does, I need everyone behind this line. Will you help me make it strong?\""
+      }
+    ]
+  },
+  "riftlight-convergence/check_line/narration": {
+    "source": "sha256:0bfdf906c6e91bc7e806836b82ece62f4d4c51986d1c56855aca206c05fde8b5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bram hands out iron stakes as long as your arm."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Every stake goes in up to its hat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. The ice is as hard as a dinner plate, and the snow keeps sliding over your boots."
+      }
+    ]
+  },
+  "riftlight-convergence/check_line/onSuccess/narration": {
+    "source": "sha256:b80a3c7643559c1e7216f7feb8121b984eea5bb08ad547a3471f631ad1d86713",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clang, clang, clang. Every stake goes in up to its hat. Bram ties a rope between them and twangs it."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"is a line.\""
+      }
+    ]
+  },
+  "riftlight-convergence/check_line/onFailure/narration": {
+    "source": "sha256:fc9dc7a6a6733f0a72deddf688def62c25023ca3f765d5b6422f8e29bac1f16d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The third stake skids, and so do you, right onto your bottom. The stakes go in crooked, and the rope sags."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"It's a line,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bram kindly."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"A wiggly one.\""
+      }
+    ]
+  },
+  "riftlight-convergence/bigfoot_stakes/narration": {
+    "source": "sha256:530a94752db91e46c65dae35649239a730439d9da3f7482b8cd141a2ab42a476",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot tucks every stake under one arm and pushes them into the ice with a thumb. Bram stares. Then he grins, very wide."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Finally,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Somebody my size.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He ties a rope between the stakes and twangs it. It hums like a harp string."
+      }
+    ]
+  },
+  "riftlight-convergence/olivia_plan/narration": {
+    "source": "sha256:cb196429dba96ad36f544f0deb71f08ed26fd1e114b008805e9f6c8cf9672fa5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia is drawing loops in the snow with the tip of her horn."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Orin wants to look. Bram wants to wait,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I want to ask.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She taps a loop."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Someone is pushing the land around. If I call one small opening right here, maybe it will tell me who. Imagine if we could use them, instead of chasing them!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, Bram is staking his line alone. It is coming out wiggly."
+      }
+    ]
+  },
+  "riftlight-convergence/olivia_plan/variants/0": {
+    "source": "sha256:49dcf32576c1331b009abb66b98da4d6de00d19d3469a764cc972b920be32595",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"There you are!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says first."
+      },
+      {
+        "by": "olivia",
+        "text": "\"You helped me at the whale road. You know I'm not reckless.\""
+      }
+    ]
+  },
+  "riftlight-convergence/olivia_plan/variants/1": {
+    "source": "sha256:53df7197a7a0b48479aad85ddcc0a70bc4839be5f141581e0f496c801318a88a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"Oh. You chose the whales' way over mine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says first, a little stiffly. Then she smiles anyway."
+      }
+    ]
+  },
+  "riftlight-convergence/line_held/narration": {
+    "source": "sha256:86158096af4b64d6f50354d64bfcef61ab19e4f1bc4c097852d6113162d7d84f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip Thistledown, the young manticore scout, comes bouncing up with his notebook and his spoon."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says tonight is the night!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Master Orin says tonight is for looking. I say tonight is for both!\""
+      },
+      {
+        "by": "narrator",
+        "text": "He licks his pencil. Orin stands on one corner of his map to stop it blowing away."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Pieces first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-convergence/line_held/variants/1": {
+    "source": "sha256:e9eaf4d887df2a7ff343371b4fade24c57d240a0c36111df39a15cfc23b0bb98",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"My whale-road friends!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Lady Olivia calls from across the camp, and waves her whole horn at you."
+      }
+    ]
+  },
+  "riftlight-convergence/tell_rivers/narration": {
+    "source": "sha256:62ba785461b6125a50422173e4680b80778b3c978cde33c2fd0a21742db3612c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin taps the great river on his map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Start with the water,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Only what you really saw.\""
+      }
+    ]
+  },
+  "riftlight-convergence/tell_sky/narration": {
+    "source": "sha256:694142f23684aa435ceb4930892430f6bbab7a1e7e710df498a7cd8c54b5c464",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip is writing everything down very fast, with his tongue poking out. Then Orin points to the empty sky at the top of his map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"And up there?\""
+      }
+    ]
+  },
+  "riftlight-convergence/check_trace/narration": {
+    "source": "sha256:fc92881ddeb0f45f41379adbe2addb17c7d7ae38b7dd0b7f03084b7d54fa36ff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin hands you a sheet of paper so thin you can see through it."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Trace every old line onto this, right over today's map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Slowly. The snow wants the paper too.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A gust lifts one corner. Pip sits on it."
+      }
+    ]
+  },
+  "riftlight-convergence/fit/narration": {
+    "source": "sha256:482c3e209298c610d2d78c2c9842afd8d2d117e96eaf63c2f6914dab658a6849",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin lays your tracing over his big map, and then he goes very still. The old lines do not match today's land. But they match each other. They join up, edge to edge, into one old map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"These places are not wandering,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin says quietly."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"They are being put back where they used to be. Someone is doing this on purpose.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Even Pip stops writing."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Whoever is moving the land,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"wants it back the way it was.\""
+      }
+    ]
+  },
+  "riftlight-convergence/olivia_sees/narration": {
+    "source": "sha256:c518c231dfd38069586e76ce5452757dc6e571258f9203cfaa366bae2edf647f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Lady Olivia leans over the map until her mane brushes it. Her eyes shine."
+      },
+      {
+        "by": "olivia",
+        "text": "\"One old map,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she breathes."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Then somebody knows how to move the land!\""
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Somebody who doesn't ask anyone first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Then somebody should ask them,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia. Bram says nothing. He just moves his lantern a little closer to his line."
+      }
+    ]
+  },
+  "riftlight-convergence/chime_pull/onSuccess/narration": {
+    "source": "sha256:9d025fed011c09ee5a0f552ff8f4d29768f035e83befeafb4d5eca9f5351ab88",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You grab the strap and hold on. The chime hums like a kettle and points one way only: down, into the old ice. Seren crouches beside you and listens."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It has never pulled this hard,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-convergence/pip_runs/narration": {
+    "source": "sha256:3bddb8fc22823b10091dd0b708ae4e1718a2b4cda40e0ae6cee3a4b4d5134267",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Down there!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Pip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a real scout goes first!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Before anyone can grab his tail, he is off, sliding down the snow toward a dark gap in the ice where all the snow is pouring in."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Pip!\""
+      },
+      {
+        "by": "narrator",
+        "text": "roars Bram. What will you do?"
+      }
+    ]
+  },
+  "riftlight-convergence/check_call/onSuccess/narration": {
+    "source": "sha256:4415240fce67b1dbb1313ded6c60417de7f183153c8a262843ca3461b5724ddc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Pip! A real scout comes back to tell the others!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip skids to a stop, thinks hard, and climbs back up."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That's true,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he puffs."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I'll tell you what I saw.\""
+      }
+    ]
+  },
+  "riftlight-convergence/swoop/narration": {
+    "source": "sha256:03a505d162bf8f90baa2e22dae18db67fe3081a4737e4bab7cbdaed1378f8132",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your griffin dives, scoops Pip up by his scarf and flaps back up the slope. Below you, the gap in the ice yawns dark, and the snow pours into it like sand in an hourglass."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Again!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      }
+    ]
+  },
+  "riftlight-convergence/passage/narration": {
+    "source": "sha256:23c8ffc4b7f03e6b2aecba5eb59b9aee5da04bc832bb0c97e9d2c370aa389b2d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Below the camp, a passage opens into the glacier, wide enough to walk down. All the sliding snow pours into it and is gone. Somewhere deep inside, the old ice groans."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"The pull comes from down there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But not tonight. Tonight we eat, and we think.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes DOWN THERE in his notebook and underlines it twice."
+      }
+    ]
+  },
+  "riftlight-convergence/rest_olivia/narration": {
+    "source": "sha256:5492f992ebb4490c30422936b074b2cbdaea5f0c1d04230c28fa5ae282245a00",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia shifts over to make room. For a while she just watches the snow slide by."
+      },
+      {
+        "by": "olivia",
+        "text": "\"At the Exchange, the snow fell on the fish stalls for days,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"People are losing their roads and their rivers. If I could learn to move the land, I could move it back for them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at you."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Is that so wrong?\""
+      }
+    ]
+  },
+  "riftlight-convergence/rest_bram/narration": {
+    "source": "sha256:9d76f4e3275060ba3bbf44d8c8dbf178c25791c0638111795e65b28d2f150b95",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bram makes room on his bench, which is a rock. Orin shares his last apple ring."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"If anything goes wrong tonight, I have a signal,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bram says."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Two claps and a stomp. It means stop. Everybody stops. Even unicorns.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He shows you, very softly, so he doesn't wake the glacier. Clap, clap, stomp."
+      }
+    ]
+  },
+  "riftlight-convergence/olivia_asks/narration": {
+    "source": "sha256:5fe7633ee8de82c1baaef44003c45842caf6df2176eddfbba669b0ad0530ec0c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia stands up."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Someone is putting the land back on purpose,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"So it can be done! Let me call one small opening, right here, and ask it who.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Orin frowns."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"We don't know what an opening will do.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bram picks up his broom. Everyone looks at you. What do you tell her?"
+      }
+    ]
+  },
+  "riftlight-convergence/wait_seren/narration": {
+    "source": "sha256:ffe6412d40673eaeb7b6849c9c9e32f9721dceddf17e05c8eb3fe4301c0081f2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia sighs, but she waits. Seren takes out her ring of little chimes and tunes it, ting by ting."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"If it gets big,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren whispers to you,"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"I will try to hold its edge. Only its edge.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia taps her hoof. Tap, tap, tap."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Ready?\""
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Ready,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      }
+    ]
+  },
+  "riftlight-convergence/go_ahead/narration": {
+    "source": "sha256:576aafaff0f02c656674ef79370443bed1c598f81026b32f5ef52e8e5ffbb9cc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia's whole face lights up."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Finally, someone who wants to find out!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squeezes your hand with her hoof, which is surprisingly hard."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Stand near me. If I'm right, you'll want to see this.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren is still digging in her pack for her chimes."
+      }
+    ]
+  },
+  "riftlight-convergence/summoning/narration": {
+    "source": "sha256:bed33f0175073e72bc9e9a474cb30e2b70b79fc124ab401cd4826846e4678423",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia touches her horn to the empty air. An opening unfolds above the snow, as tall as a door. It shimmers with colors nobody chose, sliding and swapping like fish in a pond. Olivia stares."
+      },
+      {
+        "by": "olivia",
+        "text": "\"No. Those aren't the ones I asked for.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She waves her horn. The opening does not listen. It begins to pull."
+      }
+    ]
+  },
+  "riftlight-convergence/rope_holds/narration": {
+    "source": "sha256:338b77365259dd3bc044df4105bef93e815dd1bd445acacff90b0cdc260f9079",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sled slides, bumps against Bram's rope and stops dead. Twang. The stakes hold like teeth. Orin's map flaps on its sled, safe."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Good stakes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bram grunts, very pleased with everyone."
+      }
+    ]
+  },
+  "riftlight-convergence/seren_holds/narration": {
+    "source": "sha256:a7d72355daa8b2d40a27b1d140170d2e24e305ad232b97efeb376ed175129808",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren lifts her ring of chimes and rings one note, long and steady. The opening's edge stops growing. It still swaps its colors, and it still pulls, but it gets no bigger. The sled slows and stops."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Only its edge,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren whispers."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Quickly now.\""
+      }
+    ]
+  },
+  "riftlight-convergence/decision/narration": {
+    "source": "sha256:056c02c9293543d873fc0996a6f9b9349a342324f4c206cb75eb1eba73c84cf8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia is still waving her horn, and the opening is still not listening. Pip has reached her side."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Help me stop her,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bram, already moving."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Before it pulls somebody in.\""
+      },
+      {
+        "by": "olivia",
+        "text": "\"No!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Stand with me. I can learn it. I only need a moment.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will you do?"
+      }
+    ]
+  },
+  "riftlight-convergence/decision/variants/1": {
+    "source": "sha256:8c5028b25b8a7ff828105bcba391fe9023da91f0053516cc9544719355b4e840",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She looks straight at you."
+      },
+      {
+        "by": "olivia",
+        "text": "\"You know why I'm doing this.\""
+      }
+    ]
+  },
+  "riftlight-convergence/check_bram/narration": {
+    "source": "sha256:615b405ba2967c1d3cc03bbc32dea184bf280b5efa3d9e663a3250a7da75d79c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bram plants himself between Olivia and the opening like a door."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Lady Olivia. Look at me, not at it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The pull tugs at her mane. You grab the end of Bram's rope so he can lean in."
+      }
+    ]
+  },
+  "riftlight-convergence/check_olivia/narration": {
+    "source": "sha256:19d0305d09707994dcde8495dbfc4e1c7c54fa6721e794a8d18a6ff4b757aa93",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia keeps her horn up."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Catch the loose things,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "olivia",
+        "text": "\"so I can watch it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Papers, mittens and Pip's hat go flying past you toward the opening."
+      }
+    ]
+  },
+  "riftlight-convergence/check_olivia/onFailure/narration": {
+    "source": "sha256:f9cc758523956a71326e8de1ad88ebe3c94365cc0de0491295a6995feb2ab9ad",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You catch the hat, but Pip's notebook flaps right out of his paws and into the opening. Pip wails."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"My notes! All my notes!\""
+      }
+    ]
+  },
+  "riftlight-convergence/orin_talks/narration": {
+    "source": "sha256:04cad718bc5c0edbe3917aaefc03f4723d0d352017de46a692796e779c563805",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin steps up beside Olivia, quite calm."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"At the buried bridge, the chime told us to wait,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"We learned more by waiting than we ever did by pushing. Let this one show us what it does, from behind the line.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia's horn dims. Slowly, she steps back with him."
+      }
+    ]
+  },
+  "riftlight-convergence/signal_stop/narration": {
+    "source": "sha256:60379d004be35829d96a1e04d9d20eee68afc77e07a565d4180038ea22d5016f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You clap twice and stomp, as hard as you can. Clap, clap, STOMP. Bram does it too. Then Orin. Then Pip, a bit late. Olivia blinks, and her horn stops glowing."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Everybody stops,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says faintly."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Even unicorns.\""
+      }
+    ]
+  },
+  "riftlight-convergence/remind/narration": {
+    "source": "sha256:856ad78c662d39d2c009305b448aa76fbdd4ba8a2d57abad8c5b83e84f00806c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"You said you only wanted to ask it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell her."
+      },
+      {
+        "by": "party",
+        "text": "\"It isn't answering.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia opens her mouth to argue. Then she looks at the opening, swapping its colors and pulling at everything, and closes it again. She lowers her horn."
+      }
+    ]
+  },
+  "riftlight-convergence/beside_her/narration": {
+    "source": "sha256:7d220c5900d2b6614d56bcbe00a4c7a8c6b6eb15de6a8bbb3c3d0ebfdcea65e0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You stay right where you are, beside her. Olivia takes a deep breath, and steadies."
+      },
+      {
+        "by": "olivia",
+        "text": "\"All right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Let's watch it together. Nobody goes any closer.\""
+      }
+    ]
+  },
+  "riftlight-convergence/stopped/variants/0": {
+    "source": "sha256:c0404c0aa9ebd40e82693c94aa66ac4b2b91437ef893ed9862ccf19e78981065",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"You helped me at the whale road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"And now you've told me no.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She takes a long breath."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I suppose friends do both.\""
+      }
+    ]
+  },
+  "riftlight-convergence/stopped/variants/1": {
+    "source": "sha256:2427c71399370beb3ab4ec7f144901b9e7a47e1ca549e068ad622143e81521dc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia looks at the rope, then at all of you. Her ears go flat."
+      },
+      {
+        "by": "olivia",
+        "text": "\"You would all rather wait,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I'm not very good at waiting.\""
+      }
+    ]
+  },
+  "riftlight-convergence/stood/narration": {
+    "source": "sha256:31ebc2fcd6e08008025dc2ddaa407836880fe4267c52e544fc66147380355219",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia watches the opening for a long, long moment. It flickers bigger and smaller. It swaps its colors. It pays no attention to her at all. At last she lowers her horn."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It didn't do one thing I asked,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-convergence/stood/variants/0": {
+    "source": "sha256:b10839f0fa83205e1a86ac6adf07125a524486235d9c8e82195a1ec919c4a198",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"You stood with me at the whale road, and you stood with me tonight. That's twice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She laughs, a bit shakily."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Next time I'll ask it nicely.\""
+      }
+    ]
+  },
+  "riftlight-convergence/stood/variants/1": {
+    "source": "sha256:b75db0b24bac4db2614a88515da3483e036625d74de5830a40143d966811dd61",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She looks at you in surprise."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I didn't think you would stand with me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Thank you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she looks back at the opening, already thinking."
+      }
+    ]
+  },
+  "riftlight-convergence/pip_choice/variants/0": {
+    "source": "sha256:af682d05fd3e33ef487a0c0ca7b4465ebb20a063d6ca76885b10e7e6deea8a9a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip stays behind the line, next to Bram."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a real scout goes first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip says slowly."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But you didn't go first. You stayed, and kept everyone safe.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He crosses something out in his notebook and writes something new."
+      }
+    ]
+  },
+  "riftlight-convergence/pip_choice/variants/1": {
+    "source": "sha256:05728e845fd6e72ec686bded2bcaddc187128f5b1c3c19bc2e15e7e0579c2772",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip stays right at Olivia's side, chin up, copying the way she stands."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a real scout goes first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"And you stood with her. So I will too.\""
+      }
+    ]
+  },
+  "riftlight-convergence/fish/narration": {
+    "source": "sha256:446353b48079865c70529a829e0a15edb36e7d05ca45bf95c1025c300fadcddf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Something drops out of the opening and lands on Bram's head with a wet slap. A fish! A silver fish, wriggling, a long way from any water. Bram does not move."
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"Someone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "bram_lock",
+        "text": "\"take this fish.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The fish flips off his head and flops toward the opening, as if it knows the way home."
+      }
+    ]
+  },
+  "riftlight-convergence/fish/onSuccess/narration": {
+    "source": "sha256:2bec7e90d6ab0a06bb081c25632966bdd422b3a3c28fc3523b36c07aa89e0f5e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You scoop it up and toss it. Plop! It sails through. For a blink you hear gulls, and smell a fish stall very far away. Then it's gone, home again."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Moved things go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"if you let them.\""
+      }
+    ]
+  },
+  "riftlight-convergence/lesson/narration": {
+    "source": "sha256:6b9ff8a7abe773c4d68b9bcf1e161187e41509c7118dee51b05f51cf7daf0a91",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The opening still hangs over the snow, smaller now, swapping its colors. Seren walks up to it with her ring of chimes."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Nobody can tell an opening where to go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Not even Olivia. But you can hold what is already true: how big it is, how still. That's called Manipulate.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She hands you the Listening Chime."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Hold it still while the opening is small, and it stays small.\""
+      }
+    ]
+  },
+  "riftlight-convergence/check_hold/narration": {
+    "source": "sha256:0acb8a1c2b560751293bdf3f6ad7fcda9921a9b232d8de9222ddb36e564137dc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the chime out at the opening's edge. It wants to swing. It wants to hum. Seren whispers,"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Don't push. Just keep.\""
+      }
+    ]
+  },
+  "riftlight-convergence/check_hold/onFailure/narration": {
+    "source": "sha256:0ffe022f19283a93afcd95486c408217b3f59acd0efa70b5defa81cac66980a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The chime wobbles, and the opening hiccups one size bigger before Seren steadies it with you."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Holding is hard. That's part of the lesson too.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The opening stays, small and stubborn, and Bram ropes it off for the watchers."
+      }
+    ]
+  },
+  "riftlight-convergence/check_pip_hold/narration": {
+    "source": "sha256:18bf0c6fee786d738bff034c1ea1d5ffbe10508dc3a2b4f7ba08fb734f344531",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You put the chime in Pip's paws and wrap your hands around his."
+      },
+      {
+        "by": "party",
+        "text": "\"Don't grab,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell him."
+      },
+      {
+        "by": "party",
+        "text": "\"Just keep it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip's tail is twitching. Olivia is watching."
+      }
+    ]
+  },
+  "riftlight-convergence/check_pip_hold/onSuccess/narration": {
+    "source": "sha256:72017fd49b46a142419380206e84d778b1541384f47ac31de59bb29fffbc7d01",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip holds his breath, and the chime holds still. The opening stays exactly as it is, then folds small and closes by itself. Pip stares at his paws."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I held it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I didn't grab. I held.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He writes HOLD, DON'T GRAB on the back of his paw."
+      }
+    ]
+  },
+  "riftlight-convergence/check_pip_hold/onFailure/narration": {
+    "source": "sha256:b82b8896d6131b352626df5b5d204dceff6c7c56f93c1f9651b3a4faab5ab576",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip grabs. The chime jerks, and the opening hiccups bigger before Seren steadies it. Pip goes pink to the ears."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Grabbing is a hard habit,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren gently. The opening stays, small and stubborn, and Bram ropes it off for the watchers."
+      }
+    ]
+  },
+  "riftlight-convergence/hold_traced/narration": {
+    "source": "sha256:02778d4780dcb857b99ed70bd37a197bd9e2542654e27b6168038f90f55d826f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold your clean tracing up to the opening. Its edge lines up with your neatest line, so you know just where to hold the chime. It goes still, and the opening stays exactly as it is. Then it folds small and closes by itself."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Neat lines help,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Orin, very pleased."
+      }
+    ]
+  },
+  "riftlight-convergence/hold_starweaver/narration": {
+    "source": "sha256:536e23f4057098ad9d13390d2956cd817387e7ce781fc2bc55203853c0595868",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your starweaver reads the light around the opening's edge and holds it with Seren, note for note. The opening goes still, then folds small and closes by itself. Seren's eyes shine."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"You were made for this,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-convergence/lesson_done/narration": {
+    "source": "sha256:0a9a556a500604ae0fde648131b8d75922c3f19f84f6be86d6aa1d21f87c09b2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You have learned Manipulate. You can hold what is already true about an opening: open, small, still. You can never choose where it goes. Olivia has been listening the whole time."
+      },
+      {
+        "by": "olivia",
+        "text": "\"That's what happened to me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says quietly."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I asked it for one thing, and it did another.\""
+      }
+    ]
+  },
+  "riftlight-convergence/joining/narration": {
+    "source": "sha256:f1d428514a2902f95b9f0d7ff6dfdf808a8be03033b175234b59ea6a74613a04",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Orin smooths his map and draws joining lines from one of your pieces to the next, until they make one old shape across the whole land. Then he draws a small arrow, pointing down into the glacier."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Wherever the pieces go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"they go toward there.\""
+      }
+    ]
+  },
+  "riftlight-convergence/joining/variants/1": {
+    "source": "sha256:e383d622e10459845d976b34e963cbb2cc804cdd8728b7a5dbc72376e8d2f4d2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Plop. Pip's notebook drops out of nowhere and lands in his lap. He hugs it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It came back! It came home!\""
+      }
+    ]
+  },
+  "riftlight-convergence/ending/narration": {
+    "source": "sha256:d4fe409c0a4d4b5540c833940fab2a7187c687c812bf7589f7b3fbaa8e4b327f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Down the passage, the old ice groans again, and your chime leans toward it like a dog on a leash. So here is what your pieces show together: someone is putting the land back the way it was, long ago, on purpose. Who is it? And can you keep today's places where they are? Orin rolls up his map."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Tomorrow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"we follow the pull.\""
+      }
+    ]
+  },
+  "riftlight-convergence/ending/variants/0": {
+    "source": "sha256:b61e340c45c65830ecd33652eaa4abf3511f86251dc50de702a4b2c0329ee570",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia sits down beside Orin with her own notebook."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"Show me how you test one thing at a time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "orin_vale",
+        "text": "\"I'm listening now.\""
+      }
+    ]
+  },
+  "riftlight-convergence/ending/variants/1": {
+    "source": "sha256:92cd17815ffa827e8355f7954db901d1ce2e349d8d98fd07f0ca02e849a02737",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia packs her bag to come along."
+      },
+      {
+        "by": "olivia",
+        "text": "\"It didn't obey me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"But maybe I can help hold what's already there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip packs his bag right beside hers."
+      }
+    ]
+  },
+  "riftlight-convergence/ending/variants/2": {
+    "source": "sha256:c1dd7ac70168ddb4955ac105a97be83116fff1632c4099f661d01cebd2fa52bd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia shoulders her bag."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I'll find my own way to the bottom of this,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. She isn't angry. She is just very sure. Off she goes, and Pip stays with Bram."
+      }
+    ]
+  },
+  "riftlight-convergence/ending/variants/3": {
+    "source": "sha256:9ff3d7a3c9657ebb22ed6111fdd21813778d723e13bbf705eeb82ed566e7a676",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia shoulders her bag."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Orin wants to look. I want to try,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I'll find my own way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She isn't angry. She is just very sure. Pip hesitates, then hurries after her, notebook first."
+      }
+    ]
+  }
+}

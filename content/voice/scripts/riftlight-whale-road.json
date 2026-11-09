@@ -1,0 +1,1087 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-whale-road/arrive/narration": {
+    "source": "sha256:b972253f0a9c64bd4c8274dc2c9dee5d17ad22a107bc10e8ebf4e46db637c76f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the last stepping island, the sky opens into a wide bowl of mist. Cloud whales swim in it, each one longer than a street, singing low. Round and round they go. On a grassy island, a kitsune sits knitting a scarf longer than she is."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Keeper Juniper,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"One row for every circle the whales swim. Forty-one rows. That is far too much scarf.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She points a needle at the whales."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Why are they circling? And how do we let them go? Help me find out.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/low_pass/narration": {
+    "source": "sha256:6a40976c93cc5a0181506c065dff9e9d22289992ade72be40e8b6cccb42a3b1c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A whale swings low to look at you. Its belly brushes the grass, and the whole island tips like a plate of peas. Juniper hugs her knitting."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"That's Hiccup, the little one. He's nosy. Hold on to something!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her ball of yarn starts to roll."
+      }
+    ]
+  },
+  "riftlight-whale-road/check_yarn/onFailure/narration": {
+    "source": "sha256:00c2817bbf6e780c1d57a0fdbc171e2d6752e1d711a8bae1e9e710848d8a4c32",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You dive and miss, and slide on your tummy across the grass. The yarn bounces off into the sky. Juniper reels it back, row by row."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Forty-one. Or forty. Oh, I've lost count.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/check_fly/onSuccess/narration": {
+    "source": "sha256:0f0e29b610a614f85ce657720a0362b225084024e6b285188b0ba8b7fc737f32",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You flap along beside him. Hiccup hiccups a tiny cloud right in your face, then rolls back up, and the island rocks level."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"He likes you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"He never likes anyone.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/check_fly/onFailure/narration": {
+    "source": "sha256:3a2b85eef45862e150b47cbc23cb656b635b44d552f30254dc2eebf80a1b114e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hiccup turns to say hello and bumps you with his nose. You tumble back down onto the grass, dizzy and damp."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"He likes you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Too much.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/whale_eye/narration": {
+    "source": "sha256:8644f0e555dea490eb7390520ec8ba02994f6f214fddd5a0353ef980c00cf8de",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind Hiccup comes a whale so big she blocks the sun. Her eye slides past, kind and very tired."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Auntie Billow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"She leads. Whales find their way by singing. And they always swim ahead of the island due back, an old island my people have waited on for a hundred years. When it comes, the whales show us where.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sighs."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Lost whales, lost island.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/turn_watch/narration": {
+    "source": "sha256:ed16b8fc3ab0d15769843bd729976ffe7d7035bd05e5d4591bed0670cd1d39b0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every circle, the whales swim to the far end of the bowl. There they slow, listen, and turn back."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Something out there turns them,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"I can't leave my whales to go and look. Will you?\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you find out what turns them?"
+      }
+    ]
+  },
+  "riftlight-whale-road/check_listen/onFailure/narration": {
+    "source": "sha256:e48f1e3135a28d7ba66437cc28ea26708738572e744447f603decd5992dd8bd9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The song booms through the grass until your ears tickle and you giggle. You can't tell where it went."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Then go and look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper, and points her needle at the rope walk."
+      }
+    ]
+  },
+  "riftlight-whale-road/pair_seen/narration": {
+    "source": "sha256:2ab408bb2430dc50add593cf39cf8c8c18f8e68b21764c5bdbc798e59f901942",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Out where the whales turn, a ring of shimmer hangs in the empty sky, like heat over a summer road. It pulses: bright, dim, bright. Then Juniper gasps and points behind her own island. A second ring hangs there, close enough to throw a cake through. It pulses at the very same moment. Bright, dim, bright. Two openings, beating together like one heart."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Those weren't there in the spring,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper whispers."
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_here/narration": {
+    "source": "sha256:6e1520472037eed78a8cbe942cb84aa45d5c5a46205e2592bd5a81fd06fb7279",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Beside the near opening stands Lady Olivia, the unicorn Riftseeker, mane blowing like a flag. Pip Thistledown, the young manticore scout, is at her heels, counting pulses out loud."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Ninety-one, ninety-two!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia drops a feather into the near opening. A breath later, it floats out of the far one."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Linked,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Two ends of one tunnel. Imagine what we could do with that.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper sniffs."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Feathers are not whales.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/echo_test/narration": {
+    "source": "sha256:984831e0d08c9cdaa5377c9669399f4075293debff6edd6f0d10dcad430fe470",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip holds out his spoon to you, very grandly."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Lady Olivia says a real scout tests things. Your turn!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper grumbles, but she leans in to watch. How will you test the openings?"
+      }
+    ]
+  },
+  "riftlight-whale-road/why_circle/narration": {
+    "source": "sha256:94c255c1e269a006450e187c7e3006bb75b74086f046e0b1dbb8457007accf1f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then Auntie Billow sings. Her song slips into the near opening and comes straight back out of the far one, ahead of her. She hears a whale singing up ahead, so she turns toward it. Now it is behind her, so she turns again. Juniper drops her needles."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She's following her own song. Round and round. Oh, poor old girl.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes WHALES ARE CONFUSED, then adds AND SAD."
+      }
+    ]
+  },
+  "riftlight-whale-road/calf_stuck/narration": {
+    "source": "sha256:069beabf514863e93c176d71275e150aeaf8b66f3a3bc4c0722a1a7069149007",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Little Hiccup has swum too close to the near opening. Each pulse tugs him in. He squeaks a worried cloud."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Quick!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Lasso him with the kite lines and pull!\""
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Pulling frightens them,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Wait for the quiet beat between pulses, and sing him out.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will you do?"
+      }
+    ]
+  },
+  "riftlight-whale-road/check_haul/narration": {
+    "source": "sha256:a9e5990f7a4b263fbbba270ed2244a6d8edbd7ff3641cab146586ea52215d357",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone grabs a kite line. Olivia takes the end in her teeth, which is not very ladylike."
+      },
+      {
+        "by": "olivia",
+        "text": "\"On three!\""
+      }
+    ]
+  },
+  "riftlight-whale-road/hauled/narration": {
+    "source": "sha256:ec222da46e2dac1ee9b70c4b2f6ca6ed19ce5f543689ebc896bdd2d51385999f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hiccup squeals and bolts, and the whole herd scatters after him across the sky. It takes Juniper until sunset to call them back, and they keep far away from you now. Olivia shakes out her mane."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"See? Quick works.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes QUICK WORKS in his notebook. Then, smaller, he writes MOSTLY."
+      }
+    ]
+  },
+  "riftlight-whale-road/hauled/variants/0": {
+    "source": "sha256:cdf22912bf3f01096098bd785bde8884f89a4098fb389e6463e5729c7f414e81",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hiccup has a new notch in his fin. Juniper goes very quiet. Even Olivia says, softly,"
+      },
+      {
+        "by": "olivia",
+        "text": "\"It worked. It wasn't pretty.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/sung_out/narration": {
+    "source": "sha256:92f12c9ffc7ca9d8680b90763b774efabafe8b49d3003c8a80b9cf533b3c677e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hiccup drifts out of the pull, slow and sleepy, and rests his huge soft chin on the edge of Juniper's island."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"He'll follow you now,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. But it took ages. The sun is low, and Olivia and Pip have gone."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Off to the far opening,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Something about a big note. She doesn't like waiting.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/sung_slow/narration": {
+    "source": "sha256:0ea416e3c28bd0905a5566c10a0378df2756a1ec8977e8668172b63edf772f38",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the end Hiccup drifts free on his own, many slow pulses later. He is fine. He just doesn't know you any better than before. The sun is low, and Olivia and Pip have gone."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Off to the far opening,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Something about a big note. She doesn't like waiting.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_offer/narration": {
+    "source": "sha256:a6c90904a1afc22b10d1b9c26c9596714ec1cdbe781b936582d628a7eecb9641",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"Here's the thing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Lady Olivia, eyes shining."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Those openings are only half awake. That's why they pulse. Wake them all the way with one big note, and the pulsing stops. No echo, no circling. Every whale free by breakfast, and the pair wide open to the salt flats on the other side.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks up at Billow."
+      },
+      {
+        "by": "olivia",
+        "text": "\"She's been circling for days, Juniper. Look how tired she is.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/island_tug/narration": {
+    "source": "sha256:54cd9b657992d7966de45971199d4dff36844cb3fcb9f43976c943df552cabf0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then a pulse comes, bigger than all the rest. The whole island jerks toward the near opening, like a dog on a leash. The tether ropes groan. Juniper's teapot slides off its rock."
+      },
+      {
+        "by": "olivia",
+        "text": "\"See?\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Half awake, and tugging. It will only get worse.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you hold the island?"
+      }
+    ]
+  },
+  "riftlight-whale-road/check_tether/onFailure/narration": {
+    "source": "sha256:d0233e4099af12a36c80d9beb2b5ef918a721a3ac1054585632979c2ed534fd5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The island lurches a boat length closer before it holds. Juniper's basket of barley cakes slides over the edge and falls into the clouds."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"was supper.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/check_anchor/onFailure/narration": {
+    "source": "sha256:d0233e4099af12a36c80d9beb2b5ef918a721a3ac1054585632979c2ed534fd5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The island lurches a boat length closer before it holds. Juniper's basket of barley cakes slides over the edge and falls into the clouds."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"was supper.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/check_brace/onFailure/narration": {
+    "source": "sha256:d0233e4099af12a36c80d9beb2b5ef918a721a3ac1054585632979c2ed534fd5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The island lurches a boat length closer before it holds. Juniper's basket of barley cakes slides over the edge and falls into the clouds."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"was supper.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/juniper_answer/narration": {
+    "source": "sha256:f7870d904912cb7e18b915cd8be629452b2238daf29b85a2c0df1cd8c15f3064",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper wipes her hands on her scarf."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"She's right that they're tired. And she's right that it tugs. But wake those openings that loud and the whales bolt every which way. Scattered whales stay lost for weeks, and I won't know where the island due back comes in. My way is one whale at a time, in the quiet beat.\""
+      },
+      {
+        "by": "olivia",
+        "text": "\"How slow?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks Olivia. Juniper doesn't answer."
+      }
+    ]
+  },
+  "riftlight-whale-road/pip_bell/narration": {
+    "source": "sha256:aa3082cedbf9f2548b643231c305588bf795f40f84fce4d0533ee0540ea4a704",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip drags a brass bell out of Olivia's pack. It is bigger than his head."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia needs this hung at the far opening, for the big note,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"If I do it right, she'll let me ring it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper calls from her lantern pile."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"I could use a scout who can count, too.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What do you tell Pip?"
+      }
+    ]
+  },
+  "riftlight-whale-road/bell_hung/narration": {
+    "source": "sha256:290e54797f046814b7256cd86529e14a827ee88f8b6af7c7f57a47f712ad5227",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip polishes the bell with his scarf until he can see his own nose in it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says one big note and they're all free,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She says I can ring it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then he looks over at Hiccup, and stops polishing."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Do whales mind loud?\""
+      }
+    ]
+  },
+  "riftlight-whale-road/pip_lanterns/narration": {
+    "source": "sha256:c209f615d90dcca845423d79a6586bbec4dc0e2ead382ac6a6519fadce12dc87",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip looks at the bell, then at Juniper, then at the bell. Then he sets it down very gently."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a good scout learns everything,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That has to include lanterns.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper hands him one, and he holds it like a baby bird. Olivia raises one eyebrow, and hangs the bell herself."
+      }
+    ]
+  },
+  "riftlight-whale-road/rest/variants/3": {
+    "source": "sha256:1510fb6b24a2bf34f6ea4c10e9154b9fd2d2a48ba7ffd542e27458969cb1e7c0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper casts off her scarf and starts a fresh one."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Row one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says firmly."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"I've lost count of the old one.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/pip_notebook/narration": {
+    "source": "sha256:7add1c7da69231123a041b14517e2954d47cca0a890701d0041d9edad1bfe4ae",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip's notebook has a drawing of the two openings for every night he has been here. Each night they sit a whisker further along, always the same way."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says it's the wind,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip, chewing his pencil."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But the wind keeps changing its mind. This doesn't.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/chime_lean/narration": {
+    "source": "sha256:a334e217d18720b4ab4dfa883a06a07f5a305aa94fdcfa02b627d4fc829ba2b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your Listening Chime hums in your pack. You hold it up between the two openings. It does not lean toward either one. It leans past them both, far away, back toward the glacier where all of this began. Juniper stares at it."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Something is pulling them,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"The openings. The whales. Maybe my island too.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hiccup snores a cloud, and nobody laughs."
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_test/narration": {
+    "source": "sha256:82dd9955b7d9fb14bd9d18230141ce999586837e577eee36dc8436d341678169",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper shakes you awake before dawn."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Let's try my way once,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Auntie Billow first. Show her the true road in the quiet beat, and she might hear it over the echo.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia watches from the far rock with her bell. How will you lead Auntie Billow?"
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern_pip/narration": {
+    "source": "sha256:8b7346955fcfe3e6095b5df82c3d5f1f95153a23746d97872549ed94aa9cd975",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip holds up his notebook and counts the pulses out loud, the way he has all week."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Bright, dim, now!\""
+      }
+    ]
+  },
+  "riftlight-whale-road/hiccup_leads/narration": {
+    "source": "sha256:f5d71fa6c29cf3dc78d13489a5ca3fc8b01c0ba4c2c7b7b4356425b9ee9f1a2f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hiccup wakes, yawns a cloud, and swims up to his auntie. He bumps her gently with his nose. Then he swims out between the openings, past the echo, and waits for her in the open sky. She follows him."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"He trusts you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"so she trusts him.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/billow_out/narration": {
+    "source": "sha256:0e07e0f534fff8126865256007cdbc6278873db601107cffd41948f8fdc97efb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Auntie Billow stops. She listens. Then she swims straight between the two openings, past her own echo, and out into the open sky, singing. One whale. Only one. Juniper wipes her eyes on a great deal of scarf."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"One,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Eleven to go.\""
+      },
+      {
+        "by": "narrator",
+        "text": "On the far rock, Olivia says,"
+      },
+      {
+        "by": "olivia",
+        "text": "\"Lovely,\""
+      },
+      {
+        "by": "narrator",
+        "text": "and she means it."
+      }
+    ]
+  },
+  "riftlight-whale-road/billow_balks/narration": {
+    "source": "sha256:8c891933d54ab16a7d3453ba12faf44c6ebd9558709ed3a967a6a0364f489ca6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She tries again, and turns again. On the third try, with Juniper humming beside you, Billow slips out between the openings at last, slow and unsure. The sun is high by then."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"One,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper, worn out."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"It works. It's just slow.\""
+      },
+      {
+        "by": "narrator",
+        "text": "On the far rock, Olivia taps her bell, not loud."
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/narration": {
+    "source": "sha256:ab7d2216ca567f9c151a39fb213ecc7f0ce997e163a4302330e97c373f8597af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "olivia",
+        "text": "\"Eleven more, at one a night,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Olivia."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Or I ring my bell, and they're all free by lunch. Scattered, yes. But free.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at her hooves."
+      },
+      {
+        "by": "olivia",
+        "text": "\"When I was small, our river went the wrong way for a whole summer. Everyone waited for it to come back. It didn't. I don't like waiting.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper holds her scarf tight."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"And I don't like losing whales.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/variants/0": {
+    "source": "sha256:e6445f3612e762f2931d3098c1eaa75af7991e8bed15beaa93571575c1601324",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip stands by the bell, beaming."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I hung it. Well, mostly.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/variants/2": {
+    "source": "sha256:af7c21bb5ced4827eac48761fb51f2d5cec5a47dcf44e6ac4e33d4f21c1f8c7a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip taps his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"And the openings moved again last night. A whisker. Same way.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/promise/narration": {
+    "source": "sha256:a80fbe4f26d543e04ec6b342c97bd448cc8277465b82781755f113895f6ebd40",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper rolls up her scarf."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Whatever happens here, I'm going up to the lookout next, to wait for the island due back. The lookout keepers will want to know how the whales fared. Will you bring them the news yourselves? Guided or scattered, the honest way?\""
+      }
+    ]
+  },
+  "riftlight-whale-road/promised/narration": {
+    "source": "sha256:1260491d324ae5f605d685bc486a3ffea090f2bbe8641bdff684c7432aaebe39",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_juniper",
+        "text": "\"Honest news,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper, and ties a short end of yarn around your wrist."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Show them that, and they'll know you came from me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip ties one around his own wrist too, though nobody asked him to."
+      }
+    ]
+  },
+  "riftlight-whale-road/not_promised/narration": {
+    "source": "sha256:ac14e59bd0ee5af7aa0145bb5fa318c87603eaed0a4b524b4d5d94f5a9ee74b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper nods."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"You don't know where the next opening takes you. That's fair. I'll send a kite instead.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She starts knitting the message. It is going to be a very long message."
+      }
+    ]
+  },
+  "riftlight-whale-road/decide/narration": {
+    "source": "sha256:aeeada5a9716676ea786de0cdbf3dbd1139bc86d07bbf3a66dd75189fdd7d17c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The whales circle. Olivia's bell hangs ready at the far rock. Juniper's lanterns hang ready at the near one."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"With all of you on the lanterns,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"we could lead every whale out tonight. It will be a long, cold night.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Olivia shrugs, not unkindly."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Or sleep on it, and choose at the openings in the morning. Mine, or hers.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will you do?"
+      }
+    ]
+  },
+  "riftlight-whale-road/hiccup_night/narration": {
+    "source": "sha256:dc2002833d73abefeccb60830d090310056b413259ff2c97786e9a3bd11c8e50",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "All night, you swing Juniper's lanterns in the quiet beats, and Hiccup does the rest. He swims out past the echo, swims back, and bumps each whale with his nose until it follows him. Olivia sits on her rock and watches, chin on her hooves."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Showing off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she murmurs. By the first gray light, the last tail slips out."
+      }
+    ]
+  },
+  "riftlight-whale-road/guided/narration": {
+    "source": "sha256:adb3ef66217eef33a52ad490dd1cb7d0a16b8bb1924fbcb9df15aa41e3f535f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The whales swim off into open sky, singing. Both openings stop pulsing, spread wide and hold steady, and through the far one you smell salt and mud. Olivia sighs and unhooks her bell."
+      },
+      {
+        "by": "olivia",
+        "text": "\"Another day.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper sets off for the lookout, to wait for the island due back. So here is your piece: the openings come in pairs, and something keeps pulling them, the way your chime leans, back toward the glacier. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_night/narration": {
+    "source": "sha256:70fb5e42214eb4f316e8bdb825997670e1458a6f73912766f462e4dfcf866c40",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Olivia lies down by the fire, mane full of sparks."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I know you think I'm in a hurry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "olivia",
+        "text": "\"I am. Every night those openings move a little, and nobody knows why. If we learn to open them ourselves, then we decide where they go, not whatever is pulling them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at the bell."
+      },
+      {
+        "by": "olivia",
+        "text": "\"One note. I'm almost sure.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip, half asleep, mumbles,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia is always sure.\""
+      }
+    ]
+  },
+  "riftlight-whale-road/juniper_night/narration": {
+    "source": "sha256:bcc2192f9730a429abe9b83523b368580586068d8a0af523a8851097a364551a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper knits by the fire."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"My grandmother's grandmother waved the island due back goodbye,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"We've kept a lantern lit for it ever since. When it comes home, the whales will swim ahead of it, singing, and we'll know where to stand.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She pats Hiccup's chin."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"If they're scattered, we'll be guessing. I'm not good at guessing.\""
+      }
+    ]
+  }
+}

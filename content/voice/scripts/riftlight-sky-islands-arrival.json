@@ -1,0 +1,1185 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-sky-islands-arrival/island/narration": {
+    "source": "sha256:2e611373eade4e41c9d665729c5069222191e2c19a69b93ea2d77ae2dc80d1bb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The fold opens onto cold stone high above the realm, then shuts behind you with a pop. A kitsune temple keeper hooks an arm through a rope ring."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Keeper Sorrel. Hold on!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she shouts."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"These are called the Sky Islands, and this one is not where it belongs. Last night it sat beside its neighbors. This morning it hangs out here, all alone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squints at you."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Why is this island where it should not be? Help me find out, and help me keep my travelers off the edge.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island/variants/0": {
+    "source": "sha256:1b0c107fafac59fc660dc56c13a5eef552ca42d2af20c973819788ed46414acf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Cairnstep griffins set your party down on a stone pad high above the realm, then are gone in three flaps. A kitsune temple keeper hooks an arm through a rope ring."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Keeper Sorrel. Hold on!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she shouts."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"These are called the Sky Islands, and the griffins found us by luck. Last night this island sat beside its neighbors. This morning it hangs out here, all alone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squints at you."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Why is this island where it should not be? Help me find out, and help me keep my travelers off the edge.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/landing/prompt": {
+    "source": "sha256:5d8ccd9fc6bd3dbf14af38f63c8e98454d2ae90090d992f5c2f1fcd59b331a4d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind slams the landing pad like a door."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Grab a rope ring and hold on!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Sorrel."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/landing_held/narration": {
+    "source": "sha256:d24fdf582f62fd475f01c1161e2d351c18861b93e49c084a6045b76cc1d95699",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every hand finds a ring, and the gust howls past."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Good grips,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Most visitors arrive sitting down.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She leads you past a gold-roofed shrine with a bronze bell as big as a barrel, and hands you a wrapped supper bundle."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Eat when the wind lets you.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/lesson/narration": {
+    "source": "sha256:0a604e67274daac7c973bccb51b0846256577db1e30e384c74da9352d10711a1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren Wisp, the kitsune from the glacier, is here on the shrine steps, comparing notes with Pip Thistledown, the young manticore scout who runs errands for Lady Olivia. He has a notebook in one paw and a spoon behind his ear, for prying things."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says moved places are the most important places,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Help me listen?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren asks you to hum the hall note and listen for an answer."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"A starweaver can learn to answer a rift's hum. That is called Attune.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/lesson/variants/0": {
+    "source": "sha256:21cb4e7667c5ca9378559f5317fd19643562f5553897d2eaa5bc3b5125ccb869",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren Wisp and Pip Thistledown, the young manticore scout, are here too, checking another moved place. Pip waves his spoon."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says moved places are the most important places. Help me listen?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip asks. Seren asks you to compare the sounds with what she taught you before."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pip_notes/narration": {
+    "source": "sha256:6f18c81a17e50f1cbda04426568c4da3e9b616f6e864e50a1a18ea1101c03be9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip's notebook is full of tiny islands and crossed-out arrows."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"This one was beside its neighbors at supper. Now look. Rude.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He taps a smudge."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says when a sound out there moves, the islands near it move too. If I can prove it, she'll put my name in her book. Will you help me listen?\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/hum_heard/narration": {
+    "source": "sha256:a21cb630cf5fba159434bebce17e62b579f5625e846970c27db3cd6fe00f39c6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A thin hum answers from the east, then again from the very same spot. Seren's ears swing up."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That is a rift. Its hum stays put while the wind runs around. A hum is steady. Wind is a liar.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes EAST and underlines it twice, in case east moves."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/local/narration": {
+    "source": "sha256:dbb12ab99a70c0dac0259a1f27cb84d5a4ac601a8802f1d0d47d5e23585e3dd7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sorrel shows you a rope between two marker posts. Yesterday it pointed to the next island. Now it points at empty sky."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"And travelers keep following it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sighs. A low song drifts in from beyond the mist. How will you keep travelers back from the edge?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/markers_set/narration": {
+    "source": "sha256:5090d7b883d902ad6e536bb5803e5a2d213e02140f67da6e27164e982cf72b50",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three cairns stand in a line, tall enough to see in fog. Sorrel strings a warning cord between them. It hums."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"One less traveler walking toward an old view.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip salutes the nearest cairn, in case it is somebody important."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/markers_dropped/narration": {
+    "source": "sha256:02176e6884f3f91b38cbca83fcb8d47bab3ed6ba0b897939984816fcb0182125",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last stone slides off its sled and drops over the edge. You wait for a crash. None comes."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"It will land somewhere,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel. She ties her washing line between the two cairns you saved and clips a spoon to it. The spoon clatters a fine warning."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song/narration": {
+    "source": "sha256:22e17b7a847ae25fb158b95b4d676513be4bf09c14ee6e62d004e9add51ef995",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wait for the low song again. It comes from somewhere Sorrel did not expect. She hands you her slate and chalk."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Point at it every time it sounds. If most of you agree, we have a true bearing.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_bearing/narration": {
+    "source": "sha256:916c3828f0713c51fc13e115e0fb95f3c0544383d34f4bb7dd0575d0de99c397",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Most fingers point the same way: east, and a little down. Sorrel chalks a bold line, then the old route beside it. They do not match at all."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"The song has moved,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"So have we.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She moves the marker posts to your line. Her scarf, tied on top, flaps east."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_muddled/narration": {
+    "source": "sha256:c644002272a27040714a28770fd0a9bbfd0199b809be90a05192fa0c57039a8c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fingers point east, south, and one straight up at a gull. The slate looks like a spider fell in the chalk."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"The song bounces off the mist,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel kindly. She picks east and moves the marker posts. The gull looks insulted."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker/narration": {
+    "source": "sha256:ea7903fd22be559546569e84fd2d40e206281b8ac43db1be77cf1ee06edca093",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A rattle comes down the old rope road. A kite seller is pulling a cart toward the edge, nose in a map. The map is upside down. The road ends in empty air twenty steps ahead."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Dob! Stop!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Sorrel. He waves and keeps walking. How will you stop him?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_safe/narration": {
+    "source": "sha256:23dbf08907fcb2152e39cec3e721f63ae22fa081671222a005d2eb504c21484e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Dob stops, one wheel on the last plank. He looks down. He turns his map right side up."
+      },
+      {
+        "by": "dob",
+        "text": "\"Ah. The road went wrong. I did not.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He sells kites to the next island."
+      },
+      {
+        "by": "dob",
+        "text": "\"You saved my cart,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and hands you a bundle of bright kite-flags."
+      },
+      {
+        "by": "dob",
+        "text": "\"Wave these, and the whole sky will see.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He ties a springy lace on your ankle, for quick feet, and counts four coins into your hand."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_dragged/narration": {
+    "source": "sha256:d84a87d2fadd729af8f7bd9efea113da2016dc5fb96c7c25758c66eb7ba3518d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cart tips at the last plank, one wheel in the sky. You haul it back while kites spill off like startled birds. Dob dangles from his strap, smiling."
+      },
+      {
+        "by": "dob",
+        "text": "\"Ah. Wrong road.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Safe on stone, he hands you a bundle of bright kite-flags."
+      },
+      {
+        "by": "dob",
+        "text": "\"Wave these, and the whole sky will see.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He finds three coins in his pockets for you."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/edge_merge/narration": {
+    "source": "sha256:7d44803bcd078039ea350c343dff8313bbbe901e4136b95d1feb1c13f9475a06",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sorrel points to a tall pole with an iron basket on top."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"The signal basket. At dusk we light it, so islands and ferries can find us. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight. Without a light, she will never find us.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/basket_plan/narration": {
+    "source": "sha256:7aa43327bdf2cfe643f7bdbc7390280c8c603c065ba203158fb13b6bdbc1b8f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The pole leans like a sleepy giraffe, its stone foot cracked loose."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"If that tips at dusk,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip, chewing his pencil,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"the fire goes over the edge.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Sorrel hands you rope and a pile of wedge stones. How will you set it straight before dark?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_leaning/narration": {
+    "source": "sha256:ac113dab49fd35445399041e3d3fb473b1cd0ba53be33c857b25944ab17ac6fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The pole stands, mostly. It leans a thumb's width east and creaks at every gust. Sorrel ties on two more ropes and gives it a stern look."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"It will hold. It just has opinions.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel/narration": {
+    "source": "sha256:b84724d87b9a3b9299546514c9322d836cd573d009747442c76f838d582b7d0c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_sorrel",
+        "text": "\"No fire without fuel,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sighs Sorrel. Her oil jars cracked in the move. The woodshed under the shrine holds dry logs, if you can carry them across the windy yard. The orchard has windfall twigs, if you can catch them first. What will you fetch?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_soggy/narration": {
+    "source": "sha256:243cff0ad562353a3f73ffd2f62dee572b6a8e8191678f81c20def58ef9aa03e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Half the wood is wet, and the other half is wetter."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"This will burn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"It will not like it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She slips you a bundle of shrine incense to help."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Do not tell the shrine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/light/narration": {
+    "source": "sha256:4a769b62b74b8e6015fb086a5d09d8f8850718874c5ed5854a97691d40ec94c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sun sinks behind the mist. The basket is full, and someone must light it in a gale. Sorrel holds out a flint striker and a clay pot of shrine coals. Seren licks a finger and checks the wind."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Fast and bright, or slow and careful. Either works, if nobody sneezes.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/basket_lit/narration": {
+    "source": "sha256:68dfebbb9ac62f37c86a417a6ba77c6c66a1410a5ad1ea6d981c4563346f9f2b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The flame catches and stands up tall and gold. Far off in the mist, a tiny light blinks back."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"There,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Now the sky can find us.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip bows to the basket. Sorrel hands you a brass whistle from the shrine."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"One loud note, for when the sky must hear you.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dusk_ferry/narration": {
+    "source": "sha256:c0730607f3c6ab093cf5aa88be160c798acec413e467219141937818a34b8799",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A griffin drops out of the dusk onto the pole rail, satchel flapping."
+      },
+      {
+        "by": "fenwick",
+        "text": "\"Fenwick, courier! Every island has been hunting for your light. Captain Thimble's ferry is right behind me, and the wind is swinging her sideways. She needs a landing now!\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you bring her in?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dusk_ferry/variants/0": {
+    "source": "sha256:08deea1e2688e5ce29225d132aace5c1faf4c1dadd1c5eba2115cc22aaf85c5e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "fenwick",
+        "text": "\"The Cairnstep watchers told me where you landed,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he adds."
+      },
+      {
+        "by": "fenwick",
+        "text": "\"They said to look after you.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_in/narration": {
+    "source": "sha256:7dbca8d794bc47b574349786ad293ee5e49f2b44709606d4ed30762422b2d49d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ferry thumps against the pad and stays. Hens flap out of a basket and strut about. A kitsune steps off, her captain's hat tied on with string."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Captain Thimble. Best landing all week.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her passengers cling to the rail and will not let go."
+      },
+      {
+        "by": "thimble",
+        "text": "\"I need a safe lane home for them,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "thimble",
+        "text": "\"and a very strong cup of tea.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_in/variants/0": {
+    "source": "sha256:60d712464284d57f54853dfbe57d4b875d72933873767c2675633e73c1df9604",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then she stares."
+      },
+      {
+        "by": "thimble",
+        "text": "\"You! From the Exchange quay! You found us. See? Same washing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A line of damp socks flaps from the rail."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_bumped/narration": {
+    "source": "sha256:7a924a407a7420942e38c391bb4e2faddfacb08f283592b013889a0e03412ef7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ferry bumps the pad and bounces off like a ball. A crate of washing spills socks everywhere. Hens flap out and strut about. A kitsune steps off, her captain's hat tied on with string."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Captain Thimble. I have had worse landings. Not this week.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her passengers cling to the rail."
+      },
+      {
+        "by": "thimble",
+        "text": "\"I need a safe lane home for them, and a very strong cup of tea.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_bumped/variants/0": {
+    "source": "sha256:997480d809f17fb46e16f5f1791ad6412d0643ed76979ae42b189396c25f7884",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then she stares."
+      },
+      {
+        "by": "thimble",
+        "text": "\"You! From the Exchange quay! You found us. See? Same washing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She waves a sock at you."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/passengers_stuck/narration": {
+    "source": "sha256:2ada16f66e62790e87566d154615634a10fa644ba9dc517c5a2e43be76f3179b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sorrel brings rice crackers, and nobody hurries. The passengers climb down one crunch at a time. Thimble sits on a barrel and watches the hens follow them."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Next time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "thimble",
+        "text": "\"I bring only hens.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/thimble/narration": {
+    "source": "sha256:4827ae4809682146359a54b0e96fcc7c305ba9b04b701b1cbb95c93857a6e1c4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Thimble unrolls a chart and holds it flat with three hens."
+      },
+      {
+        "by": "thimble",
+        "text": "\"My old lane is gone. I steered by the cloud whales' song. Where they sing, the sky stays level. Now the song has wandered.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The ferry rail hums faintly, leaning east. Fenwick's feather leans east too."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Find where the song comes from,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Thimble,"
+      },
+      {
+        "by": "thimble",
+        "text": "\"and Fenwick will tell every island.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pip_night/narration": {
+    "source": "sha256:1600cd5a80e7928abb979bda72f02d1dad241d5b71ac7b151426f79fde36dd4d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip's notebook is soaked at one corner. You dry the pages by the fire while he reads his list aloud: islands that moved, three socks, a hen named Gravy."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says counting is how you catch the truth,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says quietly."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But I still don't know why it all moves. Counting is easier with friends.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gravy agrees, from his head."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/night_song/narration": {
+    "source": "sha256:974f2c1829437b8176b9c3fe962f90b79fd0604bbf973261210034aaaae35e2d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Night. The sky is huge and full of stars. The shrine bell shivers all by itself. Then the low song comes, close and slow, rolling over the island like a wave."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"That is the nearest it has been,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Tonight we find which way it leads.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_vote/narration": {
+    "source": "sha256:af09bb90625ec3ff0433dc1353ed94eba29adac776ed784ae4f5adfaa196725a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone has a clue: the hum you heard this morning, Sorrel's chalk slate, Thimble's humming rail, Fenwick's feather, and Pip's crossed-out arrows."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Lay them together,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren,"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"and they will show where the song leads.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Where will you start?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_found/narration": {
+    "source": "sha256:cd094fc44ae22ba0b4ad37a8ffa8f64eaee197f6f4386b78ee18ce4b232c1e9a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every clue points one way: east, past the dark edge, where the sky is singing. Sorrel smiles for the first time since you landed."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"The old keepers said cloud whales sing where the sky is safe to cross. If their song has moved, they may need help. Someone must go and see.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_vote/narration": {
+    "source": "sha256:59e1959e1fb2506a78b36f6051fac1a13f8ff123e480bb6146047ae95c8ea40e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Dawn is a pale stripe. Sorrel presses a flag-cloth with her island's mark into your hands."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Someone must see what is wrong with the singing. Past the stepping islands, a keeper named Juniper looks after the whales' turning place. Tell her Sorrel sent you. Thimble's ferry can take you part of the way. Fenwick can lead you along the stepping islands.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you go?"
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_vote/variants/0": {
+    "source": "sha256:dde1beffd2ade062063fcd78a525079b32b1e4f91f9fae91072fca55eaadd91e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fenwick shakes his head."
+      },
+      {
+        "by": "fenwick",
+        "text": "\"Not without the whales' answer. The ferry, then.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_ferry/narration": {
+    "source": "sha256:42bebfb66d2aa409714ff517d8a049161b4e614ab028eb7691d01ed6704a06ab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Thimble hands out boarding ropes."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Hold the rail, and no singing back until I say.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her passengers vote to stay with Sorrel, hens and all, in case there is more tea. Dob loads his kite cart aboard and sits on top, map the right way up."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_flags/narration": {
+    "source": "sha256:1ed4a45c5d394e524e63fae75627da6f12cbff49825fa4eac5eca50f1c5eccf7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fenwick clips three tiny flags to his wing."
+      },
+      {
+        "by": "fenwick",
+        "text": "\"I fly ahead and wave. If I wave two, hold on to something.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A hen watches, deeply unimpressed. Dob will wait for the ferry, selling kites to anyone brave enough to look up."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island_done/variants/2": {
+    "source": "sha256:fc2f467338768f8423030c374094c2423e832a3c0e912a3a3b944b4e437c25f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Captain Thimble waves her string-tied hat."
+      },
+      {
+        "by": "thimble",
+        "text": "\"You cannot miss the washing!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/narration": {
+    "source": "sha256:9ac484359fc7bc50aaf1cbeb719c9efea886a4f70a3d6cdae335214af0809504",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The open pad lies between you and the pole, and the wind comes in gusts. When a gust ends, every wind banner droops."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Wait for the lull,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Sorrel,"
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"then cross.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/onAssisted/narration": {
+    "source": "sha256:88949fe146b4d08680148f7fd2fccd9113d7dd6e27303b7473645d483e853281",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sorrel calls the lull."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Now!\""
+      },
+      {
+        "by": "narrator",
+        "text": "You cross together without a stumble."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/narration": {
+    "source": "sha256:3eeebc97a73e0c577a56765da0e03ba8b664a23400afdd9ee1f1b054574978c1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The fuel must go up to the basket. Sorrel steadies the ladder, and Pip waits at the top, arms out like a very small harbor."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Toss them up to me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Lady Olivia says I have excellent hands.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Sorrel says,"
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Do not drop one on me.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/onAssisted/narration": {
+    "source": "sha256:07e3ed20585012335da7da2b6b6b4a3b2986f8469b133afef25fc738360fb321",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sorrel hauls the last logs up on a rope."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"A little help is still help,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/camp_play/narration": {
+    "source": "sha256:7db3aaf04b93675a3d8023f11add666dde6cad18b668848af6cae7e9d23f7fb9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_sorrel",
+        "text": "\"What would make a good camp tonight?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks Sorrel. Pip suggests more hens. The hens suggest more barley."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/narration": {
+    "source": "sha256:b099c8c84a679089ac82e074df95e83772ecbedf8684ed954604c6227b8bbcab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The song comes again, close now, in a pattern: low, high, low, middle."
+      },
+      {
+        "by": "thimble",
+        "text": "\"That is how whales say here we are,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Thimble."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Answer the same way,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren,"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"so they know a friend is listening.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/onSuccess/narration": {
+    "source": "sha256:594cba51950fd209700da98426dc6e8366ac36b9a56e71c1d1b43401fbf53409",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The song stops. Then one long, warm note answers from the east."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"They heard us,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/onFailure/narration": {
+    "source": "sha256:7cd0ead47ffa26fab183ad2c058466da1519a40ca6af835bc67b411825ff0592",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your pattern wobbles, and the song stops. No answer comes. Fenwick ruffles his feathers."
+      },
+      {
+        "by": "fenwick",
+        "text": "\"Then I can't tell where to fly.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisps/narration": {
+    "source": "sha256:cb7928190387269ea7f46649f159ac510cd86829b27d66402cce0c71013b9e58",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The bright basket draws little floating lights out of the dusk. Two wisps tumble in on the gale and circle the flame, giggling. They think it is a very large, very rude candle, and they want it."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"They will pull it apart!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Sorrel."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Shoo them off, gently!\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisps_shooed/narration": {
+    "source": "sha256:ebc317fb415d85ed59b4a05f5ce72522e688e2b52b15701b76bdaddbbf39c68a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wisps squeak and bob away over the edge, still giggling. Pip scoops a spoonful of their leftover glow into a jar and screws on the lid."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"For emergencies,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and hands it to you."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Or snacks.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Sorrel laughs so hard her ears flap."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dojo/narration": {
+    "source": "sha256:6f3d235561f7a18a6c2ac5fa65d3588e49a34e4c449c8e513cb60f511c5218c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A bigfoot named Master Dunnick pulls you in out of the wind and leans on the door. The wind pushes. He pushes back. He has done this for forty years."
+      },
+      {
+        "by": "dunnick",
+        "text": "\"This school is called the Dojo. Here we train the Thornguard, a hero who holds the line.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A thorn bracer hangs by the fire. A Thornguard's strength lives in it, and a song bell worn beside it will not ring. Thump. Students catch pillows falling from the rafters."
+      },
+      {
+        "by": "dunnick",
+        "text": "\"Anyone may try the bracer on.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dojo/variants/0": {
+    "source": "sha256:3a32e3787dccdf6b5bd6af1643a03d2869d12c2b753aa1a35fbbbc5824cd226b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Master Dunnick is still leaning on the Dojo door."
+      },
+      {
+        "by": "dunnick",
+        "text": "\"Back already? Good.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The thorn bracer waits on its hook. Thump. Another pillow drops."
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dojo_pillows/narration": {
+    "source": "sha256:5caeb732d4d21c050f5ccbd490d0e0d4692d3d73a472d91eab3b23d0cfd2cce9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A student unties a rope, and pillows tumble from the rafters. You plant your feet and catch one, then another. The next lands on your head."
+      },
+      {
+        "by": "dunnick",
+        "text": "\"That is how you brace,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Master Dunnick."
+      },
+      {
+        "by": "dunnick",
+        "text": "\"Stand still, and let it come.\""
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/mooring/narration": {
+    "source": "sha256:58d97d8d238792b8c4a5801b3a24d7d2b1a30a5375b11aca13156de7ffab93af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sorrel leads you to the edge, where a mooring rope as thick as a tree trunk ends in a ragged tuft."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"This held us beside our neighbors for three hundred years,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_sorrel",
+        "text": "\"Last night it snapped.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The broken end does not hang down. It points east, toward the hum, stiff as a finger. Your Listening Chime hums too, and leans the other way, far off, back toward the glacier. Pip writes PULLED, NOT FELL, and underlines it twice."
+      }
+    ]
+  }
+}

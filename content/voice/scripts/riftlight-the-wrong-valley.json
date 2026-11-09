@@ -1,0 +1,1053 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-the-wrong-valley/arrival/narration": {
+    "source": "sha256:ddba8299ad89d775febc858309d430988a419c3341df682379fe06fa18f47052",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "North of the counting stones, the road climbs toward the glacier. Pip Thistledown, the young manticore scout, unrolls his map."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Dry valley ahead.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A river roars down it. Pip turns the map upside down. The river is still there. Below, an enormous yeti waves a lantern on a pole."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Stay up there! I'm Hummock. I keep the markers on this road. The river came down the wrong valley this morning. Where is it going? And why? Help me find out, and warn the evening sled before it drives into it!\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/snowbank/narration": {
+    "source": "sha256:260bf2e95b4e8f6a32fd0c12712a72c569624491a8808ea5e453d869b61afa81",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The bank is steep, snowy and very slidey. Hummock plants his pole at the bottom like a goalpost."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Feet first!\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/snowbank/onFailure/narration": {
+    "source": "sha256:faf8694452433c68db9a20be611aafba0bcf5229a1afd4ac13f16785b532f6db",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You spin, bump and land headfirst in a drift. Hummock pulls you out by the boots, and it takes a while to find Pip's map."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Steady on.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/meet_hummock/narration": {
+    "source": "sha256:2267e9067e1b08cf9c26f1b3cccb7667f7a69793d2ad29f31e4f2ddb4b213808",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hummock's eyebrows have frozen into two icicles. He thaws them in his tea, one at a time."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"My warning post is over there, on the far bank,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Every evening a sled comes down from the singing hall, along this valley, because it's always been dry. Tonight it isn't.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He pats a boulder."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"That's Gertrude. I name all my rocks. They stay where I put them.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/look/narration": {
+    "source": "sha256:d5dda328a6c7306a3d7b0582f631297f658b266d6243831d5b8b99d8ad365801",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip holds up his map."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a good map is never wrong. Only the land can be.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ridges, markers, the river, the dry valley. Something here has moved. How can you tell what?"
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/look/variants/0": {
+    "source": "sha256:bb319a9ddd0bfe4a4852f3eb05bc949263510b61004f160b02fad339d7cc0e5b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip pats his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"And we have Tally's road plan. Every landmark counted!\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/look/variants/1": {
+    "source": "sha256:327052bcc573ee5d6eb95e315ffd145d5eaf0c86723304bb4e3847e854b10c12",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip pats his rubbing of the old carved mountain."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"No help here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he admits."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But it's very nice.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_map/narration": {
+    "source": "sha256:d97ec7c6dfea1668b94199011aeb44d6f713775e94405d4d399767682fdddd62",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind keeps folding the map in half. Pip holds one corner in his teeth."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Mmf,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says helpfully."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_climb/narration": {
+    "source": "sha256:5eed08eeddd35186c903a440030185367ead072eb0826fb1b12cb1e7a491c0c1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Gertrude is tall, round and slippery."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"She doesn't mind feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_plan/onSuccess/narration": {
+    "source": "sha256:b29a17db3689a320a68d43ba05dbe6b4380691be0ba12f513cf20540d413366d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally's landmarks line up, one, two, three. Quick work."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She'd be proud,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/read_valley/narration": {
+    "source": "sha256:7a4a464eef2ea9b35bdbdb7163d3e9e680732f6cf413e6661d1cc74f8c991781",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ridges are where they should be. Hummock's markers stand in their rows. Only the river has moved, right out of its own valley and into this dry one."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"So the map's right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip slowly,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"and the river is the one being wrong.\""
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Let's see where it turns,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/bank_path/narration": {
+    "source": "sha256:640d998f1c2102153f1076a9eaf23e8705bb9c6e13cb6de9bdc28c6e1368b64e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Stepping stones run up the edge of the rushing water. They were dry this morning. Now each one wears a little hat of foam."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Hop lively,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/fork/narration": {
+    "source": "sha256:8aadddb118dfe85c2576dcfa6de92b861249113faa5a33eb451ac7245b8aea40",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the top of the valley, the river splits. It always went left, down its own valley. Today it goes right. You look for what pushed it. No ice. No fallen rocks. No beaver with big plans. The river just turns, smooth as a ribbon, with nothing in its way."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Like it remembers the road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/old_road/narration": {
+    "source": "sha256:fcfc340d57b6ef861570f9d4ef6e8285567f18e88940ed6ba2ab6be2c2dd7cf9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "By the fork stands Hummock's oldest marker, a stone post older than anyone's grandmother. He rubs off the frost. Carved on it is a wavy line, pointing right, down the valley that was dry."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"That never made sense,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"The river never went that way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "High on the old valley's walls lie round river stones, dry for ages. This river is running down a road it ran long, long ago. Your Listening Chime swings north on its string, toward the glacier, and hums."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/down_valley/narration": {
+    "source": "sha256:c2fa503d279937affacd55446ab5dab4a53c86a75ed5e92148ad9b2c33676606",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The water rushes on down the old valley, filling pools that have been empty forever."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Where's it going?\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Pip, already running. How will you keep up?"
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_board/narration": {
+    "source": "sha256:bff6b403e329b82ffbf2742e341ac84e4c030d2b7c590248e13848195e5ebf49",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hummock lends you a flat board he uses for carrying signs."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"It's not a sled,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he warns. The board does not care."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_trail/narration": {
+    "source": "sha256:2603f019fce0330dc161851cc8fb8d8f96b258a1e1ce65397fbaf023d51a5dfb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The snow is waist deep on you and knee deep on Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Lift your knees,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, as if that helps."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/old_falls/narration": {
+    "source": "sha256:7c2df7f7ddac4f492fedee89183c0e856c13b6184bc23a39be6763dcb161b76e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the cliff, an old waterfall has woken up. Its stone lip is worn smooth from long ago, and the water pours over it as if it never stopped. Below, a dry lake bed is filling. Two ducks sit in the middle, very surprised."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It's going home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"To an old home.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/pip_dam/narration": {
+    "source": "sha256:62199678f7d38a99da0400562b8e34cbb7901c8d39981eeb4937086d16242d4b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip's eyes shine."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says if the land goes wrong, you put it right! We could wall off the old valley at the fork and push the river home!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hummock scratches his ear."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"A wall is quick. But the water would pile up over the low ice where we cross, right by my oldest marker. Or we let it run and watch where it goes. That takes longer, and the sled comes at dusk.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will you do?"
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wall/narration": {
+    "source": "sha256:bed8b6ffbd1e867baf7dd3643767f32541555156bd91af96854c64507948652f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back at the fork, everyone heaves rocks. Hummock carries three at once. Pip carries one, with great ceremony."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Faster!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he shouts."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/walled/narration": {
+    "source": "sha256:6b41ff87cc5a31421d698cca3840a76dbef1cfea86a8d3c80bc333154d14893f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "But the water piles up behind your wall. It spills over the low ice shelf at the river's edge and swallows Hummock's oldest marker, wavy line and all. Already, a thin stream is sneaking around the end of the wall, back down the old valley."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Now only the fish can read it.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/wall_burst/narration": {
+    "source": "sha256:2929c5b8df85618c7059eacf628bbe5a2acf463065995a7585a12e4b53c1c8a1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your rocks tumble away down the old valley. Hummock wrings out his eyebrows."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Rivers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"are not very good at being told.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip looks at the water for a long time, and writes something small in his notebook."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/narration": {
+    "source": "sha256:4e981a027d99835421daac9959565d22ccc7175cf93dfd971b7a9bee5d072f28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You sit on the cliff edge and watch. The water fills the old pools one by one, in an order it seems to know by heart."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Remember it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Somebody will want to know.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Watch the order, then tell him."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/onSuccess/narration": {
+    "source": "sha256:e0a6a1e1ea3f4504a07dd027b24ab57c0cfc04fb033d8c738ca4745628376e45",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Round, long, long, falls,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell Hummock. He writes it on his sleeve."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/understood/narration": {
+    "source": "sha256:55a4ef82d74cc61171dada47fcadd76a939be436ce721b069967fcaee989486b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The water knows its way. It fills every old pool and takes every old bend, like feet finding old slippers in the dark."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"I've never seen it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hummock rumbles,"
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"but my marker has. That wavy line was right all along.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/crossing/narration": {
+    "source": "sha256:1b73533f58c45cad0bfe1cd28d4b80fa67f66fd4c61775a61e2b0b0aafa9c196",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back at the fork, the new river runs between you and Hummock's warning post. Low down, a shelf of old ice runs along the water's edge, flat but creaky. High up, wet rocks with Hummock's rope strung between them, slow but solid."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Pick one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"I'll come last. I have to jump.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/crossing_flooded/narration": {
+    "source": "sha256:e490727dd04344937d2d63851069268f4bc860367d339e21a9d5dc17d8706db1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back at the fork, the new river runs between you and Hummock's warning post. Your wall's water covers the low ice shelf now, knee deep and very cold. High up, wet rocks with Hummock's rope strung between them, slow but solid."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Pick one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"I'll come last. I have to jump.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_high/narration": {
+    "source": "sha256:2fd085e1892c150ef662ca29f7d583154f1d223de53713158bb9eb2d1d5c551c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rocks are slick with spray. The rope hums in the wind."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Hand over hand,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hold_ice/narration": {
+    "source": "sha256:4010c55072d1a9d1a1a9bb19e192bf1f7137b69a21a3d01a6f111a358405b4ae",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your thornguard steps out onto the ice and braces, shield down, feet wide. The cracks stop spreading."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Steady on,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock, impressed. One by one, everyone crosses behind the thornguard, and the ice holds like a held breath."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/across_low/narration": {
+    "source": "sha256:334023765a1e58839bc1c81e4168171da8d41ddf2c013e7f2b16ccec30eb640a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You came over by the low ice shelf. Pip counts everyone's toes, twice, to be sure."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"All there!\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/across_high/narration": {
+    "source": "sha256:3c1e94cb36011cb36d1770e81788edfb244b0f8edc9750cfe968f33cc8936419",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You came over by the high rocks. Pip's paws are scraped, and he is very proud of them."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Explorer paws,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/far_bank/narration": {
+    "source": "sha256:b9870ba408fd67c71187a1bb274f2fc2dfa15584641ee0f60e9972b7128006e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the far bank, you turn around. Hummock is still on the other side, holding his lantern high."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Too heavy for that ice, too big for those rocks,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"There's a narrow spot I can jump. But the water surges every few breaths. Call me when it drops!\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hummock_jump/onSuccess/narration": {
+    "source": "sha256:d3343ac0599f9da2c673b8d491895c5a693c3d841e0b24a6151a395908583cec",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"NOW!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hummock leaps and lands with a thump that shakes snow off the trees. He doesn't spill a drop of lantern oil."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/lantern_post/variants/0": {
+    "source": "sha256:76c444efd1c77c2986aa2c23c27a2e96543c984045198984fbc1bb52943a34f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Far up the valley, bells jingle already."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"No time to build,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/lantern_post/variants/1": {
+    "source": "sha256:bdadbd00355d3eacd7f11c65047f87d69658987baa93a5d9aca6c791cd22a051",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hummock pats the empty hook on his post."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"No lantern,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he sighs."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/narration": {
+    "source": "sha256:20db27ff90edc7a8ff22ba90d71c5f1312b7098a8a92a5c0f701bd6c5c733710",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind keeps puffing at the wick."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Strike when it dips,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock, shielding it with both enormous hands."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/onFailure/narration": {
+    "source": "sha256:c2a77060db5cc61c8e9c1a55874c7c4b7064d9c7000d3aaa575e1367fb9b7b81",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind blows out every spark. And there go the bells, coming closer!"
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Run!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/narration": {
+    "source": "sha256:65f85bcf11fe4275cb2b73a7c7c1fe2537398233e61ac06cdd74315a49e1b0e4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Lay flat stones in a giant arrow pointing away from the water."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Big as a sled,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Tail by the water, point up the safe path.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/onFailure/narration": {
+    "source": "sha256:38b16a9fce88a539b072e70445d04b3ffb6269dfca827343c19cde75fd285ec9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A stone slips, and the arrow comes out as a squiggle. Nobody would follow that. Bells!"
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Run!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/warning_lit/narration": {
+    "source": "sha256:5e437fe18c758287f072e35993f6e13dc30a93abede0b6cfda1e70de3b7bb9da",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Jingle, jingle. A sled comes around the bend, sees your warning and swishes to a stop."
+      },
+      {
+        "by": "grandma_drift",
+        "text": "\"Well, I never,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a voice."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_sledge/narration": {
+    "source": "sha256:6ede3e89c3560ffe1b352dfbd5eaf66fdfec53241b1e5c424ebc1ff026961f3f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bells jingle around the bend. A sled, a big one, coming fast."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Wave!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Pip."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/sledge_stops/narration": {
+    "source": "sha256:7c8b2674d70857897e1edbd9415dc246639db2b60daf766490c9646d80583e68",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Out of the sled climbs a yeti grandmother in a scarf three times her length."
+      },
+      {
+        "by": "grandma_drift",
+        "text": "\"Grandma Drift,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"with soup for the reading room. What is that river doing in my valley?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hummock tells her. She stares at the water."
+      },
+      {
+        "by": "grandma_drift",
+        "text": "\"My grandmother told a story about a river that got lost,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "grandma_drift",
+        "text": "\"I thought it was just a story.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/driver/narration": {
+    "source": "sha256:08778fe9d2538965e54eb082444ef51efb3d45011a820b12cdb02a3ae8261114",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "grandma_drift",
+        "text": "\"This soup has to reach the reading room tonight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Grandma Drift."
+      },
+      {
+        "by": "grandma_drift",
+        "text": "\"Hot.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The safe way is the high path: steep, and her sled is heavy. Or the edge of the old valley, firm in some places and mud in others, and the light is going. How will you get her around?"
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_haul/onFailure/narration": {
+    "source": "sha256:304d4d589cbc5e97bf5e9d5b1b6b957e57bfaf7895af44b143a74ac2385ac329",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sled tips on the last bump. Half the soup slops out, mostly onto Hummock. He licks his elbow."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Not bad.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_guide/narration": {
+    "source": "sha256:6aad597a82a764d7756a0771906bdc72953c5e78cf3c8745bf265a04ab3d8aa1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Some stones are firm. Some are mud pretending to be stones."
+      },
+      {
+        "by": "grandma_drift",
+        "text": "\"Choose well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Grandma Drift."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/dusk/narration": {
+    "source": "sha256:bd051c8246bdac3502bb18889693314d0dd87112dcda6f0c167d0d5c94a89292",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "As the sun touches the ridge, the river shivers. Then, all at once, it turns. Water rushes back past the fork, into its own valley, so fast it splashes up the bank and snatches Pip's notebook right off a rock!"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"My notes!\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/river_back/narration": {
+    "source": "sha256:d460d8016b2b8cecc4c2181fad15f55d72d553b9f7bf8c1ff039dae80142f336",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then it's quiet. The river runs in its own valley again, as if nothing happened. The old valley lies empty and shining, its pools full, its waterfall dripping. Pip sits down."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It went to its old home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Then it came back to this one. Which home is home?\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/river_back/variants/0": {
+    "source": "sha256:773b78be94772cff438da9ec566666010a3118916e490b9af0d4b55eeef4ffde",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "route_worker_yeti",
+        "text": "\"It didn't need our wall,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock gently."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"It came back by itself.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/river_back/variants/1": {
+    "source": "sha256:71592bcada3fceeee73f819801f84c1f6cb6ddb7a069c3e254ee23c4c6e91395",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hummock looks down the old valley, where his lantern went."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"I'll hang a new one tomorrow.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/rest/narration": {
+    "source": "sha256:24fccc50adaa0c07749f07293e6eb32f63c174815644274cf61d8f838fc6c4f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hummock's hut is small for a yeti and huge for everyone else. Grandma Drift has gone on up to the reading room, but she left a pot of soup on his stove. Hummock's eyebrows drip as they thaw."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Sleep by the stove,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"or go and see the old valley by moonlight. It won't look like that again for a long time.\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_moon/narration": {
+    "source": "sha256:3606cf27e29ef4e24de584b919827a09e4e72a397fa2ffc92bf946f966f83096",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Moonlight on wet stones. Pools, puddles, a sleepy owl."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Look for the pattern,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/narration": {
+    "source": "sha256:c9b96065bcbb0586c6b019482e811e6c8e25fbfa5cd6ea2a1062ecea56415523",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the morning, Pip opens his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"What do I write for Lady Olivia?\""
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"Write it for the reading room first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Hummock."
+      },
+      {
+        "by": "route_worker_yeti",
+        "text": "\"The yetis' memory ice is kept by an old yeti called Elder Murmur. The ice remembers rivers. Show her the river you crossed, and ask her: has it ever run there before?\""
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/ending/narration": {
+    "source": "sha256:2e6852a5177b9e4c0bded9ffcd4eeb51839683208e7abfb9361bf6deb614ca5e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "So here is your piece. For one day, the river went back down a valley it ran long ago, filled its old pools and woke its old falls, and then came home again. Your Listening Chime still leans north, toward the glacier, and hums a little louder than before."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Up to the reading room?\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip. Behind you, the road runs back to the counting stones. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}

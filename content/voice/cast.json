@@ -1304,8 +1304,8 @@
       "status": "provisional",
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman",
+        "voiceId": "vGQNBgLaiM3EdZtxIiuY",
+        "name": "kad-tally",
         "approved": true
       }
     },
@@ -7397,8 +7397,8 @@
         }
       ],
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man",
+        "voiceId": "AFkIMdmeB0MMrr1tgGds",
+        "name": "kad-faun-man",
         "approved": true
       }
     },
@@ -8006,8 +8006,8 @@
       "status": "provisional",
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man",
+        "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
+        "name": "kad-centaur-man",
         "approved": true
       }
     },

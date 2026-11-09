@@ -16,7 +16,8 @@
     "flag_warden": "skywardens",
     "engineers": "skywardens",
     "apprentice": "skywardens",
-    "tamsin": "kitsune"
+    "tamsin": "kitsune",
+    "egg_faun": "faun"
   },
   "voices": [
     {
@@ -69,7 +70,8 @@
       "search": "precise cheerful young woman",
       "speakers": [
         "tally",
-        "dragonling_stone_keeper"
+        "dragonling_stone_keeper",
+        "egg_faun"
       ]
     },
     {
@@ -305,7 +307,8 @@
         "bracken_swiftmile",
         "old_corran",
         "perrin",
-        "kettle_campers"
+        "kettle_campers",
+        "burrowfolk_claimant"
       ]
     },
     {
@@ -348,7 +351,6 @@
         "carter",
         "littlest_bracken",
         "brackens",
-        "egg_faun",
         "flute_faun",
         "mother_bracken"
       ]
@@ -366,7 +368,8 @@
         "faun_claimant",
         "faun_drover",
         "faun_prospector",
-        "rope_shop_boy"
+        "rope_shop_boy",
+        "brassbuckle_scout"
       ]
     },
     {
@@ -485,8 +488,6 @@
         "brassbuckles",
         "prospectors",
         "travelers",
-        "brassbuckle_scout",
-        "burrowfolk_claimant",
         "cart_driver",
         "claim_pair",
         "feathered_hat",

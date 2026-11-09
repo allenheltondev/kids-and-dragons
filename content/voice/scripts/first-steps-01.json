@@ -1,5 +1,41 @@
 {
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "first-steps-01/check_latch/onFailure/narration": {
+    "source": "sha256:76211e702029935a93fc4ca93fdcbad81d30841400dd6b95e24b9d959235ea01",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The bow gets tighter. Then tighter still. A pair of curly horns pops up over the gate, and two quick hands untie it for you."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Everybody does that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a cheerful voice."
+      }
+    ]
+  },
+  "first-steps-01/check_climb/onFailure/narration": {
+    "source": "sha256:b241eaa15ceb0411d1bf36d22d0e4fa6034c12ce4298ee0b9581816e6aab5712",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Squeak! Squeak! Squeeeak! You land in a soft patch of clover, and somebody nearby laughs a friendly laugh."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Everybody does that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a cheerful voice."
+      }
+    ]
+  },
   "first-steps-01/scene_tansy/narration": {
     "source": "sha256:d6cfb36f250fb6cb4eb6c6a0532d7eb6f1bbec601417d3ff8f3e41db95d92ed5",
     "reviewed": false,
@@ -179,6 +215,28 @@
       {
         "by": "tansy",
         "text": "\"Every hero needs a rest.\""
+      }
+    ]
+  },
+  "first-steps-01/rest_picnic/narration": {
+    "source": "sha256:bd2f87da9219d558e6b1903ee6664d34f2e34c25d8f869b3b14a40be09e540af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy spreads a checked picnic blanket under an apple tree. Bun eats a dandelion. Flick and Dot nap in a teacup. The sun is warm, and every bump and scrape from today feels better."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Keep the blanket,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "\"You earned it today.\""
       }
     ]
   },

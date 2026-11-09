@@ -1,0 +1,1037 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-wyrm-nest/arrival/narration": {
+    "source": "sha256:8fefa4f48ad0f99e6770aedf966c551d6baf36547a3263b86053aa2b752b1daa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry, the young yeti keeper from the reading room, leads you down the builders' brand-new tunnel, her knitting bag bouncing."
+      },
+      {
+        "by": "flurry",
+        "text": "\"My new reading room is at the very end,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs."
+      },
+      {
+        "by": "flurry",
+        "text": "\"The builders carved it all year. And now a frost wyrm has curled up in it and gone to sleep!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She wrings her mittens."
+      },
+      {
+        "by": "flurry",
+        "text": "\"The readers need a room. The wyrm needs a home. Where can a frost wyrm and the readers both live?\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/builders/narration": {
+    "source": "sha256:d9bed646bc7f7dcdd570de4697312bb93dba530cddc4b665625b123d4da06562",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the tunnel's end, yeti builders stand in a worried huddle. Every chisel wears one of Flurry's knitted hats, so it won't scrape. Pip Thistledown, the young manticore scout, pops out from behind a builder's leg."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a wyrm is only a very big lizard.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A builder taps a curly horn on a hook."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"If anything goes wrong, two toots on that. The griffins at the Cairnstep always come. Yetis and griffins answer each other.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/frozen_tunnel/narration": {
+    "source": "sha256:f66449f6a81538e98fc67197232e5c1045065ee05370019656cd3b6741b4e690",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last bit of tunnel is frozen shut. Every snore from the far side blows frost through the cracks, and the frost has grown into a wall of white ferns, thick as a hedge."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"We stopped carving when it started snoring,\""
+      },
+      {
+        "by": "narrator",
+        "text": "a builder whispers. How will you get through?"
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_chip/narration": {
+    "source": "sha256:48ec98aac9f14857311bf3f62b5bc8b8fddfa8ddd16ed7431bd3d8c1ddc7efab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Some of the frost is thick, and some is thin as paper. A builder lends you a chisel in a striped hat."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Gently,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Like icing a cake.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_squeeze/narration": {
+    "source": "sha256:b6e4b7ba67310b1506cfd03887009a9340bf236f0af53d353ec8a247c74ed6da",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the top of the frost wall there is a gap the size of a cat flap. Pip is already wriggling into it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Tails last,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/the_nest/narration": {
+    "source": "sha256:69e8663ebd606211eb8b1811113269fb8dd6749fa1bf12af4fca839f8a544ab7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "There it is. A frost wyrm: long and white and shiny as a snowbank in the sun, with frosty feathers down its back. It is curled around the room three whole times. Its head rests on Flurry's new reading stool, and it has dragged every blanket the builders brought into one big nest. Across the room, a far tunnel leads out to the snowy mountains."
+      },
+      {
+        "by": "flurry",
+        "text": "\"That's my stool,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry whispers."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That's a very big lizard,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip whispers back."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tail/onSuccess/narration": {
+    "source": "sha256:61174950ad929edda63f1ae4d6b25ad28f25b50bbc5ba5418dde19402d2245fe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You grab Flurry's scarf and pull. The tail swishes past, so close it combs her fur. Flurry sits down hard."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she breathes."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/wyrm_why/narration": {
+    "source": "sha256:9e7338cc6b0962a6c380ab30683fb148a803f9a25db8bbf04f63190dc3f13a8d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind the wyrm's tail, in the back wall, a shimmering opening hangs in the air, like a window that should not be there."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"That wasn't there when we carved,\""
+      },
+      {
+        "by": "narrator",
+        "text": "a builder whispers."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"It opened the night the river ran the wrong way. The wyrm came through it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A little cold light drifts out of it and buzzes around the wyrm's nose like a moth: a will-o'-wisp. The wyrm twitches, and whimpers in its sleep, like a lost dog at the wrong door. Your Listening Chime hums, leaning past the opening, toward the old heart of the glacier."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/pip_poke/narration": {
+    "source": "sha256:b43217602e14a5708cbc82fcc9e8b8e10c1263e4d4ea01528e184f3e87a1cfec",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip is creeping toward the wyrm with his spoon held out."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says you find out if something's friendly by giving it a poke,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip whispers. Flurry covers her eyes. What will you do?"
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/narration": {
+    "source": "sha256:e30fa1df59d53301c9ea2d2efd4044be1ce8e02d5b947b76917b3a3295219664",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip stops with his spoon in the air."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Give me one good reason,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers. He is listening, a little."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/onSuccess/narration": {
+    "source": "sha256:2094d7eecc5686f91850b4ef3343e043f43d215e08a0b1fb9495784994209a4a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip lowers the spoon."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I suppose I wouldn't like being poked,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he admits, and puts it behind his ear."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/onFailure/narration": {
+    "source": "sha256:4b3ef1fb68fc539660a90b7bb3646b0893fe286d5964a805accd32ce80e25ab1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"Just a little one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_grab/narration": {
+    "source": "sha256:3b98284551df37791bd02c56881996eb31e8e7a038d74b38f276e32fdf5b5f62",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip's tail is swishing behind him, just out of reach."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Quick!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry squeaks."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_grab/onSuccess/narration": {
+    "source": "sha256:2f77eff91b7e5081724b50e2e1b27ed53c3c8decf220367768298265a55499f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You catch his tail and tug. Pip slides back on his bottom with a squeak."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Fine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Science can wait.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/pip_pokes/narration": {
+    "source": "sha256:4dccbbde5c3f2ca598ee732637a4898ccc42c777512dfad916d652930be584cc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Poke. The wyrm opens one eye and sneezes. A blast of frost covers Pip from ears to tail. He stands there like a little snowman, with frozen eyebrows. The wyrm watches you now, wary, and it will not stop watching."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip the snowman,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"may have been wrong about lizards.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/opening/narration": {
+    "source": "sha256:77e8eac924d916066f928faa9e6ca9559463ad12fa523f97fb110bec6ea2fd04",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "flurry",
+        "text": "\"Maybe the wyrm wants to go back through,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry whispers."
+      },
+      {
+        "by": "flurry",
+        "text": "\"But what's on the other side?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Somebody has to look through the shimmering opening without falling in. The builders uncoil a long rope."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_rope/narration": {
+    "source": "sha256:6cab226eb793b54604d4602bcbdb5de2978e0707b3fed56004a2bbb9b0b8e5a6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A builder ties the rope around his middle and leans into the shimmer."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Don't let go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"I mean it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You dig in your heels."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/flicker/narration": {
+    "source": "sha256:349394ca7c6cdbda6c3bc4859d75aacd649fb9d84ef4f7568f55bafee821697c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two toots on the curly horn, a lot of pulling, and out comes the builder, snowy and blinking."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Lovely hollow on the other side,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he gasps."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"But the opening flickered while I was in it, on and off, like a candle.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The builders frown. A wyrm will not like a flickering door."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/slipped/narration": {
+    "source": "sha256:ae4f13fe6ff3ad19cc198e95030c94f620f3ede97456ae07b9a7bca81860eb1f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two toots on the curly horn, and the builders haul you back out by the rope, snowy and blinking. You saw a lovely snow hollow on the other side. But while you were in it, the opening flickered on and off, like a candle. The builders frown."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"A wyrm won't like a flickering door,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says one."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/star_read/narration": {
+    "source": "sha256:9242d50faa7f8e5c6850fcc604291f92b85cb3b485a9e50edd82f6beff4f856e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your starweaver looks into the shimmering opening and reads its light: slow, steady and the same on both sides. It goes somewhere close, deep in the glacier, and it will stay open."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"How can you tell?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip asks. Your starweaver shrugs. It just looks steady, the way a good chair looks steady."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/hollow/narration": {
+    "source": "sha256:5a932613f3cfd05aa0b6722905027944f3557b6d1593863428dd66de1d5db673",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the other side of the shimmering opening is a snow hollow: high and cold and quiet, with a roof like a bowl of glass. Nobody lives there. Nobody uses it."
+      },
+      {
+        "by": "flurry",
+        "text": "\"It's perfect,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry breathes."
+      },
+      {
+        "by": "flurry",
+        "text": "\"For a wyrm, I mean.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks back at her room, and at her blankets, and goes quiet."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sleepwalk/narration": {
+    "source": "sha256:53c17ec3f90c90a1822be0f3f047773cc9953ff131d5b6451853003aedd410f9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You step back through the opening, and stop. The wyrm is sleepwalking! Eyes shut, snoring, it uncurls from its nest and slides across the room, straight toward you all."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Hide!\""
+      },
+      {
+        "by": "narrator",
+        "text": "squeaks Flurry."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_blocks/narration": {
+    "source": "sha256:2dd6aba28f588dac8525cd4e56261526e3aa94add2fc206415fb818f51a77aa4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The blocks are slippery and the gap behind them is small. Pip is already in it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Breathe in,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Smaller!\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/rest/narration": {
+    "source": "sha256:650cde4c7e9c3f7b00f63f35cb8543f450f2c439fc97c4b54078ff1ec08073ba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "When your hearts stop thumping, the builders lead you into their side cave and share oat cakes from a tool tin. One cake is shaped like a chisel."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"My best work,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the builder who baked it. Flurry knits very fast, the way she does when she's thinking. Pip draws the wyrm, and gives it a little hat."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/wyrm_lore/narration": {
+    "source": "sha256:eda552e6d213a012e83e873dd051c9b908298f28134e45a4a8bf73342aefd181",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The oldest builder chews his cake slowly."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Frost wyrms go where it is cold and quiet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Never where they're pushed. Push a wyrm, and it pushes back. But a wyrm that's shown the way will sometimes follow.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He brushes off his crumbs."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Sometimes.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_talk/narration": {
+    "source": "sha256:645e0a5a9b886f4a8562ae2c3c62b71af45e7823b4da285adb270e4f532748fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry stops knitting."
+      },
+      {
+        "by": "flurry",
+        "text": "\"It's my first room,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "flurry",
+        "text": "\"I made forty icicle hats for it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks toward the nest."
+      },
+      {
+        "by": "flurry",
+        "text": "\"But the wyrm didn't ask to come here either. It came through that opening, and now it can't find its way. I know how that feels. It was my first day once.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/plan/narration": {
+    "source": "sha256:c9890d672d5cfa795329ba984416bd6ff1e53ca7da722101a7908d6508390ba6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back at the frost door, everyone looks at the sleeping wyrm. Pip bounces."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia would bang some pots and shoo it out the far tunnel. Done by lunch!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry shakes her head."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Or we help it through the opening to the hollow. It would need its nest, though. My blankets.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A builder rubs his chin."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Shooing is loud, and the old ice is close. Moving it is slow.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will you do?"
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/drive_prep/narration": {
+    "source": "sha256:cd766727eb3c553a4a5b47c97b67343f4215e1fa97fac486b5772805ac227060",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The builders hand out pots, pans and one very old kettle. Pip takes a ladle and grins."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Everybody be scary,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers. Flurry holds her knitting needles over the kettle and looks sad about it. How will you scare the wyrm out?"
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_roar/narration": {
+    "source": "sha256:3f7b966b3d8c61aeb1a2236a7b208e78ba89b2d575e646f3c40b6a6bfb0d7023",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You puff yourself up as big as you can. Pip climbs onto a builder's shoulders."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Now I'm a big wyrm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/deep_groan/narration": {
+    "source": "sha256:6e1f79c600c0dbaf2d3d7f24da21a573e9ed7509919b7bf635a563e1f3640d73",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then, from far below, something answers all that noise: a long, slow groan, like someone turning over in bed. The tunnel shivers. A crack runs across the ceiling of Flurry's new room. Flurry whispers what Elder Murmur always says."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Do not shout near the old ice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Too late now. The wyrm uncurls, and uncurls, and rises."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/move_prep/narration": {
+    "source": "sha256:8225723c193ec209b37360830b8121d5cf034a2fa9c0ee457e1d7c3326fe1561",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "To feel at home in the hollow, the wyrm needs its nest: Flurry's blankets. Flurry hugs her knitting bag."
+      },
+      {
+        "by": "flurry",
+        "text": "\"I can knit new ones,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, very bravely."
+      },
+      {
+        "by": "flurry",
+        "text": "\"It will take all winter.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A builder holds up a pile of work sacks."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Or these. They're scratchy, and they smell of us. It might not like them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will the nest be made of?"
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sneak_nest/onAssisted/narration": {
+    "source": "sha256:4f5ff008984d71c4a8691d950a879923b3419d844959e7b1f002765461713f2f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry whispers"
+      },
+      {
+        "by": "flurry",
+        "text": "\"out\""
+      },
+      {
+        "by": "narrator",
+        "text": "each time the wyrm breathes out, and you move together. Blanket by blanket, the nest moves into the hollow."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/room_won/narration": {
+    "source": "sha256:4e2b7b6b6f58458efdc5d3057d14409a7c6ce36b9b320049e5cc5db12c19ef6b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tunnel goes quiet. Flurry peeks out from behind a builder."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Is it over?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/empty_room/onSuccess/narration": {
+    "source": "sha256:c7c519d9fa41d1e75c019ef66d2a7da05f808108f87ec7bc93d0be342ce281b2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Heave, and heave, and the benches thump back into place. The builders prop the ceiling with a beam."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Good as new,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says one."
+      },
+      {
+        "by": "yeti_builders",
+        "text": "\"Nearly.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/storeroom/narration": {
+    "source": "sha256:878527c84d2e96f1bdd0fd57a4c7709fd25caa08b9db922ff65350a2e0fa7c59",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The readers still need a room."
+      },
+      {
+        "by": "flurry",
+        "text": "\"There's the builders' old storeroom,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Flurry, in a small voice. It is small and dark and full of broken barrels and one very old boot."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/readers_come/variants/0": {
+    "source": "sha256:e91779e3def1ec7b71015de7bb77754a1b68811a883dfa5a4cf02a310366d234",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She peeks through the shimmering opening at the wyrm on its nest."
+      },
+      {
+        "by": "memory_readers",
+        "text": "\"It looks comfortable,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "memory_readers",
+        "text": "\"Good. A neighbor who sleeps all winter is a quiet neighbor.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/readers_come/variants/1": {
+    "source": "sha256:87fb8beb41645ff085cef424cce307404511f3e0ee986e79c0e58c8b9c6cf132",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She looks at the wyrm snoring in Flurry's room, and then at the little storeroom."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Smaller,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "flurry",
+        "text": "\"But dry.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_carry/narration": {
+    "source": "sha256:c349b2e5aa1ee9cdb4c7d46d2434efd74ae459aa2d126df602231937fd62111c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The slates are heavy, and the tunnel floor is slick with the wyrm's frost. One reader carries her stack on her head."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Slow feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tray/narration": {
+    "source": "sha256:46bcdb7d7750b435d7438517df16b8aefe107704fd101ab707449baf059a3b28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip ties his tea tray to a string. The slates go on top, very carefully."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a sled is just a lazy cart,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says proudly."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tray/onSuccess/narration": {
+    "source": "sha256:f333ef8614f2cd578c0f6e0e942125488b75df9c5c92aa8ffadb587ff8c36411",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tray glides down like a little sled, and stops right at the door. Pip bows. Murmur whispers,"
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Clever.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/narration": {
+    "source": "sha256:c56a95c7e10ddb4e0a58c5d60a73a474b5a35a3d99f5c91acdbb2bcb4f6150b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The readers sit down, open their slates and look at the walls. Flurry hangs her icicle hats along the ceiling, one by one."
+      },
+      {
+        "by": "flurry",
+        "text": "\"There,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Now it's a room.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur looks toward the shimmering opening."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"The ice beside it saw everything last night,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Shall we read it? Or let it rest first?\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/variants/0": {
+    "source": "sha256:d20be00302f8035957ca69bcea09eda8308d8e065e17cd31e941068ff5a97209",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The storeroom is very small. The readers sit knee to knee."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Cozy,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers, and means it."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/variants/1": {
+    "source": "sha256:79b6de10efa604b71afcacda2e94e47d1c0c6094d9a68aa00692012a44c66cea",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "There are no blankets."
+      },
+      {
+        "by": "flurry",
+        "text": "\"I'll knit,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Flurry."
+      },
+      {
+        "by": "flurry",
+        "text": "\"All winter.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She has already started."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/new_wall/narration": {
+    "source": "sha256:21ac5851fce26a1e03fd7498b517d418572c4cf2fe1384fb173649b1f671aa40",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur breathes on the ice beside the shimmering opening, and a faint picture swims up: last night, in Flurry's room. The opening blinks open in the air. A frost wyrm tumbles out of it, all legs and surprise, and looks around as if somebody moved its house. Flurry puts a paw over her mouth."
+      },
+      {
+        "by": "flurry",
+        "text": "\"It didn't come on purpose,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Something brought it.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/walls_rest/narration": {
+    "source": "sha256:701fc1ee624f0f337be2ca8926cb178cf94340cba9e4cba8883b05211369e44c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur nods slowly."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Ice that has seen a lot is like a puppy after a party,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Let it settle before you ask it anything.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The readers get out their knitting instead. Flurry teaches Pip to knit. He makes something long and lumpy, and says it is a scarf for the wyrm."
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/murmur_last/narration": {
+    "source": "sha256:9fa9d7ece435b51f996d1c7ea6c996a66bda30df1347ee9d00079431064a39ee",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur sits beside you and blows on her iced tea."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"A river that remembers another valley,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"An opening where there was none. A wyrm that came through it, and wanted to go home.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks down at the floor, toward the oldest ice."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Things are moving that have not moved in a very long time.\""
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/narration": {
+    "source": "sha256:a374e38971d4ffdcea40345f4ecfa0604effa8c0bd318a22c93734e5c348adb7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the top of the tunnel, the curly horn hangs on its hook. Two toots, and the griffins at the Cairnstep will come. Back up the stair, the reading room waits. Pip shuts his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will want to hear all of this.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Here is the piece you carry: long ago, the river ran down the valley that was dry, and now the land is moving again, and moved things try to go home. The Listening Chime leans toward the heart of the glacier. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}
