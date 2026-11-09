@@ -371,7 +371,8 @@ const DIGESTS: PreEpicSave["digests"] = {
 // could not fail now can, so their authored costs are reachable: the hedge latch (timing, the coins),
 // the mending circle (relay, the quiet-moss lesson the crater uses), the calf's sling (precision, the
 // herd's company), the quiet moss (timing) and the woodland chorus (memory, was a play game), whose misses
-// both wake the echo hunter. No scene, edge, stat or TN moved; the endings, roads, setbacks and
+// both wake the echo hunter; the unicorns' offer and the guard lesson describe those games. No scene,
+// edge, stat or TN moved; the endings, roads, setbacks and
 // resumed-save digests below are unchanged. Also gemfall-02, text only: its converted games' cues
 // name the tap they ask for, and the bridge beam no longer talks about leveling.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
@@ -417,7 +418,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
   "chapters/gemfall-03c.json": "50ba95c1a4ac5f6c700abbc433b38b617b677799f6364818f90d0e03e8d9006b",
   "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
-  "chapters/gemfall-04b.json": "99d2277282731546940fde448f17ed101e2aa192cf65283e16a191454cc1e677",
+  "chapters/gemfall-04b.json": "26106d947ee299951e7e195c916a27defb87e2cf5866f3f390a3a753f040cd13",
   "chapters/gemfall-04c.json": "17b14d20611e8d1c7361c057625f9fd49ac253b0a7d7d4b01ef80d5a04ce73ae",
   "chapters/gemfall-05a.json": "bf36941e45e9064f050a1cc12ca06ff17454470212222d0d083ac32d5075a0bf",
   "chapters/gemfall-05b.json": "f0a16c181e23485c1c181ef91d758e5f4627bb769599cdbadc443b5a70c2bbf9",

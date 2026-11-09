@@ -747,7 +747,7 @@
       "discovers": [
         "character.unicorn"
       ],
-      "narration": "Two unicorns tend a gray glade. \"We are mending,\" says the elder. \"Will you help?\" Hold the moss for the hum, or guard the edge and learn the woodland sounds. The worst glade, farther north, will need one or the other.",
+      "narration": "Two unicorns tend a gray glade. \"We are mending,\" says the elder. \"Will you help?\" Pass the mending hum along the moss, or guard the edge and learn the woodland's pattern of sounds. The worst glade, farther north, will need one or the other.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -761,7 +761,7 @@
       "choices": [
         {
           "id": "help",
-          "label": "Hold the moss steady",
+          "label": "Pass the hum along the moss",
           "icon": "heart",
           "goto": "interaction_mending_circle"
         },
@@ -831,7 +831,7 @@
     },
     "scene_unicorns_guard": {
       "type": "story",
-      "narration": "You guard the edge while they mend. Squirrels rustle, a branch taps, a bird answers. You learn to leave gaps between sounds, so no one beat can be followed. That could help at the worst glade.",
+      "narration": "You guard the edge while they mend. Squirrels rustle, a branch taps, a bird answers. They answer each other in a pattern, the same way every time. You learn to listen for it and echo it back, sound for sound. That could help at the worst glade.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1363,7 +1363,7 @@
         },
         {
           "id": "woodland_chorus",
-          "label": "Sing the woodland chorus",
+          "label": "Echo the woodland's pattern",
           "goto": "interaction_guard_chorus",
           "icon": "note",
           "requiresFlag": "forest_guard_plan"
