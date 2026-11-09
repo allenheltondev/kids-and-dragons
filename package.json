@@ -54,6 +54,7 @@
     "voice:script": "tsx tools/voice/draft-scripts.ts",
     "voice:lexicon": "tsx tools/voice/lexicon.ts",
     "voice:generate": "tsx tools/voice/generate.ts",
+    "voice:library": "tsx tools/voice/library.ts",
     "voice:bakeoff": "tsx tools/voice/bakeoff/run.ts",
     "voice:cast": "tsx tools/voice/cast/build.ts",
     "voice:untagged": "tsx tools/voice/cast/untagged.ts",

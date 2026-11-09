@@ -8,7 +8,7 @@ import { classify } from "./lines";
 import type { Pricing } from "./cost-model";
 import { desire, type World } from "./world";
 
-const CAST: CastSheet = { speakers: { narrator: { who: "A warm storyteller.", elevenlabs: { voiceId: "voice-narrator" } } } };
+const CAST: CastSheet = { speakers: { narrator: { who: "A warm storyteller.", elevenlabs: { voiceId: "voice-narrator", approved: true } } } };
 
 function world(): World {
   const lines = classify([{ address: "ch/a/narration", campaign: "c", chapter: "ch", kind: "narration", text: "The door is shut.", renders: 1 }], { facetsMax: 2 });

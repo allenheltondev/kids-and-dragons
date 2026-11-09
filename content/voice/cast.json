@@ -19,7 +19,24 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6214
+      "lineCount": 6214,
+      "gender": "female",
+      "genderFrom": "person",
+      "elevenlabs": {
+        "voiceId": "cgSgspJ2msm6clMCkdW9",
+        "name": "Jessica - Playful, Bright, Warm",
+        "approved": true
+      },
+      "history": [
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "cgSgspJ2msm6clMCkdW9",
+          "voiceName": "Jessica - Playful, Bright, Warm",
+          "model": "eleven_v4",
+          "at": "2026-11-06T18:37:32.483Z"
+        }
+      ]
     },
     "party": {
       "name": "The party",
@@ -38,7 +55,22 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 63
+      "lineCount": 63,
+      "elevenlabs": {
+        "voiceId": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura - Enthusiast, Quirky Attitude",
+        "approved": true
+      },
+      "history": [
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "FGY2WhTYpPnrIDTdsKH5",
+          "voiceName": "Laura - Enthusiast, Quirky Attitude",
+          "model": "eleven_v4",
+          "at": "2026-11-06T18:40:00.666Z"
+        }
+      ]
     },
     "pib": {
       "name": "Pib",
@@ -94,7 +126,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:54:05.063Z"
         }
-      ]
+      ],
+      "accent": "Midwestern American"
     },
     "wisp": {
       "name": "Wisp",
@@ -139,7 +172,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:10:09.410Z"
         }
-      ]
+      ],
+      "accent": "Appalachian American"
     },
     "door_voice": {
       "name": "Door Voice",
@@ -163,7 +197,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "tansy": {
       "name": "Tansy",
@@ -217,7 +252,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:05:31.403Z"
         }
-      ]
+      ],
+      "accent": "Midwestern American"
     },
     "flick": {
       "name": "Flick",
@@ -258,7 +294,8 @@
       "lineCount": 12,
       "speaks": true,
       "status": "provisional",
-      "direction": "tiny, squeaky, boastful, a sore loser for two seconds"
+      "direction": "tiny, squeaky, boastful, a sore loser for two seconds",
+      "accent": "New York American"
     },
     "bun": {
       "name": "Bun",
@@ -340,7 +377,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:54:56.262Z"
         }
-      ]
+      ],
+      "accent": "Australian"
     },
     "coralie_fenn": {
       "name": "Madame Coralie Fenn",
@@ -394,7 +432,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:16:39.825Z"
         }
-      ]
+      ],
+      "accent": "Australian"
     },
     "tobble": {
       "name": "Tobble Reedpipe",
@@ -427,7 +466,8 @@
       "lineCount": 2,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "hesper": {
       "name": "Hesper Longstride",
@@ -468,7 +508,8 @@
       "lineCount": 9,
       "speaks": true,
       "status": "provisional",
-      "direction": "few words, listens to the whole answer, kind but busy"
+      "direction": "few words, listens to the whole answer, kind but busy",
+      "accent": "Texan"
     },
     "boggart": {
       "name": "Boggart",
@@ -521,7 +562,8 @@
       "lineCount": 9,
       "speaks": true,
       "status": "provisional",
-      "direction": "sidelong, delighted, says everything twice"
+      "direction": "sidelong, delighted, says everything twice",
+      "accent": "Southern American"
     },
     "lighthouse_keeper": {
       "name": "Lighthouse Keeper",
@@ -553,7 +595,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Australian"
     },
     "tour_guide": {
       "name": "Tour Guide",
@@ -578,7 +621,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "mortar": {
       "name": "Mortar",
@@ -620,7 +664,8 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional",
-      "direction": "one slow turn before every answer, few words"
+      "direction": "one slow turn before every answer, few words",
+      "accent": "Southwestern American"
     },
     "old_wick": {
       "name": "Old Wick",
@@ -646,7 +691,8 @@
       "lineCount": 1,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southern American"
     },
     "orange_captain": {
       "name": "Orange Captain",
@@ -678,7 +724,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Alaskan Inuit English"
     },
     "postmaster_quill": {
       "name": "Postmaster Quill",
@@ -710,7 +757,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Pacific Northwest American"
     },
     "courier_griffin": {
       "name": "Courier Griffin",
@@ -743,7 +791,8 @@
       "lineCount": 2,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Pacific Northwest American"
     },
     "mrs_tuft": {
       "name": "Mrs. Tuft",
@@ -784,7 +833,8 @@
       "lineCount": 5,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, a little prim, everything in jars"
+      "direction": "brisk, a little prim, everything in jars",
+      "accent": "Texan"
     },
     "selkie_grandmother": {
       "name": "Selkie Grandmother",
@@ -822,7 +872,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Australian"
     },
     "innkeeper_flint": {
       "name": "Innkeeper Flint",
@@ -854,7 +905,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southwestern American"
     },
     "hob": {
       "name": "Hob Thistledown",
@@ -891,7 +943,8 @@
       "lineCount": 3,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "sprites": {
       "name": "Sprites",
@@ -920,7 +973,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "marda": {
       "name": "Marda Thorn",
@@ -962,7 +1016,8 @@
       "lineCount": 5,
       "speaks": true,
       "status": "provisional",
-      "direction": "unhurried, warm, asks one question and waits"
+      "direction": "unhurried, warm, asks one question and waits",
+      "accent": "Texan"
     },
     "drover": {
       "name": "Rush drover",
@@ -1018,7 +1073,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "Thick Irish",
+      "accent": "Texan",
       "direction": "Youthful, slightly faster than normal",
       "history": [
         {
@@ -1062,7 +1117,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "flute_faun": {
       "name": "Flute Faun",
@@ -1088,7 +1144,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "egg_faun": {
       "name": "Egg Faun",
@@ -1114,7 +1171,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "cook": {
       "name": "Cook",
@@ -1143,7 +1201,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "ferrier": {
       "name": "Ferrier",
@@ -1169,7 +1228,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southern American"
     },
     "relay_runner": {
       "name": "Relay Runner",
@@ -1227,7 +1287,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:13:46.503Z"
         }
-      ]
+      ],
+      "accent": "Texan"
     },
     "fennick": {
       "name": "Fennick Longstride",
@@ -1261,7 +1322,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "old_lintel": {
       "name": "Old Lintel",
@@ -1302,7 +1364,8 @@
       "lineCount": 9,
       "speaks": true,
       "status": "provisional",
-      "direction": "very slow, hears everything, mossy and calm"
+      "direction": "very slow, hears everything, mossy and calm",
+      "accent": "Southwestern American"
     },
     "drake": {
       "name": "Drake",
@@ -1366,7 +1429,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "old_ossley": {
       "name": "Old Ossley",
@@ -1439,7 +1503,7 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "approved",
-      "accent": "Deep, louisiana drawl",
+      "accent": "Southern American",
       "direction": "very few words, long unhurried pauses",
       "history": [
         {
@@ -1474,7 +1538,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "wagon_driver": {
       "name": "Wagon Driver",
@@ -1498,7 +1563,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "dilly": {
       "name": "Dilly",
@@ -1529,7 +1595,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "prospector": {
       "name": "Rush prospector",
@@ -1575,7 +1642,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:55:11.137Z"
         }
-      ]
+      ],
+      "accent": "Midwestern American"
     },
     "parsnip_driver": {
       "name": "Parsnip Driver",
@@ -1599,7 +1667,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "gullet": {
       "name": "Gullet",
@@ -1641,7 +1710,8 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional",
-      "direction": "unhurried, hums between sentences, proud"
+      "direction": "unhurried, hums between sentences, proud",
+      "accent": "Southern American"
     },
     "silver_otter": {
       "name": "Silver otter",
@@ -1704,7 +1774,8 @@
       "lineCount": 6,
       "speaks": true,
       "status": "provisional",
-      "direction": "dreamy, talks sideways to lost things"
+      "direction": "dreamy, talks sideways to lost things",
+      "accent": "Southern American"
     },
     "mire_mimic": {
       "name": "Mire Mimic",
@@ -1769,7 +1840,8 @@
       ],
       "lineCount": 7,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southern American"
     },
     "prospectors": {
       "name": "Prospectors",
@@ -1798,7 +1870,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "sausage_seller": {
       "name": "Sausage Seller",
@@ -1827,7 +1900,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "burdock": {
       "name": "Burdock",
@@ -1870,7 +1944,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "Heavy Scottish",
+      "accent": "Midwestern American",
       "history": [
         {
           "decision": "approved",
@@ -1935,7 +2009,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:04:21.811Z"
         }
-      ]
+      ],
+      "accent": "Californian American"
     },
     "wend": {
       "name": "Wend",
@@ -1984,7 +2059,7 @@
       "lineCount": 10,
       "speaks": true,
       "status": "approved",
-      "accent": "Heavy Southern",
+      "accent": "Southern American",
       "history": [
         {
           "decision": "approved",
@@ -2033,7 +2108,8 @@
       "lineCount": 7,
       "speaks": true,
       "status": "provisional",
-      "direction": "dry, careful, kind underneath"
+      "direction": "dry, careful, kind underneath",
+      "accent": "Southern American"
     },
     "brackens": {
       "name": "Brackens",
@@ -2065,7 +2141,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:22:39.002Z"
         }
-      ]
+      ],
+      "accent": "Midwestern American"
     },
     "troupe_leader": {
       "name": "Troupe Leader",
@@ -2104,7 +2181,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Appalachian American"
     },
     "red_scarves": {
       "name": "Red Scarves",
@@ -2135,7 +2213,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "sefa_tallgrass": {
       "name": "Sefa Tallgrass",
@@ -2179,7 +2258,8 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional",
-      "direction": "warm gravel, formal, kind, quietly worried"
+      "direction": "warm gravel, formal, kind, quietly worried",
+      "accent": "Southwestern American"
     },
     "cart_driver": {
       "name": "Cart Driver",
@@ -2206,7 +2286,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "waystation_centaur": {
       "name": "Waystation Centaur",
@@ -2232,7 +2313,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "bracken_swiftmile": {
       "name": "Bracken Swiftmile",
@@ -2281,7 +2363,7 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "approved",
-      "accent": "Northeast American",
+      "accent": "Texan",
       "direction": "Brash, overly confident, alpha male",
       "history": [
         {
@@ -2319,7 +2401,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southwestern American"
     },
     "granny_ash": {
       "name": "Granny Ash",
@@ -2360,7 +2443,8 @@
       "lineCount": 3,
       "speaks": true,
       "status": "provisional",
-      "direction": "bossy, delighted, grandmotherly"
+      "direction": "bossy, delighted, grandmotherly",
+      "accent": "Southwestern American"
     },
     "marker_movers": {
       "name": "Marker Movers",
@@ -2386,7 +2470,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southwestern American"
     },
     "beech_tree": {
       "name": "Beech Tree",
@@ -2432,7 +2517,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:14:34.713Z"
         }
-      ]
+      ],
+      "accent": "Pacific Northwest American"
     },
     "elder_unicorn": {
       "name": "Elder Unicorn",
@@ -2472,7 +2558,8 @@
       ],
       "lineCount": 7,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "flood_warden": {
       "name": "Flood Warden",
@@ -2529,7 +2616,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:49:18.653Z"
         }
-      ]
+      ],
+      "accent": "New England American"
     },
     "echo_hunter": {
       "name": "Echo Hunter",
@@ -2617,7 +2705,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:30:53.862Z"
         }
-      ]
+      ],
+      "accent": "New England American"
     },
     "hedge_prospectors": {
       "name": "Hedge Prospectors",
@@ -2641,7 +2730,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "ma_ruddle": {
       "name": "Ma Ruddle",
@@ -2685,7 +2775,8 @@
       "elevenlabs": {
         "voiceId": "nPczCjzI2devNBz1zQrb",
         "name": "Brian - Deep, Resonant and Comforting"
-      }
+      },
+      "accent": "Midwestern American"
     },
     "tib": {
       "name": "Tib",
@@ -2710,7 +2801,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "sergeant_holloway": {
       "name": "Sergeant Holloway",
@@ -2765,7 +2857,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:00:52.959Z"
         }
-      ]
+      ],
+      "accent": "New York American"
     },
     "clerk_pennywhistle": {
       "name": "Clerk Pennywhistle",
@@ -2805,7 +2898,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "old_corran": {
       "name": "Old Corran",
@@ -2846,7 +2940,8 @@
       "lineCount": 4,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "road_boss": {
       "name": "Road Boss",
@@ -2887,7 +2982,8 @@
       "lineCount": 5,
       "speaks": true,
       "status": "provisional",
-      "direction": "gruff, puffing, good-humored"
+      "direction": "gruff, puffing, good-humored",
+      "accent": "Texan"
     },
     "map_seller": {
       "name": "Map Seller",
@@ -2911,7 +3007,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Californian American"
     },
     "rumor_ring": {
       "name": "Rumor Ring",
@@ -2935,7 +3032,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Californian American"
     },
     "hollis": {
       "name": "Hollis",
@@ -2975,7 +3073,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "pellam": {
       "name": "Pellam",
@@ -3036,7 +3135,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:19:32.299Z"
         }
-      ]
+      ],
+      "accent": "New York American"
     },
     "brask": {
       "name": "Engineer Brask",
@@ -3086,7 +3186,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "Strong German",
+      "accent": "New York American",
       "history": [
         {
           "decision": "approved",
@@ -3137,7 +3237,8 @@
       ],
       "lineCount": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "nim": {
       "name": "Nim",
@@ -3178,7 +3279,8 @@
       "lineCount": 7,
       "speaks": true,
       "status": "provisional",
-      "direction": "quick, proud, a little sassy"
+      "direction": "quick, proud, a little sassy",
+      "accent": "Appalachian American"
     },
     "tibbet": {
       "name": "Corporal Tibbet",
@@ -3215,7 +3317,8 @@
       "lineCount": 3,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "apprentice": {
       "name": "Apprentice",
@@ -3254,7 +3357,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "flag_warden": {
       "name": "Flag Warden",
@@ -3289,7 +3393,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "door_archivist": {
       "name": "Door Archivist",
@@ -3313,7 +3418,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "oldest_archivist": {
       "name": "Oldest Archivist",
@@ -3349,7 +3455,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "eldest": {
       "name": "The Eldest",
@@ -3394,7 +3501,8 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional",
-      "direction": "mild, unhurried, sips tea between sentences"
+      "direction": "mild, unhurried, sips tea between sentences",
+      "accent": "New England American"
     },
     "soup_woman": {
       "name": "Soup Woman",
@@ -3436,7 +3544,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Australian"
     },
     "path_keeper": {
       "name": "Path Keeper",
@@ -3480,7 +3589,8 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional",
-      "direction": "slow, kind, proud of his visitors' book"
+      "direction": "slow, kind, proud of his visitors' book",
+      "accent": "New England American"
     },
     "young_gatherer": {
       "name": "Young Gatherer",
@@ -3522,7 +3632,8 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional",
-      "direction": "small, brave, insists she is not lost"
+      "direction": "small, brave, insists she is not lost",
+      "accent": "Appalachian American"
     },
     "great_gran_ashby": {
       "name": "Great-Grandma Ashby",
@@ -3567,7 +3678,8 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional",
-      "direction": "very old, brisk, tender, unarguable"
+      "direction": "very old, brisk, tender, unarguable",
+      "accent": "Appalachian American"
     },
     "grandmother": {
       "name": "Grandmother",
@@ -3629,7 +3741,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:07:27.897Z"
         }
-      ]
+      ],
+      "accent": "Appalachian American"
     },
     "small_dragonling": {
       "name": "Small Dragonling",
@@ -3668,7 +3781,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Appalachian American"
     },
     "perrin": {
       "name": "Perrin Nine-Verse",
@@ -3708,7 +3822,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "feathered_hat": {
       "name": "Feathered Hat",
@@ -3732,7 +3847,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "hessa": {
       "name": "Hessa Wren",
@@ -3802,7 +3918,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:11:40.232Z"
         }
-      ]
+      ],
+      "accent": "Midwestern American"
     },
     "captain": {
       "name": "Captain",
@@ -3855,7 +3972,8 @@
           "at": "2026-10-30T18:44:56.247Z"
         }
       ],
-      "notes": "Re-audition required: Gacrux was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Pulcherrima is a provisional alternative."
+      "notes": "Re-audition required: Gacrux was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Pulcherrima is a provisional alternative.",
+      "accent": "New York American"
     },
     "grandmother_tull": {
       "name": "Grandmother Tull",
@@ -3897,7 +4015,8 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional",
-      "direction": "old, slow talker, kind"
+      "direction": "old, slow talker, kind",
+      "accent": "Appalachian American"
     },
     "dunmore": {
       "name": "Dunmore",
@@ -3934,7 +4053,8 @@
       "elevenlabs": {
         "voiceId": "nPczCjzI2devNBz1zQrb",
         "name": "Brian - Deep, Resonant and Comforting"
-      }
+      },
+      "accent": "Midwestern American"
     },
     "claim_pair": {
       "name": "Claim Pair",
@@ -3958,7 +4078,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "warden_clerk": {
       "name": "Warden Clerk",
@@ -3996,7 +4117,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "mosshome_runner": {
       "name": "Mosshome Runner",
@@ -4058,7 +4180,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:17:23.200Z"
         }
-      ]
+      ],
+      "accent": "New England American"
     },
     "ford_witch": {
       "name": "Mother Thrum",
@@ -4118,7 +4241,8 @@
           "at": "2026-10-30T18:32:08.143Z"
         }
       ],
-      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Aoede is a provisional alternative."
+      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Aoede is a provisional alternative.",
+      "accent": "Southern American"
     },
     "centaur_relay": {
       "name": "Centaur Relay",
@@ -4154,7 +4278,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "exchange_merchant": {
       "name": "Madame Coralie Fenn",
@@ -4196,7 +4321,7 @@
       "lineCount": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "Transatlantic",
+      "accent": "Australian",
       "direction": "grand, theatrical, dramatic",
       "history": [
         {
@@ -4264,7 +4389,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:24:57.353Z"
         }
-      ]
+      ],
+      "accent": "Texan"
     },
     "brisk": {
       "name": "Brisk",
@@ -4315,7 +4441,8 @@
           "at": "2026-10-30T19:25:25.807Z"
         }
       ],
-      "notes": "Re-audition required: Pulcherrima was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Autonoe is a provisional alternative."
+      "notes": "Re-audition required: Pulcherrima was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Autonoe is a provisional alternative.",
+      "accent": "Texan"
     },
     "bryony": {
       "name": "Bryony",
@@ -4413,7 +4540,8 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional",
-      "direction": "gracious, thrilled, never sore about losing"
+      "direction": "gracious, thrilled, never sore about losing",
+      "accent": "Texan"
     },
     "alder": {
       "name": "Alder",
@@ -4444,7 +4572,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Pacific Northwest American"
     },
     "stall_witch": {
       "name": "Stall Witch",
@@ -4486,7 +4615,8 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, patient, a warm sales smile"
+      "direction": "brisk, patient, a warm sales smile",
+      "accent": "Southern American"
     },
     "linnet": {
       "name": "Cadet Linnet",
@@ -4517,7 +4647,8 @@
       "lineCount": 1,
       "speaks": true,
       "status": "provisional",
-      "notes": "Provisional voice changed from Sadachbia to Puck to avoid a chapter-level voice conflict."
+      "notes": "Provisional voice changed from Sadachbia to Puck to avoid a chapter-level voice conflict.",
+      "accent": "New York American"
     },
     "rook": {
       "name": "Rook",
@@ -4557,7 +4688,8 @@
       "elevenlabs": {
         "voiceId": "nPczCjzI2devNBz1zQrb",
         "name": "Brian - Deep, Resonant and Comforting"
-      }
+      },
+      "accent": "Midwestern American"
     },
     "warden_sergeant": {
       "name": "Warden Sergeant",
@@ -4582,7 +4714,8 @@
       "lineCount": 0,
       "speaks": true,
       "status": "provisional",
-      "notes": "Provisional voice changed from Orus to Algieba to avoid a chapter-level voice conflict."
+      "notes": "Provisional voice changed from Orus to Algieba to avoid a chapter-level voice conflict.",
+      "accent": "New York American"
     },
     "odo": {
       "name": "Odo",
@@ -4622,7 +4755,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "posy": {
       "name": "Corbin and Posy",
@@ -4725,7 +4859,8 @@
       "guessedLines": 19,
       "speaks": true,
       "status": "provisional",
-      "direction": "ancient, unhurried, dry, amused"
+      "direction": "ancient, unhurried, dry, amused",
+      "accent": "New England American"
     },
     "bones": {
       "name": "Bones",
@@ -4823,7 +4958,7 @@
       "lineCount": 14,
       "speaks": true,
       "status": "approved",
-      "accent": "California",
+      "accent": "Appalachian American",
       "direction": "Motherly",
       "history": [
         {
@@ -4873,7 +5008,8 @@
       "lineCount": 10,
       "speaks": true,
       "status": "provisional",
-      "direction": "worried, dramatic, counts and loses count"
+      "direction": "worried, dramatic, counts and loses count",
+      "accent": "Pacific Northwest American"
     },
     "saltrot_guide": {
       "name": "Puddle",
@@ -4930,7 +5066,7 @@
       "guessedLines": 3,
       "speaks": true,
       "status": "approved",
-      "accent": "slavic american",
+      "accent": "Cockney (London)",
       "direction": "slow pace. pensive. abrupt.",
       "history": [
         {
@@ -4938,8 +5074,21 @@
           "voice": "Callirrhoe",
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:57:54.997Z"
+        },
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "T6NabghTdZ1K1TRF4KuA",
+          "voiceName": "Lena - Deep, Dark & Haunting Storyteller",
+          "model": "eleven_v4",
+          "at": "2026-11-06T18:43:51.864Z"
         }
-      ]
+      ],
+      "elevenlabs": {
+        "voiceId": "T6NabghTdZ1K1TRF4KuA",
+        "name": "Lena - Deep, Dark & Haunting Storyteller",
+        "approved": true
+      }
     },
     "pip_thistledown": {
       "name": "Pip Thistledown",
@@ -5048,8 +5197,22 @@
           "voice": "Alnilam",
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:06:29.314Z"
+        },
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "nPczCjzI2devNBz1zQrb",
+          "voiceName": "Brian - Deep, Resonant and Comforting",
+          "model": "eleven_v4",
+          "at": "2026-11-06T18:41:57.399Z"
         }
-      ]
+      ],
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting",
+        "approved": true
+      },
+      "accent": "Southwestern American"
     },
     "tally": {
       "name": "Tally",
@@ -5091,7 +5254,8 @@
       "guessedLines": 4,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, exact, counts aloud, faster when upset"
+      "direction": "brisk, exact, counts aloud, faster when upset",
+      "accent": "Appalachian American"
     },
     "orin_vale": {
       "name": "Master Orin Vale",
@@ -5149,7 +5313,7 @@
       "lineCount": 73,
       "speaks": true,
       "status": "approved",
-      "accent": "British",
+      "accent": "Pacific Northwest American",
       "direction": "studious, very curious",
       "history": [
         {
@@ -5199,7 +5363,8 @@
       "lineCount": 19,
       "speaks": true,
       "status": "provisional",
-      "direction": "small, nervous, quick, a little squeaky"
+      "direction": "small, nervous, quick, a little squeaky",
+      "accent": "Pacific Northwest American"
     },
     "olivia": {
       "name": "Lady Olivia",
@@ -5264,7 +5429,8 @@
           "at": "2026-10-30T18:16:05.001Z"
         }
       ],
-      "notes": "Re-audition required: Erinome was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Zephyr is a provisional alternative."
+      "notes": "Re-audition required: Erinome was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Zephyr is a provisional alternative.",
+      "accent": "New England American"
     },
     "bram_lock": {
       "name": "Bram Lock",
@@ -5310,7 +5476,7 @@
       "lineCount": 15,
       "speaks": true,
       "status": "provisional",
-      "accent": "Strong American Midwestern",
+      "accent": "New England American",
       "direction": "old, calm",
       "history": [
         {
@@ -5390,7 +5556,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:07:04.166Z"
         }
-      ]
+      ],
+      "accent": "Californian American"
     },
     "thimble": {
       "name": "Captain Thimble",
@@ -5432,7 +5599,7 @@
       "lineCount": 12,
       "speaks": true,
       "status": "approved",
-      "accent": "Strong Cockney",
+      "accent": "Californian American",
       "history": [
         {
           "decision": "approved",
@@ -5481,7 +5648,8 @@
       "lineCount": 8,
       "speaks": true,
       "status": "provisional",
-      "direction": "indignant, literal, chilly"
+      "direction": "indignant, literal, chilly",
+      "accent": "New England American"
     },
     "gull": {
       "name": "Gull",
@@ -5542,7 +5710,8 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional",
-      "direction": "practical, short, protective"
+      "direction": "practical, short, protective",
+      "accent": "Alaskan Inuit English"
     },
     "barge_pilot": {
       "name": "Barge pilot",
@@ -5584,7 +5753,7 @@
       "guessedLines": 6,
       "speaks": true,
       "status": "approved",
-      "accent": "Heavy Creole",
+      "accent": "Southern American",
       "direction": "Loud, obnoxious, doesn't care who is in the room",
       "history": [
         {
@@ -5634,7 +5803,8 @@
       "lineCount": 11,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, generous, talks to her pot"
+      "direction": "brisk, generous, talks to her pot",
+      "accent": "Australian"
     },
     "corvane": {
       "name": "Corvane",
@@ -5676,7 +5846,8 @@
       "speaks": true,
       "status": "provisional",
       "notes": "Provisional voice changed from Charon to Schedar to avoid a chapter-level voice conflict.",
-      "direction": "courtly, old, confused, patient, sad"
+      "direction": "courtly, old, confused, patient, sad",
+      "accent": "Midwestern American"
     },
     "yeti_herder": {
       "name": "Yeti herder",
@@ -5746,7 +5917,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:21:20.560Z"
         }
-      ]
+      ],
+      "accent": "Alaskan Inuit English"
     },
     "young_yeti_singer": {
       "name": "Young yeti singer",
@@ -5780,7 +5952,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Alaskan Inuit English"
     },
     "skerry": {
       "name": "Skerry",
@@ -5827,7 +6000,23 @@
       "guessedLines": 8,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, warm, a little dramatic, calling from above"
+      "direction": "brisk, warm, a little dramatic, calling from above",
+      "elevenlabs": {
+        "voiceId": "sAw3vvSRCnHWDa1FdPPf",
+        "name": "Rida M - Expressive, Emotional Narrator",
+        "approved": true
+      },
+      "accent": "Pacific Northwest American",
+      "history": [
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "sAw3vvSRCnHWDa1FdPPf",
+          "voiceName": "Rida M - Expressive, Emotional Narrator",
+          "model": "eleven_v4",
+          "at": "2026-11-06T18:42:36.814Z"
+        }
+      ]
     },
     "elder_murmur": {
       "name": "Elder Murmur",
@@ -5873,7 +6062,8 @@
       "lineCount": 27,
       "speaks": true,
       "status": "provisional",
-      "direction": "whispering, very slow, very old, gentle"
+      "direction": "whispering, very slow, very old, gentle",
+      "accent": "Alaskan Inuit English"
     },
     "flurry": {
       "name": "Flurry",
@@ -5919,7 +6109,8 @@
       "lineCount": 28,
       "speaks": true,
       "status": "provisional",
-      "direction": "quick, nervous, kind, soft"
+      "direction": "quick, nervous, kind, soft",
+      "accent": "Alaskan Inuit English"
     },
     "grandmother_winkle": {
       "name": "Grandmother Winkle",
@@ -5959,7 +6150,8 @@
       ],
       "lineCount": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Cockney (London)"
     },
     "dab": {
       "name": "Dab",
@@ -5993,7 +6185,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Cockney (London)"
     },
     "fen": {
       "name": "Fen",
@@ -6039,7 +6232,8 @@
       "lineCount": 8,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, practical"
+      "direction": "brisk, practical",
+      "accent": "Southern American"
     },
     "keeper_sorrel": {
       "name": "Keeper Sorrel",
@@ -6080,7 +6274,8 @@
       "lineCount": 26,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, kind, unflappable"
+      "direction": "brisk, kind, unflappable",
+      "accent": "Californian American"
     },
     "keeper_clove": {
       "name": "Keeper Clove",
@@ -6121,7 +6316,8 @@
       "lineCount": 23,
       "speaks": true,
       "status": "provisional",
-      "direction": "fussy, kind, brave when it counts"
+      "direction": "fussy, kind, brave when it counts",
+      "accent": "Californian American"
     },
     "tumble": {
       "name": "Tumble",
@@ -6167,7 +6363,8 @@
       "lineCount": 9,
       "speaks": true,
       "status": "provisional",
-      "direction": "fast, cheerful, breathless"
+      "direction": "fast, cheerful, breathless",
+      "accent": "Pacific Northwest American"
     },
     "dragonling_stone_keeper": {
       "name": "Tally",
@@ -6208,7 +6405,8 @@
       "lineCount": 32,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Appalachian American"
     },
     "farmer_gourd": {
       "name": "Farmer Gourd",
@@ -6249,7 +6447,8 @@
       "lineCount": 7,
       "speaks": true,
       "status": "provisional",
-      "direction": "cheerful, hurried, round and breathless"
+      "direction": "cheerful, hurried, round and breathless",
+      "accent": "Appalachian American"
     },
     "keeper_juniper": {
       "name": "Keeper Juniper",
@@ -6295,7 +6494,8 @@
       "lineCount": 72,
       "speaks": true,
       "status": "provisional",
-      "direction": "brisk, warm, sing-song when giving instructions"
+      "direction": "brisk, warm, sing-song when giving instructions",
+      "accent": "Californian American"
     },
     "route_worker_yeti": {
       "name": "Hummock",
@@ -6336,7 +6536,8 @@
       "lineCount": 32,
       "speaks": true,
       "status": "provisional",
-      "direction": "slow, rumbling, kind, a gentle giant"
+      "direction": "slow, rumbling, kind, a gentle giant",
+      "accent": "Alaskan Inuit English"
     },
     "grandma_drift": {
       "name": "Grandma Drift",
@@ -6376,7 +6577,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Alaskan Inuit English"
     },
     "yeti_builders": {
       "name": "Yeti builders",
@@ -6415,7 +6617,8 @@
       "lineCount": 14,
       "speaks": true,
       "status": "provisional",
-      "direction": "slow, deep, gentle, a crew speaking together"
+      "direction": "slow, deep, gentle, a crew speaking together",
+      "accent": "Alaskan Inuit English"
     },
     "fishmonger": {
       "name": "Fishmonger",
@@ -6443,7 +6646,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Alaskan Inuit English"
     },
     "rope_shop_boy": {
       "name": "Rope-shop boy",
@@ -6462,7 +6666,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "brassbuckle_scout": {
       "name": "Brassbuckle scout",
@@ -6484,7 +6689,7 @@
       "lineCount": 0,
       "speaks": true,
       "status": "approved",
-      "accent": "Jamaican",
+      "accent": "Midwestern American",
       "history": [
         {
           "decision": "approved",
@@ -6526,7 +6731,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:22:21.038Z"
         }
-      ]
+      ],
+      "accent": "Midwestern American"
     },
     "mother_bracken": {
       "name": "Mother Bracken",
@@ -6546,7 +6752,8 @@
       "lineCount": 0,
       "speaks": true,
       "status": "provisional",
-      "notes": "Provisional voice changed from Pulcherrima to Kore to avoid a chapter-level voice conflict."
+      "notes": "Provisional voice changed from Pulcherrima to Kore to avoid a chapter-level voice conflict.",
+      "accent": "Midwestern American"
     },
     "littlest_bracken": {
       "name": "Littlest Bracken",
@@ -6570,7 +6777,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "cart_donkey": {
       "name": "Cart donkey",
@@ -6624,7 +6832,8 @@
       "lineCount": 4,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "burrowfolk_prospector": {
       "name": "Burrowfolk prospector",
@@ -6652,7 +6861,7 @@
       "lineCount": 2,
       "speaks": true,
       "status": "approved",
-      "accent": "Southern American",
+      "accent": "Midwestern American",
       "direction": "Old, rickety, shaky voice",
       "history": [
         {
@@ -6680,7 +6889,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "boggart_prospector": {
       "name": "Boggart prospector",
@@ -6705,7 +6915,7 @@
       "lineCount": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "Transylvanian",
+      "accent": "Southern American",
       "direction": "Croaky and strained",
       "history": [
         {
@@ -6778,7 +6988,8 @@
           "at": "2026-10-30T19:17:55.418Z"
         }
       ],
-      "notes": "Re-audition required: Achernar was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Erinome is a provisional alternative."
+      "notes": "Re-audition required: Achernar was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Erinome is a provisional alternative.",
+      "accent": "Appalachian American"
     },
     "dumpling": {
       "name": "Dumpling",
@@ -6823,7 +7034,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "carters_mule": {
       "name": "Carter's mule",
@@ -6879,7 +7091,7 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "approved",
-      "accent": "african american from the bronx",
+      "accent": "New England American",
       "history": [
         {
           "decision": "approved",
@@ -6922,7 +7134,7 @@
       "lineCount": 5,
       "speaks": true,
       "status": "approved",
-      "accent": "Italian New York",
+      "accent": "Appalachian American",
       "history": [
         {
           "decision": "approved",
@@ -6949,7 +7161,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New York American"
     },
     "centaur_drover": {
       "name": "Centaur drover",
@@ -6981,7 +7194,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Texan"
     },
     "faun_drover": {
       "name": "Faun drover",
@@ -7000,7 +7214,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "burrowfolk_claimant": {
       "name": "Burrowfolk Claimant",
@@ -7019,7 +7234,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "faun_claimant": {
       "name": "Faun Claimant",
@@ -7038,7 +7254,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Midwestern American"
     },
     "skywardens": {
       "name": "Skywardens",
@@ -7072,7 +7289,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:01:20.797Z"
         }
-      ]
+      ],
+      "accent": "New York American"
     },
     "dragonling_runner": {
       "name": "Dragonling Runner",
@@ -7091,7 +7309,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Appalachian American"
     },
     "masked_choir_singer": {
       "name": "Masked choir singer",
@@ -7129,7 +7348,8 @@
           "at": "2026-10-30T18:30:11.652Z"
         }
       ],
-      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Vindemiatrix is a provisional alternative."
+      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Vindemiatrix is a provisional alternative.",
+      "accent": "Midwestern American"
     },
     "crying_gem_buyer": {
       "name": "Crying gem-buyer",
@@ -7148,7 +7368,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Australian"
     },
     "road_mule": {
       "name": "Road mule",
@@ -7202,7 +7423,8 @@
       "lineCount": 18,
       "speaks": true,
       "status": "provisional",
-      "direction": "rigid, honest, never wastes a word"
+      "direction": "rigid, honest, never wastes a word",
+      "accent": "New York American"
     },
     "travelers": {
       "name": "Travelers",
@@ -7232,7 +7454,8 @@
       "elevenlabs": {
         "voiceId": "nPczCjzI2devNBz1zQrb",
         "name": "Brian - Deep, Resonant and Comforting"
-      }
+      },
+      "accent": "Midwestern American"
     },
     "ducklings": {
       "name": "Ducklings",
@@ -7256,7 +7479,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "duckling": {
       "name": "Duckling",
@@ -7307,7 +7531,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Appalachian American"
     },
     "the_crows": {
       "name": "The crows",
@@ -7335,7 +7560,8 @@
       "guessedLines": 3,
       "speaks": true,
       "status": "provisional",
-      "direction": "curt, cawing together"
+      "direction": "curt, cawing together",
+      "accent": "Pacific Northwest American"
     },
     "dock_workers": {
       "name": "Dock workers",
@@ -7362,7 +7588,8 @@
       "lineCount": 2,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southern American"
     },
     "goat_kid": {
       "name": "Goat kid",
@@ -7403,7 +7630,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:25:36.649Z"
         }
-      ]
+      ],
+      "accent": "Californian American"
     },
     "spotted_kid": {
       "name": "Spotted kid",
@@ -7459,7 +7687,8 @@
       "lineCount": 16,
       "speaks": true,
       "status": "provisional",
-      "direction": "practical, short dockside speech"
+      "direction": "practical, short dockside speech",
+      "accent": "Southern American"
     },
     "frost_wyrm": {
       "name": "Frost wyrm",
@@ -7524,7 +7753,7 @@
       "lineCount": 3,
       "speaks": true,
       "status": "approved",
-      "accent": "Heavy Southern",
+      "accent": "Alaskan Inuit English",
       "direction": "Condescending, short, only says the words she needs to say",
       "history": [
         {
@@ -7552,7 +7781,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Southern American"
     },
     "cloaked_griffin": {
       "name": "Cloaked griffin",
@@ -7571,7 +7801,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Pacific Northwest American"
     },
     "cloaked_unicorn": {
       "name": "Cloaked unicorn",
@@ -7597,7 +7828,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "young_river_drake": {
       "name": "Young river drake",
@@ -7635,7 +7867,8 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Alaskan Inuit English"
     },
     "memory_readers": {
       "name": "Memory readers",
@@ -7660,7 +7893,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Alaskan Inuit English"
     },
     "dob": {
       "name": "Dob",
@@ -7690,7 +7924,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "fenwick": {
       "name": "Fenwick",
@@ -7724,7 +7959,8 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Pacific Northwest American"
     },
     "dunnick": {
       "name": "Master Dunnick",
@@ -7759,7 +7995,8 @@
       "lineCount": 4,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "New England American"
     },
     "mustard": {
       "name": "Mustard",
@@ -7789,7 +8026,8 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "accent": "Californian American"
     },
     "cloud_whale": {
       "name": "Cloud whale",

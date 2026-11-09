@@ -565,6 +565,10 @@ export async function listVoices(provider: Provider, keys: Keys, fetch: Fetch): 
 /** A voice in ElevenLabs' public Voice Library: not on the account until someone adds it. */
 export interface LibraryVoice extends VoiceInfo {
   ownerId: string;
+  /** How many people added it: the nearest thing the library has to a review. */
+  added?: number;
+  /** Days of warning before its owner can withdraw it, when it has such a period. */
+  noticeDays?: number;
 }
 
 export interface LibraryPage {
@@ -574,12 +578,14 @@ export interface LibraryPage {
 }
 
 /** Searches the public Voice Library (read only: nothing on the account changes). */
-export async function searchLibrary(keys: Keys, query: { search?: string; gender?: string; page?: number }, fetch: Fetch): Promise<LibraryPage> {
+export async function searchLibrary(keys: Keys, query: { search?: string; gender?: string; accent?: string; language?: string; page?: number }, fetch: Fetch): Promise<LibraryPage> {
   const params = new URLSearchParams({ page_size: "30", page: String(query.page ?? 0) });
   if (query.search?.trim()) params.set("search", query.search.trim());
   if (query.gender === "female" || query.gender === "male") params.set("gender", query.gender);
+  if (query.accent?.trim()) params.set("accent", query.accent.trim());
+  if (query.language?.trim()) params.set("language", query.language.trim());
   const json = (await getJson(`${ELEVENLABS}/shared-voices?${params}`, authFor("elevenlabs", keys), fetch)) as {
-    voices?: { public_owner_id: string; voice_id: string; name: string; category?: string; gender?: string; age?: string; accent?: string; descriptive?: string; use_case?: string; preview_url?: string | null }[];
+    voices?: { public_owner_id: string; voice_id: string; name: string; category?: string; gender?: string; age?: string; accent?: string; descriptive?: string; use_case?: string; preview_url?: string | null; cloned_by_count?: number; notice_period?: number }[];
     has_more?: boolean;
     total_count?: number;
   };
@@ -591,10 +597,19 @@ export async function searchLibrary(keys: Keys, query: { search?: string; gender
       about: [v.category, v.gender, v.age, v.accent, v.descriptive, v.use_case].filter(Boolean).join(", "),
       ...(genderOf(v.gender) ? { gender: genderOf(v.gender) } : {}),
       ...(v.preview_url ? { preview: v.preview_url } : {}),
+      ...(typeof v.cloned_by_count === "number" ? { added: v.cloned_by_count } : {}),
+      ...(typeof v.notice_period === "number" ? { noticeDays: v.notice_period } : {}),
     })),
     hasMore: json.has_more === true,
     ...(typeof json.total_count === "number" ? { total: json.total_count } : {}),
   };
+}
+
+/** How many custom voices the plan allows and how many are in use: library voices and designed voices both count. */
+export async function voiceSlots(keys: Keys, fetch: Fetch): Promise<{ used: number; limit: number; tier?: string }> {
+  const json = (await getJson(`${ELEVENLABS}/user/subscription`, authFor("elevenlabs", keys), fetch)) as { voice_slots_used?: number; voice_limit?: number; tier?: string };
+  if (typeof json.voice_limit !== "number") throw new Error("ElevenLabs did not say how many voices this plan allows");
+  return { used: json.voice_slots_used ?? 0, limit: json.voice_limit, ...(json.tier ? { tier: json.tier } : {}) };
 }
 
 /** A candidate voice from ElevenLabs' voice design: audio of the sample text, and the id that saves it. */
