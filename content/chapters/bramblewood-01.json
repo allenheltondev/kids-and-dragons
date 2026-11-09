@@ -196,7 +196,7 @@
         "npc.harvest_sprite"
       ],
       "art": "scenes/bramblewood/clearing",
-      "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot.",
+      "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot. \"Oh! You came through the hedge!\" the sprite calls. \"Nobody comes through the hedge. Hello. I have an acorn.\"",
       "cast": [
         {
           "figure": "entities/pib",

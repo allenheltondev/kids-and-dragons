@@ -1301,7 +1301,7 @@
       "discovers": [
         "creature.echo_hunter"
       ],
-      "narration": "The worst glade has a crack in its gray floor. Beside it listens a pale, eyeless echo hunter. It hunts by sound. How will you get past it?",
+      "narration": "The worst glade has a crack in its gray floor. Beside it listens a pale, eyeless echo hunter. It hunts by sound. \"Shh!\" somebody whispers, and the crack says it back three times, much too loud. How will you get past it?",
       "cast": [
         {
           "figure": "entities/echo_hunter"
@@ -2069,7 +2069,7 @@
     },
     "scene_stepping_logs": {
       "type": "story",
-      "narration": "Two mossy logs cross the only brook into the worst glade. A row of left boots waits on the bank. A toadstool opens an eye. Mire mimics! They want your right boots too.",
+      "narration": "Two mossy logs cross the only brook into the worst glade. A row of left boots waits on the bank. A toadstool opens an eye and says, in a voice exactly like yours, \"Right boot, please.\" Mire mimics! They want your right boots too.",
       "cast": [
         {
           "figure": "entities/mire_mimic"
