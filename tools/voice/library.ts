@@ -20,7 +20,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { addLibraryVoice, keysFromEnv, listVoices, searchLibrary, voiceSlots, type Fetch, type LibraryVoice } from "./bakeoff/providers";
 import { loadProfiles } from "./cast/profile.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type Picks, type Placed, type Sheet } from "./casting";
 import { ELEVENLABS, type CastSheet, type Provider } from "./desired";
 import { readJson } from "./load";
 import { makeBilledChars, makeSynthesizer, type DeliveryTables, type SynthOptions } from "./synth";
@@ -135,8 +135,9 @@ async function add(): Promise<void> {
   }
   for (const [id, pick] of wanted) {
     const voiceId = await addLibraryVoice(keys, { ownerId: pick.ownerId!, voiceId: pick.voiceId, name: id }, http);
-    picks[id] = { ...pick, voiceId, name: id };
-    delete picks[id].ownerId;
+    settleAdded(picks, pick.voiceId, { voiceId, name: id });
+    // Saved after each one, so a failure halfway leaves the file saying what is on the account.
+    fs.writeFileSync(values.picks, `${JSON.stringify(picks, null, 2)}\n`);
     console.log(`  added ${id}`);
   }
   fs.writeFileSync(values.picks, `${JSON.stringify(picks, null, 2)}\n`);

@@ -239,11 +239,25 @@ export function firstPicks(rows: readonly { row: CastingVoice; lines: number; ca
   return picks;
 }
 
-/** The picks not on the account yet: each one takes a voice slot. */
+/** The picks not on the account yet, once each: each one takes a voice slot, however many rows share it. */
 export function toAdd(picks: Picks, account: readonly VoiceInfo[]): [string, Candidate][] {
   const have = new Set(account.map((voice) => voice.id));
   const names = new Map(account.map((voice) => [voice.name, voice.id]));
-  return Object.entries(picks).filter(([id, pick]) => pick.ownerId !== undefined && !have.has(pick.voiceId) && !names.has(id));
+  const seen = new Set<string>();
+  return Object.entries(picks).filter(([id, pick]) => {
+    if (pick.ownerId === undefined || have.has(pick.voiceId) || names.has(id) || seen.has(pick.voiceId)) return false;
+    seen.add(pick.voiceId);
+    return true;
+  });
+}
+
+/** After a library voice is added under a new id, every row that picked it speaks with the account's copy. */
+export function settleAdded(picks: Picks, libraryId: string, added: { voiceId: string; name: string }): void {
+  for (const [row, pick] of Object.entries(picks)) {
+    if (pick.voiceId !== libraryId || pick.ownerId === undefined) continue;
+    const { ownerId: _, ...rest } = pick;
+    picks[row] = { ...rest, voiceId: added.voiceId, name: added.name };
+  }
 }
 
 /**

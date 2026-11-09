@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ACCENT_LABELS, AMERICAN_VARIETY, PEOPLE_ACCENTS, REGION_ACCENTS, REGION_IDEAS, accentFor, americanFor } from "./cast/accents.ts";
-import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
+import { accentsFor, applyAccents, assign, candidatesFor, castingProblems, firstPicks, libraryAccent, rowAccent, searchWords, settleAdded, shortlistPage, toAdd, type Casting, type CastingVoice, type Sheet } from "./casting";
 
 const row = (over: Partial<CastingVoice> = {}): CastingVoice => ({ id: "kad-yeti-deep", gender: "male", people: "yeti", prompt: "", search: "deep slow gentle", speakers: ["hummock"], ...over });
 
@@ -167,6 +167,15 @@ describe("candidates", () => {
   it("adds only library picks the account lacks, under either id or name", () => {
     const picks = { one: { voiceId: "a", name: "A", about: "", ownerId: "o" }, two: { voiceId: "b", name: "B", about: "", ownerId: "o" }, three: { voiceId: "c", name: "C", about: "", ownerId: "o" }, four: { voiceId: "d", name: "D", about: "" } };
     expect(toAdd(picks, [{ id: "b", name: "B" }, { id: "z", name: "three" }]).map(([id]) => id)).toEqual(["one"]);
+  });
+
+  it("adds a voice two rows share once, and gives both rows the account's copy", () => {
+    const maria = { voiceId: "maria", name: "Maria Moody", about: "", ownerId: "o" };
+    const picks = { "kad-yeti-herder": { ...maria }, "kad-manticore-elder": { ...maria } };
+    expect(toAdd(picks, []).map(([id]) => id)).toEqual(["kad-yeti-herder"]);
+    settleAdded(picks, "maria", { voiceId: "new", name: "kad-yeti-herder" });
+    expect(picks["kad-manticore-elder"]).toEqual({ voiceId: "new", name: "kad-yeti-herder", about: "" });
+    expect(toAdd(picks, [{ id: "new", name: "kad-yeti-herder" }])).toEqual([]);
   });
 
   it("escapes what the library says about a voice on the page", () => {
