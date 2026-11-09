@@ -126,11 +126,13 @@ describe("the people route", () => {
   const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
   const cast = JSON.parse(fs.readFileSync(path.join(ROOT, "tools", "voice", "bakeoff", "cast.json"), "utf8")) as CastFile;
   const pricing = JSON.parse(fs.readFileSync(path.join(ROOT, "tools", "voice", "pricing.json"), "utf8")) as Pricing;
-  const setup = () => {
+  const setup = (change: (sheet: CastSheet) => void = () => {}) => {
     const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "cast-people-"));
     const sheetPath = path.join(outDir, "cast.json");
     // The real sheet and canon, so who is a yeti and who is a griffin is the game's own answer.
-    fs.copyFileSync(path.join(ROOT, "content", "voice", "cast.json"), sheetPath);
+    const sheet = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "voice", "cast.json"), "utf8")) as CastSheet;
+    change(sheet);
+    fs.writeFileSync(sheetPath, JSON.stringify(sheet));
     const fetch: Fetch = async () => {
       throw new Error("no call");
     };
@@ -158,7 +160,8 @@ describe("the people route", () => {
   });
 
   it("refuses a character the sheet does not have, and one with no voice to share on that provider", async () => {
-    const { handle } = setup();
+    // The real sheet may have cast her on ElevenLabs by now; this asks what happens when she has no voice there.
+    const { handle } = setup((sheet) => void delete sheet.speakers.yeti_herder!.elevenlabs);
     expect((await handle("/api/cast/people", { id: "nobody" }, {}))!.status).toBe(400);
     const none = await handle("/api/cast/people", { id: "yeti_herder", provider: "elevenlabs" }, {});
     expect(none!.status).toBe(400);
