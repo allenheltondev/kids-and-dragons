@@ -349,6 +349,15 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Re-pinned for the dialogue pass on gemfall-04b and gemfall-07r (#549): a few quoted lines in
 // narration (a warden, a faun, a mire mimic, an echo) so the recorded voices have something to say.
 // Narration text only; no scene, edge, flag, effect, stat or TN moved, and the gameplay digests are unchanged.
+// Re-pinned for the owner-approved chapter 2 quality pass (gemfall-02): a graph change. The bridge beam
+// (relay), the stuck wagon (timing) and the hedge brace (precision) become games that can miss, where
+// they were cooperate or balance games no party could fail; sneaking past the cinder wolves becomes a
+// timing game (`interaction_wolf_sneak`) whose miss reaches the existing wolf fight; one clever check
+// (`check_signs_add_up`) joins the five tremor outcomes before `scene_corner_row`, and a party that
+// passes it gets a scene with Marda (`rest_marda_inn_signs`, 3 coins). The goal is now a question, and
+// the opening, the jackalope scene and the wolf scene introduce the hedges, the sausage wagon and the
+// sheeple. The endings, roads, setbacks and resumed-save digests below were not re-taken: they still
+// match the pre-epic build, because each warps straight to a terminal scene or fork.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
@@ -387,7 +396,7 @@ const DIGESTS: PreEpicSave["digests"] = {
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
-  "chapters/gemfall-02.json": "84a970910b841e24aeb5e13844a94add026ac382fdff088b14fbc6d677389539",
+  "chapters/gemfall-02.json": "a13209b07177cee85d6f8d848d8a3ffb565f1ed8a99cd0c05808865494f5da3a",
   "chapters/gemfall-03a.json": "aa3f2e19a4db60409c4541eac8bc4277488f65f0789318b4a8556125cb5e5686",
   "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
   "chapters/gemfall-03c.json": "b038ce1c9d7e5c94fcd56730df53e22e3638025f29e45847481018f056fb907f",
