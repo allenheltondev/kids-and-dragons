@@ -106,11 +106,14 @@ const boundaryPicks={scene_inspection:"argue",scene_gate_town:"explain",scene_tu
  scene_warden_count:"ask_logs",scene_who_to_tell:"wardens"};
 it.each(sizes.flatMap(size=>outcomes.flatMap(outcome=>["hold_string","read_chalk"].map(job=>({size,outcome,job})))))
  ("bridge: $size seats / $outcome / $job changes the crossing",({size,outcome,job})=>{
- const {state,trace}=walk(bridge,size,{...bridgePicks,scene_crack_string:job,scene_crossing:job==="hold_string"?"measured_line":"settled_interval"},outcome);
+ // A slack string (a precision game now) teaches no measured line, so that party rations the span.
+ const practiced=job==="hold_string"&&outcome!=="miss-supported";
+ const crossing=job==="hold_string"?(practiced?"measured_line":"ration"):"settled_interval";
+ const {state,trace}=walk(bridge,size,{...bridgePicks,scene_crack_string:job,scene_crossing:crossing},outcome);
  expect(trace.has("interaction_transfer_rule")).toBe(true);
  expect(trace.has("interaction_survey_evidence")).toBe(true);
- expect(state.flags.bridge_preparation_used===true).toBe(job==="hold_string"||outcome!=="miss-supported");
- expect(offered(trace.get("scene_crossing")!,"measured_line")).toBe(job==="hold_string");
+ expect(state.flags.bridge_preparation_used===true).toBe(outcome!=="miss-supported");
+ expect(offered(trace.get("scene_crossing")!,"measured_line")).toBe(practiced);
  expect(offered(trace.get("scene_crossing")!,"settled_interval")).toBe(job==="read_chalk");
  expect(state.chapterOutcome).toBe("success");
  });
@@ -129,7 +132,9 @@ it.each(sizes.flatMap(size=>outcomes.map(outcome=>({size,outcome}))))
  ("woods: $size seats / $outcome makes the log crew's brace useful",({size,outcome})=>{
  const {state,trace}=walk(woods,size,woodsPicks,outcome);
  expect(state.flags.high_path_brace).toBe(true);
- expect(state.flags.high_path_brace_used).toBe(true);
+ // A slipped ivy line (a timing game now) puts the party in front of the wolves instead.
+ expect(state.flags.high_path_brace_used===true).toBe(outcome!=="miss-supported");
+ expect(trace.has("encounter_wolves")).toBe(outcome==="miss-supported");
  expect(trace.has("interaction_ivy_ledge")).toBe(true);
  expect(trace.has("check_bridge_test")).toBe(false);
  expect(state.flags.told_wardens).toBe(true);
@@ -152,14 +157,18 @@ it.each(sizes)("woods: a checked feeding plan spends actual food at %i seats",si
 });
 it.each(sizes.flatMap(size=>outcomes.flatMap(outcome=>["pull_rope","polish"].map(job=>({size,outcome,job})))))
  ("boundary: $size seats / $outcome / $job changes the crowd activity",({size,outcome,job})=>{
- const {state,trace}=walk(boundary,size,{...boundaryPicks,scene_morning_bells:job,scene_crowd_at_stones:job==="pull_rope"?"crew_line":"hand_chorus"},outcome);
+ // A missed dawn pull (timing) readies no bell crew; a missed chorus (memory) settles no queue; a
+ // wrapping lifted crooked (precision) leaves the Unassigned Stone behind.
+ const missed=outcome==="miss-supported";
+ const crowd=job==="pull_rope"?(missed?"stand_with":"crew_line"):"hand_chorus";
+ const {state,trace}=walk(boundary,size,{...boundaryPicks,scene_morning_bells:job,scene_crowd_at_stones:crowd},outcome);
  expect(trace.has("interaction_gear_inventory")).toBe(true);
  expect(trace.has("interaction_one_rule")).toBe(true);
  expect(trace.has("interaction_kept_stone")).toBe(true);
- expect(state.party.some(p=>p.character.questItems.includes("facet_unassigned"))).toBe(true);
- expect(offered(trace.get("scene_crowd_at_stones")!,"crew_line")).toBe(job==="pull_rope");
+ expect(state.party.some(p=>p.character.questItems.includes("facet_unassigned"))).toBe(!missed);
+ expect(offered(trace.get("scene_crowd_at_stones")!,"crew_line")).toBe(job==="pull_rope"&&!missed);
  expect(offered(trace.get("scene_crowd_at_stones")!,"hand_chorus")).toBe(job==="polish");
- expect(state.flags.prepared_queue_used).toBe(true);
+ expect(state.flags.prepared_queue_used===true).toBe(!missed);
  expect(state.flags.told_wardens).toBe(true);
  expect(state.chapterOutcome).toBe("success");
  });
@@ -220,7 +229,7 @@ it.each(sizes.flatMap(size=>["wardens","gatherers","close"].map(audience=>({size
  for(const result of [a,b,c])expect(["told_wardens","told_gatherers","kept_close"].filter(f=>result.state.flags[f])).toEqual([expected]);
  });
 it.each(sizes)("boundary: missed crab warning still enters the original fight at %i seats",size=>{
- const {trace,state}=walk(boundary,size,{...boundaryPicks,scene_gate_town:"quick_rule",scene_crab_warning:"read",scene_crabs_rescue:"work"},"miss-supported",1,true);
+ const {trace,state}=walk(boundary,size,{...boundaryPicks,scene_gate_town:"quick_rule",scene_crab_warning:"read",scene_crabs_rescue:"work",scene_crowd_at_stones:"stand_with"},"miss-supported",1,true);
  expect(trace.has("interaction_crab_warning")).toBe(true);
  expect(trace.has("encounter_crabs")).toBe(true);
  expect(trace.has("scene_crabs_rescue_work")).toBe(true);
@@ -236,8 +245,8 @@ it.each(sizes)("incomplete relay, support and play jobs award no preparation at 
   [boundary, "interaction_kept_stone", "got_the_unassigned_stone"],
  ] as const) {
   let state = enterScene(initial(chapter, size), id, context(chapter)).state;
-  if (promptOf(state).spec.kind === "relay") expect(promptOf(miss(chapter, state)!).outcome).toBe("failure");
-  else expect(miss(chapter, state)).toBeNull();
+  if (["cooperate", "balance", "play"].includes(promptOf(state).spec.kind)) expect(miss(chapter, state)).toBeNull();
+  else expect(promptOf(miss(chapter, state)!).outcome).toBe("failure");
   const actor = promptOf(state).actorId;
   state = act(chapter, state, {action:"start",relaxed:false}, actor);
   const attempt = applyIntent(state, {playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}}, context(chapter));
@@ -257,10 +266,26 @@ it.each(sizes)("mixed miss profile reports the actual outcomes and gates at %i s
  expect(a.state.flags.bridge_preparation_used).not.toBe(true);
  const b=walk(woods,size,woodsPicks,"miss-supported");
  expect(b.interactionOutcomes.get("interaction_falls_logs")).toBe("success");
- expect(b.interactionOutcomes.get("interaction_ivy_ledge")).toBe("success");
- expect(b.state.flags.high_path_brace_used).toBe(true);
- const c=walk(boundary,size,boundaryPicks,"miss-supported");
- expect(c.interactionOutcomes.get("interaction_dawn_rope")).toBe("success");
- expect(c.interactionOutcomes.get("interaction_crowd_bell_line")).toBe("success");
- expect(c.state.flags.bell_crew_ready).toBe(true);
+ expect(b.interactionOutcomes.get("interaction_ivy_ledge")).toBe("failure");
+ expect(b.state.flags.high_path_brace_used).not.toBe(true);
+ const c=walk(boundary,size,{...boundaryPicks,scene_crowd_at_stones:"stand_with"},"miss-supported");
+ expect(c.interactionOutcomes.get("interaction_dawn_rope")).toBe("failure");
+ expect(c.interactionOutcomes.get("interaction_kept_stone")).toBe("failure");
+ expect(c.state.flags.bell_crew_ready).not.toBe(true);
+ expect(c.state.flags.got_the_unassigned_stone).not.toBe(true);
+});
+
+it.each(sizes)("a missed survey rope closes the span and a lost hand-bell chorus settles no queue at %i seats", size => {
+ const land=(chapter:Chapter,id:string,how:"miss"|"solve")=>{
+  const opened=enterScene(initial(chapter,size),id,context(chapter)).state;
+  const done=how==="miss"?miss(chapter,opened)!:solve(chapter,opened);
+  expect(promptOf(done).outcome,id).toBe(how==="miss"?"failure":"success");
+  return landed(chapter,done,promptOf(done).resolvedActorId ?? promptOf(done).actorId);
+ };
+ expect(land(bridge,"interaction_survey_line","miss").sceneId).toBe("scene_under_bridge");
+ expect(land(bridge,"interaction_survey_line","solve").sceneId).toBe("scene_far_rim");
+ const lost=land(boundary,"interaction_crowd_hand_bells","miss");
+ expect(lost.sceneId).toBe("scene_centaur_whisper");
+ expect(lost.flags.prepared_queue_used).not.toBe(true);
+ expect(land(boundary,"interaction_crowd_hand_bells","solve").flags.prepared_queue_used).toBe(true);
 });

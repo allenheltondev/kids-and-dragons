@@ -389,6 +389,14 @@ const DIGESTS: PreEpicSave["digests"] = {
 // 1 health, which the story shows). Each cue, and the choice that leads to it, names the tap it asks
 // for and offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and
 // resumed-save digests below are unchanged.
+// Re-pinned for the owner-approved chapter 5a, 5b and 5c quality pass: a graph change. Games no party could
+// fail now can, so their authored costs are reachable. 5a: the measuring string (precision, a miss teaches
+// no rope brace) and the survey rope (timing, a miss closes the span). 5b: the ivy ledge (timing, a miss
+// meets the wolves). 5c: the dawn bell rope and the bell cart (timing), the Unassigned Stone's wrapping
+// (precision, a miss leaves the stone with Ashby) and the hand-bell chorus (memory, was a play game; a
+// miss settles no queue). Each cue, and the choice that leads to it, names the tap it asks for and
+// offers an attempt. No scene, edge, stat or TN moved; the endings, roads, setbacks and resumed-save
+// digests below are unchanged.
 // Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
@@ -434,9 +442,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04a.json": "daf9da4bbcfa5d81e54d72b9e4d72f5e5206f877d1c2ece9c6b791dddf2c1432",
   "chapters/gemfall-04b.json": "26106d947ee299951e7e195c916a27defb87e2cf5866f3f390a3a753f040cd13",
   "chapters/gemfall-04c.json": "e281173e60c3373859184caa7a76924946811a8059333b7f890bcf3ee920de3f",
-  "chapters/gemfall-05a.json": "bf36941e45e9064f050a1cc12ca06ff17454470212222d0d083ac32d5075a0bf",
-  "chapters/gemfall-05b.json": "f0a16c181e23485c1c181ef91d758e5f4627bb769599cdbadc443b5a70c2bbf9",
-  "chapters/gemfall-05c.json": "da75ade067bc5769638c58401e2dd4876c2704553cb1ba182761057ef87a853d",
+  "chapters/gemfall-05a.json": "6158555dba9c779162530effc81a014f11e439f24b6b541e69cc68ec95671d50",
+  "chapters/gemfall-05b.json": "209214528a9453b93d89c1010124e156da82a2157651050a05b9f473bb76892d",
+  "chapters/gemfall-05c.json": "c70c4a4472c6f60cf306db1056684bdc541201f0f44c5959d2cbe7989d965385",
   "chapters/gemfall-06.json": "b1e6c764a451e59ec39198bdffa87b0989977479682875bf5720e7f3dba360c7",
   "chapters/gemfall-07h.json": "5e247fbcfeaad63d3a3786189a551a30479dd898b256cc4d4a93235acb1753cc",
   "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
