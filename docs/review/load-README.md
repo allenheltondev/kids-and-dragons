@@ -92,6 +92,16 @@ npm run load -- \
   --out docs/review/load-$(date +%F)-ramp.md
 ```
 
+**The room-opening budget stops this ramp from one address.** Every table the
+script seats opens its room from a device the stage has never seen, and one
+address may open `ROOM_OPEN_NEW_LIMIT` (20) of those in fifteen minutes
+(`handlers/code-guard.ts`, `admitRoomOpen`). So against a deployed stage the
+10-table stage runs and the 50-table stage is refused with 429s that are the
+budget's, not the throttle's. Until the script can spread its tables over
+several addresses, or the stage under test is given a higher limit for the run,
+the ramp above measures only its first stage. The CI smoke run is not affected:
+it talks to a dev server on loopback, which is never counted.
+
 Each stage runs five minutes with the tables starting spread over thirty seconds,
 and a minute's rest between stages, so a stage's numbers are its own. The think time
 (1.5 s a tap) and the heartbeat (20 s) are a real table's.

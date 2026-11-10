@@ -603,6 +603,14 @@ it is already in is not affected: reading a room's state with a token for that
 room is never counted or refused. Joining or watching from scratch is. The rows are `GUESS#<client>` / `WINDOW#<n>`, and deleting one forgives
 that client at once.
 
+**Somebody is told "Too many new games from here".** That network opened more
+rooms in 15 minutes than the room-opening budget allows
+(`handlers/code-guard.ts`, `admitRoomOpen`): `ROOM_OPEN_NEW_LIMIT` from devices
+the game had never seen, or `ROOM_OPEN_KNOWN_LIMIT` from devices it had. Joining
+a room, and playing in one, are not affected. It clears when the window turns
+over, and the rows are the wrong-code budget's, under `open#new#<client>` and
+`open#known#<client>`.
+
 **Somebody got into a game who should not be there.** The TV, or the phone
 that opened the room, showed them arriving, with a Remove button that stays
 until the host dismisses it. After a refresh of the host's screen, or once

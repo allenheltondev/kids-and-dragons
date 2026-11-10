@@ -1517,6 +1517,20 @@ so a game in progress is never cut off by strangers on the same network. A
 client is its IPv4 address or its IPv6 /64, and behind CloudFront that comes
 from a header CloudFront sets and vouches for (deploy.md, "The origin secret").
 
+**Opening a room is budgeted the same way.** `POST /api/room` from a device
+nobody has seen writes a household, a player, a device, a run and a room, more
+than any other route writes for a stranger. So one client may open
+`ROOM_OPEN_NEW_LIMIT` rooms from never-seen devices in a window, and
+`ROOM_OPEN_KNOWN_LIMIT` from devices that already hold a token, each on a
+counter of its own beside the wrong-code one (`admitRoomOpen`, keys
+`open#new#<client>` and `open#known#<client>`). A device is new exactly once,
+so the first counts first evenings at an address; the second exists because a
+token costs one anonymous room, and is separate so that strangers on a shared
+address never stop a family that is already playing. The request is checked
+once it is known to be well formed and before anything is written. Loopback is
+never counted: that is the dev server, the end-to-end suite and the load smoke
+test, and production never reports it.
+
 **The room sees who arrives, and its host can take one out.** Every join is
 announced on the room's channel (`ArrivalMessage`), live only like a preview,
 so a stranger with the code shows up the moment they are in, not after they

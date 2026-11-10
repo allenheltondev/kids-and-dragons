@@ -3,10 +3,80 @@ import { makeHarness } from "../test-support.ts";
 import {
   CODE_MISS_LIMIT,
   CODE_MISS_WINDOW_MS,
+  ROOM_OPEN_KNOWN_LIMIT,
+  ROOM_OPEN_NEW_LIMIT,
   clientKeyFor,
   admitCodeLookup,
+  admitRoomOpen,
   retryAfterSeconds,
 } from "./code-guard.ts";
+
+describe("the room-opening budget", () => {
+  const spend = async (deps: Parameters<typeof admitRoomOpen>[2], client: string, opener: "new" | "known", times: number) => {
+    for (let i = 0; i < times; i++) expect(await admitRoomOpen(client, opener, deps), `${opener} room ${i}`).toBe(true);
+  };
+
+  it(`lets one address open ${ROOM_OPEN_NEW_LIMIT} rooms from never-seen devices, then refuses that address only`, async () => {
+    const { deps } = makeHarness();
+    await spend(deps, "192.0.2.1", "new", ROOM_OPEN_NEW_LIMIT);
+    expect(await admitRoomOpen("192.0.2.1", "new", deps)).toBe(false);
+    expect(await admitRoomOpen("192.0.2.2", "new", deps)).toBe(true);
+  });
+
+  it("keeps known devices on a budget of their own, so strangers at the same address cannot stop a family", async () => {
+    const { deps } = makeHarness();
+    await spend(deps, "192.0.2.1", "new", ROOM_OPEN_NEW_LIMIT);
+    expect(await admitRoomOpen("192.0.2.1", "new", deps)).toBe(false);
+
+    await spend(deps, "192.0.2.1", "known", ROOM_OPEN_KNOWN_LIMIT);
+    // Known devices are still counted: a device token costs one anonymous room.
+    expect(await admitRoomOpen("192.0.2.1", "known", deps)).toBe(false);
+  });
+
+  it("is not the wrong-code budget: opening rooms never costs a join, and missed codes never cost a room", async () => {
+    const { deps } = makeHarness();
+    await spend(deps, "192.0.2.1", "new", ROOM_OPEN_NEW_LIMIT);
+    expect(await admitCodeLookup("192.0.2.1", deps)).not.toBeNull();
+
+    for (let i = 1; i < CODE_MISS_LIMIT; i++) await admitCodeLookup("192.0.2.3", deps);
+    await admitCodeLookup("192.0.2.3", deps);
+    expect(await admitCodeLookup("192.0.2.3", deps)).toBeNull();
+    expect(await admitRoomOpen("192.0.2.3", "new", deps)).toBe(true);
+  });
+
+  it("admits a parallel burst only up to the limit", async () => {
+    const { deps } = makeHarness();
+    const admitted = await Promise.all(
+      Array.from({ length: ROOM_OPEN_NEW_LIMIT * 3 }, () => admitRoomOpen("192.0.2.1", "new", deps)),
+    );
+    expect(admitted.filter(Boolean)).toHaveLength(ROOM_OPEN_NEW_LIMIT);
+  });
+
+  it("forgives an address once the window turns over", async () => {
+    const { deps, clock } = makeHarness();
+    await spend(deps, "192.0.2.1", "new", ROOM_OPEN_NEW_LIMIT);
+    expect(await admitRoomOpen("192.0.2.1", "new", deps)).toBe(false);
+    clock.advance(CODE_MISS_WINDOW_MS);
+    expect(await admitRoomOpen("192.0.2.1", "new", deps)).toBe(true);
+  });
+
+  it("never counts this machine talking to itself, however it is addressed", async () => {
+    // The dev server's own tabs, the end-to-end suite and the load smoke test.
+    const { deps } = makeHarness();
+    for (const address of ["127.0.0.1", "::ffff:127.0.0.1", "::1"]) {
+      await spend(deps, clientKeyFor(address), "new", ROOM_OPEN_NEW_LIMIT * 3);
+    }
+  });
+
+  it("does count the rest of the loopback range and a client with no address", async () => {
+    const { deps } = makeHarness();
+    for (const address of ["127.0.0.2", undefined]) {
+      const client = clientKeyFor(address);
+      await spend(deps, client, "new", ROOM_OPEN_NEW_LIMIT);
+      expect(await admitRoomOpen(client, "new", deps), String(address)).toBe(false);
+    }
+  });
+});
 
 describe("clientKeyFor", () => {
   it("keys IPv4 by the address", () => {

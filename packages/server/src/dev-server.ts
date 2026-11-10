@@ -33,9 +33,11 @@ import { applyAction } from "./handlers/action.ts";
 import { reportClientError } from "./handlers/client-error.ts";
 import {
   admitCodeLookup,
+  admitRoomOpen,
   clientKeyFor,
   retryAfterSeconds,
   SLOW_DOWN,
+  TOO_MANY_ROOMS,
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { relayCheer } from "./handlers/cheer.ts";
@@ -208,6 +210,7 @@ async function main(): Promise<void> {
     const shared = await resolveShared(req, base);
     if (shared !== undefined) {
       if (!shared) return forgottenDevice(res);
+      if (!(await admitRoomOpen(clientOf(req), "known", deps))) return tooManyRooms(res, deps);
       if (display) {
         // The tablet as the TV (#274): its own household, nobody seated, no
         // device token or session handed back.
@@ -244,6 +247,8 @@ async function main(): Promise<void> {
     const existing = await resolvePrincipal(req, base);
     const hostName = vetTypedName(req.body?.displayName, "Host");
     if (!existing && !hostName.ok) return sendError(res, statusFor(hostName.error), hostName.error.code, hostName.error.message);
+    // Before the household, as in lambda/http.ts: a refused stranger leaves nothing behind.
+    if (!(await admitRoomOpen(clientOf(req), existing ? "known" : "new", deps))) return tooManyRooms(res, deps);
     const host =
       existing ??
       (await createGuestHousehold(
@@ -940,7 +945,8 @@ async function main(): Promise<void> {
     // a session or viewer token for this room, and not a player the host took
     // out. A stream open to anyone with the code would be a laptop testing a
     // room that production does not have.
-    const reader = await roomReader(req, base);
+    const token = streamToken(req);
+    const reader = await readerFor(token, base);
     if (!reader || reader.roomCode.toUpperCase() !== code) {
       return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
     }
@@ -987,7 +993,7 @@ async function main(): Promise<void> {
      * alone (`POST /api/presence`), which is how production runs: AppSync
      * Events reports no stream opening or closing (#258).
      */
-    const viewer = await resolveSession(req, base);
+    const viewer = token ? await base.identity.resolveSession(token) : null;
     if (STREAM_PRESENCE && viewer && viewer.runId === room.runId) {
       const runId = room.runId;
       const playerId = viewer.playerId;
@@ -1262,28 +1268,37 @@ async function resolveKid(req: Request, deps: BaseDeps): Promise<{ householdId: 
   return session ? { householdId: session.householdId, playerId: session.playerId } : null;
 }
 
+function bearer(req: Request): string {
+  return /^Bearer\s+(.+)$/i.exec((req.get("authorization") ?? "").trim())?.[1] ?? "";
+}
+
+/** The room-scoped token issued at join, from the header only, as in lambda/http.ts. */
 async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIdentity | null> {
-  const header = req.get("authorization") ?? "";
-  const match = /^Bearer\s+(.+)$/i.exec(header.trim());
-  // `EventSource` cannot set headers, so the SSE stream has nowhere to put its
-  // token but the query string. Everything else uses the header.
-  const query = typeof req.query?.token === "string" ? req.query.token : "";
-  const body = typeof req.body?.sessionToken === "string" ? req.body.sessionToken : "";
-  const token = match?.[1] ?? (query || body);
+  const token = bearer(req);
   if (!token) return null;
   return deps.identity.resolveSession(token);
 }
 
+type RoomReader = { runId: string; roomCode: string; playerId?: string; householdId?: string };
+
 /** The room a request's session or viewer token was issued for. Same as lambda/http.ts. */
-async function roomReader(
-  req: Request,
-  deps: BaseDeps,
-): Promise<{ runId: string; roomCode: string; playerId?: string; householdId?: string } | null> {
-  const header = req.get("authorization") ?? "";
-  const query = typeof req.query?.token === "string" ? req.query.token : "";
-  const token = /^Bearer\s+(.+)$/i.exec(header.trim())?.[1] ?? query;
+function roomReader(req: Request, deps: BaseDeps): Promise<RoomReader | null> {
+  return readerFor(bearer(req), deps);
+}
+
+async function readerFor(token: string, deps: BaseDeps): Promise<RoomReader | null> {
   if (!token) return null;
   return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));
+}
+
+/**
+ * The event stream's token, and the one place a query string is read for one.
+ * `EventSource` cannot set a header, so the stream has nowhere else to put it.
+ * Production has no such route: its stream is AppSync, which is handed the
+ * token in the subscription itself.
+ */
+function streamToken(req: Request): string {
+  return bearer(req) || (typeof req.query?.token === "string" ? req.query.token : "");
 }
 
 /**
@@ -1303,6 +1318,12 @@ function reportsSlowDown(res: Response, deps: Pick<HandlerDeps, "now">): void {
 function slowDown(res: Response, deps: Pick<HandlerDeps, "now">): void {
   res.set("retry-after", String(retryAfterSeconds(deps.now())));
   sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
+}
+
+/** Refused by the room-opening budget, as in lambda/http.ts. */
+function tooManyRooms(res: Response, deps: Pick<HandlerDeps, "now">): void {
+  res.set("retry-after", String(retryAfterSeconds(deps.now())));
+  sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, TOO_MANY_ROOMS);
 }
 
 // ---------------------------------------------------------------------------

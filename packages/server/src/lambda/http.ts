@@ -25,9 +25,11 @@ import { adoptDevice, addPlayer, createGuestHousehold, linkAccount, vetTypedName
 import { applyAction } from "../handlers/action.ts";
 import {
   admitCodeLookup,
+  admitRoomOpen,
   clientKeyFor,
   retryAfterSeconds,
   SLOW_DOWN,
+  TOO_MANY_ROOMS,
 } from "../handlers/code-guard.ts";
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
@@ -310,6 +312,8 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   const existing = await resolvePrincipal(req, deps);
   const hostName = vetTypedName(req.body.displayName, "Host");
   if (!existing && !hostName.ok) return fromError(hostName.error);
+  // Before the household, not after: a refused stranger must leave nothing behind.
+  if (!(await admitRoomOpen(req.client, existing ? "known" : "new", deps))) return tooManyRooms(deps);
   const host =
     existing ??
     (await createGuestHousehold(
@@ -379,6 +383,7 @@ async function postRoomShared(
   location?: string,
 ) {
   if (!shared) return forgottenDevice();
+  if (!(await admitRoomOpen(req.client, "known", deps))) return tooManyRooms(deps);
   if (display) {
     const created = await createRoom(
       {
@@ -1287,17 +1292,21 @@ async function roomReader(
   req: Req,
   deps: HandlerDeps,
 ): Promise<{ runId: string; roomCode: string; playerId?: string; householdId?: string } | null> {
-  const token = bearer(req) || (typeof req.query.token === "string" ? req.query.token : "");
+  const token = bearer(req);
   if (!token) return null;
   return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));
 }
 
-/** The room-scoped token issued at join. This is what authenticates play. */
+/**
+ * The room-scoped token issued at join. This is what authenticates play.
+ *
+ * From the `Authorization` header and nowhere else. A token in a query string
+ * is written into access logs, proxies and browser history, and one in a body
+ * invites the same token being read from two places. Every client sends the
+ * header; the only stream that cannot (`EventSource`) is the dev server's.
+ */
 async function resolveSession(req: Req, deps: HandlerDeps): Promise<SessionIdentity | null> {
-  const token =
-    bearer(req) ||
-    (typeof req.query.token === "string" ? req.query.token : "") ||
-    (typeof req.body.sessionToken === "string" ? req.body.sessionToken : "");
+  const token = bearer(req);
   if (!token) return null;
   return deps.identity.resolveSession(token);
 }
@@ -1347,6 +1356,15 @@ function error(
 /** Refused by the wrong-code budget (`handlers/code-guard.ts`). */
 function slowDown(deps: HandlerDeps): APIGatewayProxyStructuredResultV2 {
   const refused = error(SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
+  return {
+    ...refused,
+    headers: { ...refused.headers, "retry-after": String(retryAfterSeconds(deps.now())) },
+  };
+}
+
+/** Refused by the room-opening budget (`handlers/code-guard.ts`, `admitRoomOpen`). */
+function tooManyRooms(deps: HandlerDeps): APIGatewayProxyStructuredResultV2 {
+  const refused = error(SLOW_DOWN.status, SLOW_DOWN.code, TOO_MANY_ROOMS);
   return {
     ...refused,
     headers: { ...refused.headers, "retry-after": String(retryAfterSeconds(deps.now())) },
