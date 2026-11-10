@@ -1,11 +1,17 @@
 /* The privacy link (#523): the footer of the page, a full-width strip with a divider above it. Small
    and plain, there because it has to be. The secondary text colour keeps it readable; the height is
-   just enough to tap. In a column it takes the bottom edge (margin-top: auto). */
+   just enough to tap. In a column it takes the bottom edge (margin-top: auto).
+
+   One line on a phone: guide, privacy, terms and the copyright fit side by side from 360px wide
+   (measured: about 340px needed), which is why the text is a touch under the xs size and the links
+   are padded close. Narrower than that it wraps, as it always has. Sizes are in em so the game's
+   text-size setting still scales them. */
 .privacy-footer {
+  --privacy-footer-size: 0.6875em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  column-gap: var(--space-3, 0.75em);
+  column-gap: 0.4em;
   align-items: center;
   justify-content: center;
   align-self: stretch;
@@ -29,22 +35,22 @@
      844px, largest text) that squeezes the page. One row whenever both fit. */
   padding: 0;
   color: var(--color-text-muted, #b7b0d8);
-  font-size: var(--font-size-xs, 0.75em);
+  font-size: var(--privacy-footer-size);
 }
 
 .privacy-footer__link {
   display: inline-flex;
   align-items: center;
   min-block-size: 2.25rem;
-  padding: 0 var(--space-3, 0.75em);
+  padding: 0 0.35em;
   color: var(--color-text-muted, #b7b0d8);
-  font-size: var(--font-size-xs, 0.75em);
+  font-size: var(--privacy-footer-size);
   text-decoration: none;
 }
 
 .privacy-footer__dot {
   color: var(--color-text-muted, #b7b0d8);
-  font-size: var(--font-size-xs, 0.75em);
+  font-size: var(--privacy-footer-size);
 }
 
 .privacy-footer__link:hover,
