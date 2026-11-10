@@ -14,7 +14,7 @@ import { describe, expect, it } from "vitest";
 import { sceneExits } from "../../packages/shared/src/scene-exits.ts";
 import type { Chapter } from "../../packages/shared/src/types/chapter.ts";
 import { ContentSet } from "./content-set.ts";
-import { formatEvent, renderReport, validateContent, type ReportEvent } from "./validate-content.ts";
+import { checkerFingerprint, formatEvent, renderReport, validateContent, type ReportEvent } from "./validate-content.ts";
 import { copyTree, readJson, REPO, writeJson } from "./validate-harness.ts";
 
 const CHAPTER = "content/chapters/bramblewood-01.json";
@@ -126,25 +126,61 @@ describe("validateContent", () => {
   }, 30_000);
 
   it("writes a proof into the tree only when asked, and says so", () => {
-    const proof = "content/graph-proofs/riftlight.json";
+    /*
+     * A three-node graph over cloned chapters, as validate-conditions-and-graphs
+     * builds one, and not Riftlight: an untrusted proof means a walk, and
+     * Riftlight's takes long enough under coverage to time a test out.
+     * validate-cli.test.ts writes Riftlight's own proof, through the command
+     * line, and holds it to the one that ships.
+     */
+    const campaignFile = "content/campaigns/the-hollow-crown.json";
+    const proof = "content/graph-proofs/the-hollow-crown.json";
     const tree = copyTree();
-    tree.remove(proof);
+    const base = readJson(tree, "content", "chapters", "bramblewood-01.json");
+    for (const id of ["graph-glade", "graph-dawn"]) {
+      writeJson(tree, ["content", "chapters", `${id}.json`], { ...structuredClone(base), id, title: id });
+    }
+    const campaign = readJson(tree, "content", "campaigns", "the-hollow-crown.json");
+    campaign.chapters = ["bramblewood-01", "graph-glade", "graph-dawn"];
+    campaign.graph = {
+      version: 1,
+      entry: "clearing",
+      flags: ["lantern_lit"],
+      nodes: {
+        clearing: { chapter: "bramblewood-01", revisit: "pass" },
+        glade: { chapter: "graph-glade" },
+        dawn: { chapter: "graph-dawn", ending: { title: "Dawn" } },
+      },
+      edges: {
+        "to-glade": { from: "clearing", to: "glade", kind: "sideways" },
+        "glade-back": { from: "glade", to: "clearing", kind: "return", effects: [{ type: "setFlag", flag: "lantern_lit" }] },
+        "to-dawn": { from: "clearing", to: "dawn", kind: "forward", when: { flag: "lantern_lit" } },
+      },
+    };
+    writeJson(tree, ["content", "campaigns", "the-hollow-crown.json"], campaign);
+    // The fixture is about proofs; it has no class places and is not on their allow list.
+    const options = { classPlaces: false };
 
-    const refused = validateContent(tree);
-    expect(refused.findings).toContainEqual(expect.objectContaining({ file: "content/campaigns/riftlight.json", at: "/graph", message: expect.stringContaining("no graph proof") }));
+    const refused = validateContent(tree, options);
+    expect(refused.findings).toEqual([expect.objectContaining({ file: campaignFile, at: "/graph", rule: "campaign", message: expect.stringContaining("no graph proof") })]);
     expect(refused.written).toEqual([]);
     expect(tree.has(proof)).toBe(false);
 
-    const handed: string[] = [];
-    const written = validateContent(tree, { writeProofs: true, write: (path) => handed.push(path) });
+    const handed: [path: string, text: string][] = [];
+    const written = validateContent(tree, { ...options, writeProofs: true, write: (path, text) => handed.push([path, text]) });
     expect(written.findings).toEqual([]);
     expect(written.written.map((file) => file.path)).toEqual([proof]);
-    expect(handed).toEqual([proof]);
-    // The same walk, by the same checker, over the same graph: the proof that ships.
-    expect(tree.json(proof)).toEqual(copyTree().json(proof));
+    // The hook is handed exactly what went into the tree.
+    expect(handed).toEqual([[proof, tree.text(proof)]]);
+    expect(tree.json(proof)).toMatchObject({ campaign: "the-hollow-crown", checker: checkerFingerprint() });
+    expect(renderReport(written)).toMatch(/the-hollow-crown\.json {2}campaign .*proof written\)/);
 
-    expect(validateContent(tree).findings).toEqual([]);
-  }, 60_000);
+    // Trusted from then on, and not written again.
+    const trusted = validateContent(tree, { ...options, writeProofs: true });
+    expect(trusted.findings).toEqual([]);
+    expect(trusted.written).toEqual([]);
+    expect(renderReport(trusted)).toMatch(/the-hollow-crown\.json {2}campaign .*proven\)/);
+  });
 });
 
 describe("ContentSet", () => {

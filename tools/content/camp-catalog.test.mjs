@@ -281,7 +281,10 @@ describe("friends (§4.4)", () => {
   });
 });
 
-describe("through the gate (npm run content:validate)", { timeout: 60_000 }, () => {
+// The befriend case's second run fails a Riftlight chapter at its schema, so the gate no longer
+// knows that chapter's flags, the graph proof is stale and Riftlight is walked: in process now,
+// and under coverage on CI, where that one walk took 28 s.
+describe("through the gate (npm run content:validate)", { timeout: 120_000 }, () => {
   it("fails a malformed catalog at its schema, and a malformed find in a chapter", () => {
     const dir = copyTree();
     const catalog = readJson(dir, "content", "camp.json");
