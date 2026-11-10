@@ -1,30 +1,39 @@
 #!/usr/bin/env bash
 #
-# One command to prod — roadmap Chapter 0.
+# One command to deploy a stack — roadmap Chapter 0.
 #
-#   ./scripts/deploy.sh              → the prod stack
+#   ./scripts/deploy.sh prod         → the prod stack
 #   ./scripts/deploy.sh staging      → the staging stack
 #   ./scripts/deploy.sh dev          → a stack you drive by hand
 #
-# `.github/workflows/deploy.yml` calls this same script — staging on every pull
-# request, prod on every push to main — so what runs from a laptop and what runs
-# from CI are the same steps in the same order, and there is no deploy path that
-# is only ever exercised by one of them.
+# The environment is always named. No argument used to mean prod, so
+# `npm run infra:deploy` from any checkout shipped whatever was in it to the
+# families' stack.
+#
+# The workflows call this same script — `deploy.yml` for staging on every pull
+# request, `prod-deploy.yml` for prod once CI passes on main — so what runs from
+# a laptop and what runs from CI are the same steps in the same order, and
+# there is no deploy path that is only ever exercised by one of them.
 #
 # Order matters and is not arbitrary:
 #
 #   1. the checks, because a broken chapter must fail here and never at the table
-#   2. the Lambda bundles, because the stack's CodeUri directories are their output
+#   2. both builds (the Lambda bundles and the client), and the voice-clip
+#      check, because anything that can fail without touching AWS should fail
+#      before the stack changes
 #   3. the stack, because the bucket and distribution it creates are where step 4 goes
 #   4. the client, art, and content
 #   5. an invalidation, because CloudFront is still holding the previous index.html
+#   6. pruning bundle files no page can still be asking for
 #
 # Uploading the SPA *after* the stack means a deploy that fails at step 3 leaves
 # the previous version serving, rather than a new bundle talking to an API that
-# does not exist yet.
+# does not exist yet. Building it *before* the stack is the other half of that:
+# the client used to be built after `sam deploy`, so a build that failed left a
+# new API serving the old client.
 #
-# KAD_PREBUILT=1 turns this into a ship-only run: steps 2 and 4's build halves
-# are skipped and whatever is already in infra/.build/ and packages/client/dist/
+# KAD_PREBUILT=1 turns this into a ship-only run: both builds in step 2 are
+# skipped and whatever is already in infra/.build/ and packages/client/dist/
 # is deployed as-is. The prod workflow sets it after downloading CI's build
 # artifact, so production ships the exact bytes CI tested. The ordering above
 # still holds — both directories are *verified* up front, before sam deploy, so
@@ -33,7 +42,38 @@
 
 set -euo pipefail
 
-CONFIG_ENV="${1:-default}"
+usage() {
+  cat >&2 <<'EOF'
+usage: ./scripts/deploy.sh <prod|staging|dev>
+
+  prod      the families' stack (kad-prod)
+  staging   the stack every pull request deploys to (kad-staging)
+  dev       a stack you drive by hand (kad-dev)
+
+The environment is required: there is no default.
+EOF
+}
+
+# Before anything else, the tool checks included: a run that names no
+# environment must say so, whatever is or is not installed.
+if [ "$#" -lt 1 ]; then
+  echo "error: no environment given" >&2
+  usage
+  exit 2
+fi
+
+CONFIG_ENV="$1"
+case "$CONFIG_ENV" in
+  prod)    STACK="kad-prod";    STAGE="prod" ;;
+  staging) STACK="kad-staging"; STAGE="staging" ;;
+  dev)     STACK="kad-dev";     STAGE="dev" ;;
+  *)
+    echo "error: unknown environment '$CONFIG_ENV'" >&2
+    usage
+    exit 2
+    ;;
+esac
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
@@ -42,18 +82,45 @@ cd "$ROOT"
 # profile's default region and reports a stack that deployed fine as missing.
 export AWS_REGION="${AWS_REGION:-us-east-1}"
 
+say() { printf "\n\033[1;36m==> %s\033[0m\n" "$1"; }
+
+# Production from a laptop ships exactly what main is, or it says why not.
+#
+# CI needs none of this: prod-deploy.yml deploys a commit CI passed, refuses
+# one that is no longer the tip of main, and its rollback path names its ref on
+# purpose. A laptop has none of those, only a working tree that may hold a
+# half-finished edit or sit on a branch. KAD_DEPLOY_ANYWAY=1 is for the evening
+# CI itself is what is broken, or a rollback by hand to an older commit; it
+# prints what it is about to ship instead of refusing.
+if [ "$STAGE" = "prod" ] && [ -z "${CI:-}" ]; then
+  problems=()
+  if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+    problems+=("the working tree has uncommitted changes")
+  fi
+  head_sha="$(git rev-parse HEAD 2>/dev/null || true)"
+  main_sha="$(git ls-remote origin refs/heads/main 2>/dev/null | cut -f1 || true)"
+  if [ -z "$head_sha" ] || [ -z "$main_sha" ]; then
+    problems+=("could not compare HEAD with origin's main")
+  elif [ "$head_sha" != "$main_sha" ]; then
+    problems+=("HEAD (${head_sha:0:8}) is not the tip of origin's main (${main_sha:0:8})")
+  fi
+  if [ "${#problems[@]}" -gt 0 ]; then
+    if [ "${KAD_DEPLOY_ANYWAY:-}" = "1" ]; then
+      say "Deploying to prod anyway (KAD_DEPLOY_ANYWAY=1)"
+      printf '  - %s\n' "${problems[@]}"
+    else
+      echo "error: refusing to deploy this checkout to prod:" >&2
+      printf '  - %s\n' "${problems[@]}" >&2
+      echo "       Production normally deploys itself when CI passes on main." >&2
+      echo "       To ship this checkout regardless, set KAD_DEPLOY_ANYWAY=1." >&2
+      exit 1
+    fi
+  fi
+fi
+
 for tool in sam aws node npm; do
   command -v "$tool" >/dev/null 2>&1 || { echo "error: $tool is not installed" >&2; exit 1; }
 done
-
-case "$CONFIG_ENV" in
-  default|prod) STACK="kad-prod";    STAGE="prod" ;;
-  staging)      STACK="kad-staging"; STAGE="staging" ;;
-  dev)          STACK="kad-dev";     STAGE="dev" ;;
-  *) echo "error: unknown environment '$CONFIG_ENV' (expected dev, staging or prod)" >&2; exit 1 ;;
-esac
-
-say() { printf "\n\033[1;36m==> %s\033[0m\n" "$1"; }
 
 # ---------------------------------------------------------------------------
 
@@ -101,6 +168,41 @@ if [ "${KAD_PREBUILT:-}" = "1" ]; then
 else
   say "Bundling Lambdas"
   node infra/build.mjs
+  # Here and not after the stack: the build needs nothing the stack makes, and
+  # one that fails after `sam deploy` leaves a new API serving the old client.
+  say "Building the client"
+  npm run build
+fi
+
+outputs() {
+  aws cloudformation describe-stacks \
+    --stack-name "$STACK" \
+    --region "$AWS_REGION" \
+    --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" \
+    --output text
+}
+
+# Recorded narration (#545): every clip the manifests in content/ play must be
+# on this site before those manifests go live, or a browser fetches a 404
+# mid-sentence. Asked over HTTPS exactly as a browser asks, so it needs no AWS
+# permission, and run with plain node because a ship-mode deploy has no
+# node_modules. Not skipped with the checks: CI cannot know what this bucket
+# holds. No manifests is the ordinary state and passes at once.
+voice_clips_on_site() {
+  say "Voice clips on $SITE_URL"
+  node tools/voice/verify-site.ts "$SITE_URL"
+}
+
+# Asked before the stack changes whenever there is a site to ask: the clips
+# live in the bucket, not in this deploy, so the answer is the same either
+# side of `sam deploy`, and a missing clip should stop the deploy while the
+# old API is still the one serving. A stack that does not exist yet has no
+# site; its first deploy asks afterwards, below.
+SITE_URL="$(outputs SiteUrl 2>/dev/null || true)"
+VOICE_CHECKED=0
+if [ -n "$SITE_URL" ] && [ "$SITE_URL" != "None" ]; then
+  voice_clips_on_site
+  VOICE_CHECKED=1
 fi
 
 # The secret CloudFront adds to every request it forwards to the API, so the
@@ -162,21 +264,24 @@ PARAMS+=("SessionTiming=$TIMING_MODE")
 # that posts to Slack stops only when a deploy says so on purpose.
 PARAMS+=("AlarmSlackWorkspaceId=${ALARM_SLACK_WORKSPACE_ID:-\"\"}" "AlarmSlackChannelId=${ALARM_SLACK_CHANNEL_ID:-\"\"}")
 
+# Whether sam stops to show the changeset. CI never does: nobody is there.
+# Prod from a laptop always does, whatever samconfig says for `prod` (which
+# is written for the workflow): a person is about to change the families'
+# stack by hand and should see what changes. Otherwise samconfig decides.
+CONFIRM=()
+if [ -n "${CI:-}" ]; then
+  CONFIRM=(--no-confirm-changeset)
+elif [ "$STAGE" = "prod" ]; then
+  CONFIRM=(--confirm-changeset)
+fi
+
 sam deploy \
   --template-file infra/template.yaml \
   --config-file "$ROOT/infra/samconfig.toml" \
   --config-env "$CONFIG_ENV" \
   --parameter-overrides "${PARAMS[@]}" \
   --no-fail-on-empty-changeset \
-  ${CI:+--no-confirm-changeset}
-
-outputs() {
-  aws cloudformation describe-stacks \
-    --stack-name "$STACK" \
-    --region "$AWS_REGION" \
-    --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" \
-    --output text
-}
+  ${CONFIRM[@]+"${CONFIRM[@]}"}
 
 BUCKET="$(outputs SiteBucketName)"
 DISTRIBUTION="$(outputs DistributionId)"
@@ -187,27 +292,22 @@ if [ -z "$BUCKET" ] || [ "$BUCKET" = "None" ]; then
   exit 1
 fi
 
-if [ "${KAD_PREBUILT:-}" = "1" ]; then
-  say "Building the client — skipped (KAD_PREBUILT=1: shipping the verified artifact)"
-else
-  say "Building the client"
-  npm run build
+# A first deploy: there was no site to ask until now.
+if [ "$VOICE_CHECKED" = "0" ]; then
+  voice_clips_on_site
 fi
-
-# Recorded narration (#545): every clip the manifests in content/ play must be
-# on this site before those manifests go live, or a browser fetches a 404
-# mid-sentence. Asked over HTTPS exactly as a browser asks, so it needs no AWS
-# permission, and run with plain node because a ship-mode deploy has no
-# node_modules. Not skipped with the checks: CI cannot know what this bucket
-# holds. No manifests is the ordinary state and passes at once.
-say "Voice clips on $SITE_URL"
-node tools/voice/verify-site.ts "$SITE_URL"
 
 say "Uploading to $BUCKET"
 
 # Hashed filenames, so they can be cached until the heat death of the universe.
+#
+# Added to, never synced with `--delete`: the previous build's files are still
+# what the page being served right now names, and what a phone that has it open
+# will ask for when it first shows a lazy screen. Deleting them here, before
+# the new index.html is even up, was a window of 404s on every deploy. The
+# prune after the invalidation removes only files no build has shipped for
+# weeks (tools/deploy/stale-bundles.ts).
 aws s3 sync packages/client/dist/bundle "s3://$BUCKET/bundle" \
-  --delete \
   --cache-control "public,max-age=31536000,immutable"
 
 # Art and content are *not* hashed — they are versioned by the manifest and by
@@ -236,6 +336,31 @@ aws cloudfront create-invalidation \
   --paths "/*" \
   --query "Invalidation.Id" \
   --output text
+
+# Last, and never fatal: the site is already live, and a file that outlives
+# its welcome costs a fraction of a cent. Only keys under bundle/ that this
+# build does not ship and that were uploaded more than two weeks ago.
+say "Pruning old bundle files"
+if stale="$(aws s3api list-objects-v2 --bucket "$BUCKET" --prefix bundle/ --output json \
+      | node tools/deploy/stale-bundles.ts packages/client/dist/bundle)"; then
+  pruned=0
+  while IFS= read -r key; do
+    key="${key%$'\r'}"
+    [ -n "$key" ] || continue
+    case "$key" in
+      bundle/*) ;;
+      *) echo "warning: not deleting $key (outside bundle/)" >&2; continue ;;
+    esac
+    if aws s3api delete-object --bucket "$BUCKET" --key "$key" >/dev/null; then
+      pruned=$((pruned + 1))
+    else
+      echo "warning: could not delete $key" >&2
+    fi
+  done <<< "$stale"
+  echo "  removed $pruned"
+else
+  echo "warning: could not work out which bundle files are stale; none removed" >&2
+fi
 
 printf "\n\033[1;32m  %s is live at %s\033[0m\n\n" "$STACK" "$SITE_URL"
 
