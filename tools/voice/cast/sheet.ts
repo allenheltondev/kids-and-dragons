@@ -206,7 +206,7 @@ function nameFromNotes(key: string, notes: string): string {
 
 const GROUP = /\b(flock|crew|family|families|choir|crowd|troupe|expedition|cousins|travelers|campers|workers|engineers|readers|skywardens|ducklings|cubs|queue)\b|^(sheeple|sprites|prospectors|brassbuckles|brackens|red_scarves|kettle_campers|gullets_cousins)$/i;
 const CREATURE = /\b(donkey|mule|pony|duckling|ducklings|goat|whale|wyrm|drakes?)\b/i;
-const SILENT = /\bnever speaks\b|\bonly bleats\b|\bdoes not speak\b|\bwithout words\b/i;
+const SILENT = /\bnever speaks\b|\bonly (?:bleats|chatters|screeches|squawks|honks|quacks|peeps|barks|squeaks|hoots)\b|\bdoes not speak\b|\bwithout words\b/i;
 
 function kindOf(id: string, name: string, who: string): Kind {
   if (GROUP.test(id) || GROUP.test(name) || /\b(all talk at once|never fewer than)\b/i.test(who)) return "group";
@@ -455,7 +455,17 @@ export function callQuotes(text: string, speakers: readonly Speaker[], from = 0)
       // Named last is who "she" is, unless the sheet knows that one is a he: then the scene's one she.
       const lastKnown = speakers.find((speaker) => speaker.id === lastNamed)?.pronoun;
       const byScene = inSceneWith(pronoun);
-      id = lastNamed !== null && !(lastKnown && lastKnown !== pronoun && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
+      const contradicted = !!lastKnown && lastKnown !== pronoun;
+      // Unless the sentence just before is about them ("Puddle pokes him with one fin. "Draw it again." He sniffs.").
+      if (lastNamed !== null && contradicted && !byScene && (pronoun === "he" || pronoun === "she") && beatBefore(start)?.id !== lastNamed) {
+        // "A griffin is folding a map while a unicorn stands on it. "It will not fold," he mutters.": the unicorn is a
+        // she, so "he" is the one in the scene named before her who could be a he. Someone only mentioned is not.
+        const could = (who: string): boolean => {
+          const speaker = speakers.find((s) => s.id === who);
+          return !!speaker?.here && (speaker.pronoun ?? pronoun) === pronoun;
+        };
+        id = [...mentions].reverse().find((m) => m.at < start && m.id !== lastNamed && could(m.id))?.id ?? lastNamed;
+      } else id = lastNamed !== null && !(contradicted && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
     } else if (tag !== null) id = tag;
     // "I'm Orin Vale." names its own speaker, and that is stronger than the sentence before it being about someone else.
     else if (introducedIn(match[1]!) !== null) id = introducedIn(match[1]!);
@@ -1222,7 +1232,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const old = previous?.speakers[draft.id];
     const chapters = [...draft.chapters].sort();
     const candidates = heard.get(draft.id) ?? [];
-    const kind = kindOf(draft.id, draft.name, draft.who);
+    let kind = kindOf(draft.id, draft.name, draft.who);
     const lines = pickLines(candidates);
     const guess = guessed.get(draft.id) ?? 0;
     const lineCount = candidates.length + guess;
@@ -1235,7 +1245,9 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const group = isGroupName(draft.name);
     // What the notes say outright is not overturned by a "he" the counter heard: one of them is wrong, and it is the counter.
     const fromNotes = genderOf({ name: draft.name, who: draft.who, pronouns: undefined });
-    const contradicts = (fromNotes === "f" && heardPronoun === "he/him") || (fromNotes === "m" && heardPronoun === "she/her");
+    // Nor is a gender a person set: the sheet keeps the pronouns that went with it.
+    const known = old?.genderFrom === "person" ? ({ female: "f", male: "m" } as const)[old.gender as "female" | "male"] ?? fromNotes : fromNotes;
+    const contradicts = (known === "f" && heardPronoun === "he/him") || (known === "m" && heardPronoun === "she/her");
     if (!draft.pronouns && heardPronoun && !group && !contradicts) {
       draft.pronouns = heardPronoun;
       draft.pronounsFrom = "narration";
@@ -1243,7 +1255,11 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       draft.pronouns = old.pronouns;
       draft.pronounsFrom = "narration";
     }
-    const who = draft.who || `${draft.name}.`;
+    // Words a person wrote about someone the content never describes ("a silver otter; only chatters") are theirs, and
+    // so is calling them a creature, until the content gives them notes or lines of its own.
+    const written = !draft.who && old?.who && old.who !== `${old.name}.` ? old : undefined;
+    const who = draft.who || written?.who || `${draft.name}.`;
+    if (written?.kind === "creature" && kind === "character" && lineCount === 0) kind = "creature";
     // A gender a person set is theirs; otherwise it follows the content.
     const gender = old?.genderFrom === "person" && old.gender ? { gender: old.gender, genderFrom: "person" as const } : derivedGender({ name: draft.name, who, pronouns: draft.pronouns }, draft.pronounsFrom);
     const figure = [...draft.figures].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0];
@@ -1265,7 +1281,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       lines,
       lineCount,
       ...(guess > 0 ? { guessedLines: guess } : {}),
-      speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),
+      speaks: !SILENT.test(who) && (lines.length > 0 || kind !== "creature"),
       // What a person decided carries over; everything else above is refreshed from the content,
       // so an approved character's chapters stay current and a new clash is still seen.
       status: old?.status ?? "provisional",

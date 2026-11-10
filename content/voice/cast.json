@@ -1180,8 +1180,7 @@
       "direction": "Youthful, slightly faster than normal",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm",
-        "approved": true
+        "name": "Bella - Professional, Bright, Warm"
       }
     },
     "lead_drover": {
@@ -1217,8 +1216,7 @@
       },
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man",
-        "approved": true
+        "name": "kad-centaur-man"
       },
       "lines": [
         {
@@ -2279,8 +2277,7 @@
       },
       "elevenlabs": {
         "voiceId": "XrExE9yKIg1WjnnlVkGX",
-        "name": "Matilda - Knowledgable, Professional",
-        "approved": true
+        "name": "Matilda - Knowledgable, Professional"
       },
       "lines": [
         {
@@ -3099,8 +3096,7 @@
       },
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk",
-        "approved": true
+        "name": "kad-dragonling-brisk"
       },
       "lines": [],
       "lineCount": 0,
@@ -3634,8 +3630,7 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "vGQNBgLaiM3EdZtxIiuY",
-        "name": "kad-tally",
-        "approved": true
+        "name": "kad-tally"
       }
     },
     "brask_pass_keeper": {
@@ -3662,8 +3657,7 @@
       },
       "elevenlabs": {
         "voiceId": "OYWwCdDHouzDwiZJWOOu",
-        "name": "kad-brask",
-        "approved": true
+        "name": "kad-brask"
       },
       "lines": [
         {
@@ -5865,7 +5859,7 @@
           "address": "riftlight-wyrm-nest/plan/narration"
         }
       ],
-      "lineCount": 175,
+      "lineCount": 173,
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
@@ -6789,7 +6783,7 @@
           "address": "riftlight-reading-room/pip_here/variants/0"
         }
       ],
-      "lineCount": 27,
+      "lineCount": 29,
       "speaks": true,
       "status": "provisional",
       "direction": "whispering, very slow, very old, gentle",
@@ -7481,8 +7475,8 @@
     },
     "gull": {
       "name": "Gull",
-      "kind": "character",
-      "who": "Gull.",
+      "kind": "creature",
+      "who": "the harbor gull from the docks, Gemfall's side of the one harbor gull (Riftlight's is \"The gull\"); only screeches here, never says sorry",
       "gender": "unknown",
       "genderFrom": "none",
       "figure": "entities/quay_gull",
@@ -7495,13 +7489,13 @@
       },
       "lines": [],
       "lineCount": 0,
-      "speaks": true,
+      "speaks": false,
       "status": "provisional"
     },
     "silver_otter": {
       "name": "Silver otter",
-      "kind": "character",
-      "who": "Silver otter.",
+      "kind": "creature",
+      "who": "a silver otter from the mimic ditch; playful and a little pleased with itself; only chatters",
       "gender": "unknown",
       "genderFrom": "none",
       "figure": "entities/silver_otter",
@@ -7514,7 +7508,7 @@
       },
       "lines": [],
       "lineCount": 0,
-      "speaks": true,
+      "speaks": false,
       "status": "provisional"
     },
     "brassbuckle_scout": {
@@ -8445,7 +8439,7 @@
     "duckling": {
       "name": "Duckling",
       "kind": "creature",
-      "who": "Duckling.",
+      "who": "one small duckling that picks the party; only peeps",
       "gender": "unknown",
       "genderFrom": "none",
       "figure": "entities/duckling",
@@ -8760,8 +8754,8 @@
     },
     "spotted_kid": {
       "name": "Spotted kid",
-      "kind": "character",
-      "who": "Spotted kid.",
+      "kind": "creature",
+      "who": "a younger kid goat from the yeti herder's herd, white with brown spots and extra wiggly; not the Goat kid the party brought home; only bleats",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -8776,15 +8770,15 @@
       },
       "lines": [],
       "lineCount": 0,
-      "speaks": true,
+      "speaks": false,
       "status": "provisional"
     },
     "cloaked_griffin": {
       "name": "Cloaked griffin",
       "kind": "character",
       "who": "Cloaked griffin.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "gender": "male",
+      "genderFrom": "narration",
       "figure": "cast/orin_vale",
       "chapters": [
         "riftlight-glacier-survival"
@@ -8793,8 +8787,13 @@
       "gemini": {
         "voice": "Zubenelgenubi"
       },
-      "lines": [],
-      "lineCount": 0,
+      "lines": [
+        {
+          "text": "It will not fold.",
+          "address": "riftlight-glacier-survival/departure/narration"
+        }
+      ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional",
       "accent": "Pacific Northwest American",
@@ -8802,13 +8801,15 @@
         "voiceId": "nPczCjzI2devNBz1zQrb",
         "name": "Brian - Deep, Resonant and Comforting",
         "approved": true
-      }
+      },
+      "pronouns": "he/him",
+      "pronounsFrom": "narration"
     },
     "cloaked_unicorn": {
       "name": "Cloaked unicorn",
       "kind": "character",
       "who": "Cloaked unicorn.",
-      "pronouns": "he/him",
+      "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
       "genderFrom": "person",
@@ -8820,13 +8821,8 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [
-        {
-          "text": "It will not fold.",
-          "address": "riftlight-glacier-survival/departure/narration"
-        }
-      ],
-      "lineCount": 1,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional",
       "accent": "New England American",

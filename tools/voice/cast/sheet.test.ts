@@ -54,6 +54,18 @@ describe("whose line is it", () => {
     expect(attributeQuotes('The rain stops. "Finally."', speakers)).toEqual([]);
   });
 
+  it("gives a he or she past someone known to be the other, to the one in the scene named before them who could be", () => {
+    const griffin = { id: "griffin", names: ["griffin"], here: true };
+    const unicorn = { id: "unicorn", names: ["unicorn"], here: true, pronoun: "she" as const };
+    const text = 'A griffin is trying to fold a map while a unicorn stands on one corner. "It will not fold," he mutters.';
+    expect(attributeQuotes(text, [griffin, unicorn])).toEqual([{ id: "griffin", words: "It will not fold,", pronoun: "he" }]);
+    // Someone only mentioned is not in the scene to say it.
+    expect(attributeQuotes(text, [{ ...griffin, here: false }, unicorn]).map((q) => q.id)).toEqual(["unicorn"]);
+    // A sentence about the last-named one, just before the quote, is stronger than the "he" after it.
+    const beat = 'Pip frowns. Puddle pokes him with one fin. "Draw it again." He sniffs.';
+    expect(attributeQuotes(beat, [{ id: "pip", names: ["Pip"], here: true }, { id: "puddle", names: ["Puddle"], here: true, pronoun: "she" }]).map((q) => q.id)).toEqual(["puddle"]);
+  });
+
   it("leaves a quote nobody is tagged for", () => {
     expect(quotesFor('A sign says "NO MESSING." Pib shrugs.', ["Pib"])).toEqual([]);
   });
@@ -185,6 +197,25 @@ describe("voices", () => {
     const again = buildSheet({ chapters, individuals: [], narration: [] }, first);
     expect(again.speakers.a).toEqual(first.speakers.a);
     expect(again.speakers.b!.gemini.voice).toBe(bVoice);
+  });
+
+  it("keeps what a person wrote about a silent creature the content never describes", () => {
+    const chapters: ChapterLike[] = [{ id: "c", scenes: { s: { cast: [{ figure: "entities/silver_otter", name: "Silver otter" }] } } }];
+    const first = buildSheet({ chapters, individuals: [], narration: [] }, null);
+    expect(first.speakers.silver_otter).toMatchObject({ kind: "character", who: "Silver otter.", speaks: true });
+    Object.assign(first.speakers.silver_otter!, { kind: "creature", who: "a silver otter from the mimic ditch; only chatters", speaks: false });
+    const again = buildSheet({ chapters, individuals: [], narration: [] }, first);
+    expect(again.speakers.silver_otter).toMatchObject({ kind: "creature", who: "a silver otter from the mimic ditch; only chatters", speaks: false });
+  });
+
+  it("keeps the pronouns of a gender a person set, against a he the counter heard", () => {
+    const chapters: ChapterLike[] = [{ id: "c", scenes: { s: { cast: [{ figure: "cast/lady_olivia", name: "Cloaked unicorn" }] } } }];
+    const narration = [{ chapter: "c", address: "c/s/narration", text: 'A cloaked unicorn stands on the map. "It will not fold," he mutters.' }];
+    const first = buildSheet({ chapters, individuals: [], narration }, null);
+    expect(first.speakers.cloaked_unicorn!.pronouns).toBe("he/him");
+    Object.assign(first.speakers.cloaked_unicorn!, { pronouns: "she/her", pronounsFrom: "narration", gender: "female", genderFrom: "person" });
+    const again = buildSheet({ chapters, individuals: [], narration }, first);
+    expect(again.speakers.cloaked_unicorn).toMatchObject({ pronouns: "she/her", gender: "female", genderFrom: "person" });
   });
 
   it("refreshes an approved character's chapters, so a clash in a new chapter is still caught", () => {
