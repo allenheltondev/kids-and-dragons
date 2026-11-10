@@ -46,6 +46,12 @@ export interface InteractionPrompt {
   stopPosition?: number;
   submittedAnswer?: string[];
   outcome?: "success" | "failure" | "assisted";
+  /**
+   * The acting hero's matchup edge on this game's tags (#567), fixed when the
+   * attempt starts so a refresh or reconnect plays the same game. Absent: no
+   * edge, and the game is exactly as it was before edges.
+   */
+  edge?: InteractionEdge;
   /** Server time when this exact connected team began holding together. */
   steadySince?: string;
   steadyPlayerIds?: string[];
@@ -66,6 +72,53 @@ export type InteractionAction =
   | { action: "retry" }
   | { action: "assist" }
   | { action: "continue" };
+
+/**
+ * A matchup edge on a mini-game (#567, docs/matchups.md "Mini-games"): at most
+ * one knack (a plus edge) and one snag (a minus edge) for the acting hero, from
+ * species or class. `step` is their sum: 1 easier, -1 harder, 0 when they
+ * cancel. The notes are the sentences the table reads.
+ */
+export interface InteractionEdge {
+  /** The hero it belongs to: the acting hero when the attempt started. */
+  heroId: string;
+  step: -1 | 0 | 1;
+  knack?: { id: string; text: string };
+  snag?: { id: string; text: string };
+}
+
+/** The kinds an edge changes. `play`, `sequence` and `cooperate` take no modifier. */
+export const EDGE_KINDS: readonly InteractionSpec["kind"][] = ["precision", "timing", "tracking", "memory", "balance", "relay"];
+
+/** How much wider a target or tolerance is for this attempt's edge: a knack 1.5x, a snag 0.75x. */
+export function edgeScale(prompt: Pick<InteractionPrompt, "edge">): number {
+  const step = prompt.edge?.step ?? 0;
+  return step > 0 ? 1.5 : step < 0 ? 0.75 : 1;
+}
+
+/**
+ * A relay's edge, for one hero's own catch or throw: a relay passes through
+ * every hand, and only the hero the edge belongs to plays it easier or harder.
+ */
+export function relayEdgeScale(prompt: Pick<InteractionPrompt, "edge">, playerId: string | undefined): number {
+  return prompt.edge && prompt.edge.heroId === playerId ? edgeScale(prompt) : 1;
+}
+
+/** How much slower a tracking or memory playback runs for this attempt's edge: a knack 1.3x, a snag 0.8x. */
+export function edgePace(prompt: Pick<InteractionPrompt, "edge">): number {
+  const step = prompt.edge?.step ?? 0;
+  return step > 0 ? 1.3 : step < 0 ? 0.8 : 1;
+}
+
+/** The full width of a precision or timing target this attempt: relaxed doubles it, an edge scales it. */
+export function aimWidth(spec: { width: number }, prompt: Pick<InteractionPrompt, "relaxed" | "edge">): number {
+  return Math.min(1, spec.width * (prompt.relaxed ? 2 : 1) * edgeScale(prompt));
+}
+
+/** One step of a tracking or memory playback this attempt, in ms. */
+export function playbackStepMs(spec: { stepMs: number }, prompt: Pick<InteractionPrompt, "relaxed" | "edge">): number {
+  return spec.stepMs * (prompt.relaxed ? 2 : 1) * edgePace(prompt);
+}
 
 export const SUPPORT_LEASE_MS = 6000;
 
@@ -107,13 +160,14 @@ export function serverClockGap(samples: readonly { sentAt: string; receivedAt: n
   return gaps.length ? Math.min(...gaps) : undefined;
 }
 
-export function precisionSuccess(spec: Extract<InteractionSpec, { kind: "precision" } | { kind: "timing" }>, position: number, relaxed: boolean): boolean {
+export function precisionSuccess(spec: Extract<InteractionSpec, { kind: "precision" } | { kind: "timing" }>, position: number, relaxed: boolean, scale = 1): boolean {
   return Number.isFinite(position) && position >= 0 && position <= 1 &&
-    Math.abs(position - spec.target) <= Math.min(1, spec.width * (relaxed ? 2 : 1)) / 2;
+    Math.abs(position - spec.target) <= Math.min(1, spec.width * (relaxed ? 2 : 1) * scale) / 2;
 }
 
-export function playbackMs(spec: InteractionSpec, relaxed: boolean): number {
-  const step = spec.kind === "tracking" || spec.kind === "memory" ? spec.stepMs * (relaxed ? 2 : 1) : 0;
+/** How long a tracking or memory playback runs. `pace` is `edgePace`: an edge slows or quickens every step. */
+export function playbackMs(spec: InteractionSpec, relaxed: boolean, pace = 1): number {
+  const step = spec.kind === "tracking" || spec.kind === "memory" ? spec.stepMs * (relaxed ? 2 : 1) * pace : 0;
   return spec.kind === "tracking" ? (spec.swaps.length + 1) * step : spec.kind === "memory" ? spec.answer.length * step : 0;
 }
 
@@ -126,20 +180,25 @@ export function playbackMs(spec: InteractionSpec, relaxed: boolean): number {
 export const ANSWER_EARLY_MS = CLOCK_TRUSTED_MS;
 
 /** Whether a tracking or memory answer arriving `now` comes after its playback, as the server judges it. */
-export function playbackOver(prompt: Pick<InteractionPrompt, "spec" | "relaxed" | "startedAt">, now: string): boolean {
+export function playbackOver(prompt: Pick<InteractionPrompt, "spec" | "relaxed" | "startedAt" | "edge">, now: string): boolean {
   if (prompt.relaxed) return true;
   // A prompt with no start time has nothing to wait for, as before.
-  return !(Date.parse(now) - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false) - ANSWER_EARLY_MS);
+  return !(Date.parse(now) - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false, edgePace(prompt)) - ANSWER_EARLY_MS);
 }
 
 export function trackedCover(spec: Extract<InteractionSpec, { kind: "tracking" }>): number {
   return spec.swaps.reduce((at, [a, b]) => at === a ? b : at === b ? a : at, spec.start);
 }
 
+/** How far the legacy (v1) balance's shared lift may sit from the gold and still count. */
+export function balanceGold(prompt: Pick<InteractionPrompt, "relaxed" | "edge">): number {
+  return (prompt.relaxed ? 0.25 : 0.125) * edgeScale(prompt);
+}
+
 export function balanceReady(prompt: InteractionPrompt, connected: readonly string[]): boolean {
   const total = connected.reduce((sum, id) => sum + (prompt.levels?.[id] ?? 0), 0);
   return connected.length > 0 && connected.every((id) => (prompt.levels?.[id] ?? 0) > 0) &&
-    Math.abs(total - connected.length * 0.5) <= (prompt.relaxed ? 0.25 : 0.125);
+    Math.abs(total - connected.length * 0.5) <= balanceGold(prompt);
 }
 
 export function relayHolder(prompt: InteractionPrompt, connected: readonly string[]): string | undefined {

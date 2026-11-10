@@ -317,6 +317,9 @@
     },
     "sneak": {
       "type": "interaction",
+      "tags": [
+        "sneak"
+      ],
       "narration": "Hold the chime still in both hands. The crawlers look up, then down, then up again. Move only while they look down. Puddle flicks her crest to help you count.",
       "cast": [
         {

@@ -2596,6 +2596,9 @@
     },
     "floe_hop": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "Flat floes drift apart and together, toward a big, calm one. \"Wait till they touch!\" Skerry calls. \"Then hop!\"",
       "interaction": {
         "kind": "timing",
@@ -2642,6 +2645,9 @@
     },
     "jam_hold": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "Past the jam, your rope's loop is snagged on a branch, and the branches shift and roll in the current. \"Keep your eye on the loop!\" Skerry calls. \"Which branch has it?\"",
       "interaction": {
         "kind": "tracking",

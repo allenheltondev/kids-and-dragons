@@ -1924,6 +1924,9 @@
     },
     "interaction_ridge_creep": {
       "type": "interaction",
+      "tags": [
+        "sneak"
+      ],
       "narration": "The ridge path climbs through tall grass, and prides like to know who is coming. The grass hides your steps only while the wind rushes. When it stops, freeze.",
       "interaction": {
         "kind": "timing",
@@ -2192,6 +2195,9 @@
     },
     "interaction_marker_load": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Lift together just as the post swings level, then carry it to the new hole. A tuft of tail-fur tickles somebody's nose.",
       "interaction": {
         "kind": "precision",
@@ -2337,6 +2343,9 @@
     },
     "interaction_wolf_trail": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "The wolf's warm prints glow in the swaying grass. Follow the last one, not your own boot prints!",
       "interaction": {
         "kind": "tracking",

@@ -21,9 +21,9 @@ reason to decide whether to fight at all.
 3. **The field guide is where you learn them; the TV only reminds.** The guide shows a creature's traits,
    who it likes and dislikes, and who is good against it. The TV shows a three-to-five word hint at the
    start of a fight and a short callout when one moves a roll.
-4. **Gemfall is pinned.** `rules.matchups.exemptCampaigns` lists campaigns that play with matchups off, byte
-   for byte. Gemfall is on it. The gameplay digests in `gemfall-compat.test.ts` must not move, and no
-   Gemfall file changes.
+4. **Gemfall is pinned.** `rules.matchups.exemptCampaigns` lists campaigns whose dice play with matchups off,
+   byte for byte. Gemfall is on it. The gameplay digests in `gemfall-compat.test.ts` must not move. The one
+   exception is mini-games (below): Gemfall's are tagged and play with edges, by the owner's decision (#567).
 5. **Pros come with cons.** Every species has at least one edge for and one edge against. No class is best
    against everything.
 
@@ -123,3 +123,47 @@ through the existing roll event path.
 A `CheckScene` may carry `tags` (keys of `matchups.checkTags`). Existing chapters have none, so nothing
 changes for them. A small first pass tags the Riftlight spine checks where the tag is plain. Tags are
 mechanical, never shown as story text.
+
+## Mini-games
+
+Story interactions (content/README.md, "Story interactions") read the same edges as checks (#567). They
+are built in `interactionEdge` (`matchups.ts`), and the tolerances it scales are in `interactions.ts`.
+
+**How it works.** An interaction scene may carry `tags`, the same `checkTags` a check uses. When an
+attempt starts, the **acting hero's** `check` edges on those tags are read from `rules.matchups`:
+
+- **At most one knack and at most one snag.** The knack is the strongest plus edge from species or class.
+  The snag is the strongest minus edge. However many edges match, they count once each, and a knack and a
+  snag together cancel to no change. A Thornguard dragonling on a `force` game gets one knack, not two.
+- **A step, not a number.** A knack makes the game one step easier and a snag one step harder:
+
+  | Kind | Knack | Snag |
+  |---|---|---|
+  | `precision`, `timing` | gold target 1.5x wider | 0.75x as wide |
+  | `tracking`, `memory` | playback 1.3x slower | 0.8x as long |
+  | `balance` | 1.5x the tolerance around the gold | 0.75x |
+  | `relay` | catch and pickup reach 1.5x, a forgiving throw, on the hero's own turn only | 0.75x |
+  | `play`, `sequence`, `cooperate` | no modifier | no modifier |
+
+  `content:validate` refuses tags on `play`, `sequence` and `cooperate` games, since they would promise
+  nothing.
+- **Only the hero.** Nobody else at the table changes the game. In a relay, which passes through every
+  hand, the edge holds only for the hero's own catches and throws. A balance lift has one shared marker,
+  so the acting hero's edge sets its tolerance.
+- **Fixed for the attempt.** The edge is saved on the prompt (`InteractionPrompt.edge`), so a refresh, a
+  reconnect or a phone that drops plays the same game. A retry reads it again for whoever starts the next
+  attempt.
+- **On every campaign.** The engine reads the edge table from the rules, not from the dice's matchup
+  context, so Gemfall's games have edges while its checks and fights stay exempt.
+
+**What it never does.**
+- It never changes outcomes, branches, XP, coins, items or flags. A knack makes a success more likely;
+  `onSuccess`, `onFailure` and `onAssisted` are the same scenes for everyone.
+- It never removes relaxed play, **Helping hand** (assist) or retry. A snag narrows relaxed play's doubled
+  target to 1.5x, which is still wider than plain play, so it never undoes relaxed play's help.
+- It never gates anything: there is no class-only or species-only way through a game. Clues are never
+  gated on class either.
+
+**What the table sees.** Under the game's cue, the fight log's own callout: "Strong here!" with the knack's
+sentence, or "Careful:" with the snag's. Both show when both land. On a phone the skill games hide the
+heading, so the TV is where it is read aloud.

@@ -2999,6 +2999,9 @@
     },
     "interaction_newcomer_load": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Everything goes on a carrying board, even a fishbowl. Raise or lower your side until it is level. The fish is counting on you.",
       "interaction": {
         "kind": "balance",

@@ -1,5 +1,5 @@
 import { useRef, useState, type CSSProperties } from "react";
-import { balanceLift, balanceTarget, balanceTolerance, interactionActor, interactionClues, playbackMs, precisionPosition,
+import { aimWidth, balanceLift, balanceTarget, balanceTolerance, edgePace, interactionActor, interactionClues, playbackMs, precisionPosition,
   pullNeeded, skillAim, skillSteps, type InteractionAction, type InteractionPrompt, type PartyMember } from "@kad/shared";
 import { reducedMotion } from "../a11y/prefs";
 import { HeroImage } from "../world/hero-art-dom";
@@ -120,7 +120,7 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
     </>;
   } else if (spec.kind === "precision" || spec.kind === "timing") {
     const aim = skillAim(prompt);
-    const width = Math.min(1, aim.width * (prompt.relaxed ? 2 : 1));
+    const width = aimWidth(aim, prompt);
     const position = !active && prompt.stopPosition !== undefined ? prompt.stopPosition : still ? power : precisionPosition(now - Date.parse(prompt.startedAt ?? ""), aim.periodMs * (prompt.relaxed ? 1.5 : 1));
     const safe = Math.abs(position - aim.target) <= width / 2;
     const stage = <div className="skill-scene skill-scene--aim" data-safe={safe} data-still={still}>
@@ -137,8 +137,8 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
   } else if (spec.kind === "sequence" || spec.kind === "memory") {
     const pattern = spec.kind === "memory";
     const elapsed = now - Date.parse(prompt.startedAt ?? "");
-    const watching = active && pattern && !prompt.relaxed && elapsed < playbackMs(spec, false) + 250;
-    const lit = pattern && watching && !still ? litStep(elapsed, spec.stepMs, spec.answer.length) : null;
+    const watching = active && pattern && !prompt.relaxed && elapsed < playbackMs(spec, false, edgePace(prompt)) + 250;
+    const lit = pattern && watching && !still ? litStep(elapsed, spec.stepMs * edgePace(prompt), spec.answer.length) : null;
     const option = (id: string) => spec.options.find(o => o.id === id);
     const clues = playerId ? interactionClues(prompt, playerId, ids) : [];
     const answers = active ? game.arrangement : prompt.submittedAnswer ?? game.arrangement;

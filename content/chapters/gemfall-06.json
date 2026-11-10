@@ -2975,6 +2975,9 @@
     },
     "interaction_moth_trail": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "One moth glows brighter, then hides between three flat rocks. Follow where it ends up. The soup prospector watches too, with his bowl well out of range.",
       "interaction": {
         "kind": "tracking",
@@ -3023,6 +3026,9 @@
     },
     "interaction_wagons": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "A wagon wheel is stuck in a rut, blocking the road again. \"I'll pull, you push!\" says the centaur drover. \"On my heave!\" Everybody behind you offers excellent advice.",
       "interaction": {
         "kind": "timing",

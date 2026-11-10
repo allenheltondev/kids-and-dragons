@@ -10,7 +10,7 @@
  * Pure functions over the authoritative prompt, so the TV and every phone say the same thing.
  */
 
-import { balanceReady, interactionActor, playReady, playbackMs, relayHolder, supportPlayers, supportsReady } from "@kad/shared";
+import { balanceReady, edgePace, interactionActor, playReady, playbackMs, relayHolder, supportPlayers, supportsReady } from "@kad/shared";
 import type { InteractionPrompt, InteractionSpec, PartyMember } from "@kad/shared";
 
 export type InteractionKind = InteractionSpec["kind"];
@@ -55,7 +55,7 @@ export function showing(view: TableView): boolean {
   const { prompt, now } = view;
   if (prompt.phase !== "active" || prompt.relaxed) return false;
   if (prompt.spec.kind !== "memory" && prompt.spec.kind !== "tracking") return false;
-  return now - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false) + 250;
+  return now - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false, edgePace(prompt)) + 250;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import { relayCatchWindow, relayPosition, relayTarget, relayThrowQuality, type InteractionPrompt, type PartyMember, type RelayCatchInput, type RelayThrowInput } from "@kad/shared";
+import { relayCatchWindow, relayEdgeScale, relayPosition, relayTarget, relayThrowQuality, type InteractionPrompt, type PartyMember, type RelayCatchInput, type RelayThrowInput } from "@kad/shared";
 import { HeroImage } from "../world/hero-art-dom";
 import { reducedMotion } from "../a11y/prefs";
 import { Button } from "../ui/Button";
@@ -36,10 +36,11 @@ export function RelayFlightCatcher({ prompt, playerId, object, nextName, nextMem
   useEffect(() => { gesture.current = null; setDrag({ x: 0, y: 0 }); setThrowing(false); }, [flight.id, caught]);
   const target = relayTarget(prompt.passed?.length ?? 0);
   const position = still ? 0.82 : relayPosition(flight, now);
-  const window = relayCatchWindow(flight, prompt.relaxed);
+  const reach = relayEdgeScale(prompt, playerId);
+  const window = relayCatchWindow(flight, prompt.relaxed, reach);
   const onGround = flight.dropped || (!prompt.relaxed && position > window.end);
   const ready = still || prompt.relaxed && position >= window.start || position >= window.start && position <= window.end;
-  const quality = relayThrowQuality(aim, power, prompt.passed?.length ?? 0, prompt.relaxed);
+  const quality = relayThrowQuality(aim, power, prompt.passed?.length ?? 0, prompt.relaxed, reach);
   const submit = async (action: () => Promise<boolean>, throwing = false) => {
     if (sending.current || busy) return;
     sending.current = true; setError(false);

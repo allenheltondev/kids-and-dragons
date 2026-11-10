@@ -22,6 +22,7 @@ import {
   type ClassId,
   type EncounterState,
   type FightHint,
+  type InteractionEdge,
   type MatchupNote,
   type RulesContent,
   type SpeciesId,
@@ -67,6 +68,18 @@ export function calloutsOf(notes: readonly Pick<MatchupNote, "id" | "text" | "ro
     const callout = calloutOf(note);
     return callout === null ? [] : [callout];
   });
+}
+
+/**
+ * A mini-game's knack and snag (#567, `InteractionPrompt.edge`), knack first.
+ * Both show when both land, though they cancel: each is still true of the hero.
+ */
+export function calloutsOfEdge(edge: InteractionEdge | undefined): Callout[] {
+  if (!edge) return [];
+  return calloutsOf([
+    ...(edge.knack ? [{ ...edge.knack, roll: 1, damage: 0 }] : []),
+    ...(edge.snag ? [{ ...edge.snag, roll: -1, damage: 0 }] : []),
+  ]);
 }
 
 /** The callouts a roll carries (`DiceRoll.matchup`); none without it. */

@@ -1,4 +1,4 @@
-import { interactionActor, playbackOver, precisionSuccess, trackedCover, type InteractionAction, type InteractionPrompt } from "./interactions.js";
+import { aimWidth, edgeScale, interactionActor, playbackOver, precisionSuccess, trackedCover, type InteractionAction, type InteractionPrompt } from "./interactions.js";
 
 /** A round identifies the situation being acted on, including a recovery. */
 export interface SkillChallenge {
@@ -30,7 +30,8 @@ export function pullNeeded(prompt: InteractionPrompt, connected: readonly string
   const supplied = connected.reduce((sum, id) => sum + (pulls[id] ?? 0), 0);
   return waiting ? Math.max(0, Math.min(1, (pullTarget(prompt) * connected.length - supplied) / waiting)) : pullTarget(prompt);
 }
-export function balanceTolerance(prompt: InteractionPrompt): number { return prompt.relaxed ? 0.17 : 0.09; }
+/** How far the shared lift may sit from the gold: wider relaxed, and scaled by the acting hero's edge (#567). */
+export function balanceTolerance(prompt: InteractionPrompt): number { return (prompt.relaxed ? 0.17 : 0.09) * edgeScale(prompt); }
 export function skillAim(prompt: InteractionPrompt) {
   const spec = prompt.spec;
   if (spec.kind !== "precision" && spec.kind !== "timing") throw Error("This game has no aiming window.");
@@ -98,8 +99,8 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
     if (!unit(action.position)) throw Error("Aim inside the playfield.");
     prompt.stopPosition = action.position;
     const aim = skillAim(prompt);
-    if (precisionSuccess(aim, action.position, prompt.relaxed)) return advance(spec.kind === "timing" ? "Through safely!" : "Right on target!");
-    const miss = Math.abs(action.position - aim.target) - aim.width * (prompt.relaxed ? 2 : 1) / 2;
+    if (precisionSuccess(aim, action.position, prompt.relaxed, edgeScale(prompt))) return advance(spec.kind === "timing" ? "Through safely!" : "Right on target!");
+    const miss = Math.abs(action.position - aim.target) - aimWidth(aim, prompt) / 2;
     return stumble(Math.max(0.2, miss * 1.8), miss < 0.12 ? "Nearly! You keep your footing. Adjust and try this part again." : "A rough landing! You lose your footing. Read the opening before trying again.");
   }
   if (spec.kind === "tracking") {

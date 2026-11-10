@@ -800,6 +800,9 @@
     },
     "wait_slow": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "Hold the lamp low and still, and breathe slow. Inside the ice, the cloud drifts and thins and thickens. Lift the lamp at the clearest moment.",
       "interaction": {
         "kind": "precision",
@@ -839,6 +842,9 @@
     },
     "wait_long": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "The old ice takes a long, cold while. The cold creeps up through your boots and into your toes. Hold the lamp low and still, and lift it at the clearest moment. It comes and goes fast.",
       "interaction": {
         "kind": "precision",
@@ -878,6 +884,9 @@
     },
     "wait_knack": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "You breathe the way the hall's song taught you: a long breath, a rest, a long breath. The cloud inside the ice drifts in time with you. Lift the lamp at the clearest moment.",
       "interaction": {
         "kind": "precision",

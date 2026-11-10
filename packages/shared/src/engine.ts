@@ -34,7 +34,7 @@
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { cooperationProgress } from "./teamwork.js";
 import { applySkillAction, skillCanStart, skillStart } from "./skill-games.js";
-import { balanceReady, interactionActor, playbackOver, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
+import { balanceReady, edgeScale, EDGE_KINDS, interactionActor, playbackOver, playReady, precisionSuccess, relayEdgeScale, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
 import { relayStart, relayLaunch, relayCatchScore, relayThrowQuality, relayPickupRadius } from "./relay.js";
 import type {
   Character,
@@ -100,7 +100,7 @@ import { isPracticeCampaign } from "./practice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
 import type { MatchupInput } from "./dice.js";
 import type { MatchupRules } from "./types/matchups.js";
-import { checkNotes, matchupTotal } from "./matchups.js";
+import { checkNotes, interactionEdge, matchupTotal } from "./matchups.js";
 import { sceneCreatures, type Bestiary } from "./bestiary.js";
 import { newCharacter, resolveCharacter, withInventory, withMastery } from "./character.js";
 import {
@@ -1459,6 +1459,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     delete prompt.playCounts;
     delete prompt.steadySince; delete prompt.steadyPlayerIds;
     delete prompt.stopPosition; delete prompt.submittedAnswer;
+    delete prompt.edge;
     return undefined;
   }
   if (prompt.phase === "result") throw new Illegal("ILLEGAL", "This attempt is complete.");
@@ -1466,6 +1467,13 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
   if (intent.action === "start") {
     if (playerId !== actor || prompt.phase !== "ready" || typeof intent.relaxed !== "boolean") throw new Illegal("ILLEGAL", "Not ready to start.");
     prompt.relaxed = intent.relaxed; prompt.startedAt = ctx.now; prompt.phase = "active";
+    // #567: the acting hero's knack or snag on this game, fixed for the attempt. Read from
+    // the rules in every campaign: Gemfall's dice are exempt from matchups, its games are not.
+    const hero = draft.party.find((member) => member.playerId === playerId)?.character;
+    const edge = hero && EDGE_KINDS.includes(prompt.spec.kind)
+      ? interactionEdge(ctx.rules, { id: playerId, species: hero.species, class: hero.class }, scene.tags)
+      : undefined;
+    if (edge) prompt.edge = edge; else delete prompt.edge;
     if (intent.rulesVersion === 2 && skillCanStart(prompt.spec.kind)) prompt.challenge = skillStart();
     if (prompt.spec.kind === "relay") {
       prompt.relay = relayStart(ctx.now);
@@ -1502,7 +1510,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       // Score the displayed phone position, not network arrival time. This is
       // a cooperative family game; a modified client can forge its own timing.
       prompt.stopPosition = intent.position;
-      result(precisionSuccess(prompt.spec, intent.position, prompt.relaxed) ? "success" : "failure");
+      result(precisionSuccess(prompt.spec, intent.position, prompt.relaxed, edgeScale(prompt)) ? "success" : "failure");
       return undefined;
     case "support": {
       if (prompt.spec.kind !== "cooperate" || !["hold", "prop", "release"].includes(intent.mode)) throw new Illegal("ILLEGAL", "Invalid support input.");
@@ -1568,13 +1576,14 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
         if (relay) {
           if (typeof intent.position !== "number" || !Number.isFinite(intent.position) || intent.position < 0 || intent.position > 1 || typeof intent.reach !== "number" || !Number.isFinite(intent.reach) || intent.reach < 0 || intent.reach > 1) throw new Illegal("ILLEGAL", "Invalid catch input.");
           // Like precision, score the moment displayed on the phone, never network arrival time.
-          let score = relayCatchScore(relay.flight, intent.position, intent.reach, prompt.relaxed);
+          const reach = relayEdgeScale(prompt, playerId);
+          let score = relayCatchScore(relay.flight, intent.position, intent.reach, prompt.relaxed, reach);
           // A reach away from an already fallen object leaves it where it is.
           // The original drop was charged once; repeated pickup attempts are untimed.
           if (relay.flight.dropped && score === "miss") return undefined;
           // A fallen object can be scooped up in one touch. Charge this drop once,
           // then return it to the child's hands rather than asking for a second tap.
-          if (score === "miss" && intent.position === 1 && Math.abs(intent.reach - relay.flight.landing) <= relayPickupRadius(prompt.relaxed)) {
+          if (score === "miss" && intent.position === 1 && Math.abs(intent.reach - relay.flight.landing) <= relayPickupRadius(prompt.relaxed, reach)) {
             relay.chances -= 1; relay.streak = 0;
             if (relay.chances === 0) { relay.last = "missed"; relay.flight.dropped = true; result("failure"); return undefined; }
             score = "recover";
@@ -1597,9 +1606,10 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
         if (relay) {
           if (typeof intent.aim !== "number" || !Number.isFinite(intent.aim) || intent.aim < -1 || intent.aim > 1 || typeof intent.power !== "number" || !Number.isFinite(intent.power) || intent.power < 0 || intent.power > 1) throw new Illegal("ILLEGAL", "Invalid throw input.");
           const pass = prompt.passed?.length ?? 0;
-          const quality = relayThrowQuality(intent.aim, intent.power, pass, prompt.relaxed);
+          const knack = relayEdgeScale(prompt, playerId);
+          const quality = relayThrowQuality(intent.aim, intent.power, pass, prompt.relaxed, knack);
           const next = relayHolder({ ...prompt, passed: [...(prompt.passed ?? []), playerId] }, connected);
-          relay.flight = relayLaunch(relay.flight.id + 1, ctx.now, intent.aim, intent.power, pass, prompt.relaxed, playerId);
+          relay.flight = relayLaunch(relay.flight.id + 1, ctx.now, intent.aim, intent.power, pass, prompt.relaxed, playerId, knack);
           relay.last = quality === "clean" ? "clean-pass" : quality === "wobbly" ? "wobbly-pass" : "wild-pass";
           if (quality === "clean") relay.cleanPasses += 1;
           // The final target also matters. A wild throw rebounds to the sender for a recovery.

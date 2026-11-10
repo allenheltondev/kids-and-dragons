@@ -960,6 +960,9 @@
     },
     "grab_sled": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady",
       "narration": "The sled bumps toward the opening, one hop at a time. The pull comes in breaths, like a big animal asleep. Grab the sled's rope while the pull breathes out.",
