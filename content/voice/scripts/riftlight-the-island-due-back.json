@@ -1,0 +1,1255 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-the-island-due-back/arrival/narration": {
+    "source": "sha256:158fd95368894950b5e68c894708132329d80f2ba81f251a770065d770986397",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the whales' turning place, a bell hangs on a post at the very edge of the sky. Keeper Juniper, the kitsune island keeper, rings it with her tail. Pip Thistledown, the young manticore scout, is here too, notebook out."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"An old island called Notchbrow is coming home!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper calls."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Our songs have waited for it. But it's early. A whole year early! Why has the island come back early? Help me find out before it drifts past.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/due_song/narration": {
+    "source": "sha256:77b413d1b8cdf9bb10ff7ef3a5dc722cecab407574372c5c77041e70fd81f616",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper unrolls a long song-scroll, tied to her tail so the wind can't steal it."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Every drifting island has a song for its road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Notchbrow's road is a grandmother long. The last line says: never early, never late.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She frowns."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"It has never once been early.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes NEVER EARLY and underlines it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says early is always better,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Not for islands,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spot/narration": {
+    "source": "sha256:9dd8633152aece866562709a0b245609616c73e83a60b06dca8d75dbd6e5d38a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clouds roll past like sheep. Somewhere inside them, an island is coming."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"I need to know which side it will touch,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"so the landing board is waiting there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She hands out two sighting sticks with notches cut in them. Pip points his spoon at the bell tower."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says always get up high!\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spot/variants/0": {
+    "source": "sha256:7aa39bdcfd60fe14858f0fe86caca590e21704ba66e6942a325a6aad5c916449",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Out in the clouds, the whales bend their lane into a long, slow curve."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They're swimming around something,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper whispers."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spot/variants/1": {
+    "source": "sha256:5d77c392604c91791945d48642442c003f29a840834d007de598c312f04ae497",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper looks for the whales anyway."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They always swim ahead of a returning island,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says quietly."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Today we only have our eyes.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tower/narration": {
+    "source": "sha256:ce128300c908e3285ac8276a0bf54f495ecf73fb9e6d94aeed88e2710c1b8501",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The bell tower is a ladder with big ideas. It sways. The bell bonks you on the head, gently."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper tells the bell."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_sticks/onSuccess/narration": {
+    "source": "sha256:c91662724270463eff22295c24b837304e9a69ced11375d530e7e3858d250600",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The notches line up."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Right side!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper, and drags the landing board over."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whales_lead/narration": {
+    "source": "sha256:8b6dc727b6e6fbe4a6900753af91d67fdcfb67ad6112c07a96ae168d8dec2303",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The whales swim their long curve, slow and sure, like a line drawn across the sky. At the end of it, the clouds part."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Right side!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper laughs."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Thank you, whales.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lays the landing board on the right, first try. Pip writes WHALES KNOW THINGS in very big letters."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/fly_look/narration": {
+    "source": "sha256:6b8d0808e3e4d09a46c9d62268f815092e594e0d32f39ed0e20308725d0c6814",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your griffin climbs above the clouds. From up there you can see the island's whole road: a long gray shape, coming in on the right. You glide back down and point. Juniper drags the landing board over."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Show-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip, deeply impressed."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/wrong_side/narration": {
+    "source": "sha256:4170f87c2a25fd2d89c6c9dc837dc0d2916315b3a833c87cf2ff2b6d7002c631",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper laid the landing board on the left. The island is coming in on the right! The board is long and very, very heavy."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Quick,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Before it slides past!\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spotted/narration": {
+    "source": "sha256:3b09cceb6192561f857beba7b5f196f1255926e744ce18b778b5a7ddcc741757",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Out of the clouds slides an island: low and grassy, with a notch in its flat brow. Notchbrow. An old stone stands near its edge. Then your Listening Chime hums in your pack and tips, all by itself, toward the glacier far behind you. Juniper's ears go flat."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Islands drift,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says slowly."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They don't get pulled.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spotted/variants/0": {
+    "source": "sha256:ffd7090040ee6ef1179d1d992da12e4e470b67c9e7a3e6c11b5a2bed63b106f2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A young whale drifts past alone, calling for its family. Pip watches it go and chews his pencil."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia said they'd be fine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tumble/narration": {
+    "source": "sha256:b118ce683d98acbf16b5d0fd6acb2f904a31d884f3fed542d3b92b26bc1e925b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Thump! A griffin lands beside you in a heap, mailbag first."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Tumble,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, upside down."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Island courier. I carry everyone's letters between the islands, and any message you like. I'm very fast. I'm just bad at stopping.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squints at Notchbrow."
+      },
+      {
+        "by": "tumble",
+        "text": "\"That one's early. I haven't got a single letter for it.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust/narration": {
+    "source": "sha256:b1b1c34d4a48cbeed262ad939adee3830d86134c47c889b5518b77d77447dbf0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then a gust howls over the lookout. Tumble's mailbag bursts, and letters fly up like startled birds. At the same moment, Juniper's signal frame tips toward the edge. It is the tall frame she flashes cloth messages from."
+      },
+      {
+        "by": "tumble",
+        "text": "\"My letters!\""
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"My frame!\""
+      },
+      {
+        "by": "narrator",
+        "text": "There is only time to save one."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/narration": {
+    "source": "sha256:ba6804e02a6dcccc4fe2d4b1593d8be4e48cca29fd7321d3ffbbd1c32d17f92f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip writes it all down."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a good scout saves the most important thing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Which one was it?\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/0": {
+    "source": "sha256:41a68084f2646728381ca76b298be14da58aea1d2d70024d6d2acb51ab702b4f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble hugs her dry mailbag."
+      },
+      {
+        "by": "tumble",
+        "text": "\"I owe you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Need a message carried? Anything at all?\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/1": {
+    "source": "sha256:30b518b2a2be3d5169b1830ec3a36406005f96d7a2d0eaada1af73e842e7272e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble pegs her soggy letters on the bell rope like washing."
+      },
+      {
+        "by": "tumble",
+        "text": "\"No flying till they're dry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sighs."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Wet letters stick to my feathers.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/2": {
+    "source": "sha256:233a76917f57c139969aa024bc0184769c8b5b0d4548ee7624be32808d9df461",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper pats the frame."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Good. With this, I can flash a message to any island I can see.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/3": {
+    "source": "sha256:472bd6ca2320068eb14d9bce3283647adbaabf249115c78697c68e1f73bc3988",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper looks at the cracked frame."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"No flashing messages until that's mended,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/crossing/narration": {
+    "source": "sha256:18ea691a888b4187631045a193bf8c32616c720c4ae9a998291f9b6db1687fce",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow slides up beside the lookout, close enough to smell its grass. Juniper pushes out the landing board. It reaches, just. The gap breathes: wide, narrow, wide."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Cross when it's narrow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"And don't look down. Down is mostly cloud.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tumble stays behind to mind the lookout."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_walk/onSuccess/narration": {
+    "source": "sha256:d5424c4ee153345258e17d932bddfb5e977be2d68c9d31caa6efb2ef3e753359",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You step onto soft grass. Pip hops down after you and takes the notebook out of his teeth."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Ptoo.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/narration": {
+    "source": "sha256:516d3a5c2c7612785f33b23a465840e2001fa609ae1d5eede38356e52da1cae2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Far below, a whale sings one low note each time the island swings closest."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Listen,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Step on the note.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/onSuccess/narration": {
+    "source": "sha256:afbdab4746754d2875f2aa219eb27685a48cd53bba95fa9a3fd6f87faea9d500",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Boom, goes the whale, and you step. The board barely moves."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They're helping,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper says softly."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/leap/narration": {
+    "source": "sha256:60532c94bcdf9cab8798618ad9298a47cde5c3362c2735300dcba16614405a0c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your duskrunner backs up, runs and leaps the gap with a rope. You tie it off on a crooked tree, and everyone crosses hand over hand. Pip arrives last, upside down."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"On purpose,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/on_island/narration": {
+    "source": "sha256:eadfffe1cfa2cd5648f38fe959e61f358fffe77d494fd14c54dbd4609130dc4e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow is old. Its grass is soft, its trees are crooked, and a scarecrow wears a hat nobody has worn in a hundred years. A hen pops out of a bush and glares at you. She has been riding this island all alone, and she does not like visitors. Juniper kneels and pats the grass."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Welcome home, old thing. Now, why are you early?\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/on_island/variants/0": {
+    "source": "sha256:a3960e579f44c9ea24d13ab7dabb8ca3e7e97af886b45372ef317b5bc2244b6a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip pats his empty pocket."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"All my Lady Olivia notes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says sadly. The hen sits on his foot."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pip_hen/narration": {
+    "source": "sha256:f156fce155286a36f9b5efa36fb6b5a8b283a0d0d151f5f5a430917175bd8d96",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip scoops up the hen before anyone can stop him."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"A sample!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will love her. A real hen from an island that came home early!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The hen does not love Pip. She pecks his hat and stares, very hard, at her bush. Juniper raises an eyebrow."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"She lives here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/hen_kept/narration": {
+    "source": "sha256:69490b6b4050a38bd5b0a8e1033f15a0b57df248443557d2e54506e040ce5fee",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip tucks the hen inside his scarf, so only her head pokes out. She glares at you all the way, and every few steps she twists around to look back at her bush."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She'll get used to me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip. The hen does not look like a hen who gets used to things."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/hen_left/narration": {
+    "source": "sha256:66f89dddfcf379e7ef696680688611fdc4e0fcc3a29772228fd3439c4a7c899a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip sighs and sets the hen down by her bush. She fluffs up to twice her size, and then follows him anyway, pecking at his heels."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I think she likes me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"I think she's making sure you leave,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/explore/narration": {
+    "source": "sha256:84ba33bba016d961e12a7ace8ba9605df9413b0130d86392c59cd09115354dbb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_juniper",
+        "text": "\"The oldest songs say Notchbrow has a mooring stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"where it tied up long ago, with words carved on it. Nobody alive has read them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Two ways lead toward the stone: a path through the crooked orchard, or the high ridge above it."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/lost_orchard/narration": {
+    "source": "sha256:05fb2a77eddef4c6ac8f32cf492d5e7ca3864f6727af28c7e4167273faa6ae2a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At last the hen gets bored. She hops off the scarecrow and marches away, and Pip follows her, because nobody has a better idea. She leads you straight to the stone and settles on top of it like a crown."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"She knew the way all along,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper. You have lost time, and Notchbrow has drifted on."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/stone/narration": {
+    "source": "sha256:8acab6d257ed5b6af282342257f6598f4bba477526fa6f58ff4aeb777a0f5966",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The mooring stone is taller than Juniper, with a round eye worn smooth by a rope, long ago. Shapes are carved all over it, under the moss. Juniper brushes the moss away with her tail, very gently."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Copy it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"before the island turns and the light slides off it.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/copy/onSuccess/narration": {
+    "source": "sha256:981461686ed9175d697086262e117dc367e59aa2833b1abbeff2b4b037e7ca28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You draw every shape before the light moves on. Juniper stops humming."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"That's all of it.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pull/narration": {
+    "source": "sha256:a48723c71c2c065beba858086e3f95a3d6f57d50ea8561e2c11bbde191e71416",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then your Listening Chime swings out of your pack on its strap and points, hard, toward the glacier where all this began. It tugs like a puppy on a leash. Pip has to hold it with both paws. All around you, Notchbrow creaks the same way. Juniper stares toward the glacier."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"So that's why it's early,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"It isn't coming home. Something is pulling it.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/hold/narration": {
+    "source": "sha256:669b3a0d1a9270158f2ec4b148d5b956b7e4ae9d629fafba885a26aacbe44863",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow lurches toward the glacier, away from the lookout. Across the gap, the landing board scrapes and slides. Pip grabs his long coil of rope."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says if something's being pulled, pull back! Tie the island to the lookout, through the stone's eye!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper shakes her head."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"A rope that holds an island pulls on everything it's tied to. Let it go its way, and run for the board.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tied/narration": {
+    "source": "sha256:a9f29d8b1e493f780fa83a518c8cad95e35264f367c886985206ab87092e3f57",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Notchbrow stops. Under your hands, the mooring stone creaks, and a thin crack runs through its eye. Juniper puts a paw on it."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Shh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells it."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Only a little while.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip's ears go down."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia never said what the rope does to the other end.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/walk_back/narration": {
+    "source": "sha256:120b8eb962813c80bcdb409791ce5f16a3626a939620dddf1205e9a4fd31b64e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Held still, the board is easy. You walk back across like it's a garden path, and the hen comes too, tucked under Pip's arm. Then the rope begins to sing, a low, worried hum."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"It won't hold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Nothing holds against a pull like that.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/run_back/variants/0": {
+    "source": "sha256:8bc8d4371eed2de1778b4d9d97cbd94a9af8db95ff142b8f425f8bac10202075",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble is already flapping."
+      },
+      {
+        "by": "tumble",
+        "text": "\"I can fly you a line!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she shouts."
+      },
+      {
+        "by": "tumble",
+        "text": "\"But then I'll be too puffed to carry anything else for a while.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_return/onFailure/narration": {
+    "source": "sha256:ec1a59f3be86e8d322d38f547ec248b19d9b2658c58335f1e4b1e89c4b259cbf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The board drops under your feet. You leap the last bit and land in a heap, and the board tumbles away into the clouds."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"I have another one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Somewhere.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tumble_line/narration": {
+    "source": "sha256:92b2f9d4f68477368805a2a3184330b4908929f3d21f3eed9d7c65b0b1239e52",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble swoops across with the end of a rope in her beak, and you cross holding it, safe and steady. Then she lands, hard, on the lookout."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Ow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Fine. I'm fine.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She is puffed right out. She will need a long rest before she can carry anything again."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/back/narration": {
+    "source": "sha256:f57164f027d75628ec75e7b417a5da08795760027884dc166c77e0438c503879",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back on the lookout, you watch Notchbrow go. It drifts away across the sky, still leaning toward the glacier. Juniper counts everyone twice, and the hen three times. Pip sits down hard."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"We read an island,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Nobody is going to believe me.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/back/variants/1": {
+    "source": "sha256:5d5ba1bde3241f2b30cb871f85e1852cf2976d9f5f1e227a3433fe6efb259d65",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then the hen wriggles out of Pip's scarf, flaps across the gap with a furious squawk and lands on Notchbrow's grass, home. Pip stares after her."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She just wanted to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Moved things do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/drift_on/narration": {
+    "source": "sha256:0823a76068370d3cb8b0b026870f4feedbcf83c0868df93ea9732d38125fa46b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Far ahead, right in Notchbrow's path, a temple island sits on a cloud, all red roofs and bells. A gray squall is rolling in behind it. Juniper's tail goes stiff."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"That's a temple called the Squall Temple,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"where the keepers ring the weather bells. Notchbrow will drift right into them, in a storm.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Your chime still leans toward the glacier, steady as a compass."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/rest/narration": {
+    "source": "sha256:5e928775c6af807486072787dd95afa65ea74a8e46ba838d87522c8998a1bcef",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper pours ginger tea from a pot shaped like a whale. Pip drinks his in one gulp and burns his tongue. The hen drinks from the lid."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"The temple must hear from us before the island gets there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"A warning would send them all inside to get their push poles ready. Our welcome song would bring them out to clear the landing and let it rest. A song rings fast from bell to bell. A warning needs a carrier.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/warn/narration": {
+    "source": "sha256:6d00530556ea1112e81bf210608cd60d77d5e2613d1a82d00958ebb302e73171",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper writes it fast: An island is coming. Go inside. Get your push poles ready. Pip adds a drawing of a very worried face."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Now,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"who can carry it in time?\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/welcome/narration": {
+    "source": "sha256:c888fb176205e6c5b0d8e98c15912ea73acd2961a56d41d0004653908b8e72a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper smiles."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"An old island coming home should be greeted, not pushed.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She tunes the bell with her tail. Pip looks at the squall."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Greeted? Out in that?\""
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They'll have lanterns,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/dispatch/narration": {
+    "source": "sha256:22fae73a767635e283970ea4ae5eb2e2053a6ab5cad5962274b0d5b5dafd6ccb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "keeper_juniper",
+        "text": "\"Quick is best,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Notchbrow won't wait for us.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A young keeper is already lacing her boots, ready to run it along the stepping islands. That will be slow, but sure."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/by_tumble/narration": {
+    "source": "sha256:9b8805dcad15483b80dcf36d4aad2afe482871de2ae2b8a6ee0d19720e38d305",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tumble tucks the warning in with her dry letters."
+      },
+      {
+        "by": "tumble",
+        "text": "\"Squall Temple. Easy. It's big and it rings.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She takes off, wobbles once and is gone into the clouds. A moment later you hear a faraway thump."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"She's landed,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Somewhere.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/by_frame/narration": {
+    "source": "sha256:a44882dd3c6ce8a869e9513d99a2f2eba2cff822ae849dd8f510e911b5e08f5c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper flashes the cloths: white, striped, white, faster than you can blink. Far away, a tiny light flashes back from the temple's tower."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They have it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"with time to spare.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/by_hand/narration": {
+    "source": "sha256:6c9ff79089038e3d1d48c9a27983013ecd2e1638702d4b93a5d81daa618cd34f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The young keeper runs off along the stepping islands with the warning in her paw, hopping from rock to rock. She is quick, but the islands are far apart, and Notchbrow is quicker."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"It will get there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Juniper."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Late, but it will get there.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/welcome_rung/narration": {
+    "source": "sha256:1ea7ceb83513b308892320912c3223151e1a52b504b2d0ebc01cd652778fe025",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper rings the welcome song on her bell. Far away, the next island's bell rings it back, and the next, and the next, all the way to the temple. Songs travel fast in the sky."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They'll clear the landing and come out to greet it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Juniper says happily. Pip looks at the squall and says nothing, very loudly."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/farewell/narration": {
+    "source": "sha256:ce2bb5591fe17b70ccdd7f6bf1d23c23d39b5807a43a16db3e5b9a7ed402a930",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip turns his spoon over and over."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says if something wanders, you tie it down,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But Notchbrow wasn't wandering, was it? It was being pulled. Was she wrong?\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/farewell/variants/0": {
+    "source": "sha256:d2611b3e48061ddb353544995c03f9a975a09edaa32d57b9be143f555e1406ca",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He looks at the cracked stone, far away now."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"And the rope broke the stone.\""
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pip_doubt/narration": {
+    "source": "sha256:8f6be6390dd6e6f52359c900646c6c82b64f65328ce005c21952d60c67aa4e18",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip thinks about it for a long time. Then he writes on a scrap of Juniper's paper: Ask first. Tie later. Maybe. He folds it very small."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Don't tell her I wrote maybe,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pip_loyal/narration": {
+    "source": "sha256:569567564236be278a507f7c8ce3e1a675f2049404fb96f36cc23980b447f909",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip nods hard."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She is,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"She always is.\""
+      },
+      {
+        "by": "narrator",
+        "text": "But he keeps looking toward the glacier, where your chime points, and the tip of his tail twitches."
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/narration": {
+    "source": "sha256:4496519719f36002598daa6251685d2ee99fd926b82ca02ee102d183de345042",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Juniper adds a new line to her song-scroll: Came home early. Pulled."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"Follow Notchbrow to the temple, if you can,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "keeper_juniper",
+        "text": "\"They'll need help when it gets there. Or the whales' turning place is always open to you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is your piece: an island was pulled across the sky, and its old stone shows the land below in an older shape. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}

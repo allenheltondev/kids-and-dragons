@@ -1,0 +1,1095 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-reading-room/arrival/narration": {
+    "source": "sha256:28ff65604edc267fc4d637f942e32b7979b384abd14c5710a3652a6080d418bf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The upper path ends at a round door cut into the glacier, clear as a bottle. A very old yeti opens it before you knock. She wears three scarves and holds a cup of tea with ice in it."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Elder Murmur,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"I keep the reading room. Today you crossed a river in a valley that was dry. Has this river ever run here before? Our memory ice may know. Come and ask it with me.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/pip_here/narration": {
+    "source": "sha256:fb8d10fa8594a2a91d00f46cfc2a34cbf62f076655b7ba4950e7635e476e7e88",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Inside, Pip Thistledown, the young manticore scout, is already waiting with his notebook open."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says memory ice is the oldest map in the world,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, much too loudly. Murmur puts a finger to her lips."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I'm going to copy it for her,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip whispers."
+      }
+    ]
+  },
+  "riftlight-reading-room/pip_here/variants/0": {
+    "source": "sha256:33734511f5bbaeaa38f73fb4fd59b373e35b61c8c3d6518b44555f0619ed7e4a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur looks at your dry boots."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"You crossed high, over the rocks. Good. High eyes see the shape of a valley.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/pip_here/variants/1": {
+    "source": "sha256:6d04bf94fcc949add5d8e97bc87633301ea92cdd7945731dc3009d6d915a9bf4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur looks at your wet boots."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"You crossed low, by the water. Good. Wet knees remember how a river pulls.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/stair/narration": {
+    "source": "sha256:dd2a95452921f7e542f3b6ac6ce808b45ed1ed32ee7e2ebe185f8ab02f4f543a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A stair spirals down into the ice. Every step squeaks like a mouse if you stomp."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Quiet feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"The old ice listens.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip pats a tea tray on a string."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Or we slide! Lady Olivia says the fastest way down is the best way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you go down?"
+      }
+    ]
+  },
+  "riftlight-reading-room/check_tiptoe/narration": {
+    "source": "sha256:faf294f61801d7a347d72b49e173e5a306c27510591233a71482cb96a4118e42",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Toes first. Heels never."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Ninety-nine steps,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"I counted them once.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/check_sled/narration": {
+    "source": "sha256:914156764ebb6dd6d09645952425476f00f99e1b16428d845a1ebf72db4d3f55",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tea tray is very fast. Pip is already going."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Dig your heels in to stop!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls back."
+      }
+    ]
+  },
+  "riftlight-reading-room/room/narration": {
+    "source": "sha256:7d409bc9e9c2dfd226db9b8c0028d68b177fea44507297f72288ffe031796d58",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The reading room is round and glassy and very quiet. Yeti readers in blankets stare into the walls. Inside the ice, pictures move, faint as breath on a window: falling snow, a bird, a goat chewing."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Memory ice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"It keeps what it saw when it froze. We read it. We never make it show.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/tuft/narration": {
+    "source": "sha256:60202796f877a2c96e1cdd07a52a8b51d202abf30dd962348ae25a9aa6cf4d36",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A young yeti hurries over with a little striped hat."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"This is Flurry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"She will keep our new reading room, when the builders finish carving it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry points at an icicle dripping onto a stack of slates, a hundred years of the readers' notes."
+      },
+      {
+        "by": "flurry",
+        "text": "\"The hat is for the icicle. Help me? And then ask the old ice if rivers can move. What if one moves into my new room?\""
+      }
+    ]
+  },
+  "riftlight-reading-room/check_icicle/onSuccess/narration": {
+    "source": "sha256:f177253e91395d1ef49272321de1ebd027a555e4321c2f18ae320d8e90726c79",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The little striped hat slides on. The icicle stops dripping at once. Flurry claps her mittens."
+      },
+      {
+        "by": "flurry",
+        "text": "\"It suits it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at you as if you might be very good at things."
+      }
+    ]
+  },
+  "riftlight-reading-room/check_icicle/onFailure/narration": {
+    "source": "sha256:1e9ea7dc0a57a0db0337575773befc035fb064f666916eafb2f67347e4f179cf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The top stool wobbles, and you come down holding the hat and a lot of air. Flurry catches you, mostly. She hats the icicle herself, standing on her toes."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Thank you for trying,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, kindly."
+      }
+    ]
+  },
+  "riftlight-reading-room/snap_icicle/narration": {
+    "source": "sha256:9358b95fd0d923a88754750c0096dba6e1d209a6fcc265a24c8cd21f578f304f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "SNAP. The icicle comes off clean, and no more drips fall on the slates. But the snap rings around the whole room. The readers jump. The pictures in the walls go cloudy, like a breath on glass. Flurry looks at the little hat in her paws."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"It won't drip now.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/ask_wall/narration": {
+    "source": "sha256:4ea83354eb7828a40a13d76620801877aac3a52461e28b1e80267d3f2a4f753d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur points to the back of the room."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"The old wall is through there, the oldest ice we can read. My knees cannot go anymore. Bring me what it shows.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A low tunnel runs that way, dripping. Above it runs a narrow ledge hung with lamps. How will you get there?"
+      }
+    ]
+  },
+  "riftlight-reading-room/yelp/narration": {
+    "source": "sha256:c8066307f93b7c85f3679cfae525dc1b770665c3ca25fc91ca539b510c015f35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You yelp. The tunnel yelps back: yelp, yelp, yelp, all the way to the old wall. The ice ahead turns cloudy."
+      },
+      {
+        "by": "party",
+        "text": "\"Sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you whisper. \"Sorry, sorry,\" says the tunnel. Pip pats your back."
+      }
+    ]
+  },
+  "riftlight-reading-room/check_ledge/narration": {
+    "source": "sha256:276a12d96b9bbf5d93d45415863f8028413594db2a5b5c89a64eb387ecbd93f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ledge is as wide as a loaf of bread. You hold on to the lamp hooks and pull yourself along."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Tails up,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip whispers, holding his high."
+      }
+    ]
+  },
+  "riftlight-reading-room/lamp_fall/narration": {
+    "source": "sha256:c01a46bd82fbd412c91d4033670fa29e10ca4b3fd7ac1aa68bda757b048451e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You catch it, mostly. The glass cracks, and the glow-moss inside goes dim. Now there is one less light at the old wall, and the ice ahead looks cloudier. Pip pats your shoulder."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says every scientist breaks one thing a day.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/listening_floor/narration": {
+    "source": "sha256:99317dcb56a8c8e0be820989e051f6eb96c968c9e3365409d692d3f0e89d36d6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Near the old wall is a hole in the floor, no wider than a bucket. Far, far down, somebody is singing the low song from the yetis' singing hall. Pip picks up a pebble."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says you find out how deep a hole is by dropping something in.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/pebble_drop/narration": {
+    "source": "sha256:ab9947cb67379ef6ed45675783a829d16cd1eb2f1e7d8126c771344317ee612b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Plink. Plink. Plonk. The pebble falls for a long, long time. Then, far below, the singing stops. The floor gives a little creak, and the old wall ahead goes cloudy. Pip counts on his claws."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Very deep,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he reports, in a very small voice."
+      }
+    ]
+  },
+  "riftlight-reading-room/hall_song/narration": {
+    "source": "sha256:7a513b46100f25ee1eca555e40c752c949162cb164979400acbb3ebeb48635af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lie flat and listen. The song comes up slow: a long note, a rest, a long note. Your breathing slows to match it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I could sleep here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip mumbles, and nearly does. Now you know the old ice's rhythm."
+      }
+    ]
+  },
+  "riftlight-reading-room/old_wall/narration": {
+    "source": "sha256:22cc6d4f82988443c6f0021308ccbbc8c2a49aceff654cc5b66465f56e91aca1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The old wall is pale and smooth, like a frozen pond standing on its edge, with one reading lamp hung beside it. Deep inside, something moves, too faint to see. Pip presses his nose to it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says rift magic wakes things up! Ring the Listening Chime at it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur's whisper floats through the ice from the room behind you."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Or wait. Old ice clears if you are still and patient. It takes a long, cold while.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/ring_chime/narration": {
+    "source": "sha256:3a87350bd1478c412ec8c21a9f1a8d2c139d3035217fdff872eae1af5fb408a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lift the Listening Chime and ring it at the wall. TING. The note runs into the ice like a crack of light. All at once the wall flashes bright as noon, and pictures pour across it, fast, much too fast."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Whoa,\""
+      },
+      {
+        "by": "narrator",
+        "text": "breathes Pip. Somewhere behind you, Murmur gasps."
+      }
+    ]
+  },
+  "riftlight-reading-room/wait_slow/onAssisted/narration": {
+    "source": "sha256:ece3226be558819c05f7e8097ae116d266386763796bc979fd10a5cd49452ff5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip whispers"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"now\""
+      },
+      {
+        "by": "narrator",
+        "text": "at the clear moment, and you lift the lamp together. The cloud thins away, like fog off a pond."
+      }
+    ]
+  },
+  "riftlight-reading-room/wait_long/onAssisted/narration": {
+    "source": "sha256:a0a75d4682f849607c561861078fae0321b32b910868feea8d08943b44385681",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip whispers"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"now\""
+      },
+      {
+        "by": "narrator",
+        "text": "at the clear moment, and you lift the lamp together. Your teeth are chattering, but the cloud thins away."
+      }
+    ]
+  },
+  "riftlight-reading-room/old_river/narration": {
+    "source": "sha256:0a652536c94a4f4c095aba16e7b9b05b6d5ae935d50840ab6d7fd6127c892f91",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Elder Murmur has come after all, one slow step at a time, and stands behind you. Inside the old wall, a river is running. You know those ridges. It is the river you crossed today. But in the ice, it turns and leaves by a different valley: the one that was dry, the one you crossed. The memory ice shows the river leaving by a different valley. Long, long ago, this river ran there before."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"It has been here before,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip whispers."
+      }
+    ]
+  },
+  "riftlight-reading-room/deep_sound/narration": {
+    "source": "sha256:20e14a2b99f0cdb40f483e7b14cd88313b2446f43908336fe8bfe0863e4153f8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then, far below the floor, something sighs, long and slow, like a giant turning over in bed. The Listening Chime tugs in your pack, down toward the deepest ice, where the glacier is oldest. Pip takes a huge breath, the kind you take before you yell \"Hello!\" Murmur puts a paw on his shoulder."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Do not shout near the old ice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"You don't know what you might wake.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/hush_pip/narration": {
+    "source": "sha256:99c18d8ad78e469ac66a89da868a210efe8b7576deeace105e45b05163a82421",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip nods. Pip understands. Then Pip whispers,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"But Lady Olivia says it's rude not to say hello,\""
+      },
+      {
+        "by": "narrator",
+        "text": "and fills his chest for the biggest hello of his life."
+      }
+    ]
+  },
+  "riftlight-reading-room/hush_pip/onSuccess/narration": {
+    "source": "sha256:00b105c5e80a5b6c5432ac1ca209dd985f9233bcced3e7a89b6c93b7a2873ae0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mmmf. Pip's hello comes out as a tiny hum into your paw. Far below, the sigh fades away. Pip goes pink to the ears."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Sorry. That was not scientific.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/hush_pip/onFailure/narration": {
+    "source": "sha256:fb0dcea10891e6fb11684172a0f893bd8770fb64fa9419a4f27cf528a8afaf83",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Too slow."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Hel...\""
+      },
+      {
+        "by": "narrator",
+        "text": "bounces off every wall before you catch the rest. Far below, the sigh turns into a groan. A crack runs up the old wall, thin as a hair, and icicles rain from the ceiling. One bonks you."
+      }
+    ]
+  },
+  "riftlight-reading-room/shaking/narration": {
+    "source": "sha256:86ea8137360a7d84214547a4da65bba4669fbbf15fe97f63882a363d76ebbec7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From the reading room comes a clatter, then Flurry's voice:"
+      },
+      {
+        "by": "flurry",
+        "text": "\"The icicles! They're falling on the slates!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur shuffles back, as fast as a yeti her age can go, which is not fast. In front of you, the river in the ice is starting to fade. What first?"
+      }
+    ]
+  },
+  "riftlight-reading-room/slates_broken/narration": {
+    "source": "sha256:238b8de333dfb2a122ba2954c5ab841a2ad3dc1676684128300d1ab0f4ecc0a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "By the time you hurry back, it is over. There are icicles everywhere, and three old slates are cracked right across. Flurry is gathering the pieces in her knitting basket."
+      },
+      {
+        "by": "flurry",
+        "text": "\"It's all right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and sniffs."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Mostly all right.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/check_slates/onSuccess/narration": {
+    "source": "sha256:f898cfe3c85a5caf5dbb66de9b8ebfaab72260469df638c82b76ef5adbfd474f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up it goes. Icicles bounce off the table like hail on a tent. When the shaking stops, every slate is safe. Flurry hugs the stack."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Thank you, thank you.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/fading/narration": {
+    "source": "sha256:09034d641b73af0bd1a315299ba471cc82df4be110dfc13430db0edbde2c957f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then you remember the river. You hurry back to the old wall. The picture is fading, like a drawing left out in the rain. Only a little is left, and it is going fast. Pip already has his pencil out."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Quick! Draw what's left!\""
+      }
+    ]
+  },
+  "riftlight-reading-room/compare/narration": {
+    "source": "sha256:17f6d431b9688e59409319c3d0f8997752baca89c981949b333cb5be5dc5934b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back in the reading room, Murmur lays your copy on the stone table, beside Pip's sketch of the valley you crossed today. She blows on her tea to make it colder."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Now prove it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Is it the same valley? A reader never guesses.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/check_match/narration": {
+    "source": "sha256:c37506953d66427c2ff6e889dab74ccd1311fe867e6765e7d7f67095e6adc7c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip holds his sketch up to the lamp. You hold your copy behind it."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"If the lines meet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers,"
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"it is the same valley.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/match_unsure/narration": {
+    "source": "sha256:1016821a14b647478d836bcd91acbf972a5addc1b5cb00363074a79f4fc63f57",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur takes your copy and Pip's sketch both."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"I will read the old wall again myself,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers,"
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"every night, until I am sure.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip's sketch was his present for Lady Olivia. He swallows."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Keep it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Science first.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A few nights later, Murmur is sure."
+      }
+    ]
+  },
+  "riftlight-reading-room/match_high/narration": {
+    "source": "sha256:41f80e82002b663a5532fe62ef9b5ceed3f7378d4742dafc57060f7a44afa0c7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You close your eyes and remember the high rocks, with the valley spread out below you like a map. Those ridges. That fork. That turn."
+      },
+      {
+        "by": "party",
+        "text": "\"Same valley,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you whisper. Murmur checks it twice, and nods."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"High eyes see far.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/match_low/narration": {
+    "source": "sha256:05ba03cdc00e1b16e982b1524168c264aba592b0d33d2f4f81ec0b7d3cfd0028",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You put your finger on the turn in the copy. That is where the water grabbed your knees today and tried to pull you along. Same turn. Same pull. Murmur checks it twice, and nods."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Wet knees remember.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/old_slates/narration": {
+    "source": "sha256:fbb2b14580c1e1cb5b238fd81d5c7d6e3bc3555669c4c8d7c3769f5c700365fc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry brings the slates you saved. Murmur runs a claw down them, one by one. In every slate, for a hundred years, the river runs its usual way. Not once does it leave by the other valley."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"So the old wall is older than every slate here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Older than my grandmother's grandmother.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/bridge_pattern/narration": {
+    "source": "sha256:536debfaf614e1f5813de0648b4e55a3be96c84b711a78990c103421173296f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell Murmur about the buried bridge on the Saltrot: arches over dry mud, with a waterline carved high up, where a river ran in an older shape. Murmur sets down her tea, which she never does."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Two rivers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers,"
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"both remembering an older shape of the land.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip writes it down twice, to be safe."
+      }
+    ]
+  },
+  "riftlight-reading-room/matched/narration": {
+    "source": "sha256:fd87eb3f95e11ab87be289b3743d08d912c59699be383da7a4ddb2666b180fa8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "So it is true. Long ago, before any reader was born, this river ran down the valley that was dry. Today, for a little while, it tried to go that way again."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Like it remembered,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry whispers. Murmur pours iced tea. Pip gulps his and gets brain freeze."
+      }
+    ]
+  },
+  "riftlight-reading-room/tuft_worry/narration": {
+    "source": "sha256:da04ab7cfe3474655f8edd9787ec26dffef8aa37b931a615bf4d60676362ec19",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry twists her knitting into a knot."
+      },
+      {
+        "by": "flurry",
+        "text": "\"If a river remembers the way it used to go, could it come back? Into my new room?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur looks into her tea. She does not know. What do you tell Flurry?"
+      }
+    ]
+  },
+  "riftlight-reading-room/check_tuft/onSuccess/narration": {
+    "source": "sha256:41f75f128e67af34b8c4fcfa851aa124ee24198a1d5a49bcbaa90fe8607c5ac8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry unknots her knitting, one loop at a time."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Then I'll go and look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Tomorrow. With my hats.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/tuft_brave/narration": {
+    "source": "sha256:a506dff8e325cf5f25277f278df26abb6ab495823897df687b22da9202008bb1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry looks up at the icicle in its little striped hat. It is not dripping. She laughs."
+      },
+      {
+        "by": "flurry",
+        "text": "\"If an icicle can wear a hat, I can go and look at my new room.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She unknots her knitting, one loop at a time."
+      }
+    ]
+  },
+  "riftlight-reading-room/pip_idea/narration": {
+    "source": "sha256:6f3d2cdca2ea4c5323d19628c4379d441454f645ae9e273db2f32f82ad0d9e3b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip bounces in his seat."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"If rivers remember, Lady Olivia could remind them! She could send a river anywhere we like!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry goes pale under her fur."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Anywhere?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur says nothing, and looks at the floor. What do you tell Pip?"
+      }
+    ]
+  },
+  "riftlight-reading-room/pip_wonders/narration": {
+    "source": "sha256:3092944e84b037f2f99a8650e0b3da4c77adc49a0a2c6e4819c0747aa3ee2442",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip chews his pencil."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says everything can be used.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at Flurry's worried face. Then he writes, very small:"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Ask the river first?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry lets out a long breath."
+      }
+    ]
+  },
+  "riftlight-reading-room/pip_dreams/narration": {
+    "source": "sha256:689631b41733d46919829881ca9d8e393a4eced00bd51944aa879cd445c2e29b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip writes RIVERS!!! in his notebook and underlines it three times. Flurry pulls her knitting into her lap and holds it tight. Murmur whispers, to nobody in particular,"
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"The old ice was not asked either.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/rest/narration": {
+    "source": "sha256:51026e03b1a66c1b1f8cf3edb529c31a04226946829203b62e283b1bad0c7393",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The readers make room for you on the warm side of the room, which is the side with the most blankets."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Guests first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers, handing out lichen cakes. They taste like a forest kept in the cold."
+      }
+    ]
+  },
+  "riftlight-reading-room/murmur_tale/narration": {
+    "source": "sha256:4dcf1afce379e18ae1ee25f0209cc3ab3ece86a148b305217208e24cff4af247",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Murmur thinks for a long time."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Once, I saw snow falling up,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Once, a bird that flew backward. I wrote them down. I did not write why. A reader writes what she sees.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at the floor, where the deep sound came from, and says nothing else."
+      }
+    ]
+  },
+  "riftlight-reading-room/mend_slates/narration": {
+    "source": "sha256:ee77602cbc866816105d3d4d98cbc79fd7ea194078c504485136b886d774dac9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You fit the cracked slates together with Flurry, edge to edge. A few pieces are missing. Flurry writes the missing words back in from memory, very neatly, with her tongue between her teeth."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Not the same,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "flurry",
+        "text": "\"But not gone.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/tuft_pack/narration": {
+    "source": "sha256:4458d59d0a8e794fe254079be91d5932690606a7265ddb310bdb8b1785d2ee0f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry packs for her new room: one blanket, one stool, eleven icicle hats."
+      },
+      {
+        "by": "flurry",
+        "text": "\"The builders say it's nearly finished,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Way down their tunnel, in the coldest, quietest ice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She wiggles."
+      },
+      {
+        "by": "flurry",
+        "text": "\"They want me to come and see it tomorrow.\""
+      }
+    ]
+  },
+  "riftlight-reading-room/way_out/narration": {
+    "source": "sha256:2727e3e069cdf8256f72273b90488d277916627dea401ec7b2abad752ef6a118",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Halfway up the stair, the deep sound comes once more, softer, like a sleeper's sigh. The steps shiver. Your copy of the river slides in your pack."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Hold on to it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flurry squeaks."
+      }
+    ]
+  },
+  "riftlight-reading-room/ending/narration": {
+    "source": "sha256:ee98ce23d740435f1a2d8b618ca138ada26fb06f2bb1fbe2f985e97b53f71d41",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the round glass door, a yeti builder puffs up with frost on his eyebrows. \"Flurry! A frost wyrm has curled up in your new room, and it snores snow!\" Flurry's knitting drops. The builders' tunnel goes deeper into the glacier; the upper path goes back to the valley."
+      },
+      {
+        "by": "elder_murmur",
+        "text": "\"Now you carry a piece,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Murmur whispers. Long ago, this river ran down the valley that was dry, and today it tried to go that way again. The chime still leans down, toward the oldest ice. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  },
+  "riftlight-reading-room/ending/variants/3": {
+    "source": "sha256:6feff72c35d371b434e36c7415ad34763b35f7788158e88ab91f896da349a42c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry picks up her knitting again."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Then somebody has to go and ask that wyrm to move,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and looks at you."
+      }
+    ]
+  },
+  "riftlight-reading-room/ending/variants/4": {
+    "source": "sha256:e39159db1b6f595a27d315046da4170d058d6676932459eb7f9c0f83e883cfaa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flurry hides behind Murmur's scarves."
+      },
+      {
+        "by": "flurry",
+        "text": "\"Somebody has to go and look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she squeaks, and looks at you."
+      }
+    ]
+  }
+}

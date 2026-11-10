@@ -1,0 +1,1095 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-05a/scene_soup_line/narration": {
+    "source": "sha256:4708cc5213fa032d921390bc74deb19b5d0329623fca566dc3f9193e5246189a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The soup woman's name is Hollis. DEEP HOLLOW is stitched on her apron. She hands a muddy prospector a bowl."
+      },
+      {
+        "by": "hollis",
+        "text": "\"Eat first, dear. Questions later.\""
+      },
+      {
+        "by": "narrator",
+        "text": "His wheelbarrow has lost a wheel."
+      }
+    ]
+  },
+  "gemfall-05a/scene_soup_line_fix_barrow/narration": {
+    "source": "sha256:4d09862ce1402ff216d6430151a1a1805c8a6d1c5ea671b35434ddf97b450171",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You knock the wheel back on with a rock. The prospector gives you his luck pebble, the only thing he has left. It is not a gem."
+      },
+      {
+        "by": "muddy_prospector",
+        "text": "\"Worked anyway,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-05a/scene_cult_pitch/narration": {
+    "source": "sha256:17dad121c27d2e8793d115451432430c50c46258bf041862483f0247f0312799",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hollis talks while she ladles."
+      },
+      {
+        "by": "hollis",
+        "text": "\"The world's rules are broken, love. The power under the mountain could write new ones. The seal on it isn't a lock. It's a lid on the cure.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She nods at a jar labeled THE BREAK, half full of humming stones."
+      }
+    ]
+  },
+  "gemfall-05a/scene_cult_pitch_say_no_kindly/narration": {
+    "source": "sha256:db448922704499f91719fb1e5ff9a3be8b9c64a201097219843dfb9e09f623ed",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"No, thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Hollis keeps ladling."
+      },
+      {
+        "by": "hollis",
+        "text": "\"That's all right, love. Soup's still free.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She means it. That part stays with you all the way to the bridge."
+      }
+    ]
+  },
+  "gemfall-05a/scene_clerk/narration": {
+    "source": "sha256:16d295e89b6c9972cda65a31f297ecf1c5d3e4481481c87de62cf92f26795985",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the clerk's table, a warden named Pellam logs every gem that crosses and keeps none."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Logged is not owned,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. The tired carter brings gem 4117. Its hum makes his pen jump off the page."
+      }
+    ]
+  },
+  "gemfall-05a/check_carter/onSuccess/narration": {
+    "source": "sha256:7df5cc237f3136c5c7d7b57ab95d62a392090ef6721017c6c0e070c387d162f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She has been listening to that gem hum for nine days."
+      },
+      {
+        "by": "carter",
+        "text": "\"Take it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "carter",
+        "text": "\"Give me a song I can sing over it instead.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You give her the best one you know."
+      }
+    ]
+  },
+  "gemfall-05a/check_carter/onFailure/narration": {
+    "source": "sha256:dccf43e4cc01852a229cd674ec474f0946b4caecada1bc5ba4f08f3923a55e77",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "carter",
+        "text": "\"Promised to a buyer in the foothills,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and clicks to her mule. Gem 4117 hums away west across the bridge."
+      }
+    ]
+  },
+  "gemfall-05a/scene_clerk_stone/narration": {
+    "source": "sha256:e076e008681f9e45af9e255854f296c1ecb1d3c768bfd2923ad9d61bff13e4d5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pellam crosses out WESTBOUND, writes EASTBOUND, crosses that out, and writes WITH THEM."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Very irregular,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Entirely legal.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The stone is cool and heavy. Its hum makes your teeth fizz."
+      }
+    ]
+  },
+  "gemfall-05a/scene_engineers/narration": {
+    "source": "sha256:bf348a6f732f467eae591cd048dbd4590d8eba6df1ace24723bb1c10e9de61d0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Inside, Engineer Brask pins every crack in red on a chalk survey. She has a pencil behind each ear and a third lost in her hair."
+      },
+      {
+        "by": "brask",
+        "text": "\"Seen anything odd on the road?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she asks."
+      },
+      {
+        "by": "brask",
+        "text": "\"I need it. This drawing makes no sense.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_outline/onFailure/narration": {
+    "source": "sha256:6d6d906b8f6c950208b0ee119aa10acc30871938292703531236b0a8be42449b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says"
+      },
+      {
+        "by": "brask",
+        "text": "\"no, no, you're right, look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "and draws it again properly."
+      }
+    ]
+  },
+  "gemfall-05a/rest_tent/narration": {
+    "source": "sha256:bf08969b1921ee9943cb324099b32e2f7bf4ce69d14020e40c65547101bcec0d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The engineers share strong tea. Every cup ripples."
+      },
+      {
+        "by": "brask",
+        "text": "\"Even the tea is nervous,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask. Rest, and decide who should hear what you found."
+      }
+    ]
+  },
+  "gemfall-05a/scene_who_to_tell/narration": {
+    "source": "sha256:5960a91b6ebff6be8f70876eb18a295516d64d4b7395fd728a2f425effd3f519",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "brask",
+        "text": "\"Tell the wardens,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask,"
+      },
+      {
+        "by": "brask",
+        "text": "\"and we can use this to run the crossing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Or Nim can ring it north to the gathering towns. Or you can keep it close until you know more. Who should hear it first?"
+      }
+    ]
+  },
+  "gemfall-05a/scene_told_wardens/narration": {
+    "source": "sha256:4472b84fc3f7dcd8e1cecd54039caab18202f38248440947afb0e892f9940ab4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask writes it all down and underlines the mountain three times."
+      },
+      {
+        "by": "brask",
+        "text": "\"This changes the arithmetic.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She gives you a crossing pass. She has underlined that too."
+      }
+    ]
+  },
+  "gemfall-05a/scene_told_gatherers/narration": {
+    "source": "sha256:bb6115ee9818a5281a3e0026deafd5cdb5afafbccf2834a2653c46f4a866e72c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nim listens, rings her bell once, and turns Pepper north."
+      },
+      {
+        "by": "nim",
+        "text": "\"Grandmother will say she told everyone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "For once, Pepper does not argue."
+      }
+    ]
+  },
+  "gemfall-05a/check_span/onFailure/narration": {
+    "source": "sha256:e628fe02309c8c81e9e677574b23cabca95db228cd1637ffcf6a7de8461f09ba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Halfway across, the bridge gives a long groan and the flag slams down."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Span closed! Everybody back!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The only other way over is the old pride ford, underneath."
+      }
+    ]
+  },
+  "gemfall-05a/rest_setback/narration": {
+    "source": "sha256:08beeeaf1321475dc4551be957e819d3424268f5b71561e0e6597318784f09f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nobody is hurt. The wolves just wanted the warm side more. You wait two days on the south bank while the rush gets ahead. At last Pellam waves you across himself."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Logged,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Late. But logged.\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_brass_south/narration": {
+    "source": "sha256:f9bc363817b3ddf512e4e08f79d0cb0d3dde8230fd8f2119c3e06879440363a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Six tired people in dented brass hats push an empty wheelbarrow south. It is the Brassbuckle Expedition, and nobody is smiling."
+      },
+      {
+        "by": "brassbuckle_scout",
+        "text": "\"We are just going home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says their scout."
+      }
+    ]
+  },
+  "gemfall-05a/scene_brass_south_ask_what/narration": {
+    "source": "sha256:922a3801f038fa4ecd4952861eb05e39878719a171c52843c89f24e1bf7616b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "brassbuckles",
+        "text": "\"Full,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the tallest one."
+      },
+      {
+        "by": "brassbuckles",
+        "text": "\"The foothills are full. Every stone has three people on it, and a warden writing it down.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He sighs."
+      },
+      {
+        "by": "brassbuckles",
+        "text": "\"We should have told the troll a story.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nobody believes him, not even him."
+      }
+    ]
+  },
+  "gemfall-05a/scene_brass_south_share_supper/narration": {
+    "source": "sha256:15018644b790548492dc54e09e823fed284699ba238caf3360c6b89d7375740e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You share your supper on the empty barrow. Then the smallest one gives you a folded paper."
+      },
+      {
+        "by": "brassbuckles",
+        "text": "\"Our map of the span. Keep to the east rail. It sways least. We were going to sell it.\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_brass_south_ask_question/narration": {
+    "source": "sha256:c4ec692bfe5c7ea8f387c45f9b6cc07fed048d0b96bb605393fba418ab9d10b5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Where did you get that? And where is it going?\""
+      },
+      {
+        "by": "narrator",
+        "text": "you ask. The Brassbuckles look into their barrow. It is empty."
+      },
+      {
+        "by": "brassbuckles",
+        "text": "\"Nowhere, now,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the tallest."
+      },
+      {
+        "by": "brassbuckles",
+        "text": "\"Home.\""
+      },
+      {
+        "by": "narrator",
+        "text": "This time he sounds like he means it."
+      }
+    ]
+  },
+  "gemfall-05a/check_crates/onSuccess/narration": {
+    "source": "sha256:2ea15f04b47fe4e89dcca4ced3cb984301082744ff389eaa1747284606c848a8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You catch the top crate, then the next, then the next, and stand there holding a wobbling tower until the carter props it back."
+      },
+      {
+        "by": "carter",
+        "text": "\"Nine days those have been humming at me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, wiping her face."
+      },
+      {
+        "by": "carter",
+        "text": "\"Nine days. Thank you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "One crate has a tag on it: 4117."
+      }
+    ]
+  },
+  "gemfall-05a/check_crates/onFailure/narration": {
+    "source": "sha256:901195d61e9aa5ad58de56aa22cc6b7af74402228b8541818a5a188d9af31198",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crates topple straight past your hands and land, thump, thump, thump, in a hay cart. Nothing breaks. One of them bursts open, and it is full of socks."
+      },
+      {
+        "by": "carter",
+        "text": "\"Not that one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the tired carter."
+      },
+      {
+        "by": "carter",
+        "text": "\"The humming ones are underneath.\""
+      },
+      {
+        "by": "narrator",
+        "text": "One tag says 4117."
+      }
+    ]
+  },
+  "gemfall-05a/scene_nim_pony/narration": {
+    "source": "sha256:18981639f8826e3f909b3c516c47fb550a203a842c5fcb17513c888c6d641da6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the bridge foot, a dragonling named Nim argues with her pony, Pepper. Nim is a bell-rider. She carries news north to the gathering towns, if Pepper will go. Pepper wants grass."
+      },
+      {
+        "by": "nim",
+        "text": "\"Help?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nim asks. Her bell rings the whole time."
+      }
+    ]
+  },
+  "gemfall-05a/scene_nim_pony_hold_pony/narration": {
+    "source": "sha256:4f1ee3a7abb0a888deeb184c0209fe31f0abc24edf36ea5cd657931bf732a535",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You cover Pepper's ears and lead her past the humming carts. She allows it, if you scratch her nose."
+      },
+      {
+        "by": "nim",
+        "text": "\"Grandmother says ponies always know first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Nim."
+      },
+      {
+        "by": "nim",
+        "text": "\"She is usually right. It's very annoying.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_pony/narration": {
+    "source": "sha256:d29969c175f9cf4e5eb44f8670d8aa81ce9629a4aaf7264848737a95a5bb423b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pepper has gone stiff-legged, staring at the humming carts."
+      },
+      {
+        "by": "nim",
+        "text": "\"She'll stand there till Tuesday,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Nim."
+      },
+      {
+        "by": "nim",
+        "text": "\"Do something nice at her.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_pony/onSuccess/narration": {
+    "source": "sha256:ee3e939e02440b17575e545bec6f0d81039ea9ec7f8ccc5031d1aa4395360521",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pepper sighs and walks on, as if it was her idea."
+      },
+      {
+        "by": "nim",
+        "text": "\"Only Grandmother can do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Nim. She gives you three coins."
+      },
+      {
+        "by": "nim",
+        "text": "\"Bell-rider's tip. Don't tell Grandmother.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_pony/onFailure/narration": {
+    "source": "sha256:ee3e939e02440b17575e545bec6f0d81039ea9ec7f8ccc5031d1aa4395360521",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pepper sighs and walks on, as if it was her idea."
+      },
+      {
+        "by": "nim",
+        "text": "\"Only Grandmother can do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Nim. She gives you three coins."
+      },
+      {
+        "by": "nim",
+        "text": "\"Bell-rider's tip. Don't tell Grandmother.\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_nim_pony_bell_greeting/narration": {
+    "source": "sha256:3308002f147e3c416a5c32c5bb66348360669747de0d13374969a6683a9e0931",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You bow and ring a pretend bell: high, low, high, the gathering-town way. Nim squeaks."
+      },
+      {
+        "by": "nim",
+        "text": "\"You're from the towns!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She tells you which grandmothers are feuding this year. It is most of them."
+      }
+    ]
+  },
+  "gemfall-05a/scene_survey_guard/narration": {
+    "source": "sha256:543b7f189a3309232c645a797ced2c93b894a3e7b02f285632e28acbbd65a9d5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the engineers' tent, they are mapping the bridge's cracks. Corporal Tibbet guards the door. He is very new, and his helmet is too big."
+      },
+      {
+        "by": "tibbet",
+        "text": "\"No entry without a pass. Or a good reason. In writing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He holds out a clipboard."
+      }
+    ]
+  },
+  "gemfall-05a/scene_survey_guard_clerks_stone/narration": {
+    "source": "sha256:f2d02598bc88b7444806d8732f539c60b5697470a4cb1d1ce91349bf9045da9f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You show Tibbet the Clerk's Stone, tag 4117, marked WITH THEM in Pellam's hand. Tibbet salutes the stone. Then, to be safe, he salutes you too."
+      },
+      {
+        "by": "tibbet",
+        "text": "\"Logged goods may pass,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-05a/check_string/narration": {
+    "source": "sha256:3a2b09b5bfec5fc7420a520a2b3247c1093d1244eb76d321427929c8a0d6acf8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The apprentice stretches the knotted string along the crack."
+      },
+      {
+        "by": "apprentice",
+        "text": "\"Pull your end tight just as the knot lines up with the edge. It only reads true when it's tight.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_string/onSuccess/narration": {
+    "source": "sha256:6497fdc14845100dc363754e3b7acd5ce13615ee1292654eb9bece00692e13f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold it steady as a heron's leg. The apprentice counts the knots."
+      },
+      {
+        "by": "apprentice",
+        "text": "\"A hair wider than yesterday,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sighs."
+      },
+      {
+        "by": "apprentice",
+        "text": "\"It's always a hair wider than yesterday.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_string/onFailure/narration": {
+    "source": "sha256:bc82e4aeb706a3db52f6410d0ba8bed09eb22b806bf3929766b9dc5a7b99e7ac",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A breeze makes the string wiggle like a worm. The apprentice laughs and measures it herself."
+      },
+      {
+        "by": "apprentice",
+        "text": "\"A hair wider than yesterday. Always is.\""
+      }
+    ]
+  },
+  "gemfall-05a/choice_stones_on_table/narration": {
+    "source": "sha256:fde72c0d7d953e605ab78d3e4802e0f354adc8e578941e2c9e91ae1e0687ca0b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask looks at your packs."
+      },
+      {
+        "by": "brask",
+        "text": "\"Those are humming,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "brask",
+        "text": "\"May I see them, on the survey?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The whole tent goes quiet. Will you lay your stones on the table? Everybody vote."
+      }
+    ]
+  },
+  "gemfall-05a/choice_stones_on_table_keep_shut/narration": {
+    "source": "sha256:7847873a0c6cc1a27363e27465b0f03e89ef8d99d55bcc706c23e71fd52d8d40",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Not yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Brask nods."
+      },
+      {
+        "by": "brask",
+        "text": "\"Fair. You carried them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She writes KEPT SHUT in the corner of the survey and underlines it. You feel proud, and a little bit watched."
+      }
+    ]
+  },
+  "gemfall-05a/scene_span_question/narration": {
+    "source": "sha256:b355d5eda8efe1233360438a83664ab7985c2e29f86000a97fe5822bb8ab6091",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the bridge end, the warden with the flag stops you."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Where did you get that?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she asks."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"And where is it going?\""
+      },
+      {
+        "by": "narrator",
+        "text": "It is Old Lintel's question, word for word, a whole country from his bridge."
+      }
+    ]
+  },
+  "gemfall-05a/scene_span_question_answer/narration": {
+    "source": "sha256:0c285820024cf1f5bed2992ac5d59a93121e8b57ecabe579bd9fa014b7c0a986",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell her everything, from the Exchange docks to here. She writes it all down."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Nobody else answers properly,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"They just say 'mine' and 'north.'\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_span_question_ask_back/narration": {
+    "source": "sha256:2549e83b37957aee7a3d979d8390ba40b162f65b79e81a578d9dc92d86b32571",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "flag_warden",
+        "text": "\"From a carter,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"who had it from a centaur, who had it from a manticore, who had it from a troll.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She shrugs."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Good question. Nobody has a good answer.\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_span_question_river_asked/narration": {
+    "source": "sha256:2d83f81f951f5416346676f1898435b47ab3d132f8ec0fe77621a6fef175d480",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"The river asked us first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"It carried us all the way to the sea.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The warden blinks. Then she laughs, the first Skywarden laugh you have heard."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Did you have an answer?\""
+      },
+      {
+        "by": "narrator",
+        "text": "You are still working on that."
+      }
+    ]
+  },
+  "gemfall-05a/scene_pack_crossing/narration": {
+    "source": "sha256:2008eb4ff15b888d16e113f100d7c1a75896da56ef436cae73891098f17f3430",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Packs cross the bridge apart from people. Pellam offers the wardens' gem cart, or your own arms."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Logged is not owned,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. The cart hums like a hive. Its mule looks unimpressed."
+      }
+    ]
+  },
+  "gemfall-05a/scene_pack_crossing_reed_knot/narration": {
+    "source": "sha256:5fb222dd92f9c8ff530a7b51888f96961570d032aafa64d5aeed1b705310764b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wind Old Ossley's wet reed knot around your packs. The hum goes soft, like a faraway river. Pellam writes QUIETER THAN EXPECTED."
+      },
+      {
+        "by": "pellam",
+        "text": "\"Most irregular,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, pleased."
+      }
+    ]
+  },
+  "gemfall-05a/check_span_quiet/onFailure/narration": {
+    "source": "sha256:4438ab7da5e30e0687b838baf2ab5162a6ed34a79509023054b50768ebf82693",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The east rail is steadier, but not steady enough. Halfway over, the bridge groans and the flag slams down."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Span closed! Everybody back!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The only other way over is the old pride ford, underneath."
+      }
+    ]
+  },
+  "gemfall-05a/scene_rim_lookout/narration": {
+    "source": "sha256:a7d7525a0aeb3dc665e324e26b7f592c500c1297b2707c831b6c7ab7fd022bf9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A new centaur marker reads REDSPIRE, ONE DAY. Bracken Swiftmile, a relay centaur, skids up, her sash stuffed with letters."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Relay waits for nobody! Anything going south?\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_rim_lookout_send_word/narration": {
+    "source": "sha256:90147c11f5ff163bd01320af8b1be7edfd3e7dc7e38e43f4f4421abe8067f37d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You write two short letters. One for Elder Sefa: the cubs were right, the stones really sing. One for Old Lintel: we are finding out."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Troll'll take a year to read it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bracken, and gallops south."
+      }
+    ]
+  },
+  "gemfall-05a/check_fires/onSuccess/narration": {
+    "source": "sha256:26131861aa65fc5af4455ffe95b79d17e3cf4fa4c1e24ef5c95445215e336ead",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You count in hundreds, then in patches, then in valleys. Bracken helps. Your best guess is four thousand and twelve, and Bracken writes it down to carry south."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Biggest rush in living memory,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and whistles."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"And all of it humming.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_fires/onFailure/narration": {
+    "source": "sha256:69aa41b037e3554156a80c90c10c9f7d9f25418dd5a503ec375008a235319943",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One, two, three... you lose count at three hundred and something, when a cloud moves and a whole valley of fires appears at once."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"More than stars,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bracken, and that will have to do. She trots off south with your news."
+      }
+    ]
+  },
+  "gemfall-05a/interaction_level/narration": {
+    "source": "sha256:372a828fac03a0ba5315d8ea7f597f06317297791dfd70f848e1e3b57ff2da28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask brings a tray of water with a tiny cork boat on it."
+      },
+      {
+        "by": "brask",
+        "text": "\"Engineers' level.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Carry it flat across the planks. Keep the boat in the middle."
+      }
+    ]
+  },
+  "gemfall-05a/interaction_level/onSuccess/narration": {
+    "source": "sha256:05c98ca8a392190958270cfe90af51c7539afe4750421f035117b6603a4957f7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cork boat never moves."
+      },
+      {
+        "by": "brask",
+        "text": "\"Level to a hair,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask",
+        "text": "\"The approach is sound. It's the middle that worries me.\""
+      }
+    ]
+  },
+  "gemfall-05a/interaction_level/onFailure/narration": {
+    "source": "sha256:6051a2adc2092ed672ff6b6abc98fc123451a2aeb726b0d0b1da484bcd5ffca6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Water slops over, and the cork boat goes for a swim."
+      },
+      {
+        "by": "brask",
+        "text": "\"Either the plank leans or you do,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask, mopping with her hat."
+      }
+    ]
+  },
+  "gemfall-05a/interaction_level/onAssisted/narration": {
+    "source": "sha256:aa3d9b73c99a9a42099eafa56bd66999c705a24b58ee9bafd920ae08aa8a3d3a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brask steadies one side, and the water lies flat."
+      },
+      {
+        "by": "brask",
+        "text": "\"Level to a hair. It's the middle that worries me.\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_lantern_wisps/narration": {
+    "source": "sha256:5f6c476db7f37cfdca8975ed11a96fabe5207b348e683b57212940da202f8fe0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two tiny, giggling wisps have untied the lantern strings on the gem cart. The lamps swing wild. The mule starts to complain."
+      },
+      {
+        "by": "brask",
+        "text": "\"Get them off before the whole line spooks!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Brask."
+      }
+    ]
+  },
+  "gemfall-05a/scene_wisps_shooed/narration": {
+    "source": "sha256:a7fc4e92cc99ec85e97973d024381099a04a414c60a137ef6fdf52185f7f5ebf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wisps bob away over the river, still giggling. Brask scoops their leftover glow into a jar."
+      },
+      {
+        "by": "brask",
+        "text": "\"Free light,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "brask",
+        "text": "\"Take it. The tent has plenty.\""
+      }
+    ]
+  },
+  "gemfall-05a/scene_rim_lookout_pay/narration": {
+    "source": "sha256:95a431612f1398dd413461a748db52cc5f905881101015fa3f0d3cc4f17766a5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You press a coin into Bracken's hand. Your letters go in the front of her sash."
+      },
+      {
+        "by": "bracken_swiftmile",
+        "text": "\"Priority post!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She gallops south, and one very old letter flutters out onto your boot."
+      }
+    ]
+  },
+  "gemfall-05a/interaction_flag_rope/narration": {
+    "source": "sha256:e059676c275023b4f0e4742f08e3912faa1e574be9caf57bc335e804677bb2bd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The warden with the flag ties her loose signal rope back up. She waves you to the rail."
+      },
+      {
+        "by": "flag_warden",
+        "text": "\"Learn my flags before your turn.\""
+      }
+    ]
+  }
+}

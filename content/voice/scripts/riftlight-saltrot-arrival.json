@@ -1,0 +1,1241 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-saltrot-arrival/flats/narration": {
+    "source": "sha256:159b2202019e71e1a0c99937ffdebb12a4a1937af234ec6c5c74259f03c08dc4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Brackish water curls around ridges of mud. A Skupper pops up in a puddle exactly her size, crest high."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Puddle!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Your guide. Named for the puddle. There's always one that fits.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She points a fin at a heap of pale, cold silt."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"My town's front door is under that. Saltrot mud is brown and warm. This is gray, like glacier ice ground to flour. What's glacier silt doing on my mudflat?\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/shells/narration": {
+    "source": "sha256:8751c8e1ea6b55240ffd1d70adf51016ddab0b6753a14696710ecb915ddddbef",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle skips ahead, pool to pool."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I need water. You need shells. Mud has opinions,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Skip where I skip, or poke before you step.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Fiddler crabs wave one big claw each, in rows, like a crowd at a parade."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/shells_a_check/onSuccess/narration": {
+    "source": "sha256:c5c910d0dab9ed56d8df3082454752b69c413eae86811466ee1dfb94d8f14ccb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Dry-ish boots, all of you."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Good skipping,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle. From a Skupper, that is a medal."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/shells_off/narration": {
+    "source": "sha256:34d4f1beab1497b551f50bbe5158d155fa52fde7193c05fd36ead95f683b7c3e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One leg sinks to the knee with a long, rude squelch. Puddle tows you out by the sleeve, and your shin stings where a shell scraped it. The mud keeps your sock."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Mud likes socks,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"It's starting a collection.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/shell_path/narration": {
+    "source": "sha256:9bf7dd90ad0053bc9f24999fa382d89134522db1a17aa96864c5739cc3ccdd9b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The last steps up are three kinds of shell: whelk, cockle and oyster."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wrong order, and they roll,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle. She whispers a different bit of the order to each of you."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Put it together. I'm a guide, not a parrot.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/shell_path/onFailure/narration": {
+    "source": "sha256:742fd3d369509450b0cc5953d9820e8e57dd90ad639572de677455fdc828cb67",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A shell rolls. You slide back to the bottom and climb again the long way, which takes ages."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Scenic route,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, not laughing."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/town/narration": {
+    "source": "sha256:8b0a1b47bf3973668cf1e9bb9523c5803123717aa1a4497fc9e451204110871e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A round hatch in the mud is the front door of Tidepocket, Puddle's burrow town. Cold gray silt is piled on it like icing. Tap, tap, TAP comes from below."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Grandmother Winkle,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Strict. She says a guide who can't clear her own door can't keep anybody's path.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest droops."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Help me dig?\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/town_a_check/narration": {
+    "source": "sha256:9f450502ce97538a76b6d39e4d5e059160ae30081695288c502bb3e2e49247f6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone grabs a shell scoop. Puddle digs too, flinging silt over her shoulder and onto your boots."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Sorry. Sorry. Not sorry, dig!\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/town_b_check/narration": {
+    "source": "sha256:c8d0dd2d307a4f567dab6f6a90817286bae62d0497b6f61ead210ab95f9f41eb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle draws a line in the mud with one fin."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Water runs downhill. Make it carry the silt away for us.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/town_brace/narration": {
+    "source": "sha256:af61ee67512b8f33e7547375b49345a9d66d5788d41744fb09ebd5912bba0b5a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your thornguard plants both feet and braces the sagging hatch frame, so the silt can't slump back. Puddle digs between those sturdy legs."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Best fence I ever had,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/town_done/narration": {
+    "source": "sha256:f0523f61a646ee8cfeddb0e1a798d531c72a9457561c0d9aa73a90734cbdaaf9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The hatch swings up with a pop and a puff of warm air. Skuppers pour out in a cheerful line, blinking. Last comes a very small, very old Skupper with a very large frown: Grandmother Winkle."
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"About time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Then she sees the clean hatch, and almost smiles."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/town_off/narration": {
+    "source": "sha256:c5a23f9109f40f3ab26c4c72e390068d8140a544c2a50109f6e0c861a95cb554",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The silt slumps back over half the hatch. A Skupper child pops out through the gap like a cork, then another. At last Grandmother Winkle squeezes out sideways, muddy to the crest."
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"Half a door,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and looks at Puddle. Puddle looks at her feet."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/hatch_party/narration": {
+    "source": "sha256:41a57babaaae878bd957bce0d004bc72f47c69be6c1a82e66d9575018ea9b483",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The whole town blinks in the sunlight, and everybody wants help at once."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Pick a job,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"and do it loudly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Grandmother Winkle supervises from a shell, which mostly means pointing."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/silt/narration": {
+    "source": "sha256:565f362446e0abc5720f92d318d4c733eba705e2397056ecd78b86fdfbc55481",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Now you can see the silt properly. It is pale and gray and cold, like flour left out in the snow."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Saltrot mud is warm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"This came from somewhere with ice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A Skupper child named Dab licks some."
+      },
+      {
+        "by": "dab",
+        "text": "\"Tastes like old pennies.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nobody asks how Dab knows what pennies taste like."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/local/narration": {
+    "source": "sha256:981dee4f304384e229bd5de8da9d2e3d8a43d13943708cae7c4523d5b45344bb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"The silt buried my path markers overnight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle. On a far shell-bank, a frogfolk fisher named Fen hops on one foot as the water rises. Her fish bag sits on the next bank, and the gulls have noticed."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"She followed my markers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle groans,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"and they went the wrong way.\""
+      },
+      {
+        "by": "fen",
+        "text": "\"Help me get my bag?\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Fen."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/path_check/narration": {
+    "source": "sha256:18a0ef1efc053bfb59c37475a4659e5e4b6691aae8eae11bc0ea4371c04cc4d3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle hands you empty shells."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Firm ground only. Trust a path once, then look again.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/path_check/onSuccess/narration": {
+    "source": "sha256:a0048c31784b2abed6f3d3d1b255db405c054fa2fee6dfd4f929e770c0156b63",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fen hops along your new markers, grabs her bag, and hops back."
+      },
+      {
+        "by": "fen",
+        "text": "\"Now that's a path,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Puddle's crest stands up tall."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/traveler_done/narration": {
+    "source": "sha256:2157625a2eb373bd53fa1d375e4c39e4fbbc27ba12dc1a20025d130de655ef3e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fen hugs her bag and gives you a dried fish, which nobody will be eating, and a small river charm."
+      },
+      {
+        "by": "fen",
+        "text": "\"For luck on soft ground. It warms up over firm mud.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squelches off, gulls following in a hopeful cloud."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/traveler_off/narration": {
+    "source": "sha256:1fedab13f53f0273e42e10d94407a1fba71453e32893612cbb2a5c51aae92447",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A wave slaps the bank and soaks the bag. Fen grabs it herself, dripping."
+      },
+      {
+        "by": "fen",
+        "text": "\"Mostly dry. Mostly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squelches off without saying thank you, and Puddle scratches a note in the mud with one fin: look again."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/puff/narration": {
+    "source": "sha256:87dbd22f373002b4edc99cdbeebf759602796dc141d571a311b7236591a21525",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Something round bobs past in the channel. It's Dab, puffed up three times her size, spines out like a very round hedgehog. A gull startled her. Now she is floating toward deep water."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Puffed Skuppers float,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, her own crest straight up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They can't steer!\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/puff_b/narration": {
+    "source": "sha256:6638b39790d4fd1dc746d24c6f4a9e162768d044b0ba2ff6e6c824cd6983e602",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"Low and slow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Like the tide going out.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/puff_done/narration": {
+    "source": "sha256:ffc6df8947e54561daf69437735fcadc2cf19180509233fda40f51f1fb8f6350",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Dab lets out a squeaky sigh and shrinks, like a small round bagpipe."
+      },
+      {
+        "by": "dab",
+        "text": "\"Thanks. This morning I saw old stone posts upriver, where the pale silt starts. And it was snowing on them. Just on them.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle goes quiet. Grandmother Winkle sends a warm honeycake after you, for saving Dab."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/puff_off/narration": {
+    "source": "sha256:22cafc62b7a5b47318479a52b1d99d3d08158d5b9c52c7d683326ff9f27a0835",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Dab drifts out of reach. Puddle dives in, tows her back, and gets a spine in the nose for her trouble. So do you, pulling them both out."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. Family,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle. Dab sniffs."
+      },
+      {
+        "by": "dab",
+        "text": "\"Sorry. This morning I saw old stone posts upriver, where the pale silt starts. And it was snowing on them. Just on them.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/ossley/narration": {
+    "source": "sha256:8b42ba5d6c46fe0a36f056dc54535b0528efdecdb6e1bba6714a6d407a842e9f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A flat boat runs aground with a soft thump. Old Ossley, the frogfolk ferryman, peers over the side, his boat full of crates for Tidepocket."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"It's this cold silt,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he grumbles."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Never had it down here till this season. Came down the river with the melt. Hands?\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/ossley/variants/0": {
+    "source": "sha256:ef203a24c4f1386865f45f1ad702f06de2357e0a33c2d4ea72de95228f016519",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He winks at you."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Same river, same fare, eh?\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/ossley_b/narration": {
+    "source": "sha256:18520deeb011912503984dd317e35eec8beca5b327e9a89e080bf78b3423c49d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "old_ossley",
+        "text": "\"Under the keel,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley,"
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"and lift where she's flat.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/ossley_done/narration": {
+    "source": "sha256:4b9a928936260c2bea6bfa0e4c3d29b527b6e21eb6c001cc8e51718e8f168c0e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The boat floats free. Ossley catches a sliding crate of kelp with his tongue, without looking."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Honest work, honest pay.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He pays you five coins."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"When you want to go upriver, I'm your frog.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/ossley_off/narration": {
+    "source": "sha256:795be865d161b61c9c3eb2e650c68ac6d0039f7a2290cfc468e0c97c6295f5e0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The tide wins the race. You carry the last crates through knee-deep water while Ossley bails with a bucket. Two crates arrive damp."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"For the wet ones,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and pays you three coins, not five."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"When you want to go upriver, I'm your frog.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/camp/narration": {
+    "source": "sha256:1291819e270525e9d9f68ae89168b7d83d8681e7727ce8d20bd73a6c1c49eddf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The families press a hot kelp cake into every hand."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Diggers eat first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, and eats first anyway. Grandmother Winkle settles on her shell. Out on the flats, two travelers are wading toward the town's lamps."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/camp_story/narration": {
+    "source": "sha256:24be1e019bf32eed069d71df107ebd13469d345b02d42da22360503166392096",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "grandmother_winkle",
+        "text": "\"Silt comes from where water comes from,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Grandmother Winkle."
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"Upriver is a bridge with no river. Guides have one rule for it: show the bank, never the stone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She squints at Puddle."
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"You know the rule?\""
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Yes, Grandmother.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she tells it again, shorter."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/camp_story/variants/0": {
+    "source": "sha256:c5941ef04a73394bbfcd209572782cada2b90efc9ba6574a419801238a2ddb16",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "grandmother_winkle",
+        "text": "\"And a guide,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she adds,"
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"finishes digging her own door.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest droops."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/camp_gift/narration": {
+    "source": "sha256:3c1e6eb1a9994916cc5b5e18c793ae2f7452589be926915d40a638b6d79da594",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Grandmother Winkle breaks the honeycake into tiny pieces and keeps the smallest."
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"Good manners. Upriver is a bridge with no river. Guides have one rule for it: show the bank, never the stone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She taps Puddle's crest."
+      },
+      {
+        "by": "grandmother_winkle",
+        "text": "\"You may show these ones the bank.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest shoots straight up."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/lesson/narration": {
+    "source": "sha256:0f5645d0c3d5004ad00691967e79a31311ffb4b02900e78effe27997e0ca851d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren Wisp, the kitsune from the glacier, has come down the river with Pip Thistledown, a young manticore scout with a notebook and a spoon he pries things with. Pip waves the spoon at you like an old friend. He waves it at everybody."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Every rift hums,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"A starweaver can learn to answer one. That is called Attune.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Far off, something hums like a bee in a bucket."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says knock loud!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/lesson/variants/0": {
+    "source": "sha256:65df45b032244759057b87310a5b2eb795a4c239498fb93f7d056737d81993c2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren Wisp has come down the river with Pip Thistledown, the young manticore scout, checking another place that has moved. Pip waves his spoon at you. He waves it at everybody. Far off, something hums like a bee in a bucket. Seren asks you to listen and compare it with what she taught you before."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says knock loud!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/hum_done/narration": {
+    "source": "sha256:6033562317ec65dedbb40d19cc9b43b361533fc0452b2a64a95a38ebd4d54f7f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Under the mud, a low note hums back from far to the north. In your pack, the Listening Chime leans that way all by itself, north and up the river, toward the glacier. Seren goes very still. Pip writes GLACIER and underlines it twice. Puddle's crest folds flat."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The silt comes from the ice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"From your ice.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/hum_off/narration": {
+    "source": "sha256:d744e44f2c72c9e7c7dc56a7b1108f8309f3c7cfcf0452c27ad87cbbbf188d94",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The hum hides in the squelch, so Pip knocks your chime with his spoon. BONG. Every fiddler crab dives into its hole, and something under the silt grumbles. But far to the north, a low note answers, and the chime leans that way, toward the glacier."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The silt comes from the ice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle whispers."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"From your ice.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/trail/narration": {
+    "source": "sha256:d462489cdec2716c8dc714ebcb9975936912f090f7fe1a99623fae14694b25ae",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip spreads his muddy map on a reed drum. The pale stripe of silt runs upriver, wider and colder the farther it goes."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Follow it, and we find where it starts!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren asks Puddle to come. Puddle folds her fins."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"To the high shells. Not past them. Past them is the old bank, and Grandmother's rule.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/trail_b_check/narration": {
+    "source": "sha256:4878268df1d9865fc33373eb823434daca63e27707748235457a38db1616f96e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"Poke the gray,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"It's softer than it looks.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/trail_done/narration": {
+    "source": "sha256:514cda463a335cf9afbda9dcae65ce48bdbc4b75639a3ce3ed126b847a800476",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The pale stripe grows wider and colder, a gray road through the brown. Ahead, it climbs a long, low rise. Pip skips ahead, notebook out."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will want a map of this!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, every fiddler crab lifts its claw at once."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crabs/narration": {
+    "source": "sha256:446880b21e70fdbc3609d42c45a266cb3409c400cafc708b292ad2b28e5f0083",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crabs wave together, all facing upriver."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They don't do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They wave by the tide, and the tide's hours away.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her crest shoots up."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They know something we don't. Find out. Fast.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crabs_leap_check/narration": {
+    "source": "sha256:b1ee93d4430ea9c263d65833096fb728570a02c3be8e309425e6d932804348f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your manticore crouches, wiggles and leaps high onto the ledge in one bound. Pip's mouth falls open."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Teach me that!\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crabs_done/narration": {
+    "source": "sha256:223ac875122bd2b6c802f2985b1cff910b5fb8f8cd86b1a2edb36df05796a893",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Upriver, water is piling up behind a long gray bar of silt, like a bath with the plug in."
+      },
+      {
+        "by": "party",
+        "text": "\"When that bar gives, the water comes all at once,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"An early tide,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But that's not what they're waving about.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The silt beside you heaves."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crabs_off/narration": {
+    "source": "sha256:88a828029f24e92dded95ab4fbb02a69121c742ffa4b2e819be57c7cbfe5d911",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You work it out late, after a crab pinches your toe to hurry you up. Upriver, water is piling up behind a long gray bar of silt."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"An early tide,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But that's not why they're waving.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The silt beside you heaves."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crab_warn/narration": {
+    "source": "sha256:c00611954512cf38e3cb439ea36671b681f9fe99e83adb4339b7b07642bc0b35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two big crabs push up out of the silt, shells clear as windows."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Glassback crabs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The cold silt froze their warm mud. Now they want this warm bank.\""
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says stand your ground!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Or we find them somewhere warmer,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That takes time, and the tide is coming.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crab_done/narration": {
+    "source": "sha256:d4ad1f7d39905461dbeeadd21adcb7f55d32a2d5c2476b9818445b4ecdcaac00",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crabs back off, glaring, and scuttle away over the flats. One leaves a glassy pebble at your feet."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"A luckstone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Very good manners, for a crab.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she frowns after them."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They're still cold. They'll be at somebody's door by the next tide.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, water begins to slide."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crab_lead/narration": {
+    "source": "sha256:b72715329137b273a0680d8fb4c70ef3d9445547be17ecd80c580935f1e7b1ef",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle sniffs the air."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Warm mud smells like toast. Find the toast.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crab_led/narration": {
+    "source": "sha256:372f05c3dac097644c4c85c28528e7f14a6d68e66875b2d1ce4cbe8a6cde5d97",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You find a hollow where the sun has sat all day. The crabs sink in up to their eyes and sigh like kettles."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They'll stay,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, proud."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"No more crabs at anybody's door.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she looks upriver."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But that took a while.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, water begins to slide."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/crab_nipped/narration": {
+    "source": "sha256:fdce52beeb6e873472388aa26f3b9a4ebafe45287847f193a36c64e30c8477c3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You find a warm hollow, but the crabs take the long way to it, right through your ankles. Pinch. Pinch. At last they sink in and sigh like kettles."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They'll stay,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Your ankles will recover.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she looks upriver."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But that took a while.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, water begins to slide."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/tide/narration": {
+    "source": "sha256:48b6071df955c11dbfbd7f8d2b4940e5611a89d0f587c4bac53e2dc01b655296",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up the channel, the silt bar gives way. A gray wall of water slides toward you, quiet as a cat. For the first time, Puddle sounds worried."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"High shells! Now!\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/tide_a/narration": {
+    "source": "sha256:b3343dd34011b25dee135947be7ac213b711ac953c6cb59dfe4cb4ca48ab0027",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"Light and fast!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Puddle, swimming beside you."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Don't stop to look at it!\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/tide_done/narration": {
+    "source": "sha256:f5a4f50a85673065b17edd022d26ef9eb4b53769643e3a32169fe287d4a1c3f6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone's across, and Pip counts heads twice."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Right number,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. A fiddler crab is sitting on his head, waving. One last channel lies between you and the high shells, and the water breathes in and out."
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/tide_dash/narration": {
+    "source": "sha256:f0d4f796b9d78698150e5e22cc5d7fbd3fe0a3782b9656ae161e6c960bd4eec8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The water pulls back from the last channel, then rushes in again, like a giant, rude breath."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Wait for the pull,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, crest raised high."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Then go.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/tide_dash/onFailure/narration": {
+    "source": "sha256:1b437b15b88719dde36476983f6ad70cbe11740377dd101d66db1be9c5f56082",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The water grabs you mid-hop. Puddle puffs up round, and you ride the last bit on her like a spiky raft."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. You're welcome.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/lead/narration": {
+    "source": "sha256:8748b70f383283bda0eb0a73aae44e499fc14f6bfcd4b81b3d11aaf2ae02bd48",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From the high shells you see where the pale stripe ends: a line of old stone arches, standing in dry ground with no river under them. A little snow is falling on them, and only on them."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The buried bridge,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle says quietly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Show the bank, never the stone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren looks north, toward the white mountains."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Master Orin Vale studies silt. He should see this.\""
+      }
+    ]
+  },
+  "riftlight-saltrot-arrival/ending/narration": {
+    "source": "sha256:ebcf6d235d5bb14c90301fb82ee0b5f366324aa20684618cda22f53af5df0489",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The water goes back out, slow and silver. Puddle scratches the day into the mud for the guides' account."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Tomorrow I'll show you the bank of the buried bridge. The bank. Not the stone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is your piece: the cold silt burying this town came down the river from the glacier. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}

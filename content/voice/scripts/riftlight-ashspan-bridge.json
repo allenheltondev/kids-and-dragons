@@ -1,0 +1,1199 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-ashspan-bridge/bridge/narration": {
+    "source": "sha256:4930fcea972fd76c41ecca89575a5c370a5157064bdaf0dd4ee7fe7481e3ae3a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ashspan Bridge crosses the Great River here, but the melt has torn the planks out of its middle. Old Ossley, the frogfolk boatman, leans on the pole of his flat boat. A long pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Folk cannot walk over,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says at last."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"So they ride with me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A line of travelers waits on the bank with baskets."
+      },
+      {
+        "by": "party",
+        "text": "\"Can we get everyone across? And the bridge mended?\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at you a long time."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"That is the question.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/bridge/variants/0": {
+    "source": "sha256:10e1e234a8eb67713eb420a02ecba0a071530ae6dcfeed1acdb49da6ad40a8e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then, more quietly:"
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"The river. You, me, and a rope.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He nods once. That is all, and it is a lot."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/plank_check/narration": {
+    "source": "sha256:f30d2605f5c54ee3b6853f398767345f1e2535dcab3e0dbbf1d8f55bfe5fd469",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The plank bucks like a pony."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Flat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley. Just that."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/plank/narration": {
+    "source": "sha256:8e28daf5b1913da8cdc946e8bc6da15ffa948f035b3201dcf6f7620197c8e1f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the plank flat until both travelers are aboard. Ossley tests it with his pole."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"That will do.\""
+      },
+      {
+        "by": "narrator",
+        "text": "One traveler pats the plank, the way you pat a good horse."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/brace_done/narration": {
+    "source": "sha256:cbe69d4da7e870ed4292efb6e189cfaed567c22afeb624357a8788d6f5d4c99e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The plank end does not budge, even when the heaviest bag thumps across. Ossley taps it."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Like a post,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Long pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"A post that gets out of the way after. Hard to find.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/board_wet/narration": {
+    "source": "sha256:9cd70d253aade7ff2ddf109ff129d5c3e59a71816af6bd681a95384f78e0fbc0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The plank tips, and one bag drops into the shallows, quacking. Everyone fishes it out."
+      },
+      {
+        "by": "tilly",
+        "text": "\"It floats,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says its owner."
+      },
+      {
+        "by": "tilly",
+        "text": "\"It's a very good bag.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ossley wrings out his hat and says nothing. That is how frogfolk laugh."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ferry_ask/narration": {
+    "source": "sha256:f37ce89b93b97b5864d1049b4b746e262378418713c319cdd7f4be7ab09dae7d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The nearer traveler hugs her bag. She is a griffin with a shawl."
+      },
+      {
+        "by": "tilly",
+        "text": "\"I'm Tilly. Duck eggs, for market across the river. They aren't due for days.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The bag quacks."
+      },
+      {
+        "by": "tilly",
+        "text": "\"They disagree.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ossley pushes off."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Strong river,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Flat boat spins, if the weight sits wrong.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ferry_plan/narration": {
+    "source": "sha256:585975837be2892f8bcd97d3ea6c23951b0d3f4f56a7a6cb8b22188a9abd2dcd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ossley hands out jobs without words: a finger at the pole, a finger at the water, a finger at you. Then, because you look puzzled:"
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Steady the boat. Watch the river.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you help him across?"
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ferry_hold/narration": {
+    "source": "sha256:6aaedf9ea5869056538e7696747074a9e57cf2653c8d3ce74ce40f9c23bd3b6c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "old_ossley",
+        "text": "\"Left,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley. Pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Right.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Left.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tilly leans the wrong way every time."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/crossing/narration": {
+    "source": "sha256:474a1284a67dd60c2ca5b651c33da45d3990665ae7b3149b4081d68d3788ae6c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The flat boat wobbles like a duck, then slides across as straight as a plank."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Frogfolk dislike spinning.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tilly counts her eggs. It takes no time, since they are all in one bag."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ferry_spin/narration": {
+    "source": "sha256:2370ce1f104a13a3d96115d517b3e156e6cc8383c3fb07e0e3a81cff1621cab8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The boat turns one slow circle. The bridge goes by twice. Ossley's throat puffs out like a drum. He jams his pole into the mud, and the boat stops, a little dizzy. Tilly checks her bag."
+      },
+      {
+        "by": "tilly",
+        "text": "\"Still quacking.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ferry_dock/narration": {
+    "source": "sha256:a6af24d602284ffaa6514945cdd74ab92096c2d93e91e447d5433235f69b65c2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The far landing comes up fast."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Bump,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Do not crash. Tell me when.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tilly covers her bag with both hands."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/dock_bump/narration": {
+    "source": "sha256:81bba4fb70cb343d59bfd99f9d049eaf2c85e9730464728fba390b1db3eef918",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bonk! Tilly's bag flies out of her arms and into the shallows. You jump in after it, up to your middle, and hold it high, dripping. Something inside goes tap, tap."
+      },
+      {
+        "by": "tilly",
+        "text": "\"Oh no,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tilly."
+      },
+      {
+        "by": "tilly",
+        "text": "\"They felt that.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/far_bank/narration": {
+    "source": "sha256:fef7be69ebd7e6f53d91bee3650e715f0dd1613200c7ededbacd38d27fb7ac23",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A dragonling bridge-mender stomps down to meet you."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Bryn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and glares at the broken deck."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Planks, I have, in my cart up the bank. Hands, I do not. Help me mend this, and the market folk can cross.\""
+      },
+      {
+        "by": "tilly",
+        "text": "\"And my eggs can get to market,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tilly."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/plank_pile/narration": {
+    "source": "sha256:70e9495ea0c37ec50cf942823612eca38763c276e9aa1fbdf07f4f96805cb9a9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A heap of old planks blocks the ramp."
+      },
+      {
+        "by": "bryn",
+        "text": "\"That pile has been there since dawn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn."
+      },
+      {
+        "by": "bryn",
+        "text": "\"I think it is breathing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You stamp on the ramp. Thump! The whole pile jumps. A wide wet mouth opens under the top plank, then another, smaller. Two mire mimics, a big one and a little one. Mimics dress up as whatever lies about and wait for a snack. Tilly's bag smells like duck."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/mimic_won/narration": {
+    "source": "sha256:85f2588f1d2bb433e4a2cd74e7dce6208fc0903bee93603bc11c9b752b8fae60",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The mimics hiccup, drop their planks and waddle off to the reeds. They leave behind a springy bootlace one of them once swallowed."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Not mine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Yours.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ossley nods. Long pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Hard to unload a pile that argues.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/mimic_shooed/narration": {
+    "source": "sha256:06b67cf238dd7c971d285d847659f7537db1fcbb213c2c0a0e7251403af101ca",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The mimics are faster than they look. You end up in the mud with a plank on your head. Ossley tips both mimics into the reeds with his pole, then pours you warm tea from a flask."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Mimics,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. That is the whole lesson."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/cart_plan/narration": {
+    "source": "sha256:037b74e1b03295ad65a4fdebb4730e8bc561fe4490b08fcee892c53c060374a6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bryn's cart of new planks sits in mud up to its axle. Her two pack goats pull and slip. One sits down, as if to say, call me when it's over."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Stuck, the cart is,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Unstuck, it must be.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you free it?"
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/cart_free/narration": {
+    "source": "sha256:7e6645dda9db1236fa5df594aba12d25e72b79398593cb351377431bef07d8c7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wheel pops free with a slurp. The goats trot up the bank as if it were their idea. Bryn kisses one on the nose, and it eats her sleeve. She hands you a brave whistle."
+      },
+      {
+        "by": "bryn",
+        "text": "\"For calling goats. They ignore it, but it is very loud.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/cart_stuck/narration": {
+    "source": "sha256:00874b5204e6e73c0e5db70badbeca62d91ee99a6ab4da10b97d85839f591a21",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The mud wins, until Ossley's rope and everyone's backs haul the cart out. One plank snaps."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Kindling,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sighs Bryn. She hands you a brave whistle."
+      },
+      {
+        "by": "bryn",
+        "text": "\"For calling goats. They ignore it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The goats pretend to be someone else's goats."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/bridge_head/narration": {
+    "source": "sha256:c7f631dac46904b27883fc8ba177ab118182a4e0faf30881845d446cfb0fb264",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cart cannot cross the broken end, so the planks go down hand to hand while one goat watches, no help at all. Soon they are stacked at the bridge end. Below, logs and branches have jammed against the middle stone pier."
+      },
+      {
+        "by": "bryn",
+        "text": "\"The river threw its furniture at us,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn. If the heap shifts, it will shove the bridge crooked."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/jam_plan/narration": {
+    "source": "sha256:8456bd9fc925c38322920ac939a099fee8a20263140e7ab25931fccccfefc0b8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The jam is logs, roots and one whole fence."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Rope it all and pull,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Quick, quick.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ossley squints at it for a long time."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"One log holds the rest,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Find that one. Slower.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, the river nudges the stack of new planks. What will you do?"
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/haul_check/narration": {
+    "source": "sha256:c2fdc57a17c5141def51be20bfebbeb64f173072f26d4c9f1bb775b6df16d227",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "bryn",
+        "text": "\"Pull!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Bryn. Ossley sighs and takes the end of the rope."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/jam_shift/narration": {
+    "source": "sha256:7bd3f59f245a7e7b3abb03d50aee78ba1e69e97d7785c6e47cf7144d5f108448",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The heap lurches, and the pier shudders. Everyone grabs a rope and hauls until the last log slides free. Ossley hooks a branch off his hat."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Rude,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he tells the river. The river does not say sorry."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/jam_clear/narration": {
+    "source": "sha256:fbd55ef626b40ac7efaf9e7c626446e39d823db60c68b4de8630823ee6dfeb35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The logs bob away downstream. Then one log turns and floats back upriver, against the current, before it gives up and follows the rest. Ossley watches it go."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Hm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. The pier stands straight. Above it sits the cracked middle beam, and under that, the stone that holds the middle of the bridge up."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/span_stone/narration": {
+    "source": "sha256:5ef41c96a105380f6ddd135a2ba55119613f97759e299cbcb73757c38afbd810",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every stone in Ashspan is yellow and crumbly, like old cake, cut from this very bank. But the span stone under the middle beam is dark and heavy, with pale rings inside like a sliced onion."
+      },
+      {
+        "by": "bryn",
+        "text": "\"No rock like that for a hundred miles,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn."
+      },
+      {
+        "by": "bryn",
+        "text": "\"My grandmother said the bridge was built on it. It was here first.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then your Listening Chime hums and leans upriver, toward the glacier far away. Ossley watches it a long time."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Huh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/carry_beam/narration": {
+    "source": "sha256:100e1dee82f3d39c8638dfe30ebb34e95b026d930eff7baa1fccdd8b980b240f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The new beam lies on the bank, thick as a sleeping cow. Everyone takes a place along it. Bryn walks backward in front, calling,"
+      },
+      {
+        "by": "bryn",
+        "text": "\"Level! Level! Mostly level!\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/beam_plan/variants/0": {
+    "source": "sha256:56d85406423958f6f5484c6feffe172375a23aefa4928147725e5c5987c31aac",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "First Bryn patches the chipped span stone with mortar, grumbling."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Old stone, this. Not mine to break.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she looks at you."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/lift_check/narration": {
+    "source": "sha256:ca3a3cc6c5ce07d0cfad6b1bc87560f197c8b52874b57dc73333876e86f77052",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "old_ossley",
+        "text": "\"One,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley. A long pause. Everyone wobbles."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Two.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Another pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Three.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/beam_up/narration": {
+    "source": "sha256:502b56dee90a95e0252227f305b7b825215aa54383abb8661519874bde87c040",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The beam drops into its notches with a deep thunk. Bryn pats it like a pony."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Do not tell the old one.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Ossley taps it, and it rings clear. Bryn hands around her lunch pail: a supper bundle, still warm."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/beam_slip/narration": {
+    "source": "sha256:05700bffaf14b2f5aef4ced63febb1f0888d9f175b59b9af7492b59c0d24cbe1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The beam thumps in a finger crooked and scrapes everyone's hands. Bryn taps it straight with a mallet."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Shy, it was. Brave, it is now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It rings a bit flat, but it rings. Bryn hands around her lunch pail: a supper bundle, still warm."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/hatch/narration": {
+    "source": "sha256:a94afb6ea9cb396247081aec3c292fcf9b16ad551ff5e6d1fd67e71ecdf9db68",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tilly's bag cracks. A tiny beak pokes out."
+      },
+      {
+        "by": "tilly",
+        "text": "\"Oh no,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tilly."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Oh yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ossley. A duckling the size of a teacup tumbles out, then a whole fluffy handful. They waddle toward the gap in the deck, peeping."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/hatch/variants/0": {
+    "source": "sha256:fc32e0a5fa940827c30c50218f1d0190bca7df7560168f8bddb586fb492d2567",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tilly",
+        "text": "\"That bump at the dock,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tilly faintly."
+      },
+      {
+        "by": "tilly",
+        "text": "\"It woke them up early.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/duck_plan/narration": {
+    "source": "sha256:98933c83aa0f6136a75d0a135d73f9b8537c4e511b6801f28a2c4b0490651412",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One duckling wanders to the edge and peers down at the water with great interest."
+      },
+      {
+        "by": "tilly",
+        "text": "\"Eggs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tilly faintly,"
+      },
+      {
+        "by": "tilly",
+        "text": "\"are supposed to wait until market.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She holds out an empty basket. How will you get them to safety?"
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/coax_check/narration": {
+    "source": "sha256:c84a341153ebe2a21ec298ebc9d88f758662837ec06be9c3ef182afe3448d709",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Peep,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "ducklings",
+        "text": "\"Peep,\""
+      },
+      {
+        "by": "narrator",
+        "text": "say the ducklings. It is going well."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ducks_safe/narration": {
+    "source": "sha256:f07a49667a967f39555977a8ee5b030c8f74bc74d57c04b28ca45495414eb374",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ducklings tumble into the basket and go quiet. Tilly counts, loses count and counts again."
+      },
+      {
+        "by": "tilly",
+        "text": "\"All of them!\""
+      },
+      {
+        "by": "narrator",
+        "text": "One falls asleep on Ossley's hat, and he does not dare move. Tilly ties a songbird ribbon around your wrist."
+      },
+      {
+        "by": "tilly",
+        "text": "\"For my heroes.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ducks_loose/narration": {
+    "source": "sha256:8e9f9c36f0306e42c723c211afb636828040a1d0a4c954e0ad51cc04187523b3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three ducklings dash for the gap and cling to a plank end, peeping. Ossley fishes them out with his net. One pecks your ankle. Tilly tucks them all in the basket."
+      },
+      {
+        "by": "tilly",
+        "text": "\"They'll learn. In about a year.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She ties a songbird ribbon around your wrist."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/duck_friend/narration": {
+    "source": "sha256:4c4d1f8ec7cfb00f84fc7390072b31dbcaf4226de7b2e9d84bff81cea0458ac6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One duckling will not stay in the basket. It climbs out, waddles over, and sits on your boot. Peep. Tilly laughs."
+      },
+      {
+        "by": "tilly",
+        "text": "\"That one has picked you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tilly",
+        "text": "\"They do that. It may go with you, if you like.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Do you take it along?"
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/planks_plan/narration": {
+    "source": "sha256:c7489415518a462cb62ddaa0f7cfb026354344d8688e6b9a61b5501c4109c309",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Now the deck. Bryn's planks wait at the bridge end, and the gap yawns between the two halves."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Across, they go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Bryn. How will you get the planks across?"
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/planks_plan/variants/0": {
+    "source": "sha256:a4e368b6c3dafc0ac7e0c0856cdf0da02b0fb7d5a7bbfd8929cfb9e1fec233c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bryn counts her stack and frowns."
+      },
+      {
+        "by": "bryn",
+        "text": "\"One short.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/planks_laid/variants/0": {
+    "source": "sha256:12ea21b49b1395dddad0421783acd49172f9c04309b0a27436ea0f323601c279",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One hole is left, and no plank to fill it. Ossley looks at his boat a long time. Then he pries up a board from his own deck and hands it over."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Bridge first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/bridge_open/narration": {
+    "source": "sha256:0511396ea3cc12af29ecd0c4f7b7fd962404a10f7d6731809a09176063eb9c8f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk start across in a long, chattering line, baskets on their heads. Bryn pays you six coins from the toll box."
+      },
+      {
+        "by": "bryn",
+        "text": "\"A bridge pays its menders.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/folk_cross/narration": {
+    "source": "sha256:96fc90610ad4f099de6b3b81ff438bd660177e05d036696cfdec0b705b167728",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tilly crosses last with her peeping basket."
+      },
+      {
+        "by": "tilly",
+        "text": "\"I'd have missed market,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells Ossley."
+      },
+      {
+        "by": "tilly",
+        "text": "\"Thank you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He tips his hat, then checks it for ducks. She presses warm oat cakes into your hands."
+      },
+      {
+        "by": "tilly",
+        "text": "\"Don't share them with ducks. They take advantage.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/rest_hut/narration": {
+    "source": "sha256:887fa5652201fa9bbb9020e0f5568521a6bbee4d87af736ba35f95d16f02245f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bryn lights a stove in the bridge-house. It smells of oats, and a little of goat. Ossley points to a raised footpath into the Whispering Marsh."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"A school called the Academy is up there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Long pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"They made me a reed mat. Nobody has fetched it. Follow the posts. The ducks take shortcuts. You should not.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/rest_hut/variants/0": {
+    "source": "sha256:31ff52b45cba1ae92dfbc0723a9ed618e5204cb383f30c35c6569656d048ff8d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He looks at the hole in his boat where the board was."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"A dry mat would cover that.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/share_bryn/narration": {
+    "source": "sha256:e491bee55963bd60ae04fd766d42cf685a7d2c1622fc7574e1bd31533805a118",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You set out your supper. Bryn adds oats, and Ossley adds a fish nobody asked about. It is an odd meal and a very good one. Bryn hangs a river charm around your neck."
+      },
+      {
+        "by": "bryn",
+        "text": "\"Wet out of your boots, it keeps. Mostly.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/tie_boat/narration": {
+    "source": "sha256:bf40651bfd082bcdd5819584554d5c339ccd94243275ac0a2c4b1efc08d9a327",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ossley shows you his favorite knot, the one that comes undone when he whistles. You practice until it comes undone when you whistle."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"A natural,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Long pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Or a menace.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/ossley_routes/narration": {
+    "source": "sha256:1172a7fcbb9e4d777d4d5b1279919e0347057f570aafb0fcdbc9fc05d8f2d94c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ossley coils his rope."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Tomorrow's tide takes me downriver,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says,"
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"to the coast called the Saltrot. This year the silt there came from somewhere I do not know.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He looks at the dark span stone under the bridge."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Like that.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Up the road, he says, are the old boundary stones, where the keepers count things."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Ask nicely. Bring a cheese.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He blinks both eyelids at once. That means a joke."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/routes/narration": {
+    "source": "sha256:9d400b56d987cec931de97bc5aa82f2c3f3181a0adb745354b6fc0174c647bff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The bridge is whole, and the landing is safe. So here is tonight's piece: the stone that holds up the middle of Ashspan is not from here. It was here before the bridge, and nobody knows where it came from. Something is moving the land. What is it? And can you put things right? Ossley points downriver to the Saltrot, up the road to the boundary stones, and north along the upper bank road to Frostfang Shore."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Long walk. Griffin country at the end.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Whichever way you go, he is generally going it too."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/mat_return/narration": {
+    "source": "sha256:6e77ea741624edb7aff72c2bbd1c6b1dd18fb851148ef903d36dfe991cc4c90e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You follow the posts back to the bridge. Ossley unrolls the dry mat across his wet deck. The travelers step on without slipping."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Better,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/mat_return/variants/0": {
+    "source": "sha256:70ddadd4cd3630e6d7a5f834d00ce5c2e62af5cd82f17735d8384d333143017d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It covers the hole where his board was, too. Ossley pats it. A long pause."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Much better.\""
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/academy/narration": {
+    "source": "sha256:cb749aae75b5e45e2bde634c4167b93741292c821a1cca1cc7462982800b9384",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the top of the tower above the marsh village is a classroom with no roof. This school is called the Academy. Here you can learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands by a huge brass telescope while homework drifts off the desks. A star circlet rests on a cushion. A Starweaver's light lives in it, and a dusk hood worn beside it starts to itch."
+      },
+      {
+        "by": "nettle",
+        "text": "\"Anyone may try it on,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the professor."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/academy/variants/0": {
+    "source": "sha256:b6467791a5ef6652cce35366b86e020f52502b971749f9377b64c58c3be9fdd1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Professor Nettle waves from the brass telescope."
+      },
+      {
+        "by": "nettle",
+        "text": "\"Back at the Academy! Mind the homework.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The star circlet waits on its cushion."
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/academy_stars/narration": {
+    "source": "sha256:fb83982ed83db3529a5aac8d0131d557b538d3a542b904c62bc708a3d9f74628",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Professor Nettle lets you look through the telescope. Even by day, the stars look close enough to count their points. Then the telescope sneezes. Dust puffs out."
+      },
+      {
+        "by": "nettle",
+        "text": "\"Bless you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the professor."
+      },
+      {
+        "by": "nettle",
+        "text": "\"It does that when it sees something new.\""
+      }
+    ]
+  }
+}

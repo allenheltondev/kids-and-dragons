@@ -131,7 +131,11 @@ it("a background-only story biome needs explicit scene art rather than tactical 
     // Retain all four class rooms as well as the chapter under test.
     const kept = [...chapters.values()].filter(c => c.index <= 3 || c.id === chapter.id || Object.values(c.scenes).some(s => "classPlace" in s)).map(c => c.id);
     for (const id of fixture.chapters) {
-      if (!kept.includes(id)) fs.rmSync(path.join(root, "content/chapters", `${id}.json`));
+      if (!kept.includes(id)) {
+        fs.rmSync(path.join(root, "content/chapters", `${id}.json`));
+        // A chapter's voice script goes with it: a script for no chapter is its own validation error.
+        fs.rmSync(path.join(root, "content/voice/scripts", `${id}.json`), { force: true });
+      }
     }
     fixture.chapters = kept;
     // The finale is gone, and its epilogues with it.

@@ -1,5 +1,27 @@
 {
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "bramblewood-01/scene_first_clearing/narration": {
+    "source": "sha256:40776421b0d7edd0f4fd756976da5db49b94f67c1542c8c74fda19a6299d641a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot."
+      },
+      {
+        "by": "pib",
+        "text": "\"Oh! You came through the hedge!\""
+      },
+      {
+        "by": "narrator",
+        "text": "the sprite calls."
+      },
+      {
+        "by": "pib",
+        "text": "\"Nobody comes through the hedge. Hello. I have an acorn.\""
+      }
+    ]
+  },
   "bramblewood-01/scene_pib/narration": {
     "source": "sha256:25c54f25cbc3106275f4aae7d0323048b6ba7c0b8e3d71a03f98f6aa6cc8cdfe",
     "reviewed": false,
@@ -19,6 +41,28 @@
       {
         "by": "narrator",
         "text": "Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous."
+      }
+    ]
+  },
+  "bramblewood-01/scene_door_listen/narration": {
+    "source": "sha256:6c61a51383f13399ff2cc9aa9b4c55ada0f50844efb766c8dedbe5d1dbfc8665",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind the door, somebody very small says:"
+      },
+      {
+        "by": "door_voice",
+        "text": "\"I only borrowed it. I was going to put it back.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then, quieter:"
+      },
+      {
+        "by": "door_voice",
+        "text": "\"I can't reach the shelf.\""
       }
     ]
   }

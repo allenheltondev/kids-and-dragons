@@ -1,0 +1,1971 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-08/scene_faun_family/narration": {
+    "source": "sha256:d1598af081ed6b5ef9d113618f24aae512b3c0c6420d5e7516d81b6952a344af",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A faun family trots downhill with everything they own, even a grumpy goat. Little Tansy holds out a pink stone."
+      },
+      {
+        "by": "tansy",
+        "text": "\"It hums louder when the ground shakes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Is it my fault? What do I do?\""
+      }
+    ]
+  },
+  "gemfall-08/scene_faun_family_carry/narration": {
+    "source": "sha256:adfd9227b57df9cece74d2071bf0de3956a72d968b06e9994ce838d2d554dc5b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy folds your fingers over the stone, very seriously, like signing a contract."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Tell it sorry from me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then her family trots off, the goat complaining all the way."
+      }
+    ]
+  },
+  "gemfall-08/scene_faun_family_hello/narration": {
+    "source": "sha256:0b01b11956527fe7615bff8bf6e8d88d1670f3c6f9a79223fd446438b4301548",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"It's only saying hello,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell her. Tansy holds it to her ear."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Hello,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers back, beaming. The goat gives you a long look. It is not convinced."
+      }
+    ]
+  },
+  "gemfall-08/scene_overlook_up/narration": {
+    "source": "sha256:bbd35894da6bf51ba328c47008ed17c53433533156dffec5bb8a43b171f0c8b3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You turn your back on it all. The summit glows like a coal somebody just blew on."
+      },
+      {
+        "by": "party",
+        "text": "\"Nobody look back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "somebody says. Then everybody does, once, very quickly. That still counts."
+      }
+    ]
+  },
+  "gemfall-08/scene_overlook_up/variants/0": {
+    "source": "sha256:280d09241ff1b70eda0a4dd6db6477449915c612376f10dcda6f01e7b1eaf8f7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You turn your back on it all. The summit glows like a coal somebody just blew on."
+      },
+      {
+        "by": "party",
+        "text": "\"Don't look back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell yourself. Then you do, once, very quickly. That still counts."
+      }
+    ]
+  },
+  "gemfall-08/choice_last_breath_practice/narration": {
+    "source": "sha256:636bae54aed51d27ce8a8d5bb82d454b1e774135bd63d97282012045ce140b32",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You practice giving the stones back."
+      },
+      {
+        "by": "party",
+        "text": "\"Here you are.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Too short."
+      },
+      {
+        "by": "party",
+        "text": "\"We are very sorry about the whole entire rush.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Too long."
+      },
+      {
+        "by": "party",
+        "text": "\"These are yours.\""
+      },
+      {
+        "by": "narrator",
+        "text": "That one is right."
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper/narration": {
+    "source": "sha256:3564efe6438f222c3e9bfc5b06d2ec2501f16cc06671632ed9cff14511ea81b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In a huge cave at the bottom of the mountain waits the Seal-Keeper, a dragon so old its scales have turned to gemstone. An embermoth snores on its nose. Nobody reaches the seal without answering it."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"What did you carry up my mountain?\""
+      },
+      {
+        "by": "narrator",
+        "text": "it asks. It already knows."
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper/variants/0": {
+    "source": "sha256:a86edc2e02f4c3ab2d7b5329c930c5c267779ad35810e4b68d12d31435d4435b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Its great eye finds only rush gems in your packs."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Empty hands,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Why?\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper/variants/1": {
+    "source": "sha256:33438a9b2e7aa467bd46678f2a34b5f28f3230bd047e8e696ac702c45d3e6589",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Its eye counts {facets} of the great stones."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Not many,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Then each one has a story.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper/variants/2": {
+    "source": "sha256:716a894d97a762266facc502943e79285b80e4e51caa631adc50c454538ea121",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"You carried {facets} great stones up my mountain,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"My mountain felt every one.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_came_to_help/narration": {
+    "source": "sha256:1183e1897fc6b2ccb8b2884c1f6e408a785338c01eed83da820f50bb1d74bcf0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We didn't bring any,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"We came to help.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper is quiet for a very long time. Then it lowers its huge head until its eye is level with yours."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Everyone who climbs my mountain brings me stones,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Or excuses for stones. Nobody has ever brought me nothing on purpose.\""
+      },
+      {
+        "by": "narrator",
+        "text": "An embermoth crawls off its nose and onto your shoulder."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Help,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the dragon, trying out the word."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes. I could use some of that.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_caravan/narration": {
+    "source": "sha256:5f6c07f8d1950e5c8aef6bb11e702ca32c86d5916864ed0a4a0fcbddf018c611",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You show it the Caravan Stone."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That one has been loud for a month,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I heard it from here.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Far below, something hums back."
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_table/narration": {
+    "source": "sha256:71329ea5cd9c1d16ad8f7da21e35f8de2f225cdd6c52ab7eb0f6302c9351a8f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You set down the Table Stone, logged twice by the wardens."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They log everything,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They have never once brought one back.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_ember_sold/narration": {
+    "source": "sha256:d7b5cb91d6cc6401b51e5ceaf464dddff9862a36651cab9a6381e48af700fe86",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We sold the first one we found,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"For a lot.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper breathes out, warm and slow."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Most do,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says. It sounds tired, not angry."
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_ember/narration": {
+    "source": "sha256:bcd8b8f16932c9d5066cfd66078f402ce867f70d7d3981e4a30cb6e21f9a9dee",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold up the Ember Facet, your very first stone."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That one came the furthest,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"And it is still with you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It sounds surprised."
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_sorry_sprites/narration": {
+    "source": "sha256:7a19b33dc56133589f398156e7f2df8279808a1fdbef8cfca9a2fea85b3e984f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We took the sprites' stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"We're sorry.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper blinks."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I was going to ask,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Nobody has ever told me first.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_medal/narration": {
+    "source": "sha256:85100175e14271ffac562b5bd57ce986454c797327ed6335c91354eab9eeca1b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold up the sprites' woven medal."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Harvest sprites,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper softly."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They do not give those to many.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A moth lands on the medal, and the dragon lets it stay."
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_truth/narration": {
+    "source": "sha256:d6c5f5e28fd8906a2051e5c3f1ea2936d4a7fc36f36b2d8b6da818e6bdcd56e4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell it every stone, where it came from, and who was there."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper, as if checking a very old list."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That is what you carried.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_truth/variants/0": {
+    "source": "sha256:e44f71dfa96ac5841de2774f56c2849a3939b3213c968b4fd444b804c7f11905",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell it the truth: a few rush gems, the road, the people on it, a promise or two."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Lighter than most. Not less.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_ask/narration": {
+    "source": "sha256:12cdf97a92ecf1dcf5d781f18808ae70310b4190570468a9711b44ba3fc0183d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"What did you carry?\""
+      },
+      {
+        "by": "narrator",
+        "text": "you ask it back."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That is my question,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper. But it answers."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"The seal. The quiet. And lately, a great many pockets.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_little_stone/narration": {
+    "source": "sha256:696f4c128a182cbae079daa39062db8d136d2c86aa075db428a71674bdb12313",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold out Tansy's pink stone."
+      },
+      {
+        "by": "party",
+        "text": "\"A faun girl says sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Somebody else's stone, carried up for somebody else's sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That is new.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keeper_moth/narration": {
+    "source": "sha256:2ac7054970b6563d709b3ed87271eb83f17c86c325ad0cb272fbe1918adfe516",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your embermoth wakes and flies to the Seal-Keeper's nose. The dragon goes cross-eyed looking at it."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That one was lost,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Not now.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2/narration": {
+    "source": "sha256:d2087afd769ac7f58dca93046c36bc501cd75e815ef411d2eb625e5b837b979e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The dragon nods, slow as a mountain."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"And on the road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it asks,"
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"what did the land ask of you? What did you answer?\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2/variants/0": {
+    "source": "sha256:facff6d5c9aa350862b18f273ffb4065641d687d959fd93fd5fb8e108981bb34",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"Empty hands,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the dragon says again."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Very well.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2/variants/1": {
+    "source": "sha256:c324a61e297631e251403171fc2bd3a6ce0e2f2a7fd0505a8e7562af81bfc559",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"A few stones, well carried,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the dragon says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That is not nothing.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2/variants/2": {
+    "source": "sha256:8e4792099eeae7bfa8f50a6d0045820ab773d325bd2d44b43ede204c45da84fb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"You carried {facets} great stones up all those steps,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Heavy things are hard to put down.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2/variants/3": {
+    "source": "sha256:b2e12c08b2917afcf78448862488bcb6ade46bb23f13c99076be37799bb38e28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then it sniffs."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Coins,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You gave coins to the soup tents. I felt every one go.\""
+      }
+    ]
+  },
+  "gemfall-08/check_ash_map/onSuccess/narration": {
+    "source": "sha256:0c5da4fe8df56808bdd63207723e5c216b57aae38978df00cbb2d978c3d1e399",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You draw it all with a stick: the bridges, the bogs, the bits where you got lost. The Seal-Keeper follows every line with one claw."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You walked all of it.\""
+      }
+    ]
+  },
+  "gemfall-08/check_ash_map/onFailure/narration": {
+    "source": "sha256:58ed039ad50c4d973182d17d7a59c007519884c6f67275b70be3b5d8d7db36be",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your map wanders off the ash and partway up the wall. The Seal-Keeper tilts its head and reads it anyway."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I can read a smudge,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I have had a lot of practice.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_funded/narration": {
+    "source": "sha256:5ad39b12293e8ecf775bad00d4ed8340ccab85f7316755c2559ee106953f8540",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell it about the coins you gave the soup tents."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I know,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I felt it. One more thread pulled.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It sounds tired, not angry."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Go on.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_refused/narration": {
+    "source": "sha256:7429eec3c6b263f0e5b7d4079aa06f2b7d678971070475399128cc389cebeb17",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We said no to the soup line's cure,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Kindly?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks the Seal-Keeper. Yes, kindly."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Then you did something I cannot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_marsh/narration": {
+    "source": "sha256:2185cb1b2e63715fe830d4dfd26881af114a9af2b9fc3e9b3b02a6f2a0a7e62b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"The marsh kept us a while,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"The forest let us go.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper nods."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"The marsh keeps what it likes. The forest lets go what it trusts.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_forded/narration": {
+    "source": "sha256:c0ae426dea56703a4becc345d5e1882d185479ea61204d33e0631d209ee7241e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We forded the west branch, clean across,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"How?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks the Seal-Keeper. As you tell it, you hum, and it hums along, badly."
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_river_took/narration": {
+    "source": "sha256:99f3bdbe01e1495c65c2ad4d368ef5ff08e990097d8d16b67234e0f72ee0f4d7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"The river took us,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"Old Ossley fished us out.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper's head comes up."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Ossley does not fish out everybody,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_crossed_dry/narration": {
+    "source": "sha256:9d1a7276ea9b3c9cf35e1fceabea5715e93142506fdc9d0f51725e28c0559384",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Old Lintel heard all our toll stories,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The Seal-Keeper laughs like a rockfall."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Lintel used to tell riddles himself,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"He stops when he is worried.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_glade_finished/narration": {
+    "source": "sha256:029f0a2615b7f702827ec1131ca1702e5862a63353bc607d0b479d3d90d2ac17",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We took the Glade Stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"The glade is healing slowly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper is quiet a long time."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Slowly,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes. It would be.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_glade_mended/narration": {
+    "source": "sha256:a6a1ca52897d035ec68b40b89876de8eaca09819740a8560bc16a55f54b82982",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"The wounded glade is green again,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The Seal-Keeper closes its eyes, and the gem-veins glow soft green, like moss remembering its color."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I felt that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_road/narration": {
+    "source": "sha256:fba2db6cce13663af2d61f8a81816e8cf92bfbd9fdbe4b5cfce8c541e97ebca3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell it all: the good bits, the soggy bits and the mistakes."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"That is a road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper, and lets you decide what kind."
+      }
+    ]
+  },
+  "gemfall-08/scene_q2_people/narration": {
+    "source": "sha256:961cd815030f4fa24a32f2d66b28bfcdae5ce43e26410c0e86078fd9104f1a4d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell it about everyone who lent you rope, showed the way or fed you."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"People,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They do keep turning up.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It sounds pleased."
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict/narration": {
+    "source": "sha256:8dbd2a25b56c339f860c065db2a73f7db362cd3de47765056510831249023c8a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"Last question,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Who did you tell? And what do you want?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Under the floor, something huge rolls over in its sleep. A bone in the wall sneezes."
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_honest/narration": {
+    "source": "sha256:4b5412200a5df0dab048ae203401d7842cec1b3b49d98b230ed7acf51100b12f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell it what you want, even the silly parts. The Seal-Keeper does not blink."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Honest,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Up here, that is rarer than gems.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then it waits, to see if you meant it."
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_wardens/narration": {
+    "source": "sha256:81dac552586d5499c3c484c59b0de45ea4bbc92d6fb81b92e5460b5c22099727",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We told the wardens,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The Seal-Keeper snorts a puff of ash."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They write everything down twice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They notice. They do not climb. You climbed.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_close/narration": {
+    "source": "sha256:99a3d08155f63278566452cfbd89a2d271d9cf5de0daae65024912b8d4609d44",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We told nobody,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "party",
+        "text": "\"We came ourselves.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The dragon tilts its head, and three moths slide off."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Then nobody will thank you, or help,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Can you bear that?\""
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_rich/narration": {
+    "source": "sha256:b4a248e50d02f4ddd088b32d3db55a49cd4072b8b8d2e9ab764b3d8e28d1af81",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Honestly? We came to get rich.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper laughs like a rockslide."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"At last,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Everybody else says they came for me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then it looks at you, hard."
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_duty/narration": {
+    "source": "sha256:b069f05e8adc33138c4b81c993e0226cac84d022c0facbe6253fca9a1770237b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Somebody had to come,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Somebody,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I have been somebody for a very long time. It is heavy.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A moth lands on your shoulder, as if to help carry it."
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_proving/narration": {
+    "source": "sha256:bb070b3b3eb86ef89972b4b691708165a8da7888e98828a04c243e0a3e18ce90",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We came to find out if we could,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"And can you?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks the Seal-Keeper. You do not know yet. It nods so slowly that a moth falls asleep."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Then we will both find out.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_gatherers/narration": {
+    "source": "sha256:0dd1af9b87952ecb7fd147c498bbde91dbffff73c5e2e444fa15b92b0c3dba69",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We told the grandmothers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say,"
+      },
+      {
+        "by": "party",
+        "text": "\"and they told everyone.\""
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"They have been telling everyone for a thousand years,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper, moving aside."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Finally, somebody listened.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_verdict_surprised/narration": {
+    "source": "sha256:646ae6df1120bc35e41b16bb35e3a15ca3efde510d53e44dbdae7bd457b09771",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wait. The Seal-Keeper lowers its head until one eye is level with you."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I am very rarely surprised,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Twice in a thousand years.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Slowly, it moves aside."
+      }
+    ]
+  },
+  "gemfall-08/check_verdict/onSuccess/narration": {
+    "source": "sha256:b863aa0f1ad1eb06e3ccc1dccd03a67c9e3d8a65ce67f802c7257c0a76e8239b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The dragon is quiet for a long, long time. Then it moves aside."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Hm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says. From a dragon, that is a standing ovation."
+      }
+    ]
+  },
+  "gemfall-08/check_verdict/onFailure/narration": {
+    "source": "sha256:eb4205debf55b9504c527e816061940233ed3cc03c68f912f3c3261cf66cd3e6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The dragon sighs. The sigh is warm, and not the good kind of warm."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Then show me,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  },
+  "gemfall-08/encounter_dragon/narration": {
+    "source": "sha256:4c9364296397d866247354dd1736c198e0d54cdeb0c47699b0f1a811c6a199db",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "“Show me how you stand together,”"
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper. Watch the ground its breath is aimed at. End three hero turns beside the witness stone to answer the challenge."
+      }
+    ]
+  },
+  "gemfall-08/encounter_dragon/onVictory/narration": {
+    "source": "sha256:3e2454e4c06d31dd51cd75b9da38066ed283733ab235db5e94efa3f36de48fcf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The dragon laughs like an avalanche having a nice day."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You fight like people who mean it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says, and steps aside."
+      }
+    ]
+  },
+  "gemfall-08/scene_dragon_claw/narration": {
+    "source": "sha256:7f4d973f88cca50ff0fc609ace82d04166a6be1ae6fc054606a35d979aeb13f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It lifts you up to one enormous eye, like a ladybug."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You came up my mountain the wrong way,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"What do you have left to give?\""
+      }
+    ]
+  },
+  "gemfall-08/check_dragon_claw/onSuccess/narration": {
+    "source": "sha256:6abe7e643abfbe3f4399b6d63faea37663b39c25980ebb1d73ba52bf0b3fc08d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hang on. The Seal-Keeper gives its claw one gentle shake, and you hang on anyway, stuck fast like a burr on a sock. It makes a noise that might be a laugh."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Stubborn,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says, and sets you down in front of the seal, bruised but still here."
+      }
+    ]
+  },
+  "gemfall-08/scene_dragon_claw_slip/narration": {
+    "source": "sha256:bff0f3d55a7237c6904a825e250f1b460858fa75c84db4753a73269fb580e71d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"Well?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks the Seal-Keeper. Behind it the seal creaks, and the thing underneath rolls over again."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"What do you have left?\""
+      }
+    ]
+  },
+  "gemfall-08/scene_dragon_claw_give/narration": {
+    "source": "sha256:1b12701087781a0a47c5eeb9f5203faa9479dd962ae823a98c8e8ebc676830ad",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold out a stone from your pack. The Seal-Keeper sets it into a gap in the seal. It fits."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Better,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says, and puts you down. That stone is the mountain's now."
+      }
+    ]
+  },
+  "gemfall-08/scene_dragon_claw_time/narration": {
+    "source": "sha256:492fa4d86fa68d912fc1a9d032dfff6913567f26bbc3109432573ddf20d59c13",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"Time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sighs the Seal-Keeper, as if you asked for its last cookie. It sets you on a ledge and breathes on the seal's cracks for what feels like an hour. Your legs fall asleep."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Now. Look.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_seal_cracks/narration": {
+    "source": "sha256:9787de5fc3d542891b6c6f5399e4e1d1f399b07a7e6009613bf10fc900985bd6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind the dragon, set in the floor, is the seal: a great round window of gemstone, cracked and missing pieces. Red light glows through. CRACK! A piece as big as a door slides toward the dark."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Catch it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "roars the Seal-Keeper."
+      }
+    ]
+  },
+  "gemfall-08/scene_titan_eye/narration": {
+    "source": "sha256:d105af411b1236cf64df5978a73cdfb24cf930515f6d2858d7dab5a0e15a64da",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"Look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers the Seal-Keeper. Under the glass, an eye opens, as big as a pond and red as sunset. It looks up at you, sleepy. An old, old note rises through the floor, and every rush gem in your pockets hums along."
+      }
+    ]
+  },
+  "gemfall-08/check_hear_titan/onSuccess/narration": {
+    "source": "sha256:b649082b7d71533e6a49d117a35dbc7e42157e1dfe8b5de149676b3d4846cabb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It is a question, the same sounds over and over, like a little kid at bedtime."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You hear it too.\""
+      }
+    ]
+  },
+  "gemfall-08/check_hear_titan/onFailure/narration": {
+    "source": "sha256:68bbd1fc0c7b179a11aae0ab698cf70595c6514356ab7305968818a772f13056",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "All you hear is a hum that makes your ear itch."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"It is asking something,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"It always asks the same thing.\""
+      }
+    ]
+  },
+  "gemfall-08/check_hear_titan/onAssisted/narration": {
+    "source": "sha256:26e0dfa41aad0853003c9d2b55526529098a321fa479591ea95670893ce17e7e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper listens with you. Rumble, chime, sigh, over and over, like a bedtime question."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Yes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You hear it too.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_seal_chamber/narration": {
+    "source": "sha256:7b17dbfb262e5eda7cc0434e5c750180d01dc55a8fa2772b73d7ce310c902310",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Now the whole truth: every gemstone the mountain ever threw out is a piece of the seal. Under it sleeps the titan. The seal is its blanket, and every stone carried off let the cold in. Now it is waking, not angry, only asking: \"Is it morning? Should I get up?\" A crown stone, bigger than your head, holds the seal together."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Today it asked you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Mend the seal, and it sleeps. Turn it, and it goes for good. Leash it, and someone holds its power. Or take the crown stone, and I hold the seal alone.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_restore_begin/narration": {
+    "source": "sha256:64ce2d4578dee64b7d3d972d3f9d0866e5d59d624c6e38bbadcda266674f1190",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Not yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell it."
+      },
+      {
+        "by": "party",
+        "text": "\"Go back to sleep. We brought your blanket back.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper sighs with relief. But the titan is rolling over, and the pieces slide like a puzzle that will not hold still."
+      }
+    ]
+  },
+  "gemfall-08/scene_restore_begin/variants/0": {
+    "source": "sha256:d2d0ca18b986c27af8ca58cb52bc0ac9c977ba0e76672f143e2c5a45ef6aeee1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You have only rush gems and your hands."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Hands will do,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Hold the pieces while I breathe on them.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_restore_last_gap/narration": {
+    "source": "sha256:9a73ad01d2d3080e0b5dfc0475e97994a7e768162cae0c99eaed51cc6859243d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One gap is left, under the crown stone. The titan's eye is nearly shut."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Something to finish it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Anything given on purpose.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_titan_sleeps/narration": {
+    "source": "sha256:65f052a73e47deb42207ecabf54427def1ba424a726adb9d66602160582ba73d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The great eye closes, slow as a sunset. A warm sigh tumbles every embermoth head over heels. The seal clicks whole, and the shaking stops."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"It said thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"It never has before.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_destroy_begin/narration": {
+    "source": "sha256:84c0534b3d489460bfce0d3d3debe27af7c187685ad3bed9db0f8376806b6eeb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Sleep for good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The Seal-Keeper is quiet a long time."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"The seal turns like a wheel,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Turned all the way, it lets go.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It does not say if that is good."
+      }
+    ]
+  },
+  "gemfall-08/scene_tether/narration": {
+    "source": "sha256:3a9e60848deb1e382392a740c1063778c5194a5a059de15cad790154d1bfc584",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The titan stirs, and its power rises toward your hands like warm bathwater. It needs a leash and a holder. Up the tube come warden whistles, and humming: Hessa's masked choir has climbed after you to sing it a cure."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Whose hand?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"A tether made on the road holds best. Bare hands may slip. If they do, let go.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_wardens_come/narration": {
+    "source": "sha256:fe88a3d0c9e246ca0ef074a1e4e41cb7f0514b6c7063fbd529e47cde37ee8a38",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You shout up the tube, and down come the Skywardens, out of breath and still very neat."
+      },
+      {
+        "by": "voss",
+        "text": "\"We will build it a cage,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Captain Voss."
+      },
+      {
+        "by": "voss",
+        "text": "\"Pass the leash to me.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_leash_held/narration": {
+    "source": "sha256:e66abd96458c979ca65298582d710ba307bd39f31cc18f40a5d3830d75534572",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The leash settles in your hands like a sleepy dog on a lead. Under the glass, the titan's eye looks up at you, then closes halfway. Waiting."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Now you are the weather.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_chord_held/narration": {
+    "source": "sha256:38367bcad1e11e856bd2a2a67bbd0beda91f2f4cf7079a452a95e7bf0746eea1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hessa's choir sings its chord into the seal, and you hold them to every word of the bargain. The titan hums back, and the red light turns gold."
+      },
+      {
+        "by": "hessa",
+        "text": "\"It's listening,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Hessa whispers, crying."
+      }
+    ]
+  },
+  "gemfall-08/check_tether_cult/narration": {
+    "source": "sha256:4fff69769eeda6a1ac637ec6fedf12a1fff1cca264f66de44a2d3d5423551e96",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You call up the tube for Hessa, and she comes at once, as if she had been waiting on the stair all along. Behind her come her friends from the Deep Hollow in their painted bark masks, humming one low note. Hessa looks at the leash, then at the tether in your hands."
+      },
+      {
+        "by": "hessa",
+        "text": "\"We'll sing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "hessa",
+        "text": "\"You keep us to the bargain.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_tether_slipping/narration": {
+    "source": "sha256:9797f8837f6e74fe7a9d02f4424e7a07c88163b3d356525b2dabf872fa381d9d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The leash bucks like a kite in a storm, and the seal groans. One more pull and something will crack."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Let go, or hold on,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Only one is safe.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_tether_let_go/narration": {
+    "source": "sha256:70e250b04dea6b757d8ed37e09c30afcb9f1e14b37d637bf3f1a0cf24a768ee8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You let go. The leash snaps back under the seal like a rubber band, and the mountain says OOF. The seal holds. The leash is gone for good."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Choose again.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_chord_slipping/narration": {
+    "source": "sha256:e01aa4f15d1a1702781a7955732928bca4ce0cd7af01d79688ed840e02bb7911",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One extra note wobbles, and a hair-thin crack runs across the seal. The singers have their eyes shut behind their masks. Hessa sees it."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Help!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Find the right note, or stop the song.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_chord_stopped/narration": {
+    "source": "sha256:0cf7c8b4a65bb0c26dca265d188061f20e4ef493ac01655630ea5b78df119d94",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wave your arms until the singers stop. The crack fades. Hessa sits down and cries a little, and a singer pats her head. The cure is gone for good."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Choose again,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper, gently."
+      }
+    ]
+  },
+  "gemfall-08/ending_turned_back/variants/11": {
+    "source": "sha256:4d0bbf7bb32d2286145554e7e14e3397f028e79fa86791bf726a4cbff0996ada",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In Redspire, Pellam writes your names atop a fresh page."
+      },
+      {
+        "by": "pellam",
+        "text": "\"For next time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-08/check_tether_cult_bare/narration": {
+    "source": "sha256:c97a2f9eba56121f105163f6768035f9f7c90dbbe8e20cac5a11674e7c6f5cb2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You call up the tube for Hessa, and she comes at once, as if she had been waiting on the stair all along. Behind her come her friends from the Deep Hollow in their painted bark masks, humming one low note. Hessa looks at the leash, then at your empty hands."
+      },
+      {
+        "by": "hessa",
+        "text": "\"We'll sing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "hessa",
+        "text": "\"Tell us the bargain, and we'll keep it.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keystone/narration": {
+    "source": "sha256:876d64edab9b4ffe77357975aaf9b30e5dcccd2800ef7c1fa2375f98c470e2cb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crown stone is bigger than your head and warm as bread. Under it, the titan's eye opens wide."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Collectors may lift it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Seal-Keeper."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Anyone else must pry, and gets one try.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keystone_refused/narration": {
+    "source": "sha256:b1c1f3216a1ff8e31309e93895c196b4abdde8355008e34440148e07da4acb2a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper lifts your hands off the crown stone one finger at a time, like unsticking a starfish."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Not that one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Not today, and not by you.\""
+      }
+    ]
+  },
+  "gemfall-08/scene_keystone_lifted/narration": {
+    "source": "sha256:52279e6a4dce88fdf150393deabef2645768f1e982b5343784aa8884312132d4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Keystone comes free in your arms, warm as a sleeping cat. The seal shudders, and the great eye flies open. The Seal-Keeper lies down across the seal."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"Go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"I will always hold the door.\""
+      }
+    ]
+  },
+  "gemfall-08/interaction_verdict_council/narration": {
+    "source": "sha256:f04a79d4bd0503f893869206bc9d7d30b7df0863298e3d65b8ec88e7595c28e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seal_keeper",
+        "text": "\"Who did you tell, and what do you want?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper lowers its head to listen. Give every hero a turn: something you carried, someone who helped, or what should happen now."
+      }
+    ]
+  },
+  "gemfall-08/interaction_verdict_council_response_carried/narration": {
+    "source": "sha256:a6561d4942c63a31540670de360ed1bf8c56f29324740298eba4a4b1f66cc00f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The dragon asks what changed because you carried it. Then it moves aside."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You came a long way to give your own answers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  },
+  "gemfall-08/interaction_verdict_council_response_helped/narration": {
+    "source": "sha256:f2f972d0eda0ad980d999129e95f61ea4c02744eec381d8d4859928d55b21d6e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "An embermoth settles closer to listen. Then it moves aside."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You came a long way to give your own answers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  },
+  "gemfall-08/interaction_verdict_council_response_choice/narration": {
+    "source": "sha256:9e9d7fec667969a4f7431ac8c3b50fcb99b32061721fbe5f65da0049c5ab3b8d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Seal-Keeper waits until your answer is complete. Then it moves aside."
+      },
+      {
+        "by": "seal_keeper",
+        "text": "\"You came a long way to give your own answers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      }
+    ]
+  }
+}

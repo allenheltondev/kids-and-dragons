@@ -1,0 +1,1439 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-bone-yard/arrival/narration": {
+    "source": "sha256:b36018b4d5f23649914cd4f661d6bd3c67b33be8d344da90a027eaf3d8ffe6a6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the Saltrot flats, the mud turns pale with bones. This is the Bone Yard. Giant ribs rise from the channels, taller than houses, and between them sit stone ruins that were not here yesterday. A Skupper pops up in a pool."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Puddle!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Your guide, in case the mud ate your memory. It eats boots.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She points a fin."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Those ruins landed on my channel last night. Whose ruins are these? Why did they land here? Help me find out before my pool dries up.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/rule/narration": {
+    "source": "sha256:98ccff0df4fa67125cfaa0765731dbba687b04cbca2f657e964d509a864a0db8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle flicks a pebble onto a bone. It wobbles, rolls back uphill, and drops into her pool. Plop."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Bone Yard rule,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Take nothing, hum something, and leave before the tide turns. Whatever you take comes back. Usually in your boot.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The ruins stand across a field of bones and channels."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I only go where it's wet. How do you want to cross?\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rib/narration": {
+    "source": "sha256:2a60103fa5ba6979c782a4377755b2fb9fb3a03617a5a3aa559da782c068e2be",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rib is as wide as a bench and as long as a street. It is also slimy. Puddle swims along underneath."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Arms out,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Like a heron.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/narration": {
+    "source": "sha256:ec88ffac7d9d2351a0e552fbd2a8633167e081e57ba5e37a86e0dd4bdfad2059",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The channel is low and getting lower. Puddle swims ahead, then turns."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Mud's thick here. Lean in and push. If you stop, it keeps you.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/onSuccess/narration": {
+    "source": "sha256:a94b4c45a165dc1d2b9dee392f415f4757a15c6c61f8350df17445595213e30e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You push through, one squelch at a time. Puddle cheers every step like a race. Near the ruins the water is only ankle deep."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"They're drinking my channel,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she mutters."
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/onFailure/narration": {
+    "source": "sha256:7a6464ccca8180a8f4b319fed1353db9c97b12798d730e0b2b5115db6adbbe39",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The mud grabs both legs and holds on. Puddle puffs up round as a ball, and you grab her like a float. She tows you out."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. Spines. Sorry.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You are free, and one arm tingles where she poked."
+      }
+    ]
+  },
+  "riftlight-bone-yard/fly_over/narration": {
+    "source": "sha256:dd9cdb5df9c66d1dcb31ce491dc77583e7f1ea351ad7744e45ed563020553471",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your griffin flaps up over the bones. From the sky, the ruins make a broken ring with a flicker of light in the middle, like a candle in a window. You glide back down. Puddle swims up, out of breath."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Show-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, delighted."
+      }
+    ]
+  },
+  "riftlight-bone-yard/skull/narration": {
+    "source": "sha256:15243d31885f2443a1c242991644f297b3304064efc1e8ff90a4edb20fb4cfee",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The path runs under a skull as big as a barn. Nobody knows what it belonged to, and Puddle says nobody should dig to find out. Inside it is cool and smells of salt. A crab lives in its nose and glares at you."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Speak low,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle whispers from a channel."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The bones aren't angry. They're tired.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/ruins_edge/narration": {
+    "source": "sha256:d07ff2a7b363fcd3803093d425764f9bb5689b8bf735f22123b5818a6d78a267",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Little pale creatures clatter along the foot of the ruins, in shells made of old bone chips, like coats covered in buttons. Bone crawlers. They all hurry toward a flicker of light deep inside. Then one stops and sniffs your pack, where the Listening Chime hums."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Uh oh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Crawlers love fresh magic. Your chime hums like a kettle.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/lullaby/narration": {
+    "source": "sha256:365e694abfc781b9526e3771d6bf513a909158703b318539715ad8448f69b6aa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your songkeeper sings, soft and slow. The crawler sways. Then it tucks in its legs and falls asleep right there in the path, snoring like a tiny rattle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I'm telling my grandmother about that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      }
+    ]
+  },
+  "riftlight-bone-yard/crawler_tail/narration": {
+    "source": "sha256:8c248c5294c380b7d44b7841d1f99efc11dbb02f86614d21bfce8ed751860a12",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crawler follows you to the ruins, trying to climb into your pack after the chime. At last Puddle opens her floating lunch box and gives it her kelp roll. The crawler wears it as a hat and wanders off, proud."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"was my lunch.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/ruins_gate/narration": {
+    "source": "sha256:8526b7b17c74e28018fcb0cd2275597730fb28b6e4c77d5860260acc87b2e7e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Inside, everything is gray stone with white specks, like salt on bread. A stair climbs into the sky and stops. Puddle hops into a salty puddle the tide left by the gate. It fits her exactly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Named for it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. On a wall sits Pip Thistledown, the young manticore scout, prying at a carved stone with a spoon."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a real scout brings back samples!\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_chip/narration": {
+    "source": "sha256:24e805231427b9e06749e17b01629b8be940098c957603e2284bb03d3ea3d56d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The carved chip pops halfway out with a click. Under it, the wall hums, the same buzz as your chime. Puddle's crest folds flat."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Pip. Take nothing. It comes back.\""
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Then I'll only borrow it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says you can't learn anything if you're scared of a pebble.\""
+      },
+      {
+        "by": "narrator",
+        "text": "What will you do?"
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_pip/onSuccess/narration": {
+    "source": "sha256:54b2d8ce99fd416fb900312bf229501533178225e8a59a1a2d82f55af0c904f7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip sighs and pushes the chip back. It clicks into place by itself, like a puzzle piece going home. Pip jumps."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Did it just pull?\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_pip/onFailure/narration": {
+    "source": "sha256:e95bab50a72cac84e7653a90be1a6f27f36861d7da27277f1f5222da22f03b94",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"A drawing can't hum,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip, and he keeps the chip."
+      }
+    ]
+  },
+  "riftlight-bone-yard/manticore_talk/narration": {
+    "source": "sha256:7c893cad07e16fb0bb90367c92a7566a3340d0b12c49b4f2921365ec0238e9b3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You flick your tail the polite manticore way, low and slow. Pip's ears go pink."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Okay, okay,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he mutters, and pushes the chip back. It clicks into place by itself, like a puzzle piece going home."
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_draws/narration": {
+    "source": "sha256:1c42ec80aa5b3203a7aef90d05a136402255113175ee8ad459a113888544ac49",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip draws the chip instead, tongue out, with a lot of shading."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"For Lady Olivia,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"And maybe Master Orin. He likes drawings.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest pops back up."
+      }
+    ]
+  },
+  "riftlight-bone-yard/explore/narration": {
+    "source": "sha256:7c1851f861eb1689992bd3370261e775b52de31dd1bcacc6ccbaf7004b088bdd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The ruins are a maze of walls with no roofs."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I can't see over them from down here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Somebody tell me what this place is.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip points his spoon two ways at once. Where will you look?"
+      }
+    ]
+  },
+  "riftlight-bone-yard/stair_top/narration": {
+    "source": "sha256:8426ae8017ce0d3dae11a19d7d0dbd923cfe32d4fb96f0fa4aa0839e385753e8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From the top, the ruins make a ring of walls around an open square, like a town square that lost its town. Its gate faces north, upriver. In the middle, the flicker of light shivers, and crawlers circle it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"What do you see?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip calls up."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Is it treasure?\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/doorway_step/narration": {
+    "source": "sha256:73c5a9cf63ec7175b74c724c04e035281783bbe159f0c567c3dced6be676b158",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Inside the oldest doorway, the front step is worn into a dip by feet, a long, long time ago. Somebody went in and out of this door every day. Pip takes off his hat."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Somebody lived here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he whispers."
+      }
+    ]
+  },
+  "riftlight-bone-yard/doorway_nest/narration": {
+    "source": "sha256:d890120fa8fab1b407044428b76c8dba0e73dcdd692767003c9ba2cbeb529bfb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Wrong doorway. It is full of sleeping crawlers, packed like spoons in a drawer. They wake up grumpy and pour out past your ankles, clattering off toward the middle of the ruins. One nips Pip's tail on the way."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Rude,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/narration": {
+    "source": "sha256:b7abb394f9c0f0a5ce5db31af1929704ee8ea44ae7ebcfae2c01e76a3495a578",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle calls you back to her puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Low down by the gate. Old carving. Copy it for me, I can't reach.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Under the moss is a row of shapes cut into the stone. Watch them, then draw them in order."
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/onSuccess/narration": {
+    "source": "sha256:23f0646dab917c25fefd50d0eda7faae2ff7521dbc5a909918a8334e7c0d30cc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your copy is neat and exact."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I could read that in the dark.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/same_stone/narration": {
+    "source": "sha256:e848d81b9f9e3042ff33ac6a29cdbc3cf789adf22597ffcdf49d9069b6a3101f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold your drawing beside the stone and remember the buried bridge. Its old arches were this same gray stone, with these same white specks, curved this same way. They had this same waterline, carved high up. These ruins and that bridge came from the same old place. Something carried them both away and set them down far apart."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The bridge has family,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle whispers."
+      }
+    ]
+  },
+  "riftlight-bone-yard/lean/narration": {
+    "source": "sha256:c19834ea33853c0c2a0a9642a4ea377804e1b44ec05f02ced2ec9eced922ee8a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A wave touches the walls. Every stone creaks, and the whole ruin leans a finger's width north, upriver. Your chime swings the same way, toward the glacier far away, and hums. Pip, who has climbed a wall for a better look, wobbles."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"They're trying to walk home!\""
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Moved things do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Goats. Ruins. Everything wants home.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/catch_pip/onSuccess/narration": {
+    "source": "sha256:c7f80ba58dab29c26ff57c1e8fe0d0d458ee44c0371553b62d825543cf92bb24",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You catch him by the scruff, like a kitten. Pip dangles and blinks."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Thank you. That was very scientific of you.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/catch_pip/onFailure/narration": {
+    "source": "sha256:30ab6059d9ee8432a8b4eaa68563978d7879a49665240a0769aae5b747ddc54f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "He lands on you, and then you both land in Puddle's puddle. Puddle puffs up in surprise, and you get stung a little."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Sorry, sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, shrinking."
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_idea/narration": {
+    "source": "sha256:c678f752410be25679079d94ff099b899574c1b38b256495c99469b6ade6e22e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip's eyes shine."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"If ruins can walk, Lady Olivia could make them walk anywhere! Bridges where we need them. A tower by the sea!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle looks at the leaning stones and says nothing. What do you tell Pip?"
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_amazing/narration": {
+    "source": "sha256:b7c64f5d08544abc0079a646ecd8ddce9cb2a877fe14166909b73000b320ba63",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip writes AMAZING in his notebook and underlines it three times. Puddle's crest droops a little."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Things you push,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"push back.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/dam/narration": {
+    "source": "sha256:2e7e67c3adc15c881ac2fa12e1f8e1830c301772aa4b398cc09ca93cc67f8477",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A fallen arch lies across Puddle's channel like a lid on a pot. Water piles up behind it. Past it, in an open square, a tear in the air flickers: bigger, smaller, bigger. Crawlers crowd around it."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Shoving is quick,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But stones scrape, and shoved things creep back. Or we help it go the way it leans. That's slow, and the tear keeps growing.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/dam/variants/0": {
+    "source": "sha256:0fd6560b176b620b4ca1e6fad482b2017ae74f851483924b2e628ce2c4b58bf3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip is already rolling up his sleeves."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia would shove it.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/dam/variants/1": {
+    "source": "sha256:3211736cc1039267e826a6c0a22f58e7fc9cf1f804f287143c4872d852477102",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip scratches his ear."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Or we could ask it. Can you ask an arch?\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_shove/narration": {
+    "source": "sha256:abb37db7fb5514a979bd113fb804eb1077415c25789e4191d606ec60b1c1dcf7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone grabs an edge. Pip grabs Puddle's tail by mistake."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Not that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"On three!\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/shoved/narration": {
+    "source": "sha256:5ededb3f2822eca5633c33cd7978a076fde4ad0be4986bd97ecba9c810183442",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Water rushes through with a happy gurgle, and Puddle shoots past you like a cork."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Water!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she sees the arch. Its carved face scraped along the rocks. The waterline is gone, ground into gray dust. And already, with every wave, the arch creaks back toward the channel."
+      }
+    ]
+  },
+  "riftlight-bone-yard/cracked/narration": {
+    "source": "sha256:5b85392aca32730b046763a6399f391cf8873a6e0b318cd501f542000e0d58c0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Only a trickle gets past the broken half. Puddle's crest droops."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Well. That was loud.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The carving is in crumbly pieces now. Pip pats the arch."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he tells it. In the square, at least, the tear is still small."
+      }
+    ]
+  },
+  "riftlight-bone-yard/bigfoot_lift/narration": {
+    "source": "sha256:ebc5f267ce5b07f279a04bfee15a65837927dc2dcc9a0dc252a6efc8ff84be35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot hugs the arch and stands up. It comes away with a groan and a lot of dripping."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Water!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Puddle, and shoots past like a cork. But the carved face scraped as it came up, and the waterline is gone. Already the arch creaks back toward the channel."
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_lean/narration": {
+    "source": "sha256:6b2d4f64b572200383114374f23dd4d5b274973587c830cb600e186f00586a13",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle lies flat in the trickle and watches the waves."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"It leans the same way every time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Scoop the mud from the right places, in the right order, and the water will push it for us.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She whispers a different part of the plan to each of you."
+      }
+    ]
+  },
+  "riftlight-bone-yard/nudged/narration": {
+    "source": "sha256:1682e657e341abc5707ee2a461f937310fb8d71c965f02185fa41ade7f8a3edd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The arch slides north, a little at a time, the way it wanted to go. The water curls around it and runs free, and the carving is still whole."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"It went where it wanted,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle, swimming a loop. Then she stops. While you worked, the tear grew wide and bright, and more crawlers came."
+      }
+    ]
+  },
+  "riftlight-bone-yard/nudged_slow/narration": {
+    "source": "sha256:e8df461ff7f8a384c9680af2931984750e2bdd5546433de3e61b57874e2d63db",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At last the arch slides, but only a trickle gets past."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"The tide will finish it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"By morning, it runs.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The carving is still whole. But while you worked, the tear grew wide and bright, and more crawlers came."
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/variants/0": {
+    "source": "sha256:85d43d849f2cd1682e29fcf94b36a0953557cf150cc08961be72512add828e20",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "And toward Pip's humming pocket. They pile around him against the far wall."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I would like to give this back now!\""
+      },
+      {
+        "by": "narrator",
+        "text": "squeaks Pip."
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/variants/1": {
+    "source": "sha256:e545c5ce9eee87099fd9f4fe05a51d127fbb2d1d8d92dc936c1b1c5d1533d291",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle bobs in the channel at the edge of the square."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Watch my crest. Up means duck!\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/variants/2": {
+    "source": "sha256:671bc8b43af78883e1aa84964b8771df75f95318844d40ed3cb25ecb2f4058fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle calls from the trickle outside."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Watch my crest over the wall. Up means duck!\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/variants/0": {
+    "source": "sha256:85d43d849f2cd1682e29fcf94b36a0953557cf150cc08961be72512add828e20",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "And toward Pip's humming pocket. They pile around him against the far wall."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I would like to give this back now!\""
+      },
+      {
+        "by": "narrator",
+        "text": "squeaks Pip."
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/variants/1": {
+    "source": "sha256:e545c5ce9eee87099fd9f4fe05a51d127fbb2d1d8d92dc936c1b1c5d1533d291",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle bobs in the channel at the edge of the square."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Watch my crest. Up means duck!\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/variants/2": {
+    "source": "sha256:671bc8b43af78883e1aa84964b8771df75f95318844d40ed3cb25ecb2f4058fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle calls from the trickle outside."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Watch my crest over the wall. Up means duck!\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/1": {
+    "source": "sha256:249bb041fb5a7c3a6d2e05fafffe2c57d3349749580611823117b54f3e0b1497",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind them, the tear still flickers, bigger, smaller, bigger."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"We'll mark it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Travelers go around it from now on.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/2": {
+    "source": "sha256:91f82b6fc8d0906605934a35af21fa371826f6dce572a8cd2e15d593aae4cfbc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip tumbles out of the pile, hugging the chip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he gasps."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"This chip is much more popular than me.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/3": {
+    "source": "sha256:f19a08c170a32df6272bfaf5f6c2b4b93443f3878a1521e64a524ab2a5d709a2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip squeezes out on his own, scratched and grumpy. The crawlers kept his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"My drawings for Lady Olivia,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he moans."
+      }
+    ]
+  },
+  "riftlight-bone-yard/puddle_court/narration": {
+    "source": "sha256:3f5b5b4c25218c2b03c2a4194f414ec682bb452fd4d7b3defadc3ad43a88153d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle swims right into the square, the first Skupper ever to see it from inside. She touches a carved waterline with one fin."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Same as the bridge,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says softly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I had to see it myself.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/puddle_court/variants/0": {
+    "source": "sha256:ff910a5fd5a1e1b98b4330e3f7077f84b0dc0b8e92fcd77aaf9d283a93d41708",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle can't reach the square over dry stone. So Pip lifts her up to the wall, very carefully, because of the spines. She peeks over at a carved waterline."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Same as the bridge,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says softly."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I had to see it myself.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/swarmed/narration": {
+    "source": "sha256:4074bf24a0cd15d9052a7e342818fc50625567406962b6e1aac8a9edbd80bfdc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crawlers pile on, all reaching for your humming chime."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Out! Out!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Puddle, crest straight up. You hold the chime tight and back out of the square. Your drawing slips from your pack, and three crawlers sit on it at once. The short way through the square is theirs now."
+      }
+    ]
+  },
+  "riftlight-bone-yard/float_out/narration": {
+    "source": "sha256:34ca813e1fa3327114bebb839f8c4dfbd56a89195377f5fbbce0ea5cea1cdd32",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle puffs up round as a ball. Everyone grabs a spine, carefully. She floats you down her channel, out of the square and around the swarm."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, the whole way."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. Ow. You're welcome.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/rest/narration": {
+    "source": "sha256:4a9ec5c679bfd4623acc0e43d6544820e7ab2ce54cbd3b9d95d077ff6206de87",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle opens her floating lunch box: kelp rolls in leaves."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Guides eat first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and eats one, then shares the rest. Pip eats his in one bite. The ruins creak north with every wave."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Rule says leave before the tide turns,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But I've always wanted to see them move.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/rest/variants/0": {
+    "source": "sha256:aeeece53b7cb55e93800b5c100e10a35590017b41e007b835930d30f77b19702",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle's lunch box is empty, because a crawler is wearing her lunch. So Pip shares his emergency crackers. They taste a bit like map. The ruins creak north with every wave."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Rule says leave before the tide turns,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"But I've always wanted to see them move.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/cut_off/narration": {
+    "source": "sha256:2415596017239065ae9c754abab7887bfed6fb142d633895979afa022afc6b95",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "saltrot_guide",
+        "text": "\"Stand still,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle. She swims out to the deepest part and puffs up round as a ball. One at a time, you hold her spines, carefully, and she ferries you across."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Ow. Next. Ow. Next.\""
+      },
+      {
+        "by": "narrator",
+        "text": "By the last trip her crest is drooping, and you are wet to the knees."
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_tide/narration": {
+    "source": "sha256:12c2e8eda50bd5ea8acfcc65e6088483eaa2b19a9516556e3965b71fd51b34ab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You stay. The tide slides in, and every stone creaks. The whole ruin leans north, and for one breath its gate points straight upriver, toward the buried bridge far away."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Look,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle breathes. Then cold water swirls around your knees."
+      }
+    ]
+  },
+  "riftlight-bone-yard/tide_turns/narration": {
+    "source": "sha256:5c53a740a872a72d556d67d12bc363a30bcffbb4c74b62711c7698543394ede2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the edge of the Bone Yard, something rattles in your boot. You tip it out: a tiny bone chip. It rolls away by itself, uphill, back toward the ruins. Puddle grins."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Told you. Boot.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/tide_turns/variants/0": {
+    "source": "sha256:a819ee3dfc7bcc45efa1e76703a226421b893bbeda2a6e9d0c9176436bf2a2a8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then Pip yelps. His pocket is wriggling. The carved chip climbs out, hops down the path, and rolls all the way back to its wall. Pip stares at his empty pocket."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia never said they come back by themselves.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/tide_turns/variants/1": {
+    "source": "sha256:792e973463f06f1bb367574f2e60b6c38cccf7b17e9ba55a16dd1a51471ff190",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip checks his pockets, just in case. Only his drawing."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Drawings don't climb,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, relieved."
+      }
+    ]
+  },
+  "riftlight-bone-yard/drawing/narration": {
+    "source": "sha256:41b013b3b7be821049b84676d42e920fb8e16acc27acbb80adbd202e5201073b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle and Pip both look at your drawing of the carving."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Guides keep an account of everything that comes and goes here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"This belongs in it.\""
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Master Orin and Lady Olivia need to see it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip. Who should keep it?"
+      }
+    ]
+  },
+  "riftlight-bone-yard/drawing/variants/0": {
+    "source": "sha256:b10032f2d8e672e418c275b5b5ed7c42a73f1234cfa523457c6a3f8ef52ae599",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your drawing is still under three crawlers, but you remember every shape: a long line, two little waves, a ring."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Guides keep an account of everything that comes and goes here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Puddle."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Tell it to me, for the account.\""
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Tell it to me, for Master Orin and Lady Olivia!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip. Who should hear it first?"
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_puddle/narration": {
+    "source": "sha256:a92fc7369a2e1bcd03ee104ba9ff9b8ed9a84b331a2a9ffba2fc427eb1ac3f4a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle tucks the drawing into her floating lunch box, where it stays dry."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Every guide on the Saltrot will know this mark by next tide,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"If Master Orin wants it, he can come and ask nicely.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip looks at his feet, then nods."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That's fair.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_puddle/variants/0": {
+    "source": "sha256:8bc4e49e27efe483dfa2d5b4055db50ef0e12478694cbdfc716d6a125c741824",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle scratches the shapes into the mud with one fin, then copies them onto a flat shell for the guides' account."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Every guide on the Saltrot will know this mark by next tide,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Pip looks at his feet, then nods."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That's fair.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_pip/narration": {
+    "source": "sha256:e043c043f7edb752b6ad6fb446791b2a98e4bda895e03c0637393eb9027797a8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip tucks the drawing inside his scarf and hugs it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will know what to do with it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Maybe she can move ruins too!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest folds flat."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Tell her,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says slowly,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"that these ones want to go home.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_pip/variants/0": {
+    "source": "sha256:8cb6b53686ee324c125c38b3f132485e3f920187611fc70efbdaf1a2b1935db3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip says the shapes over and over, so he won't forget: line, wave, wave, ring."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will know what to do with it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Maybe she can move ruins too!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Puddle's crest folds flat."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Tell her,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says slowly,"
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"that these ones want to go home.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_pip/variants/1": {
+    "source": "sha256:89744666d442edf21f328bee2e9056aefceda381ef107fede2e772f1104bd02e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip stops."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I'll show Master Orin too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he decides."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"He'll want to ask the ruins things first.\""
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/narration": {
+    "source": "sha256:417d1d685bbb7455e1036f177facb7623c1e3c786c79d3f06ee9a4f50b3d3e51",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Puddle swims beside you as far as the water goes."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Old Ossley, the frog boatman, takes his ferry upriver on the next tide,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"I checked his channel myself.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So here is your piece: the buried bridge and these ruins came from the same old place, and something carried them apart. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/2": {
+    "source": "sha256:3d1b6496185e237f27f3e14b2af470c634627cc52916b9e595b447b25ae2b8f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind you, the shoved arch is creeping back toward Puddle's channel."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Then I'll shove it again,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sighs."
+      },
+      {
+        "by": "saltrot_guide",
+        "text": "\"Every tide. Forever. Fine.\""
+      }
+    ]
+  }
+}

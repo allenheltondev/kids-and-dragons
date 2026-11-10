@@ -1,0 +1,1461 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-stone-counters/arrival/narration": {
+    "source": "sha256:6dee43f17e50706783851594ede065c64380eb4c59623ff8a4db9952065a1028",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On a hilltop in the foothills, under a reddish sky, stands a ring of old stones. A dragonling taps each one with her tail."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Ten, eleven. Eleven?\""
+      },
+      {
+        "by": "narrator",
+        "text": "She starts again from one. She sees you."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"I'm Tally. I keep the boundary stones by the river, and these counting stones. If we've met, hello again. If not, hello.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She points at an empty dent in the grass."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Twelve stones have stood here since my grandmother's grandmother. Today, eleven. A counter's stones never move. So how can a stone that never moves have moved?\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/the_road/narration": {
+    "source": "sha256:d92d485801ddb98a45ad45020e6af4b1e2a6f5e3c16fb488170e7017128a9dfe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up the hill, where the road squeezes between two rocks, the missing stone stands right in the way. It is the Eldest, the biggest of the twelve, carved with a mountain throwing sparks. Beside it, a fold hangs in the air, as tall as a door. And under the Eldest, prying with a spoon, is Pip Thistledown, the young manticore scout."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says a moved stone is the best sample in the world!\""
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Stone thief!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Tally. What do you do?"
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_spoon/onSuccess/narration": {
+    "source": "sha256:9dfb11bc88e29a1c363ada0fdfbf86d83480e171318a6d82342de7ba4be888be",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You pluck the spoon right out of his paw. Pip blinks."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Oh. Hello.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You hand it back once he promises to keep it in his pocket."
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_calm/narration": {
+    "source": "sha256:6625cdcb4066d96415214c022b2a1b22930ed3af153028cb2c7be7903f7920d8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally's tail lashes. She is counting under her breath, very fast."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"One two three four. One. One two three.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Every time she loses it, she starts again from one."
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_calm/onSuccess/narration": {
+    "source": "sha256:d1c6fa117fb19914a94a3109d1a8f8ebf6edb9f6de8b84b2c668ba3a02fa887a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You count with her, slow and steady, until her tail slows too."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Fine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Fine. Let him talk.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_calm/onFailure/narration": {
+    "source": "sha256:3cb3d4bedb47e8ce60329d200772d82c44ef0d5cd2ceced4e7f8d922b0abe469",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally grabs Pip by the tail and lifts him off the stone."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Caught in the act,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Pip dangles, very politely."
+      }
+    ]
+  },
+  "riftlight-stone-counters/pip_says/narration": {
+    "source": "sha256:b949758b61e4ab32060ecb134577b17138eb6fc9dd1c5bd09f8cc9c034be54c1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"I didn't move it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"I came up at dawn to scout for the Riftseekers, and it was already here. It's twice my size!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally narrows her eyes."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Stones don't move by themselves. Somebody pushed it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at the spoon. Pip looks at the spoon. Prove the stone moved itself, and Pip is off the hook."
+      }
+    ]
+  },
+  "riftlight-stone-counters/lesson/narration": {
+    "source": "sha256:7d5c6cccc30dfef64948d9edfd9f1e2209c3602a0f993a2151c859b35d2f82d7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren Wisp, the kitsune from the Riftseekers, comes puffing up the road."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There you are, Pip. You were meant to be back for breakfast.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she sees the fold, and her ears go up."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Hum the low note from the singing hall.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You hum. The fold hums back, faint as a bee in a jar."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Answering an opening's hum is called Attune,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It never changes an opening's rules. It lets you hear them.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/lesson/variants/0": {
+    "source": "sha256:cb6f03d3a55b2b65708cfcbddd29f496a9fd16af55e4ec47236df3da7e3d54ac",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren Wisp, the kitsune from the Riftseekers, comes puffing up the road."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"There you are, Pip. You were meant to be back for breakfast.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she sees the fold."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Another one. Hum the way I taught you before.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You hum the low note from the singing hall. The fold hums back, faint as a bee in a jar."
+      }
+    ]
+  },
+  "riftlight-stone-counters/fold/narration": {
+    "source": "sha256:7fb928497ed37eb3233ea0b78f8242f449493d22e3dabc257478c9cd4bee893e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "seren_wisp",
+        "text": "\"Now watch its edges,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren. You watch. The fold is a little smaller than it was. Pip opens his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"At dawn it was taller than a house. Now it's a door.\""
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Some openings stay,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"This one is in a hurry. It shrinks, and when it is gone, it is gone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally tries to count its edges."
+      }
+    ]
+  },
+  "riftlight-stone-counters/grass/narration": {
+    "source": "sha256:d1b9dbfb2c1e27c66fb46001e1c67649cc9ec4f2693af3d276d280a29440697b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally stamps her foot."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"If somebody pushed the Eldest up here, they dragged it. A stone that big leaves a scrape.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Long grass lies between the dent and the road. Pip is already on his belly, which does not help. How will you look?"
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_grass/narration": {
+    "source": "sha256:4100f266cf7d0a73d54d9ef8e35028b70e632f1dd9c9a3cc2e404eb63ea7b6e4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You part the grass, slow and careful. A beetle glares at you for opening its front door."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Gently,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Tally."
+      }
+    ]
+  },
+  "riftlight-stone-counters/grass_wind/onAssisted/narration": {
+    "source": "sha256:480f07ec519ffc9be9b0810be7a849976e4529ff364d2bc521a91ec725afef9c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip whispers"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"now\""
+      },
+      {
+        "by": "narrator",
+        "text": "every time the wind drops. You look together."
+      }
+    ]
+  },
+  "riftlight-stone-counters/wind_drops/narration": {
+    "source": "sha256:6cb5a99641153d76151dbd20dfc9677828c9fd7043cd1d0566afaf1438bfc791",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the stillness, the grass between the dent and the road lies smooth and whole, like a combed beard."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Nobody dragged anything through that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "breathes Pip."
+      }
+    ]
+  },
+  "riftlight-stone-counters/sniff/narration": {
+    "source": "sha256:dc939564e2a9c4e268e5c472d706e2c568b4201efdb53bdb47ff9e1c21ff60b4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You and Pip sniff along the grass, noses down, tails up. It smells of grass, beetle and nothing else at all. No stone has been dragged through here. Pip sneezes on Tally."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Bless you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, not kindly."
+      }
+    ]
+  },
+  "riftlight-stone-counters/no_drag/narration": {
+    "source": "sha256:6e2165ad1717ce19f37ed8ca95f7cffa50c90eafec0058980f476d3d830bd5ab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "No scrape. No track. Nothing between the dent and the road but grass and one cross beetle. Tally sits down hard."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"So it didn't slide. Did it fly?\""
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says nothing flies without wings,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip,"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"except rumors.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/hollow/narration": {
+    "source": "sha256:27934c16f6f778c7c1e1fffc4942f44bcb736358c4a80bef3419e4c1b8baacc0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back at the ring, Tally lays her counting cord around the empty dent. It fits the Eldest's shape exactly, edge for edge. The grass inside is pressed flat and pale, and three worms are very confused about the sunshine. Then the hill gurgles. A trickle of meltwater starts toward the dent."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"No!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Tally."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"It'll wash the edge away!\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_trickle/narration": {
+    "source": "sha256:8a426821c8b345e8055dec88b6e56afce77513eda8a7be334df3cc4b098cd680",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally hands you a flat stone."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Shovel. Go.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip digs with both paws, very fast and mostly sideways."
+      }
+    ]
+  },
+  "riftlight-stone-counters/under/narration": {
+    "source": "sha256:cc8c2b205ab08bae2c06c6237b648ae72eab9ccb74d821cc77cef32c6efb6a60",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "So the dent is where the Eldest stood. But why is it up on the road now?"
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Look underneath it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Stones keep secrets underneath. Usually woodlice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The fold beside the Eldest has shrunk again, to the height of a pony. How will you look under a stone that big?"
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_rock/narration": {
+    "source": "sha256:90b64f1d500180dbf57cfa448c28ec3e971ac293a07e889aa4b0ccfc7accde5c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone leans on the Eldest. Pip leans on you."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That counts,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_dig/narration": {
+    "source": "sha256:682ae2a6af838fb1bc227db30c6a75570690d4e471ea040d1135352e80370b2a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The road is packed hard under loose gravel."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Dig in the wrong spot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally,"
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"and the hole falls in.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/old_socket/narration": {
+    "source": "sha256:5cfe8905e2d1250d53d11c5eb7886b533a5153ac5db360bb04f9db5c31ec8b7c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Under the Eldest is a socket, worn deep into the rock of the road. It is the Eldest's exact shape, smooth as an old bowl and packed with ancient dark grit. It is far older than the counting ring."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"It didn't wander off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally whispers."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"It went back. Back to where it stood long, long ago, before there was a ring at all.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Your Listening Chime swings on its string and points north, toward the far white glacier."
+      }
+    ]
+  },
+  "riftlight-stone-counters/pebble/narration": {
+    "source": "sha256:86dcd27cb766e28e8e45658289aa71da7d7dc3752c464662de9a2b1b2cd72092",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "By the fold, a little counting pebble twitches. Then it is gone, and back again a step away. Hop. Hop."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"If it moves again, I want to SEE it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally. Keep your eyes on the pebble, and show Tally where it lands."
+      }
+    ]
+  },
+  "riftlight-stone-counters/seen/narration": {
+    "source": "sha256:4f55b44c7120d22f37e700160d694b182591e8c8b4d561b402577b8b0842a3fb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The pebble did not roll. It did not bounce. It was here, and then it was there, sitting in a little dimple worn smooth long ago."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It went where it used to be,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren softly. Pip drops his notebook. Then he picks it up and writes very fast."
+      }
+    ]
+  },
+  "riftlight-stone-counters/verdict/variants/0": {
+    "source": "sha256:45d9d889814b4dc78e3a8b2d5716b8f6dfa45a3a00a91dd7169616ec41c01861",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"But things got trampled, and I missed things,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says slowly."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"I'm not sure.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_vouch/onSuccess/narration": {
+    "source": "sha256:9e7910c0c8b86e1891863f6268034500a4d868a62f9fec1c697e79f9aa11883f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally's tail stops lashing."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"All right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"I believe you both.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_vouch/onFailure/narration": {
+    "source": "sha256:7dc02e2c1ce8b75f55547da1390cb2c45f4d2ca5e4ad4e962b3655acc81574f7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Maybe,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Maybe not. I'll keep this spoon while I decide.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She takes it from Pip's pocket and tucks it in her belt. Pip watches it go like a lost puppy."
+      }
+    ]
+  },
+  "riftlight-stone-counters/pip_cleared/narration": {
+    "source": "sha256:8fffcd9ac4aef8137aad58734fe2efe30c8d3d5220cb13ef523cfdd46ea8c82d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"A stone that never moves has moved,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"By itself. Back to an older place.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She says it twice, like a count she has to get used to. Pip does a small, careful dance. Then wheels creak on the road below. A cart is coming, and the Eldest is standing right in its way."
+      }
+    ]
+  },
+  "riftlight-stone-counters/pip_cleared/variants/0": {
+    "source": "sha256:3fe6b157bc333f6a91cdcd90513947f9e064d9bcba6801303fcbcfa70a0ea3a2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Pip,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally,"
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"I'm sorry I called you a thief.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/what_now/narration": {
+    "source": "sha256:bdabc805df34161b0bee9b68e4610dd78f61916ab8821330303732edfdba50f9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A turnip cart is coming up the hill, and it will never get past the Eldest. Pip bounces."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says if the land moves wrong, you move it back! Push it home!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally's claws twitch."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Pushed things push back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Or leave it where it wants to be, and the road stays blocked by that fold.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The fold is the size of a cartwheel now. What will you do with the Eldest?"
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_push/narration": {
+    "source": "sha256:348683b4bb0738705e00f11f7624aeeabc06c1942d02d21873fed32f117abdb3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone gets a shoulder on the Eldest. Pip gets his tail on it."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"One, two, THREE,\""
+      },
+      {
+        "by": "narrator",
+        "text": "counts Tally."
+      }
+    ]
+  },
+  "riftlight-stone-counters/bigfoot_carry/narration": {
+    "source": "sha256:c162f9c737ef959145e3719a2f522ae6a7c1ac76a9dfd506694fb900af0d4d3d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot hugs the Eldest and stands up with it, grunting. Tally counts every step down the hill."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Forty-one, forty-two, put it DOWN.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Clunk. The Eldest sits in its dent."
+      }
+    ]
+  },
+  "riftlight-stone-counters/pushed_home/narration": {
+    "source": "sha256:d16b86a6771d3e19e2be1efa59cb83e1b478bd0e6b1073ca6730e6e849f33539",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally counts the ring."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Ten, eleven, twelve!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She counts it again, just to hear it. The road is clear. Pip writes PUSHED IT HOME in big letters."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia will be so pleased.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/creak/narration": {
+    "source": "sha256:1a0fc9dfa8f54cfd71981ce6f1493e419bf0ba63e1a802d53b3590a648aba020",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then the Eldest creaks. Very slowly, it leans in its dent, uphill, toward the road and its old socket, like a dog leaning on its lead. Tally's smile wobbles."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It wants to go back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren quietly."
+      }
+    ]
+  },
+  "riftlight-stone-counters/gourd_clear/narration": {
+    "source": "sha256:9bf58657c05344b4b967a63cda7ec0efc33821c53c71ce89f1493567f45c6fff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cart rattles up the hill. Farmer Gourd, a round dragonling, waves from the seat. His goat, Mustard, pulls the cart and wears a straw hat."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Morning, Tally! These turnips must get over the hill before they go soft. Can you get me past that shimmery thing?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The empty road runs right past the fold. Mustard sniffs at it, and decides it smells like lunch."
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_goat/narration": {
+    "source": "sha256:5104263a671ff5ac809b464ac8421b15391bd7dca73383deb2408a6854982a6b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cart rolls up the open road. Mustard leans toward the shimmer, harder and harder."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Mustard, no,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Farmer Gourd."
+      }
+    ]
+  },
+  "riftlight-stone-counters/leave_it/narration": {
+    "source": "sha256:9cf3e2ab5de527434dff478d8340fa1be8682aeb058c194cbc17d3453664d5cf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally walks once around the Eldest. Then she sits down beside it and pats it."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"All right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, very small."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"You stood here first. I'll count you here.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She ties a new knot in her counting cord."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Twelve. Twelve, in a new shape.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her tail droops, then lifts. But the road is still blocked, with only a thin gap beside the fold."
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_bend/narration": {
+    "source": "sha256:b1c59b870e469af6d91384de8f22d1a43c3bb838eacedf23696e889eb7caa8c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Seren holds the cord. Tally counts paces. Pip counts them differently."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"There are no halves in paces, Pip.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/stuck/narration": {
+    "source": "sha256:933a49f4213b62af29a0c6765f3166dc3c749939d7891ed92fca683be1942ee8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally sits down in the road."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Well. Now it's stuck in a new wrong place.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip pats the stone."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he tells it. The only way past is the thin gap right beside the fold."
+      }
+    ]
+  },
+  "riftlight-stone-counters/gourd_gap/narration": {
+    "source": "sha256:a4df0c58cecd8d0c092127978d9c0d7d376e45d9aa0b093232ac81baad8a25a4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cart rattles up the hill. Farmer Gourd, a round dragonling, waves from the seat. His goat, Mustard, pulls the cart and wears a straw hat."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Morning, Tally! These turnips must get over the hill before they go soft. Can you get me past that shimmery thing?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Mustard eyes the fold as if it might be lunch."
+      }
+    ]
+  },
+  "riftlight-stone-counters/gourd_tight/narration": {
+    "source": "sha256:a4df0c58cecd8d0c092127978d9c0d7d376e45d9aa0b093232ac81baad8a25a4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cart rattles up the hill. Farmer Gourd, a round dragonling, waves from the seat. His goat, Mustard, pulls the cart and wears a straw hat."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Morning, Tally! These turnips must get over the hill before they go soft. Can you get me past that shimmery thing?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Mustard eyes the fold as if it might be lunch."
+      }
+    ]
+  },
+  "riftlight-stone-counters/squeeze/narration": {
+    "source": "sha256:2601524cb07914dc4baf18d87f714655aadbb6b8e685700c91c853f5272e32b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The gap runs right past the fold. Every few breaths the fold tugs at loose things: a leaf, a feather, Pip's whiskers. Then it lets go."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Roll through between the tugs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Farmer Gourd,"
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"or carry my turnips around by hand. Slow, but safe.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/squeeze_tight/narration": {
+    "source": "sha256:f9434698a142e02326ceffdf8afb41f46ac4a4ae85d3722cc4f613cbea349982",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The way past hugs the fold. Every few breaths it tugs at loose things, close enough to lift your hair: a leaf, a feather, Pip's whiskers. Then it lets go."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Roll through between the tugs,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Farmer Gourd,"
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"or carry my turnips around by hand. Slow, but safe.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/squeeze_time/onFailure/narration": {
+    "source": "sha256:ad975cfc5ace9a7f11bd7db26758581b3cbad7deca6d1ebcd45abe0adcfcf801",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You go a moment early. The fold tugs, and a sack of turnips slides off the back and into the shimmer. Gone. Farmer Gourd takes off his cap."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Somebody downhill is getting turnips.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/squeeze_time/onAssisted/narration": {
+    "source": "sha256:2d52ebcb90d5d0dfbf9b5326fd2dd610d490ceffc203c8aafe497f1c4492b23a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip shouts"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"NOW\""
+      },
+      {
+        "by": "narrator",
+        "text": "at exactly the right moment. The cart rolls through, every turnip aboard."
+      }
+    ]
+  },
+  "riftlight-stone-counters/squeeze_close/onFailure/narration": {
+    "source": "sha256:ad975cfc5ace9a7f11bd7db26758581b3cbad7deca6d1ebcd45abe0adcfcf801",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You go a moment early. The fold tugs, and a sack of turnips slides off the back and into the shimmer. Gone. Farmer Gourd takes off his cap."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Somebody downhill is getting turnips.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/squeeze_close/onAssisted/narration": {
+    "source": "sha256:1bd265fa3ff15a0866d740235ba0a1885feae745e2391bfe4d0793e57f71eb01",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip shouts"
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"NOW\""
+      },
+      {
+        "by": "narrator",
+        "text": "at exactly the right moment. The cart scrapes through, every turnip aboard."
+      }
+    ]
+  },
+  "riftlight-stone-counters/turnip_relay/narration": {
+    "source": "sha256:80ac5ec2b6b365fadf72eea9604f95509b680c474a5a2603be40340ac926bf1b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Turnip by turnip, pass the load around the far side of the Eldest, away from the fold. Mustard helps by eating the small ones."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"That is not helping,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Farmer Gourd."
+      }
+    ]
+  },
+  "riftlight-stone-counters/dusk_run/narration": {
+    "source": "sha256:14f3d883ad945fbc5fe044ef277d83a181c94dc850942bbdd53c7cd7cd420d6c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your duskrunner grabs Mustard's harness and counts the tugs. One, two, NOW. Cart, goat and farmer shoot through the gap like a cork from a bottle."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Wheee!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Farmer Gourd, cap on backward. Not one turnip lost."
+      }
+    ]
+  },
+  "riftlight-stone-counters/past/narration": {
+    "source": "sha256:3c4311b79b8fa43c18a7aa733b3a045747e35f05e9b86b82bed21138f60aebf4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Farmer Gourd's cart rolls on over the hill, Mustard trotting proudly in front."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Thank you!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls back."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"I'll tell the whole market a stone went for a walk!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally counts the turnips going by, out of habit."
+      }
+    ]
+  },
+  "riftlight-stone-counters/past/variants/0": {
+    "source": "sha256:4cd8eb5a3163cf59982cb93dd321b04f2d51d7b7c26606037e75ef8887846803",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Minus a few,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she adds."
+      }
+    ]
+  },
+  "riftlight-stone-counters/past_slow/narration": {
+    "source": "sha256:b32955fd7f75716a4c3d747c105eb4895ba697c9e140f962e5844077d66ab578",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Farmer Gourd loads up again and rolls on over the hill, Mustard trotting proudly in front."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Thank you!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he calls back."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Every last turnip!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally counted every one, twice. It all took a long, long time."
+      }
+    ]
+  },
+  "riftlight-stone-counters/fold_window/narration": {
+    "source": "sha256:a085eab02b6d16954c2a5e74464fcea561a199fb67b241c2565cd4c8d349bc91",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The fold is the size of a window now, and still shrinking. Wet wind blows out of it, and the sound of a big river, far away. Pip's nose is nearly touching it."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Lady Olivia says openings are doors. I could just peek!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren frowns."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Or we count how fast it is closing, so we know how long it has left.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/fold_small/narration": {
+    "source": "sha256:f57434558f0f6174f0978ccbb42f563b38b7e1a8956f7e04f2663760bd64e588",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "All that carrying took time. The fold is no bigger than a dinner plate now, and still shrinking. Wet wind blows out of it, and the sound of a big river, far away. Pip sighs."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Too small to peek.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Seren holds up two fingers."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"We can still count how fast it is closing.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/chime_listen/narration": {
+    "source": "sha256:9a3401e497c99971fd31d98226981064d71266fecf10ec6748c4f08c9e454adb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the Listening Chime up to the little fold. It hums, then leans, past the fold and on, north, toward the glacier, like a dog pointing at a squirrel."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Huh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip, writing fast."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Everything today points that way.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_peek/onSuccess/narration": {
+    "source": "sha256:ba159868b675970fa013dcf099d0a9c63bf92b2cfc0400f9f7ff6b9b1c47840b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You haul Pip back out with his fur standing straight up."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"A big river, way downhill!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he gasps."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"And wet wood, and frogs!\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_peek/onFailure/narration": {
+    "source": "sha256:a99c6773a553736be26da7fa485970111ef1d91ac49e47a5765dc1175ed4798b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The fold tugs harder. You hold on to Pip, but Pip does not hold on to his hat. It sails through and is gone."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"That was my best hat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, from inside his collar."
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_count/onSuccess/narration": {
+    "source": "sha256:6b9705a148ab54fb49282676b0e4e7ce42f91c7add147acad2092298ee154dbe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You count it together."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It will last until we have packed,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren,"
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"and not a minute more.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/check_count/onFailure/narration": {
+    "source": "sha256:236258d04aa35c35a4bf3030102d47018271ad5f9c0a1e09a2e9f0c6513c1e34",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lose count at fourteen, because Pip sneezed. Seren laughs."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"Soon, then. That is all we know.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/attuned/narration": {
+    "source": "sha256:fca5bca5ad4f92b6a07b3ad911d8a35aff4716aa47b5ce46d20b45e71126e4eb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your starweaver hums, the way Seren taught. The fold hums back, quick and thin, like a kettle nearly done."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It's in a hurry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Seren."
+      },
+      {
+        "by": "seren_wisp",
+        "text": "\"It will last until you have packed, and not a minute more.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/rest/narration": {
+    "source": "sha256:3fd6a505d359870c79e93d82e901d20e5f6e48edea6d73f011d8d55050db3880",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally shares ember toffee, warm in the middle, counted out one each. Pip's piece glues his teeth together."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Room for one big drawing to carry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, muffled, opening his notebook. Tally's road plan would help wherever the land moves next. A rubbing of the Eldest's carving keeps its old mountain, to compare with other stones. Which will Pip carry?"
+      }
+    ]
+  },
+  "riftlight-stone-counters/route_copy/narration": {
+    "source": "sha256:33392b25786a2aa72ae3ee69af8b855e9d77f615d890a1c6ec6d0ebebf254f4d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally draws the road as it is today, every landmark counted. Pip folds it into his notebook."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Next time the land argues with a map, we'll have somewhere to start.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/carving_copy/narration": {
+    "source": "sha256:6b5ec0da74fba9599ffc3c45414055e1b8660dce437af0b09aed856dcd8074ac",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pip lays the page over the Eldest's carving and rubs it with charcoal: a mountain, throwing sparks."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"An eruption,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Our oldest counts can't agree when it was. Nobody's count matches.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip draws a box beside it for the part nobody knows."
+      }
+    ]
+  },
+  "riftlight-stone-counters/goodbye/narration": {
+    "source": "sha256:112bc261d04e9692cccaf633c8d1b113533b578d1d841bc97c29467687c48adc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally walks you to the edge of the hill, counting your steps."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"A counter's stones must never move,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Mine did. So now I'll count the moving too.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks north."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"My cousin up the valley says the river has gone the wrong way as well. Strange days for counting.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/goodbye/variants/0": {
+    "source": "sha256:1595ff7f43dd0d105181278154993eb0fdb23ebadb43e2ee1d8f600a09f2f8a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind her, the Eldest creaks in its dent, leaning toward the road."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"I'll push it back every morning,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sighs."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Every single morning.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/goodbye/variants/1": {
+    "source": "sha256:3653062791ad06e0f8a974e56a424bf1e9bc9cdb446ec4261e82415f89d936c7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind her, the Eldest lies stuck sideways across the road."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"My cousins and I will roll it somewhere sensible,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sighs."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Tomorrow. With a lot of cousins.\""
+      }
+    ]
+  },
+  "riftlight-stone-counters/goodbye/variants/2": {
+    "source": "sha256:30258440dd61ebe03590681b421f3056147f9919a1d93f86c00adf22faffadf0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Behind her, the Eldest stands in its old socket, with the new bend curving around it."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Twelve, in a new shape,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and almost smiles."
+      }
+    ]
+  },
+  "riftlight-stone-counters/goodbye/variants/3": {
+    "source": "sha256:c9ff30dc1393928126eb96ed55944fcbd9b8bcca3314f289316618f96993acba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Then she hands Pip his spoon at last."
+      },
+      {
+        "by": "dragonling_stone_keeper",
+        "text": "\"Don't pry anything else.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pip hugs it."
+      }
+    ]
+  },
+  "riftlight-stone-counters/ending/narration": {
+    "source": "sha256:5f32c771f8630ee0df90d786de9667955dfc69ff600d3a1d1c18c34fdf392009",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "So here is your piece. A stone that never moves went back to where it stood long ago, all at once, without touching the ground between. The road runs downhill to Ashspan Bridge. North, up toward the glacier, a river has gone the wrong way. And the fold is still shrinking."
+      },
+      {
+        "by": "pip_thistledown",
+        "text": "\"Take it now, or it's gone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Pip. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}
