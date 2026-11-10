@@ -490,6 +490,47 @@ two-second command on a laptop.
 
 ## Operating it
 
+### Alarms, and where they go
+
+Every stack has one SNS topic, `kad-<stage>-alarms`, and six alarms that publish
+to it. Each counts something that should be zero:
+
+| Alarm | Fires when | What it means at the table |
+|---|---|---|
+| `kad-<stage>-api-errors` | the API Lambda crashes or times out, once | a tap got no answer |
+| `kad-<stage>-api-5xx` | the API answers 5xx five times in five minutes | the game is probably unplayable (this is the one that catches content failing to load) |
+| `kad-<stage>-api-throttles` | Lambda refuses to run the API, once | taps are being dropped |
+| `kad-<stage>-channel-authorizer-errors` | the realtime authorizer fails, once | screens cannot join a room's channel |
+| `kad-<stage>-sweep-errors` | the guest sweeper fails | the job that deletes households is broken; read its log before the next run |
+| `kad-<stage>-log-sweep-errors` | the log sweeper fails | old logs are not being deleted |
+
+They only see traffic that happened. Nothing probes the site, so a production
+that is broken while nobody is playing stays quiet until somebody does.
+
+**Sending them to Slack.** Production posts to a Slack channel through AWS's own
+Slack integration (Amazon Q Developer in chat applications, formerly AWS
+Chatbot). Three steps, once:
+
+1. In that service's console, choose Slack as the chat client and authorize the
+   workspace. The console then shows the **workspace id** (`T…`).
+2. Pick the channel and copy its **channel id** (`C…`, the last part of the
+   channel's link). For a private channel, invite the AWS app to it first.
+3. Set `ALARM_SLACK_WORKSPACE_ID` and `ALARM_SLACK_CHANNEL_ID` as variables on
+   the `Production` GitHub environment. The next production deploy subscribes
+   the channel.
+
+Staging sets neither, so its alarms exist (a staging deploy then needs exactly
+the permissions a production one does) and nobody is told. The Slack channel
+itself is the one piece staging does not create, so the first time it is turned
+on, set the two variables on `Staging` for one deploy before `Production`: a
+missing `chatbot` permission then fails there instead.
+
+**The deploy role needs three more services for this:** `cloudwatch`, `sns` and
+`chatbot`. The dedicated roles in `infra/github-oidc.yaml` carry them (redeploy
+that stack). A shared role has to be given them **before** the first deploy that
+includes the alarms, or CloudFormation is refused and the whole stack update
+rolls back, which is how #440 left production a day behind.
+
 **Where the logs are.** `/aws/lambda/kad-*`, JSON-formatted. The stack declares
 no log groups and sets no retention: Lambda creates each group on the function's
 first invocation, and retention is handled account-wide by a utility outside this
