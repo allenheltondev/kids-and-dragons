@@ -103,6 +103,40 @@ describe("who is in the game", () => {
     expect([...renamed.get("soup_woman")!.aliases]).toContain("Marigold");
   });
 
+  it("keeps two people under one name apart when the scenes draw them as two", () => {
+    const split = new Map(collectCharacters({
+      chapters: [
+        // The griffin comes first, but the figure the id names keeps the id.
+        { id: "r-01", campaignId: "r", voiceGuide: { npcVoices: { Brask: "Brask, the griffin who keeps the pass ledger (he/him)." } }, scenes: { s: { cast: [{ figure: "cast/pass_keeper", name: "Brask" }] } } },
+        { id: "g-05", campaignId: "g", voiceGuide: { npcVoices: { brask: "Skywarden engineer; blunt" } }, scenes: { s: { cast: [{ figure: "cast/brask", name: "Engineer Brask" }] } } },
+        { id: "g-06", campaignId: "g", voiceGuide: { npcVoices: { brask: "Skywarden engineer, back again" } }, scenes: { s: { cast: [{ figure: "cast/brask", name: "Brask" }] } } },
+        // Cast with no voice notes: a namesake drawn as someone else is someone else.
+        { id: "r-02", campaignId: "r", scenes: { s: { cast: [{ figure: "cast/pass_keeper", name: "Brask" }] } } },
+      ],
+      individuals: [], narration: [],
+    }).map((d) => [d.id, d]));
+    expect([...split.keys()].sort()).toEqual(["brask", "brask_pass_keeper"]);
+    expect([...split.get("brask")!.chapters].sort()).toEqual(["g-05", "g-06"]);
+    expect([...split.get("brask_pass_keeper")!.chapters].sort()).toEqual(["r-01", "r-02"]);
+    expect(split.get("brask_pass_keeper")!.voiceNotes).toEqual([{ chapter: "r-01", key: "Brask" }]);
+  });
+
+  it("keeps two drovers apart when one role key is cast under two role names", () => {
+    const drovers = new Map(collectCharacters({
+      chapters: [
+        { id: "g-02", campaignId: "g", voiceGuide: { npcVoices: { drover: "a grumpy drover in a hurry, fond of her dinner" } }, scenes: { s: { cast: [{ figure: "entities/centaur", name: "Rush drover" }] } } },
+        { id: "g-03", campaignId: "g", voiceGuide: { npcVoices: { drover: "the lead drover; slow, booming" } }, scenes: { s: { cast: [{ figure: "entities/centaur", name: "Lead Drover" }] } } },
+        { id: "g-04", campaignId: "g", voiceGuide: { npcVoices: { drover: "the lead drover from the ford" } }, scenes: { s: { cast: [{ figure: "entities/centaur", name: "Lead Drover" }] } } },
+        // Voice notes with nobody cast are no reason to split.
+        { id: "g-05", campaignId: "g", voiceGuide: { npcVoices: { drover: "a drover" } } },
+      ],
+      individuals: [], narration: [],
+    }).map((d) => [d.id, d]));
+    expect([...drovers.keys()].sort()).toEqual(["drover", "lead_drover"]);
+    expect([...drovers.get("drover")!.chapters].sort()).toEqual(["g-02", "g-05"]);
+    expect([...drovers.get("lead_drover")!.chapters].sort()).toEqual(["g-03", "g-04"]);
+  });
+
   it("guesses a voice's gender and size from pronouns and notes", () => {
     expect(genderOf({ name: "Hessa Wren", who: "warm, generous", pronouns: "she/her" })).toBe("f");
     expect(genderOf({ name: "Old Wick", who: "a very old frogfolk lamplighter; he croaks" })).toBe("m");

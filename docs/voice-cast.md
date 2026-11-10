@@ -61,6 +61,17 @@ It merges the same person across chapters:
   A generic name ("Wisp") is never merged that way, so Riftlight's Seren Wisp stays her own
   person.
 
+It keeps two people apart when the scenes show two, even under one name or one voice-note key:
+
+- drawn as two different people (`cast/brask` and `cast/pass_keeper`), they are two: Gemfall's
+  Engineer Brask is `brask`, Riftlight's griffin pass-keeper is `brask_pass_keeper`;
+- a role key (`drover`) cast under two role names is two: the "Rush drover" is `drover`, the
+  "Lead Drover" is `lead_drover`.
+
+Whoever is drawn with the figure the id names keeps the id (else the first chapter's); the other
+takes an id from their figure, or from their role name. A split character starts with no voice
+of their own, so give them one before their chapter's script names them.
+
 **Lines** are quotes a speech tag gives to someone:
 
 - a name in the tag ("…," says Pib);

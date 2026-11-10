@@ -9,7 +9,7 @@
         "text": "A wagon wheel drops into a rut, and gem chips spill everywhere."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"WATCH YOUR BOOTS!\""
       },
       {
@@ -27,7 +27,7 @@
         "text": "Your bigfoot looks once, and points. Under the wheel. In a hoofprint. Inside somebody's boot. Every chip goes back."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"Never seen eyes like that,\""
       },
       {
@@ -35,7 +35,7 @@
         "text": "the drover booms."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"I'll remember you folks.\""
       }
     ]
@@ -587,7 +587,7 @@
         "text": "At dawn the lead drover sings the crossing verse: slow, slow, wait, slow."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"My ford, my pace,\""
       },
       {
@@ -605,7 +605,7 @@
         "text": "The lead drover sings it again, thumping one step for each line: slow, and slow, and wait, and slow."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"Now sing it back,\""
       },
       {
@@ -613,7 +613,7 @@
         "text": "he booms."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"In order.\""
       }
     ]
@@ -627,7 +627,7 @@
         "text": "By the third time through, you are singing with him."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"Huh,\""
       },
       {
@@ -635,7 +635,7 @@
         "text": "he booms."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"You've got it.\""
       },
       {
@@ -653,7 +653,7 @@
         "text": "The river is wide and fast."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"One wagon at a time,\""
       },
       {
@@ -693,7 +693,7 @@
         "text": "Two young glassback crabs have parked on the first crossing stones. Wheels come close. Claws click. Wheels back away."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"Back to the reeds, please,\""
       },
       {
@@ -711,7 +711,7 @@
         "text": "The crabs shuffle back to the reeds like small dukes leaving a party. The drover gives you a river charm."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"Polite neighbors,\""
       },
       {
@@ -797,7 +797,7 @@
         "text": "The stuck wagon leans hard into its rut. Tap when the marker crosses the gold to give it one good heave. The drover has named the rut."
       },
       {
-        "by": "drover",
+        "by": "lead_drover",
         "text": "\"Do not encourage it.\""
       }
     ]

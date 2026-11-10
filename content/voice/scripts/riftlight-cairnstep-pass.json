@@ -9,7 +9,7 @@
         "text": "Stone cairns climb a slope toward a notch in the Frostfang Peaks. By the lowest one sits a griffin keeper called Brask, from the aerie on the cliffs. He licks his pencil and writes something down."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Visitors. Good. I need witnesses.\""
       },
       {
@@ -17,7 +17,7 @@
         "text": "He pats a heavy pass ledger."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"This path was not in my book last season. Is this pass real? Does it belong on the map? A wrong page sends a herd off a cliff. Climb it with me, and help me decide.\""
       }
     ]
@@ -31,7 +31,7 @@
         "text": "The cairns climb in steps of old snow over loose stone. Brask flaps ahead."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Touch every cairn as you pass,\""
       },
       {
@@ -39,7 +39,7 @@
         "text": "he calls."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"It is polite, and it helps you balance.\""
       },
       {
@@ -57,7 +57,7 @@
         "text": "One cairn is so neat you want to give it a medal."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Don't,\""
       },
       {
@@ -65,7 +65,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"It will get ideas.\""
       }
     ]
@@ -79,7 +79,7 @@
         "text": "At the notch, the wind combs your ears. Then the Listening Chime on your pack begins to hum. It swings on its cord and leans, not down the pass, but back the way the river comes, toward the glacier far away. Then it is still. Brask licks his pencil and writes: \"Bell. Pointing.\" He frowns at the words."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"I will ask about that later.\""
       }
     ]
@@ -93,7 +93,7 @@
         "text": "Brask opens his ledger on a flat rock. Last season's drawing shows a smooth ridge. This season's shows the notch you stand in. A pencil line marks the herders' grazing route, cut by floodwater in three places."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"One drawing is wrong,\""
       },
       {
@@ -101,7 +101,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"My witnesses will tell me which.\""
       }
     ]
@@ -115,7 +115,7 @@
         "text": "You hold the old page up against the real mountain. The cairns line up. The ridge does not. A slab of stone has stepped sideways, like someone making room in a crowded room."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Where, exactly?\""
       },
       {
@@ -133,7 +133,7 @@
         "text": "You lay the herders' route over the new drawing. The new path runs above the three flooded spots, along a high, dry shelf."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"So the herd could use it,\""
       },
       {
@@ -141,7 +141,7 @@
         "text": "says Brask,"
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"if the shelf is real. Where does it meet the cairns?\""
       },
       {
@@ -159,7 +159,7 @@
         "text": "Your flyer goes up for a look. From above, the two drawings fit together like halves of a cracker, and the step in the ridge is as plain as a nose."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Show-off,\""
       },
       {
@@ -177,7 +177,7 @@
         "text": "The pages agree on all but one thing: a step in the ridge, where stone slid sideways after the first snow."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"So the drawing was right,\""
       },
       {
@@ -185,7 +185,7 @@
         "text": "says Brask,"
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"and the mountain changed.\""
       },
       {
@@ -193,7 +193,7 @@
         "text": "He writes it down, then stops."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"But my apprentice thinks she drew it wrong. She has been crying on the page.\""
       }
     ]
@@ -207,7 +207,7 @@
         "text": "A young griffin skids up the slope, hugging a rolled page. Her beak is inky."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"This is Pebble,\""
       },
       {
@@ -215,7 +215,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"My apprentice. She draws the new page each season.\""
       },
       {
@@ -359,7 +359,7 @@
         "text": "Brask clears his throat."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Now, witnesses. Something older.\""
       }
     ]
@@ -373,7 +373,7 @@
         "text": "Brask opens the ledger to its very first page. The paper is brown as toast and soft as cloth."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"My grandmother's grandmother's page,\""
       },
       {
@@ -381,7 +381,7 @@
         "text": "he says."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Older than the aerie.\""
       },
       {
@@ -389,7 +389,7 @@
         "text": "It shows a path through this very notch, dotted in old ink. Beside it are things to steer by: a lake shaped like a boot, and a peak with two horns. You look out. There is no lake. There is no two-horned peak."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"A path here, long ago,\""
       },
       {
@@ -397,7 +397,7 @@
         "text": "Brask says slowly,"
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"and nothing around it that is here now.\""
       }
     ]
@@ -477,7 +477,7 @@
         "text": "says Pebble."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Or roll a stone along it and listen,\""
       },
       {
@@ -485,7 +485,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"That takes longer. Listening always does.\""
       },
       {
@@ -503,7 +503,7 @@
         "text": "The slab is steady, settled like a cat on a cushion. But at its far edge, a little stone drops through a gap and falls a long way."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"The neck,\""
       },
       {
@@ -511,7 +511,7 @@
         "text": "says Brask quietly."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"The narrow bridge of rock at the top of the pass. It is hollow underneath.\""
       }
     ]
@@ -543,7 +543,7 @@
         "text": "Brask pulls out a long knotted cord, and everyone walks a stretch of it along the shelf. It hums in the wind like a harp. Pebble counts in griffin, which has different numbers."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Four hundred steps long,\""
       },
       {
@@ -551,7 +551,7 @@
         "text": "Brask writes."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Two goats wide. One hollow neck.\""
       },
       {
@@ -559,7 +559,7 @@
         "text": "He pays you six coins from the aerie's purse and an owlfeather clasp."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Fee and badge.\""
       }
     ]
@@ -573,7 +573,7 @@
         "text": "Brask lights a tiny stove that hisses like a cat. His tea tastes of pine needles and warm stones. Everyone gets a mug. Pebble gets a thimble. Brask writes:"
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Tea. Good.\""
       },
       {
@@ -599,7 +599,7 @@
         "text": "Far below, tiny dots move along the valley."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Herders,\""
       },
       {
@@ -607,7 +607,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"They will want to know if this path is real.\""
       }
     ]
@@ -637,7 +637,7 @@
         "text": "Brask nods."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Then let us finish.\""
       }
     ]
@@ -651,7 +651,7 @@
         "text": "The old pages smell of dust and pencil. Some passes are crossed out. A few have a tiny star."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Every road in this book was new once,\""
       },
       {
@@ -659,7 +659,7 @@
         "text": "says Brask. He turns back to the first page and taps it."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Except this one. This one was old when the book was new.\""
       }
     ]
@@ -673,7 +673,7 @@
         "text": "Brask taps the ledger."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"If herders come this way, where can their grain sacks wait out the weather?\""
       },
       {
@@ -691,7 +691,7 @@
         "text": "Drips mean wet. Dust means dry."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Write that down,\""
       },
       {
@@ -709,7 +709,7 @@
         "text": "Pebble draws a tiny roof on the map. Then a yip floats over the rocks. A cinder wolf, gray as ash and glowing at the edges, is nosing at the little cairn where the aerie keeps its hay and bread. A second wolf trots up."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Hungry, not wicked,\""
       },
       {
@@ -717,7 +717,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"But that is my winter hay.\""
       }
     ]
@@ -731,7 +731,7 @@
         "text": "You took your time at the slab, and the wolves did not. One already has a loaf in its jaws."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"That loaf is gone,\""
       },
       {
@@ -739,7 +739,7 @@
         "text": "sighs Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Save the rest.\""
       }
     ]
@@ -753,7 +753,7 @@
         "text": "The wolves dart off with a loaf and some hay."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Hay can be bought,\""
       },
       {
@@ -761,7 +761,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Friends are harder.\""
       }
     ]
@@ -775,7 +775,7 @@
         "text": "The neck is a narrow bridge of rock. Below it is a gap you could drop a house into."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Travelers will cross here,\""
       },
       {
@@ -783,7 +783,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"They need to know how. So do we.\""
       },
       {
@@ -841,7 +841,7 @@
         "text": "You remember the hollow donk from the slab, and where it was. You walk around it, and across the solid strip beside it, one goat wide. Pebble follows in your footprints."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Listening,\""
       },
       {
@@ -849,7 +849,7 @@
         "text": "says Brask,"
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"is quicker in the end.\""
       }
     ]
@@ -863,7 +863,7 @@
         "text": "The safe way runs down the middle, one traveler wide. Brask draws it as a dotted line."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"A goat could walk it,\""
       },
       {
@@ -871,7 +871,7 @@
         "text": "he says."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"A goat should walk it on a rope.\""
       },
       {
@@ -879,7 +879,7 @@
         "text": "He licks his pencil."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Now. What do we write?\""
       }
     ]
@@ -893,7 +893,7 @@
         "text": "Brask holds his pencil over a clean page."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"A ledger is a promise to the next traveler. The herd's old route is under water, and they are hungry.\""
       },
       {
@@ -907,7 +907,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Not open,\""
       },
       {
@@ -915,7 +915,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Not with that crack. Not in my book.\""
       }
     ]
@@ -929,7 +929,7 @@
         "text": "Brask writes OPEN in big letters."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"The herd will be glad,\""
       },
       {
@@ -945,7 +945,7 @@
         "text": "Brask looks at it a long moment."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Then a good cairn at least, so they can find the safe line.\""
       }
     ]
@@ -959,7 +959,7 @@
         "text": "Brask writes OPEN, WITH CARE, and draws a tiny hat on the neck. That is how griffins mark a place that needs respect."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Travelers read warnings,\""
       },
       {
@@ -967,7 +967,7 @@
         "text": "he says."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Mostly.\""
       },
       {
@@ -989,7 +989,7 @@
         "text": "Brask writes UNSETTLED in small letters."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"The ridge moved once. I will not send a herd over a thing that might move twice.\""
       },
       {
@@ -997,7 +997,7 @@
         "text": "It is a careful answer, and a bit sad."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"We will still raise a cairn,\""
       },
       {
@@ -1005,7 +1005,7 @@
         "text": "he says."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"A closed road deserves a good marker.\""
       }
     ]
@@ -1019,7 +1019,7 @@
         "text": "The last cairn goes up at the neck, where travelers will see it. Brask scratches a mark in the middle of it."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"The capstone goes there,\""
       },
       {
@@ -1027,7 +1027,7 @@
         "text": "he says."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Exactly there.\""
       },
       {
@@ -1045,7 +1045,7 @@
         "text": "Down it goes, into the gap. You count to five before it lands. Pebble counts to seven, in griffin. The cairn stands, but it is short now, too short to see from the valley."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"I will stand here myself and wave at the herd,\""
       },
       {
@@ -1053,7 +1053,7 @@
         "text": "says Brask,"
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"until we find a new top.\""
       }
     ]
@@ -1075,7 +1075,7 @@
         "text": "Brask lifts his flag toward the sky. Far off, a little island floats in the air, small as a loaf in a pond, and a tiny flag waves from it."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Our neighbors,\""
       },
       {
@@ -1083,7 +1083,7 @@
         "text": "he says."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"They watch the weather. We watch the stones.\""
       }
     ]
@@ -1093,7 +1093,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Our neighbors will want to hear what we found,\""
       },
       {
@@ -1101,7 +1101,7 @@
         "text": "says Brask."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"What shall we tell them?\""
       }
     ]
@@ -1115,7 +1115,7 @@
         "text": "Brask hands you a flag. Big wave, little wave, circle, pause. It is like a dance with a very strict teacher. Across the sky, a tiny figure waves back."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Oh, nicely done,\""
       },
       {
@@ -1133,7 +1133,7 @@
         "text": "The island's flags answer."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"They say thank you,\""
       },
       {
@@ -1141,7 +1141,7 @@
         "text": "Brask reads."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"And the ridge is not the only thing that moved. Their old landing route now points into empty sky.\""
       },
       {
@@ -1149,7 +1149,7 @@
         "text": "He licks his pencil and does not write."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"I would like to know how.\""
       }
     ]
@@ -1163,7 +1163,7 @@
         "text": "The island's flags answer."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"They say yes,\""
       },
       {
@@ -1171,7 +1171,7 @@
         "text": "Brask reads."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Their old landing route now points into empty sky.\""
       },
       {
@@ -1179,7 +1179,7 @@
         "text": "He licks his pencil and does not write."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"I would like to know how.\""
       }
     ]
@@ -1193,7 +1193,7 @@
         "text": "Brask ties the ledger shut."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"You walked it first, so the aerie owes you a flight. Griffins pay their debts.\""
       },
       {
@@ -1201,7 +1201,7 @@
         "text": "He looks at the island."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Our neighbors have route trouble too. We can fly you over to them, whenever you say.\""
       },
       {
@@ -1219,7 +1219,7 @@
         "text": "The aerie is a loaf short, because you stopped to listen."
       },
       {
-        "by": "brask",
+        "by": "brask_pass_keeper",
         "text": "\"Worth a loaf,\""
       },
       {
