@@ -512,24 +512,29 @@ Slack integration (Amazon Q Developer in chat applications, formerly AWS
 Chatbot). Three steps, once:
 
 1. In that service's console, choose Slack as the chat client and authorize the
-   workspace. The console then shows the **workspace id** (`T…`).
+   workspace. The console then shows the **workspace id** (`T…`). Stop there:
+   do not go on to configure a channel in the console. The stack makes its own
+   configuration, `kad-<stage>-alarms`, and a second one for the same channel
+   may be refused.
 2. Pick the channel and copy its **channel id** (`C…`, the last part of the
    channel's link). For a private channel, invite the AWS app to it first.
 3. Set `ALARM_SLACK_WORKSPACE_ID` and `ALARM_SLACK_CHANNEL_ID` as variables on
    the `Production` GitHub environment. The next production deploy subscribes
    the channel.
 
-Staging sets neither, so its alarms exist (a staging deploy then needs exactly
-the permissions a production one does) and nobody is told. The Slack channel
-itself is the one piece staging does not create, so the first time it is turned
-on, set the two variables on `Staging` for one deploy before `Production`: a
-missing `chatbot` permission then fails there instead.
+Staging sets neither, so its alarms exist and nobody is told. A green staging
+deploy proves the template, not production's permissions: staging deploys with
+its own role, and the Slack workspace is authorized only where production
+lives, so the channel cannot be tried on staging first. The first production
+deploy after the two variables are set is the Slack hookup's first real test.
+Watch that one.
 
 **The deploy role needs three more services for this:** `cloudwatch`, `sns` and
 `chatbot`. The dedicated roles in `infra/github-oidc.yaml` carry them (redeploy
 that stack). A shared role has to be given them **before** the first deploy that
 includes the alarms, or CloudFormation is refused and the whole stack update
-rolls back, which is how #440 left production a day behind.
+rolls back, which is how #440 left production a day behind. Each stage's role
+needs them separately: staging's passing says nothing about production's.
 
 **Where the logs are.** `/aws/lambda/kad-*`, JSON-formatted. The stack declares
 no log groups and sets no retention: Lambda creates each group on the function's

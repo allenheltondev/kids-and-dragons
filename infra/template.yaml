@@ -1015,9 +1015,11 @@ Resources:
   # deletes data is failing", and nothing else. Each is a count of things that
   # should be zero, so a threshold is a decision about noise, not capacity.
   #
-  # Every stage gets the topic and the alarms, so a staging deploy exercises
-  # exactly the permissions a production one needs (the lesson of #440, where
-  # a production-only property failed three releases that staging had passed).
+  # Every stage gets the topic and the alarms, so a staging deploy creates
+  # everything a production one does except the Slack channel (the lesson of
+  # #440, where a production-only property failed three releases that staging
+  # had passed). That proves the template. It does not prove production's
+  # role, which is a different role from staging's.
   # Only a stage given a Slack workspace and channel has anyone listening.
   #
   # The deploy role needs cloudwatch, sns and chatbot actions for these. The
