@@ -16,6 +16,7 @@ import type {
   Chapter,
   CreateRoomRequest,
   CreateRoomResponse,
+  DeviceStanding,
   IntentPreview,
   ItemCatalog,
   JoinRoomRequest,
@@ -360,6 +361,12 @@ export interface Api {
    * binding the device already holds goes along, to be revoked.
    */
   redeemPairingCode(code: string, deviceToken?: string): Promise<PairingResult & { deviceToken: string }>;
+
+  // --- leaving a device (server `handlers/leave-device.ts`) -------------------
+  /** Who this device plays as, and whether it may stop. */
+  deviceStanding(deviceToken: string): Promise<DeviceStanding>;
+  /** This device stops being that kid. Its own token is the whole proof. */
+  leaveDevice(deviceToken: string): Promise<void>;
 
   // --- another TV in another place (handlers/screens.ts) ----------------------
   /** The host asks for a one-time code that lets one more TV show this room. */
@@ -861,6 +868,18 @@ export const api: Api = {
       method: "POST",
       headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
       body: JSON.stringify({ code }),
+    });
+  },
+
+  deviceStanding(deviceToken) {
+    return request<DeviceStanding>("/api/device", { headers: { "x-kad-device-token": deviceToken } });
+  },
+
+  async leaveDevice(deviceToken) {
+    await request<unknown>("/api/device/leave", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({}),
     });
   },
 

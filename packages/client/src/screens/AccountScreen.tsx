@@ -21,6 +21,7 @@ import { loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { LazySignInFlow } from "./HomeScreen";
+import { LeaveDevice } from "./LeaveDevice";
 import "./shared.css";
 import "./HomeScreen.css";
 import { PrivacyFooter } from "../ui/PrivacyFooter";
@@ -177,6 +178,11 @@ export function AccountScreen(): ReactElement {
               </Button>
             ) : null}
           </section>
+
+          {/* A device that is one kid can stop being her: a ward's tablet at
+              discharge, a phone handed down. Keyed on the binding, so it is
+              asked again when signing in or pairing changes who this is. */}
+          {hasPlayed ? <LeaveDevice key={`${keepsakeStep}:${pairing}`} hidden={pairing !== "none"} /> : null}
 
           {pushHere && pairing === "none" ? (
             <ChunkBoundary inline className="kad-chunk-float" message="The turn switch couldn’t open.">

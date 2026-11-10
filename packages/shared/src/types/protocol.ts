@@ -920,6 +920,19 @@ export interface PairingResult {
 }
 
 /**
+ * `GET /api/device`: what a personally bound device is told about itself, so
+ * it can offer to leave in true words (`POST /api/device/leave`).
+ */
+export interface DeviceStanding {
+  /** The nickname this device plays as. */
+  displayName: string;
+  /** A grown-up's sign-in keeps this household, so signing in finds her again. */
+  kept: boolean;
+  /** Leaving still leaves a way back to her: a sign-in, or another of her devices. */
+  canLeave: boolean;
+}
+
+/**
  * On a shared tablet, a join or a create names who is playing (#250): one of
  * the household's profiles, or a new kid by name. Sent with the tablet's
  * `x-kad-shared-token`; the answer carries a session token and never a

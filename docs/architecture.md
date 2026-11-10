@@ -1443,6 +1443,16 @@ tables they visited, and their `VISIT#` rows with it.
 - **Lost phone** → the household owner revokes `DEVICE#<deviceId>` from their own device. That token is dead immediately.
 - **New phone** → join the room, which makes it a new player, or the owner signs in on it and binds it to an existing player (`POST /api/auth/device`) to bring that player's heroes back.
 - **Nobody who only plays can manage anything.** Without a sign-in a phone cannot claim the household, bind another phone to a player, or revoke one.
+- **Except give up its own binding.** A device that plays as a kid can stop
+  (`POST /api/device/leave`, `handlers/leave-device.ts`; "This device" on the
+  Accounts and devices screen): a ward's tablet at discharge, a phone handed
+  down, a borrowed one going back. The device's own token is the whole proof,
+  so whoever is holding it can do it with no grown-up signed in; it revokes
+  that one binding and drops the turn notifications it asked for. The kid, her
+  heroes and her other devices are untouched. It is refused where it would
+  strand her: `GET /api/device` answers `canLeave` only when a grown-up keeps
+  the household, or another of her devices is still live and this is not the
+  device that founded an unkept household (the only one that can ever keep it).
 
 #### The practice (#255)
 
