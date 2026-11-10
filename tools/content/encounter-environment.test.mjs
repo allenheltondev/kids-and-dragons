@@ -11,17 +11,13 @@
  * why that is the shape of these tests).
  */
 
-import { execFileSync } from "node:child_process";
-import { cpSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.ts";
 
-const REPO = fileURLToPath(new URL("../..", import.meta.url));
-const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
 const read = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8"));
 const FIXTURES = ["packages", "shared", "src", "fixtures"];
 
@@ -289,32 +285,8 @@ describe("the schema", () => {
 // content:validate, on a copy of the real tree
 // ---------------------------------------------------------------------------
 
-const temps = [];
-afterAll(() => {
-  for (const dir of temps) rmSync(dir, { recursive: true, force: true });
-});
-
-function copyTree() {
-  const dir = mkdtempSync(join(tmpdir(), "kad-env-"));
-  temps.push(dir);
-  cpSync(join(REPO, "content"), join(dir, "content"), { recursive: true });
-  cpSync(join(REPO, "schemas"), join(dir, "schemas"), { recursive: true });
-  cpSync(join(REPO, "assets", "world"), join(dir, "assets", "world"), { recursive: true });
-  cpSync(join(REPO, "assets", "manifest.json"), join(dir, "assets", "manifest.json"));
-  return dir;
-}
-
-function validate(dir) {
-  try {
-    const out = execFileSync(process.execPath, [VALIDATOR], {
-      env: { ...process.env, KAD_CONTENT_ROOT: dir, NO_COLOR: "1" },
-      encoding: "utf8",
-    });
-    return { code: 0, out };
-  } catch (err) {
-    return { code: err.status ?? 1, out: `${err.stdout ?? ""}${err.stderr ?? ""}` };
-  }
-}
+/** The gate as `npm run content:validate` runs it, class places and all, over a copy of the tree in memory. */
+const gate = (tree) => validate(tree, [], { classPlaces: true });
 
 const CHAPTER = ["content", "chapters", "bramblewood-01.json"];
 const SCENE = "encounter_bramblewisps";
@@ -324,9 +296,8 @@ const SCENE = "encounter_bramblewisps";
  * and 5-6; the party spawns on the left at x 0-1) given an environment.
  */
 function withEnvironment(bend) {
-  const dir = copyTree();
-  const path = join(dir, ...CHAPTER);
-  const chapter = JSON.parse(readFileSync(path, "utf8"));
+  const tree = copyTree();
+  const chapter = readJson(tree, ...CHAPTER);
   const scene = chapter.scenes[SCENE];
   scene.environment = {
     clock: { rounds: 4, label: "The thicket closes", onExpire: "collapse" },
@@ -336,8 +307,8 @@ function withEnvironment(bend) {
   scene.onEscape = { goto: scene.onDefeat.goto };
   scene.onTimeout = { goto: scene.onDefeat.goto };
   bend?.(scene);
-  writeFileSync(path, JSON.stringify(chapter, null, 2));
-  return validate(dir);
+  writeJson(tree, CHAPTER, chapter);
+  return gate(tree);
 }
 
 describe("content:validate", { timeout: 60_000 }, () => {
