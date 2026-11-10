@@ -254,24 +254,6 @@
       }
     ]
   },
-  "gemfall-03c/check_block_jumpers/narration": {
-    "source": "sha256:7f3338112d95e32ec12d43722d318c5efdbf70fc29ac107a79469390f098d304",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve."
-      },
-      {
-        "by": "red_scarves",
-        "text": "\"Link arms!\""
-      },
-      {
-        "by": "narrator",
-        "text": "he says. Everybody braces."
-      }
-    ]
-  },
   "gemfall-03c/scene_queue_jumpers_send_back/narration": {
     "source": "sha256:df911e4a495f87ee545ccc90fc4f4abe21caadd3594b0f1f60184bf78cd8d6e3",
     "reviewed": false,

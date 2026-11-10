@@ -1039,7 +1039,7 @@
         "text": "says a dock worker."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"Pretty. Spooky. Pretty spooky.\""
       }
     ]
@@ -1123,7 +1123,7 @@
         "text": "says a dock worker."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"The boards are walking.\""
       }
     ]
@@ -1163,7 +1163,7 @@
         "text": "says a dock worker."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"It's one sneeze from falling.\""
       }
     ]
@@ -1173,7 +1173,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"Where, though?\""
       },
       {
@@ -1181,7 +1181,7 @@
         "text": "pants a dock worker."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"Pick a spot. Quickly, please!\""
       }
     ]
@@ -1195,7 +1195,7 @@
         "text": "The stack stops. The dock workers let go one finger at a time. One pats the top crate."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"Good crate,\""
       },
       {
@@ -1213,7 +1213,7 @@
         "text": "One crate slides into the fold and is gone with a soft pop. A cold puff comes back out."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"Right,\""
       },
       {
@@ -1221,7 +1221,7 @@
         "text": "says one of the dock workers."
       },
       {
-        "by": "dock_workers",
+        "by": "dock_worker",
         "text": "\"Nobody tell the crate's owner.\""
       },
       {
@@ -1387,7 +1387,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "dock_worker",
+        "by": "fish_seller",
         "text": "\"You saved my fish. Let us save that little one!\""
       },
       {

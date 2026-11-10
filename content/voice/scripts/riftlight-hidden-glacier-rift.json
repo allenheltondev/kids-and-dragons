@@ -9,7 +9,7 @@
         "text": "You stay at the singing hall instead of taking the shelf path. The yeti herder waits at the door with the kid goat under one arm. The kid is eating her scarf."
       },
       {
-        "by": "goat_kid",
+        "by": "yeti_herder",
         "text": "\"My herd keeps stopping on the east ridge,\""
       },
       {
@@ -17,7 +17,7 @@
         "text": "she says."
       },
       {
-        "by": "goat_kid",
+        "by": "yeti_herder",
         "text": "\"Ears up, all pointing one way. Something under the ice is ticking. I want to know what, before a goat finds it first. Will you help me look?\""
       }
     ]

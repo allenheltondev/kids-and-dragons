@@ -513,7 +513,7 @@
         "text": "In the night, half a hillside slid onto the road. A heap of red rocks taller than a wagon blocks it."
       },
       {
-        "by": "skywardens",
+        "by": "warden_sergeant",
         "text": "\"Road's closed,\""
       },
       {
@@ -581,7 +581,7 @@
         "text": "You help the warden pack the runaway stones into sacks, away from the wagon wheels. He counts the last one and pays you three coins."
       },
       {
-        "by": "skywardens",
+        "by": "warden_sergeant",
         "text": "\"Honest work,\""
       },
       {
@@ -589,7 +589,7 @@
         "text": "he says. Then, quietly,"
       },
       {
-        "by": "skywardens",
+        "by": "warden_sergeant",
         "text": "\"I have never been so glad to be bored.\""
       }
     ]
@@ -603,7 +603,7 @@
         "text": "Past the slide, small red stones trickle across the road in bursts. Ping, ping, ping. Then they stop."
       },
       {
-        "by": "skywardens",
+        "by": "warden_sergeant",
         "text": "\"Go in the gaps!\""
       },
       {

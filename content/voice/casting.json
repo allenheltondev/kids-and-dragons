@@ -17,7 +17,9 @@
     "engineers": "skywardens",
     "apprentice": "skywardens",
     "tamsin": "kitsune",
-    "egg_faun": "faun"
+    "egg_faun": "faun",
+    "bracken_swiftmile": "centaur",
+    "rook": "burrowfolk"
   },
   "voices": [
     {
@@ -28,7 +30,8 @@
       "search": "young male eager energetic",
       "speakers": [
         "pip_thistledown",
-        "manticore_cubs"
+        "manticore_cubs",
+        "rook"
       ]
     },
     {
@@ -38,7 +41,8 @@
       "prompt": "A woman's voice in her thirties, bright and carrying, mid-high pitch with a clear, slightly sharp edge on stressed words, like a bird call. Brisk and warm with a flair for the dramatic, projecting as if calling down from a height. Quick pace, big expressive swings, affectionate. General American. Adult performer, warm and clear, never scary.",
       "search": "bright female dramatic confident",
       "speakers": [
-        "skerry"
+        "skerry",
+        "bracken_swiftmile"
       ]
     },
     {
@@ -304,7 +308,6 @@
       "search": "strong baritone male folk singer",
       "speakers": [
         "drover",
-        "bracken_swiftmile",
         "old_corran",
         "perrin",
         "kettle_campers",
@@ -504,8 +507,7 @@
       "speakers": [
         "posy",
         "ma_ruddle",
-        "masked_choir_singer",
-        "rook"
+        "masked_choir_singer"
       ]
     },
     {

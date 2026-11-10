@@ -313,7 +313,7 @@
         "text": "In the tally house, Great-Grandma Ashby, the oldest grandmother of all, opens a big book full of tidy eruption marks. This season's page is mostly question marks."
       },
       {
-        "by": "grandmother",
+        "by": "great_gran_ashby",
         "text": "\"Show me what you know,\""
       },
       {
@@ -321,7 +321,7 @@
         "text": "she says, tapping her walking stick."
       },
       {
-        "by": "grandmother",
+        "by": "great_gran_ashby",
         "text": "\"We will compare.\""
       }
     ]
@@ -589,7 +589,7 @@
         "text": "She frowns."
       },
       {
-        "by": "bell_code_expert",
+        "by": "small_dragonling",
         "text": "\"But never this many. And they haven't come back.\""
       }
     ]
@@ -1067,7 +1067,7 @@
         "text": "You put a coin on the table. A grandmother carries in a pot of honey the size of her head. It goes on bread, on porridge, and once, by mistake, on a glasses case. She slides a honeycake into your pack."
       },
       {
-        "by": "great_gran_ashby",
+        "by": "grandmother",
         "text": "\"For the road.\""
       }
     ]

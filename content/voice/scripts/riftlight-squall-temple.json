@@ -9,7 +9,7 @@
         "text": "A cloud skiff from Juniper's lookout bucks toward a temple island in the rain, all red roofs and ringing bells. Pip Thistledown clings to the mast. On the landing, a kitsune in a brown apron waves a teapot like a lantern."
       },
       {
-        "by": "pip_thistledown",
+        "by": "keeper_clove",
         "text": "\"Keeper Clove, of the Squall Temple!\""
       },
       {
@@ -17,7 +17,7 @@
         "text": "he shouts."
       },
       {
-        "by": "pip_thistledown",
+        "by": "keeper_clove",
         "text": "\"Notchbrow is drifting straight at us, with a storm behind it. Can we keep the temple safe as the island drifts in? Jump, quick!\""
       }
     ]
@@ -27,7 +27,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "pip_thistledown",
+        "by": "keeper_clove",
         "text": "\"Your warning came in time. My keepers are safe inside!\""
       }
     ]
@@ -37,7 +37,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "pip_thistledown",
+        "by": "keeper_clove",
         "text": "\"Your warning only just got here. Half my keepers are still outside!\""
       }
     ]
@@ -47,7 +47,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "pip_thistledown",
+        "by": "keeper_clove",
         "text": "\"We heard the welcome song! My keepers are all out on the landing with lanterns, to greet it!\""
       }
     ]
@@ -481,7 +481,7 @@
         "text": "he tells Pip,"
       },
       {
-        "by": "pip_thistledown",
+        "by": "keeper_clove",
         "text": "\"or I'll tie a bell to your tail.\""
       },
       {

@@ -584,32 +584,6 @@
       }
     ]
   },
-  "gemfall-05a/check_rubbing/narration": {
-    "source": "sha256:c0f31b6f5abc8e6df0e326580c1712cfcd9890aa7e640de2abf56608bb92c1be",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The marks only show in just the right light. The warden lifts her lantern, and the shapes glow one at a time."
-      },
-      {
-        "by": "flag_warden",
-        "text": "\"Quick,\""
-      },
-      {
-        "by": "narrator",
-        "text": "she says."
-      },
-      {
-        "by": "flag_warden",
-        "text": "\"Light moves.\""
-      },
-      {
-        "by": "narrator",
-        "text": "Watch them, then draw them back in order."
-      }
-    ]
-  },
   "gemfall-05a/scene_survey_guard/narration": {
     "source": "sha256:543b7f189a3309232c645a797ced2c93b894a3e7b02f285632e28acbbd65a9d5",
     "reviewed": false,
@@ -805,7 +779,7 @@
         "text": "she says,"
       },
       {
-        "by": "carter",
+        "by": "flag_warden",
         "text": "\"who had it from a centaur, who had it from a manticore, who had it from a troll.\""
       },
       {
@@ -813,7 +787,7 @@
         "text": "She shrugs."
       },
       {
-        "by": "carter",
+        "by": "flag_warden",
         "text": "\"Good question. Nobody has a good answer.\""
       }
     ]

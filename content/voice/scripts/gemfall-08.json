@@ -1067,7 +1067,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "seal_keeper",
+        "by": "party",
         "text": "\"Honestly? We came to get rich.\""
       },
       {
@@ -1499,7 +1499,7 @@
         "text": "you tell it."
       },
       {
-        "by": "seal_keeper",
+        "by": "party",
         "text": "\"Go back to sleep. We brought your blanket back.\""
       },
       {
@@ -1635,7 +1635,7 @@
         "text": "You shout up the tube, and down come the Skywardens, out of breath and still very neat."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"We will build it a cage,\""
       },
       {
@@ -1897,20 +1897,6 @@
       {
         "by": "seal_keeper",
         "text": "\"I will always hold the door.\""
-      }
-    ]
-  },
-  "gemfall-08/interaction_bundles/narration": {
-    "source": "sha256:e49b4902f770f8c5e848e65869633f55a1b9154c735d8f4db29d3e9f10a170c6",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "Down the slope, the faun family is stuck: their goat has parked the cart across a washed-out step. You help pass the bundles over, hand to hand. Tansy's mother hands you a warm honeycake."
-      },
-      {
-        "by": "tansy",
-        "text": "\"For being kind to my small one.\""
       }
     ]
   },

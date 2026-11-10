@@ -529,7 +529,7 @@
         "text": "He brushes off his crumbs."
       },
       {
-        "by": "pip_thistledown",
+        "by": "yeti_builders",
         "text": "\"Sometimes.\""
       }
     ]
@@ -625,7 +625,7 @@
         "text": "You puff yourself up as big as you can. Pip climbs onto a builder's shoulders."
       },
       {
-        "by": "yeti_builders",
+        "by": "pip_thistledown",
         "text": "\"Now I'm a big wyrm,\""
       },
       {
@@ -713,7 +713,7 @@
         "text": "The tunnel goes quiet. Flurry peeks out from behind a builder."
       },
       {
-        "by": "yeti_builders",
+        "by": "flurry",
         "text": "\"Is it over?\""
       },
       {
@@ -771,7 +771,7 @@
         "text": "She peeks through the shimmering opening at the wyrm on its nest."
       },
       {
-        "by": "memory_readers",
+        "by": "elder_murmur",
         "text": "\"It looks comfortable,\""
       },
       {
@@ -779,7 +779,7 @@
         "text": "she whispers."
       },
       {
-        "by": "memory_readers",
+        "by": "elder_murmur",
         "text": "\"Good. A neighbor who sleeps all winter is a quiet neighbor.\""
       }
     ]
@@ -793,7 +793,7 @@
         "text": "She looks at the wyrm snoring in Flurry's room, and then at the little storeroom."
       },
       {
-        "by": "flurry",
+        "by": "elder_murmur",
         "text": "\"Smaller,\""
       },
       {
@@ -801,7 +801,7 @@
         "text": "she whispers."
       },
       {
-        "by": "flurry",
+        "by": "elder_murmur",
         "text": "\"But dry.\""
       }
     ]

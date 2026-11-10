@@ -110,24 +110,6 @@
       }
     ]
   },
-  "gemfall-07l/scene_two_scouts_table_stone/narration": {
-    "source": "sha256:fb13724ba879814d13b4ae67e608f0f0fe879d29b83aad2336d04455f5d26e0b",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "You set down the Table Stone from the truth-table at Redspire. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They drop the rope to listen."
-      },
-      {
-        "by": "rook",
-        "text": "\"It's the same stone,\""
-      },
-      {
-        "by": "narrator",
-        "text": "they say together."
-      }
-    ]
-  },
   "gemfall-07l/scene_choir/narration": {
     "source": "sha256:8d07d171b0001d8ced877708885857682655d287bfcef7e16afa5b08f50f0342",
     "reviewed": false,
@@ -571,7 +553,7 @@
         "text": "A centaur relay pulls up and unrolls a sash-map."
       },
       {
-        "by": "centaur_relay",
+        "by": "relay_runner",
         "text": "\"Fat caravan tomorrow,\""
       },
       {

@@ -233,7 +233,7 @@
         "text": "You peek over the ridge. Below, a great tear hangs in the air, wider than a house. Through it, faraway ground slides past: a valley, a river, a hill, all moving. Under it, a tall figure bends over an old map on the ice."
       },
       {
-        "by": "orin_vale",
+        "by": "corvane",
         "text": "\"Why is the river on the wrong side of the mountain?\""
       },
       {
@@ -1115,7 +1115,7 @@
         "text": "Pip grabs the end of Bram's rope in his teeth and scampers for the ridge on the breath out, small and fast, under the pull."
       },
       {
-        "by": "bram_lock",
+        "by": "pip_thistledown",
         "text": "\"Real scouts go first,\""
       },
       {
@@ -1123,7 +1123,7 @@
         "text": "he says,"
       },
       {
-        "by": "bram_lock",
+        "by": "pip_thistledown",
         "text": "\"when it's their turn!\""
       }
     ]

@@ -53,7 +53,7 @@
         "text": "You mention the glade. The archivist at the door runs her thumb along a cord to a knot."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"That glade's record changed this morning. It got better.\""
       },
       {
@@ -61,7 +61,7 @@
         "text": "She beams."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"In. Feet.\""
       }
     ]
@@ -75,7 +75,7 @@
         "text": "Your bigfoot knocks on the archive door three slow times, the MossHome way. The door opens by itself. An archivist drops an armful of cords."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"Nobody's done that in years. Come in. Wipe your feet.\""
       }
     ]
@@ -89,7 +89,7 @@
         "text": "The archivist folds her arms on the doorstep."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"Don't tell me your road,\""
       },
       {
@@ -97,7 +97,7 @@
         "text": "she says."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"Show me. Every path that moved under your boots.\""
       }
     ]
@@ -111,7 +111,7 @@
         "text": "You stomp the last bend of your road into the moss. The archivist's eyebrows go up, and up again."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"Come in. Wipe your feet. Twice.\""
       }
     ]
@@ -125,7 +125,7 @@
         "text": "You stomp the wrong way and sit down hard in the moss."
       },
       {
-        "by": "archivist",
+        "by": "door_archivist",
         "text": "\"Wait on the bench,\""
       },
       {
@@ -377,58 +377,6 @@
       {
         "by": "runner",
         "text": "\"Everybody's noticing.\""
-      }
-    ]
-  },
-  "gemfall-05b/scene_runners_post_river/narration": {
-    "source": "sha256:e73947291a2bd1ffbeffa4dc75d64953252879fe9ee12db7b8285fa38bb2c9ac",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "\"The river road?\" A runner wipes his brow. The troll at Stone Crossing asks one question now: where did you get that, and where is it going? Out east, the manticore prides bend their roads around something."
-      },
-      {
-        "by": "runner",
-        "text": "\"Everybody's noticing,\""
-      },
-      {
-        "by": "narrator",
-        "text": "he puffs."
-      }
-    ]
-  },
-  "gemfall-05b/scene_runners_post_gullet/narration": {
-    "source": "sha256:9256642165869583a351af8dc3616fa3341f4a53b4f5210043996ddb98aa9430",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "runner",
-        "text": "\"Gullet?\""
-      },
-      {
-        "by": "narrator",
-        "text": "A runner laughs."
-      },
-      {
-        "by": "runner",
-        "text": "\"Notched hat, hums a lot?\""
-      },
-      {
-        "by": "narrator",
-        "text": "Gullet has run out of hat and started on her other hat."
-      },
-      {
-        "by": "gullet",
-        "text": "\"She says she's not worried,\""
-      },
-      {
-        "by": "narrator",
-        "text": "he puffs."
-      },
-      {
-        "by": "gullet",
-        "text": "\"Which means she is.\""
       }
     ]
   },

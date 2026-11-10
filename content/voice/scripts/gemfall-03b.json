@@ -357,7 +357,7 @@
         "text": "Gullet turns her hat around. Every notch is a new wisp since the mountain went off. The brim is full."
       },
       {
-        "by": "wisp",
+        "by": "gullet",
         "text": "\"When I run out of hat,\""
       },
       {
@@ -365,7 +365,7 @@
         "text": "she says,"
       },
       {
-        "by": "wisp",
+        "by": "gullet",
         "text": "\"I'll start on my other hat.\""
       }
     ]
@@ -429,7 +429,7 @@
         "text": "One heave, two heaves, and all three slide aboard like wet sacks of flour. The raft rides very low. Gullet drops them at a frogfolk landing where a path leads northeast toward the roads, and the tallest one gives you a squashed honeycake."
       },
       {
-        "by": "gullet",
+        "by": "prospectors",
         "text": "\"For the rescue. Sorry about the squash.\""
       }
     ]

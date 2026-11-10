@@ -530,24 +530,6 @@
       }
     ]
   },
-  "gemfall-04b/interaction_spring_cup/narration": {
-    "source": "sha256:bbfe93bcdc331f093c01fcd707eac7efa94f216dd87db6bf01fc980dc4735d7c",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "A young unicorn steps out of the ferns with a leaf full of spring water. You carry it together to a thirsty glade without spilling a drop."
-      },
-      {
-        "by": "elder_unicorn",
-        "text": "\"For later,\""
-      },
-      {
-        "by": "narrator",
-        "text": "she says, handing you a tiny bottle of sunbloom nectar."
-      }
-    ]
-  },
   "gemfall-04b/scene_beech_squirrel/narration": {
     "source": "sha256:e2cae4865372459b95e016708b7213eda4a2bd067fa3fce95de38c15fe6859b9",
     "reviewed": false,

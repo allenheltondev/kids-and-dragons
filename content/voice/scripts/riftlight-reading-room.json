@@ -292,15 +292,7 @@
       },
       {
         "by": "narrator",
-        "text": "you whisper."
-      },
-      {
-        "by": "party",
-        "text": "\"Sorry, sorry,\""
-      },
-      {
-        "by": "narrator",
-        "text": "says the tunnel. Pip pats your back."
+        "text": "you whisper. \"Sorry, sorry,\" says the tunnel. Pip pats your back."
       }
     ]
   },
@@ -629,7 +621,7 @@
         "text": "Back in the reading room, Murmur lays your copy on the stone table, beside Pip's sketch of the valley you crossed today. She blows on her tea to make it colder."
       },
       {
-        "by": "pip_thistledown",
+        "by": "elder_murmur",
         "text": "\"Now prove it,\""
       },
       {
@@ -637,7 +629,7 @@
         "text": "she whispers."
       },
       {
-        "by": "pip_thistledown",
+        "by": "elder_murmur",
         "text": "\"Is it the same valley? A reader never guesses.\""
       }
     ]
@@ -673,7 +665,7 @@
         "text": "Murmur takes your copy and Pip's sketch both."
       },
       {
-        "by": "pip_thistledown",
+        "by": "elder_murmur",
         "text": "\"I will read the old wall again myself,\""
       },
       {
@@ -681,7 +673,7 @@
         "text": "she whispers,"
       },
       {
-        "by": "pip_thistledown",
+        "by": "elder_murmur",
         "text": "\"every night, until I am sure.\""
       },
       {
@@ -689,7 +681,7 @@
         "text": "Pip's sketch was his present for Lady Olivia. He swallows."
       },
       {
-        "by": "olivia",
+        "by": "pip_thistledown",
         "text": "\"Keep it,\""
       },
       {
@@ -697,7 +689,7 @@
         "text": "he says."
       },
       {
-        "by": "olivia",
+        "by": "pip_thistledown",
         "text": "\"Science first.\""
       },
       {
@@ -781,7 +773,7 @@
         "text": "she whispers,"
       },
       {
-        "by": "pip_thistledown",
+        "by": "elder_murmur",
         "text": "\"both remembering an older shape of the land.\""
       },
       {
@@ -1091,7 +1083,7 @@
         "text": "Flurry hides behind Murmur's scarves."
       },
       {
-        "by": "elder_murmur",
+        "by": "flurry",
         "text": "\"Somebody has to go and look,\""
       },
       {

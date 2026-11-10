@@ -178,15 +178,7 @@
       },
       {
         "by": "sheeple",
-        "text": "\"In the grass.\""
-      },
-      {
-        "by": "sheeple",
-        "text": "\"We all saw them.\""
-      },
-      {
-        "by": "sheeple",
-        "text": "\"Because one of us did.\""
+        "text": "\"In the grass.\" \"We all saw them.\" \"Because one of us did.\""
       }
     ]
   },
@@ -668,28 +660,6 @@
       }
     ]
   },
-  "gemfall-02/scene_ditch_hay_home/narration": {
-    "source": "sha256:c7f72946cb54a5660039086b0521d44e10fa23c6bb4f4cb5157763728e16f608",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The hay cart rolls over on good solid mud. On the far side, Burdock's wife has a table of warm honeycakes."
-      },
-      {
-        "by": "burdock",
-        "text": "\"Two coins a cake,\""
-      },
-      {
-        "by": "narrator",
-        "text": "she says."
-      },
-      {
-        "by": "burdock",
-        "text": "\"Or a thank-you, which is also nice.\""
-      }
-    ]
-  },
   "gemfall-02/interaction_stuck_wagon/narration": {
     "source": "sha256:735114ba3702e61eff4f55461eec83102a4622de5eb7ba02dd6533287b162ff6",
     "reviewed": false,
@@ -741,24 +711,6 @@
       {
         "by": "narrator",
         "text": "says the drover, and trots off without a coin for anyone."
-      }
-    ]
-  },
-  "gemfall-02/interaction_hedge_brace/narration": {
-    "source": "sha256:4c50bdc824b5563154384bcc74c2060e45b0b746b15b0fbd81cb969457aba913",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The fauns from the canal bridge catch up with their long brace pole."
-      },
-      {
-        "by": "pib",
-        "text": "\"You helped our bridge,\""
-      },
-      {
-        "by": "narrator",
-        "text": "they say. One branch is tangled. Hold the brace where the branch can slip free."
       }
     ]
   },

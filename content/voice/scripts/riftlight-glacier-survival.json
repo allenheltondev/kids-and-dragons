@@ -732,34 +732,6 @@
       }
     ]
   },
-  "riftlight-glacier-survival/hall_table/narration": {
-    "source": "sha256:accd91510ac6eed7629b7b71509030d0aa28f4221d16e592aa2dbc8d281d37a7",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "At the long table, a round yeti knitter is making a scarf so long it runs under the bench and out the other side. She holds up goat-wool boot laces."
-      },
-      {
-        "by": "yeti_herder",
-        "text": "\"Three coins a pair. Quickest laces on the glacier. Or sit and be warm for free.\""
-      }
-    ]
-  },
-  "riftlight-glacier-survival/hall_buy/narration": {
-    "source": "sha256:092d5447b11c2e9bbab6f779a3c272e67372eb665a4f9f77ba6871a0feb88d16",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "You count three coins into the knitter's mitten. She ties the laces into your boots with a speedy bow."
-      },
-      {
-        "by": "yeti_herder",
-        "text": "\"Go on, run. Do not trip. They are fast laces.\""
-      }
-    ]
-  },
   "riftlight-glacier-survival/conservatory/narration": {
     "source": "sha256:a1bd8d1f9367c46adb5c4e408e33bb014929d2046551ac74de75f884e9b3e2ed",
     "reviewed": false,
@@ -1245,7 +1217,7 @@
         "text": "Warm and dry, you step outside. The little goat you brought home stays with its herd, already asleep in a heap of goats. You know now where the snow on the quay came from: right here. But why is a glacier spilling onto a harbor, and why does its snow walk uphill? A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner."
       },
       {
-        "by": "cloaked_unicorn",
+        "by": "cloaked_griffin",
         "text": "\"It will not fold,\""
       },
       {

@@ -54,24 +54,6 @@
       }
     ]
   },
-  "gemfall-01/scene_night_docks/narration": {
-    "source": "sha256:995138699bedcdd6940779e6ec137bf6edb7043cc5f198aff0537f28ecd7080a",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "A boy changes his rope price. A fishmonger looks north and doubles the herring price."
-      },
-      {
-        "by": "fishmonger",
-        "text": "\"Rush prices!\""
-      },
-      {
-        "by": "narrator",
-        "text": "somebody shouts."
-      }
-    ]
-  },
   "gemfall-01/choice_why_north/narration": {
     "source": "sha256:2c1d6cb088d13168dfe2d17076ed61bd6d40afed9252bde5155253c0c317bafe",
     "reviewed": false,

@@ -685,7 +685,7 @@
         "text": "Everyone gets a shoulder on the Eldest. Pip gets his tail on it."
       },
       {
-        "by": "pip_thistledown",
+        "by": "dragonling_stone_keeper",
         "text": "\"One, two, THREE,\""
       },
       {
@@ -831,7 +831,7 @@
         "text": "Seren holds the cord. Tally counts paces. Pip counts them differently."
       },
       {
-        "by": "pip_thistledown",
+        "by": "dragonling_stone_keeper",
         "text": "\"There are no halves in paces, Pip.\""
       }
     ]
@@ -1051,7 +1051,7 @@
         "text": "Farmer Gourd's cart rolls on over the hill, Mustard trotting proudly in front."
       },
       {
-        "by": "mustard",
+        "by": "farmer_gourd",
         "text": "\"Thank you!\""
       },
       {
@@ -1059,7 +1059,7 @@
         "text": "he calls back."
       },
       {
-        "by": "mustard",
+        "by": "farmer_gourd",
         "text": "\"I'll tell the whole market a stone went for a walk!\""
       },
       {
@@ -1091,7 +1091,7 @@
         "text": "Farmer Gourd loads up again and rolls on over the hill, Mustard trotting proudly in front."
       },
       {
-        "by": "mustard",
+        "by": "farmer_gourd",
         "text": "\"Thank you!\""
       },
       {
@@ -1099,7 +1099,7 @@
         "text": "he calls back."
       },
       {
-        "by": "mustard",
+        "by": "farmer_gourd",
         "text": "\"Every last turnip!\""
       },
       {
