@@ -28,6 +28,7 @@ import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import type { AnySchema, ErrorObject, Options as AjvOptions, ValidateFunction } from "ajv";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
@@ -44,7 +45,7 @@ import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequ
 import { plateProblems } from "../../packages/shared/src/story-plates.ts";
 import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { helpProblems } from "../../packages/shared/src/help.ts";
-import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
+import { DEED_OWNERS, TIER_IDS } from "../../packages/shared/src/types/domain.ts";
 import { BUILT_IN_ICON_IDS } from "../../packages/shared/src/icon-registry.ts";
 import { chapterLines } from "../voice/inventory.ts";
 import { scriptReport } from "../voice/script.ts";
@@ -55,6 +56,19 @@ import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllo
 import { campCatalogProblems, chapterBefriends, chapterFinds } from "./camp-catalog.mjs";
 import { chapterLookFinds, looksCatalogProblems } from "./looks-catalog.mjs";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
+import type { AuthoredEnemySpec, Bestiary } from "../../packages/shared/src/bestiary.ts";
+import type { AbilityCatalog } from "../../packages/shared/src/encounter.ts";
+import type { FieldGuide } from "../../packages/shared/src/field-guide.ts";
+import type { GraphProof } from "../../packages/shared/src/graph-proof.ts";
+import type { HelpContent } from "../../packages/shared/src/help.ts";
+import type { CampCatalog } from "../../packages/shared/src/types/camp.ts";
+import type { Branch, Campaign, Chapter, ChapterRoute, Choice, Effect, EncounterEnvironment, EncounterMap, EnvironmentVariant, Scene } from "../../packages/shared/src/types/chapter.ts";
+import type { ItemCatalog, RulesContent } from "../../packages/shared/src/types/domain.ts";
+import type { LookCatalog } from "../../packages/shared/src/types/look.ts";
+import type { WorldMap, WorldTile } from "../../packages/shared/src/types/world.ts";
+import type { CastSheet } from "../voice/cast/sheet.ts";
+import type { ClassPlaceAllowList } from "./class-places.mjs";
+import type { ContentSet } from "./content-set.ts";
 
 /**
  * The art itself is always this checkout's, whichever tree is being judged: a
@@ -64,8 +78,8 @@ import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.
 const REPO_ASSETS = fileURLToPath(new URL("../../assets", import.meta.url));
 
 /** Whether `assets/<path>` is in this checkout. Asked once per path: a run asks about the same figures in scene after scene. */
-const repoAssetSeen = new Map();
-function repoAssetExists(path) {
+const repoAssetSeen = new Map<string, boolean>();
+function repoAssetExists(path: string): boolean {
   let found = repoAssetSeen.get(path);
   if (found === undefined) {
     found = existsSync(join(REPO_ASSETS, path));
@@ -79,15 +93,14 @@ function repoAssetExists(path) {
  * imports, followed from the source. A proof walked by any other checker is
  * walked again, so changing the checker re-proves every campaign.
  */
-let checker = null;
-export function checkerFingerprint() {
+let checker: string | null = null;
+export function checkerFingerprint(): string {
   if (checker !== null) return checker;
   const src = fileURLToPath(new URL("../../packages/shared/src/", import.meta.url));
-  const seen = new Set();
+  const seen = new Set<string>();
   const queue = ["campaign-graph-lint.ts", "graph-proof.ts"];
-  const texts = [];
-  while (queue.length) {
-    const file = queue.shift();
+  const texts: string[] = [];
+  for (let file = queue.shift(); file !== undefined; file = queue.shift()) {
     if (seen.has(file)) continue;
     seen.add(file);
     // Proofs are shared across checkouts: Windows newlines and separators
@@ -95,7 +108,7 @@ export function checkerFingerprint() {
     const text = readFileSync(join(src, file), "utf8").replace(/\r\n/g, "\n");
     texts.push(`${file}\n${text}`);
     for (const [, spec] of text.matchAll(/from\s+"\.\/([^"]+)"/g)) {
-      const next = join(dirname(file), spec).replaceAll("\\", "/").replace(/\.js$/, ".ts");
+      const next = join(dirname(file), spec ?? "").replaceAll("\\", "/").replace(/\.js$/, ".ts");
       queue.push(next.endsWith(".ts") ? next : `${next}.ts`);
     }
   }
@@ -104,6 +117,93 @@ export function checkerFingerprint() {
 }
 
 // ----------------------------------------------------------------------------- report
+
+/** How to judge a tree. Everything is optional: the defaults are the gate as CI runs it. */
+export interface ValidateOptions {
+  /**
+   * `npm run content:proofs`: record each clean graph walk in
+   * `content/graph-proofs/` (shared `graph-proof.ts`). Without it a missing or
+   * stale proof fails the check, so what ships always carries a current one.
+   */
+  writeProofs?: boolean;
+  /** Called with each proof as it is written into the set, so the command line can put it on disk. */
+  write?: (path: string, text: string) => void;
+  /**
+   * `false` skips the class-place check. For test harnesses whose subject is
+   * something else and which drop a graph campaign into a content copy;
+   * nothing in CI or the repo scripts sets it.
+   */
+  classPlaces?: boolean;
+  /** Graph campaigns allowed to lack class places until #315. Defaults to tools/content/class-place-allow.json. */
+  classPlaceAllow?: ClassPlaceAllowList;
+  /** The checker fingerprint a graph proof must carry. Defaults to this checkout's. */
+  checker?: string;
+  /** A directory to keep compiled schemas in across processes (see `loadSchemas`). */
+  schemaCacheDir?: string | null;
+  /** Called with each event as it is made, so a report can be printed while the gate runs. */
+  onEvent?: (event: ReportEvent) => void;
+}
+
+/** One thing wrong with the tree. Any finding fails the gate. */
+export interface Finding {
+  /** Repo-relative path of the file it is in. */
+  file: string;
+  /** JSON pointer into the file, `/` for the file itself. */
+  at: string;
+  /** The scene the pointer is inside, when it is inside one. */
+  scene?: string;
+  /**
+   * The check that raised it (`schema`, `chapter`, `campaign`, `voice-cast`…),
+   * with the problem's own code after a slash where it leads with one
+   * (`campaign/DUPLICATE_KEY`).
+   */
+  rule: string;
+  message: string;
+  /** What to do about it, when the check knows. */
+  hint?: string;
+}
+
+/** Something worth saying that does not fail the gate. */
+export interface Warning {
+  rule: string;
+  label: string;
+  detail?: string;
+}
+
+/** What the gate says, in the order it says it. */
+export type ReportEvent =
+  | { kind: "title" }
+  | { kind: "section"; title: string }
+  | { kind: "pass"; label: string }
+  | ({ kind: "fail" } & Finding)
+  | ({ kind: "warn" } & Warning)
+  | { kind: "summary"; passed: number; warnings: number; failures: number };
+
+export interface ValidationResult {
+  /** No findings. */
+  ok: boolean;
+  /** The exit code the command line gives: 0, or 1 on any finding. */
+  code: 0 | 1;
+  findings: Finding[];
+  warnings: Warning[];
+  /** How many checks passed. */
+  passed: number;
+  /** The whole report, for `renderReport`. */
+  events: ReportEvent[];
+  /** Proofs written under `writeProofs`. */
+  written: { path: string; text: string }[];
+}
+
+/** What the gate reads of assets/manifest.json. */
+interface AssetManifest {
+  biomes?: string[];
+  backgroundOnlyBiomes?: string[];
+  storyProps?: { ids?: string[] };
+  paintedIcons?: { ids?: string[] };
+  nameplateFrames?: unknown;
+  camp?: unknown;
+  castFigures?: unknown[];
+}
 
 /**
  * One run of the gate: the tree being judged, how it was asked to judge it,
@@ -116,49 +216,52 @@ export function checkerFingerprint() {
  * terminal would have shown.
  */
 class Report {
-  constructor(set, options) {
+  readonly set: ContentSet;
+  readonly writeProofs: boolean;
+  readonly write: ((path: string, text: string) => void) | null;
+  readonly classPlacesOff: boolean;
+  readonly classPlaceAllow: ClassPlaceAllowList;
+  readonly checker: string;
+  readonly schemaCacheDir: string | null;
+  readonly onEvent: ((event: ReportEvent) => void) | null;
+
+  readonly assetRegistry: AssetManifest;
+  readonly storyPropIds: ReadonlySet<string>;
+  readonly interactionIconIds: ReadonlySet<string>;
+
+  readonly events: ReportEvent[] = [];
+  readonly findings: Finding[] = [];
+  /** `<file><pointer>` per failure: what "has anything failed yet" is asked of. */
+  readonly failures: string[] = [];
+  readonly warnings: Warning[] = [];
+  readonly written: { path: string; text: string }[] = [];
+  passed = 0;
+  /** The check now running, which every finding it raises is filed under. */
+  rule = "load";
+
+  constructor(set: ContentSet, options: ValidateOptions) {
     this.set = set;
-    /**
-     * `writeProofs` (`npm run content:proofs`) records each clean graph walk in
-     * `content/graph-proofs/` (shared `graph-proof.ts`). Without it a missing or
-     * stale proof fails the check, so what ships always carries a current one.
-     */
     this.writeProofs = options.writeProofs === true;
     this.write = options.write ?? null;
-    /**
-     * `classPlaces: false` skips the class-place check. For test harnesses whose
-     * subject is something else and which drop a graph campaign into a content
-     * copy; nothing in CI or the repo scripts sets it.
-     */
     this.classPlacesOff = options.classPlaces === false;
-    /** Graph campaigns allowed to lack class places until #315 (tools/content/class-places.mjs). */
     this.classPlaceAllow = options.classPlaceAllow ?? loadClassPlaceAllow();
     this.checker = options.checker ?? checkerFingerprint();
     this.schemaCacheDir = options.schemaCacheDir ?? null;
     this.onEvent = options.onEvent ?? null;
 
-    this.assetRegistry = set.json(MANIFEST);
+    this.assetRegistry = set.json(MANIFEST) as AssetManifest;
     this.storyPropIds = new Set(this.assetRegistry.storyProps?.ids ?? []);
     const paintedIconIds = new Set(this.assetRegistry.paintedIcons?.ids ?? []);
     this.interactionIconIds = new Set([...paintedIconIds, ...BUILT_IN_ICON_IDS]);
-
-    this.events = [];
-    this.findings = [];
-    this.failures = [];
-    this.warnings = [];
-    this.written = [];
-    this.passed = 0;
-    /** The check now running, which every finding it raises is filed under. */
-    this.rule = "load";
   }
 
-  emit(event) {
+  emit(event: ReportEvent): void {
     this.events.push(event);
     this.onEvent?.(event);
   }
 
   /** Runs one check, filing whatever it raises under `rule`. */
-  under(rule, check) {
+  under<T>(rule: string, check: () => T): T {
     const outer = this.rule;
     this.rule = rule;
     try {
@@ -168,19 +271,19 @@ class Report {
     }
   }
 
-  section(title) {
+  section(title: string): void {
     this.emit({ kind: "section", title });
   }
 
-  ok(label) {
+  ok(label: string): void {
     this.passed += 1;
     this.emit({ kind: "pass", label });
   }
 
   /** @param file repo-relative path @param path JSON pointer @param problem what is wrong */
-  fail(file, path, problem, hint) {
+  fail(file: string, path: string, problem: string, hint?: string | null): void {
     this.failures.push(`${file}${path}`);
-    const finding = { file, at: path || "/", rule: ruleOf(this.rule, problem), message: problem };
+    const finding: Finding = { file, at: path || "/", rule: ruleOf(this.rule, problem), message: problem };
     const scene = sceneOf(path);
     if (scene) finding.scene = scene;
     if (hint) finding.hint = hint;
@@ -188,8 +291,8 @@ class Report {
     this.emit({ kind: "fail", ...finding });
   }
 
-  warn(label, detail) {
-    const warning = { rule: this.rule, label };
+  warn(label: string, detail?: string): void {
+    const warning: Warning = { rule: this.rule, label };
     if (detail) warning.detail = detail;
     this.warnings.push(warning);
     this.emit({ kind: "warn", ...warning });
@@ -197,13 +300,13 @@ class Report {
 }
 
 /** `chapter`, or `campaign/DUPLICATE_KEY` where the problem leads with its own code. */
-function ruleOf(rule, problem) {
+function ruleOf(rule: string, problem: string): string {
   const code = /^([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+): /.exec(problem);
-  return code ? `${rule}/${code[1]}` : rule;
+  return code ? `${rule}/${String(code[1])}` : rule;
 }
 
 /** The scene a JSON pointer is inside, if it is inside one. */
-function sceneOf(pointer) {
+function sceneOf(pointer: string): string | null {
   return /(?:^|\s)\/(?:scenes|resumeInteractions)\/([^/\s]+)/.exec(pointer)?.[1] ?? null;
 }
 
@@ -211,7 +314,7 @@ const PLAIN = { red: "", green: "", yellow: "", dim: "", bold: "", reset: "" };
 const COLOR = { red: "\u001b[31m", green: "\u001b[32m", yellow: "\u001b[33m", dim: "\u001b[2m", bold: "\u001b[1m", reset: "\u001b[0m" };
 
 /** One event as the lines a terminal shows for it. */
-export function formatEvent(event, color = false) {
+export function formatEvent(event: ReportEvent, color = false): string[] {
   const { red: RED, green: GREEN, yellow: YELLOW, dim: DIM, bold: BOLD, reset: RESET } = color ? COLOR : PLAIN;
   switch (event.kind) {
     case "title":
@@ -230,23 +333,21 @@ export function formatEvent(event, color = false) {
     case "warn":
       return [`  ${YELLOW}warn${RESET}  ${event.label}`, ...(event.detail ? [`        ${event.detail}`] : [])];
     case "summary": {
-      const warn = event.warnings ? `   ${YELLOW}${event.warnings} warnings${RESET}` : "";
-      const bad = event.failures ? `   ${RED}${event.failures} FAILED${RESET}` : "";
+      const warn = event.warnings ? `   ${YELLOW}${String(event.warnings)} warnings${RESET}` : "";
+      const bad = event.failures ? `   ${RED}${String(event.failures)} FAILED${RESET}` : "";
       return [
         `\n${BOLD}${"-".repeat(60)}${RESET}`,
-        `${GREEN}${event.passed} passed${RESET}${warn}${bad}`,
+        `${GREEN}${String(event.passed)} passed${RESET}${warn}${bad}`,
         event.failures
           ? `\n${RED}${BOLD}FAILED${RESET} - content is broken. A malformed chapter fails the build, never the play session.`
           : `\n${GREEN}${BOLD}PASS${RESET} - schemas and scene graphs are clean.`,
       ];
     }
-    default:
-      return [];
   }
 }
 
 /** The whole report as the command line prints it. */
-export function renderReport(result, color = false) {
+export function renderReport(result: Pick<ValidationResult, "events">, color = false): string {
   return result.events.flatMap((event) => formatEvent(event, color)).map((line) => `${line}\n`).join("");
 }
 
@@ -257,48 +358,61 @@ const SCHEMAS = "schemas";
 const MANIFEST = "assets/manifest.json";
 
 /** `content/chapters/bramblewood-01.json` → `bramblewood-01`. */
-const idOf = (file) => file.slice(file.lastIndexOf("/") + 1).replace(/\.json$/, "");
+const idOf = (file: string): string => file.slice(file.lastIndexOf("/") + 1).replace(/\.json$/, "");
+
+/** A JSON object whose shape nothing has vouched for yet. */
+type Json = Record<string, unknown>;
 
 /**
  * Every `.json` file in a directory, parsed, as the cast sheet's builder reads
  * them. Throws on a directory that is not there, and on a file that does not
  * parse, as reading them from disk does.
  */
-function jsonIn(set, dir) {
+function jsonIn(set: ContentSet, dir: string): Json[] {
   if (!set.hasDir(dir)) throw new Error(`ENOENT: no such file or directory, scandir '${dir}'`);
-  return set.list(dir).map((file) => set.json(file));
+  return set.list(dir).map((file) => set.json(file) as Json);
 }
 
-function readJson(rep, path) {
+/**
+ * The file parsed, or null with the failure reported. `T` is what the caller
+ * expects once the file's schema has passed it; until then it is a claim.
+ */
+function readJson<T>(rep: Report, path: string): T | null {
   try {
-    return rep.set.json(path);
+    return rep.set.json(path) as T;
   } catch (err) {
-    rep.fail(path, "", `not valid JSON - ${err.message}`);
+    rep.fail(path, "", `not valid JSON - ${(err as Error).message}`);
     return null;
   }
 }
 
 /** ajv error -> one human line. Its own message is usually good; params add the detail. */
-function describe(err) {
-  const p = err.params ?? {};
+function describe(err: ErrorObject): string {
+  const p = (err.params ?? {}) as { additionalProperty?: string; missingProperty?: string; allowedValues?: unknown[]; limit?: unknown; pattern?: string };
   const extra = [
     p.additionalProperty && `unknown property "${p.additionalProperty}"`,
     p.missingProperty && `missing "${p.missingProperty}"`,
     p.allowedValues && `allowed: ${p.allowedValues.join(", ")}`,
-    p.limit !== undefined && `limit ${p.limit}`,
+    p.limit !== undefined && `limit ${String(p.limit)}`,
     p.pattern && `pattern ${p.pattern}`,
   ]
     .filter(Boolean)
     .join("; ");
-  return extra ? `${err.message} (${extra})` : err.message;
+  return extra ? `${String(err.message)} (${extra})` : String(err.message);
 }
 
 // ----------------------------------------------------------------------------- schema pass
 
-const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "looks", "voice-script", "voice-cast", "voice-lexicon"];
-const AJV_OPTIONS = { allErrors: true, strict: true, allowUnionTypes: true };
+const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "looks", "voice-script", "voice-cast", "voice-lexicon"] as const;
+type SchemaName = (typeof SCHEMA_NAMES)[number];
+const AJV_OPTIONS = { allErrors: true, strict: true, allowUnionTypes: true } as const;
 
-function compileSchemas(schemas, options = {}) {
+/** The compiled schemas: an ajv instance, or the standalone code read back from the cache. */
+interface Schemas {
+  getSchema(name: string): ValidateFunction | undefined;
+}
+
+function compileSchemas(schemas: readonly (readonly [string, AnySchema])[], options: AjvOptions = {}): Ajv2020 {
   const ajv = new Ajv2020({ ...AJV_OPTIONS, ...options });
   addFormats(ajv);
   for (const [name, schema] of schemas) ajv.addSchema(schema, name);
@@ -319,23 +433,23 @@ function compileSchemas(schemas, options = {}) {
  * name, so a stale cache cannot be read; any trouble reading or writing the
  * cache falls back to compiling.
  */
-function loadSchemas(rep) {
-  const schemas = [];
+function loadSchemas(rep: Report): Schemas {
+  const schemas: [string, AnySchema][] = [];
   for (const name of SCHEMA_NAMES) {
     const path = `${SCHEMAS}/${name}.schema.json`;
     if (!rep.set.has(path)) {
       rep.fail(path, "", "schema is missing");
       continue;
     }
-    const schema = readJson(rep, path);
+    const schema = readJson<AnySchema>(rep, path);
     if (schema) schemas.push([name, schema]);
   }
   if (rep.failures.length) return compileSchemas(schemas);
   const require = createRequire(import.meta.url);
-  let key;
+  let key: string;
   try {
     key = createHash("sha256")
-      .update(JSON.stringify([require("ajv/package.json").version, AJV_OPTIONS, schemas]))
+      .update(JSON.stringify([(require("ajv/package.json") as { version: string }).version, AJV_OPTIONS, schemas]))
       .digest("hex")
       .slice(0, 24);
   } catch {
@@ -349,41 +463,40 @@ function loadSchemas(rep) {
 }
 
 /** Compiled schemas by the hash of what they were compiled from, for a process that runs the gate more than once. */
-const compiledSchemas = new Map();
+const compiledSchemas = new Map<string, Schemas>();
 
-function compileFresh(schemas, key, cacheDir, require) {
+function compileFresh(schemas: readonly (readonly [string, AnySchema])[], key: string, cacheDir: string | null, require: NodeJS.Require): Schemas {
   if (!cacheDir) return compileSchemas(schemas);
-  let file;
   try {
-    file = join(resolve(cacheDir), `schemas-${key}.cjs`);
+    const file = join(resolve(cacheDir), `schemas-${key}.cjs`);
     if (!existsSync(file)) {
-      const standaloneCode = require("ajv/dist/standalone").default;
+      const standaloneCode = (require("ajv/dist/standalone") as { default: (ajv: Ajv2020, refs: Record<string, string>) => string }).default;
       const code = standaloneCode(
         compileSchemas(schemas, { code: { source: true, esm: false } }),
         Object.fromEntries(schemas.map(([name]) => [name, name])),
       );
       mkdirSync(dirname(file), { recursive: true });
-      const tmp = `${file}.${process.pid}.tmp`;
+      const tmp = `${file}.${String(process.pid)}.tmp`;
       writeFileSync(tmp, code);
       renameSync(tmp, file); // atomic: parallel test workers may race to write the same file
     }
-    const compiled = require(file);
+    const compiled = require(file) as Record<string, ValidateFunction | undefined>;
     return { getSchema: (name) => compiled[name] };
   } catch {
     return compileSchemas(schemas);
   }
 }
 
-
-function validateAgainstSchema(rep, ajv, schemaName, path, data) {
+function validateAgainstSchema(rep: Report, ajv: Schemas, schemaName: SchemaName, path: string, data: unknown): boolean {
   const validate = ajv.getSchema(schemaName);
+  if (!validate) throw new Error(`no schema "${schemaName}" was compiled`);
   if (validate(data)) {
     rep.ok(`${path}  schema ${schemaName}`);
     return true;
   }
   // Errors from failed if/then branches are noisy; keep the specific ones and drop
   // the "must match a schema in anyOf/if" summaries that repeat what follows.
-  const errors = validate.errors.filter((e) => e.keyword !== "if");
+  const errors = (validate.errors ?? []).filter((e) => e.keyword !== "if");
   rep.under("schema", () => {
     for (const err of errors) rep.fail(path, err.instancePath, describe(err));
   });
@@ -399,14 +512,14 @@ function validateAgainstSchema(rep, ajv, schemaName, path, data) {
  * a speaker the content names who is not on the sheet yet is a warning, since casting is done
  * by a person on the cast page and `npm run voice:cast` adds the newcomers.
  */
-function checkVoiceCast(rep, ajv) {
+function checkVoiceCast(rep: Report, ajv: Schemas): void {
   const castPath = "content/voice/cast.json";
   rep.section("voice cast");
   if (!rep.set.has(castPath)) {
     rep.fail(castPath, "", "the cast voice sheet is missing", "Recorded narration reads it for every line. Run `npm run voice:cast` to build it.");
     return;
   }
-  const sheet = readJson(rep, castPath);
+  const sheet = readJson<CastSheet>(rep, castPath);
   if (!sheet || !validateAgainstSchema(rep, ajv, "voice-cast", castPath, sheet)) return;
   const file = castPath;
   let ok = true;
@@ -417,21 +530,22 @@ function checkVoiceCast(rep, ajv) {
   // Who is in which chapter comes from the content as it is now, joined to the voices on the sheet:
   // a known speaker who walks into a new chapter must not share a voice there, even before
   // `npm run voice:cast` refreshes the sheet's own chapter lists.
-  let drafts = null;
+  let drafts: ReturnType<typeof collectCharacters> | null = null;
   try {
     drafts = collectCharacters(sourcesFrom(jsonIn(rep.set, "content/chapters"), jsonIn(rep.set, "content/campaigns"), []));
   } catch (error) {
     // Without the sources the clash check would fall back to the sheet's own, possibly stale,
     // chapter lists: that is the gate quietly checking less, so it fails instead.
     ok = false;
-    rep.fail(file, "", `could not read who appears where: ${String(error?.message ?? error)}`, "The cast check reads who appears in each chapter from content/chapters, as `npm run voice:cast` does.");
+    rep.fail(file, "", `could not read who appears where: ${String((error as Error | null)?.message ?? error)}`, "The cast check reads who appears in each chapter from content/chapters, as `npm run voice:cast` does.");
   }
   const byId = new Map((drafts ?? []).map((d) => [d.id, d]));
-  const current = {
+  const current: CastSheet = {
     ...sheet,
     speakers: Object.fromEntries(
       Object.entries(sheet.speakers).map(([id, entry]) => {
-        if (byId.has(id)) return [id, { ...entry, chapters: [...byId.get(id).chapters].sort() }];
+        const draft = byId.get(id);
+        if (draft) return [id, { ...entry, chapters: [...draft.chapters].sort() }];
         // On the sheet but in no chapter any more (retired or renamed): kept on disk for its
         // history, but in no chapter now, so its old voice cannot clash with anybody.
         const speaksEverywhere = entry.kind === "narrator" || entry.kind === "party";
@@ -455,10 +569,10 @@ function checkVoiceCast(rep, ajv) {
  * The pronunciation lexicon (#539): how made-up words are said. A word no spoken text uses any
  * more is only a warning; it costs nothing, but it is probably a renamed character.
  */
-function checkLexicon(rep, ajv) {
+function checkLexicon(rep: Report, ajv: Schemas): void {
   const lexPath = "content/voice/lexicon.json";
   if (!rep.set.has(lexPath)) return;
-  const lexicon = readJson(rep, lexPath);
+  const lexicon = readJson<{ words: Record<string, unknown> }>(rep, lexPath);
   if (!lexicon || !validateAgainstSchema(rep, ajv, "voice-lexicon", lexPath, lexicon)) return;
   const words = Object.keys(lexicon.words);
   if (!words.length) return;
@@ -473,15 +587,15 @@ function checkLexicon(rep, ajv) {
  * does not, or names a speaker who is not cast, fails here. One whose text has since changed is
  * only reported: that scene plays with the device voice until it is re-cut.
  */
-function checkVoiceScripts(rep, ajv, chaptersById) {
+function checkVoiceScripts(rep: Report, ajv: Schemas, chaptersById: ReadonlyMap<string, Chapter>): void {
   const files = rep.set.list("content/voice/scripts");
   if (!files.length) return;
   rep.section("voice scripts");
   const castPath = "content/voice/cast.json";
-  const cast = rep.set.has(castPath) ? readJson(rep, castPath) : null;
+  const cast = rep.set.has(castPath) ? readJson<Partial<CastSheet>>(rep, castPath) : null;
   const speakers = new Set(Object.keys(cast?.speakers ?? {}));
   for (const file of files) {
-    const script = readJson(rep, file);
+    const script = readJson<Json>(rep, file);
     if (!script || !validateAgainstSchema(rep, ajv, "voice-script", file, script)) continue;
     const chapterId = idOf(file);
     const chapter = chaptersById.get(chapterId);
@@ -489,7 +603,7 @@ function checkVoiceScripts(rep, ajv, chaptersById) {
       rep.fail(file, "", `no chapter "${chapterId}" for this script`, "A script is named for its chapter.");
       continue;
     }
-    const lines = new Map(chapterLines(chapter, { facetsMax: 6 }).map((line) => [line.address, line.text]));
+    const lines = new Map(chapterLines(chapter as unknown as Parameters<typeof chapterLines>[0], { facetsMax: 6 }).map((line) => [line.address, line.text]));
     const report = scriptReport(script, { chapter: chapterId, lines, speakers });
     for (const problem of report.problems) rep.fail(file, problem.at, problem.message);
     for (const address of report.orphaned) rep.warn(`${file}: ${address} names no authored line`, "The text moved or was removed; drop the entry.");
@@ -499,60 +613,63 @@ function checkVoiceScripts(rep, ajv, chaptersById) {
 }
 
 /** Rules invariants a schema cannot state: ordering and one-class-per-stat. */
-function checkRules(rep, file, rules) {
-  const f = file;
+function checkRules(rep: Report, f: string, rules: RulesContent): boolean {
   let ok = true;
 
   // levelXp[n] is the total XP for level n+2 and maxLevel is length+1 - the
   // convention levelForXp()/maxLevel() in packages/shared/src/rules.ts implement.
   // A leading 0 would hand everyone level 2 for free.
-  if (rules.levelXp[0] <= 0) {
-    rep.fail(f, "/levelXp/0", `level 2 must cost more than 0 XP, got ${rules.levelXp[0]}`, "levelXp holds the thresholds *above* level 1; it does not start with a 0.");
+  const [firstXp] = rules.levelXp;
+  if (firstXp !== undefined && firstXp <= 0) {
+    rep.fail(f, "/levelXp/0", `level 2 must cost more than 0 XP, got ${String(firstXp)}`, "levelXp holds the thresholds *above* level 1; it does not start with a 0.");
     ok = false;
   }
-  for (let i = 1; i < rules.levelXp.length; i += 1) {
-    if (rules.levelXp[i] <= rules.levelXp[i - 1]) {
+  rules.levelXp.forEach((needs, i) => {
+    const before = rules.levelXp[i - 1];
+    if (before !== undefined && needs <= before) {
       rep.fail(
         f,
-        `/levelXp/${i}`,
-        `XP thresholds must increase: level ${i + 2} needs ${rules.levelXp[i]}, ` +
-          `level ${i + 1} already needed ${rules.levelXp[i - 1]}`,
+        `/levelXp/${String(i)}`,
+        `XP thresholds must increase: level ${String(i + 2)} needs ${String(needs)}, ` +
+          `level ${String(i + 1)} already needed ${String(before)}`,
       );
       ok = false;
     }
-  }
+  });
 
   // spec §8.1 - the seven appearance tiers, in level order.
-  const tiers = ["fledgling", "sworn", "radiant", "mythic", "ascendant", "starborn", "legendary"];
-  for (let i = 1; i < tiers.length; i += 1) {
-    if (rules.tierLevels[tiers[i]] <= rules.tierLevels[tiers[i - 1]]) {
+  const tiers = TIER_IDS;
+  tiers.forEach((tier, i) => {
+    const earlier = tiers[i - 1];
+    if (earlier !== undefined && rules.tierLevels[tier] <= rules.tierLevels[earlier]) {
       rep.fail(
         f,
-        `/tierLevels/${tiers[i]}`,
-        `tiers must be reached in order: ${tiers[i]} at level ${rules.tierLevels[tiers[i]]} ` +
-          `is not after ${tiers[i - 1]} at level ${rules.tierLevels[tiers[i - 1]]}`,
+        `/tierLevels/${tier}`,
+        `tiers must be reached in order: ${tier} at level ${String(rules.tierLevels[tier])} ` +
+          `is not after ${earlier} at level ${String(rules.tierLevels[earlier])}`,
       );
       ok = false;
     }
-  }
+  });
   const maxLevel = rules.levelXp.length + 1;
   if (rules.tierLevels.fledgling !== 1) {
-    rep.fail(f, "/tierLevels/fledgling", `every character starts at fledgling, so it must be level 1, got ${rules.tierLevels.fledgling}`);
+    rep.fail(f, "/tierLevels/fledgling", `every character starts at fledgling, so it must be level 1, got ${String(rules.tierLevels.fledgling)}`);
     ok = false;
   }
   for (const tier of tiers) {
     if (rules.tierLevels[tier] > maxLevel) {
-      rep.fail(f, `/tierLevels/${tier}`, `${tier} is at level ${rules.tierLevels[tier]}, but levelXp only reaches level ${maxLevel}`);
+      rep.fail(f, `/tierLevels/${tier}`, `${tier} is at level ${String(rules.tierLevels[tier])}, but levelXp only reaches level ${String(maxLevel)}`);
       ok = false;
     }
   }
 
   // spec §4.3 - four classes, one per stat. Two classes on one stat leaves a stat
   // with no class and breaks the "one roll type" symmetry the whole design rests on.
-  const byStat = new Map();
+  const byStat = new Map<string, string>();
   for (const [id, cls] of Object.entries(rules.classes)) {
-    if (byStat.has(cls.stat)) {
-      rep.fail(f, `/classes/${id}/stat`, `stat "${cls.stat}" is already used by class "${byStat.get(cls.stat)}"`);
+    const taken = byStat.get(cls.stat);
+    if (taken !== undefined) {
+      rep.fail(f, `/classes/${id}/stat`, `stat "${cls.stat}" is already used by class "${taken}"`);
       ok = false;
     }
     byStat.set(cls.stat, id);
@@ -560,7 +677,7 @@ function checkRules(rep, file, rules) {
 
   // Icons carry the text (spec §11) - so an empty slug anywhere is a real defect.
   for (const [id, sp] of Object.entries(rules.species)) {
-    for (const key of ["worldAbility", "combatAction"]) {
+    for (const key of ["worldAbility", "combatAction"] as const) {
       if (!sp[key].icon?.trim()) {
         rep.fail(f, `/species/${id}/${key}/icon`, "icon slug is empty");
         ok = false;
@@ -568,7 +685,7 @@ function checkRules(rep, file, rules) {
     }
   }
   for (const [id, cls] of Object.entries(rules.classes)) {
-    const abilities = [["signature", cls.signature], ...Object.entries(cls.unlocks)];
+    const abilities: [string, { icon?: string }][] = [["signature", cls.signature], ...Object.entries(cls.unlocks)];
     for (const [key, ability] of abilities) {
       if (!ability.icon?.trim()) {
         rep.fail(f, `/classes/${id}/${key}/icon`, "icon slug is empty");
@@ -580,11 +697,12 @@ function checkRules(rep, file, rules) {
   // docs/class-mastery.md §6 - deeds. A deed that only another class's move can
   // do would leave the rank unreachable, and Master always includes a story
   // deed (rule 5), on every track, so fights are not the only way to grow.
+  const deedOwners: Partial<Record<string, string | null>> = DEED_OWNERS;
   for (const [id, cls] of Object.entries(rules.classes)) {
     for (const [rank, req] of Object.entries(cls.deeds ?? {})) {
       for (const [trackName, track] of Object.entries(req)) {
         for (const deed of Object.keys(track)) {
-          const owner = DEED_OWNERS[deed];
+          const owner = deedOwners[deed];
           if (owner && owner !== id) {
             rep.fail(f, `/classes/${id}/deeds/${rank}/${trackName}/${deed}`, `"${deed}" can only be done by a ${owner}`);
             ok = false;
@@ -624,9 +742,21 @@ function checkRules(rep, file, rules) {
  * either a typo in the id or a leftover, and both are worth a failure while the
  * catalog is still small enough to fix in a minute.
  */
-function checkAbilities(rep, file, doc, rules, rulesFile) {
-  const f = file;
-  const rf = rulesFile;
+interface AbilitiesFile {
+  abilities?: AbilityCatalog;
+  /** Abilities rules.json grants that nothing defines yet, each with the verb it is waiting on. */
+  $deferred?: Record<string, unknown>;
+}
+
+/** An ability as rules.json grants it: the words on the card. */
+interface GrantedAbility {
+  id: string;
+  name: string;
+  text: string;
+  icon: string;
+}
+
+function checkAbilities(rep: Report, f: string, doc: AbilitiesFile, rules: RulesContent, rf: string): boolean {
   let ok = true;
 
   const authored = doc.abilities ?? {};
@@ -634,8 +764,8 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
 
   // Every ability rules.json names, with the pointer that named it and the words
   // the card shows — so a mismatch can be reported against the right file.
-  const referenced = new Map();
-  const refer = (ability, at) => {
+  const referenced = new Map<string, { at: string; ability: GrantedAbility }>();
+  const refer = (ability: GrantedAbility, at: string): void => {
     const prior = referenced.get(ability.id);
     if (prior) {
       // The same ability granted by two classes would be a balance decision
@@ -688,6 +818,7 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
     // thing by different names — which is how a child learns not to trust the
     // cards.
     const def = authored[id];
+    if (!def) continue;
     if (def.name !== ability.name) {
       rep.fail(f, `/abilities/${id}/name`, `named "${def.name}" here and "${ability.name}" in rules.json at ${at}`);
       ok = false;
@@ -813,12 +944,11 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
  * annotations. Mirrors `itemCatalog()` in packages/shared — items.json is
  * generated (D7) and opens with a `$comment`, and `$` is not a legal item id.
  */
-function entries(catalog) {
+function entries<T>(catalog: Record<string, T> | null | undefined): [string, T][] {
   return Object.entries(catalog ?? {}).filter(([id]) => !id.startsWith("$"));
 }
 
-function checkItems(rep, file, items) {
-  const f = file;
+function checkItems(rep: Report, f: string, items: ItemCatalog): boolean {
   let ok = true;
   const real = entries(items);
   for (const [id, item] of real) {
@@ -827,53 +957,64 @@ function checkItems(rep, file, items) {
       ok = false;
     }
   }
-  const kinds = new Set(real.map(([, i]) => i.kind));
+  const kinds = new Set<string>(real.map(([, i]) => i.kind));
   for (const kind of ["consumable", "trinket", "quest"]) {
     if (!kinds.has(kind)) {
       rep.warn(`${f} has no ${kind} items`, "spec §9.2 defines three kinds; a catalog missing one is probably unfinished.");
     }
   }
-  if (ok) rep.ok(`${f}  item catalog  (${real.length} items, icons present)`);
+  if (ok) rep.ok(`${f}  item catalog  (${String(real.length)} items, icons present)`);
   return ok;
 }
 
 /** Every branch key a scene may carry — an environmental fight's two extra endings (#201) included. */
-const BRANCH_KEYS = ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"];
+const BRANCH_KEYS = ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"] as const;
+
+/** A scene read for whatever exits and effects it carries, whichever type it is. */
+type AnyScene = { onEnter?: Effect[]; choices?: Choice[]; environment?: EncounterEnvironment } & Partial<Record<(typeof BRANCH_KEYS)[number], Branch>>;
+
+/** Every field any member of a union carries, each optional: what a value of the union may or may not have. */
+type Wide<U> = { [K in U extends unknown ? keyof U : never]?: U extends unknown ? (K extends keyof U ? U[K] : never) : never };
+
+/** A scene read for a field only some types of scene carry: absent on the rest. */
+const wide = (scene: Scene): Wide<Scene> => scene;
 
 /** Every scene id this scene can transition to, with the JSON pointer that named it. */
-function outgoing(scene, sceneId) {
-  const edges = [];
+function outgoing(scene: AnyScene, sceneId: string): [target: string, at: string][] {
+  const edges: [string, string][] = [];
   const base = `/scenes/${sceneId}`;
   if (Array.isArray(scene.choices)) {
-    scene.choices.forEach((c, i) => edges.push([c.goto, `${base}/choices/${i}/goto`]));
+    scene.choices.forEach((c, i) => edges.push([c.goto, `${base}/choices/${String(i)}/goto`]));
   }
   for (const key of BRANCH_KEYS) {
-    if (scene[key]?.goto) edges.push([scene[key].goto, `${base}/${key}/goto`]);
+    const branch = scene[key];
+    if (branch?.goto) edges.push([branch.goto, `${base}/${key}/goto`]);
   }
   return edges;
 }
 
 /** Every effect in a scene, with its pointer. */
-function effectsOf(scene, sceneId) {
-  const out = [];
+function effectsOf(scene: AnyScene, sceneId: string): [effect: Effect, at: string][] {
+  const out: [Effect, string][] = [];
   const base = `/scenes/${sceneId}`;
-  const push = (list, at) => (list ?? []).forEach((e, i) => out.push([e, `${at}/${i}`]));
+  const push = (list: readonly Effect[] | undefined, at: string): void => (list ?? []).forEach((e, i) => out.push([e, `${at}/${String(i)}`]));
   push(scene.onEnter, `${base}/onEnter`);
-  (scene.choices ?? []).forEach((c, i) => push(c.effects, `${base}/choices/${i}/effects`));
+  (scene.choices ?? []).forEach((c, i) => push(c.effects, `${base}/choices/${String(i)}/effects`));
   for (const key of BRANCH_KEYS) {
-    if (scene[key]) push(scene[key].effects, `${base}/${key}/effects`);
+    const branch = scene[key];
+    if (branch) push(branch.effects, `${base}/${key}/effects`);
   }
   // A freed captive's effects (#201) land when the fight ends.
   // One captive, or a list of them (#220), and objectives done, the same
   // way — in the place as authored and in every variant of it.
-  const places = scene.environment
-    ? [[scene.environment, `${base}/environment`], ...(scene.environment.variants ?? []).map((v, i) => [v, `${base}/environment/variants/${i}`])]
+  const places: [place: Omit<EncounterEnvironment, "variants">, at: string][] = scene.environment
+    ? [[scene.environment, `${base}/environment`], ...(scene.environment.variants ?? []).map((v, i): [EnvironmentVariant, string] => [v, `${base}/environment/variants/${String(i)}`])]
     : [];
   for (const [place, at] of places) {
     const rescue = place?.rescue;
-    if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${at}/rescue/${i}/effects`));
+    if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${at}/rescue/${String(i)}/effects`));
     else push(rescue?.effects, `${at}/rescue/effects`);
-    (place?.objectives ?? []).forEach((o, i) => push(o?.effects, `${at}/objectives/${i}/effects`));
+    (place?.objectives ?? []).forEach((o, i) => push(o?.effects, `${at}/objectives/${String(i)}/effects`));
   }
   return out;
 }
@@ -886,23 +1027,24 @@ function effectsOf(scene, sceneId) {
  * a bramble tile throws out of `placeActor` at the instant the fight begins,
  * which is a crash at the table for a mistake plainly visible in the file.
  */
-function checkMap(rep, file, map) {
-  const at = file;
-  if (map.rows?.some(row => row.length !== map.rows[0].length)) rep.fail(at, "/rows", "all rows must have the same width", "A battle map must be rectangular.");
-  const seen = new Map();
-  for (const kind of ["partySpawns", "enemySpawns"]) {
+function checkMap(rep: Report, at: string, map: EncounterMap): void {
+  const width = map.rows?.[0]?.length;
+  if (map.rows?.some((row) => row.length !== width)) rep.fail(at, "/rows", "all rows must have the same width", "A battle map must be rectangular.");
+  const seen = new Map<string, string>();
+  for (const kind of ["partySpawns", "enemySpawns"] as const) {
     (map[kind] ?? []).forEach((spawn, i) => {
-      const where = `/${kind}/${i}`;
+      const where = `/${kind}/${String(i)}`;
       if (map.rows?.[spawn.y]?.[spawn.x] !== ".") {
-        rep.fail(at, where, `spawn at (${spawn.x}, ${spawn.y}) stands on a blocked tile`, "Spawns must be on \".\" — the figure is placed there before anyone moves.");
+        rep.fail(at, where, `spawn at (${String(spawn.x)}, ${String(spawn.y)}) stands on a blocked tile`, "Spawns must be on \".\" — the figure is placed there before anyone moves.");
         return;
       }
       // Two figures cannot share a tile (grid.ts). A duplicate only fails once a
       // fight has that many bodies in it, so it would surface on the four-enemy
       // map and not the two-enemy one.
-      const key = `${spawn.x},${spawn.y}`;
-      if (seen.has(key)) {
-        rep.fail(at, where, `spawn at (${spawn.x}, ${spawn.y}) repeats ${seen.get(key)}`, "Every spawn point needs its own tile.");
+      const key = `${String(spawn.x)},${String(spawn.y)}`;
+      const earlier = seen.get(key);
+      if (earlier !== undefined) {
+        rep.fail(at, where, `spawn at (${String(spawn.x)}, ${String(spawn.y)}) repeats ${earlier}`, "Every spawn point needs its own tile.");
       }
       seen.set(key, where);
     });
@@ -912,15 +1054,15 @@ function checkMap(rep, file, map) {
   // Cheap flood fill from the first party spawn over the open tiles.
   const first = map.partySpawns?.[0];
   if (first && map.rows) {
-    const open = (x, y) => map.rows[y]?.[x] === ".";
-    const seenTiles = new Set([`${first.x},${first.y}`]);
+    const open = (x: number, y: number): boolean => map.rows[y]?.[x] === ".";
+    const seenTiles = new Set([`${String(first.x)},${String(first.y)}`]);
     const queue = [first];
-    while (queue.length) {
-      const { x, y } = queue.pop();
+    for (let tile = queue.pop(); tile !== undefined; tile = queue.pop()) {
+      const { x, y } = tile;
       for (let dy = -1; dy <= 1; dy++) {
         for (let dx = -1; dx <= 1; dx++) {
           const nx = x + dx, ny = y + dy;
-          const key = `${nx},${ny}`;
+          const key = `${String(nx)},${String(ny)}`;
           if ((dx || dy) && open(nx, ny) && !seenTiles.has(key)) {
             seenTiles.add(key);
             queue.push({ x: nx, y: ny });
@@ -929,22 +1071,42 @@ function checkMap(rep, file, map) {
       }
     }
     (map.enemySpawns ?? []).forEach((spawn, i) => {
-      if (!seenTiles.has(`${spawn.x},${spawn.y}`)) {
-        rep.fail(at, `/enemySpawns/${i}`, `no route from the party to (${spawn.x}, ${spawn.y})`, "A walled-off enemy can never be reached, and the encounter can never be won.");
+      if (!seenTiles.has(`${String(spawn.x)},${String(spawn.y)}`)) {
+        rep.fail(at, `/enemySpawns/${String(i)}`, `no route from the party to (${String(spawn.x)}, ${String(spawn.y)})`, "A walled-off enemy can never be reached, and the encounter can never be won.");
       }
     });
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set(), fieldGuide = null, world = null, mapsById = null, backgroundOnlyBiomes = []) {
-  const f = file;
+/** What a chapter is checked against: the rest of the tree, as far as it loaded. */
+interface ChapterContext {
+  items: ItemCatalog | null;
+  rules: RulesContent | null;
+  /** The biomes in assets/manifest.json, or null when there is no manifest to ask. */
+  biomes: readonly string[] | null;
+  /** Biomes with a backdrop and no tile sheet: fine for a chapter with painted scenes and no fight. */
+  backgroundOnlyBiomes: readonly string[];
+  mapIds: ReadonlySet<string>;
+  mapsById: ReadonlyMap<string, EncounterMap>;
+  bestiary: Bestiary | null;
+  /** Flags the campaign of this chapter carries across the chapter boundary. */
+  carried: ReadonlySet<string>;
+  fieldGuide: FieldGuide | null;
+  world: WorldMap | null;
+}
+
+/** A failure against the file being checked: pointer, problem, hint. */
+type Fail = (path: string, problem: string, hint?: string | null) => void;
+
+function checkChapter(rep: Report, f: string, chapter: Chapter, context: ChapterContext): boolean {
+  const { items, rules, biomes, backgroundOnlyBiomes, mapIds, mapsById, bestiary, carried, fieldGuide, world } = context;
   let ok = true;
-  const fail = (path, problem, hint) => {
+  const fail: Fail = (path, problem, hint) => {
     rep.fail(f, path, problem, hint);
     ok = false;
   };
 
-  const expectedId = idOf(file);
+  const expectedId = idOf(f);
   if (chapter.id !== expectedId) {
     fail("/id", `id "${chapter.id}" does not match filename "${expectedId}.json"`, "The loader resolves chapters by filename.");
   }
@@ -978,7 +1140,8 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   }
 
   for (const [id, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
-    if (!scenes[id] || scenes[id].type === "interaction") {
+    const replaced = scenes[id];
+    if (!replaced || replaced.type === "interaction") {
       fail(`/resumeInteractions/${id}`, "retired activity must replace an existing non-interaction scene");
     }
     for (const [target] of outgoing(retired, id)) {
@@ -987,7 +1150,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   }
 
   // --- every goto names a scene that exists
-  const edges = new Map();
+  const edges = new Map<string, string[]>();
   for (const [id, scene] of Object.entries(scenes)) {
     const outs = outgoing(scene, id);
     for (const [target, at] of outs) {
@@ -1000,10 +1163,9 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   }
 
   // --- every scene is reachable from entry
-  const seen = new Set();
+  const seen = new Set<string>();
   const queue = ids.has(chapter.entry) ? [chapter.entry] : [];
-  while (queue.length) {
-    const id = queue.pop();
+  for (let id = queue.pop(); id !== undefined; id = queue.pop()) {
     if (seen.has(id)) continue;
     seen.add(id);
     for (const next of edges.get(id) ?? []) queue.push(next);
@@ -1041,8 +1203,9 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       }
     }
     for (const id of endings) {
-      if (scenes[id].type === "check" || scenes[id].type === "encounter") {
-        fail(`/scenes/${id}`, `a ${scenes[id].type} scene cannot be an ending - both of its branches must go somewhere`);
+      const type = scenes[id]?.type;
+      if (type === "check" || type === "encounter") {
+        fail(`/scenes/${id}`, `a ${type} scene cannot be an ending - both of its branches must go somewhere`);
       }
     }
   }
@@ -1053,15 +1216,16 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   // meant it to halve the award and would silently get the full one.
   const isEnding = new Set(endings);
   for (const [id, scene] of Object.entries(scenes)) {
-    if (scene.outcome !== undefined && !isEnding.has(id)) {
+    const { outcome, endsCampaign } = wide(scene);
+    if (outcome !== undefined && !isEnding.has(id)) {
       fail(
         `/scenes/${id}/outcome`,
-        `outcome "${scene.outcome}" on a scene that is not an ending - the chapter does not stop here, so nothing reads it`,
+        `outcome "${outcome}" on a scene that is not an ending - the chapter does not stop here, so nothing reads it`,
         "Only a scene with an empty `choices` array ends the chapter (spec §8.2).",
       );
     }
     // Same reason: only an ending can finish the campaign early.
-    if (scene.endsCampaign !== undefined && !isEnding.has(id)) {
+    if (endsCampaign !== undefined && !isEnding.has(id)) {
       fail(
         `/scenes/${id}/endsCampaign`,
         "endsCampaign on a scene that is not an ending - the chapter does not stop here, so the campaign cannot either",
@@ -1079,13 +1243,14 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   // cannot say. A switch the table can never reach, or one Gemfall's pin
   // forbids, fails here and never at the table.
   for (const [id, scene] of Object.entries(scenes)) {
-    if (scene.classPlace === undefined) continue;
+    const classPlace = wide(scene).classPlace;
+    if (classPlace === undefined) continue;
     const at = `/scenes/${id}/classPlace`;
     if (scene.type !== "story" && scene.type !== "choice_point") {
       fail(at, `a ${scene.type} scene cannot be a class place`, "Put classPlace on the story or choice_point scene that is the room.");
     }
-    if (!classIds.has(scene.classPlace)) {
-      fail(at, `"${scene.classPlace}" is not a class in content/rules.json`, `known classes: ${[...classIds].join(", ")}`);
+    if (!classIds.has(classPlace)) {
+      fail(at, `"${classPlace}" is not a class in content/rules.json`, `known classes: ${[...classIds].join(", ")}`);
     }
     if (isEnding.has(id)) {
       fail(at, "a class place cannot end the chapter - nobody would get to answer before it closed", "Give the room a way on.");
@@ -1094,8 +1259,8 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       fail(at, "Gemfall has no class places (docs/class-mastery.md §2) - it is pinned, and its only class change is the Exchange stall");
     }
   }
-  const flagsSet = new Set();
-  const flagsRequired = [];
+  const flagsSet = new Set<string>();
+  const flagsRequired: [flag: string, at: string][] = [];
   // A resumed activity may have set a legacy flag consumed by its ending.
   for (const [id, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
     for (const [effect] of effectsOf(retired, id)) {
@@ -1110,7 +1275,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       // `awardObjectives` test for true — so a flag whose only effect sets it
       // false is, for every consumer, a flag nothing ever sets.
       if (effect.type === "setFlag" && (effect.value ?? true) === true) flagsSet.add(effect.flag);
-      if (!effect.itemId) continue;
+      if (!("itemId" in effect) || !effect.itemId) continue;
       if (effect.type === "takeItem") {
         for (const id of Array.isArray(effect.itemId) ? effect.itemId : [effect.itemId]) {
           if (!items?.[id]) fail(`${at}/itemId`, `item "${id}" is not in content/items.json`);
@@ -1135,22 +1300,23 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts
     // (isGated); a `when` counts as a gate there too. Kept inline because
     // chapter-graph.ts cannot be loaded straight under Node.
-    const gated = (c) => c.requiresSpecies !== undefined || c.requiresClass !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
+    const choices = wide(scene).choices ?? [];
+    const gated = (c: Choice): boolean => c.requiresSpecies !== undefined || c.requiresClass !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
     // No class is ever mandatory (#228): a scene whose every choice needs a
     // class is validateChapter()'s CLASS_GATED_ONLY_EXIT, the same failure
     // named for its fix; mixed with other gates it is the plain one below.
-    if ((scene.choices ?? []).length > 0 && scene.choices.every((c) => c.requiresClass !== undefined)) {
+    if (choices.length > 0 && choices.every((c) => c.requiresClass !== undefined)) {
       fail(
         `/scenes/${id}/choices`,
         "every choice is class-gated (CLASS_GATED_ONLY_EXIT) - a party with none of those classes sees nothing to tap",
         "No class is ever mandatory: add a choice no class is needed for.",
       );
-    } else if ((scene.choices ?? []).length > 0 && scene.choices.every(gated)) {
+    } else if (choices.length > 0 && choices.every(gated)) {
       fail(`/scenes/${id}/choices`, "every choice is gated - a party matching none of the requirements sees nothing to tap");
     }
 
-    const choiceIds = new Set();
-    (scene.choices ?? []).forEach((choice, i) => {
+    const choiceIds = new Set<string>();
+    choices.forEach((choice, i) => {
       const at = `/scenes/${id}/choices/${i}`;
 
       // The client keys on choice ids and the server matches intents against
@@ -1216,13 +1382,14 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
        * a number canon already supplies. An override is fine and deliberate; a
        * duplicate is the drift risk coming back.
        */
-      const STATS = ["hp", "guard", "quick", "steps", "attack"];
+      const STATS = ["hp", "guard", "quick", "steps", "attack"] as const;
       let total = 0;
-      for (const enemy of scene.enemies) {
+      // As authored: everything canon can supply is optional until the loader fills it.
+      for (const enemy of scene.enemies as AuthoredEnemySpec[]) {
         const where = `/scenes/${id}/enemies/${enemy.id}`;
         // A numbing sting (#227) is checked with the same arithmetic the fight
         // uses, so a number the engine would clamp is a build failure instead.
-        for (const key of ["onHit", "retaliation"]) {
+        for (const key of ["onHit", "retaliation"] as const) {
           if (enemy[key] === undefined) continue;
           for (const problem of slowBlockProblems(enemy[key], key === "retaliation")) fail(`${where}/${key}${problem.path}`, problem.problem);
         }
@@ -1249,7 +1416,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
         total += enemy.count ?? entry.usualCount ?? 1;
 
-        for (const stat of [...STATS, "count", "art"]) {
+        for (const stat of [...STATS, "count", "art"] as const) {
           if (enemy[stat] === undefined) continue;
           const canonValue = stat === "count" ? entry.usualCount : entry[stat];
           if (enemy[stat] === canonValue) {
@@ -1299,11 +1466,13 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     fail(problem.path, problem.problem, "gate each choice into it on when.coins.min, and reach it only through choices");
   }
   for (const { path, when } of conditionRefs(chapter)) {
-    for (const key of ["flag", "notFlag"]) {
-      if (when[key]) flagsRequired.push([when[key], `${path}/${key}`]);
+    for (const key of ["flag", "notFlag"] as const) {
+      const flag = when[key];
+      if (flag) flagsRequired.push([flag, `${path}/${key}`]);
     }
-    for (const key of ["item", "notItem"]) {
-      if (when[key] && !items?.[when[key]]) fail(`${path}/${key}`, `item "${when[key]}" is not in content/items.json`);
+    for (const key of ["item", "notItem"] as const) {
+      const item = when[key];
+      if (item && !items?.[item]) fail(`${path}/${key}`, `item "${item}" is not in content/items.json`);
     }
     const of = when.count?.of;
     if (of !== undefined) {
@@ -1334,7 +1503,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
   // --- bonus objectives (spec §8.2)
   const objectives = chapter.objectives ?? [];
-  const objectiveIds = new Set();
+  const objectiveIds = new Set<string>();
   let bonusTotal = 0;
 
   objectives.forEach((objective, i) => {
@@ -1382,7 +1551,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       fail("/goal", "chapter has no goal", "Every chapter states its goal, visible from scene 1: one sentence and two to four steps (content/README.md, \"The chapter's goal\").");
     }
   } else {
-    const stepIds = new Set();
+    const stepIds = new Set<string>();
     const effectsOfChapter = Object.entries(scenes).flatMap(([id, scene]) => effectsOf(scene, id));
     goal.steps.forEach((step, i) => {
       const at = `/goal/steps/${i}`;
@@ -1436,7 +1605,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   }
 
   // Music overrides (#226): a chapter or scene may name a MUSIC_SPECS track in place of its biome's.
-  const checkMusic = (path, track) => {
+  const checkMusic = (path: string, track: string | undefined): void => {
     if (track !== undefined && !Object.hasOwn(MUSIC_SPECS, track)) {
       fail(path, `music "${track}" is not a MUSIC_SPECS track`, `known tracks: ${Object.keys(MUSIC_SPECS).join(", ")}`);
     }
@@ -1476,7 +1645,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     if (scene.type !== "interaction") continue;
     const spec = scene.interaction;
     const at = `/scenes/${sceneId}/interaction`;
-    for (const [index, option] of (spec.options ?? []).entries()) {
+    for (const [index, option] of ("options" in spec ? (spec.options ?? []) : []).entries()) {
       if (!rep.interactionIconIds.has(option.icon)) fail(`${at}/options/${index}/icon`, `unknown icon id "${option.icon}"`, "Use a registered painted icon or built-in Icon name.");
     }
   }
@@ -1492,7 +1661,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       }
     }
     for (const [sceneId, scene] of Object.entries(scenes)) {
-      const seen = new Set();
+      const seen = new Set<string>();
       for (const [i, id] of (scene.discovers ?? []).entries()) {
         const at = `/scenes/${sceneId}/discovers/${i}`;
         if (!known[id]) {
@@ -1514,8 +1683,8 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   // can draw. A typo here would leave an empty space opposite the party where
   // the selkie was meant to be, and nothing at runtime would say why.
   for (const [sceneId, scene] of Object.entries(scenes)) {
-    const seen = new Set();
-    for (const [i, member] of (scene.cast ?? []).entries()) {
+    const seen = new Set<string>();
+    for (const [i, member] of (wide(scene).cast ?? []).entries()) {
       const at = `/scenes/${sceneId}/cast/${i}`;
       const file = castFigureFile(member.figure);
       if (!file || !repoAssetExists(file)) {
@@ -1539,10 +1708,11 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 }
 
 /** `entities/selkie` → its assembled.png, as a path under this checkout's assets/. */
-function castFigureFile(figure) {
+function castFigureFile(figure: string | undefined): string | null {
   const match = /^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure ?? "");
   if (!match) return null;
-  const [, kind, id] = match;
+  const kind = match[1] ?? "";
+  const id = match[2] ?? "";
   if (kind === "characters") return `characters/${id}/fledgling/assembled.png`;
   return `${kind}/${id}/assembled.png`;
 }
@@ -1554,8 +1724,8 @@ function castFigureFile(figure) {
  * great stone reads the inventory (the facet rule): a plain line may not name one, and a
  * `holding` line names a stone the catalog has. Returns [path, problem, hint] triples.
  */
-function lastTimeProblems(campaign, items) {
-  const out = [];
+function lastTimeProblems(campaign: Campaign, items: ItemCatalog | null): [path: string, problem: string, hint?: string][] {
+  const out: [path: string, problem: string, hint?: string][] = [];
   const members = Object.values(campaign.routeSets ?? {}).flat();
   const lastTime = campaign.lastTime;
   if (!lastTime) {
@@ -1575,12 +1745,12 @@ function lastTimeProblems(campaign, items) {
     .filter(([id]) => id.startsWith("facet_"))
     .map(([id, item]) => ({ id, name: String(item?.name ?? "").replace(/^the\s+/i, "").toLowerCase() }))
     .filter((facet) => facet.name !== "");
-  const named = (text) => {
+  const named = (text: string): string | null => {
     const lower = text.toLowerCase();
     if (/\bgreat stones?\b/.test(lower)) return "a great stone";
     return facets.find((facet) => lower.includes(facet.name))?.name ?? null;
   };
-  const check = (path, text) => {
+  const check = (path: string, text: string): void => {
     const stone = named(text);
     if (stone) out.push([path, `names ${stone} without reading the inventory`, "Use { holding, text, otherwise } so a party without the stone hears its own words."]);
   };
@@ -1600,21 +1770,28 @@ function lastTimeProblems(campaign, items) {
 const PROOF_COMMENT =
   "GENERATED by `npm run content:proofs` (tools/content/validate.mjs). Do not edit. The route search's clean walk of this campaign; the server trusts it while the fingerprint matches (packages/shared/src/graph-proof.ts).";
 
-function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items = null, classIds = null) {
-  const f = file;
+function checkCampaign(
+  rep: Report,
+  f: string,
+  campaign: Campaign,
+  chaptersById: ReadonlyMap<string, Chapter>,
+  brokenChapterIds: ReadonlySet<string>,
+  items: ItemCatalog | null = null,
+  classIds: readonly string[] | null = null,
+): boolean {
   let ok = true;
-  const fail = (path, problem, hint) => {
+  const fail: Fail = (path, problem, hint) => {
     rep.fail(f, path, problem, hint);
     ok = false;
   };
 
-  const expectedId = idOf(file);
+  const expectedId = idOf(f);
   if (campaign.id !== expectedId) {
     fail("/id", `id "${campaign.id}" does not match filename "${expectedId}.json"`);
   }
 
   /** Every listed chapter that exists, grouped by the beat it is. */
-  const beats = new Map();
+  const beats = new Map<number, Chapter[]>();
   campaign.chapters.forEach((id, i) => {
     const chapter = chaptersById.get(id);
     if (!chapter) {
@@ -1671,7 +1848,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
     .filter((name) => name !== "");
   for (const { path, problem, hint } of plateProblems(campaign, chaptersById, stoneNames)) fail(path, problem, hint);
 
-  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok, items, classIds);
+  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, f, campaign, chaptersById, fail, ok, items, classIds);
 
   /*
    * Beats are the save unit and the player sees "Chapter 3 of 6" - a gap here is
@@ -1682,7 +1859,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
   const ordered = [...beats.keys()].sort((a, b) => a - b);
   ordered.forEach((index, i) => {
     if (index !== i + 1) {
-      const names = beats.get(index).map((chapter) => chapter.id).join(", ");
+      const names = (beats.get(index) ?? []).map((chapter) => chapter.id).join(", ");
       fail(
         "/chapters",
         `beat ${index} (${names}) is out of sequence; the listed chapters must cover beats 1..${ordered.length} with no gaps`,
@@ -1701,8 +1878,8 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
   const routeSets = campaign.routeSets ?? {};
 
   for (const index of ordered) {
-    const members = beats.get(index);
-    const routed = members.filter((chapter) => chapter.route);
+    const members = beats.get(index) ?? [];
+    const routed = members.filter((chapter): chapter is Chapter & { route: ChapterRoute } => Boolean(chapter.route));
 
     if (routed.length === 0) {
       // An unrouted beat is one chapter. Two files sharing an index with no
@@ -1725,7 +1902,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
       fail("/chapters", `beat ${index} draws from more than one route set (${[...sets].join(", ")}); a beat is chosen along one axis`);
       continue;
     }
-    const setName = [...sets][0];
+    const setName = [...sets][0] ?? "";
     const declared = routeSets[setName];
     if (!declared) {
       fail("/chapters", `beat ${index} uses route set "${setName}", which the campaign does not declare in routeSets`);
@@ -1753,7 +1930,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
   }
 
   if (ok) {
-    const routed = ordered.filter((index) => beats.get(index).length > 1).length;
+    const routed = ordered.filter((index) => (beats.get(index) ?? []).length > 1).length;
     const shape = routed > 0 ? `, ${routed} routed` : "";
     rep.ok(`${f}  campaign  (${campaign.chapters.length} chapter(s), ${ordered.length} beat(s)${shape})`);
   }
@@ -1780,8 +1957,16 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
  * Ordered campaigns never get here (checkCampaign returns to its beat rules
  * first), so Gemfall's output is untouched.
  */
-function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, items = null, classIds = null) {
-  const f = file;
+function checkGraphCampaign(
+  rep: Report,
+  f: string,
+  campaign: Campaign,
+  chaptersById: ReadonlyMap<string, Chapter>,
+  fail: Fail,
+  okSoFar: boolean,
+  items: ItemCatalog | null = null,
+  classIds: readonly string[] | null = null,
+): boolean {
   let ok = okSoFar;
   campaign.chapters.forEach((id, i) => {
     if (chaptersById.get(id)?.route) {
@@ -1793,7 +1978,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
       ok = false;
     }
   });
-  for (const { path, key } of duplicateJsonKeys(rep.set.text(file))) {
+  for (const { path, key } of duplicateJsonKeys(rep.set.text(f))) {
     fail(path, `DUPLICATE_KEY: "${key}" appears twice in the same object, so JSON keeps only the last`, "Give each node and each edge its own id; the first one is silently dropped.");
     ok = false;
   }
@@ -1809,7 +1994,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
     for (const id of campaign.chapters ?? []) {
       const chapter = chaptersById.get(id);
       for (const [sceneId, scene] of Object.entries(chapter?.scenes ?? {})) {
-        (scene?.environment?.variants ?? []).forEach((variant, i) => {
+        (wide(scene).environment?.variants ?? []).forEach((variant, i) => {
           for (const [factId, test] of Object.entries(variant?.when?.facts ?? {})) {
             const at = `content/chapters/${id}.json /scenes/${sceneId}/environment/variants/${i}/when/facts/${factId}`;
             const fact = graph.facts?.[factId];
@@ -1833,7 +2018,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
     // catalog has — the same check a chapter choice's `requiresItem` gets.
     for (const id of graph.edgeOrder) {
       for (const kind of RIFT_ACTION_KINDS) {
-        for (const { rule, at } of riftActionWays(graph.edges[id].rift, kind)) {
+        for (const { rule, at } of riftActionWays(graph.edges[id]?.rift, kind)) {
           (rule.requires?.anyItem ?? []).forEach((item, i) => {
             if (items[item]) return;
             fail(`/graph/edges/${id}/rift/${at}/requires/anyItem/${i}`, `item "${item}" is not in content/items.json`);
@@ -1846,10 +2031,13 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
   if (graph) {
     // A chapter that did not load is unknown to the search (it may set any
     // flag), the conservative reading; a loaded one is read for its setFlags.
-    const chapterFlags = (id) => (chaptersById.has(id) ? chapterFlagWrites(chaptersById.get(id)) : undefined);
+    const chapterFlags = (id: string): ReturnType<typeof chapterFlagWrites> | undefined => {
+      const chapter = chaptersById.get(id);
+      return chapter ? chapterFlagWrites(chapter) : undefined;
+    };
     const fingerprint = graphFingerprint(campaign, chapterFlags);
     const proofFile = `${CONTENT}/${graphProofPath(campaign.id)}`;
-    const proof = rep.set.has(proofFile) ? rep.set.json(proofFile) : null;
+    const proof = rep.set.has(proofFile) ? (rep.set.json(proofFile) as GraphProof | null) : null;
     if (proof && proof.fingerprint === fingerprint && proof.checker === rep.checker) {
       // Walked already, by this checker, over exactly this graph.
       for (const w of proof.warnings) rep.warn(`${f} ${w.path}  ${w.code}: ${w.message}`, w.hint);
@@ -1886,7 +2074,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
   }
   if (graph && classIds && !rep.classPlacesOff && campaign.id !== "gemfall" && campaign.chapters.every((id) => chaptersById.has(id))) {
     // Class places (#313, docs/class-mastery.md §2): all four, by a way every party has.
-    const reach = classPlaceReach(campaign, campaign.chapters.map((id) => chaptersById.get(id)), classIds);
+    const reach = classPlaceReach(campaign, campaign.chapters.flatMap((id) => chaptersById.get(id) ?? []), classIds);
     const verdict = classPlaceVerdict(campaign.id, reach, rep.classPlaceAllow);
     for (const message of verdict.errors) {
       fail("/graph", `CLASS_PLACE: ${message}`, "Add the room to a chapter's rest scene (docs/class-mastery.md §2), or make its way in ungated.");
@@ -1909,8 +2097,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
  * and the painting it keys must exist, or the phone draws the party on a
  * missing image.
  */
-function checkWorld(rep, file, world) {
-  const f = file;
+function checkWorld(rep: Report, f: string, world: WorldMap): void {
   let ok = true;
   for (const [slug, place] of Object.entries(world.places)) {
     if (place.parent !== null && !world.places[place.parent]) {
@@ -1922,29 +2109,30 @@ function checkWorld(rep, file, world) {
     rep.fail(f, "/image/src", `${world.image.src} is not in the repo`, "The map is the painting; ship it under assets/world/.");
     ok = false;
   }
-  const sheets = [];
+  const sheets: [at: string, sheet: { image: { width: number; height: number }; tiles: WorldTile[] }][] = [];
   for (const [slug, region] of Object.entries(world.regions ?? {})) {
     const at = `/regions/${slug}`;
-    const fail = (message) => { rep.fail(f, at, message); ok = false; };
+    const fail = (message: string): void => { rep.fail(f, at, message); ok = false; };
     if (world.places[slug]?.id !== region.placeId) fail("regional sheet must reference its canonical place");
     const b = region.bounds;
     if (b.x + b.width > 1000 || b.y + b.height > 1000) fail("regional bounds extend outside the realm");
     sheets.push([at, region]);
   }
   let previousWidth = 0;
-  for (const [index, level] of (world.atlas?.levels ?? []).entries()) {
+  const atlas = world.atlas;
+  for (const [index, level] of (atlas?.levels ?? []).entries()) {
     if (level.image.width <= previousWidth) { rep.fail(f, "/atlas/levels", "atlas levels must increase in resolution"); ok = false; }
     previousWidth = level.image.width;
-    if (Math.abs(level.image.height - level.image.width * world.atlas.image.height / world.atlas.image.width) > 1) {
+    if (atlas && Math.abs(level.image.height - level.image.width * atlas.image.height / atlas.image.width) > 1) {
       rep.fail(f, "/atlas/levels", "atlas levels must preserve the master aspect ratio"); ok = false;
     }
     sheets.push([`/atlas/levels/${index}`, level]);
   }
-  if (world.atlas && previousWidth !== world.atlas.image.width) {
+  if (atlas && previousWidth !== atlas.image.width) {
     rep.fail(f, "/atlas/levels", "atlas needs its native resolution level"); ok = false;
   }
-  const patchIds = new Set();
-  for (const [index, patch] of (world.atlas?.patches ?? []).entries()) {
+  const patchIds = new Set<string>();
+  for (const [index, patch] of (atlas?.patches ?? []).entries()) {
     const at = `/atlas/patches/${index}`;
     if (patchIds.has(patch.id) || patch.bounds.x + patch.bounds.width > 1000 || patch.bounds.y + patch.bounds.height > 1000) {
       rep.fail(f, at, "detail sections need unique ids and bounds inside the realm"); ok = false;
@@ -1953,7 +2141,7 @@ function checkWorld(rep, file, world) {
     sheets.push([at, patch]);
   }
   const knownPlaces = new Set(Object.values(world.places).map((place) => place.id));
-  const routeIds = new Set();
+  const routeIds = new Set<string>();
   for (const route of world.routes ?? []) {
     if (routeIds.has(route.id) || [...route.connects, ...(route.via ? [route.via] : [])].some((id) => !knownPlaces.has(id))) {
       rep.fail(f, "/routes", "route ids must be unique and all endpoints must be mapped places"); ok = false;
@@ -1961,7 +2149,7 @@ function checkWorld(rep, file, world) {
     routeIds.add(route.id);
   }
   for (const [at, region] of sheets) {
-    const fail = (message) => { rep.fail(f, at, message); ok = false; };
+    const fail = (message: string): void => { rep.fail(f, at, message); ok = false; };
     let area = 0;
     for (const [index, tile] of region.tiles.entries()) {
       if (!rep.set.exists(tile.src.replace(/^\//, ""))) fail(`missing tile ${tile.src}`);
@@ -1991,7 +2179,7 @@ function checkWorld(rep, file, world) {
  * failure as a finding (`file`, `at`, `scene`, `rule`, `message`, `hint`),
  * the warnings, and the whole report as `events` for `renderReport`.
  */
-export function validateContent(set, options = {}) {
+export function validateContent(set: ContentSet, options: ValidateOptions = {}): ValidationResult {
   const rep = new Report(set, options);
   rep.emit({ kind: "title" });
   check(rep);
@@ -2000,7 +2188,7 @@ export function validateContent(set, options = {}) {
   return { ok, code: ok ? 0 : 1, findings: rep.findings, warnings: rep.warnings, passed: rep.passed, events: rep.events, written: rep.written };
 }
 
-function check(rep) {
+function check(rep: Report): void {
   const ajv = rep.under("schema", () => loadSchemas(rep));
   if (rep.failures.length) return;
 
@@ -2009,17 +2197,17 @@ function check(rep) {
   const rulesPath = "content/rules.json";
   const itemsPath = "content/items.json";
 
-  const rules = rep.set.has(rulesPath) ? readJson(rep, rulesPath) : null;
+  const rules = rep.set.has(rulesPath) ? readJson<RulesContent>(rep, rulesPath) : null;
   if (!rules) rep.fail(rulesPath, "", "content/rules.json is missing");
   else if (validateAgainstSchema(rep, ajv, "rules", rulesPath, rules)) rep.under("rules", () => checkRules(rep, rulesPath, rules));
 
-  const items = rep.set.has(itemsPath) ? readJson(rep, itemsPath) : null;
+  const items = rep.set.has(itemsPath) ? readJson<ItemCatalog>(rep, itemsPath) : null;
   if (!items) rep.fail(itemsPath, "", "content/items.json is missing");
   else if (validateAgainstSchema(rep, ajv, "items", itemsPath, items)) rep.under("items", () => checkItems(rep, itemsPath, items));
 
   // --- abilities, checked against rules.json: what every card actually does
   const abilitiesPath = "content/abilities.json";
-  const abilities = rep.set.has(abilitiesPath) ? readJson(rep, abilitiesPath) : null;
+  const abilities = rep.set.has(abilitiesPath) ? readJson<AbilitiesFile>(rep, abilitiesPath) : null;
   if (!abilities) {
     rep.fail(
       abilitiesPath,
@@ -2033,7 +2221,7 @@ function check(rep) {
 
   // --- the world map: generated from canon, read by the phone's map
   const worldPath = "content/world.json";
-  const world = rep.set.has(worldPath) ? readJson(rep, worldPath) : null;
+  const world = rep.set.has(worldPath) ? readJson<WorldMap>(rep, worldPath) : null;
   if (!world) {
     rep.fail(worldPath, "", "content/world.json is missing", "Run `npm run canon:world`.");
   } else if (validateAgainstSchema(rep, ajv, "world", worldPath, world)) {
@@ -2042,7 +2230,7 @@ function check(rep) {
 
   // --- help: the words behind every "?", long-press and the join line (#256)
   const helpPath = "content/help.json";
-  const help = rep.set.has(helpPath) ? readJson(rep, helpPath) : null;
+  const help = rep.set.has(helpPath) ? readJson<HelpContent>(rep, helpPath) : null;
   if (!help) {
     rep.fail(helpPath, "", "content/help.json is missing", "Without it no screen can say what it is for, and the shared screen cannot say how to join.");
   } else if (validateAgainstSchema(rep, ajv, "help", helpPath, help)) {
@@ -2055,16 +2243,16 @@ function check(rep) {
 
   // --- the field guide: which canon ids a scene may say it discovers
   const fieldGuidePath = "content/field-guide.json";
-  const fieldGuide = rep.set.has(fieldGuidePath) ? readJson(rep, fieldGuidePath) : null;
+  const fieldGuide = rep.set.has(fieldGuidePath) ? readJson<FieldGuide>(rep, fieldGuidePath) : null;
   if (!fieldGuide) {
     rep.warn("content/field-guide.json is missing", "Run `npm run canon:field-guide` — `discovers` tags cannot be checked without it.");
   }
 
   // Biome list lives in the art contract; content and art must not drift apart.
-  let biomes = null;
-  let backgroundOnlyBiomes = [];
+  let biomes: string[] | null = null;
+  let backgroundOnlyBiomes: string[] = [];
   if (rep.set.has(MANIFEST)) {
-    const manifest = readJson(rep, MANIFEST);
+    const manifest = readJson<AssetManifest>(rep, MANIFEST);
     biomes = manifest?.biomes ?? null;
     backgroundOnlyBiomes = manifest?.backgroundOnlyBiomes ?? [];
   }
@@ -2072,10 +2260,10 @@ function check(rep) {
   // --- maps, before chapters: an encounter is checked against them
   rep.section("maps");
   const mapFiles = rep.set.list("content/maps");
-  const mapIds = new Set();
-  const mapsById = new Map();
+  const mapIds = new Set<string>();
+  const mapsById = new Map<string, EncounterMap>();
   for (const file of mapFiles) {
-    const map = readJson(rep, file);
+    const map = readJson<EncounterMap>(rep, file);
     if (!map) continue;
     if (!validateAgainstSchema(rep, ajv, "map", file, map)) continue;
     rep.under("map", () => {
@@ -2089,7 +2277,7 @@ function check(rep) {
 
   // --- the bestiary: canon's creatures, projected. Generated, never edited.
   const bestiaryPath = "content/bestiary.json";
-  const bestiary = rep.set.has(bestiaryPath) ? readJson(rep, bestiaryPath) : null;
+  const bestiary = rep.set.has(bestiaryPath) ? readJson<Bestiary>(rep, bestiaryPath) : null;
   if (!bestiary) {
     rep.warn("content/bestiary.json is missing", "Run `npm run canon:bestiary` — enemy stats cannot be checked against canon without it.");
   } else {
@@ -2100,8 +2288,8 @@ function check(rep) {
   rep.section("chapters");
   const chapterFiles = rep.set.list("content/chapters");
   if (!chapterFiles.length) rep.warn("no chapters found", "content/chapters/ is empty.");
-  const chaptersById = new Map();
-  const brokenChapterIds = new Set();
+  const chaptersById = new Map<string, Chapter>();
+  const brokenChapterIds = new Set<string>();
 
   // Flags each campaign carries between chapters — every member of every
   // declared route set, and a graph campaign's declared journey flags
@@ -2109,11 +2297,11 @@ function check(rep) {
   // so a chapter may gate on a flag an earlier chapter of its campaign set.
   // Malformed campaigns are reported below, in their own section; here they
   // simply carry nothing.
-  const carriedByCampaign = new Map();
+  const carriedByCampaign = new Map<string | undefined, Set<string>>();
   for (const file of rep.set.list("content/campaigns")) {
-    let campaign;
+    let campaign: Partial<Campaign> | null;
     try {
-      campaign = rep.set.json(file);
+      campaign = rep.set.json(file) as Partial<Campaign> | null;
     } catch {
       continue;
     }
@@ -2123,7 +2311,7 @@ function check(rep) {
   }
 
   for (const file of chapterFiles) {
-    const chapter = readJson(rep, file);
+    const chapter = readJson<Chapter>(rep, file);
     if (!chapter) {
       brokenChapterIds.add(idOf(file));
       continue;
@@ -2132,7 +2320,8 @@ function check(rep) {
       brokenChapterIds.add(idOf(file));
       continue;
     }
-    rep.under("chapter", () => checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId), fieldGuide, world, mapsById, backgroundOnlyBiomes));
+    const carried = carriedByCampaign.get(chapter.campaignId) ?? new Set<string>();
+    rep.under("chapter", () => checkChapter(rep, file, chapter, { items, rules, biomes, backgroundOnlyBiomes, mapIds, mapsById, bestiary, carried, fieldGuide, world }));
     chaptersById.set(chapter.id, chapter);
   }
 
@@ -2146,11 +2335,11 @@ function check(rep) {
   rep.section("campaigns");
   const campaignFiles = rep.set.list("content/campaigns");
   if (!campaignFiles.length) rep.warn("no campaigns found", "content/campaigns/ is empty.");
-  const referenced = new Set();
+  const referenced = new Set<string>();
 
-  const loadedCampaigns = [];
+  const loadedCampaigns: { file: string; campaign: Campaign }[] = [];
   for (const file of campaignFiles) {
-    const campaign = readJson(rep, file);
+    const campaign = readJson<Campaign>(rep, file);
     if (!campaign) continue;
     if (!validateAgainstSchema(rep, ajv, "campaign", file, campaign)) continue;
     rep.under("campaign", () => checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items, rules ? Object.keys(rules.classes ?? {}) : null));
@@ -2165,7 +2354,7 @@ function check(rep) {
   rep.under("campaign-prerequisites", () => {
     for (const { campaignId, path, problem } of prerequisiteProblems(loadedCampaigns.map((c) => c.campaign))) {
       rep.fail(
-        fileOf.get(campaignId),
+        fileOf.get(campaignId) ?? "",
         path,
         problem,
         "Campaign.requires lists campaigns the household must finish first; see schemas/campaign.schema.json.",
@@ -2207,17 +2396,17 @@ function check(rep) {
  * campaigns, the camp's friends, the art manifest's delivered frames and every
  * chapter's look finds (#669).
  */
-function checkLooks(rep, ajv, rules, campaignIds, chaptersById) {
+function checkLooks(rep: Report, ajv: Schemas, rules: RulesContent | null, campaignIds: ReadonlySet<string>, chaptersById: ReadonlyMap<string, Chapter>): void {
   rep.section("looks");
   const path = "content/looks.json";
-  const catalog = rep.set.has(path) ? readJson(rep, path) : null;
+  const catalog = rep.set.has(path) ? readJson<LookCatalog>(rep, path) : null;
   if (!catalog) {
     rep.fail(path, "", "content/looks.json is missing", "The hero looks catalog (coats, specials, nameplate frames and titles) lives there (docs/hero-looks.md §3.1).");
     return;
   }
   if (!validateAgainstSchema(rep, ajv, "looks", path, catalog)) return;
   const campPath = "content/camp.json";
-  const camp = rep.set.has(campPath) ? rep.set.json(campPath) : null;
+  const camp = rep.set.has(campPath) ? (rep.set.json(campPath) as Partial<CampCatalog> | null) : null;
   const problems = looksCatalogProblems({
     catalog,
     manifest: rep.assetRegistry.nameplateFrames,
@@ -2243,10 +2432,10 @@ function checkLooks(rep, ajv, rules, campaignIds, chaptersById) {
  * art and every chapter's finds. A chapter with a find and no catalog is a
  * failure too, so a find can never reach the table unchecked.
  */
-function checkCamp(rep, ajv, chaptersById, brokenChapterIds, campaignIds) {
+function checkCamp(rep: Report, ajv: Schemas, chaptersById: ReadonlyMap<string, Chapter>, brokenChapterIds: ReadonlySet<string>, campaignIds: ReadonlySet<string>): void {
   rep.section("camp");
   const path = "content/camp.json";
-  const catalog = rep.set.has(path) ? readJson(rep, path) : null;
+  const catalog = rep.set.has(path) ? readJson<CampCatalog>(rep, path) : null;
   if (!catalog) {
     rep.fail(path, "", "content/camp.json is missing", "The camp's pieces, shops, kit catalog and milestones live there (docs/camp.md §9).");
     return;
@@ -2275,12 +2464,12 @@ function checkCamp(rep, ajv, chaptersById, brokenChapterIds, campaignIds) {
  * there. A stall that names a scene nobody can stand in, one a party could
  * never answer in, or a class's room would fail at the table instead of here.
  */
-function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
+function checkFittingStall(rep: Report, rules: RulesContent | null, chaptersById: ReadonlyMap<string, Chapter>, brokenChapterIds: ReadonlySet<string>): void {
   const stall = rules?.fittingStall;
   if (!stall) return;
   const f = "content/rules.json";
   let ok = true;
-  const bad = (path, problem, hint) => {
+  const bad = (path: string, problem: string, hint?: string): void => {
     ok = false;
     rep.fail(f, path, problem, hint);
   };
@@ -2292,8 +2481,9 @@ function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
     if (chapter.index !== 1) {
       bad(`${at}/chapterId`, `"${chapterId}" is chapter ${chapter.index} of its campaign`, "The stall stands where a campaign opens, while its heroes are new: its first chapter.");
     }
-    const scene = chapter.scenes?.[sceneId];
-    if (!scene) return bad(`${at}/sceneId`, `"${chapterId}" has no scene "${sceneId}"`);
+    const authored = chapter.scenes?.[sceneId];
+    if (!authored) return bad(`${at}/sceneId`, `"${chapterId}" has no scene "${sceneId}"`);
+    const scene = wide(authored);
     if (scene.type !== "story" && scene.type !== "choice_point") {
       bad(`${at}/sceneId`, `"${sceneId}" is a ${scene.type} scene`, "The stall stands in a story or choice_point scene, as a class place does.");
     }
@@ -2311,7 +2501,7 @@ function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
       bad(`${at}/sceneId`, `"${sceneId}" has ${choices.length} choices - the stall's wait would hold a decision`, "Stand it in a scene whose only choice is the way on.");
     }
     for (const choice of choices) {
-      const gates = ["requiresSpecies", "requiresClass", "requiresFlag", "requiresItem", "when"].filter((key) => choice[key] !== undefined);
+      const gates = (["requiresSpecies", "requiresClass", "requiresFlag", "requiresItem", "when"] as const).filter((key) => choice[key] !== undefined);
       if (gates.length > 0) {
         bad(`${at}/sceneId`, `"${sceneId}"'s choice "${choice.id}" is gated (${gates.join(", ")})`, "The stall stands where everybody walks on the same way.");
       }
@@ -2336,16 +2526,16 @@ function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
 const MATCHUP_CAP = 2;
 const UNIVERSAL_ABILITY_IDS = ["attack", "help_up", "ready"];
 
-function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
+function checkMatchups(rep: Report, rules: RulesContent | null, abilities: AbilitiesFile | null, bestiary: Bestiary | null, chaptersById: ReadonlyMap<string, Chapter>): void {
   const m = rules?.matchups;
   if (!m) return;
   const f = "content/rules.json";
   let ok = true;
-  const bad = (file, path, problem, hint) => {
+  const bad = (file: string, path: string, problem: string, hint?: string): void => {
     ok = false;
     rep.fail(file, path, problem, hint);
   };
-  const asList = (v) => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
+  const asList = <T>(v: T | T[] | undefined): T[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
   const traitIds = new Set(Object.keys(m.traits ?? {}));
   const tagIds = new Set(Object.keys(m.checkTags ?? {}));
   const speciesIds = new Set(Object.keys(rules.species ?? {}));
@@ -2358,16 +2548,16 @@ function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
       .filter(([, def]) => (def?.effects ?? []).some((e) => e?.effect?.type === "attack"))
       .map(([id]) => id),
   ]);
-  const checkTrait = (file, path, id) => {
+  const checkTrait = (file: string, path: string, id: string): void => {
     if (traitIds.size > 0 && !traitIds.has(id)) bad(file, path, `"${id}" is not a trait in rules.matchups.traits`, `known traits: ${[...traitIds].join(", ")}`);
   };
-  const checkTag = (file, path, id) => {
+  const checkTag = (file: string, path: string, id: string): void => {
     if (tagIds.size > 0 && !tagIds.has(id)) bad(file, path, `"${id}" is not a check tag in rules.matchups.checkTags`, `known tags: ${[...tagIds].join(", ")}`);
   };
-  const checkSpecies = (file, path, id) => {
+  const checkSpecies = (file: string, path: string, id: string): void => {
     if (!speciesIds.has(id)) bad(file, path, `"${id}" is not a species in content/rules.json`, `known species: ${[...speciesIds].join(", ")}`);
   };
-  const tooBig = (n) => typeof n === "number" && Math.abs(n) > MATCHUP_CAP;
+  const tooBig = (n: unknown): boolean => typeof n === "number" && Math.abs(n) > MATCHUP_CAP;
 
   for (const [key, n] of Object.entries(m.opinion ?? {})) {
     if (tooBig(n)) bad(f, `/matchups/opinion/${key}`, `${n} is bigger than ${MATCHUP_CAP}`, "A matchup is a roll change of 1 or 2 (docs/matchups.md).");
@@ -2382,7 +2572,7 @@ function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
     asList(edge.hero?.class).forEach((id) => {
       if (!classIds.has(id)) bad(f, `${at}/hero/class`, `"${id}" is not a class in content/rules.json`, `known classes: ${[...classIds].join(", ")}`);
     });
-    for (const key of ["roll", "damage"]) {
+    for (const key of ["roll", "damage"] as const) {
       if (tooBig(edge[key])) bad(f, `${at}/${key}`, `${edge[key]} is bigger than ${MATCHUP_CAP}`, "A matchup is a roll change of 1 or 2 (docs/matchups.md).");
     }
     const roll = edge.roll ?? 0;
@@ -2424,7 +2614,7 @@ function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
       if (traits.length > 2) bad(bf, `${at}/traits`, `${traits.length} traits`, "A creature has up to two (docs/matchups.md).");
       traits.forEach((id, i) => checkTrait(bf, `${at}/traits/${i}`, id));
     }
-    for (const opinion of ["likes", "dislikes"]) {
+    for (const opinion of ["likes", "dislikes"] as const) {
       const list = entry[opinion] ?? [];
       if (!Array.isArray(list)) bad(bf, `${at}/${opinion}`, `${opinion} is not a list`);
       else list.forEach((id, i) => checkSpecies(bf, `${at}/${opinion}/${i}`, id));
