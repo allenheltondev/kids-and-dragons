@@ -515,11 +515,13 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
   const addPasskey = useKeepsakeStore((s) => s.addPasskey);
   const skipPasskey = useKeepsakeStore((s) => s.skipPasskey);
   const purpose = useKeepsakeStore((s) => s.purpose);
+  // Filled only when this sign-in listed the household's players to choose from.
+  const found = useKeepsakeStore((s) => s.players.length);
 
   return (
     <>
       <h2 className="keepsake__title" id="keepsake-title">
-        {purpose === "keep" ? "They’re kept." : "Found them."}
+        {signedInTitle(purpose, found)}
       </h2>
       <p className="keepsake__body">
         Want to skip the email next time? This phone can remember you with a fingerprint or face.
@@ -695,6 +697,20 @@ export function KeepsakeOffer(): ReactElement | null {
       <Icon name="forward" />
     </button>
   );
+}
+
+/**
+ * What just happened, over the offer to remember this phone.
+ *
+ * "Found them." used to greet every sign-in that was not keeping a party,
+ * including an address with nobody behind it: a grown-up who had only just
+ * typed a code was told something had been found, and nothing had. It is said
+ * now only when the household's players were found and one was picked
+ * (`found` is how many were listed).
+ */
+export function signedInTitle(purpose: string, found: number): string {
+  if (purpose === "keep") return "They’re kept.";
+  return found > 0 ? "Found them." : "You’re signed in.";
 }
 
 /** "Sparklehoof", "Sparklehoof and Ember", "Sparklehoof, Ember and Rue". */
