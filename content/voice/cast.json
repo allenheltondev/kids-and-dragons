@@ -2514,13 +2514,8 @@
       "gemini": {
         "voice": "Alnilam"
       },
-      "lines": [
-        {
-          "text": "Link arms!",
-          "address": "gemfall-03c/check_block_jumpers/narration"
-        }
-      ],
-      "lineCount": 1,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional",
       "accent": "Texan",
