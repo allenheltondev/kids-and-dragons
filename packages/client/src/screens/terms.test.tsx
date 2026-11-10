@@ -62,6 +62,13 @@ describe("what it says", () => {
     expect(screen.getByRole("link", { name: /privacy page/i }).getAttribute("href")).toBe("/privacy");
   });
 
+  it("asks for questions about the terms, not privacy questions, in its contact line", () => {
+    render(<TermsScreen />);
+    const who = screen.getByRole("heading", { level: 2, name: /who runs this/i }).parentElement!;
+    expect(who.textContent).toMatch(/with questions about these terms\./);
+    expect(who.textContent).not.toMatch(/privacy questions/);
+  });
+
   it("says plainly that it has not been reviewed by a lawyer", () => {
     expect(TERMS_LEDE).toMatch(/not had these terms reviewed by a lawyer/);
   });

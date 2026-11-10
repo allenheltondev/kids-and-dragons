@@ -44,7 +44,7 @@ export default function TermsScreen(): ReactElement {
           <h2 className="guide__h2" id="terms-who">
             Who runs this
           </h2>
-          <OperatorLines />
+          <OperatorLines about="questions about these terms" />
         </section>
 
         {TERMS_SECTIONS.map((section) => (
