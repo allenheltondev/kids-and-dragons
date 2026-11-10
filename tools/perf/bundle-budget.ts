@@ -325,7 +325,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // is the bundler regrouping what the book's lazy chunks now share with the game's (the camp
 // panel's store, the presence beat, book-table) into four more small chunks, and 12KB of the
 // entry into two chunks it imports, the same code. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1792;
+// 1792 -> 1799 on 2026-11-10 for the terms of use page (`/terms`): its words
+// (screens/terms-of-use.ts) and screen in a lazy chunk of their own, opened only from the
+// footer. 1797KB measured; main measured 1792KB, exactly at its budget, so none of the +5KB
+// could come from slack. First paint 331KB (main 330KB), the footer's Terms link and the
+// route, under its 332KB cap. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1799;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
