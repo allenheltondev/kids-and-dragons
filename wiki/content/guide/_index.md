@@ -45,11 +45,8 @@ email (and, if you like, a passkey). There is no password anywhere.
 
 ## Friends from another family
 
-A friend can bring their own phone and their own hero. On the phone or screen that started the
-game, open **Running this room** and tap **Let visitors join**. A grown-up who runs your game
-signs in to turn it on. The room code then grows two more letters, and friends from another
-family join with all six. Your own family's phones still join with the first four.
-
-Each hero goes home with everything it earned: its XP, its things and its Field Guide finds.
-Things can't be passed between families yet. A room open to visitors closes by itself after
-half an hour with nothing happening.
+A friend can bring their own phone and their own hero. They join with the room code, just like
+your own family's phones, and there is nothing to switch on. A phone the game has never seen gets
+a household of its own, so its hero keeps everything it earned: its XP, its things and its Field
+Guide finds. Things can't be passed between families yet. If you need somebody to stop joining,
+lock the room from **Running this room**.

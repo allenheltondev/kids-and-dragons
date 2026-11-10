@@ -11,7 +11,7 @@
  * not how a keyboard does (it Tabs first; a screen reader keeps its arrows). Until then the start
  * screen is exactly as it was for every keyboard (App installs it, a lazy chunk off the first
  * paint). Fields count: the grown-up's
- * sign-in behind "Let visitors join" has an email field and a code field, and a remote has
+ * sign-in has an email field and a code field, and a remote has
  * to reach them; while focus is in that sign-in, the arrows stay in it. Inside a field the
  * arrows are the field's own, with two ways out, so a remote is never stuck in it: Up and
  * Down leave a one-line text field (Left and Right still move the caret), and Escape and

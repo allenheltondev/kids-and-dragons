@@ -72,15 +72,11 @@ export type KeepsakeStep =
  * passkey: a tablet that remembered the owner's face would hand every kid who
  * picks it up the owner's account.
  */
-export type KeepsakePurpose = "keep" | "restore" | "share" | "forget" | "organize" | "visitors";
+export type KeepsakePurpose = "keep" | "restore" | "share" | "forget" | "organize";
 /*
  * And one for an organizer (#248): `organize` signs a grown-up in to manage
  * their households and groups, in the organizer panel (store/organizer.ts).
  * Like a tablet's errands it keeps nobody signed in once the panel closes.
- *
- * And `visitors` (#249): a grown-up who runs the game signs in on the host's
- * screen to open the room to visitors, or to close it to new ones. One errand,
- * then nobody is signed in: the host's screen is often a kid's phone.
  */
 
 /** A household offered by the `household` step (#248), for an account that owns more than one. */
@@ -106,8 +102,6 @@ export interface KeepsakeStore {
   players: KeepsakePlayer[];
   /** Populated for the `household` step only. */
   households: KeepsakeHousehold[];
-  /** The `visitors` errand (#249): which room, and which way the switch goes. */
-  visitorRoom: { code: string; open: boolean } | null;
   /**
    * Whether this deployment can offer sign-in at all. `null` until checked —
    * distinct from `false`, because "we don't know yet" must not render as
@@ -134,8 +128,6 @@ export interface KeepsakeStore {
    */
   entry: "offer" | "home";
   open(purpose?: KeepsakePurpose, entry?: "offer" | "home"): void;
-  /** Sign a grown-up in to open `code` to visitors, or close it to new ones (#249). */
-  openVisitors(code: string, open: boolean): void;
   close(): void;
   /** Back one step, from the code screen to the email one. */
   back(): void;
@@ -186,7 +178,7 @@ export function defaultKeepsakeDeps(): KeepsakeDeps {
 
 /** A tablet's errands and the organizer's panel never leave the grown-up signed in. */
 function transient(purpose: KeepsakePurpose): boolean {
-  return purpose === "share" || purpose === "forget" || purpose === "organize" || purpose === "visitors";
+  return purpose === "share" || purpose === "forget" || purpose === "organize";
 }
 
 export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) {
@@ -340,7 +332,6 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     entry: "offer",
     players: [],
     households: [],
-    visitorRoom: null,
     available: null,
     busy: false,
     error: null,
@@ -381,13 +372,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       // `restore` and the home button skip the offer: somebody who tapped to
       // sign in has already decided, and there is no party on screen to show.
       const step = purpose === "keep" && entry === "offer" ? "offer" : "email";
-      set({ purpose, entry, step, error: null, players: [], households: [], visitorRoom: null });
+      set({ purpose, entry, step, error: null, players: [], households: [] });
       // Warm the sign-in code while the email is typed; `sendCode` waits for it.
-      client().catch(() => undefined);
-    },
-
-    openVisitors(code: string, open: boolean) {
-      set({ purpose: "visitors", entry: "home", step: "email", error: null, players: [], households: [], visitorRoom: { code, open } });
       client().catch(() => undefined);
     },
 
@@ -460,16 +446,6 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
             return;
           }
           await finishShare(undefined);
-          return;
-        }
-        if (purpose === "visitors") {
-          const room = get().visitorRoom;
-          if (room) await deps.api.setVisitors(tokens.idToken, room.code, room.open);
-          // Done, and nobody stays signed in. The room says it is open on the
-          // patch every screen receives.
-          tokens = null;
-          tokensFor = null;
-          set({ step: "closed", busy: false, challenge: null, visitorRoom: null });
           return;
         }
         if (purpose === "forget") {

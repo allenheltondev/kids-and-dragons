@@ -37,7 +37,6 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
-  SetVisitorsResponse,
   SharedDevicePlayersResponse,
   SharedSeatRequest,
   ShareDeviceResponse,
@@ -319,11 +318,6 @@ export interface Api {
   ): Promise<ShareDeviceResponse>;
   /** "Forget this device": the tablet's own token names it. */
   forgetDevice(idToken: string, sharedToken: string): Promise<void>;
-  /**
-   * A signed-in owner opening a room to visitors, or closing it to new ones
-   * (#249). The id token is the grown-up's; the room is named by its code.
-   */
-  setVisitors(idToken: string, code: string, open: boolean): Promise<SetVisitorsResponse>;
   /** The "who's playing?" picker. */
   listSharedPlayers(sharedToken: string): Promise<SharedPlayersLoad>;
   /** Seat the kid picked on the tablet. Answers with a session, never a device token. */
@@ -729,15 +723,6 @@ export const api: Api = {
       headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
       token: idToken,
       body: JSON.stringify({}),
-    });
-  },
-
-  setVisitors(idToken, code, open) {
-    return request<SetVisitorsResponse>(`/api/room/${encodeURIComponent(code)}/visitors`, {
-      method: "POST",
-      headers: JSON_HEADERS,
-      token: idToken,
-      body: JSON.stringify({ open }),
     });
   },
 
