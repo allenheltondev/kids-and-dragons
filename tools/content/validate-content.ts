@@ -32,7 +32,9 @@ import type { AnySchema, ErrorObject, Options as AjvOptions, ValidateFunction } 
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
+import { isGated, reachableScenes } from "../../packages/shared/src/chapter-graph.ts";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
+import { sceneExits } from "../../packages/shared/src/scene-exits.ts";
 import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { goalStepFlags, stepsOffTheSpine } from "../../packages/shared/src/chapter-goal.ts";
@@ -62,7 +64,7 @@ import type { FieldGuide } from "../../packages/shared/src/field-guide.ts";
 import type { GraphProof } from "../../packages/shared/src/graph-proof.ts";
 import type { HelpContent } from "../../packages/shared/src/help.ts";
 import type { CampCatalog } from "../../packages/shared/src/types/camp.ts";
-import type { Branch, Campaign, Chapter, ChapterRoute, Choice, Effect, EncounterEnvironment, EncounterMap, EnvironmentVariant, Scene } from "../../packages/shared/src/types/chapter.ts";
+import type { Campaign, Chapter, ChapterRoute, Effect, EncounterEnvironment, EncounterMap, EnvironmentVariant, Scene } from "../../packages/shared/src/types/chapter.ts";
 import type { ItemCatalog, RulesContent } from "../../packages/shared/src/types/domain.ts";
 import type { LookCatalog } from "../../packages/shared/src/types/look.ts";
 import type { WorldMap, WorldTile } from "../../packages/shared/src/types/world.ts";
@@ -967,48 +969,35 @@ function checkItems(rep: Report, f: string, items: ItemCatalog): boolean {
   return ok;
 }
 
-/** Every branch key a scene may carry — an environmental fight's two extra endings (#201) included. */
-const BRANCH_KEYS = ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"] as const;
-
-/** A scene read for whatever exits and effects it carries, whichever type it is. */
-type AnyScene = { onEnter?: Effect[]; choices?: Choice[]; environment?: EncounterEnvironment } & Partial<Record<(typeof BRANCH_KEYS)[number], Branch>>;
-
 /** Every field any member of a union carries, each optional: what a value of the union may or may not have. */
 type Wide<U> = { [K in U extends unknown ? keyof U : never]?: U extends unknown ? (K extends keyof U ? U[K] : never) : never };
 
 /** A scene read for a field only some types of scene carry: absent on the rest. */
 const wide = (scene: Scene): Wide<Scene> => scene;
 
-/** Every scene id this scene can transition to, with the JSON pointer that named it. */
-function outgoing(scene: AnyScene, sceneId: string): [target: string, at: string][] {
-  const edges: [string, string][] = [];
-  const base = `/scenes/${sceneId}`;
-  if (Array.isArray(scene.choices)) {
-    scene.choices.forEach((c, i) => edges.push([c.goto, `${base}/choices/${String(i)}/goto`]));
-  }
-  for (const key of BRANCH_KEYS) {
-    const branch = scene[key];
-    if (branch?.goto) edges.push([branch.goto, `${base}/${key}/goto`]);
-  }
-  return edges;
+/**
+ * Every scene id this scene can transition to, with the JSON pointer that
+ * named it. Which exits a scene has is the shared `sceneExits`'s to say
+ * (packages/shared/src/scene-exits.ts), so the gate walks the graph the
+ * engine and `validateChapter` walk.
+ */
+function outgoing(scene: Scene, sceneId: string): [target: string, at: string][] {
+  return sceneExits(scene).map((exit) => [exit.to, `/scenes/${sceneId}${exit.at}/goto`]);
 }
 
 /** Every effect in a scene, with its pointer. */
-function effectsOf(scene: AnyScene, sceneId: string): [effect: Effect, at: string][] {
+function effectsOf(scene: Scene, sceneId: string): [effect: Effect, at: string][] {
   const out: [Effect, string][] = [];
   const base = `/scenes/${sceneId}`;
   const push = (list: readonly Effect[] | undefined, at: string): void => (list ?? []).forEach((e, i) => out.push([e, `${at}/${String(i)}`]));
   push(scene.onEnter, `${base}/onEnter`);
-  (scene.choices ?? []).forEach((c, i) => push(c.effects, `${base}/choices/${String(i)}/effects`));
-  for (const key of BRANCH_KEYS) {
-    const branch = scene[key];
-    if (branch) push(branch.effects, `${base}/${key}/effects`);
-  }
+  for (const exit of sceneExits(scene)) push(exit.effects, `${base}${exit.at}/effects`);
   // A freed captive's effects (#201) land when the fight ends.
   // One captive, or a list of them (#220), and objectives done, the same
   // way — in the place as authored and in every variant of it.
-  const places: [place: Omit<EncounterEnvironment, "variants">, at: string][] = scene.environment
-    ? [[scene.environment, `${base}/environment`], ...(scene.environment.variants ?? []).map((v, i): [EnvironmentVariant, string] => [v, `${base}/environment/variants/${String(i)}`])]
+  const environment = wide(scene).environment;
+  const places: [place: Omit<EncounterEnvironment, "variants">, at: string][] = environment
+    ? [[environment, `${base}/environment`], ...(environment.variants ?? []).map((v, i): [EnvironmentVariant, string] => [v, `${base}/environment/variants/${String(i)}`])]
     : [];
   for (const [place, at] of places) {
     const rescue = place?.rescue;
@@ -1162,14 +1151,8 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
     edges.set(id, outs.filter(([t]) => ids.has(t)).map(([t]) => t));
   }
 
-  // --- every scene is reachable from entry
-  const seen = new Set<string>();
-  const queue = ids.has(chapter.entry) ? [chapter.entry] : [];
-  for (let id = queue.pop(); id !== undefined; id = queue.pop()) {
-    if (seen.has(id)) continue;
-    seen.add(id);
-    for (const next of edges.get(id) ?? []) queue.push(next);
-  }
+  // --- every scene is reachable from entry (the shared walk, over the same exits)
+  const seen = reachableScenes(chapter);
   for (const id of ids) {
     if (!seen.has(id)) {
       fail(`/scenes/${id}`, "scene is unreachable from entry", "An orphan scene is either a typo in a goto or content nobody will ever see.");
@@ -1297,11 +1280,9 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
 
     // Requirements *hide* a choice rather than greying it out (architecture §5),
     // so a scene where every choice is gated shows some parties nothing to tap.
-    // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts
-    // (isGated); a `when` counts as a gate there too. Kept inline because
-    // chapter-graph.ts cannot be loaded straight under Node.
+    // The rule is validateChapter()'s DEAD_END, and `isGated` is its test
+    // (packages/shared/src/chapter-graph.ts): a `when` counts as a gate too.
     const choices = wide(scene).choices ?? [];
-    const gated = (c: Choice): boolean => c.requiresSpecies !== undefined || c.requiresClass !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
     // No class is ever mandatory (#228): a scene whose every choice needs a
     // class is validateChapter()'s CLASS_GATED_ONLY_EXIT, the same failure
     // named for its fix; mixed with other gates it is the plain one below.
@@ -1311,7 +1292,7 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
         "every choice is class-gated (CLASS_GATED_ONLY_EXIT) - a party with none of those classes sees nothing to tap",
         "No class is ever mandatory: add a choice no class is needed for.",
       );
-    } else if (choices.length > 0 && choices.every(gated)) {
+    } else if (choices.length > 0 && choices.every(isGated)) {
       fail(`/scenes/${id}/choices`, "every choice is gated - a party matching none of the requirements sees nothing to tap");
     }
 
@@ -1544,7 +1525,8 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
 
   // --- the chapter's goal (#356): on screen the whole chapter, ticking as flags set
   const goal = chapter.goal;
-  const onlyAnEnding = (outgoing(scenes[chapter.entry] ?? {}, chapter.entry).length === 0);
+  const entryScene = scenes[chapter.entry];
+  const onlyAnEnding = !entryScene || sceneExits(entryScene).length === 0;
   if (!goal) {
     // A chapter that is nothing but its ending (a preview's pause) has nothing to aim at.
     if (!onlyAnEnding) {

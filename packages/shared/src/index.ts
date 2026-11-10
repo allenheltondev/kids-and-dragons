@@ -44,6 +44,7 @@ export * from "./matchups.js";
 export * from "./field-guide.js";
 export * from "./discoveries.js";
 export * from "./chapter-graph.js";
+export * from "./scene-exits.js";
 export * from "./chapter-pacing.js";
 export * from "./chapter-goal.js";
 export * from "./choice-ahead.js";

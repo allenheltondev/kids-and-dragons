@@ -11,6 +11,8 @@
  */
 import { describe, expect, it } from "vitest";
 
+import { sceneExits } from "../../packages/shared/src/scene-exits.ts";
+import type { Chapter } from "../../packages/shared/src/types/chapter.ts";
 import { ContentSet } from "./content-set.ts";
 import { formatEvent, renderReport, validateContent, type ReportEvent } from "./validate-content.ts";
 import { copyTree, readJson, REPO, writeJson } from "./validate-harness.ts";
@@ -212,5 +214,33 @@ describe("ContentSet", () => {
     bare.writeText("content/a.json", "1");
     expect(bare.exists("content/a.json")).toBe(true);
     expect(bare.exists("package.json")).toBe(false);
+  });
+});
+
+describe("the shared sceneExits, against how the gate used to read a scene", () => {
+  /** The gate's own reading before it took the shared one: every choice, then any of the seven branch keys with a goto, whatever the scene's type. */
+  const KEYS = ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"];
+  function before(scene: Record<string, unknown>): [to: string, at: string][] {
+    const choices = Array.isArray(scene.choices) ? (scene.choices as { goto: string }[]) : [];
+    return [
+      ...choices.map((choice, i): [string, string] => [choice.goto, `/choices/${String(i)}`]),
+      ...KEYS.flatMap((key): [string, string][] => {
+        const goto = (scene[key] as { goto?: string } | undefined)?.goto;
+        return goto ? [[goto, `/${key}`]] : [];
+      }),
+    ];
+  }
+
+  it("names the same exits, in the same order, for every scene this repo ships", () => {
+    const tree = copyTree();
+    let scenes = 0;
+    for (const file of tree.list("content/chapters")) {
+      const chapter = tree.json(file) as Chapter;
+      for (const [id, scene] of [...Object.entries(chapter.scenes), ...Object.entries(chapter.resumeInteractions ?? {})]) {
+        expect(sceneExits(scene).map((exit) => [exit.to, exit.at]), `${file} ${id}`).toEqual(before(scene as unknown as Record<string, unknown>));
+        scenes += 1;
+      }
+    }
+    expect(scenes).toBeGreaterThan(500);
   });
 });
