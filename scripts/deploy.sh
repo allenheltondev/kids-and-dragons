@@ -157,6 +157,10 @@ PARAMS+=("PushNotifications=$PUSH_MODE" "PushContact=${KAD_PUSH_SUBJECT:-\"\"}")
 # Family-session timing (#511): on by default and operator-only; `KAD_TIMING=off` records nothing.
 if [ "${KAD_TIMING:-on}" = "off" ]; then TIMING_MODE=off; else TIMING_MODE=on; fi
 PARAMS+=("SessionTiming=$TIMING_MODE")
+# Where the alarms post (docs/deploy.md "Alarms, and where they go"). Same
+# rule: passed every deploy, empty meaning nobody is subscribed, so a stack
+# that posts to Slack stops only when a deploy says so on purpose.
+PARAMS+=("AlarmSlackWorkspaceId=${ALARM_SLACK_WORKSPACE_ID:-\"\"}" "AlarmSlackChannelId=${ALARM_SLACK_CHANNEL_ID:-\"\"}")
 
 sam deploy \
   --template-file infra/template.yaml \

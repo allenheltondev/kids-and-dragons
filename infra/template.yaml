@@ -120,6 +120,26 @@ Parameters:
       mailto: or https: address. Required when PushNotifications is on;
       without it the API logs a warning and pushes stay off.
 
+  AlarmSlackWorkspaceId:
+    Type: String
+    Default: ""
+    Description: >-
+      The Slack workspace the alarms post to, e.g. T0123ABCD. With
+      AlarmSlackChannelId, the stack points the alarm topic at that channel
+      through AWS's own Slack integration (Amazon Q Developer in chat
+      applications, once AWS Chatbot). The workspace has to be authorized once,
+      by hand, in that service's console before a deploy that sets these; the
+      id is shown there afterwards. Empty (the default, and every
+      non-production deploy) still creates the topic and the alarms, with
+      nobody subscribed.
+
+  AlarmSlackChannelId:
+    Type: String
+    Default: ""
+    Description: >-
+      The Slack channel the alarms post to, e.g. C0123ABCD (the last part of
+      the channel's link). A private channel needs the AWS app invited first.
+
 Conditions:
   # The stage that holds families' heroes. Staging and dev hold test rows and
   # are torn down by hand (docs/deploy.md), so they skip the guards below.
@@ -131,6 +151,10 @@ Conditions:
   CustomDomain: !And
     - !Not [!Equals [!Ref AppDomainName, ""]]
     - !Not [!Equals [!Ref AppHostedZoneId, ""]]
+  # Both halves again: a workspace with no channel has nowhere to post.
+  AlarmsToSlack: !And
+    - !Not [!Equals [!Ref AlarmSlackWorkspaceId, ""]]
+    - !Not [!Equals [!Ref AlarmSlackChannelId, ""]]
 
 Globals:
   Function:
@@ -981,6 +1005,224 @@ Resources:
   # application, not of how long anyone keeps the output.
   # ---------------------------------------------------------------------------
 
+  # ---------------------------------------------------------------------------
+  # Alarms — docs/deploy.md "Alarms, and where they go"
+  # ---------------------------------------------------------------------------
+  #
+  # A broken production was silent: nothing in this stack told anyone, and the
+  # first report would have been a family whose evening did not start. These
+  # are the few signals that mean "somebody cannot play" or "the job that
+  # deletes data is failing", and nothing else. Each is a count of things that
+  # should be zero, so a threshold is a decision about noise, not capacity.
+  #
+  # Every stage gets the topic and the alarms, so a staging deploy creates
+  # everything a production one does except the Slack channel (the lesson of
+  # #440, where a production-only property failed three releases that staging
+  # had passed). That proves the template. It does not prove production's
+  # role, which is a different role from staging's.
+  # Only a stage given a Slack workspace and channel has anyone listening.
+  #
+  # The deploy role needs cloudwatch, sns and chatbot actions for these. The
+  # dedicated roles in infra/github-oidc.yaml carry them; a shared role has to
+  # be given them BEFORE the first deploy of this section, or CloudFormation
+  # is refused and the whole stack update rolls back.
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "kad-${StageName}-alarms"
+
+  # Who may publish: CloudWatch, for this account's kad-<stage>-* alarms and
+  # nothing else. Stated rather than left to the topic's default policy,
+  # because an alarm whose publish is refused still goes to ALARM and simply
+  # tells nobody, which is the silence this section exists to end.
+  #
+  # Principals inside the account (the deploy role, the Slack integration
+  # subscribing below) are authorized by their own IAM policies and need no
+  # statement here.
+  AlarmTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref AlarmTopic
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AlarmsMayPublish
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref AlarmTopic
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+              ArnLike:
+                aws:SourceArn: !Sub "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:kad-${StageName}-*"
+
+  # The API crashed or timed out: an invocation Lambda itself counts as failed.
+  # One is enough. A handled failure returns normally and shows up in the 5xx
+  # alarm below instead.
+  ApiErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "kad-${StageName}-api-errors"
+      AlarmDescription: The API Lambda crashed or timed out. Somebody's tap got no answer.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ApiFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+      OKActions: [!Ref AlarmTopic]
+
+  # The API answered with a 500 it chose to send, five times in five minutes.
+  # This is the one that catches content failing to load at cold start, where
+  # every request fails while the function itself reports success. Five rather
+  # than one because a single 5xx happens; one family opening the game against
+  # a broken API makes five in a few seconds.
+  Api5xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "kad-${StageName}-api-5xx"
+      AlarmDescription: The API is answering with server errors. The game is probably unplayable.
+      Namespace: AWS/ApiGateway
+      MetricName: 5xx
+      Dimensions:
+        - Name: ApiId
+          Value: !Ref HttpApi
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+      OKActions: [!Ref AlarmTopic]
+
+  # Lambda refused to run the API at all (the account's concurrency ran out,
+  # or something is hammering it).
+  ApiThrottlesAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "kad-${StageName}-api-throttles"
+      AlarmDescription: Lambda is refusing to run the API. Taps are being dropped.
+      Namespace: AWS/Lambda
+      MetricName: Throttles
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ApiFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+      OKActions: [!Ref AlarmTopic]
+
+  # Nobody can subscribe to a room while this fails: the TV and the phones
+  # stop seeing each other's moves.
+  ChannelAuthorizerErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "kad-${StageName}-channel-authorizer-errors"
+      AlarmDescription: The realtime authorizer is failing. Screens cannot join a room's channel.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ChannelAuthorizerFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+      OKActions: [!Ref AlarmTopic]
+
+  # The two scheduled jobs. No OKActions: with one run a day (or a month), the
+  # alarm clears five minutes later only because there is nothing new to
+  # count, and an "OK" in the channel would read as "fixed" when nothing was.
+  SweepErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "kad-${StageName}-sweep-errors"
+      AlarmDescription: >-
+        The guest sweeper failed. It is the job that deletes expired
+        households, so read its log before the next run.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref SweepFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  LogSweepErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "kad-${StageName}-log-sweep-errors"
+      AlarmDescription: >-
+        The log sweeper failed. Old log streams are not being deleted, which
+        is what the privacy page promises.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref LogSweepFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  # What the Slack integration may do on the channel's behalf: read CloudWatch,
+  # so a notification can carry its graph. The guardrail on the channel below
+  # caps it at the same thing, so nobody typing in Slack can do more.
+  AlarmSlackRole:
+    Type: AWS::IAM::Role
+    Condition: AlarmsToSlack
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: chatbot.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/CloudWatchReadOnlyAccess"
+
+  AlarmSlackChannel:
+    Type: AWS::Chatbot::SlackChannelConfiguration
+    Condition: AlarmsToSlack
+    Properties:
+      ConfigurationName: !Sub "kad-${StageName}-alarms"
+      SlackWorkspaceId: !Ref AlarmSlackWorkspaceId
+      SlackChannelId: !Ref AlarmSlackChannelId
+      IamRoleArn: !GetAtt AlarmSlackRole.Arn
+      GuardrailPolicies:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/CloudWatchReadOnlyAccess"
+      SnsTopicArns:
+        - !Ref AlarmTopic
+      # No log group of its own: the stack declares none (see above).
+      LoggingLevel: NONE
+
 Outputs:
   SiteUrl:
     Description: >-
@@ -1021,3 +1263,7 @@ Outputs:
 
   EventApiRealtimeDomain:
     Value: !GetAtt EventApi.Dns.Realtime
+
+  AlarmTopicArn:
+    Description: Where every alarm in this stack publishes. Slack listens when a workspace and channel are set.
+    Value: !Ref AlarmTopic

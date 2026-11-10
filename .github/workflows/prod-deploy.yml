@@ -270,6 +270,12 @@ jobs:
           # contact for the push services). deploy.sh passes both every deploy.
           KAD_PUSH: ${{ vars.KAD_PUSH }}
           KAD_PUSH_SUBJECT: ${{ vars.KAD_PUSH_SUBJECT }}
+          # Where production's alarms post: the Production environment's
+          # ALARM_SLACK_WORKSPACE_ID and ALARM_SLACK_CHANNEL_ID variables.
+          # Both empty is a complete state: the alarms exist and nobody is
+          # told. Staging sets neither, on purpose.
+          ALARM_SLACK_WORKSPACE_ID: ${{ vars.ALARM_SLACK_WORKSPACE_ID }}
+          ALARM_SLACK_CHANNEL_ID: ${{ vars.ALARM_SLACK_CHANNEL_ID }}
 
       - name: Diagnose failed deploy
         if: ${{ failure() }}

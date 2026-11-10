@@ -276,6 +276,46 @@ Resources:
             Action: logs:*
             Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kad-${!aws:PrincipalTag/kad:stage}-*"
 
+          # The alarms, their topic and the Slack channel they post to
+          # (template.yaml "Alarms"), all named kad-<stage>-*. The Slack
+          # integration's own role is an ordinary kad-<stage>-* role, covered
+          # by IamKadRoles above. **Redeploy this stack before the first
+          # deploy that adds the alarms**, or CloudFormation is refused them.
+          - Sid: AlarmsKad
+            Effect: Allow
+            Action: cloudwatch:*
+            Resource: !Sub "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:kad-${!aws:PrincipalTag/kad:stage}-*"
+
+          - Sid: SnsKadTopics
+            Effect: Allow
+            Action: sns:*
+            Resource: !Sub "arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:kad-${!aws:PrincipalTag/kad:stage}-*"
+
+          # Chatbot is a global service: its ARNs carry no region. This scoped
+          # statement covers what can be scoped: updating and deleting a
+          # configuration that already has a name.
+          - Sid: ChatbotKadChannels
+            Effect: Allow
+            Action: chatbot:*
+            Resource: !Sub "arn:${AWS::Partition}:chatbot::${AWS::AccountId}:chat-configuration/slack-channel/kad-${!aws:PrincipalTag/kad:stage}-*"
+
+          # Creating a configuration, and reading back what was made, cannot
+          # be scoped to one name: the create action takes no resource, so a
+          # grant on the named ARN above does not authorize it. Staging never
+          # creates the channel (its Slack ids are unset), so a role missing
+          # this fails for the first time on production. Usable only when
+          # CloudFormation is the caller.
+          - Sid: ChatbotCreateAndDescribeViaCloudFormation
+            Effect: Allow
+            Action:
+              - chatbot:CreateSlackChannelConfiguration
+              - chatbot:DescribeSlackChannelConfigurations
+              - chatbot:DescribeSlackWorkspaces
+            Resource: "*"
+            Condition:
+              ForAnyValue:StringEquals:
+                aws:CalledVia: cloudformation.amazonaws.com
+
           # These resources carry generated ids rather than kad-* names. Broad
           # lifecycle permissions are therefore usable only when CloudFormation
           # is calling on the role's behalf; a workflow cannot invoke them
