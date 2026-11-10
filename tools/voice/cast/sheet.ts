@@ -206,7 +206,7 @@ function nameFromNotes(key: string, notes: string): string {
 
 const GROUP = /\b(flock|crew|family|families|choir|crowd|troupe|expedition|cousins|travelers|campers|workers|engineers|readers|skywardens|ducklings|cubs|queue)\b|^(sheeple|sprites|prospectors|brassbuckles|brackens|red_scarves|kettle_campers|gullets_cousins)$/i;
 const CREATURE = /\b(donkey|mule|pony|duckling|ducklings|goat|whale|wyrm|drakes?)\b/i;
-const SILENT = /\bnever speaks\b|\bonly bleats\b|\bdoes not speak\b|\bwithout words\b/i;
+const SILENT = /\bnever speaks\b|\bonly (?:bleats|chatters|screeches|squawks|honks|quacks|peeps|barks|squeaks|hoots)\b|\bdoes not speak\b|\bwithout words\b/i;
 
 function kindOf(id: string, name: string, who: string): Kind {
   if (GROUP.test(id) || GROUP.test(name) || /\b(all talk at once|never fewer than)\b/i.test(who)) return "group";
@@ -455,7 +455,17 @@ export function callQuotes(text: string, speakers: readonly Speaker[], from = 0)
       // Named last is who "she" is, unless the sheet knows that one is a he: then the scene's one she.
       const lastKnown = speakers.find((speaker) => speaker.id === lastNamed)?.pronoun;
       const byScene = inSceneWith(pronoun);
-      id = lastNamed !== null && !(lastKnown && lastKnown !== pronoun && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
+      const contradicted = !!lastKnown && lastKnown !== pronoun;
+      // Unless the sentence just before is about them ("Puddle pokes him with one fin. "Draw it again." He sniffs.").
+      if (lastNamed !== null && contradicted && !byScene && (pronoun === "he" || pronoun === "she") && beatBefore(start)?.id !== lastNamed) {
+        // "A griffin is folding a map while a unicorn stands on it. "It will not fold," he mutters.": the unicorn is a
+        // she, so "he" is the one in the scene named before her who could be a he. Someone only mentioned is not.
+        const could = (who: string): boolean => {
+          const speaker = speakers.find((s) => s.id === who);
+          return !!speaker?.here && (speaker.pronoun ?? pronoun) === pronoun;
+        };
+        id = [...mentions].reverse().find((m) => m.at < start && m.id !== lastNamed && could(m.id))?.id ?? lastNamed;
+      } else id = lastNamed !== null && !(contradicted && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
     } else if (tag !== null) id = tag;
     // "I'm Orin Vale." names its own speaker, and that is stronger than the sentence before it being about someone else.
     else if (introducedIn(match[1]!) !== null) id = introducedIn(match[1]!);
@@ -523,6 +533,91 @@ const idOfKey = (key: string): string => (/[A-Z\s]/.test(key) ? identity(key) : 
 /** Who is physically in each scene: chapter id, then scene id, to the ids of the characters in its cast. */
 export type SceneCasts = Map<string, Map<string, Set<string>>>;
 
+/** How the scenes show someone: the figures they are drawn with (in how many scenes) and the names they are cast under. */
+interface Sighting {
+  figures: Map<string, number>;
+  names: Set<string>;
+}
+
+const sighting = (): Sighting => ({ figures: new Map(), names: new Set() });
+
+function addSighting(into: Sighting, from: Sighting): void {
+  for (const [figure, count] of from.figures) into.figures.set(figure, (into.figures.get(figure) ?? 0) + count);
+  for (const name of from.names) into.names.add(name);
+}
+
+/** A figure drawn for one person ("cast/brask"), not for any one of a people ("entities/centaur"). */
+const isPersonFigure = (figure: string): boolean => figure.startsWith("cast/");
+
+/**
+ * Whether two sightings under one name can be one character. Drawn as two different people ("cast/brask" and
+ * "cast/pass_keeper", both called Brask), they are two. A role (`drover`) is what someone is, not who: two chapters'
+ * drovers are one only when the scenes draw them as the same kind and cast them under the same role name ("Rush
+ * drover" is not the "Lead Drover"). What the scenes do not show is no reason to split.
+ */
+function oneCharacter(a: Sighting, b: Sighting, role: boolean): boolean {
+  const people = (s: Sighting): string[] => [...s.figures.keys()].filter(isPersonFigure);
+  const [mine, theirs] = [people(a), people(b)];
+  if (mine.length > 0 && theirs.length > 0) return mine.some((figure) => theirs.includes(figure));
+  if (!role) return true;
+  if (mine.length === 0 && theirs.length === 0 && a.figures.size > 0 && b.figures.size > 0 && ![...a.figures.keys()].some((figure) => b.figures.has(figure))) return false;
+  const roles = (s: Sighting): string[] => [...s.names].filter(isRoleName).map(identity);
+  const [ours, yours] = [roles(a), roles(b)];
+  return ours.length === 0 || yours.length === 0 || ours.some((name) => yours.includes(name));
+}
+
+/** The id for a second character under a name somebody already has: from the figure drawing them, else the role they are cast as. */
+function splitId(base: string, seen: Sighting, taken: (id: string) => boolean): string {
+  const person = [...seen.figures]
+    .filter(([figure]) => isPersonFigure(figure))
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0]
+    .slice("cast/".length);
+  const role = [...seen.names].filter(isRoleName).map(identity).sort()[0];
+  const wanted = person ? (`_${person}_`.includes(`_${base}_`) ? person : `${base}_${person}`) : role && role !== base ? role : `${base}_2`;
+  let id = wanted;
+  for (let n = 2; taken(id); n += 1) id = `${wanted}_${String(n)}`;
+  return id;
+}
+
+/** Each name a chapter's scenes cast, with the figures it is drawn with and in how many scenes. */
+function castNames(chapter: ChapterLike): Map<string, Map<string, number>> {
+  const names = new Map<string, Map<string, number>>();
+  for (const scene of Object.values(chapter.scenes ?? {})) {
+    for (const member of (scene as { cast?: { name?: string; figure?: string }[] }).cast ?? []) {
+      if (!member.name) continue;
+      const figures = names.get(member.name) ?? new Map<string, number>();
+      if (member.figure) figures.set(member.figure, (figures.get(member.figure) ?? 0) + 1);
+      names.set(member.name, figures);
+    }
+  }
+  return names;
+}
+
+/** A chapter's voice notes, by the id each key names. */
+const keyedOf = (chapter: ChapterLike): { id: string; notes: string }[] => Object.entries(chapter.voiceGuide?.npcVoices ?? {}).map(([key, notes]) => ({ id: idOfKey(key), notes }));
+
+/**
+ * The chapter's own voice notes about a cast name, if any: same key, or one inside the other's name. The figure
+ * names them too ("cast/nan_rummage"), and survives a rename of the display name.
+ */
+function voiceKeyFor(name: string, figures: ReadonlyMap<string, number>, keyed: readonly { id: string; notes: string }[]): string | undefined {
+  const keys = keyed.map((k) => k.id);
+  const s = identity(name);
+  const parts = s.split("_");
+  // Only a title at the front comes off ("Elder Sefa"), never a word inside the name ("Sefa Elder").
+  const firstReal = parts.findIndex((part) => !TITLE_PARTS.has(part));
+  const bare = firstReal < 0 ? [] : parts.slice(firstReal);
+  return (
+    keys.find((k) => k === s) ??
+    keys.find((k) => figures.has(`cast/${k}`)) ??
+    keys.find((k) => parts.includes(k) || k.split("_").every((part) => parts.includes(part)) || (!isRoleName(name) && parts.every((part) => k.split("_").includes(part)))) ??
+    // "Elder Sefa" in the scenes is "Sefa Tallgrass" in the notes: a title is not part of who someone is.
+    // Only when exactly one voice note fits: two people with the same given name are two, not whichever is first.
+    (isRoleName(name) || bare.length === 0 || bare.length === parts.length ? undefined : only(keys.filter((k) => bare.every((part) => k.split("_").includes(part))))) ??
+    keyed.find((k) => identity(nameFromNotes(k.id, k.notes)) === s)?.id
+  );
+}
+
 /**
  * Every character the content names, merged across chapters and sources. Narrator and party not included.
  * `scenes`, if given, is filled with who is in each scene, resolved to the same characters.
@@ -539,59 +634,94 @@ export function collectCharacters(sources: Sources, scenes?: SceneCasts): Draft[
     return draft;
   };
 
+  // One voice-note key in two chapters is one character, unless the scenes show two: drawn as two different people
+  // (Gemfall's Engineer Brask and Riftlight's griffin Brask), or a role cast under two role names (a "Rush drover" and
+  // a "Lead Drover"). Each key in each chapter is put with the first character under its id it can be; the one drawn
+  // with the figure the id names (`cast/brask`) keeps the id, else the first, and the others are named for their figure.
+  const occurrences: { chapter: ChapterLike; key: string; notes: string; id: string; seen: Sighting; generic: boolean }[] = [];
   for (const chapter of sources.chapters) {
+    const keyed = keyedOf(chapter);
+    const shown = new Map<string, Sighting>();
+    for (const [name, figures] of castNames(chapter)) {
+      const key = voiceKeyFor(name, figures, keyed);
+      if (key === undefined) continue;
+      const seen = shown.get(key) ?? sighting();
+      addSighting(seen, { figures, names: new Set([name]) });
+      shown.set(key, seen);
+    }
     for (const [key, notes] of Object.entries(chapter.voiceGuide?.npcVoices ?? {})) {
       const id = idOfKey(key);
       const name = /[A-Z\s]/.test(key) ? key : nameFromNotes(key, notes);
       // A one-word key whose notes open on "a"/"the" is what someone is, not who: "wisp", "drover".
       const generic = !/[A-Z\s_]/.test(key) && name === titleCase(key) && /^(an?|the)\b/i.test(notes.trim());
-      const draft = get(id, name, notes, generic);
-      draft.voiceNotes.push({ chapter: chapter.id, key });
-      draft.chapters.add(chapter.id);
-      if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
+      occurrences.push({ chapter, key, notes, id, seen: shown.get(id) ?? sighting(), generic });
+    }
+  }
+  const groups = new Map<string, { seen: Sighting; generic: boolean; members: (typeof occurrences)[number][] }[]>(); // id → its characters
+  for (const occurrence of occurrences) {
+    const under = groups.get(occurrence.id) ?? [];
+    let group = under.find((g) => oneCharacter(g.seen, occurrence.seen, g.generic || occurrence.generic));
+    if (!group) {
+      group = { seen: sighting(), generic: occurrence.generic, members: [] };
+      under.push(group);
+    }
+    addSighting(group.seen, occurrence.seen);
+    group.members.push(occurrence);
+    groups.set(occurrence.id, under);
+  }
+  const keyIds = new Map<string, Map<string, string>>(); // chapter → voice-note id → the character it is about
+  const sightings = new Map<string, Sighting>(); // a character → how the scenes have shown them so far
+  const bases = new Map<string, string>(); // a character → the id their name gives, when they had to take another
+  const taken = (id: string): boolean => groups.has(id) || drafts.has(id) || [...keyIds.values()].some((ids) => [...ids.values()].includes(id));
+  for (const [id, under] of groups) {
+    const keeper = under.find((g) => g.seen.figures.has(`cast/${id}`)) ?? under[0]!;
+    for (const group of [keeper, ...under.filter((g) => g !== keeper)]) {
+      const own = group === keeper ? id : splitId(id, group.seen, taken);
+      if (own !== id) bases.set(own, id);
+      sightings.set(own, group.seen);
+      for (const { chapter, key, notes, generic } of group.members) {
+        const name = /[A-Z\s]/.test(key) ? key : nameFromNotes(key, notes);
+        const draft = get(own, name, notes, generic);
+        draft.voiceNotes.push({ chapter: chapter.id, key });
+        draft.chapters.add(chapter.id);
+        if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
+        keyIds.set(chapter.id, (keyIds.get(chapter.id) ?? new Map<string, string>()).set(idOfKey(key), own));
+      }
     }
   }
 
   for (const chapter of sources.chapters) {
-    const keyed = Object.entries(chapter.voiceGuide?.npcVoices ?? {}).map(([key, notes]) => ({ id: idOfKey(key), notes }));
-    const keys = keyed.map((k) => k.id);
-    const names = new Map<string, Map<string, number>>(); // name → figure → scenes
-    for (const scene of Object.values(chapter.scenes ?? {})) {
-      for (const member of (scene as { cast?: { name?: string; figure?: string }[] }).cast ?? []) {
-        if (!member.name) continue;
-        const figures = names.get(member.name) ?? new Map<string, number>();
-        if (member.figure) figures.set(member.figure, (figures.get(member.figure) ?? 0) + 1);
-        names.set(member.name, figures);
-      }
-    }
+    const keyed = keyedOf(chapter);
     const resolved = new Map<string, string>(); // a cast name, in this chapter → the character it is
-    for (const [name, figures] of names) {
+    for (const [name, figures] of castNames(chapter)) {
       const s = identity(name);
       const parts = s.split("_");
-      // Only a title at the front comes off ("Elder Sefa"), never a word inside the name ("Sefa Elder").
-      const firstReal = parts.findIndex((part) => !TITLE_PARTS.has(part));
-      const bare = firstReal < 0 ? [] : parts.slice(firstReal);
-      // The chapter's own voice notes, if they are about this person: same key, or one inside the other's name.
-      // The figure names them too ("cast/nan_rummage"), and survives a rename of the display name.
-      const key =
-        keys.find((k) => k === s) ??
-        keys.find((k) => figures.has(`cast/${k}`)) ??
-        keys.find((k) => parts.includes(k) || k.split("_").every((part) => parts.includes(part)) || (!isRoleName(name) && parts.every((part) => k.split("_").includes(part)))) ??
-        // "Elder Sefa" in the scenes is "Sefa Tallgrass" in the notes: a title is not part of who someone is.
-        // Only when exactly one voice note fits: two people with the same given name are two, not whichever is first.
-        (isRoleName(name) || bare.length === 0 || bare.length === parts.length ? undefined : only(keys.filter((k) => bare.every((part) => k.split("_").includes(part))))) ??
-        keyed.find((k) => identity(nameFromNotes(k.id, k.notes)) === s)?.id;
+      const key = voiceKeyFor(name, figures, keyed);
+      const here: Sighting = { figures, names: new Set([name]) };
       // Elsewhere in the game under a fuller or shorter form of the same proper name: "Madame Fenn" is "Coralie Fenn".
       // Only within one campaign, and only between real names: Riftlight's "Seren Wisp" is not Bramblewood's wisp.
       const sameName = (d: Draft): boolean => {
         const theirs = identity(d.name).split("_");
         return parts.every((p) => theirs.includes(p)) || theirs.every((p) => parts.includes(p));
       };
+      // Someone already known by this very name, unless the scenes show them as somebody else.
+      const namesake = [...drafts.values()].filter((d) => (bases.get(d.id) ?? d.id) === s);
+      const same = namesake.find((d) => oneCharacter(sightings.get(d.id) ?? sighting(), here, d.generic));
       const known = key
         ? undefined
-        : drafts.get(s) ??
-          (isRoleName(name) ? undefined : [...drafts.values()].find((d) => !d.generic && !isRoleName(d.name) && chapter.campaignId !== undefined && d.campaigns.has(chapter.campaignId) && sameName(d)));
-      const draft = key ? drafts.get(key)! : (known ?? get(s, name, "", false));
+        : (same ??
+          (namesake.length > 0
+            ? get(splitId(s, here, taken), name, "", false)
+            : isRoleName(name)
+              ? undefined
+              : [...drafts.values()].find((d) => !d.generic && !isRoleName(d.name) && chapter.campaignId !== undefined && d.campaigns.has(chapter.campaignId) && sameName(d))));
+      const draft = key ? drafts.get(keyIds.get(chapter.id)!.get(key)!)! : (known ?? get(s, name, "", false));
+      if (!key) {
+        if (namesake.length > 0 && !same) bases.set(draft.id, s);
+        const seen = sightings.get(draft.id) ?? sighting();
+        addSighting(seen, here);
+        sightings.set(draft.id, seen);
+      }
       resolved.set(name, draft.id);
       draft.chapters.add(chapter.id);
       if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
@@ -984,6 +1114,11 @@ export const ONE_CHARACTER: readonly { chapter: string; ids: readonly string[]; 
     ids: ["small_dragonling", "bell_code_expert"],
     reason: 'The narration introduces her as "A small dragonling, the town\'s bell-code expert" and tags her lines by either name.',
   },
+  {
+    chapter: "gemfall-05b",
+    ids: ["archivist", "door_archivist"],
+    reason: "The archivist who makes the party wipe its feet at the door is the one at the archive table: every scene casts her as one figure, cast/mosshome_archivist, and the voice notes call her door_archivist.",
+  },
 ];
 
 /**
@@ -1097,7 +1232,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const old = previous?.speakers[draft.id];
     const chapters = [...draft.chapters].sort();
     const candidates = heard.get(draft.id) ?? [];
-    const kind = kindOf(draft.id, draft.name, draft.who);
+    let kind = kindOf(draft.id, draft.name, draft.who);
     const lines = pickLines(candidates);
     const guess = guessed.get(draft.id) ?? 0;
     const lineCount = candidates.length + guess;
@@ -1110,7 +1245,9 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const group = isGroupName(draft.name);
     // What the notes say outright is not overturned by a "he" the counter heard: one of them is wrong, and it is the counter.
     const fromNotes = genderOf({ name: draft.name, who: draft.who, pronouns: undefined });
-    const contradicts = (fromNotes === "f" && heardPronoun === "he/him") || (fromNotes === "m" && heardPronoun === "she/her");
+    // Nor is a gender a person set: the sheet keeps the pronouns that went with it.
+    const known = old?.genderFrom === "person" ? ({ female: "f", male: "m" } as const)[old.gender as "female" | "male"] ?? fromNotes : fromNotes;
+    const contradicts = (known === "f" && heardPronoun === "he/him") || (known === "m" && heardPronoun === "she/her");
     if (!draft.pronouns && heardPronoun && !group && !contradicts) {
       draft.pronouns = heardPronoun;
       draft.pronounsFrom = "narration";
@@ -1118,7 +1255,11 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       draft.pronouns = old.pronouns;
       draft.pronounsFrom = "narration";
     }
-    const who = draft.who || `${draft.name}.`;
+    // Words a person wrote about someone the content never describes ("a silver otter; only chatters") are theirs, and
+    // so is calling them a creature, until the content gives them notes or lines of its own.
+    const written = !draft.who && old?.who && old.who !== `${old.name}.` ? old : undefined;
+    const who = draft.who || written?.who || `${draft.name}.`;
+    if (written?.kind === "creature" && kind === "character" && lineCount === 0) kind = "creature";
     // A gender a person set is theirs; otherwise it follows the content.
     const gender = old?.genderFrom === "person" && old.gender ? { gender: old.gender, genderFrom: "person" as const } : derivedGender({ name: draft.name, who, pronouns: draft.pronouns }, draft.pronounsFrom);
     const figure = [...draft.figures].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0];
@@ -1140,7 +1281,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       lines,
       lineCount,
       ...(guess > 0 ? { guessedLines: guess } : {}),
-      speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),
+      speaks: !SILENT.test(who) && (lines.length > 0 || kind !== "creature"),
       // What a person decided carries over; everything else above is refreshed from the content,
       // so an approved character's chapters stay current and a new clash is still seen.
       status: old?.status ?? "provisional",

@@ -443,13 +443,17 @@ const DIGESTS: PreEpicSave["digests"] = {
 // (force, search, sneak, swim, climb), so a hero's matchup edge makes that game one step easier
 // or harder. Gemfall's dice stay exempt from matchups. No scene, edge, flag, effect, stat, TN or
 // branch moved, and the gameplay digests below are unchanged.
+// Chapter 03c is re-pinned again, on top of the tags above, for Wend's pronoun (#706, approved by
+// the owner): Wend is a she, as her recorded voice is, so the soup bowls' two results read
+// "Kindness first," she says. Two narration strings only: no scene, edge, flag, effect, stat or TN
+// moved, and the gameplay digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "09f25a62e25d82b3385d4e658fd037b9cefde9e761c9deddafc3881a187f4980",
   "chapters/gemfall-02.json": "9df094d30ed0195ead96f6d125dad51aac67c2b66ebcc28bd8008bb844ac5acf",
   "chapters/gemfall-03a.json": "97a4159a757cf09eb9bec67c9ed07fc8fef6bdef6036e340415cb97d1cab8cf2",
   "chapters/gemfall-03b.json": "66c1f2a850f57220f4fb6b906e74db7cd092441f8506936a1aca2efc2f320b9b",
-  "chapters/gemfall-03c.json": "1ff3aa86ffa98f1806149683e26f80db6ffec51f6354053d0da581fc23a2e5e4",
+  "chapters/gemfall-03c.json": "16fd48666d8942394febfcc9b51ae2aa0df5af05c97e85509349b3874e2d4c4c",
   "chapters/gemfall-04a.json": "c587238d2c6bd0764a9a974c720499bfa0c340e50c7862020d919597b1784af0",
   "chapters/gemfall-04b.json": "a050a8eb39c95867821eeb51f2456f91f46c528d7372e44eb44116774ba17781",
   "chapters/gemfall-04c.json": "f04af270136af692a14a4f722d091095ee5122050ae5ccd08aec94097a2aa237",
