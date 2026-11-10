@@ -1,12 +1,15 @@
 /**
  * The browser half of the optional sign-in — architecture §4.5.
  *
- * Talks to Cognito **directly**, over its plain JSON API. Two consequences
- * worth being explicit about:
+ * Talks to Cognito **directly**, over its plain JSON API, for everything but
+ * the first step: our API makes sure the address has an account
+ * (`POST /api/auth/start`), and the code, the tokens and the passkey are
+ * between the browser and Cognito. Two consequences worth being explicit about:
  *
- *   1. No credential ever reaches our Lambda. The browser gets an ID token and
- *      hands *that* to `POST /api/auth/link`, which is the only thing our
- *      server ever sees.
+ *   1. No credential ever reaches our Lambda. It is told an address, which it
+ *      is about to be told anyway; the browser gets an ID token and hands
+ *      *that* to `POST /api/auth/link`, which is the only proof our server
+ *      ever sees.
  *   2. No SDK. `amazon-cognito-identity-js` is ~120KB for four calls we can
  *      write in a page, and this bundle already ships a WebGL renderer to a
  *      phone in a car. The API is a stable, documented JSON-over-POST surface
@@ -65,20 +68,8 @@ const FRIENDLY: Record<string, string> = {
   UserNotFoundException: "We couldn't find that email. Check the spelling?",
 };
 
-/**
- * A sign-up that failed *after* the account was made.
- *
- * The pool replaces every new account's password the moment it is confirmed
- * (`PostConfirmationFunction`, infra/template.yaml). If that step fails,
- * Cognito reports the whole `SignUp` as failed, but the account exists and the
- * emailed code will arrive, so the family carries on; the failure is counted
- * and alarmed on the server, where somebody can act on it. A failure *before*
- * the account exists (`PreSignUp …`) is still an error: carrying on there
- * would wait for a code that is never sent.
- */
-function createdDespite(err: AuthError): boolean {
-  return err.code === "UserLambdaValidationException" && err.message.startsWith("PostConfirmation ");
-}
+/** Where the API makes sure an address has an account, before the code is asked for. */
+const START_PATH = "/api/auth/start";
 
 export interface CognitoClient {
   /** Sends an 8-digit code to `email`, creating the account if it is new. */
@@ -119,43 +110,46 @@ export function createCognitoClient(
     return (await response.json()) as T;
   }
 
+  /** `POST /api/auth/start`: the one call here that goes to our API and not to Cognito. */
+  async function start(email: string): Promise<void> {
+    const response = await fetchImpl(START_PATH, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (response.ok) return;
+    // The server's own sentence where it has one a parent can act on
+    // ("that address doesn't look right", "too many tries from here").
+    const payload = (await response.json().catch(() => ({}))) as { error?: { message?: string } };
+    const said = response.status === 400 || response.status === 429 ? payload.error?.message : undefined;
+    throw new AuthError(
+      response.status === 429 ? "TooManyRequestsException" : response.status === 400 ? "InvalidParameterException" : "StartFailed",
+      said ?? "We couldn't start signing you in. Try again in a moment.",
+    );
+  }
+
   return {
     async requestCode(email: string): Promise<PendingChallenge> {
       const username = email.trim().toLowerCase();
 
       /*
-       * Sign up first, unconditionally, and swallow "already exists".
+       * Make sure the account exists first, unconditionally, and by asking
+       * our own API to make it.
        *
-       * The tempting order is the other way around — try to sign in, and
-       * register only if the user is unknown — but the pool sets
+       * Unconditionally, because the pool sets
        * `PreventUserExistenceErrors: ENABLED`, which is precisely a promise
        * that an unknown user is *indistinguishable* from a known one. Under
        * that setting `InitiateAuth` returns a simulated challenge for an email
-       * that has never been seen, so the "is this a new user?" branch can never
-       * be taken and a first-time player would wait forever for a code that was
-       * never sent.
+       * that has never been seen, so there is no "is this a new user?" branch
+       * to take, and a first-time player would wait forever for a code that
+       * was never sent. A returning user costs the API one call and no email.
        *
-       * Signing up first costs a returning user nothing: Cognito rejects it
-       * immediately with `UsernameExistsException` and sends no email.
+       * Through the API, and not Cognito's own public `SignUp`, because that
+       * call takes a password, and the pool cannot tell a browser that throws
+       * its password away from a caller who keeps theirs. The API makes the
+       * account with a password nobody ever chose (`POST /api/auth/start`).
        */
-      try {
-        await call("SignUp", {
-          ClientId: config.clientId,
-          Username: username,
-          // A password nobody will ever see, type, or need.
-          //
-          // Cognito requires PASSWORD among the pool's allowed first auth
-          // factors (it refuses to create a pool without it) and SignUp wants a
-          // value that satisfies the policy. Sign-in is the emailed code, so
-          // this secret is generated here, sent once, and dropped — there is
-          // nothing to store, nothing to remember, and nothing to leak.
-          Password: throwawayPassword(),
-          UserAttributes: [{ Name: "email", Value: username }],
-        });
-      } catch (err) {
-        if (!(err instanceof AuthError)) throw err;
-        if (err.code !== "UsernameExistsException" && !createdDespite(err)) throw err;
-      }
+      await start(username);
 
       const result = await call<{
         ChallengeName?: string;
@@ -294,22 +288,6 @@ function encodeCredential(credential: PublicKeyCredential): Record<string, unkno
     },
     clientExtensionResults: credential.getClientExtensionResults(),
   };
-}
-
-/**
- * A password that exists only to satisfy Cognito's sign-up validator.
- *
- * 32 bytes of CSPRNG, plus one character from each class the default policy
- * insists on. It is never persisted, never displayed, and never used to sign in
- * — the emailed code does that — so the only property that matters is that
- * nobody, including us, can guess it afterwards.
- */
-function throwawayPassword(): string {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  let raw = "";
-  for (const byte of bytes) raw += String.fromCharCode(byte);
-  return `Aa1!${btoa(raw).replace(/[+/=]/g, "")}`;
 }
 
 function toB64url(buffer: ArrayBuffer): string {

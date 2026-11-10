@@ -175,6 +175,26 @@ export function admitRoomOpen(clientKey: string, opener: "new" | "known", deps: 
   return deps.repo.reserveCodeLookup(`open#${opener}#${clientKey}`, window, limit, ttl);
 }
 
+/**
+ * Sign-ins one address may start in a window (`POST /api/auth/start`).
+ *
+ * Starting one makes an account for an address that has none, so unbounded it
+ * is a way to fill the pool with other people's addresses. A family signs in
+ * once per device and then stays signed in; twenty in fifteen minutes is every
+ * phone in a large household, twice.
+ */
+export const SIGN_IN_START_LIMIT = 20;
+
+/** What a refused starter is told. The status and code are `SLOW_DOWN`'s. */
+export const TOO_MANY_SIGN_INS = "Too many sign-in tries from here just now. Wait a few minutes, then try again.";
+
+/** Takes one sign-in start from this client's budget, or says it is spent. Nothing is handed back. */
+export function admitSignInStart(clientKey: string, deps: GuardDeps): Promise<boolean> {
+  const window = windowAt(deps.now());
+  const ttl = Math.floor(((window + 2) * CODE_MISS_WINDOW_MS) / 1000);
+  return deps.repo.reserveCodeLookup(`signin#${clientKey}`, window, SIGN_IN_START_LIMIT, ttl);
+}
+
 /** Eight hextets, or null for anything that is not an IPv6 address. */
 function expandIpv6(raw: string): string[] | null {
   const address = raw.split("%")[0] ?? ""; // drop a zone id (`fe80::1%eth0`)

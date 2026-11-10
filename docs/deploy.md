@@ -456,28 +456,42 @@ found the first time this stack was deployed for real:
 
 **`PASSWORD` must be an allowed first auth factor.** Leave it out and the pool
 will not create at all — *"PASSWORD should be configured as one of the allowed
-first auth factors"*. It is listed alongside `EMAIL_OTP`, and nothing uses it:
-the client generates 32 random bytes for `SignUp`, sends them once, and drops
-them. No screen has a password field, and sign-in is the emailed code.
+first auth factors"*. It is listed alongside `EMAIL_OTP`, and nothing uses it.
+No screen has a password field, and sign-in is the emailed code.
 
-**Sign-up needs auto-confirming.** Otherwise a new user sits `UNCONFIRMED`
-behind a second emailed code, and the first sign-in of every new family fails.
-A `PreSignUp` trigger (ten lines, inline in the template) confirms them. That is
-not a shortcut past verifying the address — the OTP *is* the verification, since
-nobody reaches a signed-in state without reading a message sent to that inbox.
+**The API makes the account, not the browser.** Before it asks Cognito for a
+code, the client calls `POST /api/auth/start` with the address. The API makes
+sure a sign-in exists for it (`AdminCreateUser`, no invitation sent), gives it a
+random password that is kept nowhere (`AdminSetUserPassword`), and answers 204
+whether the address was new or not (`cognito-directory.ts`). It is budgeted per
+client like wrong room codes (`SIGN_IN_START_LIMIT` in 15 minutes). A family
+sees none of this: they type an address and a code arrives.
 
-The consequence worth knowing: password auth is technically enabled on the pool,
-and `SignUp` is a public call. The game's own client discards the password it
-sends, but the pool cannot tell that request from one whose sender keeps it.
+The browser used to make the account itself with Cognito's public `SignUp`,
+sending 32 random bytes as the password and dropping them. `SignUp` takes
+whatever password it is given, and the pool cannot tell that client from a
+caller who keeps theirs.
 
-**So the pool replaces every new account's password itself.** A
+**Public sign-up is still open on the pool, for now.** A browser holding last
+week's bundle still calls `SignUp`, and turning it off (`AllowAdminCreateUserOnly`)
+would fail that browser's sign-in until it reloads. It is switched off in a
+change of its own, once old bundles have had time to go. Until then two things
+cover a direct `SignUp`:
+
+**Sign-up is auto-confirmed.** Otherwise a new user sits `UNCONFIRMED`
+behind a second emailed code. A `PreSignUp` trigger (ten lines, inline in the
+template) confirms them. That is not a shortcut past verifying the address — the
+OTP *is* the verification, since nobody reaches a signed-in state without
+reading a message sent to that inbox.
+
+**And the pool replaces the password of every account made that way.** A
 `PostConfirmation` trigger (inline in the template, beside `PreSignUp`) sets a
 random password the moment an account is confirmed and signs out anything
 already signed in to it. After that the only ways in are the emailed code and a
 passkey. A family sees none of this.
 
-- If the trigger fails, the account is still made, the client carries on to the
-  emailed code, and `kad-<stage>-sign-up-scrub-errors` fires. The function's log
+- If the trigger fails, the account is still made, a browser on an older bundle
+  carries on to the emailed code, and `kad-<stage>-sign-up-scrub-errors` fires. The function's log
   has a `sign_up_scrub_failed` line naming the pool, the account (by the id
   Cognito generated, not the address) and the step that failed. Reset that
   account's password by hand
@@ -486,8 +500,8 @@ passkey. A family sees none of this.
   running at all can be read in the log. Both lines carry an account id and
   never a password; they are kept as long as any other Lambda log.
 - It does not close the moment between Cognito confirming the account and the
-  trigger running. Closing public sign-up, so that only the API can create an
-  account, is what removes that, and is separate work.
+  trigger running. Turning public sign-up off removes that, and with it the
+  trigger's reason to exist.
 
 ---
 

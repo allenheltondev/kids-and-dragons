@@ -332,10 +332,10 @@ Resources:
           # factors" — and not because anything uses it.
           #
           # Nothing in this game ever asks for a password. Sign-in is an emailed
-          # code, then optionally a passkey; the client signs a user up with a
-          # random secret it discards immediately (`sync/auth.ts`), and no screen
-          # has a password field. This entry satisfies Cognito's validator and
-          # changes nothing a family sees.
+          # code, then optionally a passkey; the API makes each account with a
+          # random password that is kept nowhere (`cognito-directory.ts`), and
+          # no screen has a password field. This entry satisfies Cognito's
+          # validator and changes nothing a family sees.
           AllowedFirstAuthFactors: !If
             - Passkeys
             - [PASSWORD, EMAIL_OTP, WEB_AUTHN]
@@ -345,10 +345,12 @@ Resources:
         - !Ref WebAuthnRelyingPartyId
         - !Ref AWS::NoValue
       WebAuthnUserVerification: !If [Passkeys, preferred, !Ref AWS::NoValue]
-      # Sign-up is a step the player never sees: the client calls SignUp and then
-      # immediately starts the email-code challenge. Without this trigger the new
-      # user sits UNCONFIRMED behind a *second* emailed code, and sign-in fails
-      # for everyone who has never played before.
+      # For a browser still on a bundle from before `POST /api/auth/start`: it
+      # calls the public SignUp itself and then immediately starts the
+      # email-code challenge. Without this trigger that new user sits
+      # UNCONFIRMED behind a *second* emailed code. An account the API makes
+      # needs none of this, and both triggers go when public sign-up is
+      # turned off.
       #
       # Auto-confirming is not a shortcut past verifying the address. The email
       # code *is* the verification — nobody reaches a signed-in state without
@@ -382,6 +384,11 @@ Resources:
       # whose whole body is two assignments.
       InlineCode: |
         exports.handler = async (event) => {
+          // Only a public sign-up is confirmed here. An account the API makes
+          // (`AdminCreateUser`) arrives through this trigger too, already
+          // carrying a verified address and about to be given its password,
+          // and is passed through untouched.
+          if (event.triggerSource !== "PreSignUp_SignUp") return event;
           event.response.autoConfirmUser = true;
           if (event.request.userAttributes?.email) {
             event.response.autoVerifyEmail = true;
@@ -404,21 +411,22 @@ Resources:
   #
   # `SignUp` is a public call that takes a password, and the pool has to allow
   # PASSWORD as a first factor (see SignInPolicy above). The game's own client
-  # sends a random one and drops it, but the pool cannot tell that request from
-  # one whose sender keeps the password, and PreSignUp confirms both. So the
-  # password an account was created with is replaced here, the moment the
-  # account is confirmed, with one that exists only inside this invocation,
-  # and anything already signed in to the brand-new account is signed out.
-  # After this the only ways in are the ones that prove the inbox or the
-  # device: the emailed code and a passkey.
+  # no longer calls it (the API makes each account, `POST /api/auth/start`),
+  # but a browser on an older bundle still does, and so can anybody else: the
+  # pool cannot tell a caller who drops the password from one who keeps it,
+  # and PreSignUp confirms both. So the password an account was signed up
+  # with is replaced here, the moment the account is confirmed, with one that
+  # exists only inside this invocation, and anything already signed in to the
+  # brand-new account is signed out. After this the only ways in are the ones
+  # that prove the inbox or the device: the emailed code and a passkey.
   #
   # What this does not do is close the gap between Cognito confirming the
-  # account and this function running. Closing public sign-up altogether is
-  # the fix for that, and is separate work.
+  # account and this function running. Turning public sign-up off
+  # (`AllowAdminCreateUserOnly`) is the fix for that, once old bundles have
+  # had time to go.
   #
   # A failure throws, so Lambda counts it and SignUpScrubErrorsAlarm says so.
-  # The client carries on to the emailed code regardless (sync/auth.ts): a
-  # family's sign-in must not fail because this did.
+  # A browser on an older bundle carries on to the emailed code regardless.
   PostConfirmationFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -703,6 +711,15 @@ Resources:
               # anything on a channel.
               Action: appsync:EventPublish
               Resource: !Sub "${EventApi.ApiArn}/*"
+            - Effect: Allow
+              # Opening a sign-in (`POST /api/auth/start`, cognito-directory.ts):
+              # make the account, and give it a password nobody chose. Those
+              # two and nothing else: this function cannot read, list or delete
+              # a sign-in, or sign anybody in.
+              Action:
+                - cognito-idp:AdminCreateUser
+                - cognito-idp:AdminSetUserPassword
+              Resource: !GetAtt UserPool.Arn
       Events:
         Api:
           Type: HttpApi

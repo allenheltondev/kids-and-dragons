@@ -29,7 +29,13 @@ import {
 import { applyIntent, createRunState } from "@kad/shared";
 import { closeRoom } from "../handlers/host.ts";
 import { createRoom } from "../handlers/room.ts";
-import { CODE_MISS_LIMIT, ROOM_OPEN_NEW_LIMIT, TOO_MANY_ROOMS } from "../handlers/code-guard.ts";
+import {
+  CODE_MISS_LIMIT,
+  ROOM_OPEN_NEW_LIMIT,
+  SIGN_IN_START_LIMIT,
+  TOO_MANY_ROOMS,
+  TOO_MANY_SIGN_INS,
+} from "../handlers/code-guard.ts";
 import { MAX_BODY_BYTES, respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
 
@@ -1897,6 +1903,90 @@ describe("/api/organizer/* (#248)", () => {
   });
 });
 
+describe("POST /api/auth/start", () => {
+  const SECRET = "s3cret-from-ssm";
+  const from = (address: string) => ({ "x-kad-viewer": address, "x-kad-origin": SECRET });
+
+  function starting(harness = makeHarness()) {
+    const opened: string[] = [];
+    const rt = runtimeFor(harness, {
+      originSecret: SECRET,
+      openAccount: async (email: string) => {
+        opened.push(email);
+      },
+    });
+    const start = (email: unknown, address = "198.51.100.7") =>
+      respond(event("POST", "/api/auth/start", { body: { email }, headers: from(address) }), rt);
+    return { rt, opened, start };
+  }
+
+  it("makes sure the address has an account, as the browser will name it to Cognito, and says nothing more", async () => {
+    const { opened, start } = starting();
+    const result = await start("  Ada@Example.com ");
+    expect(result.statusCode).toBe(204);
+    expect(result.body).toBeUndefined();
+    expect(opened).toEqual(["ada@example.com"]);
+  });
+
+  it("answers an address it has seen exactly as one it has not", async () => {
+    // Who has an account is nobody else's business. The directory treats
+    // "already exists" as done (cognito-directory.test.ts), so there is one answer.
+    const { start } = starting();
+    const first = await start("ada@example.com");
+    const again = await start("ada@example.com");
+    expect(again).toEqual(first);
+  });
+
+  it("turns away something that is not an address before Cognito hears of it", async () => {
+    const { opened, start } = starting();
+    for (const email of ["", "nope", "a@b", "two words@example.com", 5, null, `${"a".repeat(250)}@example.com`]) {
+      const result = await start(email);
+      expect(result.statusCode, String(email)).toBe(400);
+      expect(bodyOf(result).error, String(email)).toMatchObject({ message: "That email address doesn't look right." });
+    }
+    expect(opened).toEqual([]);
+  });
+
+  it("gives one client a budget, and asks nothing of Cognito once it is spent", async () => {
+    const { opened, start } = starting();
+    for (let i = 0; i < SIGN_IN_START_LIMIT; i++) {
+      expect((await start(`kid${String(i)}@example.com`)).statusCode, `start ${i}`).toBe(204);
+    }
+    const refused = await start("one-more@example.com");
+    expect(refused.statusCode).toBe(429);
+    expect(bodyOf(refused).error).toMatchObject({ code: "SLOW_DOWN", message: TOO_MANY_SIGN_INS });
+    expect(Number(refused.headers?.["retry-after"])).toBeGreaterThan(0);
+    expect(opened).toHaveLength(SIGN_IN_START_LIMIT);
+
+    // Another household is not held up by it,
+    expect((await start("ben@example.com", "198.51.100.8")).statusCode).toBe(204);
+  });
+
+  it("does not spend the budget on something that was never an address", async () => {
+    const { start } = starting();
+    for (let i = 0; i < SIGN_IN_START_LIMIT * 2; i++) await start("nope");
+    expect((await start("ada@example.com")).statusCode).toBe(204);
+  });
+
+  it("fails out loud when Cognito will not, so the browser asks for no code", async () => {
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const rt = runtimeFor(makeHarness(), {
+        openAccount: async () => {
+          throw new Error("TooManyRequestsException");
+        },
+      });
+      const result = await respond(event("POST", "/api/auth/start", { body: { email: "ada@example.com" } }), rt);
+      expect(result.statusCode).toBe(500);
+      // And a runtime with no directory at all is the same failure, never a quiet yes.
+      const bare = await respond(event("POST", "/api/auth/start", { body: { email: "ada@example.com" } }), runtimeFor(makeHarness()));
+      expect(bare.statusCode).toBe(500);
+    } finally {
+      logged.mockRestore();
+    }
+  });
+});
+
 describe("POST /api/auth/link", () => {
   it("refuses a request with no bearer token", async () => {
     const result = await respond(event("POST", "/api/auth/link"), runtimeFor(makeHarness()));
@@ -2378,6 +2468,10 @@ const SHARED = [
 const PROD_ONLY = [
   // Served from the stack's environment; the dev client has no pool to describe.
   { path: "/api/config", method: "GET" },
+  // Makes sure an address has an account in the pool before its code is asked
+  // for. The dev sign-in has no pool and no accounts: `createDevAuthClient`
+  // never calls a server to request a code, and takes any address.
+  { path: "/api/auth/start", method: "POST" },
 ] as const;
 
 /** The reverse: local-only, and deliberately so. */
