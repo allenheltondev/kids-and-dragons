@@ -56,6 +56,10 @@
   text-wrap: balance;
 }
 
+/* #567: a knack or snag line under the cue, the fight log's matchup callout. */
+.game__edge { font-size: 0.85em; }
+.game--tv .game__edge { flex-basis: 100%; }
+
 /* --- the board ---------------------------------------------------------- */
 
 .game__board {

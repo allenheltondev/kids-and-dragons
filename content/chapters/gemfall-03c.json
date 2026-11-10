@@ -496,6 +496,9 @@
     },
     "check_expose": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "Tamsin's hands blur and the cards fly. The Sun Card starts on the left. Her third tail twitches every time it moves. Watch where it goes.",
       "interaction": {
         "kind": "tracking",
@@ -742,6 +745,9 @@
     },
     "check_block_jumpers": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Everybody braces.",
       "interaction": {
         "kind": "timing",
@@ -2570,6 +2576,9 @@
     },
     "interaction_wagon_level": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The stuck wagon leans hard into its rut. Tap when the marker crosses the gold to give it one good heave. The drover has named the rut. \"Do not encourage it.\"",
       "interaction": {
         "kind": "precision",
@@ -2643,6 +2652,9 @@
     },
     "interaction_ford_posts": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The marker posts have fallen flat. Pass the posts hand to hand so the runner can raise them. One arrow points into a cabbage stall. A relay-runner fixes that one herself.",
       "interaction": {
         "kind": "relay",
@@ -2741,6 +2753,9 @@
     },
     "interaction_surge_brace": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The wagon crew you freed wades up with a long brace. Set it at the wheel just right, and the wagon rights itself. The drakes argue over the bread.",
       "interaction": {
         "kind": "precision",

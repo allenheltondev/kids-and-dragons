@@ -1234,6 +1234,9 @@
     },
     "carry_beam": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The new beam lies on the bank, thick as a sleeping cow. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
       "cast": [
         {

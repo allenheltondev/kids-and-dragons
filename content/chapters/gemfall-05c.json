@@ -1936,6 +1936,9 @@
     },
     "interaction_bell_cart": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The grandmothers wheel their loudest hand bell down to the stones on a little cart. A wheel sticks in a rut. \"Push on the count!\" calls the bell-code expert. \"One, two, NOW!\"",
       "interaction": {
         "kind": "timing",

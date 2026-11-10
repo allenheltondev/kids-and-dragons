@@ -16,20 +16,27 @@ import { WhatWeStoreLink } from "./WhatWeStore";
 import "../guide/GuideScreen.css";
 import "./PrivacyScreen.css";
 
-/** Who runs the game: the operator's own words, or a plain statement that they are not filled in. */
-export function OperatorLines({ name = OPERATOR.name, contact = OPERATOR.contact }: { name?: string; contact?: string }): ReactElement {
+/**
+ * Who runs the game: the operator's own words, or a plain statement that they are not filled in.
+ * `about` is what to write in about: privacy questions here, the terms on the terms page.
+ */
+export function OperatorLines({
+  name = OPERATOR.name,
+  contact = OPERATOR.contact,
+  about = "privacy questions",
+}: { name?: string; contact?: string; about?: string }): ReactElement {
   if (name === "" || contact === "") {
     return (
       <p className="guide__p privacy__missing">
         The name and contact address of whoever runs Kids &amp; Dragons have not been published yet. Until they are, there is
-        no one here to write to about privacy.
+        no one here to write to.
       </p>
     );
   }
   return (
     <p className="guide__p">
       Kids &amp; Dragons is run by {/[.!?]$/.test(name) ? name : `${name}.`} Write to{" "}
-      <a href={`mailto:${contact}`}>{contact}</a> with privacy questions.
+      <a href={`mailto:${contact}`}>{contact}</a> with {about}.
     </p>
   );
 }

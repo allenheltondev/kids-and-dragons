@@ -1490,6 +1490,9 @@
     },
     "sneak_nest": {
       "type": "interaction",
+      "tags": [
+        "sneak"
+      ],
       "rift": "steady",
       "narration": "Ease the blankets out from around the wyrm, one at a time, and carry them through the opening. Move while it breathes out. Freeze when it breathes in.",
       "interaction": {

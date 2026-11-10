@@ -438,28 +438,33 @@ const DIGESTS: PreEpicSave["digests"] = {
 // the Glade Stone ending ("no mosshorn comes near") contradicted; it will catch up someday. One
 // narration string only: no scene, edge, flag, effect, stat or TN moved, and the gameplay
 // digests below are unchanged.
-// Chapter 03c is re-pinned for Wend's pronoun (#706, approved by the owner): Wend is a she, as her
-// recorded voice is, so the soup bowls' two results read "Kindness first," she says. Two narration
-// strings only: no scene, edge, flag, effect, stat or TN moved, and the gameplay digests below are
-// unchanged.
+// Chapters 01, 02, 03a, 03b, 03c, 04a, 04b, 04c, 05b, 05c, 06, 07h and 08 are re-pinned for
+// mini-game edges (#567, approved by the owner): 38 interaction scenes gain only a `tags` list
+// (force, search, sneak, swim, climb), so a hero's matchup edge makes that game one step easier
+// or harder. Gemfall's dice stay exempt from matchups. No scene, edge, flag, effect, stat, TN or
+// branch moved, and the gameplay digests below are unchanged.
+// Chapter 03c is re-pinned again, on top of the tags above, for Wend's pronoun (#706, approved by
+// the owner): Wend is a she, as her recorded voice is, so the soup bowls' two results read
+// "Kindness first," she says. Two narration strings only: no scene, edge, flag, effect, stat or TN
+// moved, and the gameplay digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
-  "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
-  "chapters/gemfall-02.json": "04ce7ad2b710baf5767df3a528341f79b71b156bed0b8d9e31994853a1980a78",
-  "chapters/gemfall-03a.json": "0671e7da5b33d85a4ad822568b250f5d8e37de465ceb738fc7ab0286425b6804",
-  "chapters/gemfall-03b.json": "51b0a27ee6b3efd36db1786dc88ced9a13898cf7bba3e9f2dc2f7116d0af786c",
-  "chapters/gemfall-03c.json": "c756b3d5832a6bf2a7200070a13a1885c6bab646d747aea1f913994c3d291a67",
-  "chapters/gemfall-04a.json": "daf9da4bbcfa5d81e54d72b9e4d72f5e5206f877d1c2ece9c6b791dddf2c1432",
-  "chapters/gemfall-04b.json": "26106d947ee299951e7e195c916a27defb87e2cf5866f3f390a3a753f040cd13",
-  "chapters/gemfall-04c.json": "e281173e60c3373859184caa7a76924946811a8059333b7f890bcf3ee920de3f",
+  "chapters/gemfall-01.json": "09f25a62e25d82b3385d4e658fd037b9cefde9e761c9deddafc3881a187f4980",
+  "chapters/gemfall-02.json": "9df094d30ed0195ead96f6d125dad51aac67c2b66ebcc28bd8008bb844ac5acf",
+  "chapters/gemfall-03a.json": "97a4159a757cf09eb9bec67c9ed07fc8fef6bdef6036e340415cb97d1cab8cf2",
+  "chapters/gemfall-03b.json": "66c1f2a850f57220f4fb6b906e74db7cd092441f8506936a1aca2efc2f320b9b",
+  "chapters/gemfall-03c.json": "16fd48666d8942394febfcc9b51ae2aa0df5af05c97e85509349b3874e2d4c4c",
+  "chapters/gemfall-04a.json": "c587238d2c6bd0764a9a974c720499bfa0c340e50c7862020d919597b1784af0",
+  "chapters/gemfall-04b.json": "a050a8eb39c95867821eeb51f2456f91f46c528d7372e44eb44116774ba17781",
+  "chapters/gemfall-04c.json": "f04af270136af692a14a4f722d091095ee5122050ae5ccd08aec94097a2aa237",
   "chapters/gemfall-05a.json": "6158555dba9c779162530effc81a014f11e439f24b6b541e69cc68ec95671d50",
-  "chapters/gemfall-05b.json": "209214528a9453b93d89c1010124e156da82a2157651050a05b9f473bb76892d",
-  "chapters/gemfall-05c.json": "c70c4a4472c6f60cf306db1056684bdc541201f0f44c5959d2cbe7989d965385",
-  "chapters/gemfall-06.json": "1c846bc02227787027e3e1d886dd66cad97c762a6feb495f4891c939c929b8c9",
-  "chapters/gemfall-07h.json": "0245f102c501fa6c434589ee68c2eb2befd1398e6e178e229910fdafd51f1fce",
+  "chapters/gemfall-05b.json": "301dff09a54dae678710e08571435bde4c5ce3f21c8eb850a22e844cad1888a1",
+  "chapters/gemfall-05c.json": "90a16af66db92710fe611f1f2d972781cbe7e6078fd398a56f1aab265ab47aad",
+  "chapters/gemfall-06.json": "75590fa20fe5e7f299f3f62a3bec8ddf51b95a1a3d2fea56db87e0e12533ad5e",
+  "chapters/gemfall-07h.json": "7babdc465737d55e32b6ee4fa4fdae6c49d4f99e81360bdb13d1047b7f21b6d4",
   "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
   "chapters/gemfall-07r.json": "6555ab01bd48cb40cd944cb91c5a65b841518058d708ac943f79cfb54a13e295",
-  "chapters/gemfall-08.json": "d075f2163272dc3d29b89d0d12e937691d1fe12ea4cbf9eabd3406226f372612",
+  "chapters/gemfall-08.json": "c6fecdab6736bda28bf9ac5cb11785f0c75951b1131b9aed8c06f668a72e7d7a",
 };
 
 describe("Gemfall's reviewed files and legacy contracts", () => {

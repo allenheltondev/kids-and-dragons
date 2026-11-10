@@ -2869,6 +2869,16 @@
         "onAssisted": {
           "$ref": "#/$defs/branch"
         },
+        "tags": {
+          "$comment": "#567, docs/matchups.md: what kind of doing this game is, keys of rules.matchups.checkTags (content:validate checks them). A matchup edge on a tag makes the game one step easier or harder for the acting hero. Mechanical only, never shown as story text.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*$"
+          }
+        },
         "interaction": {
           "oneOf": [
             {

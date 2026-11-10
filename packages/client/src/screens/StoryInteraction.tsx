@@ -14,12 +14,13 @@
 import { GameScenery } from "./GameScenery";
 import { PaintedInteraction } from "./InteractionArt";
 import { useEffect, useRef, useState } from "react";
-import { cooperationProgress, interactionActor, interactionStartLocal, playbackMs, speak, supportsReady } from "@kad/shared";
+import { cooperationProgress, edgePace, interactionActor, interactionStartLocal, playbackMs, speak, supportsReady } from "@kad/shared";
 import type { InteractionAction, InteractionPrompt, PartyMember } from "@kad/shared";
 import { useSend, useRunState, useMe, useGameStore, useSynced } from "../store";
 import { clockGap } from "../store/server-clock";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
+import { calloutsOfEdge } from "./matchup-copy";
 import { Button } from "../ui/Button";
 import { Board, KindControls, lampAt } from "./InteractionExtras";
 import { litStep, padNote, saysGo, stampFor } from "./game-feel";
@@ -27,6 +28,7 @@ import { useRelayArrival } from "./RelayGame";
 import { DiceCelebration } from "./DiceCelebration";
 import { cue } from "../audio/cue";
 import { GAME, HELPING_HAND, outcomeLine, phoneJob, tvStatus } from "./interaction-copy";
+import "./FightLog.css";
 import "./StoryInteraction.css";
 
 /** Frame-rate only where a marker moves; untimed play needs a slow tick for playback and lease expiry. */
@@ -100,7 +102,7 @@ function clockFor(prompt: InteractionPrompt, now: number): number | undefined {
   const { kind } = prompt.spec;
   if (kind === "precision" || kind === "timing") return undefined;
   if (kind === "relay" && prompt.relay && !prompt.caughtBy && !prompt.relay.flight.dropped && now - Date.parse(prompt.relay.flight.launchedAt) < prompt.relay.flight.durationMs) return undefined;
-  if (kind === "tracking" && !prompt.relaxed && now - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false)) return undefined;
+  if (kind === "tracking" && !prompt.relaxed && now - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false, edgePace(prompt))) return undefined;
   return SLOW_CLOCK_MS;
 }
 
@@ -147,7 +149,7 @@ function useRoomSounds(prompt: InteractionPrompt | null, now: number, connected:
     const spec = prompt.spec;
     const elapsed = now - Date.parse(prompt.startedAt ?? "");
     if (spec.kind === "memory" && !prompt.relaxed && !reducedMotion()) {
-      const step = litStep(elapsed, spec.stepMs, spec.answer.length);
+      const step = litStep(elapsed, spec.stepMs * edgePace(prompt), spec.answer.length);
       if (step !== null && step !== seen.step) padNote(Math.max(0, spec.options.findIndex((option) => option.id === spec.answer[step])));
       seen.step = step;
     }
@@ -163,7 +165,8 @@ function useRoomSounds(prompt: InteractionPrompt | null, now: number, connected:
       seen.lamp = word;
     }
     if (spec.kind === "tracking" && !prompt.relaxed && !reducedMotion()) {
-      const swap = Math.floor((elapsed - spec.stepMs) / spec.stepMs);
+      const paced = spec.stepMs * edgePace(prompt);
+      const swap = Math.floor((elapsed - paced) / paced);
       if (swap >= 0 && swap < spec.swaps.length && swap !== seen.swap) cue("whoosh");
       seen.swap = swap;
     }
@@ -190,6 +193,13 @@ function GameHead({ prompt }: { prompt: InteractionPrompt }) {
   return <header className="game__head">
     <span className="game__badge"><Icon name={game.icon} /> {game.name}</span>
     <h3 className="game__cue">{prompt.spec.cue}</h3>
+    {/* #567: the acting hero's knack or snag on this game, the fight log's own callouts. */}
+    {calloutsOfEdge(prompt.edge).map((callout) => (
+      <span key={callout.id} className={`fight-log__matchup fight-log__matchup--${callout.sign} game__edge`}>
+        <Icon name={callout.icon} />
+        <span>{callout.line}</span>
+      </span>
+    ))}
   </header>;
 }
 

@@ -22,7 +22,7 @@
  *   its beat.
  */
 import { applyIntent, enterScene } from "@kad/shared";
-import type { RunState } from "@kad/shared";
+import type { ClassId, RunState, SpeciesId } from "@kad/shared";
 import { describe, expect, it } from "vitest";
 import { pairwise } from "./pairwise.ts";
 import { allPaths, campaign, chapters, context, finishInteraction, send, start } from "./riftlight-test-support.ts";
@@ -236,12 +236,14 @@ it("sets only the Paths fragment of the journey flags, and the Coast callback ha
   expect(JSON.stringify(campaign.graph)).not.toContain('"flag":"fragment_coast_learned","value":true');
 });
 
-it("a quiet way in earns a wider window at the old wall than a noisy one", () => {
+// The windows are graded by how the party came in. A hero's own knack (#567: the wait games are
+// tagged `search`) widens every one of them alike, so the grading is read without an edge first.
+function wallHits(species: SpeciesId, cls: ClassId, positions: number[]) {
   const hits: Record<string, boolean[]> = {};
   for (const scene of ["wait_long", "wait_slow", "wait_knack"]) {
     hits[scene] = [];
-    for (const position of [0.62, 0.7]) {
-      let state = enterScene(start(chapter, "kitsune", "starweaver"), scene, context(chapter)).state;
+    for (const position of positions) {
+      let state = enterScene(start(chapter, species, cls), scene, context(chapter)).state;
       if (state.prompt?.kind !== "interaction") throw new Error("Expected interaction");
       const actor = state.prompt.actorId;
       const base = { openedSeq: state.prompt.openedSeq, attempt: state.prompt.attempt };
@@ -252,5 +254,22 @@ it("a quiet way in earns a wider window at the old wall than a noisy one", () =>
       hits[scene]!.push(stopped.state.prompt.outcome === "success");
     }
   }
-  expect(hits).toEqual({ wait_long: [false, false], wait_slow: [true, false], wait_knack: [true, true] });
+  return hits;
+}
+
+it("a quiet way in earns a wider window at the old wall than a noisy one", () => {
+  // A kitsune Thornguard has no edge on `search`.
+  expect(wallHits("kitsune", "thornguard", [0.62, 0.7])).toEqual({ wait_long: [false, false], wait_slow: [true, false], wait_knack: [true, true] });
+});
+
+it("a search knack widens every window at the old wall alike, and keeps their order", () => {
+  // A Starweaver kitsune's Glimmer is a `search` knack: each window is 1.5x as wide.
+  const positions = [0.62, 0.66, 0.7, 0.74, 0.78];
+  const plain = wallHits("kitsune", "thornguard", positions);
+  const knack = wallHits("kitsune", "starweaver", positions);
+  const count = (row: boolean[]) => row.filter(Boolean).length;
+  for (const scene of ["wait_long", "wait_slow", "wait_knack"]) expect(count(knack[scene]!)).toBeGreaterThanOrEqual(count(plain[scene]!));
+  expect(count(knack.wait_long!)).toBeLessThanOrEqual(count(knack.wait_slow!));
+  expect(count(knack.wait_slow!)).toBeLessThanOrEqual(count(knack.wait_knack!));
+  expect(count(knack.wait_long!)).toBeGreaterThan(count(plain.wait_long!));
 });

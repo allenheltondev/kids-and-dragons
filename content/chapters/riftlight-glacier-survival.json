@@ -178,6 +178,9 @@
     },
     "kid_burrow": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "Warm enough to be bold, the kid wriggles out of your coat and dives under one of three snow mounds, all the same shape. Then the mounds start to move.",
       "interaction": {
         "kind": "tracking",
@@ -1637,6 +1640,9 @@
     },
     "shelf_cross": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "One last pole goes across the snow shelf. \"The stream pauses between gulps,\" says the herder. \"Step across when it goes quiet.\" The stream gulps. Then it goes quiet.",
       "interaction": {
         "kind": "timing",
