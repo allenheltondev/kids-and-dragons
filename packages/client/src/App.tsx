@@ -11,6 +11,7 @@
  *   /guide              → <GuideScreen/> (the grown-up's guide, #257)
  *   /guide/setup        → <SetupGuideScreen/> (its accounts, devices and groups half)
  *   /privacy            → <PrivacyScreen/> (the privacy policy, #523)
+ *   /terms              → <TermsScreen/> (the terms of use)
  *   /account            → <AccountScreen/> (sign-in, devices, tablets, groups)
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
  *   /p/:code   party    → PartyLayout player
@@ -130,6 +131,8 @@ const AccountScreen = lazyChunk(() => import("./screens/AccountScreen"), (module
 
 // The privacy policy (`/privacy`, #523): public, and linked from the start screens.
 const PrivacyScreen = lazyChunk(() => import("./screens/PrivacyScreen"), (module) => module.default);
+// The terms of use (`/terms`): public, and linked from the footer beside the privacy policy.
+const TermsScreen = lazyChunk(() => import("./screens/TermsScreen"), (module) => module.default);
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -313,6 +316,15 @@ export function App(): React.JSX.Element {
         <ChunkBoundary message="The privacy page couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the privacy page" showLabel /></div>}>
             <PrivacyScreen />
+          </Suspense>
+        </ChunkBoundary>
+      );
+    }
+    if (route.name === "terms") {
+      return (
+        <ChunkBoundary message="The terms page couldn’t open.">
+          <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the terms of use" showLabel /></div>}>
+            <TermsScreen />
           </Suspense>
         </ChunkBoundary>
       );

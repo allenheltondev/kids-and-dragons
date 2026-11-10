@@ -12,6 +12,8 @@
  *                  groups, for the grown-up who wants to look after heroes.
  *   /privacy     → the privacy policy (#523). Public, needs nothing at all, and
  *                  is linked from the start screens before anyone joins or hosts.
+ *   /terms       → the terms of use, beside the privacy policy in the footer.
+ *                  Public, and needs nothing at all.
  *   /account     → accounts and devices: sign in, move a hero between
  *                  devices, set up a family tablet or a group. A grown-up's
  *                  errands, kept off the join screen.
@@ -39,6 +41,7 @@ export type Route =
   | { name: "guideSetup" }
   | { name: "account" }
   | { name: "privacy" }
+  | { name: "terms" }
   | { name: "share" }
   | { name: "tv"; code: string }
   | { name: "player"; code: string }
@@ -113,6 +116,7 @@ export function parseRoute(input: string): Route {
   if (segments.length === 2 && head === "guide" && second === "setup") return { name: "guideSetup" };
   if (segments.length === 1 && head === "account") return { name: "account" };
   if (segments.length === 1 && head === "privacy") return { name: "privacy" };
+  if (segments.length === 1 && head === "terms") return { name: "terms" };
   if (segments.length === 1 && head === "share") return { name: "share" };
 
   if (segments.length === 2 && second !== undefined) {
@@ -141,6 +145,8 @@ export function formatRoute(route: Route): string {
       return "/account";
     case "privacy":
       return "/privacy";
+    case "terms":
+      return "/terms";
     case "share":
       return "/share";
     case "tv":
