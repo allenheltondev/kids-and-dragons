@@ -262,11 +262,15 @@ jobs:
       # Coverage rather than a bare `npm test` on main: the thresholds in
       # vitest.config.ts are a ratchet, and a ratchet nothing turns is a
       # comment. `--coverage` runs the identical suite, so this is the same
-      # gate plus a floor. A pull request runs the suite bare: instrumenting
-      # 5,500 tests was two of the five minutes this step took, and the floor
-      # is checked on the merge that moves it.
+      # gate plus a floor. A pull request runs it measured too. It used to run
+      # bare to save the instrumenting time, which meant main ran a slower
+      # suite than the one that had approved the merge: one test that only
+      # timed out under coverage turned main red six merges in a row
+      # (2026-11-05), and a floor checked after the merge blocks production
+      # rather than the pull request. The end-to-end shards outlast this job
+      # either way, so the extra minutes do not lengthen a run.
       - name: Test
-        run: ${{ github.event_name == 'pull_request' && 'npm test' || 'npm run test:coverage' }}
+        run: npm run test:coverage
         env:
           KAD_DDB_ENDPOINT: http://localhost:8000
           AWS_REGION: us-east-1
@@ -274,7 +278,7 @@ jobs:
       # The summary lands in the run's front page rather than 400 lines up the
       # log, because a number nobody sees is a number nobody defends.
       - name: Report coverage
-        if: always() && github.event_name != 'pull_request'
+        if: always()
         run: |
           {
             echo "### Coverage"
