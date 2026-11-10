@@ -327,7 +327,7 @@ export function HostControls({ placement, button = true }: { placement: "inline"
       {/* In the narration when there is one (ui/story-dock.ts), never over the stage. */}
       <StopOffer state={state} timeoutMs={STOP_OFFER_MS} docked />
       {open ? panel : null}
-      {/* The grown-up's sign-in for the visitor switch. A phone's view
+      {/* A grown-up's sign-in. A phone's view
           already has one (layout/PlayerView); the shared display does not. */}
       <SignInFlow />
     </div>
