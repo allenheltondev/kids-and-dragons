@@ -29,7 +29,7 @@ import {
 import { applyIntent, createRunState } from "@kad/shared";
 import { closeRoom } from "../handlers/host.ts";
 import { createRoom } from "../handlers/room.ts";
-import { CODE_MISS_LIMIT } from "../handlers/code-guard.ts";
+import { CODE_MISS_LIMIT, ROOM_OPEN_NEW_LIMIT, TOO_MANY_ROOMS } from "../handlers/code-guard.ts";
 import { MAX_BODY_BYTES, respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
 
@@ -741,6 +741,100 @@ describe("POST /api/room/:code/watch", () => {
     // A screen is not a player (spec §2.1) — nothing here may name one.
     expect(payload).not.toHaveProperty("playerId");
     expect(payload).not.toHaveProperty("sessionToken");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Opening rooms — the one route that writes a household for a stranger
+// ---------------------------------------------------------------------------
+
+describe("the room-opening budget", () => {
+  const SECRET = "s3cret-from-ssm";
+  const from = (address: string) => ({ "x-kad-viewer": address, "x-kad-origin": SECRET });
+  const open = (rt: HttpRuntime, headers: Record<string, string>) =>
+    respond(event("POST", "/api/room", { body: { mode: "travel", displayName: "Host" }, headers }), rt);
+
+  it("refuses an address that keeps opening rooms from never-seen devices, before anything is written", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    const households = vi.spyOn(harness.repo, "putHousehold");
+
+    let deviceToken = "";
+    for (let i = 0; i < ROOM_OPEN_NEW_LIMIT; i++) {
+      const opened = await open(rt, from("198.51.100.7"));
+      expect(opened.statusCode, `room ${i}`).toBe(200);
+      deviceToken = String((bodyOf(opened) as unknown as { deviceToken: string }).deviceToken);
+    }
+    const written = households.mock.calls.length;
+    expect(written).toBeGreaterThanOrEqual(ROOM_OPEN_NEW_LIMIT);
+
+    const refused = await open(rt, from("198.51.100.7"));
+    expect(refused.statusCode).toBe(429);
+    expect(bodyOf(refused).error).toMatchObject({ code: "SLOW_DOWN", message: TOO_MANY_ROOMS });
+    expect(Number(refused.headers?.["retry-after"])).toBeGreaterThan(0);
+    // No household, so no player, device, run or room either.
+    expect(households.mock.calls.length).toBe(written);
+
+    // A family already playing at that address starts another game regardless,
+    expect((await open(rt, { ...from("198.51.100.7"), "x-kad-device-token": deviceToken })).statusCode).toBe(200);
+    // and so does a first-timer anywhere else.
+    expect((await open(rt, from("198.51.100.8"))).statusCode).toBe(200);
+  });
+
+  it("does not spend the budget on a request it was going to refuse anyway", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    for (let i = 0; i < ROOM_OPEN_NEW_LIMIT * 2; i++) {
+      const malformed = await respond(event("POST", "/api/room", { body: { mode: "nope" }, headers: from("198.51.100.7") }), rt);
+      expect(malformed.statusCode).toBe(400);
+    }
+    expect((await open(rt, from("198.51.100.7"))).statusCode).toBe(200);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Session tokens — the header, and nowhere else
+// ---------------------------------------------------------------------------
+
+describe("where a session token may arrive", () => {
+  async function seated() {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    const joined = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      rt,
+    );
+    const { sessionToken } = bodyOf(joined) as unknown as { sessionToken: string };
+    return { rt, room, sessionToken };
+  }
+
+  it("reads the room's state for a token in the Authorization header", async () => {
+    const { rt, room, sessionToken } = await seated();
+    const read = await respond(
+      event("GET", "/api/state", { query: { code: room.code }, headers: { authorization: `Bearer ${sessionToken}` } }),
+      rt,
+    );
+    expect(read.statusCode).toBe(200);
+  });
+
+  it("does not take one from the query string, where it would be logged with the URL", async () => {
+    const { rt, room, sessionToken } = await seated();
+    const read = await respond(event("GET", "/api/state", { query: { code: room.code, token: sessionToken } }), rt);
+    // The answer an unknown code gets: the route says nothing about which rooms are live.
+    expect(read.statusCode).toBe(404);
+  });
+
+  it("does not take one from the body", async () => {
+    const { rt, room, sessionToken } = await seated();
+    const beat = (init: Parameters<typeof event>[2]) => respond(event("POST", "/api/presence", init), rt);
+
+    const inBody = await beat({ body: { runId: room.runId, sessionToken } });
+    expect(inBody.statusCode).toBe(401);
+    const inQuery = await beat({ body: { runId: room.runId }, query: { token: sessionToken } });
+    expect(inQuery.statusCode).toBe(401);
+    const inHeader = await beat({ body: { runId: room.runId }, headers: { authorization: `Bearer ${sessionToken}` } });
+    expect(inHeader.statusCode).not.toBe(401);
   });
 });
 

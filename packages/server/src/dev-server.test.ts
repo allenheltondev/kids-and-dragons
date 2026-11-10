@@ -11,11 +11,13 @@
 
 import { spawn, type ChildProcess } from "node:child_process";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { request as httpRequest } from "node:http";
 import { createServer } from "node:net";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { ROOM_OPEN_NEW_LIMIT, TOO_MANY_ROOMS } from "./handlers/code-guard.ts";
 
 const SCRIPT = fileURLToPath(new URL("./dev-server.ts", import.meta.url));
 
@@ -84,6 +86,48 @@ async function post(route: string, body: unknown, headers: Record<string, string
   return { status: res.status, json: (await res.json()) as Record<string, unknown> };
 }
 
+/**
+ * A request from another address on this machine. Everything else here
+ * arrives from 127.0.0.1, which the room-opening budget never counts
+ * (handlers/code-guard.ts); 127.0.0.2 is a client like any other.
+ */
+function fromElsewhere(
+  method: "GET" | "POST",
+  route: string,
+  init: { body?: unknown; headers?: Record<string, string> } = {},
+): Promise<{ status: number; json: Record<string, unknown>; headers: Record<string, string | string[] | undefined> }> {
+  return new Promise((resolve, reject) => {
+    const url = new URL(route, base);
+    const payload = init.body === undefined ? undefined : JSON.stringify(init.body);
+    const req = httpRequest(
+      {
+        host: url.hostname,
+        port: url.port,
+        path: `${url.pathname}${url.search}`,
+        method,
+        localAddress: "127.0.0.2",
+        headers: { ...(payload === undefined ? {} : { "content-type": "application/json" }), ...init.headers },
+      },
+      (res) => {
+        let text = "";
+        res.setEncoding("utf8");
+        res.on("data", (chunk: string) => (text += chunk));
+        res.on("end", () => {
+          let json: Record<string, unknown> = {};
+          try {
+            json = JSON.parse(text) as Record<string, unknown>;
+          } catch {
+            // Not every answer is JSON; the status is what these tests read.
+          }
+          resolve({ status: res.statusCode ?? 0, json, headers: res.headers });
+        });
+      },
+    );
+    req.once("error", reject);
+    req.end(payload);
+  });
+}
+
 /** The room as the TV that opened it sees it. */
 async function watch(opened: Record<string, unknown>) {
   return post(`/api/room/${String(opened.code)}/watch`, {}, { "x-kad-device-token": String(opened.deviceToken) });
@@ -99,6 +143,46 @@ beforeAll(async () => {
 afterAll(async () => {
   await stopServer();
   await rm(dataDir, { recursive: true, force: true });
+});
+
+describe("POST /api/room on the dev server: the room-opening budget", () => {
+  it("refuses another address that keeps opening rooms, as the Lambda does, and never this machine", async () => {
+    const anonymous = { mode: "travel", displayName: "Host" };
+    for (let i = 0; i < ROOM_OPEN_NEW_LIMIT; i++) {
+      expect((await fromElsewhere("POST", "/api/room", { body: anonymous })).status, `room ${i}`).toBe(200);
+    }
+    const refused = await fromElsewhere("POST", "/api/room", { body: anonymous });
+    expect(refused.status).toBe(429);
+    expect(refused.json.error).toMatchObject({ code: "SLOW_DOWN", message: TOO_MANY_ROOMS });
+    expect(Number(refused.headers["retry-after"])).toBeGreaterThan(0);
+
+    // 127.0.0.1 is the end-to-end suite and the load smoke test: hundreds of rooms a minute.
+    for (let i = 0; i < ROOM_OPEN_NEW_LIMIT + 5; i++) {
+      expect((await post("/api/room", anonymous)).status, `local room ${i}`).toBe(200);
+    }
+  }, 60_000);
+});
+
+describe("session tokens on the dev server", () => {
+  it("takes one from the header on API routes, and from the query string on the event stream alone", async () => {
+    const opened = await post("/api/room", { mode: "travel", displayName: "Host" });
+    expect(opened.status).toBe(200);
+    const code = String(opened.json.code);
+    const token = String(opened.json.sessionToken);
+
+    const state = (init: RequestInit, query = "") => fetch(`${base}/api/state?code=${code}${query}`, init);
+    expect((await state({ headers: { authorization: `Bearer ${token}` } })).status).toBe(200);
+    // The answer an unknown code gets, exactly as in production.
+    expect((await state({}, `&token=${encodeURIComponent(token)}`)).status).toBe(404);
+
+    // `EventSource` cannot set a header, so the stream is the one exception.
+    const stop = new AbortController();
+    const stream = await fetch(`${base}/events/${code}?sinceSeq=0&token=${encodeURIComponent(token)}`, { signal: stop.signal });
+    expect(stream.status).toBe(200);
+    expect(stream.headers.get("content-type")).toContain("text/event-stream");
+    stop.abort();
+    expect((await fetch(`${base}/events/${code}?sinceSeq=0`)).status).toBe(404);
+  }, 30_000);
 });
 
 describe("POST /api/room on the dev server: the table's name", () => {

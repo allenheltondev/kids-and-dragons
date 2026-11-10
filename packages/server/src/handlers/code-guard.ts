@@ -128,6 +128,53 @@ export function admitClientError(clientKey: string, deps: GuardDeps): Promise<bo
   return deps.repo.reserveCodeLookup(`report#${clientKey}`, window, CODE_MISS_LIMIT, ttl);
 }
 
+/**
+ * Rooms one address may open in a window, from devices nobody has seen before.
+ *
+ * Opening a room with no device token makes a household, a player, a device,
+ * a run and a room, and nothing else in the API writes that much for a
+ * stranger. Unbounded, one script fills the table and the room-code space.
+ *
+ * A device is new exactly once: its first room hands it a token, and every
+ * room after that is a known device's. So this counts first evenings at one
+ * address, and twenty of those in fifteen minutes is a school hall, not a home.
+ */
+export const ROOM_OPEN_NEW_LIMIT = 20;
+
+/**
+ * Rooms one address may open in a window from devices that are already known
+ * (and from shared tablets). Counted too, because a device token costs one
+ * anonymous room, so "known" is not a promise of good faith. A budget of its
+ * own, so strangers on a shared address spending the one above never stop a
+ * family that is already playing from starting another game.
+ */
+export const ROOM_OPEN_KNOWN_LIMIT = 120;
+
+/** What a refused opener is told. The status and code are `SLOW_DOWN`'s. */
+export const TOO_MANY_ROOMS = "Too many new games from here just now. Wait a few minutes, then try again.";
+
+/**
+ * This machine talking to itself: the dev server's own browser tabs, the
+ * end-to-end suite and the load smoke test, which between them open hundreds
+ * of rooms a minute from one address. Production never sees these keys: an
+ * address there comes from CloudFront or API Gateway, and neither reports
+ * loopback. `::1` arrives here as its /64.
+ */
+const LOOPBACK_CLIENTS: ReadonlySet<string> = new Set(["127.0.0.1", "0:0:0:0::/64"]);
+
+/**
+ * Takes one room from this client's budget, or says it is spent. Ask after
+ * the request is known to be well formed and before anything is written.
+ * Nothing is handed back: every room opened costs, whatever becomes of it.
+ */
+export function admitRoomOpen(clientKey: string, opener: "new" | "known", deps: GuardDeps): Promise<boolean> {
+  if (LOOPBACK_CLIENTS.has(clientKey)) return Promise.resolve(true);
+  const window = windowAt(deps.now());
+  const ttl = Math.floor(((window + 2) * CODE_MISS_WINDOW_MS) / 1000);
+  const limit = opener === "new" ? ROOM_OPEN_NEW_LIMIT : ROOM_OPEN_KNOWN_LIMIT;
+  return deps.repo.reserveCodeLookup(`open#${opener}#${clientKey}`, window, limit, ttl);
+}
+
 /** Eight hextets, or null for anything that is not an IPv6 address. */
 function expandIpv6(raw: string): string[] | null {
   const address = raw.split("%")[0] ?? ""; // drop a zone id (`fe80::1%eth0`)
