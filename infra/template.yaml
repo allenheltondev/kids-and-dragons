@@ -437,15 +437,33 @@ Resources:
 
         exports.handler = async (event) => {
           const user = { UserPoolId: event.userPoolId, Username: event.userName };
-          // 32 random bytes, plus one character of each class a password
-          // policy can ask for. Never logged, never returned.
-          const Password = `Aa1!${randomBytes(32).toString("base64url")}`;
-          await cognito.send(new AdminSetUserPasswordCommand({ ...user, Password, Permanent: true }));
-          // Only at sign-up: a reset-password confirmation comes from somebody
-          // already holding the inbox, and their other devices stay signed in.
-          if (event.triggerSource === "PostConfirmation_ConfirmSignUp") {
-            await cognito.send(new AdminUserGlobalSignOutCommand(user));
+          // What both log lines below say: which pool, which account and
+          // which step. The account is named by the id Cognito generated for
+          // it (the pool signs in by email, so `userName` is not the
+          // address). The password is never part of either.
+          const record = { userPoolId: event.userPoolId, userName: event.userName, triggerSource: event.triggerSource };
+          let step = "set-password";
+          try {
+            // 32 random bytes, plus one character of each class a password
+            // policy can ask for. Never logged, never returned.
+            const Password = `Aa1!${randomBytes(32).toString("base64url")}`;
+            await cognito.send(new AdminSetUserPasswordCommand({ ...user, Password, Permanent: true }));
+            // Only at sign-up: a reset-password confirmation comes from somebody
+            // already holding the inbox, and their other devices stay signed in.
+            if (event.triggerSource === "PostConfirmation_ConfirmSignUp") {
+              step = "sign-out";
+              await cognito.send(new AdminUserGlobalSignOutCommand(user));
+            }
+          } catch (err) {
+            // Whoever answers the alarm needs to know whose password survived;
+            // the SDK's own error names a request, not an account. Rethrown,
+            // so Lambda still counts the failure.
+            console.error(JSON.stringify({ event: "sign_up_scrub_failed", ...record, step, error: err?.name ?? "Error" }));
+            throw err;
           }
+          // One line per account made, so that the scrub running at all can
+          // be seen in the log and not only inferred from the alarm's silence.
+          console.log(JSON.stringify({ event: "sign_up_scrubbed", ...record }));
           return event;
         };
       Handler: index.handler
