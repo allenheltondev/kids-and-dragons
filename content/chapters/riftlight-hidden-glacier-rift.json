@@ -452,6 +452,9 @@
     },
     "holes": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "West of the hole, three snow mounds lie in a row, and the ticking jumps between them. The kid dives into one and pops out of another. \"Watch the tail,\" says the herder. \"Where does it end up?\"",
       "interaction": {
         "kind": "tracking",

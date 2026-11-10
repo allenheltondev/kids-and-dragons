@@ -1,5 +1,5 @@
 /** Painted presentation for the authored Riftlight opening. No input or reward logic. */
-import type { CastMember, Chapter, InteractionPrompt, RunState } from "@kad/shared";
+import { playbackStepMs, type CastMember, type Chapter, type InteractionPrompt, type RunState } from "@kad/shared";
 
 export type FightAppearance = NonNullable<NonNullable<Chapter["presentation"]>["fights"]>[number];
 export interface InteractionAppearance { props?: string[]; coverIcons?: string[] }
@@ -28,7 +28,7 @@ export function reactionFigure(sceneId: string | null, prompt: InteractionPrompt
  if(prompt.phase==='result'&&prompt.outcome==='failure'&&rule.onFailure)return rule.onFailure;
  const spec=prompt.spec;
  if(spec.kind==='memory'&&rule.memory){
-  const step=spec.stepMs*(prompt.relaxed?2:1);
+  const step=playbackStepMs(spec,prompt);
   const id=spec.answer[Math.min(spec.answer.length-1,Math.floor(Math.max(0,elapsed)/step))];
   return rule.memory[id??'']??rule.defaultFigure??null;
  }

@@ -15,6 +15,7 @@
  */
 
 import type { ClassId, RulesContent, SpeciesId } from "./types/domain.js";
+import type { InteractionEdge } from "./interactions.js";
 import type {
   CheckTagId,
   MatchupEdge,
@@ -216,6 +217,40 @@ export function checkNotes(
     notes.push({ id: "opinion:disliked", text: `${who} does not trust you.`, roll: table.opinion.dislikedCheckRoll, damage: 0 });
   }
   return notes;
+}
+
+/**
+ * A mini-game's edge for its acting hero (#567, docs/matchups.md "Mini-games"):
+ * the hero's `check` edges on the scene's tags, as a dice check reads them, but
+ * a step rather than a number. At most one knack and one snag, however many
+ * edges match: the strongest of each, ties broken by the table's order. They
+ * cancel when both land. Undefined when nothing applies.
+ *
+ * Opinions do not count: a game is not talking a creature round.
+ */
+export function interactionEdge(
+  rules: RulesContent | MatchupRules | undefined,
+  hero: HeroKind & { id: string },
+  tags: readonly CheckTagId[] | undefined,
+): InteractionEdge | undefined {
+  const table = tableOf(rules);
+  if (!table || !tags || tags.length === 0) return undefined;
+  let knack: MatchupEdge | undefined;
+  let snag: MatchupEdge | undefined;
+  for (const edge of table.edges) {
+    if (edge.on !== "check" || !heroMatches(edge, hero) || !anyOf(list(edge.tag), tags)) continue;
+    const roll = edge.roll ?? 0;
+    if (roll > 0 && (!knack || roll > (knack.roll ?? 0))) knack = edge;
+    if (roll < 0 && (!snag || roll < (snag.roll ?? 0))) snag = edge;
+  }
+  if (!knack && !snag) return undefined;
+  const step = ((knack ? 1 : 0) - (snag ? 1 : 0)) as InteractionEdge["step"];
+  return {
+    heroId: hero.id,
+    step,
+    ...(knack ? { knack: { id: knack.id, text: knack.text } } : {}),
+    ...(snag ? { snag: { id: snag.id, text: snag.text } } : {}),
+  };
 }
 
 function clamp(n: number, cap: number): number {

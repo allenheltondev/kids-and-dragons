@@ -253,6 +253,26 @@ describe("matchups (docs/matchups.md)", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("checks an interaction's tags, and refuses tags on a game that takes no edge (#567)", () => {
+    const result = withRules(
+      (m) => {
+        m.checkTags.force ??= { name: "Force", text: "Heave." };
+      },
+      (chapter) => {
+        const to = { goto: chapter.entry };
+        chapter.scenes.edge_tagged = { type: "interaction", narration: "A log.", tags: ["made_up_tag"],
+          interaction: { kind: "precision", cue: "Heave.", actionLabel: "Heave", target: 0.5, width: 0.3, periodMs: 4000 },
+          onSuccess: to, onFailure: to };
+        chapter.scenes.edge_play = { type: "interaction", narration: "A goat.", tags: ["force"],
+          interaction: { kind: "play", cue: "Pet it.", actionLabel: "Pet", participation: "any", options: [{ id: "pet", label: "Pet", icon: "heart", reaction: "Baa." }] },
+          onSuccess: to, onFailure: to };
+      },
+    );
+    expect(result.out).toContain('"made_up_tag" is not a check tag');
+    expect(result.out).toContain("a play game takes no matchup tags");
+    expect(result.code).not.toBe(0);
+  });
+
   it("skips the vocabulary checks while the tables are empty", () => {
     const result = withRules(
       (m) => {

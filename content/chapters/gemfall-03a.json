@@ -1970,6 +1970,9 @@
     },
     "interaction_hats": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "Another brass hat sets up a game on a barrel: three cups, one shiny button. \"Find it and win a prize!\" she calls. Her hands begin to fly.",
       "cast": [
         {
@@ -2302,6 +2305,9 @@
     },
     "interaction_heron": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "The heron steps from stone to stone between the reeds. Follow its glow to its last fishing spot. Do not try a staring contest. The heron always wins.",
       "interaction": {
         "kind": "tracking",
@@ -2364,6 +2370,9 @@
     },
     "interaction_night_rope": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "A brass hat bobs in the black water, then its owner. Pull the rope in the moment a hand grabs it. Pull together, not just harder.",
       "interaction": {
         "kind": "timing",
@@ -2408,6 +2417,9 @@
     },
     "interaction_crossing": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "The brown current runs hard, then softens. Without a prepared line, the lull is short. Watch the marker, then step. The heron is supervising.",
       "interaction": {
         "kind": "timing",
@@ -2440,6 +2452,9 @@
     },
     "interaction_crossing_prepared": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "The brown current runs hard, then softens. Your prepared line marks the slower edge, so you have longer to step. The heron is supervising.",
       "interaction": {
         "kind": "timing",

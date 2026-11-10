@@ -2864,6 +2864,9 @@
     },
     "interaction_cabinet": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "One wheel of Lady Fleecewick's cabinet sticks in a rut. Forty stones slide toward the low corner. \"Lift, dears, just as it sits level! Gently! They bruise!\"",
       "interaction": {
         "kind": "precision",
@@ -3139,6 +3142,9 @@
     },
     "interaction_wagon_watch": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "From the rock you see a glow under one of three wagon covers. Track it as the wagons swap places. The lead mule looks up, as if checking your homework.",
       "interaction": {
         "kind": "tracking",

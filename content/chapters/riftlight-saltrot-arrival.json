@@ -2374,6 +2374,9 @@
     },
     "tide_dash": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "The water pulls back from the last channel, then rushes in again, like a giant, rude breath. \"Wait for the pull,\" says Puddle, crest raised high. \"Then go.\"",
       "interaction": {
         "kind": "timing",

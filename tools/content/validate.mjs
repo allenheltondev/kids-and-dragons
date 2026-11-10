@@ -2293,7 +2293,11 @@ function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
   for (const chapter of chaptersById.values()) {
     const cf = `content/chapters/${chapter.id}.json`;
     for (const [sceneId, scene] of Object.entries(chapter.scenes ?? {})) {
-      if (scene.type === "check") (scene.tags ?? []).forEach((id, i) => checkTag(cf, `/scenes/${sceneId}/tags/${i}`, id));
+      if (scene.type === "check" || scene.type === "interaction") (scene.tags ?? []).forEach((id, i) => checkTag(cf, `/scenes/${sceneId}/tags/${i}`, id));
+      // #567: play, sequence and cooperate take no knack, so a tag on one would promise nothing.
+      if (scene.type === "interaction" && scene.tags?.length && ["play", "sequence", "cooperate"].includes(scene.interaction?.kind)) {
+        bad(cf, `/scenes/${sceneId}/tags`, `a ${scene.interaction.kind} game takes no matchup tags`, "only precision, timing, tracking, memory, balance and relay games do (docs/matchups.md)");
+      }
       if (scene.type === "encounter") {
         for (const enemy of scene.enemies ?? []) {
           const at = `/scenes/${sceneId}/enemies/${enemy.id}`;

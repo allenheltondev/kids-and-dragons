@@ -1999,6 +1999,9 @@
     },
     "interaction_calf_hide": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "The calf sneezes and decides to play. It dives behind one fern, then another. Three ferns are shaking. Which one is it behind?",
       "interaction": {
         "kind": "tracking",
@@ -2235,6 +2238,9 @@
     },
     "interaction_herd_map": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "A hoof-glow marks the last safe grazing patch. Follow it to the herd's safe edge. A map of the gray could help later.",
       "interaction": {
         "kind": "tracking",
@@ -2369,6 +2375,9 @@
     },
     "interaction_calf_load": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "A broad cloth holds the calf. Lift together just as the sling swings level, then carry it home. The calf tastes the cloth. Disappointing.",
       "interaction": {
         "kind": "precision",
@@ -2400,6 +2409,9 @@
     },
     "interaction_quiet_moss": {
       "type": "interaction",
+      "tags": [
+        "sneak"
+      ],
       "narration": "Lay the moss strip flat, the way the unicorns taught you, and step only when the echo hunter turns its ear away. It listens hard.",
       "interaction": {
         "kind": "timing",

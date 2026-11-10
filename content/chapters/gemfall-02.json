@@ -2405,6 +2405,9 @@
     },
     "interaction_jackalope_hats": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "The jackalopes will not budge. Then one with a single white ear hops under a straw hat. \"Their leader,\" says a passing faun. \"Find her, and they'll let you by.\" The others shuffle the hats. Watch the white ear.",
       "cast": [
         {
@@ -2748,6 +2751,9 @@
     },
     "interaction_stuck_wagon": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a very polite centaur, waves you over. \"Wait for my pull, then push,\" she says. \"I tip well.\"",
       "cast": [
         {
@@ -2854,6 +2860,9 @@
     },
     "interaction_bridge_load": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The fauns line up along the bank to pass a long new beam down to the bridge. \"We'll lend you our brace at the hedges, if you need it,\" they say. The duck inspects both banks.",
       "interaction": {
         "kind": "relay",
@@ -2890,6 +2899,9 @@
     },
     "interaction_hay_line": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Pass each bale toward the barn. On your own, toss it to the waiting farmer. \"Get our hay home and we'll bring our brushes to the hedges,\" the crew promises. The duck wants a turn.",
       "interaction": {
         "kind": "relay",
@@ -3139,6 +3151,9 @@
     },
     "interaction_wolf_sneak": {
       "type": "interaction",
+      "tags": [
+        "sneak"
+      ],
       "narration": "The wolves watch the sausage wagon, not the lane. Wait for the wagon bell to rattle, then slip the caravan past while the wolves flinch.",
       "cast": [
         {

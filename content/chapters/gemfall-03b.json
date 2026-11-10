@@ -2304,6 +2304,9 @@
     },
     "interaction_stumps": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Somebody on the island ahead is grumbling. But first comes the biggest stump yet, rolling like a sleeping cow. \"Fend it off!\" hums Gullet. \"Push when it rolls close. Not before!\"",
       "interaction": {
         "kind": "timing",

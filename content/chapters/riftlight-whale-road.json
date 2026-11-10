@@ -883,6 +883,9 @@
     },
     "quiet_beat": {
       "type": "interaction",
+      "tags": [
+        "charm"
+      ],
       "art": "scenes/riftlight/whale-road",
       "rift": "steady",
       "cast": [
@@ -1694,6 +1697,9 @@
     },
     "sing_road": {
       "type": "interaction",
+      "tags": [
+        "charm"
+      ],
       "art": "scenes/riftlight/whale-road",
       "rift": "steady",
       "cast": [
@@ -1751,6 +1757,9 @@
     },
     "sing_road_wary": {
       "type": "interaction",
+      "tags": [
+        "charm"
+      ],
       "art": "scenes/riftlight/whale-road",
       "rift": "steady",
       "cast": [
