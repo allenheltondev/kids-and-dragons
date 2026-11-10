@@ -466,9 +466,28 @@ A `PreSignUp` trigger (ten lines, inline in the template) confirms them. That is
 not a shortcut past verifying the address — the OTP *is* the verification, since
 nobody reaches a signed-in state without reading a message sent to that inbox.
 
-The consequence worth knowing: password auth is technically enabled on the pool.
-Using it would require guessing a discarded 32-byte secret, so it is not a way
-in — but it is why `AllowedFirstAuthFactors` reads the way it does.
+The consequence worth knowing: password auth is technically enabled on the pool,
+and `SignUp` is a public call. The game's own client discards the password it
+sends, but the pool cannot tell that request from one whose sender keeps it.
+
+**So the pool replaces every new account's password itself.** A
+`PostConfirmation` trigger (inline in the template, beside `PreSignUp`) sets a
+random password the moment an account is confirmed and signs out anything
+already signed in to it. After that the only ways in are the emailed code and a
+passkey. A family sees none of this.
+
+- If the trigger fails, the account is still made, the client carries on to the
+  emailed code, and `kad-<stage>-sign-up-scrub-errors` fires. The function's log
+  has a `sign_up_scrub_failed` line naming the pool, the account (by the id
+  Cognito generated, not the address) and the step that failed. Reset that
+  account's password by hand
+  (`aws cognito-idp admin-set-user-password … --permanent` with a random value).
+- Every account it does scrub leaves a `sign_up_scrubbed` line, so the trigger
+  running at all can be read in the log. Both lines carry an account id and
+  never a password; they are kept as long as any other Lambda log.
+- It does not close the moment between Cognito confirming the account and the
+  trigger running. Closing public sign-up, so that only the API can create an
+  account, is what removes that, and is separate work.
 
 ---
 

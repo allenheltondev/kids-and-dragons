@@ -65,6 +65,21 @@ const FRIENDLY: Record<string, string> = {
   UserNotFoundException: "We couldn't find that email. Check the spelling?",
 };
 
+/**
+ * A sign-up that failed *after* the account was made.
+ *
+ * The pool replaces every new account's password the moment it is confirmed
+ * (`PostConfirmationFunction`, infra/template.yaml). If that step fails,
+ * Cognito reports the whole `SignUp` as failed, but the account exists and the
+ * emailed code will arrive, so the family carries on; the failure is counted
+ * and alarmed on the server, where somebody can act on it. A failure *before*
+ * the account exists (`PreSignUp …`) is still an error: carrying on there
+ * would wait for a code that is never sent.
+ */
+function createdDespite(err: AuthError): boolean {
+  return err.code === "UserLambdaValidationException" && err.message.startsWith("PostConfirmation ");
+}
+
 export interface CognitoClient {
   /** Sends an 8-digit code to `email`, creating the account if it is new. */
   requestCode(email: string): Promise<PendingChallenge>;
@@ -138,7 +153,8 @@ export function createCognitoClient(
           UserAttributes: [{ Name: "email", Value: username }],
         });
       } catch (err) {
-        if (!(err instanceof AuthError) || err.code !== "UsernameExistsException") throw err;
+        if (!(err instanceof AuthError)) throw err;
+        if (err.code !== "UsernameExistsException" && !createdDespite(err)) throw err;
       }
 
       const result = await call<{
