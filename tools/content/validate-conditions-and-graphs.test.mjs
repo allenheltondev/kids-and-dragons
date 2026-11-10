@@ -1,11 +1,7 @@
 /** Part 3 of the content gate suite; see validate-core.test.mjs. */
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
-import { cleanup, REPO, CHAPTER, copyTree, readJson, writeJson, validate, withChapter } from "./validate-harness.mjs";
+import { describe, expect, it } from "vitest";
+import { CHAPTER, copyTree, readJson, readText, removeFile, writeJson, writeText, validate, withChapter } from "./validate-harness.ts";
 
-// Every negative case copies the content tree; removing them all is real disk work.
-afterAll(cleanup, 60_000);
 
 
 describe("class-gated choices (#228)", { timeout: 30_000 }, () => {
@@ -172,7 +168,7 @@ describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
     expect(stale.out).toMatch(/the graph proof is stale/);
     expect(stale.out).toMatch(/npm run content:proofs/);
 
-    rmSync(join(dir, ...proofFile));
+    removeFile(dir, ...proofFile);
     const none = validate(dir);
     expect(none.code, none.out).not.toBe(0);
     expect(none.out).toMatch(/no graph proof .*graph-proofs\/the-hollow-crown\.json/);
@@ -297,8 +293,7 @@ describe("graph campaigns are walked, not just resolved (#193)", { timeout: 30_0
     };
     mutate(campaign);
     writeJson(dir, CAMPAIGN, campaign);
-    const file = join(dir, ...CAMPAIGN);
-    writeFileSync(file, rawEdit(readFileSync(file, "utf8")));
+    writeText(dir, CAMPAIGN, rawEdit(readText(dir, ...CAMPAIGN)));
     return validate(dir, ["--write-proofs"]);
   }
 
@@ -394,7 +389,7 @@ describe("graph campaigns are walked, not just resolved (#193)", { timeout: 30_0
   });
 
   it("leaves the ordered campaigns' output exactly as it was", () => {
-    const result = validate(REPO);
+    const result = validate(copyTree());
     expect(result.code, result.out).toBe(0);
     expect(result.out).toMatch(/gemfall\.json {2}campaign/);
     // Riftlight is the shipped graph campaign; every other line reads as before.

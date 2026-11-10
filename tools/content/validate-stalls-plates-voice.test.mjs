@@ -1,12 +1,8 @@
 /** Part 4 of the content gate suite; see validate-core.test.mjs. */
-import { mkdirSync, rmSync } from "node:fs";
-import { join } from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { sourceHash } from "../voice/script.ts";
-import { cleanup, CHAPTER, copyTree, readJson, writeJson, validate } from "./validate-harness.mjs";
+import { CHAPTER, copyTree, readJson, removeFile, writeJson, validate } from "./validate-harness.ts";
 
-// Every negative case copies the content tree; removing them all is real disk work.
-afterAll(cleanup, 60_000);
 
 
 // ---------------------------------------------------------------------------
@@ -307,7 +303,6 @@ describe("voice scripts (docs/voice-narration-plan.md section 3)", () => {
       ],
     };
     mutate(entry, text);
-    mkdirSync(join(dir, "content", "voice", "scripts"), { recursive: true });
     writeJson(dir, SCRIPT, { [address]: entry });
     return validate(dir);
   }
@@ -381,7 +376,7 @@ describe("the cast voice sheet and the lexicon (#539)", () => {
 
   it("fails when the cast sheet is missing, so the gate cannot be skipped", () => {
     const dir = copyTree();
-    rmSync(join(dir, ...CAST));
+    removeFile(dir, ...CAST);
     const result = validate(dir);
     expect(result.out).toContain("the cast voice sheet is missing");
     expect(result.code).not.toBe(0);

@@ -29,8 +29,10 @@ import type {
   Scene,
   SceneId,
 } from "./types/chapter.js";
-import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
-import { captivesOf, checkEncounterEnvironment } from "./environment.js";
+// Value imports carry `.ts` so the content gate can load this file under plain Node.
+import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.ts";
+import { captivesOf, checkEncounterEnvironment } from "./environment.ts";
+import { sceneExits } from "./scene-exits.ts";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -67,37 +69,11 @@ interface Edge {
 }
 
 export function sceneEdges(scene: Scene): Edge[] {
-  switch (scene.type) {
-    case "story":
-    case "choice_point":
-    case "rest":
-      return scene.choices.map((c) => ({ to: c.goto, via: `choice "${c.id}"` }));
-    case "interaction":
-      return [
-        ...(scene.onSuccess ? [{ to: scene.onSuccess.goto, via: "onSuccess" }] : []),
-        ...(scene.onFailure ? [{ to: scene.onFailure.goto, via: "onFailure" }] : []),
-        ...(scene.onAssisted ? [{ to: scene.onAssisted.goto, via: "onAssisted" }] : []),
-      ];
-    case "check":
-      return [
-        ...(scene.onSuccess ? [{ to: scene.onSuccess.goto, via: "onSuccess" }] : []),
-        ...(scene.onFailure ? [{ to: scene.onFailure.goto, via: "onFailure" }] : []),
-      ];
-    case "encounter":
-      return [
-        ...(scene.onVictory ? [{ to: scene.onVictory.goto, via: "onVictory" }] : []),
-        ...(scene.onDefeat ? [{ to: scene.onDefeat.goto, via: "onDefeat" }] : []),
-        // An environmental fight's other endings (#201) are edges like the
-        // first two: their scenes are reachable, and must reach an ending.
-        ...(scene.onEscape ? [{ to: scene.onEscape.goto, via: "onEscape" }] : []),
-        ...(scene.onTimeout ? [{ to: scene.onTimeout.goto, via: "onTimeout" }] : []),
-      ];
-    default:
-      // Authored JSON, so an unknown type can reach here despite the union.
-      // No edges beats `for (const e of undefined)` throwing past the walker
-      // that was about to report the real problem.
-      return [];
-  }
+  // Which exits a scene has is scene-exits.ts's to say; this adds the label.
+  return sceneExits(scene).map((exit) => ({
+    to: exit.to,
+    via: exit.via === "choice" ? `choice "${exit.choice.id}"` : exit.via,
+  }));
 }
 
 /** Every effect a scene can fire, wherever it hangs. */
