@@ -7,12 +7,11 @@
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 import { campCatalogProblems, chapterFinds } from "./camp-catalog.mjs";
-import { cleanup, copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.mjs";
+import { copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.ts";
 
-afterAll(cleanup, 60_000);
 
 const json = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8"));
 const CATALOG = json("content", "camp.json");

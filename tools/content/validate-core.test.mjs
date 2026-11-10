@@ -18,14 +18,17 @@
  * every assertion below would be satisfied by the copy being broken rather than
  * by the rule working — which is the exact failure mode this file exists to fix,
  * reappearing one level up.
+ *
+ * The copy is in memory and the gate is called as a function
+ * (validate-harness.ts), so a case costs a fraction of a second, not a copied
+ * tree and a spawned process. `out` is the report as the command line prints
+ * it and `code` the exit code it would give; validate-cli.test.ts spawns the
+ * real command line to hold it to both.
  */
 
 
-import { afterAll, describe, expect, it } from "vitest";
-import { cleanup, copyTree, readJson, writeJson, validate, withChapter, laterSceneOf } from "./validate-harness.mjs";
-
-// Every negative case copies the content tree; removing them all is real disk work.
-afterAll(cleanup, 60_000);
+import { describe, expect, it } from "vitest";
+import { copyTree, readJson, writeJson, validate, withChapter, laterSceneOf } from "./validate-harness.ts";
 
 
 // ---------------------------------------------------------------------------
