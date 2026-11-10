@@ -2457,7 +2457,7 @@
       },
       "onSuccess": {
         "goto": "scene_soup_line",
-        "narration": "Clink, clink, clink. The bowls stack up neat as a tower, and Wend slips a honeycake into your pocket. \"Kindness first,\" he says.",
+        "narration": "Clink, clink, clink. The bowls stack up neat as a tower, and Wend slips a honeycake into your pocket. \"Kindness first,\" she says.",
         "effects": [
           {
             "type": "grantItem",
@@ -2468,7 +2468,7 @@
       },
       "onFailure": {
         "goto": "scene_soup_line",
-        "narration": "One bowl lands in the mud, then three. Wend laughs, wipes them off and ladles you a bowl anyway. \"Kindness first,\" he says. No honeycake, though."
+        "narration": "One bowl lands in the mud, then three. Wend laughs, wipes them off and ladles you a bowl anyway. \"Kindness first,\" she says. No honeycake, though."
       },
       "art": "scenes/gemfall/wend-soup-tent"
     },

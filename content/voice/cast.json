@@ -2303,7 +2303,7 @@
       "name": "Wend",
       "kind": "character",
       "who": "a Deep Hollow soup ladler; gentle, generous, asks nothing, says 'kindness first' and means it a little too much",
-      "gender": "male",
+      "gender": "female",
       "genderFrom": "narration",
       "figure": "cast/wend",
       "voiceNotes": [
@@ -2360,7 +2360,7 @@
         "name": "kad-frogfolk-woman",
         "approved": true
       },
-      "pronouns": "he/him",
+      "pronouns": "she/her",
       "pronounsFrom": "narration"
     },
     "mother_thrum": {

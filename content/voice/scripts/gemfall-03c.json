@@ -721,7 +721,7 @@
     ]
   },
   "gemfall-03c/interaction_soup_bowls/onSuccess/narration": {
-    "source": "sha256:962a39f00ab2afea7c40f03753482a0b2c2a8434ebd9a7caae14986431d6496b",
+    "source": "sha256:82c0a0f62cd312e9afb6c98a7ace354d815ed4c23de7fe4ee91451446afc2dba",
     "reviewed": false,
     "lines": [
       {
@@ -734,12 +734,12 @@
       },
       {
         "by": "narrator",
-        "text": "he says."
+        "text": "she says."
       }
     ]
   },
   "gemfall-03c/interaction_soup_bowls/onFailure/narration": {
-    "source": "sha256:c22e1833ba7668f64894184795085ffa18ff74a4c56518c4169ca961741c0728",
+    "source": "sha256:38f8c21d5933936b976f4406da1afc4cd69e04e9c66f5b634ac252476ccc1e19",
     "reviewed": false,
     "lines": [
       {
@@ -752,7 +752,7 @@
       },
       {
         "by": "narrator",
-        "text": "he says. No honeycake, though."
+        "text": "she says. No honeycake, though."
       }
     ]
   },

@@ -438,13 +438,17 @@ const DIGESTS: PreEpicSave["digests"] = {
 // the Glade Stone ending ("no mosshorn comes near") contradicted; it will catch up someday. One
 // narration string only: no scene, edge, flag, effect, stat or TN moved, and the gameplay
 // digests below are unchanged.
+// Chapter 03c is re-pinned for Wend's pronoun (#706, approved by the owner): Wend is a she, as her
+// recorded voice is, so the soup bowls' two results read "Kindness first," she says. Two narration
+// strings only: no scene, edge, flag, effect, stat or TN moved, and the gameplay digests below are
+// unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
   "chapters/gemfall-02.json": "04ce7ad2b710baf5767df3a528341f79b71b156bed0b8d9e31994853a1980a78",
   "chapters/gemfall-03a.json": "0671e7da5b33d85a4ad822568b250f5d8e37de465ceb738fc7ab0286425b6804",
   "chapters/gemfall-03b.json": "51b0a27ee6b3efd36db1786dc88ced9a13898cf7bba3e9f2dc2f7116d0af786c",
-  "chapters/gemfall-03c.json": "50ba95c1a4ac5f6c700abbc433b38b617b677799f6364818f90d0e03e8d9006b",
+  "chapters/gemfall-03c.json": "c756b3d5832a6bf2a7200070a13a1885c6bab646d747aea1f913994c3d291a67",
   "chapters/gemfall-04a.json": "daf9da4bbcfa5d81e54d72b9e4d72f5e5206f877d1c2ece9c6b791dddf2c1432",
   "chapters/gemfall-04b.json": "26106d947ee299951e7e195c916a27defb87e2cf5866f3f390a3a753f040cd13",
   "chapters/gemfall-04c.json": "e281173e60c3373859184caa7a76924946811a8059333b7f890bcf3ee920de3f",
