@@ -1032,6 +1032,34 @@ Resources:
     Properties:
       TopicName: !Sub "kad-${StageName}-alarms"
 
+  # Who may publish: CloudWatch, for this account's kad-<stage>-* alarms and
+  # nothing else. Stated rather than left to the topic's default policy,
+  # because an alarm whose publish is refused still goes to ALARM and simply
+  # tells nobody, which is the silence this section exists to end.
+  #
+  # Principals inside the account (the deploy role, the Slack integration
+  # subscribing below) are authorized by their own IAM policies and need no
+  # statement here.
+  AlarmTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref AlarmTopic
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AlarmsMayPublish
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref AlarmTopic
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+              ArnLike:
+                aws:SourceArn: !Sub "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:kad-${StageName}-*"
+
   # The API crashed or timed out: an invocation Lambda itself counts as failed.
   # One is enough. A handled failure returns normally and shows up in the 5xx
   # alarm below instead.

@@ -291,16 +291,24 @@ Resources:
             Action: sns:*
             Resource: !Sub "arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:kad-${!aws:PrincipalTag/kad:stage}-*"
 
-          # Chatbot is a global service: its ARNs carry no region.
+          # Chatbot is a global service: its ARNs carry no region. This scoped
+          # statement covers what can be scoped: updating and deleting a
+          # configuration that already has a name.
           - Sid: ChatbotKadChannels
             Effect: Allow
             Action: chatbot:*
             Resource: !Sub "arn:${AWS::Partition}:chatbot::${AWS::AccountId}:chat-configuration/slack-channel/kad-${!aws:PrincipalTag/kad:stage}-*"
 
-          # Its read-back of what it just made cannot be scoped to one name.
-          - Sid: ChatbotDescribeViaCloudFormation
+          # Creating a configuration, and reading back what was made, cannot
+          # be scoped to one name: the create action takes no resource, so a
+          # grant on the named ARN above does not authorize it. Staging never
+          # creates the channel (its Slack ids are unset), so a role missing
+          # this fails for the first time on production. Usable only when
+          # CloudFormation is the caller.
+          - Sid: ChatbotCreateAndDescribeViaCloudFormation
             Effect: Allow
             Action:
+              - chatbot:CreateSlackChannelConfiguration
               - chatbot:DescribeSlackChannelConfigurations
               - chatbot:DescribeSlackWorkspaces
             Resource: "*"
