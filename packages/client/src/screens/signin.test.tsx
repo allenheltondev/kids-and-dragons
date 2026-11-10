@@ -25,6 +25,7 @@ import {
   namesOf,
   isKeeper,
   shouldOfferKeepsake,
+  signedInTitle,
 } from "./SignInFlow";
 
 function member(playerId: string, name: string, accent: string): PartyMember {
@@ -211,6 +212,22 @@ describe("KeepsakeLantern", () => {
   it("describes who it holds, for a screen reader", () => {
     const html = renderToStaticMarkup(<KeepsakeLantern motes={motes} />);
     expect(html).toContain("a light for Sparklehoof, Ember and Rue");
+  });
+});
+
+describe("the heading over the offer to remember this phone", () => {
+  it("says a party was kept when that is what the grown-up came to do", () => {
+    expect(signedInTitle("keep", 0)).toBe("They’re kept.");
+    expect(signedInTitle("keep", 3)).toBe("They’re kept.");
+  });
+
+  it("says heroes were found only when the household's players were found and one was picked", () => {
+    expect(signedInTitle("restore", 2)).toBe("Found them.");
+  });
+
+  it("claims nothing was found for an address with nobody behind it", () => {
+    // A brand-new address, or a phone that already was somebody: no list was shown.
+    expect(signedInTitle("restore", 0)).toBe("You’re signed in.");
   });
 });
 
