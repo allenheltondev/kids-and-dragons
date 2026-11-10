@@ -26,10 +26,12 @@ import { applyAction } from "../handlers/action.ts";
 import {
   admitCodeLookup,
   admitRoomOpen,
+  admitSignInStart,
   clientKeyFor,
   retryAfterSeconds,
   SLOW_DOWN,
   TOO_MANY_ROOMS,
+  TOO_MANY_SIGN_INS,
 } from "../handlers/code-guard.ts";
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
@@ -66,7 +68,7 @@ import {
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
 import { pushKey, subscribePush, unsubscribePush } from "../handlers/push.ts";
-import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
+import { openAccount, requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
 /** A request, already parsed into the few things the routes actually read. */
 interface Req {
@@ -94,6 +96,13 @@ export interface HttpRuntime {
   deps(): Promise<HandlerDeps>;
   verifyAccount(token: string): Promise<VerifiedAccount | null>;
   /**
+   * Makes sure a sign-in exists for this address (`cognito-directory.ts`).
+   * Throws if Cognito will not. Optional only so that a test of some other
+   * route need not supply one; a runtime without it cannot start a sign-in,
+   * and says so rather than pretending it did.
+   */
+  openAccount?(email: string): Promise<void>;
+  /**
    * The value CloudFront stamps on every request it forwards here, as
    * `x-kad-origin` (`infra/template.yaml`). Only a request carrying it has a
    * viewer address worth believing — see `clientOf`.
@@ -104,6 +113,7 @@ export interface HttpRuntime {
 const AWS_RUNTIME: HttpRuntime = {
   deps: runtime,
   verifyAccount: verifyAccountToken,
+  openAccount,
   originSecret: process.env.KAD_ORIGIN_SECRET || undefined,
 };
 
@@ -174,6 +184,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
     if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
+    if (req.path === "/api/auth/start") return (deps) => postAuthStart(req, deps, rt);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
@@ -1030,6 +1041,39 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
 // ---------------------------------------------------------------------------
 // Optional sign-in
 // ---------------------------------------------------------------------------
+
+/** An address is at most this long (RFC 5321), and nobody types a longer one by accident. */
+const MAX_EMAIL_LENGTH = 254;
+
+/** Trimmed and lower-cased, as the client sends it to Cognito, or null for something that is not an address. */
+function readEmail(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const email = value.trim().toLowerCase();
+  if (email.length > MAX_EMAIL_LENGTH) return null;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : null;
+}
+
+/**
+ * The first step of signing in: makes sure the address has an account, so the
+ * emailed code the browser asks Cognito for next has somewhere to go.
+ *
+ * Unauthenticated by nature (nobody is signed in yet), so it is budgeted per
+ * client, and it answers the same for an address it has never seen and one it
+ * has: who has an account is nobody else's business. The browser used to make
+ * the account itself with Cognito's public sign-up (`cognito-directory.ts`
+ * says why that had to stop).
+ */
+async function postAuthStart(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
+  const email = readEmail(req.body.email);
+  if (!email) return error(400, "ILLEGAL", "That email address doesn't look right.");
+  if (!(await admitSignInStart(req.client, deps))) {
+    const refused = error(SLOW_DOWN.status, SLOW_DOWN.code, TOO_MANY_SIGN_INS);
+    return { ...refused, headers: { ...refused.headers, "retry-after": String(retryAfterSeconds(deps.now())) } };
+  }
+  if (!rt.openAccount) throw new Error("this runtime has no account directory");
+  await rt.openAccount(email);
+  return { statusCode: 204 };
+}
 
 async function postLink(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
   const account = await rt.verifyAccount(bearer(req));

@@ -16,21 +16,26 @@ interface Call {
  */
 function fakeCognito(script: Record<string, unknown | (() => unknown)>) {
   const calls: Call[] = [];
-  const fetchImpl = (async (_url: string, init: RequestInit) => {
-    const target = String((init.headers as Record<string, string>)["x-amz-target"]).split(".")[1] ?? "";
+  const fetchImpl = (async (url: string, init: RequestInit) => {
+    // Our own API's one call here is told apart by its path; everything else
+    // is Cognito, named by its `x-amz-target`.
+    const start = url === "/api/auth/start";
+    const target = start ? "Start" : (String((init.headers as Record<string, string>)["x-amz-target"]).split(".")[1] ?? "");
     calls.push({ target, body: JSON.parse(String(init.body)) as Record<string, unknown> });
 
-    if (!(target in script)) throw new Error(`unscripted Cognito call: ${target}`);
+    if (!(target in script)) throw new Error(`unscripted call: ${target}`);
     const entry = script[target];
     const value: unknown = typeof entry === "function" ? (entry as () => unknown)() : entry;
 
+    // The API answers in its own shape: a status, and `{ error: { message } }`.
+    if (start) {
+      if (typeof value === "number") {
+        return new Response(JSON.stringify({ ok: false, error: { code: "X", message: `server said ${String(value)}` } }), { status: value });
+      }
+      return new Response(null, { status: 204 });
+    }
     if (value instanceof Error) {
-      // `cause`, when a test gives one, is the sentence Cognito sends with the type.
-      const message = typeof value.cause === "string" ? { message: value.cause } : {};
-      return new Response(
-        JSON.stringify({ __type: `com.amazonaws.cognitoidp#${value.message}`, ...message }),
-        { status: 400 },
-      );
+      return new Response(JSON.stringify({ __type: `com.amazonaws.cognitoidp#${value.message}` }), { status: 400 });
     }
     return new Response(JSON.stringify(value), { status: 200 });
   }) as unknown as typeof globalThis.fetch;
@@ -45,21 +50,17 @@ const CHALLENGE = {
 };
 
 describe("requestCode", () => {
-  it("signs up then starts the email challenge", async () => {
-    const { client, calls } = fakeCognito({ SignUp: {}, InitiateAuth: CHALLENGE });
+  it("has the API make sure the account exists, then starts the email challenge", async () => {
+    const { client, calls } = fakeCognito({ Start: {}, InitiateAuth: CHALLENGE });
 
     const challenge = await client.requestCode("Allen@Example.com ");
 
-    expect(calls.map((c) => c.target)).toEqual(["SignUp", "InitiateAuth"]);
+    expect(calls.map((c) => c.target)).toEqual(["Start", "InitiateAuth"]);
     // Normalised once, at the edge: Cognito treats the username as opaque, so
     // "Allen@" and "allen@" would otherwise be two households.
-    expect(calls[0]?.body["Username"]).toBe("allen@example.com");
-    // Cognito will not create a pool without PASSWORD among its allowed first
-    // auth factors, and SignUp then wants a value. It is generated, sent once,
-    // and dropped — never shown, never stored, never used to sign in.
-    const password = String(calls[0]?.body["Password"] ?? "");
-    expect(password.length).toBeGreaterThan(20);
+    expect(calls[0]?.body).toEqual({ email: "allen@example.com" });
     expect(calls[1]?.body["AuthFlow"]).toBe("USER_AUTH");
+    expect((calls[1]?.body["AuthParameters"] as Record<string, string>)["USERNAME"]).toBe("allen@example.com");
     expect((calls[1]?.body["AuthParameters"] as Record<string, string>)["PREFERRED_CHALLENGE"]).toBe(
       "EMAIL_OTP",
     );
@@ -70,67 +71,48 @@ describe("requestCode", () => {
     });
   });
 
-  it("never sends the same throwaway password twice", async () => {
-    const a = fakeCognito({ SignUp: {}, InitiateAuth: CHALLENGE });
-    const b = fakeCognito({ SignUp: {}, InitiateAuth: CHALLENGE });
-    await a.client.requestCode("allen@example.com");
-    await b.client.requestCode("allen@example.com");
-    expect(a.calls[0]?.body["Password"]).not.toBe(b.calls[0]?.body["Password"]);
-  });
-
-  it("treats an existing user as the normal case, not an error", async () => {
+  it("never signs up with Cognito itself, and never sends a password anywhere", async () => {
     /*
-     * The load-bearing one. The pool sets PreventUserExistenceErrors, which
-     * makes an unknown user indistinguishable from a known one — so we cannot
-     * branch on it and instead sign up unconditionally. If this stopped
-     * swallowing UsernameExists, every returning player would hit a hard error
-     * instead of getting a code.
+     * The load-bearing one. Cognito's public sign-up takes a password, and the
+     * pool cannot tell a browser that throws its password away from a caller
+     * who keeps theirs. So the browser makes no account: an unscripted
+     * `SignUp` here is a thrown error, and no call carries a password.
      */
-    const { client, calls } = fakeCognito({
-      SignUp: () => new Error("UsernameExistsException"),
-      InitiateAuth: CHALLENGE,
-    });
+    const { client, calls } = fakeCognito({ Start: {}, InitiateAuth: CHALLENGE });
 
-    const challenge = await client.requestCode("allen@example.com");
+    await client.requestCode("allen@example.com");
 
-    expect(challenge.session).toBe("sess_1");
-    expect(calls.map((c) => c.target)).toEqual(["SignUp", "InitiateAuth"]);
+    expect(calls.map((c) => c.target)).not.toContain("SignUp");
+    expect(JSON.stringify(calls)).not.toMatch(/password/i);
   });
 
-  it("propagates a sign-up failure that is not 'already exists'", async () => {
-    const { client } = fakeCognito({ SignUp: () => new Error("InvalidParameterException") });
-    await expect(client.requestCode("nope")).rejects.toBeInstanceOf(AuthError);
+  it("asks for no code when the account could not be made, and says to try again", async () => {
+    // Under PreventUserExistenceErrors Cognito would answer with a pretend
+    // challenge for an address it has no account for: a code screen that no
+    // code will ever satisfy.
+    const { client, calls } = fakeCognito({ Start: 500, InitiateAuth: CHALLENGE });
+
+    await expect(client.requestCode("allen@example.com")).rejects.toMatchObject({
+      code: "StartFailed",
+      message: "We couldn't start signing you in. Try again in a moment.",
+    });
+    expect(calls.map((c) => c.target)).toEqual(["Start"]);
   });
 
-  it("carries on to the code when the account was made and the step after it failed", async () => {
-    // The pool's password scrub runs once the account exists. Its failure is
-    // the server's to alarm on, not a family's sign-in to lose.
-    const { client, calls } = fakeCognito({
-      SignUp: () => new Error("UserLambdaValidationException", { cause: "PostConfirmation failed with error boom." }),
-      InitiateAuth: CHALLENGE,
-    });
-
-    const challenge = await client.requestCode("allen@example.com");
-
-    expect(challenge.session).toBe("sess_1");
-    expect(calls.map((c) => c.target)).toEqual(["SignUp", "InitiateAuth"]);
-  });
-
-  it("still fails when the account was never made, rather than wait for a code nobody sent", async () => {
-    const { client, calls } = fakeCognito({
-      SignUp: () => new Error("UserLambdaValidationException", { cause: "PreSignUp failed with error boom." }),
-      InitiateAuth: CHALLENGE,
-    });
-
-    await expect(client.requestCode("allen@example.com")).rejects.toMatchObject({ code: "UserLambdaValidationException" });
-    expect(calls.map((c) => c.target)).toEqual(["SignUp"]);
+  it("passes on what the server says about an address it will not take, or too many tries", async () => {
+    for (const [status, code] of [[400, "InvalidParameterException"], [429, "TooManyRequestsException"]] as const) {
+      const { client } = fakeCognito({ Start: status, InitiateAuth: CHALLENGE });
+      const refused = client.requestCode("allen@example.com");
+      await expect(refused).rejects.toBeInstanceOf(AuthError);
+      await expect(refused).rejects.toMatchObject({ code, message: `server said ${String(status)}` });
+    }
   });
 
   it("refuses a challenge it does not know how to answer", async () => {
     // A pool misconfigured to prefer SMS or a password would otherwise leave
     // the flow sitting on a code screen no code can satisfy.
     const { client } = fakeCognito({
-      SignUp: {},
+      Start: {},
       InitiateAuth: { ChallengeName: "SMS_OTP", Session: "s" },
     });
     await expect(client.requestCode("allen@example.com")).rejects.toThrow(/unexpected/i);
@@ -138,7 +120,7 @@ describe("requestCode", () => {
 
   it("survives a challenge with no delivery destination", async () => {
     const { client } = fakeCognito({
-      SignUp: {},
+      Start: {},
       InitiateAuth: { ChallengeName: "EMAIL_OTP", Session: "s" },
     });
     const challenge = await client.requestCode("allen@example.com");

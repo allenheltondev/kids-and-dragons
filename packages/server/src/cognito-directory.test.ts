@@ -32,6 +32,68 @@ describe("CognitoDirectory", () => {
   });
 });
 
+describe("CognitoDirectory.openAccount", () => {
+  const directoryWith = (call: ReturnType<typeof vi.fn>) =>
+    new CognitoDirectory({ userPoolId: "us-east-1_pool", region: "us-east-1", client: { call } as never });
+
+  it("makes the account with no invitation sent, then gives it a password nobody chose", async () => {
+    const call = vi.fn(async (_action: string, _body: Record<string, unknown>) => ({}));
+    await directoryWith(call).openAccount("ada@example.com");
+
+    expect(call.mock.calls.map(([action]) => action)).toEqual(["AdminCreateUser", "AdminSetUserPassword"]);
+    expect(call.mock.calls[0]?.[1]).toEqual({
+      UserPoolId: "us-east-1_pool",
+      Username: "ada@example.com",
+      // The only message a family gets is the code they asked for.
+      MessageAction: "SUPPRESS",
+      UserAttributes: [
+        { Name: "email", Value: "ada@example.com" },
+        { Name: "email_verified", Value: "true" },
+      ],
+    });
+    const set = call.mock.calls[1]?.[1] as { UserPoolId: string; Username: string; Password: string; Permanent: boolean };
+    expect(set).toMatchObject({ UserPoolId: "us-east-1_pool", Username: "ada@example.com", Permanent: true });
+    expect(set.Password.length).toBeGreaterThan(40);
+  });
+
+  it("never gives two accounts the same password, nor one account the same password twice", async () => {
+    const call = vi.fn(async (_action: string, _body: Record<string, unknown>) => ({}));
+    const directory = directoryWith(call);
+    await directory.openAccount("ada@example.com");
+    await directory.openAccount("ada@example.com");
+    await directory.openAccount("ben@example.com");
+    const passwords = call.mock.calls.filter(([action]) => action === "AdminSetUserPassword").map(([, body]) => body["Password"]);
+    expect(new Set(passwords).size).toBe(3);
+  });
+
+  it("treats an address that already has a sign-in as the ordinary case, and still replaces its password", async () => {
+    // Every returning grown-up; and an account left half-made by a call that
+    // died between the two steps is finished here instead of stuck for good.
+    const call = vi.fn(async (action: string, _body: Record<string, unknown>) => {
+      if (action === "AdminCreateUser") throw new AwsJsonError("UsernameExistsException", 400, "An account with the given email already exists.");
+      return {};
+    });
+    await expect(directoryWith(call).openAccount("ada@example.com")).resolves.toBeUndefined();
+    expect(call.mock.calls.map(([action]) => action)).toEqual(["AdminCreateUser", "AdminSetUserPassword"]);
+  });
+
+  it("passes any other failure up, and does not go on to the password", async () => {
+    const call = vi.fn(async (_action: string, _body: Record<string, unknown>) => {
+      throw new AwsJsonError("TooManyRequestsException", 400, "slow down");
+    });
+    await expect(directoryWith(call).openAccount("ada@example.com")).rejects.toMatchObject({ type: "TooManyRequestsException" });
+    expect(call).toHaveBeenCalledTimes(1);
+  });
+
+  it("fails when the password could not be set, so the caller asks for no code", async () => {
+    const call = vi.fn(async (action: string, _body: Record<string, unknown>) => {
+      if (action === "AdminSetUserPassword") throw new AwsJsonError("InternalErrorException", 500, "oops");
+      return {};
+    });
+    await expect(directoryWith(call).openAccount("ada@example.com")).rejects.toMatchObject({ type: "InternalErrorException" });
+  });
+});
+
 describe("AwsJsonClient", () => {
   const credentials = async () => ({ accessKeyId: "AKIDEXAMPLE", secretAccessKey: "secret" });
 

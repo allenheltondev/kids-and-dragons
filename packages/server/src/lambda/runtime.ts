@@ -15,6 +15,7 @@
 import { DynamoTimingStore } from "../store/timing-store.ts";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { AppSyncEventsChannel } from "../channel/appsync-events-channel.ts";
+import { CognitoDirectory } from "../cognito-directory.ts";
 import { loadContent, type ContentStore } from "../content/loader.ts";
 import { loadSharedRuntime } from "../engine/shared-engine.ts";
 import type { HandlerDeps } from "../handlers/deps.ts";
@@ -211,6 +212,21 @@ export async function verifyAccountToken(token: string): Promise<VerifiedAccount
   } catch {
     return null;
   }
+}
+
+let directoryCache: CognitoDirectory | undefined;
+
+/**
+ * Makes sure a sign-in exists for `email` (`CognitoDirectory.openAccount`).
+ * Throws when Cognito cannot be reached or refuses: the caller has nothing
+ * useful to tell a family except "try again".
+ */
+export async function openAccount(email: string): Promise<void> {
+  directoryCache ??= new CognitoDirectory({
+    userPoolId: requiredEnv("USER_POOL_ID"),
+    region: requiredEnv("AWS_REGION"),
+  });
+  await directoryCache.openAccount(email);
 }
 
 /**
