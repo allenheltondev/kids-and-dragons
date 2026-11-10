@@ -1,0 +1,1937 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-ice-shelf-traverse/shelf/narration": {
+    "source": "sha256:e1c3fcd4d3e37be225d8ba1750cb4c0c02928fc6597c118381e9508668e202da",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The singing hall falls behind you. Where the ice shelf begins, a griffin in a teal cape is waiting, with a rope ladder rolled on her back."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Skerry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I keep the iron rings on this shelf. My mother kept them before me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She frowns at the river."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The herder brings her goats this way tomorrow, and the river did something in the night. Walk it with me? Get everyone to the cairns, and see what the river did.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/lineup/narration": {
+    "source": "sha256:e794d35719a50a64c4b854883809ee34db11827e2eebbfad9660f3219b53f9ab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The shelf is only a few steps wide. The river hisses past its edge. Skerry hands you a long rope that smells a little of fish."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Tie on, or keep it coiled to throw?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she asks."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Tied, nobody wanders off. Coiled, you can fling it where feet cannot go. I have opinions. I will keep them to myself. Mostly.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/knots/narration": {
+    "source": "sha256:324628c87780391320707cc9ce0a3530739f13e6d0734e5ad71f59562a0fb054",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone ties on. Skerry checks each knot with her beak. Tug, tug."
+      },
+      {
+        "by": "skerry",
+        "text": "\"On ice, a knot that is almost right is a wrong knot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"These are right.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The rope hums between you like a guitar string."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/coil/narration": {
+    "source": "sha256:c139b23b7336aaae9f9cbc2e1ac82f5f2d732a923f2d5803d2cea5da0cea3315",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You coil the rope loose and free. The loops sit in your hand like a sleeping snake."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"A coil reaches where feet cannot. Just do not throw it at me.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/beat/narration": {
+    "source": "sha256:e472bf57a8383abbb9b8e1826aed4fbbe69f7e1ddb1181c964b20854197f74a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Rally is for nervous feet, too. You hum a slow tune, and everyone ties on to its beat. Step, step, hum. Skerry's tail swishes in time."
+      },
+      {
+        "by": "skerry",
+        "text": "\"My mother hummed on this shelf,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I had forgotten.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_thud/narration": {
+    "source": "sha256:4fe087c7eeea252936aa9f0d42fe8b1d18a0f07758472b71fc43abd9d191b7e6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old boot marks follow the dark rock wall. The ice looks the same everywhere, white as a plate."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Thick ice rings when you tap it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Thin ice thuds, like an empty drum.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Somebody taps once. Ping! Now everybody has to try. How will you test the way?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/tap/narration": {
+    "source": "sha256:f9ed6ad6e521b738f8540be00bcfe614c7739a441163145c3722960fd9754a85",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tap, tap, tap. You walk bent over, like someone hunting for a lost button. Skerry bends over too, to be polite."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Listen with your feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/tap/onSuccess/narration": {
+    "source": "sha256:1e379163c6abc271b1d5feb37785c5b5537fbb94672a793f0eaaf21138980fe2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ring, ring, thud. You keep to the ringing parts."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Nicely heard,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"You will want those ears later.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/tap/onFailure/narration": {
+    "source": "sha256:dd0d4968c53d58b95c3bede3aa6c4dfb472943258077dd2bd89babc392b81c20",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It all sounds half ring, half thud. Skerry sighs."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Follow the boot marks, then. They walked it before us.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slide/narration": {
+    "source": "sha256:f21be12c11bf61843fac576b064e4d15d75c5255e3010edc06459a19cc65516e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You find a flat stone the size of a cookie. Skerry eyes it."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That is a very good stone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Do not lose it.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slide/onFailure/narration": {
+    "source": "sha256:c24e18854cada31678d8bbf805c0d03990b436fde0a6b311c2314d876e33f6fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stone skids off the edge. Plop."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I said do not lose it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry. You test the rest with your boots."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/scout/narration": {
+    "source": "sha256:f1e053acf04fe6fe70a931a6fb0a8628df366b06f96426505df2056fe7555df4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your wings catch the cold air, and Skerry rises beside you."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Look for the pale bits,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls. The shelf below is a long white ribbon."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/scout/onFailure/narration": {
+    "source": "sha256:3e4020ca9d3b8c303d8acfd35a843a7ec18c41f82ab3b17c6187f428dc0a01f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up here, everything is white."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It always is,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry. You land and follow the boot marks."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/starlight/narration": {
+    "source": "sha256:6954143aded93d315fd3299ce5ba063423fa852e33af494c50d323446235002c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Starlight gathers in your hand. Thin ice drinks it. Thick ice bounces it back."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Ooh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, and leans so close her beak nearly touches it."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/starlight/onSuccess/narration": {
+    "source": "sha256:e186257a891e2dccee84f3c879c9bf72c44ea50f771085500d73cae7068dded2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The glow dims over three pale patches. You lead everyone around them, and Skerry says"
+      },
+      {
+        "by": "skerry",
+        "text": "\"Ooh\""
+      },
+      {
+        "by": "narrator",
+        "text": "at each one."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/boot_marks/narration": {
+    "source": "sha256:d6588b63d23d96a3bb290cfa798c6511d217b5878811bc3906a451de40a07692",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The boot marks bend toward the wall. There, a rusty iron ring is hammered into the rock, with a scrap of old rope on it. Skerry pats it."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Good morning, Grumble,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells the ring."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I name them all. Grumble has held this wall for fifty winters.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Fresh rust flakes off under her claw. Can you trust Grumble?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_pull/narration": {
+    "source": "sha256:1b815defc4ccfa97444b9efc1060d66ccd107cbcf8930b4abcbefbe93f5084e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You take turns hanging on Grumble. It does not budge. As the last hero lets go, a frozen glove drops out of a crack, with a good bootlace inside."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Finders keepers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Now drop a loop over Grumble, and the wall has a handrail.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_look/narration": {
+    "source": "sha256:cb272e6bf13e028c9e8ec961de136d3665ffe6ba9071e3e2a47eed99ee667648",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Scratched into the rust is a tiny feather."
+      },
+      {
+        "by": "skerry",
+        "text": "\"My mother's mark,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry softly. Tied to the ring is a little tin, with a note: For the next traveler. Under it lie three coins."
+      },
+      {
+        "by": "skerry",
+        "text": "\"She always did that. Take them. Then drop a loop over Grumble for a handrail.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_throw/narration": {
+    "source": "sha256:ddb980ecf855cbacd0ca27b13ea6a7a7e58c26e5fc8728aa0d043390e579a2b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Swing the loop in a slow circle and drop it over Grumble."
+      },
+      {
+        "by": "skerry",
+        "text": "\"There is another ring past the broken part, one called Old Clank,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"If you can catch Grumble, you can catch Clank.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_throw/onSuccess/narration": {
+    "source": "sha256:5f896e1832d3864992dfcff7cd9e3a05ae3ad9b13cfc166640093ca884b8e784",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flup! The loop snugs over Grumble. Skerry claps her forefeet."
+      },
+      {
+        "by": "skerry",
+        "text": "\"You can throw. I will remember that at Old Clank.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_throw/onFailure/narration": {
+    "source": "sha256:e50ee477715590d9a7b5a3d91b542b5100d8781767722681762696d9ac423e14",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The loop flops off the rock and into the river. Skerry fishes it out and comes back soaked to the cape."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Fine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she drips."
+      },
+      {
+        "by": "skerry",
+        "text": "\"We will not count on throwing at Old Clank.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ring_throw/onAssisted/narration": {
+    "source": "sha256:aa69c86ff6db9a8a05731e0d227f505fdd2440efa32973e1de2dd5c8499ed850",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Together you guide the loop over the ring. Flup."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That counts,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Clank will be easy now.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/squeeze/narration": {
+    "source": "sha256:5fe1043218301ed8ae84c21a7e8eebe4cc7c4482571292cbd87b028963d8c845",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past Grumble, the shelf pinches to one boot wide. Spray flicks your ankles. Skerry walks with her wings folded tight, like an umbrella in a cupboard."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I could fly this bit,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"But I said I would walk it with you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you get through?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/inch/narration": {
+    "source": "sha256:0d80544a62f9f12771c9dd003ca2756fbc49bf778db258c9662e1049da97b192",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You shuffle sideways along the cold wall. The river mutters by your ear."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Mutter all you like,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry tells it."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/inch/onSuccess/narration": {
+    "source": "sha256:be3ccfd97efcf0f26a3f4871d15e3bcb1fa92ec1a021af93077b8d37df41740c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Slide, slide, rest. Nobody looks down."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Lovely,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, who looked down for everyone."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/packs/narration": {
+    "source": "sha256:3eaea5afcd4bb10c1193a7e3c9017c526896394467887b277213c850a63a924c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You make a line and pass the heavy packs hand to hand. Skerry takes one in her beak."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Mmf,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, which means heavy."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/packs/onFailure/narration": {
+    "source": "sha256:03975433d385620614c66c33b99802de7701292d0872ac0e8599b6af0535dde8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A pack drops and slides toward the edge. Skerry pins it with one claw."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Mine now,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she jokes, and hands it back."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/chop/narration": {
+    "source": "sha256:c31a990524c6ee70b8bbb00571b46f5d1e45cd624c0a090e1a1c10bdf7bf8008",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Smash is good for more than doors. You crouch at the narrowest spot and swing."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Not Grumble,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry begs."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Anything but Grumble.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wide_spot/narration": {
+    "source": "sha256:90382d9ce0eba07f28f3019310a7d40d73d9b2f359cd74bc0ff82b45a062ce28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The shelf widens into a flat spot. You sit and shake out your wet cuffs. An icicle drips on somebody's hat, again and again, as if it has a message. Skerry unrolls her ladder to sit on."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Halfway,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Hear that, ahead? Water talking across the ice. That is new.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you rest?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wide_snack/narration": {
+    "source": "sha256:ec57a44cda8b8bbcde11c7c9c8300ed80da3b8d6ebfc42903677da269fee6316",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You share half a flatbread, a cube of cheese and a tired apple, cut into extremely fair pieces."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The core is the best bit,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, who gets the core. Your legs stop shaking."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wide_eat/narration": {
+    "source": "sha256:58e9a148df6add159d8e19a8b11728eb8561fd385e00e9eb5655d3786282e98a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You unwrap a proper supper: bread, cheese and a sausage somebody swears is still warm. It is not."
+      },
+      {
+        "by": "skerry",
+        "text": "\"My mother lost a sausage off this shelf once,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"We still talk about it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Your cheeks come back."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wide_look/narration": {
+    "source": "sha256:874f39ab67745565875be12d8ca056cdca55b760c5e7adf8170775b19115c3cf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "From here you can see far along the shelf. Water sparkles across it. Then a curtain of icicles, a steep slope, and past those the shelf just stops at the river."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That is where my road was,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry says quietly."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Yesterday.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/crack/narration": {
+    "source": "sha256:cec91bb0d7d3f25f5a41ea6abf6950c884eebeafc5f42a349416736bda2c7bc7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A stream of meltwater cuts across the shelf, in a crack as wide as a long stride. The water below is black and loud. Somebody peeks in."
+      },
+      {
+        "by": "party",
+        "text": "\"Deep,\""
+      },
+      {
+        "by": "narrator",
+        "text": "they report."
+      },
+      {
+        "by": "party",
+        "text": "\"Also wet.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry stares."
+      },
+      {
+        "by": "skerry",
+        "text": "\"This crack was not here last week. The ice is moving under us.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/hop/narration": {
+    "source": "sha256:1af964fa09c3b2ee92486fe98eae8b1d741f47440aa6a663fa0d8eb9fed35a87",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You line up with your toes at the crack. Your knees agree to the plan, mostly."
+      },
+      {
+        "by": "skerry",
+        "text": "\"On three,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Or two. Two is quicker.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slab/narration": {
+    "source": "sha256:716c1d505a76185a06ce7f967e9064d2d0c5a2194daf9c2c32c8259847fcabe2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A loose slab of ice, big as a door, lies by the wall. A fine bridge, if it moves."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I'll push too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, and pushes with her head."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/coil_throw/narration": {
+    "source": "sha256:61a64f0c24392e7b17d3ba32edfc78706b127bfb419d5869f99d56718064405d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You swing the coil, and Skerry hops over the crack to catch the far end."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Aim for my feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Not my face. Feet.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/coil_throw/onSuccess/narration": {
+    "source": "sha256:d55de7f0c9399670bd8167e9a816411295d7f9a34f58bc116f9fccbba8c80ff5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It lands right at her feet. She pins it, and everyone crosses hand over hand."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says proudly."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/leap/narration": {
+    "source": "sha256:22b65235d4316c3b3023a7dabe14a0c813b7d26d3d5502eab0497c7d82365d1e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "To you, the crack looks like a puddle with big plans."
+      },
+      {
+        "by": "skerry",
+        "text": "\"You're not going to jump that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry. You are."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/leap/onSuccess/narration": {
+    "source": "sha256:1bfad05d6a4c4d126bbd16c21ec22b235e2a8d630ebc7af04b8084f96966cd22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Thump! You tie off the rope, and the others follow it."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Show-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, delighted."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/icicles/narration": {
+    "source": "sha256:af40bc30c81061b0ce09819df5c28901b66de51f16189f7bcd923825aeb9e4a1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the crack, a curtain of icicles hangs from the rock like upside-down candles. Some are longer than your arm. Now and then, one lets go."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Ring, ring, CRASH,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Do not ask me how I know.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Knock the big ones down, or listen for a gap and slip through?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/knock/narration": {
+    "source": "sha256:35abce018a0154d88e54364de5a4d16d9a9c4c34bdd46b9085ca34239845763d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A snowball is a small, round plan. You pack one hard."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Tell me when it's over,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, wings over her head."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/knock/onSuccess/narration": {
+    "source": "sha256:7cf8ab970c729c5b0fbca178a256a294db68542d66402e46b894b6bcd250ed77",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Thwack. Crash. Tinkle! The long ones fall in a glittering heap, and you walk through the little drips."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Very loud,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Very good.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/knock/onFailure/narration": {
+    "source": "sha256:7aa52fc8737fc589f76716a3a542e8cd5399d012d7a7b91d7dec6c71f6e8d247",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your snowball misses. A long icicle drops anyway, right on a hat. Bonk!"
+      },
+      {
+        "by": "skerry",
+        "text": "\"That,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry,"
+      },
+      {
+        "by": "skerry",
+        "text": "\"is how I know.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/dash/narration": {
+    "source": "sha256:f70c5215f0db9ce1ad5579bd9d8f760f103bd78d4ae7922cfec499c822a6ecdd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You stand very still. Plink. Plink. Plink-plink. The drips have a rhythm."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Plink, plink, gap,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry whispers."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Go on the gap. Not before. Not after. On it.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/drip_run/narration": {
+    "source": "sha256:5cb8f25bf1114172af5e38a164ad49ebded47fc7608e1bf7ace71faa1d779def",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The drips plink in a steady rhythm."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Plink, plink, gap,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry whispers again. Wait for the gap, then go."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/drip_run/onSuccess/narration": {
+    "source": "sha256:e1b2bf129b3a097266923216ab846bb92954893c19af49693fdc1a263f1c99cd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Plink, plink, dart! Not one drip touches you. One icicle gives a long, sad plink."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It wanted a hat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/gust/narration": {
+    "source": "sha256:5c357dcf9a35e242905d3fa99ba3837d94f9e44219ec7ee46e568bd000529bff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The shelf bends around a corner, and the wind finds you. It shoves. It whistles. It blows Skerry's cape over her head, and she walks into the wall."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I meant to do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says from inside the cape. How will you get through?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/huddle/narration": {
+    "source": "sha256:9532541c07425553ee4d797468c7d2d9dc70cffe9a933b1598234fe9964148d9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Linked arms make a good wall, even a wall of slightly nervous people."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Bookend!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, and tucks in at the end."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/lull/narration": {
+    "source": "sha256:340075158a38ac4263ded73e19542e6e80b5b82fbb04f127f19b595c40bee7b0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind comes in waves."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Count it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The wind always counts to three. It is not clever.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/sing/narration": {
+    "source": "sha256:d9ea93191c778bbac85fa92548042fe3f429f21518472a6bf6eaecc07242b11a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind is loud, so you sing louder. It just has to be a long song."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I know one with forty verses,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"All about rope.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slope/narration": {
+    "source": "sha256:54e7ac88c5d1e6533874eb57c7a45497d3488ad33901f3b8b0850652b657fbc7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the corner, a sheet of ice pours down from the rocks and across the shelf. It is steep as a playground slide, and it ends in the river."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That was dry rock last spring,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The glacier is spilling over.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you cross?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slope_steps/narration": {
+    "source": "sha256:41d46c5ac057e4c94743d2052a402cb8bde92f18f7df09f9f8acc206d62828c4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A boot heel is a very small hammer. It cuts a very small stair."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Deeper,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"My claws thank you.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slope_rope/narration": {
+    "source": "sha256:3db7420ff993089121fe298dbcd38f5a285e1f2c64e697199fe9eabf9e3da510",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Rope loves holding on. You look for a lump of rock at each end."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"No. That one. No...\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/slope_slide/narration": {
+    "source": "sha256:91144c0668679c19d0fcdf900beef38ee70062880de41c3c50edb1bbe794adf6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sliding is what ice does best. You decide to let it. Skerry waits at the bottom with her wings spread wide."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Aim for the soft snow, not for me!\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/gap/narration": {
+    "source": "sha256:ebe4ad36248a24de2aaf4956ecc7b862a0a6ba539b371712f05ab13a2b2359e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At last the old boot marks walk straight into the river. Not off a cliff. Into calm water, as if it were a road. Skerry points far out."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Yesterday the river ran over there. This was dry shelf. I walked it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The river's edge moved in one night. A snowhorn goat on a ledge chews and watches. On your pack, the Listening Chime hums by itself and leans back up the valley, toward the glacier."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/inspect/narration": {
+    "source": "sha256:3e18814c02e6f974242e35a6f46e0c9230f5e196fe72a2d503df5b625cd54104",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the water, the shelf goes on toward the cairns, with another rusty ring on the far rock."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Old Clank,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry. High above, a goat track zigzags across the rocks. Down low, a lip of ice hugs the wall, thin at its edge."
+      },
+      {
+        "by": "skerry",
+        "text": "\"This close to the rock, the wind slaps me into it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"So we climb, or we creep.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/high/narration": {
+    "source": "sha256:dff3c185779d57af8b7dda868b5963c9ad72c9816cdbd43cb65d97ceb1d21be2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You climb onto the dark rocks. A loose stone rattles into the water. The goat watches, jaw going around like a slow millstone. Then it picks its way along a narrow track."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Goats know rock,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"And they know they know it. Insufferable.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Will you follow it?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/high_climb/narration": {
+    "source": "sha256:9df7574ee587bd2f7d29c101d82b8ea5f66b5c009da5bf412320314b9d9501f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goat does not hurry. It keeps looking back at you."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It thinks we're slow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Prove it wrong.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/high_own/narration": {
+    "source": "sha256:e908b9af72b7447b3ddf4cf1d373b182b0320ad8ce740bd9a29a081768f9eaa5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The goat sniffs at your plan. The handholds are small, but they are there."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Your way, then,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Show that goat.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/high_charm/narration": {
+    "source": "sha256:72162b12b8fdd39c7a5dee9e2543fc2d4270d0ec8d152c7ac0880af02c4c0814",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Beguile is a polite magic. You hold out a hand to the goat."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Please,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry whispers to it."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Just this once.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/high_lower/narration": {
+    "source": "sha256:d90a59c35292ca1d599c089ebaa6d07ecf8be1321119721587afab0dfd0bd418",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The line hangs from the high rock down to the far shelf, beside Old Clank. Wedged in a crack by the knot hangs a little tin whistle on a cord."
+      },
+      {
+        "by": "skerry",
+        "text": "\"My mother's!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"She lost it the year I hatched. Keep it. It wants a brave moment.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/low/narration": {
+    "source": "sha256:ca95f24aa07b3e72b660c0486028db8b8ea06f2ae001b363bea15319f6023639",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You kneel at the edge. The outer lip of ice creaks like a door that wants oil. The ice by the rock looks narrow but steady."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Somewhere in there is a strip that will hold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Somewhere.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you find it?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/low_probe/narration": {
+    "source": "sha256:3ac3ed6439e825c74368f7fccdc7fe0d34136f1fe00f841fab2ab3a2ee446292",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A stone is lighter than a friend, so the stone goes first."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Good plan,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Stones never complain.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/low_chip/narration": {
+    "source": "sha256:0346ae7e09bd6620b4c82450149df14f9aecc732bd5f6fdac1c32449245c36c9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tap a chip into the ice at every step and listen. Skerry tilts her head."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Ring means yes. Thud means no.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/low_listen/narration": {
+    "source": "sha256:0379af729a717b179de0c392f1c6a57fa4dff2ab43fd9c1b10e269e9d042652b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tap once and you know. Ring, ring, thud, ring. You heard this back by Grumble, and your ears remember."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Told you you would want those ears,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/low_mark/narration": {
+    "source": "sha256:2bade3b4b6d5e16d9f9963e9cfdc7af6c15cc7c5fdd1d8cdb31cbd42198198f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You mark the strip with chips of dark stone, like a trail of crumbs through the white. It is one boot wide, and it reaches Old Clank. Halfway along, two old coins peek out of the ice."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Finders keepers again,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry. The goat seems to approve."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/brace/narration": {
+    "source": "sha256:7d9abfddc6f3c9aa04026a54654419db446ba097de1d5862614ef734cad6a8cd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The thornguard plants both feet and grips the rope. Now the thornguard is a post, and the rope is a handrail."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Oh, I like you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Can I keep you? For the shelf?\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/brace_post/narration": {
+    "source": "sha256:761262017406ed48e288b916b8f3b0e941f93f23998e3b109c1591201b29b12d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The thornguard leans back to test the post."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Pull,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I'll stand here and look encouraging.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/brace_rail/narration": {
+    "source": "sha256:a1572a2bfe62c2d2e17a4aff28af41cae7f2517dee83cfc5bc1f8133a5897d22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The handrail runs along the rock to Old Clank, taut and low. It cannot stop the ice from shifting, but every hand has something to hold."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Better than Grumble,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry whispers."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Don't tell him.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wing/narration": {
+    "source": "sha256:3afec2c9f4ed6c5fb0e6f94b32e583faa732e32c4333720e50a3d7679cfab2b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Wings carry one end of the rope over the water."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Mind the rock,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It slaps.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tie it to Old Clank, and everyone has a line to follow."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wing_tie/narration": {
+    "source": "sha256:b2570b5f0b353d1920f5777095a7c418ddac550da39de3a6b40f02524a2e9759",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flying is half the job. The other half is a knot."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Double knot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Always double.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/wing_rail/narration": {
+    "source": "sha256:ba004f36385e40f7765e584958acac217af2bc57e7b89147c5890c4469b00766",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The line hums across the water in the wind. The goat watches it politely, as if it were a new kind of weather."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Good line,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/watch/narration": {
+    "source": "sha256:fd5a6e7feec1a49e7619fff2a3ea69e9a2de50064f27bef2530f971a707e955e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your way across is ready. Then the river does something strange. It swells up over the broken edge, slow as a breath, and slides back. And again."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It's breathing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Let's watch a while. If we know its breath, we know when to cross.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Somebody's toes are already numb. Go now, while you are warm? Or wait in the cold and learn the river?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/watch_river/narration": {
+    "source": "sha256:38ab45fb84b3933642b537341c8c2ee4d7a6f8557c0e0a2b0f16c69a515a9a22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You sit very still and count. Swell, slide. Swell, slide. Every breath, the water creeps a finger closer to the wall, and never goes all the way back. Your toes turn to ice cubes."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It's still moving,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Right now, while we watch.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Now you know the safest moment: just after it slides back."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/hold_line/narration": {
+    "source": "sha256:d97752d81150d45e7c628d20141673853c15c116cf677ead598e74d63c3caaf6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your rope reaches Old Clank now, but the quick knot there lets the line sag in the middle."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Retie it with my mother's knot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"It pulls tight and never slips. Watch my claws: over, under, through.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She shows it once, slowly. Tie it the same way."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/hold_line/onSuccess/narration": {
+    "source": "sha256:4fbdbc1aa3e4839d61ce3c387f06a73cd14574255de6f385d76f428971affec9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The knot snugs tight, and the line goes tight as a harp string. Pluck it, and it hums."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That's the one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/hold_line/onFailure/narration": {
+    "source": "sha256:cc6b32eff661a998360b3f1da1a0b4f9aadd4aee7a03d8de7cf31c3a8f11a5c0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The knot comes out lumpy. It holds, but the line hangs low, dipping toward the water."
+      },
+      {
+        "by": "skerry",
+        "text": "\"We won't trust that one with our weight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/ready/narration": {
+    "source": "sha256:b521b15b8dab4431fdc5c83c5133b64a8679a21c589ccb0729c1ded8875c163b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The line runs over the drowned path. The river chuckles underneath, as if it knows a joke. Skerry lifts into the air above the water."
+      },
+      {
+        "by": "skerry",
+        "text": "\"I can't carry you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"But I can shout very helpfully.\""
+      },
+      {
+        "by": "narrator",
+        "text": "This is the crossing. How will you do it?"
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/cross/narration": {
+    "source": "sha256:36add8aa35bae481e32ef40c73dcbc3be66dcdb0019c0efbe04d9412eeaaf8cf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Under the line, the river chuckles."
+      },
+      {
+        "by": "skerry",
+        "text": "\"On my count,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"One, two...\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/cross_turns/narration": {
+    "source": "sha256:31ffab061589b3ad9710319438735330c613022553a54a9c8e796c61cf8cdad2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One at a time is slower, but everyone gets a breath."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Next!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry calls, after each one."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/cross_breath/narration": {
+    "source": "sha256:6c92f0b1488b1ee3e633c75b35eca7702b710e49937d0c88ba8fd83ffe0851fa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Swell, slide. You wait for the water to slide back, the way you watched it."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Now,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/assisted/narration": {
+    "source": "sha256:ce0f59c58e768ba292bebcfe9588648f6a3c12ed8232e6dff99591de3ecc4160",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rope will help. Just keep it clear of the broken edge."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Hands on the line,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Eyes on the rope.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/cross_whistle/narration": {
+    "source": "sha256:00b0f3165656b2de3afb773947f5d0286a3b2e2561877fb251665358bcaf77e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One loud note, and everyone knows when to step."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Mother's whistle,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry, eyes shiny."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Blow it.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/cross_whistle/onSuccess/narration": {
+    "source": "sha256:8b8657c4166601f8f671c264d0f79fa8b8008ecdbc7bac12ee538fb8f1dea812",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Toot! Every boot lands on the note."
+      },
+      {
+        "by": "skerry",
+        "text": "\"That's how she did it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/across/variants/0": {
+    "source": "sha256:e6bb23fd764a6116bc240f77a2f10dde6a76579d86f4f363e4b8c6f3727eaec1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "skerry",
+        "text": "\"We crossed on its breath,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The river told us when.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/across/narration": {
+    "source": "sha256:0b80892c87b269b864107f8aa1385d7102c335522d72172740d1c0cdd3d1ffb7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You haul the rope onto dry stone. Ahead, cairns climb toward a notch in the peaks. Skerry lands and counts you with one claw."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Everyone. Everyone. Everyone. Good.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she looks back at the drowned boot marks."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The herder comes tomorrow with her goats. What do I tell her?\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/rest_safe/variants/0": {
+    "source": "sha256:1fb1702079dfa71aa606c6759c1a2363f393aaf6ad38a0c25e0a6d286717d45a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "skerry",
+        "text": "\"Ropes, then,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"New rings by morning. I'll name them after you.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/rest_safe/variants/1": {
+    "source": "sha256:3338a966ab3b2654d449bb8ad95f782fb96d715ba6d8847803419ec5e4443ea3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "skerry",
+        "text": "\"The long way, then,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Skerry."
+      },
+      {
+        "by": "skerry",
+        "text": "\"The goats will sulk. Goats love a sulk.\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/rest_safe/narration": {
+    "source": "sha256:a5857555565ded0a5bba203bf01d47b27a63cac6d04c34ea5ce131d46745413f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You sit above the water and retie your packs. The path rises toward the cairns of the Cairnstep. Skerry gazes up the valley, where your chime still leans."
+      },
+      {
+        "by": "skerry",
+        "text": "\"A river doesn't move its edge in one night,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Not by itself. Something is moving it. What? And can it be moved back?\""
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/fall/narration": {
+    "source": "sha256:239315b92058795c7e356430b6f4e61fdd1e9cb8390bdff7e9756f71ffc950d6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The shelf tips into the river, with all of you on the line. Skerry dives and grabs the rope in her beak, but the river pulls harder than any griffin."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Hold on to each other!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she cries, and lets go before it drags her under."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Don't fight it under the shelf! Let it carry you! I'll be right above!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nobody lets go of anybody."
+      }
+    ]
+  },
+  "riftlight-ice-shelf-traverse/rest_river/narration": {
+    "source": "sha256:f146c9ae52f2f0eec4d056b9ee39baa2eee573543a97f85e43694402e763902a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Cold water lifts you off the ice and carries you around the bend, rope and all. You keep your heads up and hold the line between you. Above, a teal cape flaps along the river, keeping pace."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Still here!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Skerry calls down."
+      },
+      {
+        "by": "skerry",
+        "text": "\"Watch for a way out!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The river ate her road last night. Now it has you."
+      }
+    ]
+  }
+}

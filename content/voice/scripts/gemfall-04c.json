@@ -1,0 +1,773 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-04c/scene_drovers_wagon/narration": {
+    "source": "sha256:3daaf49e27bc794bea5415681f1735e24b2709561c58d5b04875fadd717188e6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The lead drover from the ford spots you."
+      },
+      {
+        "by": "drover",
+        "text": "\"Mudlarks! Up you get!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he booms. It is what he calls everybody he likes. You ride the tailboard with your legs dangling, eating dried apples."
+      }
+    ]
+  },
+  "gemfall-04c/scene_downbound/narration": {
+    "source": "sha256:b7e92c6c56c168e5b70dfefcaf7df3a802c2998e83e15800fff94b29468e5bd5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A prospector called Ma Ruddle watches her wagon being auctioned."
+      },
+      {
+        "by": "ma_ruddle",
+        "text": "\"Never mind the wagon. I've lost my nephew Tib! Small. Orange hat. Talks to horses.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Find him, and she will give you her depot papers."
+      }
+    ]
+  },
+  "gemfall-04c/scene_downbound_work_crowd/narration": {
+    "source": "sha256:299f54c830b1db3ca60be1ac9e5f7a6b7ac98e45261a2f220c53519ce1f9954e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your kitsune climbs onto a crate and booms,"
+      },
+      {
+        "by": "party",
+        "text": "\"LOST! ONE SMALL BOY! ORANGE HAT! TALKS TO HORSES!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The whole lane stops to listen. Then forty people point the same way."
+      }
+    ]
+  },
+  "gemfall-04c/check_relay/narration": {
+    "source": "sha256:156086d041115555c87220827c474f422b41b8f8592579e47ae32b5eb3811196",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ma Ruddle can't shout over the auction. A centaur relay runner skids up."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"Small boy, orange hat, talks to horses? Hand me the word. I'll pass it down the line.\""
+      }
+    ]
+  },
+  "gemfall-04c/check_relay/onFailure/narration": {
+    "source": "sha256:881ee84b6e61c2f799899d231e369f468b0c0a4834dd0b0dc142882bd7ba0eda",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "relay_runner",
+        "text": "\"Small orange horse,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says one runner, and gallops off. Luckily the next runner has met Tib. Word comes back: found!"
+      }
+    ]
+  },
+  "gemfall-04c/check_search/narration": {
+    "source": "sha256:99727579fc7aabfd3364696a9234ff9fae4b6e90624582afb83c3cf4268545d3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "There! An orange hat bobs above the crowd, then ducks behind one of three wagons."
+      },
+      {
+        "by": "ma_ruddle",
+        "text": "\"Watch which one he hides behind,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Ma Ruddle, wringing her hands."
+      }
+    ]
+  },
+  "gemfall-04c/scene_tib_found/narration": {
+    "source": "sha256:4d01e60e4ffad3fc5f9731ad2847df481c8d42803cdabd54b66e233996c2f999",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "There is Tib, chatting with a pony. Ma Ruddle hugs him, then gives you a honeycake and a folded bill of sale."
+      },
+      {
+        "by": "ma_ruddle",
+        "text": "\"For the stone I left at the depot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "ma_ruddle",
+        "text": "\"I'm going home. You have it.\""
+      }
+    ]
+  },
+  "gemfall-04c/rest_soup_tents/narration": {
+    "source": "sha256:4e39b031154b8e28ab9ee74b0a1c78e79bc446d07d50bd56fceead89caa24838",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "By the road, helpers in dark robes serve soup in big tents. Little crystals hum on strings around their necks. A ladler named Wend waves you in."
+      },
+      {
+        "by": "wend",
+        "text": "\"Kindness first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Wend."
+      }
+    ]
+  },
+  "gemfall-04c/rest_soup_tents/variants/0": {
+    "source": "sha256:0c4d61c5c4bff124fc7f3cd2d5188716b3fb73c62bcf639f37e15b45d73018ab",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Beside the lane, people in dark robes have put up rest tents, with DEEP HOLLOW stitched small on the flaps. Behind the soup pot is Wend from the ford."
+      },
+      {
+        "by": "wend",
+        "text": "\"You made it across!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Wend, and says each of your names without being told."
+      }
+    ]
+  },
+  "gemfall-04c/scene_wend_pitch/narration": {
+    "source": "sha256:858384ce26f7f399dd46d4a1c1bce21833667d30dcb0414e17e55d9ce6ed0386",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "wend",
+        "text": "\"The world's a little broken, isn't it?\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Wend."
+      },
+      {
+        "by": "wend",
+        "text": "\"Wrong-colored sky, humming stones. We could fix it, right at the root. Will you carry a letter north for us?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Wend's crystal hums the stones' note. By the pot sits a coin box."
+      }
+    ]
+  },
+  "gemfall-04c/scene_wend_pitch_say_later/narration": {
+    "source": "sha256:fa8ba8af27a77ffc0224d1491eef4faccd91a01b65919e53fa6219c0b6d7eaaf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Maybe,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Wend nods as if maybe means yes, and slips a sealed letter into your pack,"
+      },
+      {
+        "by": "wend",
+        "text": "\"in case.\""
+      },
+      {
+        "by": "narrator",
+        "text": "All day you feel it in there, like a stone in a boot."
+      }
+    ]
+  },
+  "gemfall-04c/scene_wend_pitch_say_no/narration": {
+    "source": "sha256:d211da79b3ed08a24dc1bd7f2cfaf161ff2ba2b8d2c7a5e57cbb0ddbc62fca9d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"No, thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say, kindly and clearly. Wend smiles just as warmly, which is somehow the strangest part."
+      },
+      {
+        "by": "wend",
+        "text": "\"Kindness first anyway,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Wend, tucking a warm roll into your pack. The crystal keeps humming."
+      }
+    ]
+  },
+  "gemfall-04c/check_haul_posts/onSuccess/narration": {
+    "source": "sha256:0842cf5e3737ceccc8b870c894e9a5380e47384e262ff5a6d795fee986f4fc2e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You carry posts until your arms feel like noodles, and you plant every one straight. The road boss looks down the new curve and nods."
+      },
+      {
+        "by": "road_boss",
+        "text": "\"Good work. The relay will sing about this,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and she does not sound like she is joking."
+      }
+    ]
+  },
+  "gemfall-04c/scene_road_crew_ask_why/narration": {
+    "source": "sha256:672571252718bfd660ac951173a64ca5b95dff03d3c41bb4f7d8fb45fcfbe8b1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "road_boss",
+        "text": "\"Nothing will pass the hollow where the stone fell,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the road boss. She walks you along the detour: old bridge, pond, depot barn. Remember that order. It will get you past the silly signs ahead."
+      }
+    ]
+  },
+  "gemfall-04c/scene_road_crew_charm/narration": {
+    "source": "sha256:e9ae5660d5f3ea6e2d989bf5ee62763a19f50ab7a72f7b9f7a647ec726c225f6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the tuned charm over the hollow. It sings, faint and thin, though the stone was carried off weeks ago. The ground remembers."
+      },
+      {
+        "by": "road_boss",
+        "text": "\"Well,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the road boss."
+      },
+      {
+        "by": "road_boss",
+        "text": "\"That explains a thing or two.\""
+      }
+    ]
+  },
+  "gemfall-04c/scene_warden_patrol/narration": {
+    "source": "sha256:99e5adfad023368d357f87212fc6cf7c88b89cad06bc5299be0ca58b7b166c00",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A Skywarden patrol has stopped the road. Sergeant Holloway wants a toll of two coins, for Redspire, the wardens' citadel."
+      },
+      {
+        "by": "sergeant_holloway",
+        "text": "\"Only arithmetic,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. He also has a form marked WORKS INSTEAD, with its own box."
+      }
+    ]
+  },
+  "gemfall-04c/scene_warden_patrol_griffin_logs/narration": {
+    "source": "sha256:a518281559dbfbc39a97d440c79dce1b6d0b946ee7f7cf13752ce795894ae20d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your griffin and the sergeant swap sky news like old flyers: wind at the bridge, ash over the mountain, a storm sitting on the sea. Holloway writes it all down."
+      },
+      {
+        "by": "sergeant_holloway",
+        "text": "\"Useful,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, and waves you through."
+      }
+    ]
+  },
+  "gemfall-04c/scene_warden_patrol_pay/narration": {
+    "source": "sha256:6e4c22ed60ac38d405d9f71a484066c6bf28e993ca74f04e3e6eb88d3109cb5e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You pay. Sergeant Holloway writes PAID, POLITE in his ledger and hands you a receipt, then a receipt for the receipt."
+      },
+      {
+        "by": "sergeant_holloway",
+        "text": "\"Arithmetic,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, almost kindly."
+      },
+      {
+        "by": "sergeant_holloway",
+        "text": "\"The only thing up here that isn't shouting.\""
+      }
+    ]
+  },
+  "gemfall-04c/scene_depot/narration": {
+    "source": "sha256:626d3229c6f54ed45c07cf084e6bfcdc2ef00ec0c99be8021541ced39dd3038c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clerk Pennywhistle runs a depot barn full of strongboxes. Number nine rings like a dinner bell. That stone can be claimed, with the right paper."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"There is a form for deciding which form,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the clerk says happily."
+      }
+    ]
+  },
+  "gemfall-04c/scene_strongbox/narration": {
+    "source": "sha256:10194d9424778b087e47d438e6b2e86c0b670b7bef3830116c9c521c2e24e36c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pennywhistle opens strongbox nine."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"The Depot Stone. Claimed.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He writes your names and hands over the ringing gem."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"Keep it away from my pens.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind him, strongbox ten gives a loud thump."
+      }
+    ]
+  },
+  "gemfall-04c/scene_rumor_fire/narration": {
+    "source": "sha256:1c37b20a7e481f93b05e0b2d0dea3fe39c228f0c616d629ce5558f75beb7d628",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the noon stop, a ring of travelers is swapping news, and the news has clearly been swapped a great many times."
+      },
+      {
+        "by": "rumor_ring",
+        "text": "\"On the River Road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says one,"
+      },
+      {
+        "by": "rumor_ring",
+        "text": "\"a troll charges you a story instead of a coin.\""
+      },
+      {
+        "by": "rumor_ring",
+        "text": "\"On the Wild Road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says another,"
+      },
+      {
+        "by": "rumor_ring",
+        "text": "\"the marsh steals your boots and gives back different boots.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Everybody turns to you."
+      },
+      {
+        "by": "rumor_ring",
+        "text": "\"What's your news?\""
+      }
+    ]
+  },
+  "gemfall-04c/scene_bell_courier/narration": {
+    "source": "sha256:97c17fcbbc830db991eda714da826ea047d5536002aba80c54ab8a16d32ec0cf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A dragonling courier trots down from the north on a pony, ringing ding, ding, pause, ding."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"Boundary news! It must reach the river,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she pants. She looks very tired."
+      }
+    ]
+  },
+  "gemfall-04c/check_ring_pattern/onSuccess/narration": {
+    "source": "sha256:3fb98aa30aebec093ef047423be987f40752b6139696cd5f79c95497ee928b53",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ding, ding, pause, ding. You get it exactly right, and far away to the south, very faintly, another bell rings it back. The courier beams."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"You'd make a grandmother one day,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, which is the biggest compliment she knows."
+      }
+    ]
+  },
+  "gemfall-04c/check_ring_pattern/onFailure/narration": {
+    "source": "sha256:5f5676789ebd178608e0c08526d4afcb55e8d450eb2eb29101544e90e95c72d7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ding, pause, ding, ding, ding. The courier goes pink."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"That one means the cake is ready,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers. Far to the south, a whole camp sits down hopefully to wait for cake. She takes the bell back, giggling, and rings it properly."
+      }
+    ]
+  },
+  "gemfall-04c/scene_bell_courier_ask_news/narration": {
+    "source": "sha256:9ccbc497b16a177c2aede0083eea0af7e630fe97b443c6ba2cf277087d644841",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "bell_courier",
+        "text": "\"The grandmothers are turning back pry bars at the boundary stones,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the courier."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"Whole wagons of them. Not spoons. Spoons are fine.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her pony nudges you for attention."
+      }
+    ]
+  },
+  "gemfall-04c/scene_bell_courier_ring_back/narration": {
+    "source": "sha256:d27e787dfa36cec53bc7e33bf982c3edce2158ab1132a9fac65dd96c56a764a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You ring the answer every dragonling child knows: heard you, coming home. The courier's mouth falls open."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"You're from the hills! The grandmothers will want YOU.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She rings the news of you down the road, proud as anything."
+      }
+    ]
+  },
+  "gemfall-04c/scene_relay_sing/narration": {
+    "source": "sha256:2cb48e0ff7e7a489a182a0883a3705f7137d8f71ccee1cd785fc2f38d08871e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the relay campfire, centaurs sing one verse for each landmark. New detours mean new verses."
+      },
+      {
+        "by": "old_corran",
+        "text": "\"Your turn, travelers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "hums a centaur called Old Corran. He wants your verse for the road."
+      }
+    ]
+  },
+  "gemfall-04c/scene_ash_wind_shelter/narration": {
+    "source": "sha256:b5e1fa7948f4e2e93a1609a863dac30eabaf721b97077109bacd4fd30248f4d5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Sergeant Holloway is already behind the Skywarden supply wagon."
+      },
+      {
+        "by": "sergeant_holloway",
+        "text": "\"Third ash wind this week,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, writing BUSY under MOUNTAIN. He offers you a cracker. It is extremely dry."
+      }
+    ]
+  },
+  "gemfall-04c/interaction_last_post/narration": {
+    "source": "sha256:5e6b28977548ab4883c4d0c531c2e1539c8de6acefb604e1f5dac5165698423b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The road boss holds a rope while you guide the last post into its hole."
+      },
+      {
+        "by": "road_boss",
+        "text": "\"The relay will find that in the dark,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and gives you a jar of glowing moss for the night."
+      }
+    ]
+  },
+  "gemfall-04c/interaction_gate/narration": {
+    "source": "sha256:dededbc12e36aa521b96b8c1123a6e79a7d6994dd166268e61b9b92aad3f2dc3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the sergeant's table, a striped pole swings up and down. A patrol goat chews a ledger page."
+      },
+      {
+        "by": "sergeant_holloway",
+        "text": "\"Cross on the lift,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Holloway, writing GOAT, HUNGRY."
+      }
+    ]
+  },
+  "gemfall-04c/scene_box_ten/narration": {
+    "source": "sha256:e5d2d1521246d84a5009dd20934a129d2480725a721fe58eb205346ecc482131",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Strongbox ten grows three legs and starts eating a ledger. Eleven tries to follow."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"Mire mimics!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Pennywhistle."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"Ten has been empty since spring!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Drive them out before they eat the stamps."
+      }
+    ]
+  },
+  "gemfall-04c/scene_boxes_gone/narration": {
+    "source": "sha256:da7cd54bbbc01c5b5e13bc7c5eed8f91191df574ffdf9b624181f6bedbc0db6b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The mimics slink off, disguised as rocks. Pennywhistle thanks you with a brass whistle from lost property."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"Lost since spring,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "clerk_pennywhistle",
+        "text": "\"So is my patience.\""
+      }
+    ]
+  },
+  "gemfall-04c/interaction_pony/narration": {
+    "source": "sha256:c1286f59f29fe98ef0f36b594aaa0028e82aa08c258ef4f644ae44f8182fe2d4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "While the courier gulps water, her chubby pony nudges your elbow. Her name is Dumpling, and she is hot, itchy and sulky."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"She wants a fuss,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the courier."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"Any fuss will do.\""
+      }
+    ]
+  },
+  "gemfall-04c/interaction_verses/narration": {
+    "source": "sha256:3b0965203dda34684f296815acd32e996eab9d0397e3ebee0aed33c001ea7b99",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old Corran taps the new verses one landmark at a time, and each glows in the firelight."
+      },
+      {
+        "by": "old_corran",
+        "text": "\"Now tap them back in road order,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-04c/interaction_verses/onSuccess/narration": {
+    "source": "sha256:b873ef47ea24fdf7b8f4ec3be964d5a5ff04d0e1631a189f6caad9b28ef4f1e6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tap it back note for note."
+      },
+      {
+        "by": "old_corran",
+        "text": "\"There,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Old Corran."
+      },
+      {
+        "by": "old_corran",
+        "text": "\"The road just learned you.\""
+      }
+    ]
+  },
+  "gemfall-04c/interaction_verses/onAssisted/narration": {
+    "source": "sha256:c4cb3706dbc3222af1c0aa545b1f128bf47d726f2b5ce1df033253ca76d056d4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old Corran taps the first landmark with you."
+      },
+      {
+        "by": "old_corran",
+        "text": "\"The road just learned you.\""
+      }
+    ]
+  },
+  "gemfall-04c/interaction_post_line/onSuccess/narration": {
+    "source": "sha256:dcc52e030322f81004577c2698bfa7a6df68a6b3aa9e0ef9872844009509d982",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every post lands right."
+      },
+      {
+        "by": "road_boss",
+        "text": "\"My crew will help if the ash wind catches you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the road boss."
+      }
+    ]
+  },
+  "gemfall-04c/interaction_courier_pattern/narration": {
+    "source": "sha256:24153fd3d1ba8e0f3794c992b58cbc4c30785490f4674e968700437a850e90f2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The courier rings ding, ding, pause, ding. Watch, then echo it."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"Don't skip the pause,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she pants,"
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"or people start looking for cake.\""
+      }
+    ]
+  },
+  "gemfall-04c/interaction_courier_pattern/onFailure/narration": {
+    "source": "sha256:c0355d875acd4881c5566812d5e5a9c794c4b1ec235a207771154f5ead165b7b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ding, pause, ding, ding, ding."
+      },
+      {
+        "by": "bell_courier",
+        "text": "\"That means the cake is ready,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers. Far south, a camp waits for cake."
+      }
+    ]
+  }
+}

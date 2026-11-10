@@ -1,0 +1,805 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-03c/scene_spilled_pannier/narration": {
+    "source": "sha256:35ed7ba31520004ffde9797de48a431c0a3d9ce65e0deed3b42c5a0990b22010",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A wagon wheel drops into a rut, and gem chips spill everywhere."
+      },
+      {
+        "by": "drover",
+        "text": "\"WATCH YOUR BOOTS!\""
+      },
+      {
+        "by": "narrator",
+        "text": "booms the lead drover, who runs the river crossing. Help him catch the chips, or stand back and watch."
+      }
+    ]
+  },
+  "gemfall-03c/scene_spilled_pannier_spot_all/narration": {
+    "source": "sha256:7edabf0f407dc9332f933bd892eb011a62fa6ec593639538149f66cfedef10f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot looks once, and points. Under the wheel. In a hoofprint. Inside somebody's boot. Every chip goes back."
+      },
+      {
+        "by": "drover",
+        "text": "\"Never seen eyes like that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the drover booms."
+      },
+      {
+        "by": "drover",
+        "text": "\"I'll remember you folks.\""
+      }
+    ]
+  },
+  "gemfall-03c/scene_number_pebble/narration": {
+    "source": "sha256:a5830e5b3474b39c4bc55284fa7671db4ccca367c6e683a3f3e8485727d85ca0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the west branch, the ford line is two days long. A faun named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412."
+      },
+      {
+        "by": "burdock",
+        "text": "\"My lucky number!\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. The ford is on number 9."
+      }
+    ]
+  },
+  "gemfall-03c/scene_number_pebble_buy_cake/narration": {
+    "source": "sha256:6e9ed1b73140bef2a5fb23de478769e414030d28bcc07289e1c8d5fcf8009bdf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three coins buy a honeycake the size of one coin."
+      },
+      {
+        "by": "burdock",
+        "text": "\"My lucky number,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Burdock, meaning your money. You save the cake for someone who needs it."
+      }
+    ]
+  },
+  "gemfall-03c/choice_runaway_goat/narration": {
+    "source": "sha256:dbc0ba5802b891f759f7c8a564198edec0a2c3bed90c1300207dec0129c68df6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Burdock's goat, Pudding, gallops down the line with the pebble bucket on her head. Numbers fly everywhere."
+      },
+      {
+        "by": "burdock",
+        "text": "\"My bucket! My GOAT!\""
+      },
+      {
+        "by": "narrator",
+        "text": "wails Burdock. Chase her, or sort the spilled numbers for a honeycake."
+      }
+    ]
+  },
+  "gemfall-03c/check_goat_chase/narration": {
+    "source": "sha256:d303a67b23f96775a72eefe0dc2fabb66630811f9b99745c5c1ddc7393baf3c3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pudding gallops off with the bucket on her head. Every few steps she stops at a cabbage stall to chew."
+      },
+      {
+        "by": "burdock",
+        "text": "\"Wait for the chew!\""
+      },
+      {
+        "by": "narrator",
+        "text": "wails Burdock."
+      },
+      {
+        "by": "burdock",
+        "text": "\"Then grab!\""
+      }
+    ]
+  },
+  "gemfall-03c/choice_runaway_goat_sort/narration": {
+    "source": "sha256:e5731e44502c969b0b9af4aa5eafb3a201752eb993a3a795d0da55511f1fba76",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You ask people their numbers and sort the pebbles fairly. Burdock gives you a honeycake."
+      },
+      {
+        "by": "burdock",
+        "text": "\"This has never happened,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "burdock",
+        "text": "\"Tell nobody.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pudding wanders back."
+      }
+    ]
+  },
+  "gemfall-03c/scene_three_cards/narration": {
+    "source": "sha256:a16003df0f55059e2e74310058f473d3a26a700717b1b03449f39c7e0951808a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A kitsune named Tamsin Three-Cards shuffles cards on a barrel."
+      },
+      {
+        "by": "tamsin",
+        "text": "\"Find the Sun Card! Win a front-of-the-line pebble!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her third tail twitches. Catch her trick, walk away, or help her fool the crowd."
+      }
+    ]
+  },
+  "gemfall-03c/scene_three_cards_walk_by/narration": {
+    "source": "sha256:54059c96fc53bc2918b5e6fee9a2bd42a91ef6fa49702883230e34411cd82bc5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You keep your coins. Tamsin tips her hat."
+      },
+      {
+        "by": "tamsin",
+        "text": "\"Come back when you feel lucky.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind you, somebody loses again, very loudly."
+      }
+    ]
+  },
+  "gemfall-03c/scene_soup_line/narration": {
+    "source": "sha256:68f4118d736b3c4d4d2c2e910e2c5d7242664f0b754426282a0c32d19d4751fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A cheerful ladler named Wend gives away free soup under the dark-robed helpers' tent."
+      },
+      {
+        "by": "wend",
+        "text": "\"Kindness first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Wend. A little crystal on the ladle cord shivers whenever a gem wagon passes."
+      }
+    ]
+  },
+  "gemfall-03c/scene_soup_line_ask_crystal/narration": {
+    "source": "sha256:564912d1c6fedb9a981c043de088462ee8779001620e793b9daec401678425fc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "wend",
+        "text": "\"Since the red night,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Wend, lifting the crystal."
+      },
+      {
+        "by": "wend",
+        "text": "\"Means something, doesn't it?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Another wagon passes. The crystal hums. Wend changes the subject to soup."
+      }
+    ]
+  },
+  "gemfall-03c/scene_soup_line_thank_wend/narration": {
+    "source": "sha256:3079eae8403ca0f7aeebb51e20262d192ade48a6e434639743c01e7d5512591a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Wend beams and fills your bowls again."
+      },
+      {
+        "by": "wend",
+        "text": "\"Kindness first.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The crystal shivers at another wagon."
+      }
+    ]
+  },
+  "gemfall-03c/scene_queue_jumpers/narration": {
+    "source": "sha256:6cd6d8bea28484db8cd0184f469353d7991c7f19acc5549eba80a0a6b47931fb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A gang in red scarves pushes up the line."
+      },
+      {
+        "by": "red_scarves",
+        "text": "\"Ford closes tomorrow!\""
+      },
+      {
+        "by": "narrator",
+        "text": "their leader shouts. An old faun doubts it. Hold the line, and the scarves may treat you fairly later. Or fetch the drovers."
+      }
+    ]
+  },
+  "gemfall-03c/scene_queue_jumpers_send_back/narration": {
+    "source": "sha256:df911e4a495f87ee545ccc90fc4f4abe21caadd3594b0f1f60184bf78cd8d6e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your kitsune smiles the sweetest smile in the line."
+      },
+      {
+        "by": "party",
+        "text": "\"Haven't you heard? The back is the front now.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The red scarves sprint to the back. It takes them an hour to work it out."
+      }
+    ]
+  },
+  "gemfall-03c/scene_queue_jumpers_tamsin_help/narration": {
+    "source": "sha256:09fddf657d0dec10d72b8ebbc69416466ce5d0e07d4c4406e4900ef186675461",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tamsin strolls up, shuffling."
+      },
+      {
+        "by": "tamsin",
+        "text": "\"Find the Sun Card, win a place at the front!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The red scarves play for an hour and never find it. By then the line has rolled on without them."
+      }
+    ]
+  },
+  "gemfall-03c/scene_relay_message/narration": {
+    "source": "sha256:6ed3974a2af6f2fb1abf8467c4a59e391508ee37c2606e1bfaed0b139a4ddd37",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A centaur relay-runner skids up."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"Message for the drovers! Can't stop!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The note says RIVER RISING. CROSS SLOW. Run it, sing it down the line, or fly it to the ford."
+      }
+    ]
+  },
+  "gemfall-03c/check_run_message/onSuccess/narration": {
+    "source": "sha256:ece88c5ca59d6c825c5fcdb0f0b7305e73cbfe0e578b48982b3038a1f8c24a09",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You weave through wagons, goats and campfires, and slap the note into the lead drover's hand. He reads it, nods, and slows the crossing to a careful walk. When you get back, the runner tosses you a brave whistle."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"The relay remembers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "gemfall-03c/scene_relay_message_fly/narration": {
+    "source": "sha256:f725d28957345c6c75dd7ae522dcd5069c6c81267f4a56b8b4da3f54e1dde69e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your griffin crosses the whole line in four wingbeats. The lead drover reads the note and nods. Back in line, the runner whistles."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"The relay could use a friend with wings.\""
+      }
+    ]
+  },
+  "gemfall-03c/choice_tolls/narration": {
+    "source": "sha256:f1265bfd1e1df9f9b6c4c5a08554c89fb44d5f018ac3898b1cc76b9107291bbd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Pick one job before dusk. Free a stuck wagon, and its crew will help you in the ford. Fix the marker line for an easier ford. Or help the Brackens, a faun family with a cracked wheel, and ride their cart."
+      },
+      {
+        "by": "littlest_bracken",
+        "text": "\"We are being very brave,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Littlest Bracken."
+      }
+    ]
+  },
+  "gemfall-03c/scene_markers_restored/narration": {
+    "source": "sha256:b9baaf548b9b0dabb12edf3d82542b26ca26b2dfdf9b11535298163f7225f8be",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The marker line stands straight again, every post pointing the safe way to the ford. A relay-runner slows just long enough to say,"
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"The relay remembers.\""
+      }
+    ]
+  },
+  "gemfall-03c/scene_campfire_play/narration": {
+    "source": "sha256:c7164937a6d820d2e7a129d807465c73b0779639a4c526e77463920c3fe5c083",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the big campfire, a troupe acts out the red night with blankets and saucepans. Their mountain gets the hiccups."
+      },
+      {
+        "by": "troupe_leader",
+        "text": "\"New mountain, darlings!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries the leader. Play it, or tell them what you really heard."
+      }
+    ]
+  },
+  "gemfall-03c/check_play_mountain/narration": {
+    "source": "sha256:ed1bbd314e29c82c367a50f19425474756dc4a2fe32a41f0d149ad77ecb388e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The troupe leader hands you a red blanket and points at a barrel."
+      },
+      {
+        "by": "troupe_leader",
+        "text": "\"Climb up, darling, and be a MOUNTAIN!\""
+      }
+    ]
+  },
+  "gemfall-03c/scene_campfire_play_tell_true/narration": {
+    "source": "sha256:49d7213699a0126622cbfb05ce369ee4b494b1c50c87345617ad79bd1175e8ad",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You describe the hum in every gem. The leader changes the play. Now the mountain is quiet, and the falling stones sing."
+      },
+      {
+        "by": "troupe_leader",
+        "text": "\"Much spookier,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers."
+      }
+    ]
+  },
+  "gemfall-03c/scene_campfire_play_rewrite/narration": {
+    "source": "sha256:d46dc6f5e8308f42879976894ed99897cd44c95db50cd6fce5d91fac2e8c63c9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your kitsune changes the play on the spot. In the new ending, the stones are not treasure. They are a puzzle. The crowd likes it better."
+      },
+      {
+        "by": "troupe_leader",
+        "text": "\"Annoyingly better,\""
+      },
+      {
+        "by": "narrator",
+        "text": "mutters the leader."
+      }
+    ]
+  },
+  "gemfall-03c/scene_witch_stall/narration": {
+    "source": "sha256:87a9bec679c4f7f9fa87ff2193aaf78b52916b417a5fff896db0b3082caafea1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At a remedy stall, bell charms ring whenever a gem wagon passes. The witch, Mother Thrum, winces over her glasses."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"What do you actually want?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she asks."
+      }
+    ]
+  },
+  "gemfall-03c/scene_witch_stall_sore_feet/narration": {
+    "source": "sha256:bf9e53db99e1dc9217056ebcab9e118427f69ac244952da3246de472c5590554",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum hands over a sunbloom potion."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"Feet next. Listen first.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Another wagon makes every charm ring. She closes her eyes and counts to three."
+      }
+    ]
+  },
+  "gemfall-03c/scene_tuned_charm/narration": {
+    "source": "sha256:e2315af4cd15c258aa49876e04b6bd2108d5f552aaf2e0f40fa443e06f82cb79",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum gives you a tuned bell charm. Near any gem, it sings the same ancient note."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"Older than the road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. On her shelf, a stone rings inside a wool sock."
+      }
+    ]
+  },
+  "gemfall-03c/scene_tuned_charm_leave_it/narration": {
+    "source": "sha256:e74310092733d19d500455e6e90d0f891191b0743e265af062f11d4d0aa4b3c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You leave the ringing stone in its sock. Mother Thrum tucks it behind the counter."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"Some questions take longer.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You head back to camp with the tuned charm."
+      }
+    ]
+  },
+  "gemfall-03c/scene_tuned_charm_take_it_home/narration": {
+    "source": "sha256:75adc495bfbf77fcaf35bb73ac81c50805312415755f2908337387357846d516",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell her where it fell from, and that you will take it back. The ringing stops the moment the stone touches your dragonling's hands."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"There,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Mother Thrum softly."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"It knows. Keep it warm.\""
+      }
+    ]
+  },
+  "gemfall-03c/check_answer/onSuccess/narration": {
+    "source": "sha256:60adc16cd22da00e857eb70b7ace471aa842347fe10ecb7dcaf1ae8a679d96ff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum listens all the way to the end, then hands you the sock with the stone in it."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"That's the Ford Stone. Take it somewhere it stops ringing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"I'd like some sleep.\""
+      }
+    ]
+  },
+  "gemfall-03c/check_answer/onFailure/narration": {
+    "source": "sha256:4dfde14dbad3ffe30fdda7ac17b8c784b0203034747c0815d5119e7514be03ba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You say something about gems and glory, and Mother Thrum's charms all go quiet at once, which feels like an answer."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"Not yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says kindly."
+      },
+      {
+        "by": "mother_thrum",
+        "text": "\"Ask yourself again at the mountain.\""
+      }
+    ]
+  },
+  "gemfall-03c/scene_crossing_verse/narration": {
+    "source": "sha256:b122cabd67b3f37cec2d7b7191326f2827c2f45e5479259a04627c885976c2c0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At dawn the lead drover sings the crossing verse: slow, slow, wait, slow."
+      },
+      {
+        "by": "drover",
+        "text": "\"My ford, my pace,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he booms. The river is higher. Learn the verse, or study the water."
+      }
+    ]
+  },
+  "gemfall-03c/check_learn_verse/narration": {
+    "source": "sha256:08978c9d59529008d566e28ab901341604aa7872c53bc2811dc4ba0aaeb379ac",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The lead drover sings it again, thumping one step for each line: slow, and slow, and wait, and slow."
+      },
+      {
+        "by": "drover",
+        "text": "\"Now sing it back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he booms."
+      },
+      {
+        "by": "drover",
+        "text": "\"In order.\""
+      }
+    ]
+  },
+  "gemfall-03c/check_learn_verse/onSuccess/narration": {
+    "source": "sha256:e9f6bb76ed9516cc7dd9b09628535c8992a32615a9b5b95662993339051ad554",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "By the third time through, you are singing with him."
+      },
+      {
+        "by": "drover",
+        "text": "\"Huh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he booms."
+      },
+      {
+        "by": "drover",
+        "text": "\"You've got it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The verse sits in your chest like a drum."
+      }
+    ]
+  },
+  "gemfall-03c/choice_ford/narration": {
+    "source": "sha256:2018e2804ebc7671ae6a81748effba29892a0246ccec7daa2726e79ce5599b72",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The river is wide and fast."
+      },
+      {
+        "by": "drover",
+        "text": "\"One wagon at a time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "booms the lead drover. The jobs you did in the line can help now. How will you cross?"
+      }
+    ]
+  },
+  "gemfall-03c/scene_surge_scarves_help/narration": {
+    "source": "sha256:53ce30b3c6090557ce0b3d2344def2b4625e03503f1129fc0bd4c2667ee55db3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"HEY, RED SCARVES!\""
+      },
+      {
+        "by": "narrator",
+        "text": "you shout. Their leader shrugs."
+      },
+      {
+        "by": "red_scarves",
+        "text": "\"Fair's fair.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The whole gang wades in, and together you heave the wagon upright while the drakes squabble over bread."
+      }
+    ]
+  },
+  "gemfall-03c/scene_reed_crabs/narration": {
+    "source": "sha256:118b0028a2b5e6290f78255be29deeb3ca4bdb0aa302a2ba187e6837b6a1d491",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two young glassback crabs have parked on the first crossing stones. Wheels come close. Claws click. Wheels back away."
+      },
+      {
+        "by": "drover",
+        "text": "\"Back to the reeds, please,\""
+      },
+      {
+        "by": "narrator",
+        "text": "booms the lead drover. The crabs ignore him."
+      }
+    ]
+  },
+  "gemfall-03c/scene_crabs_cleared/narration": {
+    "source": "sha256:d84cf8e5f4a7290c7a2539ff8d42680c629181f2217ab459eb3266f2f1b1eee8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crabs shuffle back to the reeds like small dukes leaving a party. The drover gives you a river charm."
+      },
+      {
+        "by": "drover",
+        "text": "\"Polite neighbors,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he booms, and begins his verse."
+      }
+    ]
+  },
+  "gemfall-03c/interaction_soup_bowls/onSuccess/narration": {
+    "source": "sha256:962a39f00ab2afea7c40f03753482a0b2c2a8434ebd9a7caae14986431d6496b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Clink, clink, clink. The bowls stack up neat as a tower, and Wend slips a honeycake into your pocket."
+      },
+      {
+        "by": "wend",
+        "text": "\"Kindness first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-03c/interaction_soup_bowls/onFailure/narration": {
+    "source": "sha256:c22e1833ba7668f64894184795085ffa18ff74a4c56518c4169ca961741c0728",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One bowl lands in the mud, then three. Wend laughs, wipes them off and ladles you a bowl anyway."
+      },
+      {
+        "by": "wend",
+        "text": "\"Kindness first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. No honeycake, though."
+      }
+    ]
+  },
+  "gemfall-03c/interaction_clear_lane/onSuccess/narration": {
+    "source": "sha256:b2b8af5d801a8f6cc114f91fb07b015367541ee19727830fe207e9e9a08b4398",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up goes the awning, and the runner thunders through without a scrape. She flips you two coins over her shoulder."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"Thanks, line!\""
+      }
+    ]
+  },
+  "gemfall-03c/interaction_clear_lane/onFailure/narration": {
+    "source": "sha256:d4c8fb46ddf9a3c20d19d268ccefff4b64db203f859069e786256916da128b68",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The awning sags just as she passes, and she ducks, skids and bounces off a water barrel."
+      },
+      {
+        "by": "relay_runner",
+        "text": "\"Rude!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls, and does not tip."
+      }
+    ]
+  },
+  "gemfall-03c/interaction_wagon_level/narration": {
+    "source": "sha256:875be5023ffe4911cd0f17edcd7321cd2490d36409da7833cf737dd0984e47da",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stuck wagon leans hard into its rut. Tap when the marker crosses the gold to give it one good heave. The drover has named the rut."
+      },
+      {
+        "by": "drover",
+        "text": "\"Do not encourage it.\""
+      }
+    ]
+  }
+}

@@ -1,0 +1,1629 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-exchange-rift/market/narration": {
+    "source": "sha256:b8b6a4a5ab9ca6f3fcb124021ac692a8e4410d19aac9039647c812a01353883b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The Exchange has put its stalls back along the quay. A noodle seller lifts her awning with a broom. Then a snowflake lands in your breakfast. The sky is clear as a clean plate! So where is this snow coming from? That is the question this morning."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"First, I need hands!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the noodle seller."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"This awning is heavy, and I pay in coins.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/awning_plan/narration": {
+    "source": "sha256:e53a739e95502c7f4688c73d59fee7c37e1571e589788fc30f41624640eb8a0a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Snow piles up on the awning. It sags like a hammock, and the poles wobble."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Quick!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the noodle seller."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Before it all lands in my broth!\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you save it?"
+      }
+    ]
+  },
+  "riftlight-exchange-rift/awning_lift/narration": {
+    "source": "sha256:fe6c2ed36a8b5195836229f1986431a0d1cb8da577a675ee08315e62d564644c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "noodle_seller",
+        "text": "\"Poles up, chins up!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the noodle seller."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"My soup is watching.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/awning_tie/narration": {
+    "source": "sha256:765e44c0f6ed63fd91578f0297333eca0be5661a7ca21575b67cfab11b4e7862",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "noodle_seller",
+        "text": "\"Corners first,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the noodle seller, holding out four ropes."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Any knot you like, as long as it holds.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/awning_brace/narration": {
+    "source": "sha256:35a2289cf4f165a0c1fe80c06cee8ba74abcd97fa6eb0bc7e68b8c1ee5282ca0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "noodle_seller",
+        "text": "\"Hold that pole like it owes you money,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the noodle seller."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/awning_up/narration": {
+    "source": "sha256:fb60fddf6247153ab51fc129b3a6e224a109a12934284e7fb9e2128004765002",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The awning snaps tight, and the snow whooshes off onto a crate. The noodle seller drops three coins in your hands, then wraps up a supper bundle: flatbread, cheese and a sausage."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"For later. Don't tell the pot. The pot thinks everything is for the pot.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she rolls up her old spare awning, yellow and cream stripes, and puts it in your arms."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/awning_flap/narration": {
+    "source": "sha256:14dd0dec9efa35fe916cf84f4a1199f9926d27a2cd85bd9059db841dbd0936e1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The awning flaps like a huge wet bird. A pot of broth tips into the gutter. The noodle seller ties the cloth down herself."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"That is for trying,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and gives you one coin and her old spare awning, rolled up tight. The pot gurgles in a hurt way."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/noodle_counter/narration": {
+    "source": "sha256:7dde170e36addabd4eebd2a2b937f7d9369fbe94ef742e4f4b107c6ef2a9623e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Her stall smells of ginger and honey."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Honeycake is three coins,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the noodle seller."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Questions are free. Go look at the fish stall, the gull on the post and that ship. They are all wrong this morning.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/noodle_buy/narration": {
+    "source": "sha256:385ab786976ae29d989f35c70a1e09fe6fe4e847ba9c0df227494c481ea2f704",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She slides a honeycake into a paper twist and counts your coins twice, just for fun."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Eat it warm, or save it for somebody who needs it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A snowflake lands on the cake and melts at once."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/morning/narration": {
+    "source": "sha256:9e3e47be48a2d099cf92af795a32fd846035f59bd0fbba378f64c3cbe3c19ac5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Snow falls over one fish stall, under a clear sky. On a mooring post, a gull shakes frost off its wings."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Cold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it grumbles. Beyond it, a ship has docked a day early. Its kitsune captain is arguing with the harbor clock. Where do you look first?"
+      }
+    ]
+  },
+  "riftlight-exchange-rift/fish/narration": {
+    "source": "sha256:72b165088a0b06bb4aeb9e001be0863755f487c9e73c723c3c0de2ca36c78de7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The fish seller holds up a scoop of snow."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"I ordered ice. Ice stays where you put it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Under her table, stiff white grass has pushed up between the boards, cold enough to sting."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"Somebody move my buckets, before my fish catch cold!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/fish_buckets/narration": {
+    "source": "sha256:1149b484fd244240ee7d7a50e2e3eaef1757b53ae469459704bf4166bbfa19ff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "fish_seller",
+        "text": "\"Gently!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries the fish seller."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"They have had a very confusing morning.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/fish_help/narration": {
+    "source": "sha256:90c17899756d84825b93ecae0a2ddf5af8d6ac8ac0675603225fedec69b94925",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Every bucket reaches the noodle awning. The fish seller gives you two coins."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"Something stepped off that patch of grass,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"Little hooves. Went that way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Wet hoofprints trail off between the crates."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/fish_slosh/narration": {
+    "source": "sha256:5178b2d1ee889d539a41b629119cf943ee3ebd5ace1690f55df3fe37567f56cb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A bucket tips, and fish flop across the boards. Everyone chases them with nets, hats and one noodle ladle."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"Nobody lost a fish,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the fish seller,"
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"but I lost count.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She gives you a coin."
+      },
+      {
+        "by": "fish_seller",
+        "text": "\"Something stepped off that grass. Little hooves. Went that way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Wet hoofprints lead off between the crates."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gull/narration": {
+    "source": "sha256:6c47335ca3ce8e936b23b94c0502b5e757f18c18b1758d73859df3b44d99ad95",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The gull stands on one foot."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Cold,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says. It changes feet."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Still cold.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Its stomach growls."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"That is the wind,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Not my stomach.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Below it, a small white hoofprint marks the boards."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gull_help/narration": {
+    "source": "sha256:db4642dae29ec094b91890d95f9eb3b200e80a05bbff58e4a47721f9e6bcac90",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The gull tucks its icy feet into your sleeve."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"For the record, I did not ask to be a winter bird.\""
+      },
+      {
+        "by": "narrator",
+        "text": "From your arm, it spots more hoofprints between the crates."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gull_fed/narration": {
+    "source": "sha256:4031dce7f718b619c8996fddd4eb8c2e9dbb53d9572f02dc41729f2f2f0b7486",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The gull gulps the crumbs and fluffs up to twice its size."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Best thing all day.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It flaps onto a crate and points its beak."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Hoofprints! Little ones! That way!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then, quieter:"
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Don't tell the other gulls I said thank you.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/ship/narration": {
+    "source": "sha256:1ca23976332aef6ed098b65d413689b1df9b7852269443370de94818afe76f07",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The captain spreads a chart over a barrel."
+      },
+      {
+        "by": "thimble",
+        "text": "\"We were due tomorrow. We docked today. Our island was here yesterday, and this morning the dock was right there.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She jabs the chart."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Same island. Same washing on the line. Wrong patch of sky.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The wind tugs the chart."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Captain Thimble. If you find out why, tell me first. You'll know my ship by the socks.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/chart_pin/narration": {
+    "source": "sha256:4c50d2617020254382f15954013d884e8c9180849dc2daeee8c1ad8b5b675f99",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "thimble",
+        "text": "\"Grab a corner!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts Captain Thimble."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Any corner! Not my hat!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/ship_help/narration": {
+    "source": "sha256:93ff6956e453033e5b400df72e69246edf0ffe9bb37fe80aca1afe4fc12f8ea5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the corners while Captain Thimble ties the chart down. She hands you a spare ship's whistle."
+      },
+      {
+        "by": "thimble",
+        "text": "\"A brave whistle. Loud enough to wake a whale. Blow it if you need help fast. And if you ever reach the islands, look for my washing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A gust brings the smell of snow."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/ship_flap/narration": {
+    "source": "sha256:949c6d20ea9466dee83733ac3694788e3f40530b8e9ffbafce45572545533c3c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The chart flaps away like a big pale bird. Captain Thimble dives and sits on it."
+      },
+      {
+        "by": "thimble",
+        "text": "\"Never trust a map on a windy day,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs."
+      },
+      {
+        "by": "thimble",
+        "text": "\"If you ever reach the islands, look for my washing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A gust brings the smell of snow."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/ship_cold/narration": {
+    "source": "sha256:3e3c13b5afc3d1b38aa636a9e4a8eb01bca61b94a4f5ad54789afde4a73530c5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The captain points past the noodle stall."
+      },
+      {
+        "by": "thimble",
+        "text": "\"The wind comes from between those crates. Wind should have more room than that.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A coil of rope starts sliding across the boards toward them. She stamps on it. The rope stops, and sulks."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/trail_check/narration": {
+    "source": "sha256:0ca42afd83bf878f668d83de951f1803900b458bf09e6b33145bf49c7542a7a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Snow, frost and small hoofprints all lead along the quay."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Hmph,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the gull, following you along the posts."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Footprints. In my harbor.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/trail_found/narration": {
+    "source": "sha256:5ddd60e9db333ebf4d80e44512895c830509d5f453ee5b9ebbb2cc65a935ae1e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The newest prints are crisp, no bigger than a plum, with white fuzz stuck in one. They skid sideways, as if something had tugged their owner."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Little goat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the gull from a post."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Lost. Cold. Like me.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It shakes its wings, frosty feathers float down, and everybody catches one."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Good tracking. Keep those.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then a deep horn blows from the water."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/trail_lost/narration": {
+    "source": "sha256:e608b4985a4a47ac8bbebf4df296eae5f61a3488dcce517c85e66c22c6a7b6ed",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Snow covers the marks before you can read them, and you end up with a boot full of slush. A barrel rolls a little way by itself, then stops."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Barrels do not do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the gull from a post. It shakes the frost off its wings, and everybody catches a falling feather."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"For the slush,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it grumbles. Then a deep horn blows from the water."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/delivery/narration": {
+    "source": "sha256:499e7ee53e06b7c31fdfae2a1108e2a31d9949e8cbca6ce6f3812e2edc4b504d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barge bumps the quay. The pilot points at stone landing steps hanging crooked above the water."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"That was my landing this morning! Now it's halfway up a wall.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Sacks of potatoes slide across his deck."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Supper for six boats, and nowhere to land it. Help me, please!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/sack_line/narration": {
+    "source": "sha256:247e15d3d22072b934199bb6d5ce9a602799dab7418c72465e26878864ce2bed",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Hand to hand,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Like passing a baby. A heavy, lumpy baby.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/sack_rally/narration": {
+    "source": "sha256:572dd2ba8f0655382ad43f45e8279f0657f5cd378282f71b5b9b46097ee4e257",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Give us a beat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot, tapping his foot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"My potatoes like a tune.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/moor_ring/narration": {
+    "source": "sha256:99f588502b0f1fb151c75f4891295a7f3a1096603bd19fb7772c2ad1c0be05f9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Low ring, strong ring, and loop it twice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Or my barge goes visiting.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/moor_wings/narration": {
+    "source": "sha256:409c9061358b170927fc963c7a4de16a16b29c557d6000cdf144a6186c9012ce",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Up there?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The pilot squints at the high ring."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Show-off. Go on, then.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/delivery_sacks/narration": {
+    "source": "sha256:56a8fdef012e1badc9f7078f7acce856e8a5f245d01b91c8777f75a7dd298450",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The potato sacks reach the quay."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Six crews eating tonight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot. He hands you a glass jar of glowing moss."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Mosslight. It glows when it's happy.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The jar hums like a polite kettle. He frowns at the crooked steps."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Still need a way home.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/sacks_dropped/narration": {
+    "source": "sha256:85cd789fc1d6096375b43251733c6a7e973f9cb7f234845c9102c6d0585a96bd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A sack bursts. Potatoes bounce off boots and plop into the harbor. At last the supper is ashore, though three potatoes went swimming."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Six crews eating tonight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Mostly.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He frowns at the crooked steps."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Still need a way home.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/delivery_moor/narration": {
+    "source": "sha256:4915e6865e2fe700dcee3d18a71aa516a151b1d5dbabcf3a3eb42554b6fcfdfd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tie the barge to a low mooring ring. The pilot tosses you a carved charm that smells like rain."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"For the river. It keeps your feet sure on wet boards.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then he frowns at the crooked steps."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Now, where did my landing go?\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/moor_drift/narration": {
+    "source": "sha256:c9a69bbf96c996c1aec81ddc726cc1492923e0f7872183c0f0f7d285a3b04ebb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The line slips, and the barge thumps the quay. Every sack hops. You tie it to the next mooring ring, with everyone's thumbs on the knot. A small crab in the hull complains. The pilot frowns at the crooked steps."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Now, where did my landing go?\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/landing_steps/narration": {
+    "source": "sha256:b6c126837427a55731b14d6995f7be57793d84268b9e03e86788f626ee9f8cde",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crooked steps tip off the wall like a stair that fell asleep standing up. A thin, cold breath slips out from under them. It smells of snow."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Whatever grabbed my landing didn't take it far,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Could somebody look?\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/landing_climb/narration": {
+    "source": "sha256:4db6da128c8bd1893bf2561691eb95c64ac1713a15898f38b0d71c641893e578",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Mind the slime,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"It is older than me, and grumpier.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/landing_prop/narration": {
+    "source": "sha256:02c4864c4c8b5857cd2d962429d451e0b719a2071d55441c6eddca11e25b95f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Not the potato crate,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot quickly."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Anything but the potato crate.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/landing_smash/narration": {
+    "source": "sha256:a83e0cce2973923da4dc1a17aa807bca8e2104c45abaf8ed5911cb2cc0b57917",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Gently,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Those steps were my grandmother's.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/landing_clue/narration": {
+    "source": "sha256:ad1dcef0759f0a89d056265681986c22c2861d0fb81f782bd34b801ff1f36584",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Frost covers the underside of the steps like white feathers. Every feather points the same way: toward the far end of the quay. The pilot whistles."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Well, I'll be a pond. Thank you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He flips you two coins."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/landing_slip/narration": {
+    "source": "sha256:9057b5f8cb9a543fd3c7275a3137225329b90dbc41e11c8ccd36ab1c7329af1c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your foot skids, and the pilot catches your sleeve. Under the steps is only a puddle and a very surprised snail."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Never mind,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Since this morning, the steps all lean toward the far end of the quay. I wish I knew why.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/quay_rest/narration": {
+    "source": "sha256:d91a510997c379604fef4fedb27d66d49fd6ca251e7ce23bb44f09673744e803",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The pilot tosses up a bag of warm potato skins, salty and perfect. You eat them on a crate. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Crows,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot, rolling his eyes."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"They run a school up there. Do not mess with them.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gull_friend/narration": {
+    "source": "sha256:886202de81a57db301e5d06c3619deb2872635d134f894377d6ab4b1f12755cb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "As you walk on, the frosty gull lands on a crate beside you and fluffs its feathers."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Hmph,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it says."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"You are the only ones doing anything about this snow. I might come along. To keep an eye on you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Do you ask it along?"
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gull_along/narration": {
+    "source": "sha256:afa0a470b1575dc0ff92c79f54dc44741bd49b1063d55cfacd57393f96f712da",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The gull hops onto your shoulder and tucks one foot into your collar."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Warmer up here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it grumbles."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Not that I am cold.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gull_goodbye/narration": {
+    "source": "sha256:bdb99e7839ab5a4ed4b84577c61e2393fd2f7ab137958ba4858bf615b9e896fb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "the_gull",
+        "text": "\"Suit yourselves,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the gull, and flaps back to its post. It watches you go, very much not waving, with one wing up."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/rookery/narration": {
+    "source": "sha256:674a82d160c8f3d9a128503305a080dbe192d266bdd9b91563e4d84f951f202e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You climb out onto the rooftops. Crows sit on every chimney pot, staring at you. A sign says NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here crows train each Duskrunner, a hero who runs quick and quiet."
+      },
+      {
+        "by": "the_crows",
+        "text": "\"Wipe your feet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "they say, pointing at a tiny doormat. On a peg hangs a dusk hood, soft as a shadow. Worn with a star circlet, it only itches."
+      },
+      {
+        "by": "the_crows",
+        "text": "\"Try it on, if you like. But nobody who leaves the Exchange finds our ladder again.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/rookery/variants/0": {
+    "source": "sha256:8be2d73261cce6930e32eb2531039c185ebf776501eb34f18f25da39442a9bb8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crows of the Rookery eye you from every chimney."
+      },
+      {
+        "by": "the_crows",
+        "text": "\"Back again.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The sign still says NO MESSING. (WITH US.) The dusk hood waits on its peg. You wipe your feet on the tiny doormat."
+      },
+      {
+        "by": "the_crows",
+        "text": "\"Remember: once you leave the Exchange, our ladder is gone.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/quay/narration": {
+    "source": "sha256:34a0dce72f4d7aec19efa00e44fb7cc136b735f6705ab2334ad3428a6f3a88f8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards toward it. From the fold comes a deep, slow creak, and a hum like a note nobody is singing. A dock worker grabs your sleeve."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Don't go near it. It's been pulling things since dawn.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/quay_lit/narration": {
+    "source": "sha256:951207347b8b4a0b218e1b46c5b50bc05a7802d178c6112072388f4fca425803",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The moss glows bright and curious. In its light, every shadow points the same way: toward the fold. You nudge a wedge under the nearest crate. One of the dock workers carries the jar off to light the rest of the quay. Beyond the crates, something small bleats."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Ooh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Pretty. Spooky. Pretty spooky.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/pattern_seen/narration": {
+    "source": "sha256:37de5bb778de80ac786094752fe9d116a3b90c102bd3f69288bec81bda647132",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You kick a wedge under the nearest crate and shout a warning. The noodle seller grabs her awning before it tears free. Beyond the crates, something small bleats."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Thank you!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls, hugging the pole."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/pattern_missed/narration": {
+    "source": "sha256:6e0862b8fae4dfa78cc8caa987309ff79e9b2ffb3ad069e3e2d7271bcb1d3d3c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The lid rolls in a circle, twice, and drops flat by the fold, very pleased with itself. You pull everyone back from its path. Beyond the crates, something small bleats."
+      },
+      {
+        "by": "the_gull",
+        "text": "\"Show-off,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the gull tells the lid."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/clear_check/narration": {
+    "source": "sha256:1d0a58602558770582746b1ca027ed3fef227bc5ee478045b9531ca7310c75ca",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You and the dock workers lead the market crowd behind the stall rail. The noodle seller points the way with her ladle. A cat on a barrel will not budge, so you carry the barrel."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Everybody back!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she shouts."
+      },
+      {
+        "by": "noodle_seller",
+        "text": "\"Soup is free behind the rail!\""
+      },
+      {
+        "by": "narrator",
+        "text": "That works very fast."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/clear_quay/narration": {
+    "source": "sha256:f8d13907b99b7d490f01c060f2fea33dbc9f4a8726185bdd94abbeeb765bd002",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lift the noodle awning clear of a sliding crate. The dock workers pass buckets out of the way. Beyond the crates, something small bleats."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Mind your toes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"The boards are walking.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/crate_plan/narration": {
+    "source": "sha256:0f62205e56831715175a8a98d1640bd4a6f13128411351d70959b90ee46dcffd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The nearest stack groans and leans toward the fold. Two dock workers hang off its rope, boots skidding."
+      },
+      {
+        "by": "dock_workers",
+        "text": "\"We can't hold it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Behind the stack, the small bleat comes again. If the crates slide, they land on whatever is bleating. Haul it back by force, or work out where a plank would stop it? Overhead, the gull shrieks that it saw this coming."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/crate_haul/onSuccess/narration": {
+    "source": "sha256:d359b1e8476c1faad0a09d92f226711270b62d074b5491311710de7b02dab1bc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You haul together. The stack thumps back upright! But it lands crooked, leaning right over the lower stack."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Nobody climb that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"It's one sneeze from falling.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/crate_wedge/narration": {
+    "source": "sha256:73ff8238c822848173d12d42619983be86ac7712a792418ec9f47d38cda2df30",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Where, though?\""
+      },
+      {
+        "by": "narrator",
+        "text": "pants a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Pick a spot. Quickly, please!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/crates_back/narration": {
+    "source": "sha256:605d67ed570f0e41aa0a9454595686bb9cea67a0acab7200995fb709419a99f1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stack stops. The dock workers let go one finger at a time. One pats the top crate."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Good crate,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers. The fold still breathes cold, but nothing else slides. Behind the stack, the small bleat comes again, closer now, and a little cross."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/crates_slid/narration": {
+    "source": "sha256:bf2ff919651d0174cd6b816332b12a16cabbb664a63ccd4b0c8682de3e158b03",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One crate slides into the fold and is gone with a soft pop. A cold puff comes back out."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says one of the dock workers."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Nobody tell the crate's owner.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The rest of the stack stops leaning. Behind it, the bleat comes again, closer and a little cross."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gap/narration": {
+    "source": "sha256:f4da9118ca24c9e0678abd3dbd4dac88c5ae25d1ec8dd0b78345750db3d4c73c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Between the two stacks is a narrow gap. At the far end, the air looks thin and wrinkled, like a curtain in a draft."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Careful,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"It breathes.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The bleat comes from just beyond. You can squeeze through sideways, climb over the lower stack, or crawl along the wet bottom."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gap_squeeze/narration": {
+    "source": "sha256:cbca052386680a10d0c398c26f668c6497543105d8668d81042f902a20e13dd8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Breathe in,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers a dock worker behind you."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Then breathe in some more.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gap_climb/narration": {
+    "source": "sha256:a7e2493ddb94b9170152e34629a754f9d87adf2ba6b6c2230fa2ef34bcebf76c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Hands and boots,\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"And don't look at the fold.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gap_crawl/narration": {
+    "source": "sha256:f3507231d25eaa906e8ffc4fbe90e96bbc275714e9b11279ab7c7dcb66274239",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Under, then,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers a dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Mind the puddles. They are very cold puddles.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gap_through/narration": {
+    "source": "sha256:e6b75616d2e4b1f087f593632a2fb3ffaf7e0a7e52e31970bc5826db2a97f679",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You come out the other side without knocking a crate. The boards here are wet with frost, not water. A tuft of white fuzz sits on a nail."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh-eh-eh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says something small and cross, right in front of you."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/gap_scrape/narration": {
+    "source": "sha256:8cf274286ea82815a9f3eac06ce0270a37a21ebb04197b0bcc7df0b68ebe6b67",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You scrape through with a squeak. You lose a button and gain a splinter. The boards here are wet with frost, not water. A tuft of white fuzz sits on a nail."
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh-eh-eh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says something small and cross, right in front of you."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/read_light/narration": {
+    "source": "sha256:a853321df1c521a1839b13c916e0240cb77b8f51e383c53373024c45821c054b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "With a Starweaver's eyes, you study the light around the fold. It has a name: Riftlight. The kid stamps twice, waiting to be picked up. Behind you, a mooring rope draws tight."
+      },
+      {
+        "by": "party",
+        "text": "\"Riftlight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you whisper, and the light flickers, as if it heard its name."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/pull/narration": {
+    "source": "sha256:fec19e0432430d9884c2e4e4516aebdd4f026b6d2db2cd41d92cf1a4d497de18",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rope snaps straight. Crates scrape across the boards. The kid skids toward the opening, hooves spread wide. A dock worker throws you a loose line."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Grab this!\""
+      },
+      {
+        "by": "narrator",
+        "text": "You have time for one move."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/pull/variants/1": {
+    "source": "sha256:a24497ac8d35b6a9563fce102f2c412d801f4bce0267fcfc69d5357117dd67a7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "fish_seller",
+        "text": "\"You saved my fish. Let us save that little one!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the seller. She passes the loose line over the crates, where you can reach it without stepping into their path."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/pull/variants/3": {
+    "source": "sha256:2cc657b566bd3cd029a54b64067118405c17d3f052683a21ffaae0b1e9c1997f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "barge_pilot",
+        "text": "\"Crate on your left!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the pilot from his moored boat. You step clear in time."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/catch/narration": {
+    "source": "sha256:5b7ab5e986717816b8da71fd7272497488d6f23e566a6022fbdf5fb6fbc5e1d0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Run!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the dock worker."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/anchor/narration": {
+    "source": "sha256:ed52b1d8e6c7c6daf50e5861fe08a27353e294dd82dc45183a0b863596dda861",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Around the post!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Around and around!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/swoop/narration": {
+    "source": "sha256:7a8fcbd8e2954aa372f610eb80880f8d26e87722c9681c631c95a16c76a7c561",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Go, go!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the dock worker."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/smash/narration": {
+    "source": "sha256:75bc5f97aee5016122557a9264d72dd04143610da8f8d60fa3cad6fd7082bd22",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Break it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"I'll explain to the crate later.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/brace/narration": {
+    "source": "sha256:cc85c142348e017b04cc614b7e870b7f95a493135f9ab345e496bbc7030237db",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "dock_worker",
+        "text": "\"Hold it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the dock worker."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Hold it and don't let go!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/caught/narration": {
+    "source": "sha256:1acab145c557da8208b6cad947bc0dc0af2e064688cefef35c3bf1186b24b906",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tuck the kid against your chest."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Let go!\""
+      },
+      {
+        "by": "narrator",
+        "text": "yells the dock worker, and lets go of her end before it takes her too. You keep yours. The quay folds out of sight."
+      }
+    ]
+  },
+  "riftlight-exchange-rift/tumbled/narration": {
+    "source": "sha256:e30970269b36d2fdac13f4519b6a33737ebe834a98ac5e24e1259901852515ca",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The kid lands against your chest. You tumble through together, dragging the loose end of the rope."
+      },
+      {
+        "by": "party",
+        "text": "\"Got you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you gasp, and the kid says,"
+      },
+      {
+        "by": "goat_kid",
+        "text": "\"Meh.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/ridge_ok/narration": {
+    "source": "sha256:6f1992ecd5ab02769297aa4905a6c5f3ebd01360f6f6747f318f1728636dda33",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Linked together, you lean into the wind and walk. The ridge grows bigger. Behind it, the snow is quiet. The kid peeks out of the sling, sneezes, and looks very proud of itself."
+      },
+      {
+        "by": "party",
+        "text": "\"Nearly there,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell the kid."
+      },
+      {
+        "by": "party",
+        "text": "\"Nearly warm.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/barge_toss/narration": {
+    "source": "sha256:a59b82981619d85bcd46a26c467299200d82dce71efaf4eb525464d387f96420",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The horn belongs to a supply barge, sliding toward the quay too fast. Its frogfolk pilot waves a boat hook."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Throw me that rope! Right over my hook, if you please!\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/barge_toss/onSuccess/narration": {
+    "source": "sha256:5ea42157b436c8ad42f809e13c01e4ed8a9cba3eeba2954c2e250a0a69f8fb79",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rope drops neatly over his hook."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Lovely throw!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot, hauling the barge in close."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"With an arm like that, I can steer right up to the wall.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/barge_toss/onFailure/narration": {
+    "source": "sha256:4eade41dbb09795032daed07b5ad6e2577f00f3bace231735f1a6a3d5c68c2b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rope plops into the harbor. The pilot fishes it out with his hook and hauls the barge in himself, muttering to it."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"There, there, old tub. Some folk throw like fish.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/sack_chain/narration": {
+    "source": "sha256:d51ff4878f49e2b0765001d5475b8350d9a03bb0f4da8e3f64806afb4cbaaec5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Six crews wait at their boats along the quay, and every one is hungry."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"Pass the sacks friend to friend,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the pilot."
+      },
+      {
+        "by": "barge_pilot",
+        "text": "\"And mind the puddles. Potatoes hate puddles.\""
+      }
+    ]
+  }
+}

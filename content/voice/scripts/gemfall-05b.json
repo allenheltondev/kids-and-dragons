@@ -1,0 +1,923 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-05b/scene_mosshome/narration": {
+    "source": "sha256:11490330f62e2bb106ac3d6178ec200c905c6e48ca1ba0a7de69083a997a3c46",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your job: find out what MossHome, the forest town, remembers, then climb out to the foothills. Houses grow inside trees here. A leaning chair has a sign: FILE OPENED. A bigfoot runner jogs past."
+      },
+      {
+        "by": "runner",
+        "text": "\"Archive first! Wipe your feet!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She does both without stopping."
+      }
+    ]
+  },
+  "gemfall-05b/scene_mosshome_feet/narration": {
+    "source": "sha256:0246a8576888200b6938ef8c72b7386951f6a7ead9e9132f5ea55247e098a6c4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wipe your feet on the welcome moss by the archive door. Then you wipe them again. The door flies open."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Twice!\""
+      },
+      {
+        "by": "narrator",
+        "text": "breathes an archivist."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Nobody from outside wipes twice.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lets you straight in."
+      }
+    ]
+  },
+  "gemfall-05b/scene_mosshome_glade_word/narration": {
+    "source": "sha256:721fff868a512178a83d424dfe31bb6a4dfe4bac3397f2fe6d79fd1e6d738d49",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You mention the glade. The archivist at the door runs her thumb along a cord to a knot."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"That glade's record changed this morning. It got better.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She beams."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"In. Feet.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_mosshome_ask_door/narration": {
+    "source": "sha256:8ca0248cd1d28b497afe836d7b0daf1d7960b039e13f84ae48399ee77d8d4e52",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot knocks on the archive door three slow times, the MossHome way. The door opens by itself. An archivist drops an armful of cords."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Nobody's done that in years. Come in. Wipe your feet.\""
+      }
+    ]
+  },
+  "gemfall-05b/check_archive_door/narration": {
+    "source": "sha256:8812a08a94c1438c6e415d745ab5ab70bb55fc506bfbad67266ba82116ea2e1a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The archivist folds her arms on the doorstep."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Don't tell me your road,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Show me. Every path that moved under your boots.\""
+      }
+    ]
+  },
+  "gemfall-05b/check_archive_door/onSuccess/narration": {
+    "source": "sha256:bf83a4e1e5261f9d87cffb88da476795e4d5bd340540bc8e05dc4995473cf0a4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You stomp the last bend of your road into the moss. The archivist's eyebrows go up, and up again."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Come in. Wipe your feet. Twice.\""
+      }
+    ]
+  },
+  "gemfall-05b/check_archive_door/onFailure/narration": {
+    "source": "sha256:990d802b288968817edb4aa3ad042ed0fb9370f7b8c3f03e6feb47f16414717c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You stomp the wrong way and sit down hard in the moss."
+      },
+      {
+        "by": "door_archivist",
+        "text": "\"Wait on the bench,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the archivist. The bench is still growing. Slowly, it lifts you to the window."
+      }
+    ]
+  },
+  "gemfall-05b/scene_archive_table_newest/narration": {
+    "source": "sha256:835725ef1e91258f0b5c955c1d71b728cdfdc038fb2729d6a2534927d4d2d85d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The archivist points to fresh thorns: a folding path, a hedge holding prospectors, a beech sitting across the way."
+      },
+      {
+        "by": "archivist",
+        "text": "\"Somebody walked those this week.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at your boots. The welcome moss missed a spot."
+      }
+    ]
+  },
+  "gemfall-05b/check_plot/narration": {
+    "source": "sha256:e79c07c94ee3a92445ccefcb4b1519ed9f0aa1905e4c63350b5139b3633bb6a0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The archivist hands you yarn and a fistful of thorns."
+      },
+      {
+        "by": "archivist",
+        "text": "\"Three paths moved in the first week. Pin them in the order they moved, and the shape will show itself.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_spiral_on/narration": {
+    "source": "sha256:88ce24c435f6fc5d4db2855071e7f11cba8220097b089ce57cdbee4c81999097",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "archivist",
+        "text": "\"Before?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The archivists look at each other. One goes to the back of the archive. Soon you hear slow footsteps coming, and a small bird singing."
+      }
+    ]
+  },
+  "gemfall-05b/scene_spiral_hum/narration": {
+    "source": "sha256:6cad74cd6e9b2dbea0ace462adac37dd080f5fef7458504a37d34df88b4342a5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hum the note the stones hum. Every archivist stops. A spool of cord rolls under the table, and nobody chases it."
+      },
+      {
+        "by": "archivist",
+        "text": "\"The oldest knots were tied to that note,\""
+      },
+      {
+        "by": "narrator",
+        "text": "one whispers, and sends for the oldest archivist."
+      }
+    ]
+  },
+  "gemfall-05b/scene_knot_cords/narration": {
+    "source": "sha256:4d00a8a03e5c387ef62b5487a67f7ce55d7b5becba68c15f40f03d66e404946b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The oldest archivist brings knotted cords in a box. A bird nests in his beard, so he walks very slowly."
+      },
+      {
+        "by": "oldest_archivist",
+        "text": "\"The paths flinched like this long ago,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "oldest_archivist",
+        "text": "\"The forest has kept the record all along. The stones are older than the mountain's name.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_knot_cords_rest/narration": {
+    "source": "sha256:5015b9fbcd14e7f00c7d0065556fffbfbeeb67243bc12b1728be5bd2f23e1c19",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You thank him."
+      },
+      {
+        "by": "oldest_archivist",
+        "text": "\"Did not ask what the forest keeps,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the oldest archivist tells a cord, a little too loudly. The door archivist sighs and turns you back."
+      }
+    ]
+  },
+  "gemfall-05b/scene_pile_question/narration": {
+    "source": "sha256:9448dae325be9242e3acec7f90f9a328c5228b4dc914c59669e8770f3a443b63",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The forest keeps a pile under its roots: tools, hats and humming gems it took from diggers."
+      },
+      {
+        "by": "archivist",
+        "text": "\"The pile is the forest's,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says an archivist."
+      },
+      {
+        "by": "archivist",
+        "text": "\"The record decides who it trusts.\""
+      }
+    ]
+  },
+  "gemfall-05b/check_trust/onFailure/narration": {
+    "source": "sha256:d6d99e0dbdaedafdc66a1756197904933e113137c76e4d4fe15a5c5c5ad8aeb6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "archivist",
+        "text": "\"The record doesn't know you yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the archivist, kindly, and closes the box. Maybe it will, by the time you're further north."
+      }
+    ]
+  },
+  "gemfall-05b/scene_pile_visit/narration": {
+    "source": "sha256:b96b65b9d10aace7410f1b2a305f16ee71d1c002d81d841e7ff0c26ec0fc0e24",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In a root hollow lie picks, sieves, three hats and humming gems. One stone sings louder than the rest."
+      },
+      {
+        "by": "archivist",
+        "text": "\"That one wants north,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the archivist."
+      },
+      {
+        "by": "archivist",
+        "text": "\"Carry it if you like. We will record who has it.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_pile_visit_leave/narration": {
+    "source": "sha256:339d63901e46a6d9c2473e42832aeacec49006db156a8b3a3844f8734c1d67e2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You leave the loud stone where the forest put it. The archivist ties a small knot in a cord anyway."
+      },
+      {
+        "by": "archivist",
+        "text": "\"The record will remember that too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Behind you, the pile hums on in the dark."
+      }
+    ]
+  },
+  "gemfall-05b/scene_pile_visit_carry/narration": {
+    "source": "sha256:ff964fa2290c26c92187f08ffa759bfd33ad98df15d5b2234dc513a34fad46bb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lift the loud stone out of the pile. It hums against your chest like a cat that has decided you will do. The archivist ties a small knot in a cord."
+      },
+      {
+        "by": "archivist",
+        "text": "\"North,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "archivist",
+        "text": "\"That's all it wants.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_runners_post/narration": {
+    "source": "sha256:48cb466fc64fea7161e68662e85bc3e4c2aea359cbe91a6da8ae655703e7720a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the way to the elders, runners jog in place at their hollow-stump post with news from the other roads."
+      },
+      {
+        "by": "runner",
+        "text": "\"First question's yours!\""
+      },
+      {
+        "by": "narrator",
+        "text": "puffs the runner. One runner has tied a reminder cord around a banana."
+      }
+    ]
+  },
+  "gemfall-05b/scene_runners_post_rush/narration": {
+    "source": "sha256:8436d80d560a8fcb05e8682bfce254d8bfb227828c77b093c17985b1f20d391d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "runner",
+        "text": "\"The rush road?\""
+      },
+      {
+        "by": "narrator",
+        "text": "A runner puffs out the news. A ford line two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near gem wagons."
+      },
+      {
+        "by": "runner",
+        "text": "\"Same shape as here,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "runner",
+        "text": "\"Everybody's noticing.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_cloud_gatherer/narration": {
+    "source": "sha256:f60f2002443dabb56d010d99aaa8c8601ad7ef7fddf76f25f62872e51f6a3bfe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Near the elders' ring, a young dragonling sits in a patch of cloud, her gathering bag beside her."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"Not lost,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"Grandmother sent me to the elders.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Embermoths drift south past her. She stares."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"They never go that way.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_cloud_gatherer_walk/narration": {
+    "source": "sha256:1d2f9a15a453eb5648e1727bbd84b8de314e4c084a95c88ae3f9ce4e5c7ea547",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the way, she teaches you the one rule:"
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"Take what the mountain drops. Never pry at what it holds.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She says it twice."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"Grandmothers say it at every boundary stone. Nobody listens this year.\""
+      }
+    ]
+  },
+  "gemfall-05b/check_follow_moths/onSuccess/narration": {
+    "source": "sha256:02ab7cfa939ec643974b9094aa5425ad70f68a0ca3bab5a6d55ca17bd015ad17",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You follow them, the gatherer at your heels, to the edge of town, where the whole flock has settled on a fence. Every single moth is facing away from the mountain, like people with their backs to a cold draft."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"I'm telling my grandmother,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the gatherer whispers. Then she leads you back to the elders' ring."
+      }
+    ]
+  },
+  "gemfall-05b/check_follow_moths/onFailure/narration": {
+    "source": "sha256:3b502fa37c485f18888449f54e2f2a940f8216ba3295133b83e26e20f9a5611f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The moths vanish into the trees, glowing, and you lose them. Then they come drifting back past you the other way, as if they have changed their minds, and then change them again."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"Even they don't know where to go,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the gatherer, and leads you back to the elders' ring."
+      }
+    ]
+  },
+  "gemfall-05b/scene_cloud_gatherer_greet/narration": {
+    "source": "sha256:1f24be50e4ba0dee65038e5cdc6f97b9cba18aca70625616a11dbb94a9d3b335",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your dragonling touches a claw to their brow:"
+      },
+      {
+        "by": "party",
+        "text": "\"What the mountain drops, we keep. What it holds, we leave.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The young gatherer lights up."
+      },
+      {
+        "by": "young_gatherer",
+        "text": "\"You're from the foothills!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She tells you her town's bell tower is the tallest anywhere."
+      }
+    ]
+  },
+  "gemfall-05b/choice_elders/narration": {
+    "source": "sha256:1cc7a2d1a538e624c3aef5c29bb39afaabf38a192734779895bcee5c828d5631",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The MossHome elders sip tea in a ring of stumps."
+      },
+      {
+        "by": "eldest",
+        "text": "\"Somebody must hear what you found,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the eldest."
+      },
+      {
+        "by": "eldest",
+        "text": "\"The Skywardens, the guards in silver and violet at Redspire Citadel, write everything down. The dragonling grandmothers in the foothills ring the bells.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sips."
+      },
+      {
+        "by": "eldest",
+        "text": "\"Tell whoever you like first. Only tell us second.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Who will you tell? Everybody vote."
+      }
+    ]
+  },
+  "gemfall-05b/choice_elders_close/narration": {
+    "source": "sha256:1bc8ac862729c212030b830041d14ff9a4e7eeceb08cee7d8a1fa1544961a06c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "eldest",
+        "text": "\"Nobody yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the eldest, and looks at you over her cup a long time."
+      },
+      {
+        "by": "eldest",
+        "text": "\"Careful is a kind of telling, too.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sips."
+      },
+      {
+        "by": "eldest",
+        "text": "\"When you do tell. Second.\""
+      }
+    ]
+  },
+  "gemfall-05b/choice_elders_gatherers/narration": {
+    "source": "sha256:d84bbf49c86eddd636d447c3c93520c9e321ce1514613f240d4d5bf568f67919",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "eldest",
+        "text": "\"The grandmothers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the eldest, and for the first time all evening she smiles."
+      },
+      {
+        "by": "eldest",
+        "text": "\"Bells carry further than cords.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sips."
+      },
+      {
+        "by": "eldest",
+        "text": "\"Tell them we said so. And tell us second.\""
+      }
+    ]
+  },
+  "gemfall-05b/choice_elders_wardens/narration": {
+    "source": "sha256:3bfbf532bf17779b39bb1eff08d6e084c5e32415a8b1d101883751d43156ace4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "eldest",
+        "text": "\"The wardens,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the eldest."
+      },
+      {
+        "by": "eldest",
+        "text": "\"They write things down. That is not nothing.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sips."
+      },
+      {
+        "by": "eldest",
+        "text": "\"Second,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she reminds you. Every elder nods at once, and every cup of tea ripples."
+      }
+    ]
+  },
+  "gemfall-05b/scene_runner/narration": {
+    "source": "sha256:9836bc6a45eb9928f37fd3a43f94c66f49859b3ac665324e422d15bf099be5e8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The runner gives you a knotted cord: the forest's receipt for your visit."
+      },
+      {
+        "by": "runner",
+        "text": "\"Show it when the record needs to know you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she jogs away, already late for something she never stopped doing."
+      }
+    ]
+  },
+  "gemfall-05b/scene_falls_stair/narration": {
+    "source": "sha256:96a96217821c3c06ab3a63cdb361ec0671473349abaa88412e37bf52d85a0b28",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Water covers the falls stair. A bigfoot flood-warden in tall boots needs help."
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"Pass me logs, and I'll teach you a brace for the high path. Or watch the runoff, and learn where a dropped pack would wash.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her boot holds a surprised frog."
+      }
+    ]
+  },
+  "gemfall-05b/check_falls_logs/onSuccess/narration": {
+    "source": "sha256:5f99f37c76ef427b694032f7bfd3c83474358a55480a3dcbf17c6924a9e65bc3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Heave, roll, heave, and three logs settle across the flooded steps like a little bridge. The flood-warden stamps on each one, hard, and nods."
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"Proper work,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, which from a flood-warden is a medal. You cross with dry boots, and she waves you up toward the high paths."
+      }
+    ]
+  },
+  "gemfall-05b/check_falls_logs/onFailure/narration": {
+    "source": "sha256:17fa98b1708e434a61c90dba1ffe0caa4d270b4268827bf579df85cbdf6de03c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A log rolls the wrong way and you sit down in the falls with a splash. The flood-warden hauls you out with one hand, sets you on the top step, and says,"
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"Happens every season. Not usually to this many.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she drags the logs across herself, as if they weigh nothing at all."
+      }
+    ]
+  },
+  "gemfall-05b/scene_falls_stair_dripping/narration": {
+    "source": "sha256:41eba65b49ba080516db3abdb183d6acaccebcb0f21c5c96e3f6488def34b04b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "flood_warden",
+        "text": "\"The flooded paths?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The flood-warden grins."
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"You're the soggy ones! The whole forest heard!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She laughs a big bigfoot laugh, scoops you up like laundry, and carries you over the worst steps."
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"Mind you stay dry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "gemfall-05b/scene_soup_tent/narration": {
+    "source": "sha256:b5b0e43b41187843f760a0ccc129ba6c6f7dede79109f37caf5bcb417f4605f0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the high paths, a woman named Marigold gives away soup. DEEP HOLLOW is stitched on her apron."
+      },
+      {
+        "by": "soup_woman",
+        "text": "\"Whatever sleeps under the mountain could fix the world's rules,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "soup_woman",
+        "text": "\"We collect to help it wake.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her little box rattles."
+      }
+    ]
+  },
+  "gemfall-05b/scene_soup_tent_coins/narration": {
+    "source": "sha256:c904cbe490e4c1cf979c4f4a5aca8bb8368a80b5d06442ef75230f4c78f1914c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You drop a few coins in the box. They do not clink. Marigold lights up as if you handed her the sun."
+      },
+      {
+        "by": "soup_woman",
+        "text": "\"It'll wake so gently,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers. Your hands feel oddly empty."
+      }
+    ]
+  },
+  "gemfall-05b/scene_soup_tent_refuse/narration": {
+    "source": "sha256:93fb0c64dd2b7e4ebbec088d9d97ba1de00cbcba704ebdbcd3b03c978ca667b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"No, thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say, kindly but firmly. She nods as if she expected it."
+      },
+      {
+        "by": "soup_woman",
+        "text": "\"Soup's still soup,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and ladles you some anyway. You take it, because it is cold up here."
+      }
+    ]
+  },
+  "gemfall-05b/scene_halfway_hut/narration": {
+    "source": "sha256:2fede3c90b2c7811b98091db18666c042556dd24269ec7bf3fd365bf1b23a8ff",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the gorge, an old bigfoot path-keeper keeps a huge visitors' book outside his hut."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"Names going up, so I know who to find coming down.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The oldest pages are knots. His cake tin has its own tiny visitors' book."
+      }
+    ]
+  },
+  "gemfall-05b/scene_halfway_hut_sign/narration": {
+    "source": "sha256:f569cc90b9d43e05cac2f77c186f758b92afd30ef44ace3ef9fdaff5f81e0556",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You sign your names in your best writing. The path-keeper reads them out slowly, as if tasting them. More names are going up this year than ever."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"Busy mountain,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-05b/check_hut_pages/onSuccess/narration": {
+    "source": "sha256:dcb5be8b0fd1da595159360e7db219804775eb6dcfb9c65a74f2dbf6c3215a09",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Back and back you turn, past ink, past scratches, to the knots. Each knot is a climber, and the little knots tied on after are what they met on the way up. The commonest one, by far, means CROSS ANIMALS: THROW THEM A SNACK. The path-keeper taps it."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"Still good advice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"There are wolves up there today.\""
+      }
+    ]
+  },
+  "gemfall-05b/check_hut_pages/onFailure/narration": {
+    "source": "sha256:4e7adf0bfa246eeee2ac2fa6896e309a0adefa270044c5639bd0631731954676",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The knotted pages are like trying to read a knitted sweater. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you a cup of something hot."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"Takes forty years to read those,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"I've done thirty-one.\""
+      }
+    ]
+  },
+  "gemfall-05b/interaction_post_relay/narration": {
+    "source": "sha256:153d5374e54ed36f6e6ba36e9375336dff7b76bbbaa4778e44e9db323199a0b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You pass the news cords along the stump while the runner catches her breath. Her legs keep jogging anyway. The cords reach the far runner in time."
+      },
+      {
+        "by": "runner",
+        "text": "\"Post fee!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls, and tosses you three coins."
+      }
+    ]
+  },
+  "gemfall-05b/interaction_cord_knots/narration": {
+    "source": "sha256:71b369970b4930def8ddb961ede29985a9fa049ac54cfc431a5d5a92691bd0ad",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "While you pack, the runner ties a news cord slowly, so you can follow. Loop, twist, pull, loop. One loose loop looks like a confused spider."
+      },
+      {
+        "by": "runner",
+        "text": "\"There,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "runner",
+        "text": "\"Now the news can find its way.\""
+      }
+    ]
+  },
+  "gemfall-05b/scene_hut_honeycake/narration": {
+    "source": "sha256:9147f92e092d4c6c2529b2ebdf8c9ce436ecaf9eb3fcf49e285d89fba7891bdd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You put two coins in the path-keeper's tin. He hands you a honeycake wrapped in a leaf, like a medal."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"Mind the stream past the hut,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "path_keeper",
+        "text": "\"A young river drake has moved in.\""
+      }
+    ]
+  }
+}

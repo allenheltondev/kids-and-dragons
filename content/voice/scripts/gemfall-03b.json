@@ -1,0 +1,867 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-03b/scene_poling_in/narration": {
+    "source": "sha256:a966dbd165afb05fbcca36240e345ca908d63a9cc044a53a7fb809c099078325",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Marda's rumor board said the frogfolk still ferry the ones they like. A ferrywoman called Gullet likes you. Tonight, ride with her through the Whispering Marsh and find a way out. New wisps crowd behind bell ribbons."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Too many,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet hums."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Ask the boggarts. They keep lost things.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_poling_in_say_it/narration": {
+    "source": "sha256:a99e7a30389f7839ed81b4f80ecd29a86548612ad9579fe25489e6e7d4d2b5c0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Something's leaking,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The new wisps all turn toward you at once, like candles in a draft. Gullet carves a notch in her hat."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Not near the wisps,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "gullet",
+        "text": "\"They remember things.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_poling_in_pole_on/narration": {
+    "source": "sha256:7151c0db97dda087a3da41bf5bc55b4099bbcaf054c0eba1fe2f8b8a019b9688",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "gullet",
+        "text": "\"Gems are the most lost things this season,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet hums, steering for the boggarts' island. A frog salutes from a lily pad. She salutes back, just in case."
+      }
+    ]
+  },
+  "gemfall-03b/scene_ribbon_line/narration": {
+    "source": "sha256:35870366eeafa154b4860c3adc428e6a6c9b69e04927830ed255eadf31ac4ec0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Gullet's cousins are moving a bell ribbon across the channel. Their leader wears three hats. Help them and earn a dry crossing later, or duck under on your own."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Never through it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet says."
+      }
+    ]
+  },
+  "gemfall-03b/check_ribbon_duck/onFailure/narration": {
+    "source": "sha256:2359a5dcb5826599daf2985df1ef3fa647fc0dbe063419901f84f229e470a21a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Jingle. Jingle-jingle. Every bell on the line goes off at once. The new wisps all crowd to the ribbon to see who rang, and the ribbon crew, all together, say"
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Tsk.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet poles away very fast, pretending she has never met you."
+      }
+    ]
+  },
+  "gemfall-03b/scene_ribbon_line_help/narration": {
+    "source": "sha256:e0d6fa0c0399ce0cf58dd497ec44a3e240a79b5970cbe0b0909e9270720c72b6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold the pole while the cousins retie their ribbon."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Good hands,\""
+      },
+      {
+        "by": "narrator",
+        "text": "croaks the cousin in three hats."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"We will carry you across the weir later.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_ribbon_line_knots/narration": {
+    "source": "sha256:233aeba742aa63414adbe13be386379965b36564b78c77264e6de709c0e416b0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot crouches by the ribbon post. These are MossHome path-knots, tied by bigfoot to mean this way has moved."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Tall lady with cords,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a cousin."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Never stopped jogging.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_boggart_isle/narration": {
+    "source": "sha256:6fae064f4ad491c808b7fbffc66dbebb41ef1e8b44e3360f5475ef7c7835b5a3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A boggart called Nana Rummage sorts lost things on her island: mittens, umbrellas, a teapot lid. A bag hums in her lap."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Trade, maybe,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells a mitten. She wants an unusual sound."
+      }
+    ]
+  },
+  "gemfall-03b/scene_boggart_clue/narration": {
+    "source": "sha256:6a92305e6ef5f9dc71dbc56fb372e99f7bb396c48e9e71776a2f7e2225fe18f5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nana opens her bag. A gem chip hums one low note."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Like the old Gate in the still water,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells a teapot lid."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"The Hollow Gate. Exactly the same.\""
+      },
+      {
+        "by": "narrator",
+        "text": "To an umbrella:"
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Not that I said.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_boggart_clue_thanks/narration": {
+    "source": "sha256:a40b1944fde8d2a839bc0d2684276518c9946ba42c8363babe4989ba328dfbfe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Thank you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell the nearest umbrella. Nana is so pleased she nearly looks at you. She hands you a teapot lid, then takes it back. That is how boggarts say goodbye."
+      }
+    ]
+  },
+  "gemfall-03b/scene_boggart_clue_where/narration": {
+    "source": "sha256:229a01af0b935e259701f8268a40d8c1eac18e0288778183ec5d9d29659314b4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nana answers the mitten instead."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Barges are very convenient this season. Abandoned ones. Gem on the deck. Very, very convenient.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The mitten says nothing. What did she mean?"
+      }
+    ]
+  },
+  "gemfall-03b/scene_boggart_clue_lost/narration": {
+    "source": "sha256:a0e5fcf9ecc6e8d0e2c4fd54bf4c351e5b45edb0db1c7e4bf09a071c1d10df0f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nana tells the teapot lid what she found: umbrellas, a brown hat, and three prospectors."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Barge spat them out. They're on a tussock north of here. Too loud for my collection.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_toll_reeds/narration": {
+    "source": "sha256:ef7420d5d30642b2a330dc843edc6962c41d73a4565d0fccd5b7c8f51e65de2e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Knotted reeds block the channel."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Another toll,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet hums. A reed holds out its tip like a waiting hand. The knots tremble whenever somebody speaks."
+      }
+    ]
+  },
+  "gemfall-03b/scene_barge/narration": {
+    "source": "sha256:0b254f008ea7c07ae2f7882944a4ffa259abf6e1481d737c1c2c031c314040f9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A barge sits in the reeds. ABANDONED, says its very helpful sign. One gem hums on deck. Prospector footprints lead toward it. None come back."
+      },
+      {
+        "by": "gullet",
+        "text": "\"That is certainly a barge,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet hums."
+      }
+    ]
+  },
+  "gemfall-03b/scene_barge_convenient/narration": {
+    "source": "sha256:ecac1075c45782640af47da66efc8344c8e7d701b20ded27c351164e887fe5c3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Very convenient,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say loudly, like Nana."
+      },
+      {
+        "by": "party",
+        "text": "\"An abandoned barge, with one gem on it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A barnacle blinks. The whole barge sighs, unfolds into an embarrassed mire mimic, and slides into the reeds."
+      }
+    ]
+  },
+  "gemfall-03b/check_name/onSuccess/narration": {
+    "source": "sha256:e8a2085afb28947c4c077ded718cadec2e5b1786a339a9bc162e7bed34fcbc4e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barge has eyelashes. Barges do not have eyelashes."
+      },
+      {
+        "by": "party",
+        "text": "\"You're a mire mimic,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say, and the whole barge sighs, unfolds into something long and muddy and embarrassed, and slides off into the reeds."
+      }
+    ]
+  },
+  "gemfall-03b/scene_kitsune_review/narration": {
+    "source": "sha256:d3e975a0f3b2de4395264aaebe2ba8a936cb30a01d190a9cdd25c53cf5f45ee7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your kitsune circles the barge, nose in the air."
+      },
+      {
+        "by": "party",
+        "text": "\"Barnacles on the wrong side. That rope is a tail. And nobody abandons a polished lantern.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A wounded silence. The barge unfolds into a mire mimic and slinks off."
+      }
+    ]
+  },
+  "gemfall-03b/rest_reed_raft/narration": {
+    "source": "sha256:74b42f642e95f20c6f43b6ecab89dcb909b6a50bf77be20f67944837b16d9b49",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a hot stone. They taste like crunchy pond."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Rest a while,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she hums. But fog is rolling in, thick as porridge."
+      }
+    ]
+  },
+  "gemfall-03b/rest_reed_raft_hat/narration": {
+    "source": "sha256:dc3d05d2a6459efea1a45c5324810024a49c05cdeee551a4e658a7a5d35b957f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Gullet turns her hat around. Every notch is a new wisp since the mountain went off. The brim is full."
+      },
+      {
+        "by": "gullet",
+        "text": "\"When I run out of hat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says,"
+      },
+      {
+        "by": "gullet",
+        "text": "\"I'll start on my other hat.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_fog_bank/narration": {
+    "source": "sha256:aabcbc3f2447257752b9aa4b0589b5857f4420fbf3c7ec11568d88dc0d141cdf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fog hides the channel fork and its stumps."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Which way, then?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet hums. Follow a clear gap from the bow, steer by the bells behind you, or risk the wobbly high pole."
+      }
+    ]
+  },
+  "gemfall-03b/check_fog_lookout/onSuccess/narration": {
+    "source": "sha256:ad97c57d1a5076cecf5abdcb1368bbe08f09725db50b876b2608464ee1366ed6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Stump left! Stump right! Heron!\""
+      },
+      {
+        "by": "narrator",
+        "text": "You call them all, and Gullet threads the raft through like a needle through cloth. From the top of the pole you spot something else, too: a little island ahead, with people standing on it."
+      }
+    ]
+  },
+  "gemfall-03b/scene_tussock/narration": {
+    "source": "sha256:fab202c9889ecadb0c88d8c36c886a3bcd247d0e24b74855a271f790ddd1e7b1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three muddy prospectors balance on a sinking tussock."
+      },
+      {
+        "by": "prospectors",
+        "text": "\"Barge kept my good hat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the tallest. Bring them aboard, and they may help you later. Or guide them out through the shallows."
+      }
+    ]
+  },
+  "gemfall-03b/check_tussock_haul/onSuccess/narration": {
+    "source": "sha256:689a9defd48f195e8d843d52ebed055cd76df004a756a2ddd59fe78963237f21",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One heave, two heaves, and all three slide aboard like wet sacks of flour. The raft rides very low. Gullet drops them at a frogfolk landing where a path leads northeast toward the roads, and the tallest one gives you a squashed honeycake."
+      },
+      {
+        "by": "prospectors",
+        "text": "\"For the rescue. Sorry about the squash.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_tussock_nan/narration": {
+    "source": "sha256:649da28b27992aebc643d5fe620ba2efaa2032ee4f54a43b500dcffa4c4a0ecc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Nana Rummage has your hat,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The tallest gasps. Gullet sighs and poles them back to Nana's island for it. Then she drops them by a path to the northeast roads."
+      }
+    ]
+  },
+  "gemfall-03b/scene_tussock_shallows/narration": {
+    "source": "sha256:27549fb465ca278f8438eabb4fa6681e17806a55e43a7fde45e9913b3a12d78c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You point out the sandy shallows. The prospectors wade off and wave from safety."
+      },
+      {
+        "by": "prospectors",
+        "text": "\"Going home!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the tallest."
+      },
+      {
+        "by": "prospectors",
+        "text": "\"The rush can keep my hat.\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_wisp_lead_please/narration": {
+    "source": "sha256:1130b3de47a2f37e985a032a672420dffe2bd00bbc77bc766ba9ca818fce0443",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Please.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The wisp goes pink, then gold. Nobody has asked it politely before. It glows in front of your face, ready to share a memory."
+      }
+    ]
+  },
+  "gemfall-03b/scene_nan_washtub/narration": {
+    "source": "sha256:e842bf73024c569a05d728c2993c5ba2b4eb1184b01192c267fdad6a8c934af8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nana rows up in a washtub, paddling with a soup ladle."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Lost things drift here. More lately,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she tells it. She fishes out a surprised fish, puts it back, and waits for your question."
+      }
+    ]
+  },
+  "gemfall-03b/scene_nan_washtub_north/narration": {
+    "source": "sha256:dbb03260b65fd102fa099c5dc2fd48f37d2f501a5a6e8d781a41c70b4da388c0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "nan_rummage",
+        "text": "\"The trees keep lost things too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nana tells the ladle."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"Not mittens. Humming things.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sniffs at their poor taste and rows backward into the fog."
+      }
+    ]
+  },
+  "gemfall-03b/scene_nan_washtub_road/narration": {
+    "source": "sha256:7a4c9790df4ec061f28147d2065a0f081b0b9699598c1237afd0bb73aa4d533a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "nan_rummage",
+        "text": "\"Everybody on the roads is going the same way,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nana tells a spoon."
+      },
+      {
+        "by": "nan_rummage",
+        "text": "\"None of them knows they are lost.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She rows backward into the fog."
+      }
+    ]
+  },
+  "gemfall-03b/scene_reed_edge/narration": {
+    "source": "sha256:177745e88cb05a71866e8f709f21d8c62ed96f68e018f5b30cbf5f63fed06594",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the rush road, a sausage cart is stuck to its axles."
+      },
+      {
+        "by": "sausage_seller",
+        "text": "\"Free sausages for help!\""
+      },
+      {
+        "by": "narrator",
+        "text": "pants the seller. A goose honks on behalf of the whole waiting line."
+      }
+    ]
+  },
+  "gemfall-03b/scene_reed_edge_reeds/narration": {
+    "source": "sha256:450b4ccea1065afad1d4a363fb3c1f2f9ce9fe582e8dc2da03ac3ee4687710ec",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You carpet the mud with reeds. The cart rolls free."
+      },
+      {
+        "by": "sausage_seller",
+        "text": "\"Clever marsh folk!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the seller, and hands over supper. The goose takes the credit."
+      }
+    ]
+  },
+  "gemfall-03b/scene_reed_edge_prospectors/narration": {
+    "source": "sha256:d5af1da0c70e0b3930d6177a8ec4a3ef2f95e4c18cd8de9294ecc18926723eb8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Tussock people!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Your prospectors run from the line to push. The cart shoots free, and the seller brings back supper for everyone. The tallest prospector gets an extra sausage."
+      }
+    ]
+  },
+  "gemfall-03b/scene_west_branch_crew/narration": {
+    "source": "sha256:f5a4621cdd298452dc5b9abfc2be051ba117f3a726a27676d64f21dc9da0a352",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cousin in three hats spots you."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"The good hands!\""
+      },
+      {
+        "by": "narrator",
+        "text": "the cousins cry. They carry your raft across on their shoulders, singing, and set you down dry on the north bank. Gullet pretends not to be proud."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_wisp_crowd/narration": {
+    "source": "sha256:7b2ee996428fb7e99af24e068a17a5cfda0a9c78cca008dfe2ee2a8e63fac58f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A crowd of new wisps follows your raft, bumping it like puppies."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Keep them busy till the island!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the cousin in three hats."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Bored wisps tie knots. Last week they tied my hats together.\""
+      }
+    ]
+  },
+  "gemfall-03b/interaction_reed_gap/narration": {
+    "source": "sha256:a39fd6bb8b59995dc8c0b3b7a528032155fa7f2829b302b87fc07acb2a69960e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The reeds keep swinging shut, like doors in a draft."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Wait for it,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet hums."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Wait. Now!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pole through when the gap is wide."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_lantern/narration": {
+    "source": "sha256:e4d4a5e36eae09df8e5a2664795b4ae4d2f87ba0b845653c632ad1b6058ccf7b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Gullet passes the lantern forward while you steady its hook. The fog stops at the edge of its glow like a shy cat."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Good hands,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and puts a jar of mosslight in your pack."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Fog gets thick past here.\""
+      }
+    ]
+  },
+  "gemfall-03b/interaction_stumps/narration": {
+    "source": "sha256:49fb1df155232286d345244c510d348f24919557b1b44376823b32418e28d19f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Somebody on the island ahead is grumbling. But first comes the biggest stump yet, rolling like a sleeping cow."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Fend it off!\""
+      },
+      {
+        "by": "narrator",
+        "text": "hums Gullet."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Push when it rolls close. Not before!\""
+      }
+    ]
+  },
+  "gemfall-03b/scene_crabs_shooed/narration": {
+    "source": "sha256:2bb2c61e31b77dc736229000f7b2ccf1fba70b564201e07ee553ea465d3fcf31",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The crabs scuttle into deep water and leave their heap. Gullet picks through it with her pole."
+      },
+      {
+        "by": "gullet",
+        "text": "\"Spoons are Nana's. This whistle is nobody's.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She tosses you a very loud tin whistle."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_ribbon_duck/onFailure/narration": {
+    "source": "sha256:39873f6cc8e72e498be7dc53258be8957d314cb1e145efc7b306b00319d58653",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Jingle-jingle! Every bell goes off. The ribbon crew all say"
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Tsk.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet poles away fast."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_tussock_balance/onSuccess/narration": {
+    "source": "sha256:d9ad1725787ebba9954378725118ad7e57a9052a43260c458240272f59589868",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "They slide aboard like wet sacks of flour. Gullet drops them by a path to the northeast roads. The tallest gives you a squashed honeycake."
+      },
+      {
+        "by": "prospectors",
+        "text": "\"Sorry about the squash.\""
+      }
+    ]
+  },
+  "gemfall-03b/interaction_wisp_crowd_response_hum/narration": {
+    "source": "sha256:a14eae3e62a5be27338ab060fe6f7c32491e2a27cd255fc1ce830586cf702c06",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wisps sway together, glowing slow and gold. They settle into a soft line behind the raft."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Three coins for the calm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the cousin in three hats."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_wisp_crowd_response_juggle/narration": {
+    "source": "sha256:0f071bf84d072db537819b9833bc0738c1bb444228236628244e1bde58f3c2dd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wisps follow the cattails with their whole bodies. They settle into a soft line behind the raft."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Three coins for the calm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the cousin in three hats."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_wisp_crowd_response_lantern/narration": {
+    "source": "sha256:8970cc4bed075c8343290f6b3a5e636b0dce0d856cc45c6f735bb4ef540aa7ba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wisps circle it, politely, like moths with manners. They settle into a soft line behind the raft."
+      },
+      {
+        "by": "gullets_cousins",
+        "text": "\"Three coins for the calm,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the cousin in three hats."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_barge_audience_response_blink/narration": {
+    "source": "sha256:17eef5723b687cf6ad86ce9ed4708d3756babfbe4952b0efc96911438d9f73cc",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The barnacle blinks first. It has eyelashes."
+      },
+      {
+        "by": "party",
+        "text": "\"Mire mimic!\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The barge unfolds and slinks into the reeds. You never had to step aboard."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_barge_audience_response_breath/narration": {
+    "source": "sha256:436931b0059ae424f3311d73dfa84e62b84fd53c8ec89ab480f0f60c1654fd3e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The whole deck rises, then holds its breath."
+      },
+      {
+        "by": "party",
+        "text": "\"Mire mimic!\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The barge unfolds and slinks into the reeds. You never had to step aboard."
+      }
+    ]
+  },
+  "gemfall-03b/interaction_barge_audience_response_rope/narration": {
+    "source": "sha256:fe3fbf361b2dd9c5ad932418f898f3b3adfd85424da392d7e66f9aed692f6299",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rope twitches. It is a tail, having a difficult day."
+      },
+      {
+        "by": "party",
+        "text": "\"Mire mimic!\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The barge unfolds and slinks away. You never had to step aboard."
+      }
+    ]
+  }
+}

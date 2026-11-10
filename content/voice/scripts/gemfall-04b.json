@@ -1,0 +1,551 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-04b/scene_flooded_paths/narration": {
+    "source": "sha256:af0380a0734799f615f507206fcd4389a978fda52b339f274d637a4394ea92aa",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You come in late and dripping, near MossHome, the bigfoot town. A flood-warden in very tall boots hands you a jar of mosslight."
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"Happens every season,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the warden."
+      },
+      {
+        "by": "flood_warden",
+        "text": "\"Not usually to this many.\""
+      }
+    ]
+  },
+  "gemfall-04b/scene_runner_path/narration": {
+    "source": "sha256:d461f141c882f752c9f40aa19010f9913adc16f9705be7579c08ab0e7c28aebb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A bigfoot jogs toward you with knotted cords. The path folds up in front of her, and she jogs in place."
+      },
+      {
+        "by": "runner",
+        "text": "\"MossHome runner! Third missing path today!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs."
+      },
+      {
+        "by": "runner",
+        "text": "\"Help me find it?\""
+      }
+    ]
+  },
+  "gemfall-04b/check_runner_path/onSuccess/narration": {
+    "source": "sha256:6ca9cbe569da3c4911a9fbde525ed75a5cd7677a42ad70f66674e2ba7f7664a2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "All the ferns along one side are leaning the same way, like people pointing. You follow them, and there's the path, only a little way over, sulking behind a holly bush. The runner whoops."
+      },
+      {
+        "by": "runner",
+        "text": "\"MossHome is north!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls, jogging off."
+      },
+      {
+        "by": "runner",
+        "text": "\"Come and see us! Bring your feet!\""
+      }
+    ]
+  },
+  "gemfall-04b/check_runner_path/onFailure/narration": {
+    "source": "sha256:2b2922e0ea579a9e000457c51c64cc9203063a2c56a2c239449a5f17a41a76a2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You find a path. It is the wrong one, and it walks you in a neat circle back to the runner, who has found the right one herself while you were gone and is jogging in place, laughing."
+      },
+      {
+        "by": "runner",
+        "text": "\"Happens to everybody this season,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs, and jogs away north."
+      }
+    ]
+  },
+  "gemfall-04b/scene_runner_path_carry/narration": {
+    "source": "sha256:1c8efbfe721de26f0950f6d5cb4b47e9c3972d077f99cee81bcdce536f0864b0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You carry a bundle of cords to the bend. Every knot marks a moved path."
+      },
+      {
+        "by": "runner",
+        "text": "\"Forest likes records,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the runner. When the way opens, she jogs north, tying another knot."
+      }
+    ]
+  },
+  "gemfall-04b/scene_runner_path_knock/narration": {
+    "source": "sha256:42ec71fff936d17788e3fba5c8e674089fed5a29730dd08a084e504c8682034d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your bigfoot knocks twice on a trunk and jogs alongside her. The folded path shakes out like a blanket."
+      },
+      {
+        "by": "runner",
+        "text": "\"Haven't seen a knock like that outside town!\""
+      },
+      {
+        "by": "narrator",
+        "text": "puffs the runner."
+      },
+      {
+        "by": "runner",
+        "text": "\"MossHome's north. Visit!\""
+      }
+    ]
+  },
+  "gemfall-04b/scene_roll_call_here/narration": {
+    "source": "sha256:328593bad94d64394c0876e72746b6828a009b173a14bcc4659c71e4a3441f97",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Here!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The trees count your packs anyway: socks, crumbs, anything that hums. At last a path opens, like a teacher closing a book."
+      }
+    ]
+  },
+  "gemfall-04b/scene_attendance/narration": {
+    "source": "sha256:a8923abff9d2c7ed97fb361bf84468524dfb486404b931a147dae79c260c0d6d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Paths open ahead of you and close behind three prospectors, whose pockets hum."
+      },
+      {
+        "by": "boggart_prospector",
+        "text": "\"That hedge is new!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts the boggart prospector, as they walk straight into one. The forest is checking what people carry."
+      }
+    ]
+  },
+  "gemfall-04b/scene_hedge/narration": {
+    "source": "sha256:8f7ab9e83875f8db2a71b5ac39d5768fa751b7fe89a85c7e3831b63846960be0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A hedge holds the prospectors by their coats."
+      },
+      {
+        "by": "hedge_prospectors",
+        "text": "\"We only took what fell!\""
+      },
+      {
+        "by": "narrator",
+        "text": "shouts one. Their pockets hum. Nobody gets left in a hedge."
+      }
+    ]
+  },
+  "gemfall-04b/scene_hedge_empty/narration": {
+    "source": "sha256:61e0d539ec7fd432c903f2bb4cdef5915bd751a9d7c67d9867106580402f1a37",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The prospectors empty their humming pockets. The hedge lets go of their coats, one at a time."
+      },
+      {
+        "by": "hedge_prospectors",
+        "text": "\"Oh,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the loudest. The hedge rustles a satisfied tsk."
+      }
+    ]
+  },
+  "gemfall-04b/scene_unicorns/narration": {
+    "source": "sha256:aeed1a8720edc1424839a6271cb2147ffeea599ad4b11e1c5bb67069d5dae20b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two unicorns tend a gray glade."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"We are mending,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the elder."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"Will you help?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pass the mending hum along the moss, or guard the edge and learn the woodland's pattern of sounds. The worst glade, farther north, will need one or the other."
+      }
+    ]
+  },
+  "gemfall-04b/scene_unicorns_patch/narration": {
+    "source": "sha256:18fcd9515716266bd18b9bbb7d2a667dea26918d6c0c4f0d2c87a8111f9a8eb0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell them about the crumb you pressed down and its green shoot. The elder's ears go straight up."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"Down,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"Not away. Down.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lets you start the mending hum. The moss greens from the middle out."
+      }
+    ]
+  },
+  "gemfall-04b/scene_finding/narration": {
+    "source": "sha256:efea6eb0f001ed8374a7b42842e0469183e2aae355376071aae737d054b3c7c2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "When the glade is quiet, the elder rests her horn where the stone fell."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"These stones are not of the mountain,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"The forest remembers them from before the mountain had its name.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She says nothing more. Then, quieter:"
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"This was a small one. The worst glade is north of here.\""
+      }
+    ]
+  },
+  "gemfall-04b/scene_finding_before/narration": {
+    "source": "sha256:709c7c72c7d89ae9202ab53dacd192750e7534de9bd61472407d14ab0f900229",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The elder touches the ground with one hoof."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"Before names,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. That is all she will say."
+      }
+    ]
+  },
+  "gemfall-04b/scene_finding_how/narration": {
+    "source": "sha256:c5c0710a97a414a72275729c035b73f381111bb53a3ef768967b2bc0625983d6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "elder_unicorn",
+        "text": "\"Slowly,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the elder."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"The forest dislikes hurry. Something in the worst glade listens for loud things. Go quiet, or go so noisy it can't follow.\""
+      },
+      {
+        "by": "narrator",
+        "text": "That is a lot of words, for her."
+      }
+    ]
+  },
+  "gemfall-04b/scene_sitting_beech/narration": {
+    "source": "sha256:80fbc913873071a1919f80303d78760f5439a5c48d9a681e5df9f12a4693fc06",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A huge beech has sat down across the path, roots tucked under like a grandpa's feet."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Why did you come?\""
+      },
+      {
+        "by": "narrator",
+        "text": "it whispers. A squirrel taps on its shoulder, impatient."
+      }
+    ]
+  },
+  "gemfall-04b/scene_sitting_beech_stones/narration": {
+    "source": "sha256:55bd5ce12b259b31544f4c008eda1a07175166d5382d8f22f88477b837ce8cc2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"The stones,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The beech is quiet so long the squirrel falls asleep."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Honest,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it whispers at last, and shuffles aside."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Go gently. The glade is sore, and something there is listening.\""
+      }
+    ]
+  },
+  "gemfall-04b/scene_sitting_beech_passing/narration": {
+    "source": "sha256:a5590c41a51f7214ff7cfc080cd44e80abeb3d3e32c3bccf1b8929815ff77698",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "beech_tree",
+        "text": "\"Passing through,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the beech repeats slowly."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Everybody is passing through. Even me. I am just slower.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It gets up one root at a time, which takes as long as eating a cookie, and waves you on."
+      }
+    ]
+  },
+  "gemfall-04b/scene_sitting_beech_curious/narration": {
+    "source": "sha256:cfca55b7a742338cf2c28cfd40b3c3e3f2729757468c2a52cfd1b4cb5a839a31",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "beech_tree",
+        "text": "\"To find out,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the beech repeats, and every leaf rustles, pleased."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Curious. Good.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It stands up quite fast, for a beech, and drops a leaf on your shoulder: look closely in there."
+      }
+    ]
+  },
+  "gemfall-04b/scene_sitting_beech_told/narration": {
+    "source": "sha256:384a685ab666c0a98c483fabc29836ac36920bf52510fe876ccc59f8aa05b4d0",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We told the roll call everything,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you remind it. The beech creaks with laughter."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"I know,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it whispers."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"The whole forest knows.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It gets up at once, the squirrel clinging on, and bows you past."
+      }
+    ]
+  },
+  "gemfall-04b/scene_glade_heart/narration": {
+    "source": "sha256:84e979a92cd3e65679540d7447723c76febd95af72b85c086b0b6cf9f41596ea",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the middle of the worst glade sits a humming gem the size of a fist. Every tree leans away."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"Mend the glade, and the stone sinks back into the ground,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the Elder Unicorn."
+      },
+      {
+        "by": "elder_unicorn",
+        "text": "\"Take it, and the glade never mends.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Everybody vote."
+      }
+    ]
+  },
+  "gemfall-04b/scene_pile_glimpsed_sorry/narration": {
+    "source": "sha256:7595211012d2c959fe99ba53a44fe2c8026acf29fc579b3a259858a5c51cb0e7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Sorry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you tell the oak."
+      },
+      {
+        "by": "party",
+        "text": "\"We're keeping it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A long creak, like somebody thinking. Then one leaf drifts onto your pocket, right over the stone, like a label. The forest will remember who has it."
+      }
+    ]
+  },
+  "gemfall-04b/ending_marked_present/narration": {
+    "source": "sha256:58dea3c953e29f975042db35afe0cf7f0d51f1fad1f0936b2630c250f848a257",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You camp at the northern edge of the Woods, on moss soft as a pillow. At dusk the MossHome runner jogs by."
+      },
+      {
+        "by": "runner",
+        "text": "\"MossHome's just north!\""
+      },
+      {
+        "by": "narrator",
+        "text": "All night a mosshorn guards your fire. The forest has marked you present."
+      }
+    ]
+  },
+  "gemfall-04b/ending_marked_something/narration": {
+    "source": "sha256:4601acf0c65c6052f8beb85115e848c0432136d87be3b2ef2c744f833d993889",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You camp at the northern edge of the Woods. At dusk the MossHome runner jogs by."
+      },
+      {
+        "by": "runner",
+        "text": "\"MossHome's just north!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The Glade Stone hums all night, and no mosshorn comes near. Next to your name, the forest wrote something you can't read."
+      }
+    ]
+  },
+  "gemfall-04b/ending_shown_the_door/narration": {
+    "source": "sha256:29fba8005f2186b5407105ee166f243c579297cb7a71c952849c0374a20f926c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "When you find your way back, the worst glade is already green. The unicorns mended it without you. The forest walks you to its northern edge, like a guest to the door. At dusk the MossHome runner waves."
+      },
+      {
+        "by": "runner",
+        "text": "\"MossHome's just north!\""
+      }
+    ]
+  },
+  "gemfall-04b/scene_beech_squirrel/narration": {
+    "source": "sha256:e2cae4865372459b95e016708b7213eda4a2bd067fa3fce95de38c15fe6859b9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You press a coin into the squirrel's paw. It bites the coin and whispers in the beech's ear."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Fine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn. \"Throw it hard. It goes bang.\""
+      }
+    ]
+  }
+}

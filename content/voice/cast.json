@@ -1304,8 +1304,8 @@
       "status": "provisional",
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "HvylbcEdW4ILK4GRwetV",
-        "name": "kad-faun-woman",
+        "voiceId": "vGQNBgLaiM3EdZtxIiuY",
+        "name": "kad-tally",
         "approved": true
       }
     },
@@ -2592,7 +2592,7 @@
       "who": "a relay-running centaur stuffed with letters; quick, cheerful, competitive; 'relay waits for nobody'",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
-      "gender": "male",
+      "gender": "female",
       "genderFrom": "person",
       "figure": "cast/bracken_swiftmile",
       "voiceNotes": [
@@ -2634,7 +2634,7 @@
       "speaks": true,
       "status": "approved",
       "accent": "Texan",
-      "direction": "Brash, overly confident, alpha male",
+      "direction": "Brash, cheerful, competitive, overly confident, fast-paced",
       "history": [
         {
           "decision": "approved",
@@ -2644,8 +2644,8 @@
         }
       ],
       "elevenlabs": {
-        "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man",
+        "voiceId": "WtA85syCrJwasGeHGH2p",
+        "name": "kad-skerry",
         "approved": true
       }
     },
@@ -5208,8 +5208,8 @@
       "speaks": true,
       "status": "provisional",
       "elevenlabs": {
-        "voiceId": "0rEo3eAjssGDUCXHYENf",
-        "name": "Grandma Rachel - Wise Southern Senior",
+        "voiceId": "S0ypc51SmsvcKXTWvjqJ",
+        "name": "kad-pip",
         "approved": true
       },
       "accent": "Midwestern American"
@@ -7397,8 +7397,8 @@
         }
       ],
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man",
+        "voiceId": "AFkIMdmeB0MMrr1tgGds",
+        "name": "kad-faun-man",
         "approved": true
       }
     },
@@ -8006,8 +8006,8 @@
       "status": "provisional",
       "accent": "Midwestern American",
       "elevenlabs": {
-        "voiceId": "mSOmKHC6GZcZbSTGlqHO",
-        "name": "kad-burrowfolk-man",
+        "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
+        "name": "kad-centaur-man",
         "approved": true
       }
     },
@@ -8658,10 +8658,10 @@
       "name": "Cloaked unicorn",
       "kind": "character",
       "who": "Cloaked unicorn.",
-      "pronouns": "he/him",
+      "pronouns": "she/her",
       "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
+      "gender": "female",
+      "genderFrom": "person",
       "figure": "cast/lady_olivia",
       "chapters": [
         "riftlight-glacier-survival"

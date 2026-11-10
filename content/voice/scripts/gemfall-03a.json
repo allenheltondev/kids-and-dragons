@@ -1,0 +1,573 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-03a/scene_fennick/narration": {
+    "source": "sha256:e2a51d0b4884c002e7a8b28f9622a4b603c9fcbf863902fece708abddd151e75",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Fennick Longstride, a road-warden centaur, checks her stitched map-sash."
+      },
+      {
+        "by": "fennick",
+        "text": "\"At the crossing, take the upstream edge. The stones are only half under.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she trots off to fix her signs."
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll/narration": {
+    "source": "sha256:fa7b043d13199f2f2364f2f9e0e12702ae58d57d94a3205b23eca3cae93f62e9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The toll troll, Old Lintel, rests a mossy palm on the first stone."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"A story,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he rumbles."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Or a riddle.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Every traveler owes one. A bird is building a nest on his shoulder."
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_riddle_account/narration": {
+    "source": "sha256:74e6f7cab69dd3fd05c238b7c9498116dbeb23a2637c789250000b9f89d6d819",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You bring the prides' riddle score, the way manticores always have. Old Lintel's total is different. It always is. He hands you a smooth luckstone"
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"for keeping the argument going.\""
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_tell_story/narration": {
+    "source": "sha256:7967a23c55e4e06ac1894f0d92e7f42adc79540b046b6af0a2ebd4e928635a35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old Lintel hears every word of your story. The bird finishes its nest. At last he rumbles,"
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Good. That one's paid.\""
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_hum/narration": {
+    "source": "sha256:d11fbb7bd32828a4341aebfeb8b878e861fe6d9fd65e4b61e0b0ba3d079efb9c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old Lintel stops listening to the line. He listens to the bridge."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"The stones are humming,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he rumbles."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Every pack here hums one note, older than this bridge.\""
+      },
+      {
+        "by": "narrator",
+        "text": "So there is one more toll:"
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Where did you get that? And where is it going?\""
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_hum_show_ember/narration": {
+    "source": "sha256:bea43bdf063d3477a4fc1ad81118a83ddd0e3c7570a389759fda6f2e51becc79",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You hold out the Ember Facet. Old Lintel lays one finger beside it on the bridge. The bridge hums back, deep in your boots."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Hear that?\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Older than me.\""
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_hum_dont_know/narration": {
+    "source": "sha256:a2bfa929f430498125737b2b3ac56499f3171dc32abf8c9aa331fa7cacc21043",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"We don't know yet,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Old Lintel nods, which takes a while."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Then that's the toll,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Find out.\""
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_hum_answer_honest/narration": {
+    "source": "sha256:9e80aa5c4f00637694e4af3278b9bfe457b98fddc59217dad48138939bd4ceb3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell him about the red stone that landed by your boot at the Exchange, and where you think the stones are going."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Old Lintel."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Keep asking it.\""
+      }
+    ]
+  },
+  "gemfall-03a/scene_mouth/narration": {
+    "source": "sha256:fd07ee0a4f2f048dc31908c6f74a0f2eadae4359847367ba94e9b60abf85bed3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At last the river lets you go on the eastern shore. Far off, haze hangs over the Bone Yard. A frog in a very old hat fishes you out."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Old Ossley,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Later. When I'm going your way.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He hands you a reed knot. It stays wet."
+      }
+    ]
+  },
+  "gemfall-03a/scene_mouth/variants/0": {
+    "source": "sha256:aad471c0ee45cc33fa9089821295263056a0157d323950fdc8cdbd7ab825e017",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At last the river lets you go on the eastern shore. Far off, haze hangs over the Bone Yard. Old Ossley poles up in his empty boat and fishes you out, one by one."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Rough wake,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Your promise still counts.\""
+      },
+      {
+        "by": "narrator",
+        "text": "He hands you a reed knot. It stays wet."
+      }
+    ]
+  },
+  "gemfall-03a/check_kettle/onFailure/narration": {
+    "source": "sha256:0687bef2eadb0bc37e335d5faa6ec63e5b55f00930445a878525d439b651640f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The campers nod, and nod, and say"
+      },
+      {
+        "by": "kettle_campers",
+        "text": "\"oh, absolutely,\""
+      },
+      {
+        "by": "narrator",
+        "text": "and then set the kettle back down on NOT THAT WAY. You leave them arguing about which way that way is."
+      }
+    ]
+  },
+  "gemfall-03a/scene_stuck_wagon/narration": {
+    "source": "sha256:c840c169876cfa61a363c2c6668ac05e82db19072b53debc8d8c9084eab3ba6b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A wagon is stuck axle-deep in a rut. Its driver folds his arms."
+      },
+      {
+        "by": "wagon_driver",
+        "text": "\"Admiring the view,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. The view is mud. Push hard, or unload his humming crates first."
+      }
+    ]
+  },
+  "gemfall-03a/scene_stuck_wagon_unload/narration": {
+    "source": "sha256:5d311401c8fac597a3c88d67830320a445c5765fc04084c07ea1a31f2017bc32",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You lift down the humming crates."
+      },
+      {
+        "by": "wagon_driver",
+        "text": "\"Gems for the north,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the driver. The lighter wagon rolls free."
+      },
+      {
+        "by": "wagon_driver",
+        "text": "\"Still admiring the view,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he adds."
+      }
+    ]
+  },
+  "gemfall-03a/scene_river_view_give_signs/narration": {
+    "source": "sha256:bb3bb81624cada5f5e7561183ce8fb17bd3367ed6c2246bb1b2d0f4d1dcff9c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It's Fennick Longstride, the road-warden centaur. She hugs her signs like lost puppies. On the last one she scratches an arrow to the upstream edge of the crossing."
+      },
+      {
+        "by": "fennick",
+        "text": "\"For you,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "gemfall-03a/scene_skip_passes/narration": {
+    "source": "sha256:206d8d5767c5c2490fcb3d2d53de96a53ce59f88937ae75cbcc54295a0f9a44a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the line selling SKIP PASSES."
+      },
+      {
+        "by": "brassbuckles",
+        "text": "\"Skip the line!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she sings. At the front, the toll troll, Old Lintel, takes stories, not passes."
+      }
+    ]
+  },
+  "gemfall-03a/scene_skip_passes_no_thanks/narration": {
+    "source": "sha256:12815871b6190c73fa01627e9d515c93e0e60acd8f243b9ad704d02e2061d84d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Stories are the toll,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. Nearby families put their purses away. The Brassbuckle turns her tray around. Now it says COLLECTIBLE PASSES."
+      }
+    ]
+  },
+  "gemfall-03a/scene_first_story/narration": {
+    "source": "sha256:a6d31d076baf8786a9da8cb764417cb4cc162017d9878ec4ee2e42767bf3b994",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A girl named Dilly is practicing her first troll story."
+      },
+      {
+        "by": "dilly",
+        "text": "\"I have the start,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she whispers,"
+      },
+      {
+        "by": "dilly",
+        "text": "\"but no ending.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Help her find one, or give her your best story and make up another."
+      }
+    ]
+  },
+  "gemfall-03a/scene_troll_new_story/narration": {
+    "source": "sha256:288b2f4df04617b040bcb6544d3cbbfd24fabfa9f58672ecb080ddf7cee58585",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You make up a story on the spot. It wobbles. It has a goat in it for no reason."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Never been told before,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Old Lintel."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Rare, that.\""
+      },
+      {
+        "by": "narrator",
+        "text": "On the far stones, Dilly waves."
+      }
+    ]
+  },
+  "gemfall-03a/scene_gem_toll/narration": {
+    "source": "sha256:cacf7ab9cf857ca8ddca0b9998cbf66f180d5495ad42d99e51cd70de972d6fcf",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A prospector slaps a humming gem on the bridge."
+      },
+      {
+        "by": "prospector",
+        "text": "\"Paid!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Old Lintel does not move. Explain the story toll, or lift the gem and see what the bridge does."
+      }
+    ]
+  },
+  "gemfall-03a/scene_gem_toll_explain/narration": {
+    "source": "sha256:2e282635e9d5ad3b99b44bc175db27e2789ba489e52e31e0f1d69cfddfd4289f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"A story or a riddle,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you whisper. The prospector goes red."
+      },
+      {
+        "by": "prospector",
+        "text": "\"I wanted a gem. I got a gem. The end.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Old Lintel thinks."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Paid,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      }
+    ]
+  },
+  "gemfall-03a/scene_night_rope_wake_troll/narration": {
+    "source": "sha256:4e53f603078ba34a09eadb17ac7e224f2cc1ef88a3cb272f7f2b6b49a8135dd8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You shake Old Lintel's arm. Trolls wake up the way mountains do: slowly. By the time one eye opens, the Brassbuckles have crept back to bed."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Good,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he rumbles."
+      }
+    ]
+  },
+  "gemfall-03a/check_wake_joke/onSuccess/narration": {
+    "source": "sha256:ada1b3338cd11c4e4f7dfadf34fad5fce70be1699f55f82645d19e1d65aa6597",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"What do you call a fish with no eyes? A fsh.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A long silence. Then the water bubbles and bubbles: the drake is laughing so hard it has to come up for air. It taps the slate with its tail. PAID."
+      }
+    ]
+  },
+  "gemfall-03a/scene_east_landing_move_crates/narration": {
+    "source": "sha256:9c1f41c4d7cae0a74871bfd89bcd82112398a109cebb53824b85cbfef38c1bf5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You move the humming crates to the last cart. Parsnip gets up and leads the line."
+      },
+      {
+        "by": "parsnip_driver",
+        "text": "\"Such a fuss,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the driver, sneaking her an apple."
+      }
+    ]
+  },
+  "gemfall-03a/scene_east_landing_ask_question/narration": {
+    "source": "sha256:1c054e3ab3c76ab8ed0fa0b8bab6c56c17d9cafe852517686870c4a525a1206a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Where did you get them? Where are they going?\""
+      },
+      {
+        "by": "narrator",
+        "text": "The driver looks at his crates."
+      },
+      {
+        "by": "parsnip_driver",
+        "text": "\"Off the rush. North, to whoever pays.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Parsnip snorts."
+      }
+    ]
+  },
+  "gemfall-03a/interaction_planks/narration": {
+    "source": "sha256:cdc2445270d8005025b0349471e1bbecf3de9db43a6ee2a9cdfd4738a8c23c9b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "With the wagon free, you and the driver lay planks across the rut. The next cart rolls over without a bump."
+      },
+      {
+        "by": "wagon_driver",
+        "text": "\"Plank money,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the driver gruffly, and hands you a few coins."
+      }
+    ]
+  },
+  "gemfall-03a/interaction_hats/narration": {
+    "source": "sha256:d3ccd99c753c8a009cd5718439b6432452c868abd4a62a33960bc0b4960c1ba3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Another brass hat sets up a game on a barrel: three cups, one shiny button."
+      },
+      {
+        "by": "brassbuckle_recordkeeper",
+        "text": "\"Find it and win a prize!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she calls. Her hands begin to fly."
+      }
+    ]
+  },
+  "gemfall-03a/interaction_hum/narration": {
+    "source": "sha256:e5af58e16cbb4a4ecb861ccd703d7086af015da16ba28329a14e3f578405bc15",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Old Lintel hums his low note until it settles in your ears."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Remember that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_lintel",
+        "text": "\"Songs travel farther than lines.\""
+      },
+      {
+        "by": "narrator",
+        "text": "You hum it back, and the bridge hums with you."
+      }
+    ]
+  }
+}

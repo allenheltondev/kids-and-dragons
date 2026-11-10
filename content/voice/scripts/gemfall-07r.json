@@ -1,0 +1,655 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "gemfall-07r/scene_the_pinch_count_shakes/narration": {
+    "source": "sha256:ac310a554db64a01e2bee542a915c6f7cf4668e3c95b559195e34c2db29e0298",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your dragonling counts the shakes the way the grandmothers taught, a slow breath between each. Four breaths. Then four. Then three and a half."
+      },
+      {
+        "by": "party",
+        "text": "\"Grandmother says three is when you ring,\""
+      },
+      {
+        "by": "narrator",
+        "text": "your dragonling says, and stops there."
+      }
+    ]
+  },
+  "gemfall-07r/scene_glitter_barrow/narration": {
+    "source": "sha256:9a085e89feaaaf45ea4a62eb6640a7e88205d74b42955d72f13ae68b58d5660b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the middle of the Pinch, the glitter barrow is stuck. Its owner is called Odo. His wheel is jammed between two rocks, and forty wagons behind him are shouting."
+      },
+      {
+        "by": "odo",
+        "text": "\"It's all gems,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Odo says proudly. Most of it is painted gravel. But something in there hums."
+      }
+    ]
+  },
+  "gemfall-07r/check_glitter_barrow/onSuccess/narration": {
+    "source": "sha256:70fb62307ce9037cb459a69fee774d2e1b918e5deb33d39e17444dfcb0c2b66f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "With a grunt and a heave, the barrow pops free and forty wagons cheer. Odo is so grateful he digs through the glitter and hands you the humming thing: a real stone, warm as a teapot."
+      },
+      {
+        "by": "odo",
+        "text": "\"Keeps me up at night,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "odo",
+        "text": "\"Singing.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_glitter_barrow_sort/narration": {
+    "source": "sha256:81fa8910f93a0cdb71ce6e518fec433370b6cc877dbaeca73a968dc3ca923879",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tip the glitter onto a blanket. Painted gravel. Painted gravel. A button. And one real stone, warm and humming. Odo stares at his gravel a long time, then hands you the stone."
+      },
+      {
+        "by": "odo",
+        "text": "\"Well. Gravel doesn't sing at night, I suppose.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_wardens_pebble/narration": {
+    "source": "sha256:4e74c20ee43ebf7d5fd9bcc9eb0a351009c74368bf503f998a11840060c83ff6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"It's only a pebble,\""
+      },
+      {
+        "by": "narrator",
+        "text": "you say. The sergeant looks at the pebble, the box and the ledger. Then he hands it back. The faun gives you a honeycake she was saving for a very bad day."
+      }
+    ]
+  },
+  "gemfall-07r/scene_grandmothers_knit/narration": {
+    "source": "sha256:b42ef10f1db5046337eb79dab108e65629bce628aaef73c32fd57d5ec775877a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A grandmother hands you needles and wool. By noon you knit badly, and two buyers have handed over their sacks rather than watch you drop another stitch."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"That's the trick,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the grandmother."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Nobody can stand it.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_ossley/narration": {
+    "source": "sha256:cb10f377830c74e2e041f53e5c1465b2aa4892f86914c3f5b0a8df418268cfc9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A frog in a very old hat poles a flat boat up a dry creek: OLD OSSLEY, the frog from the reeds of the Great River. His boat is full of stones the river took."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Stones want to go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"We only kept them until someone was going that way.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_ossley_debt/narration": {
+    "source": "sha256:eeab4b8801a9f7d7eef6a8c7c6618435ed182c2620848c93c9e63d2b3efc15d6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Ossley's price was never coin. He presses one plain, wet stone into your hand."
+      },
+      {
+        "by": "old_ossley",
+        "text": "\"Carry this one up yourself. When you put it down, say thank you to the river.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_mosshome_runner/narration": {
+    "source": "sha256:52baaecefb6b7042e3483696f1cc908e2d82cd3e29a7246b875af8da1b03487b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A MossHome runner jogs up with moss in her hair and grumbling mules. She counts your cord's knots."
+      },
+      {
+        "by": "mosshome_runner",
+        "text": "\"Knot, knot, knot. Good!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then she unloads what the Woods took from careless hunters: shovels, a teapot, one very surprised hat, and lots of stones."
+      }
+    ]
+  },
+  "gemfall-07r/scene_boggart/narration": {
+    "source": "sha256:689026ab02f3622c0a96aa0787b1caf592e77cc28dc197df7ed9d87200eea399",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A boggart with a satchel of scribbled paper sidles up, not looking at you."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Catalog,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it tells nobody."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Who bought what in the marsh. Costs one really good sentence you overheard.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_boggart_grandma_said/narration": {
+    "source": "sha256:0633f38ccd053345cc2ae1b7f70d0ac5836911cb74d70806ed5f227a278364a2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You repeat what Grandmother Tull said about the bell nobody rings, even the part she said twice. The boggart closes its eyes to listen."
+      },
+      {
+        "by": "boggart",
+        "text": "\"Lovely,\""
+      },
+      {
+        "by": "narrator",
+        "text": "it tells nobody, and lets go of the catalog."
+      }
+    ]
+  },
+  "gemfall-07r/scene_boggart_wardens_said/narration": {
+    "source": "sha256:f231c0eefa17e22e1627835bed57fe9c66175cf3dcfc9d8528a2b208860a0045",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"It hums!\""
+      },
+      {
+        "by": "narrator",
+        "text": "you shout in Dunmore's exact voice. The boggart shivers with joy and writes it down twice, once backwards."
+      },
+      {
+        "by": "boggart",
+        "text": "\"That's a keeper.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It hands over the catalog, still not looking at you."
+      }
+    ]
+  },
+  "gemfall-07r/scene_ford_witch/narration": {
+    "source": "sha256:af15e8c97bedc7ddeb754274a75e850dd9e2382a0f8e73942a5d9888650717c8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It is Mother Thrum, the witch from the ford, with a ringing wool sock under one arm. She walked the whole road north."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"I always ask twice,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"Once at the ford, once at the mountain. What do you actually want?\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_ford_witch_not_sure/narration": {
+    "source": "sha256:a9f92b4e3b29a70f2b32bbcf7f447925f8a9e96ac2cf5e066ce126687635e1e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum nods slowly, as if that beats most answers. She keeps her ringing sock, and gives you a songbird ribbon instead,"
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"for the working out.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She will ask again. She always does."
+      }
+    ]
+  },
+  "gemfall-07r/scene_ford_witch_put_back/narration": {
+    "source": "sha256:fb0aa8a3e4f650cd6ed243134224985ed07a8fd225be299cecf534c8064c9cb1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Mother Thrum looks at you over her glasses. Then she sets a stone from the ford in your hands. For the first time, it stops ringing."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"That was the answer,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "ford_witch",
+        "text": "\"Took you long enough.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_posy/narration": {
+    "source": "sha256:c02d2f9ca537eb724ec44223976d08d4834016fb6c3640e93b80c75fd729ca90",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Up the road comes a tired prospector called Corbin, with his daughter Posy on his shoulders. They spent everything to get here. Posy holds a small humming stone in both fists."
+      },
+      {
+        "by": "posy",
+        "text": "\"It's my lucky one,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "posy",
+        "text": "\"It's going to make us rich.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corbin looks at your stones going home and says nothing."
+      }
+    ]
+  },
+  "gemfall-07r/check_posy/onSuccess/narration": {
+    "source": "sha256:5a2cd69243f233ae138ee214a9d2fbfd26d93748e539abbfc89a07938c840a63",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You tell Posy about the mountain and the hum, the gentle version. She thinks about it very hard. Then she opens her fists and puts the stone on your pile herself."
+      },
+      {
+        "by": "posy",
+        "text": "\"So it can go home,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Corbin lets out a breath he has been holding since spring."
+      }
+    ]
+  },
+  "gemfall-07r/check_posy/onFailure/narration": {
+    "source": "sha256:91858579b78d966d98bf066d1fbbdf0e4885899b532794651d523706cbceac73",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Posy listens, and then hides the stone behind her back."
+      },
+      {
+        "by": "posy",
+        "text": "\"It's mine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and her lip wobbles. You do not push. Corbin gives you a small, sorry nod, and the two of them go on up the road toward the camps."
+      }
+    ]
+  },
+  "gemfall-07r/scene_posy_medal/narration": {
+    "source": "sha256:94b755944859f24b475637423c42cfc9d8c2eca0ff0a6ec357f3faf626dd20fe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You show Posy the sprites' tiny medal that says NOT."
+      },
+      {
+        "by": "posy",
+        "text": "\"You got a medal for not taking something?\""
+      },
+      {
+        "by": "narrator",
+        "text": "She looks at her stone, then the medal. Then she puts the stone on your pile, and asks if sprites give medals to girls."
+      }
+    ]
+  },
+  "gemfall-07r/scene_masks/narration": {
+    "source": "sha256:88e0edfb8c4b59d6f0400fa4520476e2eba7f25b5d5c76106b8f6182305c0ee2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Down the road, people in bark masks are working the funnel backwards. They are Hessa's friends from the soup tent, the Deep Hollow. They want to wake the mountain so it can fix things, so they collect stones from anyone who will give."
+      },
+      {
+        "by": "hessa",
+        "text": "\"We'll break the seal properly,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says one. You know that voice. It is Hessa herself."
+      }
+    ]
+  },
+  "gemfall-07r/check_tamsin/onSuccess/narration": {
+    "source": "sha256:521279e8c20f34b1dce11c74b05721e633fc6e9ce6e571e22116f9009f4ab51d",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Hessa takes off her mask."
+      },
+      {
+        "by": "hessa",
+        "text": "\"I only wanted somebody to fix things,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says quietly. She hands you her whole sack of stones, and then her ladle, and asks you to fix things."
+      }
+    ]
+  },
+  "gemfall-07r/check_tamsin/onFailure/narration": {
+    "source": "sha256:610225f34e900ff8870e4d4fad81b46b59f5d20b42cf554c65ff9e096a93f9f2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She listens kindly, all the way to the end. Then she puts her mask back on."
+      },
+      {
+        "by": "hessa",
+        "text": "\"I hope you're right,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "hessa",
+        "text": "\"I don't think you are.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her cell rolls on with a full sack."
+      }
+    ]
+  },
+  "gemfall-07r/scene_ember/narration": {
+    "source": "sha256:0442c34455910fb3f665a849b6d68bd13a1766c5e0a398e4adf906201ef9cd7c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "coralie_fenn",
+        "text": "\"Darlings!\""
+      },
+      {
+        "by": "narrator",
+        "text": "cries Madame Coralie Fenn from her barrel on wheels, tied to a caravan roof. She has the warm red stone you sold her on the quay, your very first. Now it sits in a velvet box, and its price has gone way up."
+      }
+    ]
+  },
+  "gemfall-07r/scene_ember_wave/narration": {
+    "source": "sha256:2ed03d3eb54676df7a106e7801f5fab87c9f512af881bb4aaf7fef5e9a85589b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You wave. Madame Fenn waves back with both arms, and her barrel wobbles."
+      },
+      {
+        "by": "coralie_fenn",
+        "text": "\"Next time, darlings!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The caravan rolls on, with your very first stone humming on top."
+      }
+    ]
+  },
+  "gemfall-07r/scene_ember_buy_back/narration": {
+    "source": "sha256:98015d34b1efed617ab3312a402cac953f08b15ccec6cdb8b361b11d226efd93",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You pay. Madame Fenn hugs the velvet box before handing it over."
+      },
+      {
+        "by": "coralie_fenn",
+        "text": "\"I always hoped it would be you, darlings.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The stone is warm as toast, and it hums as if it remembers you."
+      }
+    ]
+  },
+  "gemfall-07r/scene_last_moth_feel/narration": {
+    "source": "sha256:538816e5700fb1db6b87c53686be74da43f83a8667f95634676e2409168f86e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your unicorn touches the moth with the tip of the horn."
+      },
+      {
+        "by": "party",
+        "text": "\"It isn't lost,\""
+      },
+      {
+        "by": "narrator",
+        "text": "your unicorn says."
+      },
+      {
+        "by": "party",
+        "text": "\"It's homesick. It wants to go up, but not alone.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The moth climbs into your unicorn's mane and glows there all night."
+      }
+    ]
+  },
+  "gemfall-07r/scene_morning_slide/narration": {
+    "source": "sha256:412b6be4725c60f96019a67404705859d4954475e266d5c50e295ce8d3b2d090",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "In the night, half a hillside slid onto the road. A heap of red rocks taller than a wagon blocks it."
+      },
+      {
+        "by": "warden_sergeant",
+        "text": "\"Road's closed,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says a warden, and he writes ROAD CLOSED on his clipboard in very small letters, as if that will help."
+      }
+    ]
+  },
+  "gemfall-07r/check_caravan_helped/onSuccess/narration": {
+    "source": "sha256:abb58bf19eccf3bb9781a87502f758aaf356bfdcb3472a9b4ba0a5030217f900",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The caravan master looks at you, at the help behind you, at the shaking ground, and sighs a sigh that goes all the way down to her boots."
+      },
+      {
+        "by": "caravan_master",
+        "text": "\"Fine. Take it. It's been giving me headaches.\""
+      }
+    ]
+  },
+  "gemfall-07r/scene_downhill_crowd_posy/narration": {
+    "source": "sha256:b620091c690dbb978f86fba98eb7a3ae37cc4ba1e435572dec29d8156228c57a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "It is Posy, running up while everyone runs down, with Corbin puffing behind. She pushes her lucky stone into your hand."
+      },
+      {
+        "by": "posy",
+        "text": "\"It kept humming at night. I think it was asking. You take it home.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Corbin pops the faun cart free."
+      }
+    ]
+  },
+  "gemfall-07r/scene_downhill_crowd_odo/narration": {
+    "source": "sha256:a9cba15f8b487aca073af168ec6b3688f7cc55f854472420ed2b7a959a8f5a66",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Odo clatters down with his empty wheelbarrow, just the right size for six chairs and a small faun. Odo wheels them all around the crack, singing."
+      },
+      {
+        "by": "odo",
+        "text": "\"Never carried anything worth this much,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. He means the fauns."
+      }
+    ]
+  },
+  "gemfall-07r/interaction_stone_chain/narration": {
+    "source": "sha256:8b770bc727783f163ab614208ca19633067e4587021a21adda02b42d707c08d2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You help the warden pack the runaway stones into sacks, away from the wagon wheels. He counts the last one and pays you three coins."
+      },
+      {
+        "by": "warden_sergeant",
+        "text": "\"Honest work,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Then, quietly,"
+      },
+      {
+        "by": "warden_sergeant",
+        "text": "\"I have never been so glad to be bored.\""
+      }
+    ]
+  },
+  "gemfall-07r/interaction_trickle/narration": {
+    "source": "sha256:56a98d00d88f4603134fd4fea8c753927b177084ffda557e5e7f2c3442ec6401",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Past the slide, small red stones trickle across the road in bursts. Ping, ping, ping. Then they stop."
+      },
+      {
+        "by": "warden_sergeant",
+        "text": "\"Go in the gaps!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls the warden."
+      }
+    ]
+  },
+  "gemfall-07r/interaction_wagon_bells/onFailure/narration": {
+    "source": "sha256:8efa62cc1f5c0ae6732665a1c69f79dc8aecd180b9e7db61278e0e025b483dd5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your tune comes out wrong. The lead mule winces."
+      },
+      {
+        "by": "caravan_master",
+        "text": "\"Is that a bell?\""
+      },
+      {
+        "by": "narrator",
+        "text": "asks the master, slowing anyway."
+      },
+      {
+        "by": "caravan_master",
+        "text": "\"It's the saddest bell I've ever heard.\""
+      }
+    ]
+  },
+  "gemfall-07r/interaction_return_handover/onSuccess/narration": {
+    "source": "sha256:a42cf08c3152ece8f97cf9b3443642bf38157d5f8a5a7c1f33f903d5114bccbd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stone is safe in your arms."
+      },
+      {
+        "by": "caravan_master",
+        "text": "\"Home delivery,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the master, pointing uphill."
+      }
+    ]
+  }
+}

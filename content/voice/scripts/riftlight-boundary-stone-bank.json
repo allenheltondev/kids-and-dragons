@@ -1,0 +1,955 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "riftlight-boundary-stone-bank/stones/narration": {
+    "source": "sha256:fad1fcbc3653d360051b38c5e648325898b76f4699b509a07ab2e4412d1eb5bd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You reach the east bank of the Great River. Old boundary stones march up the slope in a crooked row. A dragonling hurries down with a dry cloth, counting under her breath."
+      },
+      {
+        "by": "tally",
+        "text": "\"Seven, eight, nine stones. One, two... visitors.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She counts you too."
+      },
+      {
+        "by": "tally",
+        "text": "\"Tally. I keep these stones. If we've met, I've counted you twice now, which is fine.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She points at the bottom stone, leaning toward the water."
+      },
+      {
+        "by": "tally",
+        "text": "\"The river shoved my stones last night. Stones don't get shoved. Not mine. Why did the river shove the stones? Help me find out, and there will be tea.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/markings/narration": {
+    "source": "sha256:fd5c5816224cfc64affa83d4d93037694d66165dcdffb17de4174e1fb4a8e447",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally waves one hand, because the other holds a ball of cord."
+      },
+      {
+        "by": "tally",
+        "text": "\"Two small jobs first. The oldest stone at the top is carved with a mountain, and my record board needs a rubbing of it. And my river marker slid into the shallows.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Her board is full of crossed-out numbers."
+      },
+      {
+        "by": "tally",
+        "text": "\"The numbers never agree. Which job first?\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/carving/narration": {
+    "source": "sha256:73856056a9e55dc4b355fb7ff466b808590d8e9601334f01f9dbc88c1f60a59a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The oldest stone is taller than Tally, and grumpier. She tapes damp paper over the carving and hands you charcoal in a rag."
+      },
+      {
+        "by": "tally",
+        "text": "\"Rub it like you're polishing a pot,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"Before the wind wakes up.\""
+      },
+      {
+        "by": "narrator",
+        "text": "The grass is already leaning."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rubbed/narration": {
+    "source": "sha256:567228f8032f784bef00162ce27b730758b0d072a5b95f4ca4572002867bc9b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The rubbing comes off whole: the mountain, the smoke rising from its top, even the tiny chips."
+      },
+      {
+        "by": "tally",
+        "text": "\"Nobody gets a clean one!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally. She pegs it on a rock to dry, then squints at the sky in case it is up to something."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rub_torn/narration": {
+    "source": "sha256:44fc340524af38d8dbb8bae3c12b1480ef8bb57c6ce78007cf9bfdf2ec2ca4d8",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind snatches the paper and flaps it away like a startled hen. Tally chases it, then sits on it. What is left has most of a mountain."
+      },
+      {
+        "by": "tally",
+        "text": "\"Half a mountain is still a mountain,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/marker/narration": {
+    "source": "sha256:e172f7a783bdc0cc1ea707fb5ef431763e4db463a3f42ef8ac795a5176d87107",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The river marker is a short stone post with a rope ring on top. It stands in the shallows like a grumpy heron."
+      },
+      {
+        "by": "tally",
+        "text": "\"Set it where the water reached,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally,"
+      },
+      {
+        "by": "tally",
+        "text": "\"so travelers can see how high it came.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She lends you mittens that smell of fish."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/marker_set/narration": {
+    "source": "sha256:00d046cd9d7f552065bed48dcfb9ee588c3ab0063002cc4f8152eed1f8e7ff5a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The post thumps into its hole, high above the wet gravel. Tally scratches the height on her record board and whistles."
+      },
+      {
+        "by": "tally",
+        "text": "\"Higher than my grandmother's year! She complained about that one for a month.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/row/narration": {
+    "source": "sha256:23c9e12bcaca41d4111c557e292bc641bfd6877dfa65a271f799c9cbda7aacb2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Nine stones climb the bank like steps for a giant. Each has notches, one for every year's highest water, and a ring for the count cord that ties them together. The lowest stone leans toward the river like a sleepy goat."
+      },
+      {
+        "by": "tally",
+        "text": "\"That's Splash,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"He doesn't enjoy the name.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/plan/narration": {
+    "source": "sha256:538c3969d31f56bfef2a5121b9b80edbb9993075234c79e38c3ee3cb1d63ef8b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Splash is stuck in the clay, leaning as if he might still run off to the sea. The old count cord has snapped."
+      },
+      {
+        "by": "tally",
+        "text": "\"We could heave him up now, before the river comes back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"Or dig aaround him first, and see how the river did it. That's slower.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She counts the ripples on the water."
+      },
+      {
+        "by": "tally",
+        "text": "\"The river might not wait.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lever_check/narration": {
+    "source": "sha256:a0a973d1c3425a19da47e44e27bb412a0555f0aedea1958627ca3b7a94cc6832",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You jam the pole under Splash."
+      },
+      {
+        "by": "tally",
+        "text": "\"On three,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"One, two...\""
+      },
+      {
+        "by": "narrator",
+        "text": "She loses count."
+      },
+      {
+        "by": "tally",
+        "text": "\"Just heave!\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/dug_found/narration": {
+    "source": "sha256:c050cc69245408d190dd32964a834a33e4dc5f5d39a9f41f84227c78c37efb35",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The river packed gravel on Splash's uphill side, not his river side."
+      },
+      {
+        "by": "tally",
+        "text": "\"It came over the top,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally whispers."
+      },
+      {
+        "by": "tally",
+        "text": "\"Over the bank, and back down. It pushed him from above.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Splash slides upright by himself, without a scratch. Then a roar comes down the river. You are still in the trench."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_up/narration": {
+    "source": "sha256:0b38b87e00d0e540369b43ac67d125518cbb04ba5b88b7b98cac159e572bf830",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Splash stands straight at last. Tally thanks him. She thanks every stone, by name. Then she freezes. A brown ripple races down the river, carrying branches, a boot and one very surprised duck."
+      },
+      {
+        "by": "tally",
+        "text": "\"Melt surge!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"Grab everything the river might like!\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_up/variants/0": {
+    "source": "sha256:09ac578479bce2f400f1859a97343161857b9c196c58adb47e7e6a7204e26f9f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "His top notch is chipped now, the one for the biggest flood. Tally winces."
+      },
+      {
+        "by": "tally",
+        "text": "\"That one was eleven years old.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_up/variants/1": {
+    "source": "sha256:b14ed020d2cb0bcf106bbfee743dd2d40d4e373693cd8069a147a93eb526e248",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Splash stands straight at last, without a scratch. Tally thanks him. She thanks every stone, by name. The surge is still rolling past, carrying branches, a boot and one very surprised duck."
+      },
+      {
+        "by": "tally",
+        "text": "\"The gear!\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"Grab everything the river might like!\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_safe/narration": {
+    "source": "sha256:aaae92bbd6ad2aa28a9a4a067ae1b734de2ded7f6c8074a0af6b445e09bc7e83",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. The duck sails past, quacking its opinion."
+      },
+      {
+        "by": "tally",
+        "text": "\"Kettle saved,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"The river has no idea how to make tea.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She gives you a jar of glowing moss."
+      },
+      {
+        "by": "tally",
+        "text": "\"Mosslight. For work at dusk.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_safe/variants/0": {
+    "source": "sha256:1a5be0f87ba3387dc88eb5069b01cab3afcb1ecf917b8d8cbd56afb84f82e53e",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. Tally looks downriver after her kettle."
+      },
+      {
+        "by": "tally",
+        "text": "\"Nine years that kettle and I counted together,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Then she sniffs and gives you a jar of glowing moss."
+      },
+      {
+        "by": "tally",
+        "text": "\"Mosslight. For work at dusk.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_plan/narration": {
+    "source": "sha256:c91fcc474c8d9da5938c48d2502ba9cb623cc62e82e8b2aa43c1c2a5c511d8b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The water left a dark, damp line on Splash. It is above every notch on him. It is above every notch on the next stone too. Tally counts them twice."
+      },
+      {
+        "by": "tally",
+        "text": "\"Never this high,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"Not in all the count. That's why it shoved him.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She hands you a chisel the size of a spoon."
+      },
+      {
+        "by": "tally",
+        "text": "\"Cut this year's notch on that line. It will stay for a thousand years. No pressure.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/chisel_check/narration": {
+    "source": "sha256:573e45f2d8edd15c99c31797d363794233c68bfa2ee9ce4e89d6f651a63ef7a4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tap. Tap. Tap."
+      },
+      {
+        "by": "tally",
+        "text": "\"One, two, three,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally, very quietly."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_cut/narration": {
+    "source": "sha256:a39c8e5e16bbc88ba195e2ed570695de4a90bc81c1de8bd502db32e789bf42b7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The notch comes out clean, with a curl of stone like a ribbon."
+      },
+      {
+        "by": "tally",
+        "text": "\"That's this year,\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tally says softly. She gives you four coins and a honeycake."
+      },
+      {
+        "by": "tally",
+        "text": "\"The stone counters up the road pay me in coins. I pay my helpers in cake.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_crooked/narration": {
+    "source": "sha256:7d280845e300d245514c709627e55a6387eef1709bef306274084bb41667d9eb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The notch wobbles like a worm."
+      },
+      {
+        "by": "tally",
+        "text": "\"Honest,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally at last."
+      },
+      {
+        "by": "tally",
+        "text": "\"An honest notch.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She gives you a leaf for your blistered thumb, then four coins and a honeycake."
+      },
+      {
+        "by": "tally",
+        "text": "\"The stone counters up the road pay me in coins. I pay my helpers in cake.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/cord_plan/narration": {
+    "source": "sha256:0c3fed6171fd38f8030fe78ccd47e248ab7b7812c047c69e3b02fc7db1ab60d7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The old count cord hangs like a sad noodle, snapped in three places. A new one must run from Splash up through every stone's ring, so Tally can sight along it and see if any stone still leans. She hands you a ball of cord as big as a cabbage."
+      },
+      {
+        "by": "tally",
+        "text": "\"Miss one ring, and the row will whisper about it.\""
+      },
+      {
+        "by": "narrator",
+        "text": "How will you thread it?"
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/cord_run/narration": {
+    "source": "sha256:3599dacfb478ec27bbb5c14675ad09ec925a7ef5364fb605313529aef785bbe5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The new cord runs through all nine rings, from Splash to the oldest stone. It sags like an empty washing line."
+      },
+      {
+        "by": "tally",
+        "text": "\"Now pull it tight,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"A slack cord tells fibs. Lean uphill, slowly, like you're persuading a cow.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tighten/narration": {
+    "source": "sha256:31470b0fb5496008bb0b29b169be6b98a1d9a46c07315bb1eb00321fca930a46",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Everyone takes hold. Tally chalks a mark on the middle stone."
+      },
+      {
+        "by": "tally",
+        "text": "\"When the cord rises to my mark, tie it. Not before. Not after.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Lean too hard, and it snaps back. Lean too little, and it sags."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tight/narration": {
+    "source": "sha256:395c730b789e6f1902febf5a87b0b1837b5cc8742cbe99622fb257520065e6a7",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cord hums one low note. A beetle rides it all the way to the top, very pleased with itself. Tally squints along it."
+      },
+      {
+        "by": "tally",
+        "text": "\"There! The fourth stone from the bottom.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It leans off the line like a sleepy duck. She chalks a big X on it."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tight/variants/0": {
+    "source": "sha256:5e03216f9be604e261175eb948d41154472f9b97581b1505a71e888390bd5375",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The cord sags in the middle, so Tally squints along it a long time, counting under her breath."
+      },
+      {
+        "by": "tally",
+        "text": "\"There. I think. The fourth stone from the bottom.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It leans off the line like a sleepy duck. She chalks a big X on it, then a small question mark."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/push_check/narration": {
+    "source": "sha256:7c0a391eb7d750f22fa8459e19b19783ca775a445d668db685581e063ac7250f",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tally",
+        "text": "\"One,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"Two. Two and a half...\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/fourth_ok/narration": {
+    "source": "sha256:460c9214d159639665081a05ebb7ca4c49f5767f4d77cc42c8e1062b4a2fc141",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The fourth stone settles with a deep thud. A line of ants marches out from under it, carrying their furniture. All nine stones stand straight."
+      },
+      {
+        "by": "tally",
+        "text": "\"Straight!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"Straight, straight, straight.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She counts them to be sure."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/fourth_shift/narration": {
+    "source": "sha256:4dbed23c2bbe88f582c710828045329cd2927c98f04cbded9636c343092212fe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stone shifts, then settles crooked the other way."
+      },
+      {
+        "by": "tally",
+        "text": "\"Good enough for today,\""
+      },
+      {
+        "by": "narrator",
+        "text": "sighs Tally. You add one more wedge and pinch a finger. The ants underneath come out to complain, then go back in to complain indoors."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/top_stone/narration": {
+    "source": "sha256:441e2d4cfa26b1a33f6862002b66eace1e42b964e347293de518588d028d4339",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You climb to the oldest stone at the top. Its carving shows a mountain with smoke pouring out of it, and ash falling like snow. An eruption. Tally lays her record board in the grass."
+      },
+      {
+        "by": "tally",
+        "text": "\"The notches count the years since that day,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"So the count should tell us when the mountain burned. In nine years, I have never got it to agree.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lean/narration": {
+    "source": "sha256:5c3b3e2853ecdbfeaf6e8e735ec66d2e3a18f760ade3dae66b145d8b180ad8fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally hums while she counts, and your Listening Chime hums back. It swings on its cord and leans, not toward the carving, but up the river, toward the glacier far away. Then it is still. Tally stops counting."
+      },
+      {
+        "by": "tally",
+        "text": "\"Does it always do that?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Nobody knows what to tell her. She starts again from one."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/compare/variants/0": {
+    "source": "sha256:2eb1a4d002ec106e9ab39046d95cb5b062468f6615683883178e9593d12cd9ce",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tally",
+        "text": "\"Mind Splash's chipped notch,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"Count it from memory.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_count_check/narration": {
+    "source": "sha256:a043e46621f9e894445654175762a9bf3f43580572bf200080ab4d55278da71a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tally",
+        "text": "\"Out loud, please,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"I like to hear numbers.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/muddle/narration": {
+    "source": "sha256:e2b920eb48ce279ee773e72b9d27b043d6688b7df8b693331dede728db5a8269",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The numbers swim, and you lose count three times."
+      },
+      {
+        "by": "tally",
+        "text": "\"That's how my board got this way,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally cheerfully. She counts with you, notch by notch, starting again from one each time, until you land somewhere."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/clue/narration": {
+    "source": "sha256:ac27edc5abf5b4a5e125fbd4d288565e8121128f2d66852064bd82eb9d891fd9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Your count says one number. Tally's board says another. Her grandmother's count, scratched on the back of the stone, says a third. Nobody's count matches the eruption. And the carved mountain has a sharp top, like a tooth, where the real peak is round as a sleeping cat."
+      },
+      {
+        "by": "tally",
+        "text": "\"It's as if it was carved from somewhere else,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally. Then she shakes her head."
+      },
+      {
+        "by": "tally",
+        "text": "\"One question at a time.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/record_plan/narration": {
+    "source": "sha256:e15116d7037b8ce3a0bd3b9a125b5a92030af22404c690a255de695e091c3949",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally holds her chalk over a clean corner of the board. For once, she does not hurry."
+      },
+      {
+        "by": "tally",
+        "text": "\"What should I write? I want it true, and I want it small. The counters will read it.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/wrote_plain/narration": {
+    "source": "sha256:ac7dc8bc09a996254faa40b46f35dccac7cd30aebc998e94af54fbcc5536084c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She writes one line:"
+      },
+      {
+        "by": "tally",
+        "text": "\"Three counts. None match the eruption.\""
+      },
+      {
+        "by": "narrator",
+        "text": "She does not write why. Then she adds a tiny mountain wearing a hat."
+      },
+      {
+        "by": "tally",
+        "text": "\"For luck,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"The hat is not evidence.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/drew_both/narration": {
+    "source": "sha256:7a1d7b864f8ffe4dc5e10624c104d1d2eb3f7149b20e988c3fb959044b418b30",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "She draws the carved mountain and the real peak side by side, the tooth and the sleeping cat. They look like cousins who have never met."
+      },
+      {
+        "by": "tally",
+        "text": "\"Let the counters decide for themselves,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/runner/narration": {
+    "source": "sha256:d246691da8f5226be265520acb170370ccd22ce9d264860363e1a9e50b55475c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Boots thump up the slope. A young dragonling runner skids to a stop, red-faced and puffing."
+      },
+      {
+        "by": "runner",
+        "text": "\"Keeper! Keeper! The counters need you! A counting stone moved, no drag marks, no nothing, and they've run out of string measuring it!\""
+      },
+      {
+        "by": "narrator",
+        "text": "She sits down on her own feet. Tally looks at her row, then at you."
+      },
+      {
+        "by": "tally",
+        "text": "\"First light,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"First, tea.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rest_row/narration": {
+    "source": "sha256:02a0c664fb3999acf58df170351d234f17549f926694a32b97f50076e5b98827",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sun slides toward the hills."
+      },
+      {
+        "by": "tally",
+        "text": "\"Nobody walks anywhere hungry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally. She pours tea into cups that do not match, and counts the cups, and the runner. The river hurries by, a little lower than before."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rest_row/variants/0": {
+    "source": "sha256:26f3d20802fff62d7000dcb061b5cd7e40588aeaffc71aec7e15b7bfa09da4fb",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The sun slides toward the hills."
+      },
+      {
+        "by": "tally",
+        "text": "\"Nobody walks anywhere hungry,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally. With no kettle, she warms the tea in her hat over the fire. It tastes a little of hat. The river hurries by, a little lower than before."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/honey_buy/narration": {
+    "source": "sha256:62292b03394649fa733cb3e7cc9a85f74f9a5e4995fc54f3567e010a1c9579c6",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tally sells you a honeycake wrapped in a leaf. She drops your coins in a tin like rare beetles, and counts them."
+      },
+      {
+        "by": "tally",
+        "text": "\"Honey is the river's opposite,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tally",
+        "text": "\"It stays where you put it.\""
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/share_supper/narration": {
+    "source": "sha256:71076c47e517a97464922af0c6914bcb7f49b4a4352ee0ecd34d9e19b306faca",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You split your supper with Tally and the runner. Tally shares hers with Splash by setting a crumb on his head."
+      },
+      {
+        "by": "tally",
+        "text": "\"Fair is fair,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and hangs a river charm around your neck. It smells faintly of fish, like all her gifts."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/watch/narration": {
+    "source": "sha256:e62173d261d68c83537e6b02e30663563dbc49b19cecde2e0e49c0765e3b7be1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You sit by Splash with your feet near the water. Ants cross his new notch like a bridge. Far upriver, something flashes once in the dusk, then is gone."
+      },
+      {
+        "by": "tally",
+        "text": "\"Rivers do that,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally. She is wrong, but kindly."
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/narration": {
+    "source": "sha256:6438375f2ee07eac5f02f3d9ff9afdb1660f06bb57a232eedb1f3d4e39e43479",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tally",
+        "text": "\"I walk to the counting circle at first light,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
+      },
+      {
+        "by": "tally",
+        "text": "\"You're welcome to come.\""
+      },
+      {
+        "by": "narrator",
+        "text": "A road also follows the east bank to a crossing called Ashspan Bridge. So here is tonight's piece: the river came higher than any notch in the count, and that is why it shoved the stones. But the oldest stone shows a mountain that burned when no count says it could, and a peak that is not shaped like ours. Something is moving the land. What is it? And can you put things right?"
+      }
+    ]
+  }
+}
