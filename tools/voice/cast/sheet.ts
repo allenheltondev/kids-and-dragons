@@ -206,6 +206,8 @@ function nameFromNotes(key: string, notes: string): string {
 
 const GROUP = /\b(flock|crew|family|families|choir|crowd|troupe|expedition|cousins|travelers|campers|workers|engineers|readers|skywardens|ducklings|cubs|queue)\b|^(sheeple|sprites|prospectors|brassbuckles|brackens|red_scarves|kettle_campers|gullets_cousins)$/i;
 const CREATURE = /\b(donkey|mule|pony|duckling|ducklings|goat|whale|wyrm|drakes?)\b/i;
+/** Someone a scene can mention without casting: "the old faun", "a tall woman". */
+const STRANGERS = "man|woman|boy|girl|stranger|traveler|faun|centaur|griffin|troll|yeti|dragonling|kitsune|selkie|frogfolk|boggart|merfolk|unicorn|sprite|bigfoot|burrowfolk|dwarf|elf|gnome|halfling|farmer|guard|merchant|peddler|sailor|fisher|herder";
 const SILENT = /\bnever speaks\b|\bonly (?:bleats|chatters|screeches|squawks|honks|quacks|peeps|barks|squeaks|hoots)\b|\bdoes not speak\b|\bwithout words\b/i;
 
 function kindOf(id: string, name: string, who: string): Kind {
@@ -427,6 +429,15 @@ export function callQuotes(text: string, speakers: readonly Speaker[], from = 0)
     return { id: subject.id, ...(pronoun ? { pronoun } : {}) };
   };
 
+  // The sentence just before a quote is about somebody nobody on the sheet answers to: "The old faun grabs your sleeve."
+  const strangerBefore = (start: number): boolean => {
+    const head = context.slice(Math.max(0, start - 200), start);
+    if (!/[.!?]["”]?\s+$/.test(head)) return false;
+    const sentence = /(?:^|[.!?]["”]?\s+)([^.!?"“”]+[.!?])\s+$/.exec(head)?.[1];
+    if (!sentence || named.some((speaker) => new RegExp(`\\b(?:${speaker.names.join("|")})\\b`, "i").test(sentence))) return false;
+    return new RegExp(`^(?:the|an?)\\s+(?:[a-z-]+\\s+){0,2}?(?:${STRANGERS})\\s+[a-z]+s\\b`, "i").test(sentence);
+  };
+
   // "she says" with nobody named: the one she in the scene, when there is exactly one.
   const inSceneWith = (pronoun: string): string | null => {
     const found = speakers.filter((speaker) => speaker.here && speaker.pronoun === pronoun);
@@ -466,6 +477,9 @@ export function callQuotes(text: string, speakers: readonly Speaker[], from = 0)
         };
         id = [...mentions].reverse().find((m) => m.at < start && m.id !== lastNamed && could(m.id))?.id ?? lastNamed;
       } else id = lastNamed !== null && !(contradicted && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
+      // "The red scarves charge. The old faun grabs your sleeve. "Link arms!" he says.": the sentence just before is about
+      // someone the sheet does not know, so "he" is most likely them, and the narrator reads it.
+      if (id !== null && id === lastNamed && strangerBefore(start)) id = null;
     } else if (tag !== null) id = tag;
     // "I'm Orin Vale." names its own speaker, and that is stronger than the sentence before it being about someone else.
     else if (introducedIn(match[1]!) !== null) id = introducedIn(match[1]!);
