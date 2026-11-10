@@ -22,23 +22,47 @@ other in a single step.
 Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 
 ```bash
-./scripts/deploy.sh              # prod
+./scripts/deploy.sh prod         # prod
 ./scripts/deploy.sh staging      # staging
 ./scripts/deploy.sh dev          # a fourth stack, for driving by hand
 ```
 
+The environment is always named: with no argument the script prints its usage
+and stops. (It used to mean prod.) `npm run infra:deploy -- staging` is the same
+thing through npm.
+
+**Prod from a laptop is checked against main first.** Production normally
+deploys itself, so a by-hand prod deploy is refused unless the working tree is
+clean and `HEAD` is the tip of `origin`'s `main`, and `sam` then stops to show
+the changeset before applying it. For the evening CI itself is what is broken,
+or a rollback by hand to an older commit, `KAD_DEPLOY_ANYWAY=1` ships the
+checkout regardless and prints what was wrong with it. The workflows are not
+subject to any of this; `prod-deploy.yml` has its own guard.
+
 It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`, `voice:verify`,
 and `infra:lint` when `cfn-lint` is installed — then bundles
-the Lambdas, deploys the stack, checks that every recorded voice clip the
+the Lambdas and builds the client, checks that every recorded voice clip the
 manifests in `content/voice/manifest/` play is on the site
 (`tools/voice/verify-site.ts`, even when the checks are skipped, since only the
 deploy knows which site it is; a clip the site will not answer for stops the
-deploy too), uploads the client and the art, and invalidates
-CloudFront — in that order, so a deploy that fails partway leaves the previous
-version serving rather than a new bundle talking to an API that does not exist
-yet. It also exports `AWS_REGION=us-east-1` unless one is already set, so a
+deploy too), deploys the stack, uploads the client and the art, invalidates
+CloudFront, and prunes old bundle files — in that order. Everything that can
+fail without touching AWS has failed before the stack changes, and the upload
+comes after it, so a deploy that fails partway leaves the previous version
+serving rather than a new API with an old client, or a new bundle talking to an
+API that does not exist yet. (A stack's very first deploy has no site to ask
+about voice clips until the stack exists, so that one deploy asks afterwards.)
+It also exports `AWS_REGION=us-east-1` unless one is already set, so a
 laptop with a different profile default still reads the stack that actually
 exists.
+
+**Bundle files are added, never swept.** Every file under `bundle/` has its hash
+in its name, and the page a phone already has open keeps asking for the
+previous build's lazy chunks until it reloads. So a deploy uploads the new
+files beside the old ones, and afterwards deletes only files that this build
+does not ship *and* that were uploaded more than 14 days ago
+(`tools/deploy/stale-bundles.ts`). The prune is the last step and never fails a
+deploy. Art and content are still synced whole.
 
 The two automated paths trust CI differently, and the difference is deliberate.
 **Staging runs in parallel with CI** on every pull request, so `deploy.sh` runs

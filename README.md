@@ -158,7 +158,7 @@ breathing loop; there is no animation rig runtime ([docs/art-pipeline.md](docs/a
 | `npm run load` | A load test against a running server |
 | `npm run wiki:generate` / `wiki:build` | Wiki pages from canon / the full Hugo and Pagefind build |
 | `npm run infra:lint` / `infra:build` | Lint the SAM template / bundle the Lambdas |
-| `npm run infra:deploy` | `scripts/deploy.sh`: checks, bundle, stack, upload, invalidate |
+| `npm run infra:deploy -- <prod\|staging\|dev>` | `scripts/deploy.sh`: checks, builds, stack, upload, invalidate. The environment is required |
 
 `package.json` has a few more single-purpose scripts (atlas, portraits, guide pictures, audio
 previews).
