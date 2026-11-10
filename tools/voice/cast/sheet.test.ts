@@ -66,6 +66,13 @@ describe("whose line is it", () => {
     expect(attributeQuotes(beat, [{ id: "pip", names: ["Pip"], here: true }, { id: "puddle", names: ["Puddle"], here: true, pronoun: "she" }]).map((q) => q.id)).toEqual(["puddle"]);
   });
 
+  it("leaves a he or she to the narrator when the sentence just before is about somebody the sheet does not know", () => {
+    const scarves = [{ id: "red_scarves", names: ["red scarves"], pronoun: "he" as const }];
+    expect(attributeQuotes('The red scarves charge up the line. The old faun grabs your sleeve. "Link arms!" he says.', scarves)).toEqual([]);
+    // A sentence about a thing, not a person, leaves "he" with whoever was named last.
+    expect(attributeQuotes('The red scarves charge up the line. The rope snaps. "Link arms!" he says.', scarves).map((q) => q.id)).toEqual(["red_scarves"]);
+  });
+
   it("leaves a quote nobody is tagged for", () => {
     expect(quotesFor('A sign says "NO MESSING." Pib shrugs.', ["Pib"])).toEqual([]);
   });
