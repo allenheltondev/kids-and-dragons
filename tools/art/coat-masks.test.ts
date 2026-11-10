@@ -210,16 +210,20 @@ with tempfile.TemporaryDirectory() as out:
     args = ['bigfoot', '--family', 'base', '--tier', 'fledgling', '--out', out]
     with contextlib.redirect_stdout(io.StringIO()):
         draft.main(args)
-    written = sorted(str(p.relative_to(out)) for p in Path(out).rglob('*.png'))
+    written = sorted(p.relative_to(out).as_posix() for p in Path(out).rglob('*.png'))
     target = Path(coat.asset('characters/bigfoot/fledgling/coat-mask.png', out))
     Image.new('RGB', (4, 4), 7).save(target)
     with contextlib.redirect_stdout(io.StringIO()):
         draft.main(args)
-    kept = Image.open(target).size
+    # Opened and closed inside the directory's lifetime: Windows will not delete
+    # a file that is still open, and the temporary directory's cleanup then fails.
+    with Image.open(target) as im:
+        kept = im.size
     with contextlib.redirect_stdout(io.StringIO()):
         draft.main(args + ['--force'])
-    replaced = Image.open(target)
-    print(json.dumps(dict(written=written, kept=list(kept), replaced=[list(replaced.size), replaced.mode])))
+    with Image.open(target) as im:
+        replaced = [list(im.size), im.mode]
+    print(json.dumps(dict(written=written, kept=list(kept), replaced=replaced)))
 `);
     expect(result.written).toEqual(["assets/characters/bigfoot/fledgling/coat-mask.png"]);
     expect(result.kept).toEqual([4, 4]);

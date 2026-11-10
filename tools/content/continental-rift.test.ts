@@ -26,6 +26,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { afterAll, describe, expect, it } from "vitest";
@@ -195,7 +196,9 @@ describe("content:validate, with the slice dropped into content/", { timeout: 12
 // ---------------------------------------------------------------------------
 
 function cli(args: string[]) {
-  const tsx = path.join(REPO_ROOT, "node_modules", "tsx", "dist", "cli.mjs");
+  // Resolved, not spelled out: in a git worktree the packages live in the main
+  // checkout's node_modules, above REPO_ROOT, and a hard-coded path is not there.
+  const tsx = fileURLToPath(import.meta.resolve("tsx/cli"));
   const run = spawnSync(process.execPath, [tsx, path.join(REPO_ROOT, "tools", "content", "journey.ts"), ...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",
