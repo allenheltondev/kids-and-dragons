@@ -54,6 +54,18 @@ describe("whose line is it", () => {
     expect(attributeQuotes('The rain stops. "Finally."', speakers)).toEqual([]);
   });
 
+  it("gives a he or she past someone known to be the other, to the one in the scene named before them who could be", () => {
+    const griffin = { id: "griffin", names: ["griffin"], here: true };
+    const unicorn = { id: "unicorn", names: ["unicorn"], here: true, pronoun: "she" as const };
+    const text = 'A griffin is trying to fold a map while a unicorn stands on one corner. "It will not fold," he mutters.';
+    expect(attributeQuotes(text, [griffin, unicorn])).toEqual([{ id: "griffin", words: "It will not fold,", pronoun: "he" }]);
+    // Someone only mentioned is not in the scene to say it.
+    expect(attributeQuotes(text, [{ ...griffin, here: false }, unicorn]).map((q) => q.id)).toEqual(["unicorn"]);
+    // A sentence about the last-named one, just before the quote, is stronger than the "he" after it.
+    const beat = 'Pip frowns. Puddle pokes him with one fin. "Draw it again." He sniffs.';
+    expect(attributeQuotes(beat, [{ id: "pip", names: ["Pip"], here: true }, { id: "puddle", names: ["Puddle"], here: true, pronoun: "she" }]).map((q) => q.id)).toEqual(["puddle"]);
+  });
+
   it("leaves a quote nobody is tagged for", () => {
     expect(quotesFor('A sign says "NO MESSING." Pib shrugs.', ["Pib"])).toEqual([]);
   });
@@ -101,6 +113,40 @@ describe("who is in the game", () => {
     expect([...renamed.keys()].sort()).toEqual(["nan_rummage", "soup_woman"]);
     expect(renamed.get("nan_rummage")!.name).toBe("Nana Rummage");
     expect([...renamed.get("soup_woman")!.aliases]).toContain("Marigold");
+  });
+
+  it("keeps two people under one name apart when the scenes draw them as two", () => {
+    const split = new Map(collectCharacters({
+      chapters: [
+        // The griffin comes first, but the figure the id names keeps the id.
+        { id: "r-01", campaignId: "r", voiceGuide: { npcVoices: { Brask: "Brask, the griffin who keeps the pass ledger (he/him)." } }, scenes: { s: { cast: [{ figure: "cast/pass_keeper", name: "Brask" }] } } },
+        { id: "g-05", campaignId: "g", voiceGuide: { npcVoices: { brask: "Skywarden engineer; blunt" } }, scenes: { s: { cast: [{ figure: "cast/brask", name: "Engineer Brask" }] } } },
+        { id: "g-06", campaignId: "g", voiceGuide: { npcVoices: { brask: "Skywarden engineer, back again" } }, scenes: { s: { cast: [{ figure: "cast/brask", name: "Brask" }] } } },
+        // Cast with no voice notes: a namesake drawn as someone else is someone else.
+        { id: "r-02", campaignId: "r", scenes: { s: { cast: [{ figure: "cast/pass_keeper", name: "Brask" }] } } },
+      ],
+      individuals: [], narration: [],
+    }).map((d) => [d.id, d]));
+    expect([...split.keys()].sort()).toEqual(["brask", "brask_pass_keeper"]);
+    expect([...split.get("brask")!.chapters].sort()).toEqual(["g-05", "g-06"]);
+    expect([...split.get("brask_pass_keeper")!.chapters].sort()).toEqual(["r-01", "r-02"]);
+    expect(split.get("brask_pass_keeper")!.voiceNotes).toEqual([{ chapter: "r-01", key: "Brask" }]);
+  });
+
+  it("keeps two drovers apart when one role key is cast under two role names", () => {
+    const drovers = new Map(collectCharacters({
+      chapters: [
+        { id: "g-02", campaignId: "g", voiceGuide: { npcVoices: { drover: "a grumpy drover in a hurry, fond of her dinner" } }, scenes: { s: { cast: [{ figure: "entities/centaur", name: "Rush drover" }] } } },
+        { id: "g-03", campaignId: "g", voiceGuide: { npcVoices: { drover: "the lead drover; slow, booming" } }, scenes: { s: { cast: [{ figure: "entities/centaur", name: "Lead Drover" }] } } },
+        { id: "g-04", campaignId: "g", voiceGuide: { npcVoices: { drover: "the lead drover from the ford" } }, scenes: { s: { cast: [{ figure: "entities/centaur", name: "Lead Drover" }] } } },
+        // Voice notes with nobody cast are no reason to split.
+        { id: "g-05", campaignId: "g", voiceGuide: { npcVoices: { drover: "a drover" } } },
+      ],
+      individuals: [], narration: [],
+    }).map((d) => [d.id, d]));
+    expect([...drovers.keys()].sort()).toEqual(["drover", "lead_drover"]);
+    expect([...drovers.get("drover")!.chapters].sort()).toEqual(["g-02", "g-05"]);
+    expect([...drovers.get("lead_drover")!.chapters].sort()).toEqual(["g-03", "g-04"]);
   });
 
   it("guesses a voice's gender and size from pronouns and notes", () => {
@@ -151,6 +197,25 @@ describe("voices", () => {
     const again = buildSheet({ chapters, individuals: [], narration: [] }, first);
     expect(again.speakers.a).toEqual(first.speakers.a);
     expect(again.speakers.b!.gemini.voice).toBe(bVoice);
+  });
+
+  it("keeps what a person wrote about a silent creature the content never describes", () => {
+    const chapters: ChapterLike[] = [{ id: "c", scenes: { s: { cast: [{ figure: "entities/silver_otter", name: "Silver otter" }] } } }];
+    const first = buildSheet({ chapters, individuals: [], narration: [] }, null);
+    expect(first.speakers.silver_otter).toMatchObject({ kind: "character", who: "Silver otter.", speaks: true });
+    Object.assign(first.speakers.silver_otter!, { kind: "creature", who: "a silver otter from the mimic ditch; only chatters", speaks: false });
+    const again = buildSheet({ chapters, individuals: [], narration: [] }, first);
+    expect(again.speakers.silver_otter).toMatchObject({ kind: "creature", who: "a silver otter from the mimic ditch; only chatters", speaks: false });
+  });
+
+  it("keeps the pronouns of a gender a person set, against a he the counter heard", () => {
+    const chapters: ChapterLike[] = [{ id: "c", scenes: { s: { cast: [{ figure: "cast/lady_olivia", name: "Cloaked unicorn" }] } } }];
+    const narration = [{ chapter: "c", address: "c/s/narration", text: 'A cloaked unicorn stands on the map. "It will not fold," he mutters.' }];
+    const first = buildSheet({ chapters, individuals: [], narration }, null);
+    expect(first.speakers.cloaked_unicorn!.pronouns).toBe("he/him");
+    Object.assign(first.speakers.cloaked_unicorn!, { pronouns: "she/her", pronounsFrom: "narration", gender: "female", genderFrom: "person" });
+    const again = buildSheet({ chapters, individuals: [], narration }, first);
+    expect(again.speakers.cloaked_unicorn).toMatchObject({ pronouns: "she/her", gender: "female", genderFrom: "person" });
   });
 
   it("refreshes an approved character's chapters, so a clash in a new chapter is still caught", () => {

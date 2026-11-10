@@ -9,7 +9,7 @@
         "text": "You come out on the stony shore under the Frostfang Peaks. Behind you, the river is climbing the stones, one pebble at a time. A griffin lands on a ledge above you."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Down, river! Sit!\""
       },
       {
@@ -17,7 +17,7 @@
         "text": "she shouts. The river does not sit."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I'm Tamsin. I keep the river line for the aerie up here. Is everyone here? Good.\""
       },
       {
@@ -25,7 +25,7 @@
         "text": "She waves a wing and nearly falls off."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"The only dry ground is up. Can we find a dry way uphill, to the pass called the Cairnstep? Let's find out.\""
       }
     ]
@@ -39,7 +39,7 @@
         "text": "Tamsin tugs a rope ladder free from under a rock and lowers it down the cliff. Its bottom rung swings above the water."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I can hold the top,\""
       },
       {
@@ -47,7 +47,7 @@
         "text": "she calls."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"But if the bottom swings, the first climber rings like a bell. Set its foot on firm ground, please. Quickly. The river is listening.\""
       }
     ]
@@ -61,7 +61,7 @@
         "text": "Everyone grabs the foot of the ladder. The wet rope is as slippery as a fish."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"On three!\""
       },
       {
@@ -69,7 +69,7 @@
         "text": "calls Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"One, two, heave!\""
       }
     ]
@@ -83,7 +83,7 @@
         "text": "You loop your rope around a boulder."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Do you know a good knot?\""
       },
       {
@@ -91,7 +91,7 @@
         "text": "asks Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I only know a bad one.\""
       }
     ]
@@ -105,7 +105,7 @@
         "text": "Your thornguard plants both feet and holds the ladder still."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Oh, that's handy,\""
       },
       {
@@ -123,7 +123,7 @@
         "text": "The ladder's foot sits on the rock, steady. Tamsin tests it and squawks happily."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.\""
       }
     ]
@@ -137,7 +137,7 @@
         "text": "The ladder's foot sits on the rock, but it wobbles."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"It will do,\""
       },
       {
@@ -145,7 +145,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.\""
       }
     ]
@@ -159,7 +159,7 @@
         "text": "The cliff is striped with paint: old white lines, one above another, each with a year scratched beside it."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"The river line,\""
       },
       {
@@ -167,7 +167,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Every spring, the keeper paints where the highest water reached. My grandmother painted that top one, the year the whole shore flooded.\""
       },
       {
@@ -175,7 +175,7 @@
         "text": "She looks down. The river is above it. Above every line."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"It has never come this high,\""
       },
       {
@@ -183,7 +183,7 @@
         "text": "she says quietly."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Not once, in all the paint.\""
       }
     ]
@@ -197,7 +197,7 @@
         "text": "Along the shore, the flood has dumped driftwood, one lonely boot, and a big net of hay tied in yeti knots. The net bobs at the water's edge."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Hay for the snowhorn herd!\""
       },
       {
@@ -205,7 +205,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"That's their winter. If it floats off, it's gone.\""
       }
     ]
@@ -219,7 +219,7 @@
         "text": "Then you hear a tiny bell. Out on a gravel bar in the river stand three snowhorn goats, huddled tight."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Goats from the herd!\""
       },
       {
@@ -227,7 +227,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"The water cut off their grazing route. They won't swim, and I can't carry a goat. I tried once. The goat won.\""
       },
       {
@@ -235,7 +235,7 @@
         "text": "Tucked in the wet hay you find five coins, and Tamsin drops you a supper bundle."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"For the goats, or for you.\""
       }
     ]
@@ -249,7 +249,7 @@
         "text": "The bar sits in a brown stream that was not there this morning."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Knee deep and quick,\""
       },
       {
@@ -257,7 +257,7 @@
         "text": "Tamsin warns."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Down, river.\""
       },
       {
@@ -275,7 +275,7 @@
         "text": "On the bar, the goats lean away from you. The biggest has a cracked horn and a very cross face. The smallest wears a bell that jingles when it shivers. Between you and them sits one of the glassback crabs that live by this river."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Its burrow washed out,\""
       },
       {
@@ -283,7 +283,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"So now this bar is its house.\""
       }
     ]
@@ -297,7 +297,7 @@
         "text": "The smallest goat cannot wade water that deep. You lift it in a rope sling. It jingles in protest. The stream surges and slackens, surges and slackens."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Go when it drops,\""
       },
       {
@@ -315,7 +315,7 @@
         "text": "Tamsin dives. She grabs the kid by its scruff and flaps it back to the shore. Then she lands hard, holding one wing out at a funny angle."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I'm fine,\""
       },
       {
@@ -323,7 +323,7 @@
         "text": "she says."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Mostly. Wings are mostly fine.\""
       },
       {
@@ -341,7 +341,7 @@
         "text": "The two big goats will not wade. The boss goat, the one with the cracked horn, stamps and stares past you, up at the cliff."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Push them across now,\""
       },
       {
@@ -349,7 +349,7 @@
         "text": "says Tamsin,"
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"before the water climbs any higher.\""
       },
       {
@@ -357,7 +357,7 @@
         "text": "She squints."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Or watch it. That goat is looking at something. Goats always know something.\""
       }
     ]
@@ -371,7 +371,7 @@
         "text": "The boss goat sits in the stream like a hairy boulder. The water is up to its beard."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Out!\""
       },
       {
@@ -379,7 +379,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Out, you great lump!\""
       },
       {
@@ -397,7 +397,7 @@
         "text": "Up the cliff, too faint to see unless you are a goat, runs a zigzag of tiny ledges: an old goat track, dry all the way up. The boss goat huffs, as if to say \"finally,\" and wades for the shore. The other trots after its boss."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Well,\""
       },
       {
@@ -405,7 +405,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I've lived here my whole life.\""
       }
     ]
@@ -419,7 +419,7 @@
         "text": "The goats scramble ashore and shake like dogs, spraying everybody."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"There,\""
       },
       {
@@ -427,7 +427,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"The herd has all its horns again.\""
       },
       {
@@ -445,7 +445,7 @@
         "text": "Behind you, while you watched, the river crept up the shore and carried the hay away. Tamsin sighs."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Hay floats. Goats don't. Fair trade.\""
       }
     ]
@@ -459,7 +459,7 @@
         "text": "Tamsin breaks open a driftwood log. Its heart is dry, and it catches at the first spark. For a few minutes, the shore is cozy. Steam rises from the goats, and from your socks. One sock smells like river pudding."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"We climb next,\""
       },
       {
@@ -467,7 +467,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"But nobody climbs my ladder with stiff fingers.\""
       }
     ]
@@ -481,7 +481,7 @@
         "text": "Your socks steam on a stick like little flags. The smallest goat nibbles one, thinks about it, and spits it out."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Good taste,\""
       },
       {
@@ -499,7 +499,7 @@
         "text": "You share the supper, a bit for everyone, goats included. Tamsin gets cheese in her feathers and leaves it there. She hands you a bright ribbon from her bag."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"We wear these on feast days. Wear it for luck.\""
       }
     ]
@@ -509,7 +509,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Our aerie is above the ridge,\""
       },
       {
@@ -517,7 +517,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Our keeper keeps a pass ledger, a book of every road through the peaks. This season it shows a new path he can't quite believe. He needs someone to walk it.\""
       },
       {
@@ -525,7 +525,7 @@
         "text": "She looks at the river."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I'll tell him about my paint too. He'll want it in the book.\""
       }
     ]
@@ -539,7 +539,7 @@
         "text": "Crack! Upriver, a slab of ice breaks off the cliffs. A brown wave rolls down the shore with foam on top, like a bad hat."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Ladder! Now!\""
       },
       {
@@ -557,7 +557,7 @@
         "text": "The wave breaks around the ladder, which does not budge."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Still standing,\""
       },
       {
@@ -565,7 +565,7 @@
         "text": "says Tamsin. The river settles higher, right where you stood a minute ago."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Down, river,\""
       },
       {
@@ -583,7 +583,7 @@
         "text": "The wave swings the wobbly ladder hard. Tamsin hangs on with both claws until it settles. The river settles higher, right where you stood a minute ago."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Down, river,\""
       },
       {
@@ -601,7 +601,7 @@
         "text": "A smaller wave pulls back with a long hiss. For a moment, the stones by the ladder are bare."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Wait for it,\""
       },
       {
@@ -619,7 +619,7 @@
         "text": "The wave catches your ankles and sits you down in it. Tamsin hauls you up by the collar, one at a time."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Up. Up. Everyone up.\""
       },
       {
@@ -637,7 +637,7 @@
         "text": "The lightest climber goes first."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Don't look down,\""
       },
       {
@@ -645,7 +645,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Look at me. I'm lovely.\""
       }
     ]
@@ -659,7 +659,7 @@
         "text": "You flop onto the rock at the top. It is dry. Really dry! A path lined with stacked stones winds along the ridge toward a notch."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"The Cairnstep,\""
       },
       {
@@ -667,7 +667,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Its keeper is a griffin called Brask. He keeps the pass ledger, our book of roads. He has more ink on his feathers than on the page.\""
       }
     ]
@@ -681,7 +681,7 @@
         "text": "Up here, out of the wind, the Listening Chime on your pack begins to hum. It swings on its cord, not down toward the river, but up the valley, toward the glacier far away. It hangs there, leaning, then goes still. Tamsin's feathers prickle."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Your bell is pointing,\""
       },
       {
@@ -689,7 +689,7 @@
         "text": "she says."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Bells don't point.\""
       }
     ]
@@ -703,7 +703,7 @@
         "text": "Below, the river laps above the top line of paint."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"It will rise again tomorrow,\""
       },
       {
@@ -711,7 +711,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"The next travelers out of that river will be wetter and more tired than you. A handrail would help them.\""
       },
       {
@@ -719,7 +719,7 @@
         "text": "She looks at your rope, then at you."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Only if you can spare it.\""
       }
     ]
@@ -733,7 +733,7 @@
         "text": "You tie your rope from the old boulder at the top down to the first ledge, with a fat, neat knot. Tamsin leans her whole chest on it, which is a lot of griffin. It holds."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Somebody will thank you in the dark,\""
       },
       {
@@ -741,7 +741,7 @@
         "text": "she says, and hangs a smooth river charm aaround your neck."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"We give one to anyone who ties a rail.\""
       }
     ]
@@ -755,7 +755,7 @@
         "text": "Tamsin sells pegs to buy ink for the aerie. Her best one rings like a bell. You hammer it deep into a crack, thunk, thunk, thunk, and she ties her own spare line to it."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Somebody will thank you in the dark,\""
       },
       {
@@ -763,7 +763,7 @@
         "text": "she says, and hangs a smooth river charm aaround your neck."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"We give one to anyone who ties a rail.\""
       }
     ]
@@ -773,7 +773,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Fair enough,\""
       },
       {
@@ -781,7 +781,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"You've done plenty.\""
       },
       {
@@ -789,7 +789,7 @@
         "text": "She pats the boulder."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I'll tie one here myself, first thing tomorrow.\""
       }
     ]
@@ -803,7 +803,7 @@
         "text": "She looks at her sore wing."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"When this works again. Soon.\""
       }
     ]
@@ -813,7 +813,7 @@
     "reviewed": false,
     "lines": [
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"I'll fly ahead and tell Brask you're coming,\""
       },
       {
@@ -821,7 +821,7 @@
         "text": "says Tamsin."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"And about my paint.\""
       }
     ]
@@ -835,7 +835,7 @@
         "text": "Tamsin can't fly far with that wing tonight."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Tell Brask about my paint,\""
       },
       {
@@ -843,7 +843,7 @@
         "text": "she says."
       },
       {
-        "by": "tamsin",
+        "by": "tamsin_river_keeper",
         "text": "\"Tell him exactly.\""
       }
     ]

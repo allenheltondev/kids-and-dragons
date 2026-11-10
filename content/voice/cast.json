@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6214,
+      "lineCount": 6280,
       "gender": "female",
       "genderFrom": "person",
       "elevenlabs": {
@@ -114,8 +114,8 @@
           "address": "gemfall-02/choice_pib_gift_feather/narration"
         }
       ],
-      "lineCount": 8,
-      "guessedLines": 1,
+      "lineCount": 10,
+      "guessedLines": 3,
       "speaks": true,
       "status": "approved",
       "direction": "earnest, over-explaining, hurt when refused",
@@ -256,7 +256,7 @@
           "address": "first-steps-01/scene_tansy/narration"
         }
       ],
-      "lineCount": 27,
+      "lineCount": 28,
       "speaks": true,
       "status": "approved",
       "direction": "patient, cheerful, encouraging",
@@ -533,16 +533,16 @@
       },
       "lines": [
         {
+          "text": "Keep it. Steady hands should carry their own light. On to the North Gate.",
+          "address": "gemfall-01/interaction_lantern_pole/narration"
+        },
+        {
           "text": "I have room for one more crew. Tell me why you want to come.",
           "address": "gemfall-01/scene_caravan_yard/narration"
         },
         {
           "text": "Mortar sent you? Mortar hardly talks to anybody.",
           "address": "gemfall-01/scene_caravan_yard_mortar/narration"
-        },
-        {
-          "text": "That wagon was robbed twice this week.",
-          "address": "gemfall-01/scene_caravan_yard_guard/narration"
         }
       ],
       "lineCount": 9,
@@ -1111,19 +1111,19 @@
       },
       "lines": [
         {
+          "text": "So the fields have noticed too. For saying it out loud. Go carefully, whichever road you pick.",
+          "address": "gemfall-02/rest_marda_inn_signs/narration"
+        },
+        {
           "text": "I ask everybody this season: where is it all going? Me, I believe all three rumors. That's the trouble.",
           "address": "gemfall-02/scene_marda_question/narration"
         },
         {
-          "text": "Eat first. There is time.",
-          "address": "gemfall-02/rest_marda_inn/narration"
-        },
-        {
-          "text": "Whose news will you hear?",
-          "address": "gemfall-02/choice_common_room/narration"
+          "text": "Everything that can leave Mount Red Sky is leaving it. The fields noticed before I did. Go carefully, whichever road you pick.",
+          "address": "gemfall-02/rest_marda_inn_explains/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional",
       "direction": "unhurried, warm, asks one question and waits",
@@ -1138,16 +1138,61 @@
       "name": "Rush drover",
       "kind": "character",
       "who": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner",
-      "pronouns": "he/him",
+      "pronouns": "she/her",
       "pronounsFrom": "narration",
-      "gender": "male",
+      "gender": "female",
       "genderFrom": "narration",
       "figure": "entities/centaur",
       "voiceNotes": [
         {
           "chapter": "gemfall-02",
           "key": "drover"
+        }
+      ],
+      "chapters": [
+        "gemfall-02"
+      ],
+      "aliases": [
+        "Drover",
+        "Rush drover"
+      ],
+      "gemini": {
+        "voice": "Erinome"
+      },
+      "lines": [
+        {
+          "text": "You don't walk the Rush Road. You fall in, and it carries you to the ford. Then you wait.",
+          "address": "gemfall-02/choice_common_room_drover/narration"
         },
+        {
+          "text": "Wait for my pull, then push. I tip well.",
+          "address": "gemfall-02/interaction_stuck_wagon/narration"
+        },
+        {
+          "text": "Next time I'll ask the oxen.",
+          "address": "gemfall-02/interaction_stuck_wagon/onFailure/narration"
+        }
+      ],
+      "lineCount": 4,
+      "speaks": true,
+      "status": "provisional",
+      "accent": "Texan",
+      "direction": "Youthful, slightly faster than normal",
+      "elevenlabs": {
+        "voiceId": "hpp4J3VqNfWAUOO0d1Us",
+        "name": "Bella - Professional, Bright, Warm"
+      }
+    },
+    "lead_drover": {
+      "name": "Lead Drover",
+      "kind": "character",
+      "who": "the lead drover; slow, booming voice, sings the crossing verse and will not be hurried",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "entities/centaur",
+      "voiceNotes": [
         {
           "chapter": "gemfall-03c",
           "key": "drover"
@@ -1158,38 +1203,38 @@
         }
       ],
       "chapters": [
-        "gemfall-02",
         "gemfall-03c",
         "gemfall-04c"
       ],
       "aliases": [
         "Drover",
-        "Lead Drover",
-        "Rush drover"
+        "Lead Drover"
       ],
+      "direction": "slow and booming, will not be hurried",
       "gemini": {
         "voice": "Umbriel"
       },
+      "elevenlabs": {
+        "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
+        "name": "kad-centaur-man"
+      },
       "lines": [
-        {
-          "text": "You don't walk the Rush Road. You fall in, and it carries you to the ford. Then you wait.",
-          "address": "gemfall-02/choice_common_room_drover/narration"
-        },
         {
           "text": "Never seen eyes like that. I'll remember you folks.",
           "address": "gemfall-03c/scene_spilled_pannier_spot_all/narration"
         },
         {
-          "text": "Next time I'll ask the oxen.",
-          "address": "gemfall-02/interaction_stuck_wagon/onFailure/narration"
+          "text": "Now sing it back. In order.",
+          "address": "gemfall-03c/check_learn_verse/narration"
+        },
+        {
+          "text": "Back to the reeds, please.",
+          "address": "gemfall-03c/scene_reed_crabs/narration"
         }
       ],
-      "lineCount": 14,
-      "guessedLines": 1,
+      "lineCount": 10,
       "speaks": true,
       "status": "approved",
-      "accent": "Texan",
-      "direction": "Youthful, slightly faster than normal",
       "history": [
         {
           "decision": "approved",
@@ -1198,11 +1243,7 @@
           "at": "2026-10-30T18:35:36.985Z"
         }
       ],
-      "elevenlabs": {
-        "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man",
-        "approved": true
-      }
+      "accent": "Texan"
     },
     "sheeple": {
       "name": "Sheeple",
@@ -1664,7 +1705,7 @@
           "address": "gemfall-07r/scene_ossley/narration"
         }
       ],
-      "lineCount": 40,
+      "lineCount": 41,
       "guessedLines": 2,
       "speaks": true,
       "status": "approved",
@@ -1889,12 +1930,12 @@
       },
       "lines": [
         {
-          "text": "Fend it off! One pushes. Everybody else keeps the raft still.",
-          "address": "gemfall-03b/interaction_stumps/narration"
-        },
-        {
           "text": "Too many. Ask the boggarts. They keep lost things.",
           "address": "gemfall-03b/scene_poling_in/narration"
+        },
+        {
+          "text": "Fend it off! Push when it rolls close. Not before!",
+          "address": "gemfall-03b/interaction_stumps/narration"
         },
         {
           "text": "She says she's not worried. Which means she is.",
@@ -1912,25 +1953,6 @@
         "name": "kad-frogfolk-woman",
         "approved": true
       }
-    },
-    "silver_otter": {
-      "name": "Silver otter",
-      "kind": "creature",
-      "who": "a silver otter from the mimic ditch; playful and a little pleased with itself; only chatters",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "entities/silver_otter",
-      "chapters": [
-        "gemfall-02"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Puck"
-      },
-      "lines": [],
-      "lineCount": 0,
-      "speaks": false,
-      "status": "provisional"
     },
     "nan_rummage": {
       "name": "Nana Rummage",
@@ -2187,43 +2209,32 @@
       "pronounsFrom": "narration",
       "gender": "female",
       "genderFrom": "narration",
-      "figure": "cast/tamsin_river_keeper",
+      "figure": "cast/tamsin",
       "voiceNotes": [
         {
           "chapter": "gemfall-03c",
           "key": "tamsin"
-        },
-        {
-          "chapter": "riftlight-frostfang-shore",
-          "key": "Tamsin"
         }
       ],
       "chapters": [
-        "gemfall-03c",
-        "riftlight-frostfang-shore"
+        "gemfall-03c"
       ],
-      "aliases": [
-        "Tamsin"
-      ],
+      "aliases": [],
       "gemini": {
         "voice": "Laomedeia"
       },
       "lines": [
         {
-          "text": "Fair enough. You've done plenty. I'll tie one here myself, first thing tomorrow.",
-          "address": "riftlight-frostfang-shore/safety_leave/narration"
+          "text": "Find the Sun Card, win a place at the front!",
+          "address": "gemfall-03c/scene_queue_jumpers_tamsin_help/narration"
         },
         {
-          "text": "Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.",
-          "address": "riftlight-frostfang-shore/foot_set/narration"
-        },
-        {
-          "text": "Hay for the snowhorn herd! That's their winter. If it floats off, it's gone.",
-          "address": "riftlight-frostfang-shore/driftline/narration"
+          "text": "Come back when you feel lucky.",
+          "address": "gemfall-03c/scene_three_cards_walk_by/narration"
         }
       ],
-      "lineCount": 44,
-      "guessedLines": 4,
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "approved",
       "direction": "prankster. fun loving, laughs a lot, always upbeat",
@@ -2242,12 +2253,58 @@
         "approved": true
       }
     },
+    "tamsin_river_keeper": {
+      "name": "Tamsin",
+      "kind": "character",
+      "who": "Tamsin, a griffin who keeps the river line for the aerie above the shore (she/her). Brisk, bossy and kind; counts heads and asks \"Is everyone here?\" Talks to the river like a naughty dog (\"Down, river! Sit!\"), and it never listens. Nearly falls off ledges when she waves. Wants the herd's goats and hay safe, and wants to know why the water is above every line her family ever painted.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/tamsin_river_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-frostfang-shore",
+          "key": "Tamsin"
+        }
+      ],
+      "chapters": [
+        "riftlight-frostfang-shore"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Pulcherrima"
+      },
+      "elevenlabs": {
+        "voiceId": "XrExE9yKIg1WjnnlVkGX",
+        "name": "Matilda - Knowledgable, Professional"
+      },
+      "lines": [
+        {
+          "text": "Fair enough. You've done plenty. I'll tie one here myself, first thing tomorrow.",
+          "address": "riftlight-frostfang-shore/safety_leave/narration"
+        },
+        {
+          "text": "Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.",
+          "address": "riftlight-frostfang-shore/foot_set/narration"
+        },
+        {
+          "text": "Hay for the snowhorn herd! That's their winter. If it floats off, it's gone.",
+          "address": "riftlight-frostfang-shore/driftline/narration"
+        }
+      ],
+      "lineCount": 41,
+      "guessedLines": 3,
+      "speaks": true,
+      "status": "provisional",
+      "accent": "Pacific Northwest American"
+    },
     "wend": {
       "name": "Wend",
       "kind": "character",
       "who": "a Deep Hollow soup ladler; gentle, generous, asks nothing, says 'kindness first' and means it a little too much",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/wend",
       "voiceNotes": [
         {
@@ -2286,7 +2343,7 @@
           "address": "gemfall-05c/scene_turned_back_said_no/narration"
         }
       ],
-      "lineCount": 10,
+      "lineCount": 12,
       "speaks": true,
       "status": "approved",
       "accent": "Southern American",
@@ -2302,7 +2359,9 @@
         "voiceId": "gOZRcEzY40chlRuMDmLV",
         "name": "kad-frogfolk-woman",
         "approved": true
-      }
+      },
+      "pronouns": "she/her",
+      "pronounsFrom": "narration"
     },
     "mother_thrum": {
       "name": "Mother Thrum",
@@ -2966,16 +3025,11 @@
         {
           "chapter": "gemfall-05b",
           "key": "runner"
-        },
-        {
-          "chapter": "riftlight-boundary-stone-bank",
-          "key": "Runner"
         }
       ],
       "chapters": [
         "gemfall-04b",
-        "gemfall-05b",
-        "riftlight-boundary-stone-bank"
+        "gemfall-05b"
       ],
       "aliases": [
         "MossHome Runner",
@@ -3017,6 +3071,38 @@
         "name": "kad-bigfoot-woman",
         "approved": true
       }
+    },
+    "boundary_runner": {
+      "name": "Runner",
+      "kind": "character",
+      "who": "A young dragonling runner from the counting circle (she/her). Out of breath, says everything twice, then sits down on her own feet.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/boundary_runner",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-boundary-stone-bank",
+          "key": "Runner"
+        }
+      ],
+      "chapters": [
+        "riftlight-boundary-stone-bank"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Leda"
+      },
+      "elevenlabs": {
+        "voiceId": "BlgEcC0TfWpBak7FmvHW",
+        "name": "kad-dragonling-brisk"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": true,
+      "status": "provisional",
+      "accent": "Appalachian American"
     },
     "hedge_prospectors": {
       "name": "Hedge Prospectors",
@@ -3503,6 +3589,54 @@
       "name": "Engineer Brask",
       "kind": "character",
       "who": "Skywarden engineer; pencils behind both ears; blunt and honest; talks about arithmetic and acceptable losses but is not unkind",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/brask",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "brask"
+        }
+      ],
+      "chapters": [
+        "gemfall-05a"
+      ],
+      "aliases": [
+        "Brask",
+        "Engineer Brask"
+      ],
+      "gemini": {
+        "voice": "Despina"
+      },
+      "lines": [
+        {
+          "text": "Level to a hair. The approach is sound. It's the middle that worries me.",
+          "address": "gemfall-05a/interaction_level/onSuccess/narration"
+        },
+        {
+          "text": "Seen anything odd on the road? I need it. This drawing makes no sense.",
+          "address": "gemfall-05a/scene_engineers/narration"
+        },
+        {
+          "text": "Tell the wardens, and we can use this to run the crossing.",
+          "address": "gemfall-05a/scene_who_to_tell/narration"
+        }
+      ],
+      "lineCount": 12,
+      "speaks": true,
+      "status": "provisional",
+      "accent": "New York American",
+      "elevenlabs": {
+        "voiceId": "vGQNBgLaiM3EdZtxIiuY",
+        "name": "kad-tally"
+      }
+    },
+    "brask_pass_keeper": {
+      "name": "Brask",
+      "kind": "character",
+      "who": "Brask, the griffin who keeps the aerie's pass ledger (he/him). Slow, precise and secretly soft. Licks his pencil before every word and writes everything down, even \"Tea. Good.\" Calls the party his witnesses. Wants the ledger to be true, because a wrong page sends a herd off a cliff.",
       "pronouns": "he/him",
       "pronounsFrom": "narration",
       "gender": "male",
@@ -3510,24 +3644,20 @@
       "figure": "cast/pass_keeper",
       "voiceNotes": [
         {
-          "chapter": "gemfall-05a",
-          "key": "brask"
-        },
-        {
           "chapter": "riftlight-cairnstep-pass",
           "key": "Brask"
         }
       ],
       "chapters": [
-        "gemfall-05a",
         "riftlight-cairnstep-pass"
       ],
-      "aliases": [
-        "Brask",
-        "Engineer Brask"
-      ],
+      "aliases": [],
       "gemini": {
         "voice": "Rasalgethi"
+      },
+      "elevenlabs": {
+        "voiceId": "OYWwCdDHouzDwiZJWOOu",
+        "name": "kad-brask"
       },
       "lines": [
         {
@@ -3543,11 +3673,10 @@
           "address": "riftlight-cairnstep-pass/neck_done/narration"
         }
       ],
-      "lineCount": 55,
+      "lineCount": 43,
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "New York American",
       "history": [
         {
           "decision": "approved",
@@ -3556,11 +3685,7 @@
           "at": "2026-10-30T18:47:54.032Z"
         }
       ],
-      "elevenlabs": {
-        "voiceId": "OYWwCdDHouzDwiZJWOOu",
-        "name": "kad-brask",
-        "approved": true
-      }
+      "accent": "Pacific Northwest American"
     },
     "carter": {
       "name": "Tired carter",
@@ -3728,7 +3853,7 @@
           "address": "gemfall-05a/check_string/onSuccess/narration"
         },
         {
-          "text": "Hold this end? It only reads true when it's tight. One hero reads the knots. Everyone else pulls.",
+          "text": "Pull your end tight just as the knot lines up with the edge. It only reads true when it's tight.",
           "address": "gemfall-05a/check_string/narration"
         },
         {
@@ -5388,7 +5513,7 @@
           "address": "gemfall-08/scene_verdict_rich/narration"
         }
       ],
-      "lineCount": 78,
+      "lineCount": 79,
       "guessedLines": 19,
       "speaks": true,
       "status": "provisional",
@@ -5536,19 +5661,19 @@
       },
       "lines": [
         {
+          "text": "That one has picked you. They do that. It may go with you, if you like.",
+          "address": "riftlight-ashspan-bridge/duck_friend/narration"
+        },
+        {
           "text": "I'm Tilly. Duck eggs, for market across the river. They aren't due for days. They disagree.",
           "address": "riftlight-ashspan-bridge/ferry_ask/narration"
         },
         {
           "text": "That bump at the dock. It woke them up early.",
           "address": "riftlight-ashspan-bridge/hatch/variants/0"
-        },
-        {
-          "text": "Eggs, are supposed to wait until market.",
-          "address": "riftlight-ashspan-bridge/duck_plan/narration"
         }
       ],
-      "lineCount": 10,
+      "lineCount": 11,
       "speaks": true,
       "status": "provisional",
       "direction": "worried, dramatic, counts and loses count",
@@ -5734,7 +5859,7 @@
           "address": "riftlight-wyrm-nest/plan/narration"
         }
       ],
-      "lineCount": 175,
+      "lineCount": 173,
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
@@ -6220,15 +6345,15 @@
           "address": "riftlight-exchange-rift/gull_fed/narration"
         },
         {
-          "text": "Cold. Still cold. That is the wind. Not my stomach.",
-          "address": "riftlight-exchange-rift/gull/narration"
+          "text": "Hmph. You are the only ones doing anything about this snow. I might come along. To keep an eye on you.",
+          "address": "riftlight-exchange-rift/gull_friend/narration"
         },
         {
-          "text": "For the record, I did not ask to be a winter bird.",
-          "address": "riftlight-exchange-rift/gull_help/narration"
+          "text": "Cold. Still cold. That is the wind. Not my stomach.",
+          "address": "riftlight-exchange-rift/gull/narration"
         }
       ],
-      "lineCount": 8,
+      "lineCount": 11,
       "speaks": true,
       "status": "provisional",
       "direction": "indignant, literal, chilly",
@@ -6238,25 +6363,6 @@
         "name": "Chris - Charming, Down-to-Earth",
         "approved": true
       }
-    },
-    "gull": {
-      "name": "Gull",
-      "kind": "creature",
-      "who": "the harbor gull from the docks, Gemfall's side of the one harbor gull (Riftlight's is \"The gull\"); only screeches here, never says sorry",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "entities/quay_gull",
-      "chapters": [
-        "gemfall-01"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Zubenelgenubi"
-      },
-      "lines": [],
-      "lineCount": 0,
-      "speaks": false,
-      "status": "provisional"
     },
     "fish_seller": {
       "name": "Fish seller",
@@ -6513,7 +6619,7 @@
           "address": "riftlight-finale/kid_bridge/narration"
         }
       ],
-      "lineCount": 133,
+      "lineCount": 136,
       "guessedLines": 3,
       "speaks": true,
       "status": "approved",
@@ -6677,7 +6783,7 @@
           "address": "riftlight-reading-room/pip_here/variants/0"
         }
       ],
-      "lineCount": 27,
+      "lineCount": 29,
       "speaks": true,
       "status": "provisional",
       "direction": "whispering, very slow, very old, gentle",
@@ -7367,6 +7473,44 @@
         "approved": true
       }
     },
+    "gull": {
+      "name": "Gull",
+      "kind": "creature",
+      "who": "the harbor gull from the docks, Gemfall's side of the one harbor gull (Riftlight's is \"The gull\"); only screeches here, never says sorry",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/quay_gull",
+      "chapters": [
+        "gemfall-01"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Zubenelgenubi"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
+    },
+    "silver_otter": {
+      "name": "Silver otter",
+      "kind": "creature",
+      "who": "a silver otter from the mimic ditch; playful and a little pleased with itself; only chatters",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/silver_otter",
+      "chapters": [
+        "gemfall-02"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Puck"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
+    },
     "brassbuckle_scout": {
       "name": "Brassbuckle scout",
       "kind": "character",
@@ -7868,16 +8012,16 @@
       },
       "lines": [
         {
-          "text": "Learn the big-bell crew's passing line, or polish hand bells for a chorus. Both help at the stones!",
-          "address": "gemfall-05c/scene_morning_bells/narration"
-        },
-        {
           "text": "One ring. Moths leaving. Every night this month.",
           "address": "gemfall-05c/scene_moths_leaving/narration"
         },
         {
           "text": "But never this many. And they haven't come back.",
           "address": "gemfall-05c/scene_moths_leaving_ask_bells/narration"
+        },
+        {
+          "text": "That cave's on the list. Nobody gathers there.",
+          "address": "gemfall-05c/scene_night_lights/narration"
         }
       ],
       "lineCount": 5,
@@ -7943,12 +8087,12 @@
           "address": "gemfall-06/interaction_wagons/onSuccess/narration"
         },
         {
-          "text": "Off the road, you silly coals!",
-          "address": "gemfall-06/scene_wolves/narration"
+          "text": "I'll pull, you push! On my heave!",
+          "address": "gemfall-06/interaction_wagons/narration"
         },
         {
-          "text": "Toll refund.",
-          "address": "gemfall-06/interaction_wagons/onAssisted/narration"
+          "text": "Off the road, you silly coals!",
+          "address": "gemfall-06/scene_wolves/narration"
         }
       ],
       "lineCount": 4,
@@ -8057,8 +8201,8 @@
           "address": "gemfall-06/scene_truth_table/narration"
         }
       ],
-      "lineCount": 6,
-      "guessedLines": 5,
+      "lineCount": 7,
+      "guessedLines": 6,
       "speaks": true,
       "status": "approved",
       "history": [
@@ -8463,27 +8607,6 @@
         "approved": true
       }
     },
-    "spotted_kid": {
-      "name": "Spotted kid",
-      "kind": "creature",
-      "who": "a younger kid goat from the yeti herder's herd, white with brown spots and extra wiggly; not the Goat kid the party brought home; only bleats",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/snowhorn_kid",
-      "chapters": [
-        "riftlight-glacier-survival"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Laomedeia"
-      },
-      "lines": [],
-      "lineCount": 0,
-      "speaks": false,
-      "status": "provisional"
-    },
     "dock_worker": {
       "name": "Dock worker",
       "kind": "character",
@@ -8629,12 +8752,33 @@
         "approved": true
       }
     },
+    "spotted_kid": {
+      "name": "Spotted kid",
+      "kind": "creature",
+      "who": "a younger kid goat from the yeti herder's herd, white with brown spots and extra wiggly; not the Goat kid the party brought home; only bleats",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/snowhorn_kid",
+      "chapters": [
+        "riftlight-glacier-survival"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Laomedeia"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
+    },
     "cloaked_griffin": {
       "name": "Cloaked griffin",
       "kind": "character",
       "who": "Cloaked griffin.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "gender": "male",
+      "genderFrom": "narration",
       "figure": "cast/orin_vale",
       "chapters": [
         "riftlight-glacier-survival"
@@ -8643,8 +8787,13 @@
       "gemini": {
         "voice": "Zubenelgenubi"
       },
-      "lines": [],
-      "lineCount": 0,
+      "lines": [
+        {
+          "text": "It will not fold.",
+          "address": "riftlight-glacier-survival/departure/narration"
+        }
+      ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional",
       "accent": "Pacific Northwest American",
@@ -8652,7 +8801,9 @@
         "voiceId": "nPczCjzI2devNBz1zQrb",
         "name": "Brian - Deep, Resonant and Comforting",
         "approved": true
-      }
+      },
+      "pronouns": "he/him",
+      "pronounsFrom": "narration"
     },
     "cloaked_unicorn": {
       "name": "Cloaked unicorn",
@@ -8670,13 +8821,8 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [
-        {
-          "text": "It will not fold.",
-          "address": "riftlight-glacier-survival/departure/narration"
-        }
-      ],
-      "lineCount": 1,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional",
       "accent": "New England American",
