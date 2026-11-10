@@ -447,6 +447,9 @@
     },
     "grass_wind": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "The wind combs the grass one way, then the other. Every few breaths it drops, and the grass lies still. Look then.",
       "cast": [
         {
@@ -754,6 +757,9 @@
     },
     "pebble": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "By the fold, a little counting pebble twitches. Then it is gone, and back again a step away. Hop. Hop. \"If it moves again, I want to SEE it,\" says Tally. Keep your eyes on the pebble, and show Tally where it lands.",
       "cast": [
         {

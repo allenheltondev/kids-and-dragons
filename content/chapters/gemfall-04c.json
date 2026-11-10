@@ -455,6 +455,9 @@
     },
     "check_search": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "There! An orange hat bobs above the crowd, then ducks behind one of three wagons. \"Watch which one he hides behind,\" says Ma Ruddle, wringing her hands.",
       "interaction": {
         "kind": "tracking",
@@ -2210,6 +2213,9 @@
     },
     "interaction_post_line": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The crew lines up along the new curve. Catch each post and pass it on. Alone, pass it to the road boss.",
       "interaction": {
         "kind": "relay",
@@ -2488,6 +2494,9 @@
     },
     "interaction_ash_load": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Link up around the shared load and walk on each lull between the gusts. Ash piles up like gray snow.",
       "interaction": {
         "kind": "timing",

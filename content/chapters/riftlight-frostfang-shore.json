@@ -737,6 +737,9 @@
     },
     "bar_carry": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "The smallest goat cannot wade water that deep. You lift it in a rope sling. It jingles in protest. The stream surges and slackens, surges and slackens. \"Go when it drops,\" says Tamsin.",
       "cast": [
         {
@@ -1472,6 +1475,9 @@
     },
     "wave_gap": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "A smaller wave pulls back with a long hiss. For a moment, the stones by the ladder are bare. \"Wait for it,\" calls Tamsin.",
       "cast": [
         {

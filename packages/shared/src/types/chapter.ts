@@ -996,6 +996,12 @@ export interface EncounterScene {
 export interface InteractionScene extends Omit<StoryScene, "type" | "choices" | "classPlace" | "outcome" | "endsCampaign"> {
   type: "interaction";
   interaction: InteractionSpec;
+  /**
+   * What kind of doing this game is, keys of `rules.matchups.checkTags`, as on
+   * a check scene (#567). A hero with an edge on a tag plays it one step easier
+   * (a knack) or harder (`InteractionEdge`). Mechanical only; never story text.
+   */
+  tags?: string[];
   onSuccess: Branch;
   onFailure: Branch;
   onAssisted?: Branch;

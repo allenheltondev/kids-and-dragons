@@ -1676,6 +1676,9 @@
     },
     "cross_float": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "rift": "steady",
       "narration": "Puddle puffs up round. The goat climbs on top of her, very rudely. \"Ow,\" says Puddle. \"Wait for a long one. Then push.\"",
       "interaction": {

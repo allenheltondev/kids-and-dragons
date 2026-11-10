@@ -12,7 +12,7 @@ import { useChapter, useRunState } from "../store";
 import { interactionAppearance } from "../world/riftlight-art";
 import { HeroImage } from "../world/hero-art-dom";
 import { PaintedCover, PaintedGlyph, propUrl } from "./InteractionArt";
-import { balanceLift, cooperationProgress, balanceReady, interactionActor, interactionClues, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
+import { aimWidth, balanceGold, balanceLift, cooperationProgress, edgeScale, playbackStepMs, balanceReady, interactionActor, interactionClues, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
 import type { InteractionAction, InteractionOption, InteractionPrompt, PartyMember } from "@kad/shared";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
@@ -120,13 +120,13 @@ export function Pads({ options, lit = null, onTap, disabled = false }: {
 export function Meter({ prompt, now, prop, stop = null }: { prompt: InteractionPrompt; now: number; prop?: string; stop?: number | null }) {
   if (prompt.spec.kind !== "precision") return null;
   const spec = prompt.spec;
-  const width = Math.min(1, spec.width * (prompt.relaxed ? 2 : 1));
+  const width = aimWidth(spec, prompt);
   const left = Math.max(0, spec.target - width / 2);
   const right = Math.min(1, spec.target + width / 2);
   const start = Date.parse(prompt.startedAt ?? new Date(now).toISOString());
   const at = (t: number) => precisionPosition(t - start, spec.periodMs);
   const position = stop ?? at(now);
-  const inGold = precisionSuccess(spec, position, prompt.relaxed);
+  const inGold = precisionSuccess(spec, position, prompt.relaxed, edgeScale(prompt));
   // A short trail behind the marker, so which way it is going reads at a glance.
   const trail = stop === null ? [70, 140, 210].map((ms) => at(now - ms)) : [];
   return <div className="story-interaction__track game-track" role="img" aria-label={stop === null ? "Moving marker with a gold target" : "Stopped marker with a gold target"} data-gold={inGold}
@@ -156,8 +156,8 @@ export function lampAt(prompt: InteractionPrompt, now: number): { safe: boolean;
   if (prompt.spec.kind !== "timing") return { safe: false, soon: false, fill: 0 };
   const spec = prompt.spec;
   const position = prompt.stopPosition ?? precisionPosition(now - Date.parse(prompt.startedAt ?? new Date(now).toISOString()), spec.periodMs);
-  const safe = precisionSuccess(spec, position, prompt.relaxed);
-  const fill = safe ? 1 : approach(position, spec.target, Math.min(1, spec.width * (prompt.relaxed ? 2 : 1)));
+  const safe = precisionSuccess(spec, position, prompt.relaxed, edgeScale(prompt));
+  const fill = safe ? 1 : approach(position, spec.target, aimWidth(spec, prompt));
   return { safe, soon: !safe && fill > 0.6, fill };
 }
 
@@ -250,7 +250,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
     case "tracking": {
       if (!active && prompt.phase !== "result") return null;
       const labels = trackingLabels(spec.covers, appearance?.coverIcons);
-      const step = spec.stepMs * (prompt.relaxed ? 2 : 1);
+      const step = playbackStepMs(spec, prompt);
       const progress = still || prompt.relaxed || !active ? spec.swaps.length : Math.max(0, (elapsed - step) / step);
       const done = Math.min(spec.swaps.length, Math.floor(progress));
       const positions = spec.covers.map((_, index) => index);
@@ -292,7 +292,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
       if (!active && prompt.phase !== "result") return null;
       if (!active) return <Slots answer={prompt.submittedAnswer ?? []} length={spec.answer.length} options={spec.options} />;
       if (building && !prompt.relaxed && !still) return null;
-      const step = spec.stepMs * (prompt.relaxed ? 2 : 1);
+      const step = playbackStepMs(spec, prompt);
       const index = Math.floor(elapsed / step);
       const visible = prompt.relaxed || still;
       const option = (id: string) => spec.options.find((o) => o.id === id);
@@ -344,7 +344,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
         </div>
         <p className="game-note">Our shared lift</p>
         <div className="game-team-meter" role="meter" aria-label="Our shared lift" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(lift * 100)}>
-          <span className="game-team-meter__gold" style={{ left: `${(0.5 - (prompt.relaxed ? 0.25 : 0.125) / Math.max(1, connected.length)) * 100}%`, width: `${(prompt.relaxed ? 0.5 : 0.25) / Math.max(1, connected.length) * 100}%` }} />
+          <span className="game-team-meter__gold" style={{ left: `${(0.5 - balanceGold(prompt) / Math.max(1, connected.length)) * 100}%`, width: `${balanceGold(prompt) * 2 / Math.max(1, connected.length) * 100}%` }} />
           <span className="game-team-meter__marker" style={{ left: `${lift * 100}%` }} />
         </div>
         <ul className="game-gauges">{connectedMembers.map((m) => {
@@ -499,7 +499,7 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
         if (busy || tapped !== null || shot.current) return;
         shot.current = true;
         const position = positionNow(); setTapped(position); setStop(position);
-        buzz(precisionSuccess(spec, position, prompt.relaxed) ? [20, 40, 30] : 30);
+        buzz(precisionSuccess(spec, position, prompt.relaxed, edgeScale(prompt)) ? [20, 40, 30] : 30);
         try { if (await send({ action: "stop", position })) return; } catch { /* The control stays available after a failed send. */ }
         shot.current = false; setTapped(null); setStop(null);
       };

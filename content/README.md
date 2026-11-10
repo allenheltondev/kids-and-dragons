@@ -84,6 +84,21 @@ artwork is `aria-hidden`; labels and status words carry the interaction's
 meaning. The Practice Meadow branch scene `first-steps-01` shows the `props`
 mapping on a cooperative branch moment.
 
+A taggable game (`precision`, `timing`, `tracking`, `memory`, `balance` or
+`relay`) may carry `tags`, the same check tags a check scene uses (`force`,
+`sneak`, `climb`, `charm`, `swim`, `search`). The acting hero's matchup edge on
+a tag makes the game one step easier (a knack) or harder (a snag), shown under
+the cue (docs/matchups.md, "Mini-games"). Tag only what honestly describes the
+doing: hauling is `force`, slipping past a sentry is `sneak`, finding a hidden
+thing is `search`. Copying a pattern isn't searching, and a delicate carry
+isn't force. Leave a scene untagged when nothing fits. `play`, `sequence` and
+`cooperate` games take no tags. An edge never changes a branch or a reward, and
+relaxed play, Helping hand and retry stay for everyone.
+
+```json
+{ "type": "interaction", "tags": ["force"], "interaction": { "kind": "balance", "cue": "Lift together.", "actionLabel": "Lift", "objectLabel": "beam" }, "...": "..." }
+```
+
 Both `onSuccess` and `onFailure` must continue the story. `onAssisted` is optional,
 defaulting to `onSuccess`. Every branch supports normal narration, variants, and
 effects. Results wait for a phone's **See what happens next** before applying

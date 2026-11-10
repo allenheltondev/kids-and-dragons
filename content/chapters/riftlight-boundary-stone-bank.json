@@ -1026,6 +1026,9 @@
     },
     "tighten": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Everyone takes hold. Tally chalks a mark on the middle stone. \"When the cord rises to my mark, tie it. Not before. Not after.\" Lean too hard, and it snaps back. Lean too little, and it sags.",
       "cast": [
         {

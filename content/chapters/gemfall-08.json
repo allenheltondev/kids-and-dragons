@@ -6000,6 +6000,9 @@
     },
     "interaction_leash_transfer": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {

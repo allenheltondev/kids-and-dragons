@@ -1442,6 +1442,9 @@
     },
     "check_bridge_test": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "The spare planks have a tag: CARRY IT LEVEL. The bridge sways, and so does the plank. Everyone keeps their end steady.",
       "interaction": {
         "kind": "balance",
@@ -1957,6 +1960,9 @@
     },
     "interaction_stones": {
       "type": "interaction",
+      "tags": [
+        "swim"
+      ],
       "narration": "Slap! A wave rolls down the stream. Slap! Another. The stones are slick, but there is a gap between waves, if you watch for it.",
       "interaction": {
         "kind": "timing",
@@ -2153,6 +2159,9 @@
     },
     "interaction_falls_logs": {
       "type": "interaction",
+      "tags": [
+        "force"
+      ],
       "narration": "Pass the stepping logs up the stair, one to the next. Alone, pass them to the warden. She shows you how an ivy brace steadies a narrow ledge.",
       "interaction": {
         "kind": "relay",
@@ -2197,6 +2206,9 @@
     },
     "interaction_ivy_ledge": {
       "type": "interaction",
+      "tags": [
+        "climb"
+      ],
       "narration": "Use the ivy brace you practiced at the falls. Take each step along the ledge just as the wind drops.",
       "interaction": {
         "kind": "timing",
@@ -2256,6 +2268,9 @@
     },
     "interaction_runoff_packs": {
       "type": "interaction",
+      "tags": [
+        "search"
+      ],
       "narration": "Follow a pack through the fern pockets on your cord. The runoff carries it along. Mark where it settles, then find the rest.",
       "interaction": {
         "kind": "tracking",
