@@ -7,12 +7,11 @@
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 import { campCatalogProblems, chapterFinds } from "./camp-catalog.mjs";
-import { cleanup, copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.mjs";
+import { copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.ts";
 
-afterAll(cleanup, 60_000);
 
 const json = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8"));
 const CATALOG = json("content", "camp.json");
@@ -282,7 +281,10 @@ describe("friends (§4.4)", () => {
   });
 });
 
-describe("through the gate (npm run content:validate)", { timeout: 60_000 }, () => {
+// The befriend case's second run fails a Riftlight chapter at its schema, so the gate no longer
+// knows that chapter's flags, the graph proof is stale and Riftlight is walked: in process now,
+// and under coverage on CI, where that one walk took 28 s.
+describe("through the gate (npm run content:validate)", { timeout: 120_000 }, () => {
   it("fails a malformed catalog at its schema, and a malformed find in a chapter", () => {
     const dir = copyTree();
     const catalog = readJson(dir, "content", "camp.json");

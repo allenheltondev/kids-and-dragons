@@ -8,17 +8,13 @@
  * tree and requiring a specific complaint.
  */
 
-import { execFileSync } from "node:child_process";
-import { cpSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.ts";
 
-const REPO = fileURLToPath(new URL("../..", import.meta.url));
-const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
 const read = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8"));
 
 const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
@@ -81,31 +77,13 @@ describe("the schema", () => {
   });
 });
 
-const temps = [];
-afterAll(() => {
-  for (const dir of temps) rmSync(dir, { recursive: true, force: true });
-});
-
+/** The gate as `npm run content:validate` runs it, class places and all, over a copy of the tree in memory. */
 function validateWith(bend) {
-  const dir = mkdtempSync(join(tmpdir(), "kad-sting-"));
-  temps.push(dir);
-  cpSync(join(REPO, "content"), join(dir, "content"), { recursive: true });
-  cpSync(join(REPO, "schemas"), join(dir, "schemas"), { recursive: true });
-  cpSync(join(REPO, "assets", "world"), join(dir, "assets", "world"), { recursive: true });
-  cpSync(join(REPO, "assets", "manifest.json"), join(dir, "assets", "manifest.json"));
-  const path = join(dir, ...CHAPTER);
-  const chapter = JSON.parse(readFileSync(path, "utf8"));
+  const tree = copyTree();
+  const chapter = readJson(tree, ...CHAPTER);
   bend(chapter.scenes[SCENE].enemies[0]);
-  writeFileSync(path, JSON.stringify(chapter, null, 2));
-  try {
-    const out = execFileSync(process.execPath, [VALIDATOR], {
-      env: { ...process.env, KAD_CONTENT_ROOT: dir, NO_COLOR: "1" },
-      encoding: "utf8",
-    });
-    return { code: 0, out };
-  } catch (err) {
-    return { code: err.status ?? 1, out: `${err.stdout ?? ""}${err.stderr ?? ""}` };
-  }
+  writeJson(tree, CHAPTER, chapter);
+  return validate(tree, [], { classPlaces: true });
 }
 
 describe("content:validate", { timeout: 60_000 }, () => {

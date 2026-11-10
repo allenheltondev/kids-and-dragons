@@ -1,11 +1,7 @@
 /** Part 2 of the content gate suite; see validate-core.test.mjs. */
-import { rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
-import { cleanup, CHAPTER, copyTree, readJson, writeJson, validate, withChapter, withFirstSteps } from "./validate-harness.mjs";
+import { describe, expect, it } from "vitest";
+import { CHAPTER, copyTree, readJson, removeFile, writeJson, writeText, validate, withChapter, withFirstSteps } from "./validate-harness.ts";
 
-// Every negative case copies the content tree; removing them all is real disk work.
-afterAll(cleanup, 60_000);
 
 
 describe("the files themselves", () => {
@@ -13,7 +9,7 @@ describe("the files themselves", () => {
     // A half-saved file is the most ordinary way content breaks, and the one
     // where a stack trace instead of a message costs the most time.
     const dir = copyTree();
-    writeFileSync(join(dir, "content", "rules.json"), "{ this is not json");
+    writeText(dir, ["content", "rules.json"], "{ this is not json");
 
     const result = validate(dir);
     expect(result.out).toContain("not valid JSON");
@@ -22,7 +18,7 @@ describe("the files themselves", () => {
 
   it("catches a missing rules.json rather than crashing on it", () => {
     const dir = copyTree();
-    rmSync(join(dir, "content", "rules.json"));
+    removeFile(dir, "content", "rules.json");
 
     const result = validate(dir);
     expect(result.out).toContain("content/rules.json is missing");
@@ -124,7 +120,7 @@ describe("routed beats", () => {
      * chapter in it — at a table, mid-evening, with no way forward.
      */
     const { code, out } = routedTree(({ dir, campaign }) => {
-      rmSync(join(dir, "content", "chapters", "beat2-wild.json"));
+      removeFile(dir, "content", "chapters", "beat2-wild.json");
       campaign.chapters = campaign.chapters.filter((id) => id !== "beat2-wild");
     });
     expect(code).toBe(1);

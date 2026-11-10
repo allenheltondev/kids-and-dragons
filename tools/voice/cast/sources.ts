@@ -37,10 +37,19 @@ export function loadSources(root: string, options: { canon?: boolean } = {}): So
     options.canon === false
       ? {}
       : (yaml.load(fs.readFileSync(path.join(root, "canon", "individuals.yaml"), "utf8")) as { individuals?: IndividualLike[] });
-  const narration = inventory({ chapters, campaigns }, { facetsMax: 6 })
+  return sourcesFrom(chapters, campaigns, canon.individuals ?? []);
+}
+
+/** The same sources from chapters and campaigns already read: the content gate holds its tree in memory. */
+export function sourcesFrom(
+  chapters: readonly Record<string, unknown>[],
+  campaigns: readonly Record<string, unknown>[],
+  individuals: IndividualLike[],
+): Sources {
+  const narration = inventory({ chapters: [...chapters], campaigns: [...campaigns] }, { facetsMax: 6 })
     .filter((line) => line.kind === "narration" || line.kind === "cue" || line.kind === "prompt")
     .map((line) => ({ address: line.address, chapter: line.chapter, text: line.text }));
-  return { chapters: chapters as unknown as ChapterLike[], individuals: canon.individuals ?? [], narration };
+  return { chapters: chapters as unknown as ChapterLike[], individuals, narration };
 }
 
 /** Builds the sheet from the content on disk over the previous one, and writes it. */

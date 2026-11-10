@@ -8,44 +8,16 @@
  * Bramblewood fixture's entry scene, and run through `content:validate`.
  */
 
-import { execFileSync } from "node:child_process";
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { copyTree, readJson, REPO, validate, writeJson } from "./validate-harness.ts";
 
-const REPO = fileURLToPath(new URL("../..", import.meta.url));
-const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
 const GUIDE = readFileSync(join(REPO, "docs", "campaigns", "gemfall-authoring.md"), "utf8").replace(/\r\n/g, "\n");
 const CHAPTER = ["content", "chapters", "bramblewood-01.json"];
 
-const temps = [];
-afterAll(() => {
-  for (const dir of temps) rmSync(dir, { recursive: true, force: true });
-});
-
-function copyTree() {
-  const dir = mkdtempSync(join(tmpdir(), "kad-guide-"));
-  temps.push(dir);
-  cpSync(join(REPO, "content"), join(dir, "content"), { recursive: true });
-  cpSync(join(REPO, "schemas"), join(dir, "schemas"), { recursive: true });
-  cpSync(join(REPO, "assets", "world"), join(dir, "assets", "world"), { recursive: true });
-  cpSync(join(REPO, "assets", "manifest.json"), join(dir, "assets", "manifest.json"));
-  return dir;
-}
-
-function validate(dir) {
-  try {
-    const out = execFileSync(process.execPath, [VALIDATOR], {
-      env: { ...process.env, KAD_CONTENT_ROOT: dir, NO_COLOR: "1" },
-      encoding: "utf8",
-    });
-    return { code: 0, out };
-  } catch (err) {
-    return { code: err.status ?? 1, out: `${err.stdout ?? ""}${err.stderr ?? ""}` };
-  }
-}
+/** The gate as `npm run content:validate` runs it, class places and all, over a copy of the tree in memory. */
+const gate = (tree) => validate(tree, [], { classPlaces: true });
 
 /** Every ```json guide-<kind> block, in document order. */
 function examples() {
@@ -66,8 +38,8 @@ describe("the authoring guide's examples", () => {
 
   all.forEach((example, index) => {
     it(`example ${index + 1} (${example.kind}) passes content:validate`, () => {
-      const dir = copyTree();
-      const chapter = JSON.parse(readFileSync(join(dir, ...CHAPTER), "utf8"));
+      const tree = copyTree();
+      const chapter = readJson(tree, ...CHAPTER);
       const scene = chapter.scenes[chapter.entry];
       const next = scene.choices[0].goto;
       if (example.kind === "guide-variants") {
@@ -77,8 +49,8 @@ describe("the authoring guide's examples", () => {
           scene.choices.push({ ...choice, goto: choice.goto === "NEXT" ? next : choice.goto });
         }
       }
-      writeFileSync(join(dir, ...CHAPTER), JSON.stringify(chapter, null, 2));
-      const result = validate(dir);
+      writeJson(tree, CHAPTER, chapter);
+      const result = gate(tree);
       expect(result.out).toContain("PASS");
       expect(result.code).toBe(0);
     }, 20_000);
