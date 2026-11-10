@@ -25,8 +25,10 @@ function fakeCognito(script: Record<string, unknown | (() => unknown)>) {
     const value: unknown = typeof entry === "function" ? (entry as () => unknown)() : entry;
 
     if (value instanceof Error) {
+      // `cause`, when a test gives one, is the sentence Cognito sends with the type.
+      const message = typeof value.cause === "string" ? { message: value.cause } : {};
       return new Response(
-        JSON.stringify({ __type: `com.amazonaws.cognitoidp#${value.message}` }),
+        JSON.stringify({ __type: `com.amazonaws.cognitoidp#${value.message}`, ...message }),
         { status: 400 },
       );
     }
@@ -98,6 +100,30 @@ describe("requestCode", () => {
   it("propagates a sign-up failure that is not 'already exists'", async () => {
     const { client } = fakeCognito({ SignUp: () => new Error("InvalidParameterException") });
     await expect(client.requestCode("nope")).rejects.toBeInstanceOf(AuthError);
+  });
+
+  it("carries on to the code when the account was made and the step after it failed", async () => {
+    // The pool's password scrub runs once the account exists. Its failure is
+    // the server's to alarm on, not a family's sign-in to lose.
+    const { client, calls } = fakeCognito({
+      SignUp: () => new Error("UserLambdaValidationException", { cause: "PostConfirmation failed with error boom." }),
+      InitiateAuth: CHALLENGE,
+    });
+
+    const challenge = await client.requestCode("allen@example.com");
+
+    expect(challenge.session).toBe("sess_1");
+    expect(calls.map((c) => c.target)).toEqual(["SignUp", "InitiateAuth"]);
+  });
+
+  it("still fails when the account was never made, rather than wait for a code nobody sent", async () => {
+    const { client, calls } = fakeCognito({
+      SignUp: () => new Error("UserLambdaValidationException", { cause: "PreSignUp failed with error boom." }),
+      InitiateAuth: CHALLENGE,
+    });
+
+    await expect(client.requestCode("allen@example.com")).rejects.toMatchObject({ code: "UserLambdaValidationException" });
+    expect(calls.map((c) => c.target)).toEqual(["SignUp"]);
   });
 
   it("refuses a challenge it does not know how to answer", async () => {
