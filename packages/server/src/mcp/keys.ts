@@ -114,7 +114,10 @@ export async function mintKey(store: KeyStore, input: MintInput): Promise<{ key:
   if (!Number.isInteger(days) || days < 1 || days > MAX_KEY_DAYS) throw new KeyError(`A key lives 1 to ${MAX_KEY_DAYS} days.`);
 
   const now = input.now ?? new Date();
-  const id = randomBytes(12).toString("base64url");
+  // Hex, not base64url: an id is typed on a command line (`mcp:keys revoke <id>`), and a
+  // base64url one starts with "-" about one time in 64, which a parser reads as an option.
+  // 64 bits is plenty for an id; the secret half is what must not be guessed.
+  const id = randomBytes(8).toString("hex");
   const secret = randomBytes(32).toString("base64url");
   const record: KeyRecord = {
     id,

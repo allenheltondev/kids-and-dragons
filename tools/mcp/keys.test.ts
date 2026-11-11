@@ -39,6 +39,17 @@ describe("npm run mcp:keys", () => {
     expect(await c.run("revoke", "--stage", "prod", id)).toBe(1);
   });
 
+  it("revokes a key minted before ids were hex, even one whose id starts with a dash", async () => {
+    // Keys minted with base64url ids may start with "-"; `revoke -- <id>` still reaches them.
+    const c = cli();
+    c.store.rows.set("-aBcDeFgHiJkLmNo", {
+      id: "-aBcDeFgHiJkLmNo", label: "old", scopes: ["assets:read"], agent: null, tags: {},
+      secretHash: "0".repeat(64), createdAt: "2026-11-11T00:00:00.000Z", expiresAt: "2027-01-01T00:00:00.000Z", lastUsedAt: null,
+    });
+    expect(await c.run("revoke", "--stage", "prod", "--", "-aBcDeFgHiJkLmNo")).toBe(0);
+    expect(c.store.rows.size).toBe(0);
+  });
+
   it("explains itself instead of minting something odd", async () => {
     const c = cli();
     expect(await c.run("create", "--label", "x", "--scope", "assets:write")).toBe(2);
