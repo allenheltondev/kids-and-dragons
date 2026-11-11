@@ -13,3 +13,4 @@ export const APPROVAL_LABEL: string;
 export function characterChanges(base: LockLike | null, head: LockLike | null): CharacterChange[];
 export function storeLink(storeUrl: string | null, sha256: string, path: string): string | null;
 export function review(input: { changes: CharacterChange[]; labels: string[]; storeUrl: string | null }): { ok: boolean; report: string };
+export function readAt(rev: string, file: string): string | null;

@@ -66,15 +66,29 @@ export function review({ changes, labels, storeUrl }) {
   return { ok: approved, report: [head, "", ...lines].join("\n") };
 }
 
-function readAt(rev, file) {
-  try {
-    return execFileSync("git", ["show", `${rev}:${file}`], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 256 * 1024 * 1024 });
-  } catch {
-    return null;
-  }
+const git = (args) => execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 256 * 1024 * 1024 });
+
+/**
+ * The file at a commit, or null only when the commit has no such path. Anything else (an
+ * unknown commit, a blob this blobless checkout cannot fetch, a network error) throws: a
+ * read that failed must never pass for "no lock here", which would wave hero art through.
+ */
+export function readAt(rev, file) {
+  git(["rev-parse", "--verify", "--quiet", `${rev}^{commit}`]);
+  if (git(["ls-tree", "--name-only", rev, "--", file]).trim() === "") return null;
+  return git(["show", `${rev}:${file}`]);
 }
 
 function main() {
+  try {
+    run();
+  } catch (error) {
+    console.error(`character-art: could not read the change, so it cannot be cleared: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(2);
+  }
+}
+
+function run() {
   const { values, positionals } = parseArgs({ allowPositionals: true, options: { labels: { type: "string", default: "[]" } } });
   const [base, head] = positionals;
   if (!base || !head) {

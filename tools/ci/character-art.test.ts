@@ -78,6 +78,15 @@ describe("character art needs the owner's approval (#729)", () => {
       expect(run(preCutover, preCutover, []).status).toBe(0);
       // The cutover adds every path at once, all of it art already in git.
       expect(run(preCutover, head, []).status).toBe(0);
+
+      // A read that fails is not "no lock": an unknown commit, or a lock blob that cannot be
+      // fetched, fails the check instead of passing it.
+      expect(run("0".repeat(40), head, []).status).toBe(2);
+      const blob = git("rev-parse", `${head}:assets.lock.json`);
+      fs.rmSync(path.join(dir, ".git", "objects", blob.slice(0, 2), blob.slice(2)));
+      const unreadable = run(base, head, ["art-approved"]);
+      expect(unreadable.status).toBe(2);
+      expect(unreadable.stderr).toContain("cannot be cleared");
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

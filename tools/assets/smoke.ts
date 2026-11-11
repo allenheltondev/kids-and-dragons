@@ -6,10 +6,11 @@
  * Proves, with one fresh test blob, what the unit tests can only fake: the MCP server answers
  * and refuses as it should, the upload URL S3 signs really enforces write-once, the checksum,
  * the size and the provenance stamp, and the store's CDN serves the bytes and the stamp back.
- * Uses an `assets:write` key, ideally a short-lived staging one minted for the test.
+ * Uses an `assets:write` key for production, the only account with a store, minted for the
+ * test and revoked after it.
  *
- * Writes two small blobs under their hashes (one that lands, one never accepted). They are
- * write-once and stay, like every blob; they are labelled `smoke/…` in their stamps' paths.
+ * Leaves one small blob in the store (a second set of bytes lands only if a refusal check
+ * fails). It is write-once and stays, like every blob, labelled `smoke/…` in its stamp's path.
  *
  * Built-ins only (fetch), like the rest of tools/assets' plain-node path.
  */
@@ -162,7 +163,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const key = process.env.KAD_MCP_TOKEN;
   if (!mcpUrl || !storeUrl || !key) {
     console.error("usage: KAD_MCP_TOKEN=kadmcp_… npm run assets:smoke -- [--mcp-url URL] [--store-url URL] [--issue N]");
-    console.error("  The key needs assets:write; mint a short-lived one for the stage you are testing (docs/asset-store.md, \"Smoke test\").");
+    console.error("  The key needs assets:write; mint a one-day production key for it and revoke it after (docs/asset-store.md, \"Smoke test\").");
     process.exit(2);
   }
   console.log(`assets:smoke against ${mcpUrl} and ${storeUrl}`);
