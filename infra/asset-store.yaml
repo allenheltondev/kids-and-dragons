@@ -3,21 +3,21 @@ AWSTemplateFormatVersion: "2010-09-09"
 # The asset store: where the game's art and audio live once they are out of git
 # (docs/asset-store.md).
 #
-# One stack for the whole project, shared by every stage, deployed by hand once:
+# One stack for the whole project, shared by every stage. The production
+# deploy creates it and keeps it up to date (scripts/deploy-asset-store.sh, run
+# by .github/workflows/prod-deploy.yml after the site has shipped); nobody
+# stands it up by hand.
 #
-#   aws cloudformation deploy \
-#     --template-file infra/asset-store.yaml \
-#     --stack-name kad-asset-store \
-#     --capabilities CAPABILITY_NAMED_IAM \
-#     --region us-east-1 \
-#     --parameter-overrides AlarmTopicArn=<kad-prod's AlarmTopicArn output> MonthlyBudgetUsd=10
-#
-# then put its `StoreUrl` output in assets.config.json as `storeUrl`.
+# Its address is declared, not discovered: `storeUrl` in assets.config.json
+# names the host, the deploy passes that host in as StoreDomainName, and the
+# stack issues the certificate and the DNS records that make it true. So the
+# URL every reader pulls from is in the repo before the stack exists, and no
+# stack output is ever copied back into a file.
 #
 # Separate from infra/template.yaml on purpose. That stack is one per stage and
 # can be torn down and rebuilt; this one holds the only copy of the art once
 # git history is rewritten, so nothing a stage deploy does can reach it, and
-# deleting it is refused while it has objects (DeletionPolicy: Retain).
+# deleting the stack leaves the bucket where it is.
 #
 # Content-addressed: every file is `sha256/<hh>/<sha256>.<ext>`, written once
 # with a conditional put and never replaced. assets.lock.json in git says which
@@ -33,6 +33,21 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Kids & Dragons asset store — content-addressed art and audio, served by CloudFront
 
 Parameters:
+  StoreDomainName:
+    Type: String
+    Default: ""
+    Description: >-
+      The host readers pull from: the host of `storeUrl` in assets.config.json
+      (assets.kd.readysetcloud.io). With HostedZoneId, the stack issues an ACM
+      certificate for it (DNS validated in that zone), puts it on the CDN and
+      points A/AAAA alias records at it. Empty serves on the CDN's own
+      generated domain, which is only known after the first deploy.
+
+  HostedZoneId:
+    Type: String
+    Default: ""
+    Description: The Route 53 hosted zone that holds StoreDomainName's parent domain.
+
   MonthlyBudgetUsd:
     Type: Number
     Default: 10
@@ -64,6 +79,11 @@ Parameters:
       own bucket), so the cheapest class is plenty.
 
 Conditions:
+  # Both halves or neither, as in infra/template.yaml: a name with no zone
+  # cannot be validated, and a zone with no name has nothing to point at.
+  CustomDomain: !And
+    - !Not [!Equals [!Ref StoreDomainName, ""]]
+    - !Not [!Equals [!Ref HostedZoneId, ""]]
   HasAlarmTopic: !Not [!Equals [!Ref AlarmTopicArn, ""]]
   HasBudgetEmail: !Not [!Equals [!Ref BudgetEmail, ""]]
   # A budget with nobody to tell is noise; it is made only when someone listens.
@@ -73,7 +93,10 @@ Resources:
   StoreBucket:
     Type: AWS::S3::Bucket
     # The art's only copy once history is rewritten. Never deleted with the stack.
-    DeletionPolicy: Retain
+    # ...ExceptOnCreate: a first deploy that fails and rolls back takes its empty
+    # bucket with it. Plain Retain would leave the bucket behind, owned by no
+    # stack, and every later create would fail on the name being taken.
+    DeletionPolicy: RetainExceptOnCreate
     UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub "kad-asset-store-${AWS::AccountId}"
@@ -158,11 +181,56 @@ Resources:
         SigningBehavior: always
         SigningProtocol: sigv4
 
+  # The certificate for StoreDomainName. This stack is in us-east-1, which is
+  # where CloudFront reads certificates from.
+  StoreCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: CustomDomain
+    Properties:
+      DomainName: !Ref StoreDomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref StoreDomainName
+          HostedZoneId: !Ref HostedZoneId
+
+  # A and AAAA: the distribution serves IPv6. Z2FDTNDATAQYW2 is CloudFront's
+  # own hosted zone id, the same for every distribution.
+  StoreDnsRecordA:
+    Type: AWS::Route53::RecordSet
+    Condition: CustomDomain
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref StoreDomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
+
+  StoreDnsRecordAAAA:
+    Type: AWS::Route53::RecordSet
+    Condition: CustomDomain
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref StoreDomainName
+      Type: AAAA
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
+
   Distribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Comment: Kids & Dragons asset store (content-addressed, read-only)
+        Aliases: !If [CustomDomain, [!Ref StoreDomainName], !Ref AWS::NoValue]
+        ViewerCertificate: !If
+          - CustomDomain
+          - AcmCertificateArn: !Ref StoreCertificate
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
         Enabled: true
         HttpVersion: http2and3
         IPV6Enabled: true
@@ -266,8 +334,13 @@ Outputs:
     Description: Where assets:push writes. Writers read it from here.
     Value: !Ref StoreBucket
   StoreUrl:
-    Description: The public read URL. Put it in assets.config.json as storeUrl.
-    Value: !Sub "https://${Distribution.DomainName}"
+    Description: >-
+      The public read URL. The deploy fails unless it equals storeUrl in
+      assets.config.json (scripts/deploy-asset-store.sh).
+    Value: !If
+      - CustomDomain
+      - !Sub "https://${StoreDomainName}"
+      - !Sub "https://${Distribution.DomainName}"
   DistributionId:
     Value: !Ref Distribution
   WriterPolicyArn:
