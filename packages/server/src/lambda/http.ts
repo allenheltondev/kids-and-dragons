@@ -56,6 +56,7 @@ import { getJournal } from "../handlers/journal.ts";
 import { editKitFromBook } from "../handlers/camp-book.ts";
 import { saveFlair } from "../handlers/profile.ts";
 import { getState } from "../handlers/state.ts";
+import { checkHealth, wantsDeep } from "../handlers/health.ts";
 import { organizerRoute } from "../handlers/organizer.ts";
 import { isSlowDown, pairFromDevice, redeemPairingCode } from "../handlers/pairing.ts";
 import { deviceStanding, leaveDevice } from "../handlers/leave-device.ts";
@@ -157,9 +158,10 @@ export async function respond(
 async function route(req: Req, rt: HttpRuntime): Promise<APIGatewayProxyStructuredResultV2> {
   if (req.method === "OPTIONS") return { statusCode: 204 };
 
-  // Neither of these touches the table, the key, or the channel — so both still
-  // answer when one of those is what is broken.
-  if (req.method === "GET" && req.path === "/api/health") return health();
+  // Health boots what a request boots and says whether it could (handlers/health.ts). It
+  // touches the table only when asked to (`?deep=1`), so the plain form still answers when
+  // the table is what is broken. Config touches nothing.
+  if (req.method === "GET" && req.path === "/api/health") return health(req, rt);
   if (req.method === "GET" && req.path === "/api/config") return config();
 
   const match = matchRoute(req, rt);
@@ -1251,9 +1253,14 @@ function config(): APIGatewayProxyStructuredResultV2 {
   });
 }
 
-/** Deliberately does not touch the table — it must answer when the table cannot. */
-function health(): APIGatewayProxyStructuredResultV2 {
-  return json(200, { ok: true, service: "kad-api", time: iso(Date.now()) });
+/**
+ * 200 when the API can run a game, 503 with the part that is broken when it cannot
+ * (handlers/health.ts). A failed boot is answered here rather than thrown, so the
+ * caller gets `failed: "boot"` instead of the generic 500 every other route gives.
+ */
+async function health(req: Req, rt: HttpRuntime): Promise<APIGatewayProxyStructuredResultV2> {
+  const result = await checkHealth(() => rt.deps(), { service: "kad-api", deep: wantsDeep(req.query) });
+  return json(result.status, result.body);
 }
 
 // ---------------------------------------------------------------------------

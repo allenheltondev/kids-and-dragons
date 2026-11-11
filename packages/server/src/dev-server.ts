@@ -63,6 +63,7 @@ import { getJournal } from "./handlers/journal.ts";
 import { editKitFromBook } from "./handlers/camp-book.ts";
 import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
+import { checkHealth, wantsDeep } from "./handlers/health.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
 import { isSlowDown, pairFromDevice, redeemPairingCode } from "./handlers/pairing.ts";
 import { deviceStanding, leaveDevice } from "./handlers/leave-device.ts";
@@ -1193,22 +1194,21 @@ async function main(): Promise<void> {
   app.use("/assets", express.static(assetsDir(), { fallthrough: false }));
   app.use("/content", express.static(contentDir(), { fallthrough: false }));
 
-  app.get("/api/health", async (_req: Request, res: Response) => {
-    const engine = await loadSharedRuntime().then(
-      () => "ready" as const,
-      () => "unavailable" as const,
-    );
-    res.json({
-      ok: true,
-      service: "kad-dev-server",
-      time: iso(Date.now()),
-      uptimeSeconds: Math.round(process.uptime()),
-      engine,
-      content: {
-        root: content.root,
-        chapters: content.chapterIds().length,
-        rulesVersion: content.rules().version,
+  // The same check the Lambda answers with (handlers/health.ts): 200 when a game can run,
+  // 503 with the part that is broken when it cannot. The fields after it are this server's own.
+  app.get("/api/health", async (req: Request, res: Response) => {
+    const result = await checkHealth(
+      async () => {
+        const runtime = await loadSharedRuntime();
+        return { ...base, engine: runtime.engine, rng: runtime.rng };
       },
+      { service: "kad-dev-server", deep: wantsDeep(req.query as Record<string, unknown>) },
+    );
+    res.status(result.status).json({
+      ...result.body,
+      uptimeSeconds: Math.round(process.uptime()),
+      engine: result.body.failed === "boot" ? "unavailable" : "ready",
+      content: { root: content.root, ...result.body.content },
       rooms: channel.roomCodes().length,
     });
   });

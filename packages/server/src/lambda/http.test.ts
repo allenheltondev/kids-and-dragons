@@ -164,13 +164,44 @@ describe("routing", () => {
     expect(rt.depsCalls).toBe(0);
   });
 
-  it("serves health without touching the table — it must answer when the table cannot", async () => {
-    const rt = runtimeFor(makeHarness());
+  it("serves health by booting what a request boots, without touching the table — it must answer when the table cannot", async () => {
+    const harness = makeHarness();
+    const read = vi.spyOn(harness.deps.repo, "getRoom");
+    const rt = runtimeFor(harness);
     const result = await respond(event("GET", "/api/health"), rt);
 
     expect(result.statusCode).toBe(200);
     expect(bodyOf(result)).toMatchObject({ ok: true, service: "kad-api" });
-    expect(rt.depsCalls).toBe(0);
+    expect(harness.deps.content.chapterIds().length).toBeGreaterThan(0);
+    expect(bodyOf(result)).toMatchObject({ content: { chapters: harness.deps.content.chapterIds().length } });
+    expect(rt.depsCalls).toBe(1);
+    expect(read).not.toHaveBeenCalled();
+  });
+
+  it("reads the table once for /api/health?deep=1, the form the post-deploy smoke test asks for", async () => {
+    const harness = makeHarness();
+    const read = vi.spyOn(harness.deps.repo, "getRoom");
+    const result = await respond(event("GET", "/api/health", { query: { deep: "1" } }), runtimeFor(harness));
+
+    expect(result.statusCode).toBe(200);
+    expect(bodyOf(result)).toMatchObject({ ok: true, store: "ok" });
+    expect(read).toHaveBeenCalledTimes(1);
+  });
+
+  it("answers 503, not ok and not a generic 500, when the API cannot boot", async () => {
+    const rt = runtimeFor(makeHarness(), {
+      deps: async () => {
+        throw new Error("missing required environment variable TABLE_NAME");
+      },
+    });
+    const quiet = vi.spyOn(console, "error").mockImplementation(() => {});
+    const result = await respond(event("GET", "/api/health"), rt);
+    quiet.mockRestore();
+
+    expect(result.statusCode).toBe(503);
+    expect(result.headers?.["content-type"]).toBe("application/json");
+    expect(bodyOf(result)).toMatchObject({ ok: false, service: "kad-api", failed: "boot" });
+    expect(result.body).not.toMatch(/TABLE_NAME/);
   });
 });
 
