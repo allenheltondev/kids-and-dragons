@@ -19,7 +19,7 @@ import { checksumHeader, type UploadSigner } from "../../packages/server/src/mcp
 import { emptyLock, serializeLock, stampMetadata } from "../../packages/shared/src/asset-store";
 import { push, pull } from "./commands";
 import { loadLock } from "./lib";
-import { McpBlobStore } from "./mcp-store";
+import { MCP_CALLS_PER_SECOND, MCP_RETRIES, McpBlobStore } from "./mcp-store";
 import { formatProvenance, provenance } from "./provenance";
 import { DirBlobStore } from "./stores";
 
@@ -29,12 +29,17 @@ let base: string;
 let storeDir: string;
 let keys: MemoryKeyStore;
 const puts: string[] = [];
+/** How many of the next MCP requests the stand-in API refuses, as API Gateway does past its limit. */
+let refusals = 0;
+let mcpRequests = 0;
 
 beforeEach(async () => {
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), "kad-mcp-push-"));
   storeDir = path.join(tmp, "store");
   keys = new MemoryKeyStore();
   puts.length = 0;
+  refusals = 0;
+  mcpRequests = 0;
   const signer: UploadSigner = {
     has: (key) => Promise.resolve(fs.existsSync(path.join(storeDir, key))),
     presignPut: (key, contentType, sha256, bytes, stamp) =>
@@ -74,6 +79,11 @@ beforeEach(async () => {
         fs.writeFileSync(`${file}.stamp.json`, JSON.stringify(meta));
         puts.push(key);
         return res.writeHead(200).end();
+      }
+      mcpRequests++;
+      if (refusals > 0) {
+        refusals--;
+        return res.writeHead(429, { "content-type": "application/json" }).end('{"message":"Too Many Requests"}');
       }
       const headers = new Headers();
       for (const [k, v] of Object.entries(req.headers)) if (typeof v === "string") headers.set(k, v);
@@ -156,6 +166,45 @@ describe("assets:push through the MCP server", () => {
     expect(await store.put(blob, bytes, "image/png", { path: "assets/a.png" })).toBe(true);
     expect(await store.put(blob, bytes, "image/png", { path: "assets/a.png" })).toBe(false);
     await expect(store.put("history/x.json", bytes, "application/json")).rejects.toThrow(/AWS credentials/);
+  });
+});
+
+// The MCP server is a route on the game's API, which refuses past 50 requests a second for
+// every caller at once. The cutover asked about 2,722 stored blobs, passed that in 17 seconds,
+// and stopped with nothing recorded.
+describe("the MCP store against the API's request limit", () => {
+  it("leaves its calls a tenth of a second apart, however many ask at once", async () => {
+    const { key } = await mintKey(keys, { label: "agent", scopes: ["assets:write"] });
+    const waits: number[] = [];
+    const store = new McpBlobStore(`${base}/api/mcp`, key, { now: () => 0, sleep: (ms) => (waits.push(ms), Promise.resolve()) });
+    await Promise.all([1, 2, 3, 4, 5].map(() => store.callTool("whoami", {})));
+    expect(MCP_CALLS_PER_SECOND).toBeLessThanOrEqual(10);
+    expect(waits).toEqual([100, 200, 300, 400]);
+  });
+
+  it("waits and asks again when the API says too many requests", async () => {
+    const root = repo();
+    const { key } = await mintKey(keys, { label: "agent", scopes: ["assets:write"] });
+    const waits: number[] = [];
+    const store = new McpBlobStore(`${base}/api/mcp`, key, { sleep: (ms) => (waits.push(ms), Promise.resolve()) });
+    refusals = 3;
+    const result = await push(root, store, { cacheDir: path.join(tmp, "cache") });
+    expect(result.uploaded).toEqual(["assets/cast/pib/assembled.png"]);
+    expect(loadLock(root).files["assets/cast/pib/assembled.png"]).toBeDefined();
+    // Longer each time, so an API that is busy with players gets room.
+    expect(waits.filter((ms) => ms >= 1000)).toEqual([1000, 2000, 4000]);
+    expect(mcpRequests).toBe(4);
+  });
+
+  it("gives up after seven refusals, saying why, with nothing recorded", async () => {
+    const root = repo();
+    const { key } = await mintKey(keys, { label: "agent", scopes: ["assets:write"] });
+    const store = new McpBlobStore(`${base}/api/mcp`, key, { sleep: () => Promise.resolve() });
+    refusals = 100;
+    await expect(push(root, store, { cacheDir: path.join(tmp, "cache") })).rejects.toThrow(/HTTP 429 after 7 tries.*run the command again later/s);
+    expect(mcpRequests).toBe(MCP_RETRIES + 1);
+    expect(fs.readFileSync(path.join(root, "assets.lock.json"), "utf8")).toBe(serializeLock(emptyLock()));
+    expect(puts).toEqual([]);
   });
 });
 

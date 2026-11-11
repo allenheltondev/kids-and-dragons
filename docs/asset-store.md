@@ -164,6 +164,9 @@ Reading needs none. Writing goes one of two ways, chosen by `--writer` or
   environment variables `KAD_ASSET_WRITER=mcp` and `NODE_USE_ENV_PROXY=1` (node's
   fetch then uses the sandbox proxy). `mcpUrl` in `assets.config.json` says
   where the server is. Outside a sandbox, `KAD_MCP_TOKEN` carries the key instead.
+  The server is a route on the game's own API, which allows 50 requests a second
+  across every route, so the tool asks at most 10 times a second and waits and
+  asks again when the API answers 429.
 - **`aws`: AWS credentials with the `kad-asset-writer` policy** (a store stack
   output). It allows upload and look-up under `sha256/` and `history/` only, has
   no delete, and the bucket policy makes every blob write conditional. This is the
