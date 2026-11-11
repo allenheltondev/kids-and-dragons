@@ -16,6 +16,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { isClipKey } from "../../packages/shared/src/voice-clips.ts";
 import { checkSources, SiteClipSource } from "./sources.ts";
 
@@ -71,7 +72,10 @@ export async function verifySite(site: string, dir: string, fetcher?: Fetcher): 
   return { code: broken > 0 || unknown > 0 ? 1 : 0, lines };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run directly, not imported. Compared as URLs: a Windows path (C:\git\...) is not
+// what follows file:// in import.meta.url, and a string compare there is never true,
+// so the command printed nothing and exited 0.
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const site = process.argv[2];
   if (site === undefined || !/^https?:\/\//.test(site)) {
     console.error("usage: node tools/voice/verify-site.ts <https://site>");
