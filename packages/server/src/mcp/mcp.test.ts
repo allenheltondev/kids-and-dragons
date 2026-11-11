@@ -40,6 +40,13 @@ describe("keys", () => {
     expect(store.rows.get(info.id)!.lastUsedAt).not.toBeNull();
   });
 
+  it("makes ids a command line can take as they are: never starting with a dash", async () => {
+    for (let i = 0; i < 300; i++) {
+      const { info } = await mintKey(store, { label: `k${i}`, scopes: ["assets:read"] });
+      expect(info.id).toMatch(/^[0-9a-f]{16}$/);
+    }
+  });
+
   it("refuses a wrong secret, a malformed key, an expired key and a revoked one alike", async () => {
     const now = new Date("2026-11-11T00:00:00Z");
     const { key, info } = await mintKey(store, { label: "a", scopes: ["assets:read"], days: 1, now });

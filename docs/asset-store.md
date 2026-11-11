@@ -274,6 +274,13 @@ The `grep` counts every managed extension in a real run; widen it to the full li
 
 Things to know before you do it:
 
+- **Keep an offline copy first (#726).** S3's durability covers hardware, not losing the AWS
+  account, a mistaken deletion by someone with admin rights, or a deletion unnoticed past the
+  90 days versioning keeps. From the full clone, before rewriting:
+  `git bundle create kad-pre-rewrite.bundle --all` (about 2 GB). Keep it off AWS (a drive, or
+  another provider's cold storage), and check it restores:
+  `git clone kad-pre-rewrite.bundle check && git -C check log --oneline -1`.
+
 - **Every commit hash changes.** Everyone re-clones. Open pull requests need their
   branches rebased onto the new history (or recreated).
 - **A stale clone can put the old history back.** Any clone, worktree or cloud

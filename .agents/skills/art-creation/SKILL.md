@@ -47,8 +47,8 @@ names. If the issue and the code disagree on a path, ask; the game only finds th
 
 `npm run art:inventory` is a cross-check, not the queue. It lists art the manifest declares
 that is not on disk. Use it to confirm an issue's paths and, at the end, that they are no
-longer owed. Pull first (`npm run assets:pull`): on a checkout without the art it reports
-everything as owed.
+longer owed. Pull first (`npm run assets:pull`). On a checkout without the art it would report
+everything as owed, so it (and `art:verify`) refuses to run until the lock's art is on disk.
 
 Read the contract before writing a prompt. The main ones:
 
