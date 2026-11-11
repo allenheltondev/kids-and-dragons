@@ -425,11 +425,15 @@ jobs:
     # (8 minutes) in one shard and two-second install cards in another: nine
     # minutes against two. tools/ci/e2e-shard.mjs weighs every test by its
     # last duration in e2e/timings.json and deals longest-first onto the
-    # lightest shard: the suite is about 55 minutes of tests, so each of ten
-    # carries about five and a half. A shard's floor is still its slowest
-    # test (drop-in's walk, under four minutes), so a new test past that is
-    # worth splitting first. Each shard uploads its report so the timings can
-    # be refreshed (`--timings`, see the script) when they drift.
+    # lightest shard, test by test: a shard runs its exact list through
+    # Playwright's `--test-list`, so the 24 road fights one `for` loop makes
+    # spread out like any tests (dealt by `file:line`, they all sat in one
+    # shard: 28 minutes against six). The suite is about 90 minutes of tests,
+    # so each of ten carries about nine. A shard's floor is still its slowest
+    # test (under three minutes), so a new test past that is worth splitting
+    # first. Each shard uploads its report so the timings can be refreshed
+    # (`--timings`, see the script) when they drift; a test the file has not
+    # met is placed at the median until then.
     # The production suite is not sharded: offline.spec is `serial`.
     name: end to end (${{ matrix.name }})
     needs: changes
