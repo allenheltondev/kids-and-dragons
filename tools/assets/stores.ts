@@ -23,8 +23,11 @@ import type { AssetConfig } from "./lib.ts";
 export interface BlobStore {
   readonly name: string;
   has(key: string): Promise<boolean>;
-  /** Keep bytes under a key. Returns false when the key was already there (nothing written). */
-  put(key: string, bytes: Uint8Array, contentType: string): Promise<boolean>;
+  /**
+   * Keep bytes under a key. Returns false when the key was already there (nothing written).
+   * `path` is the repo path the bytes are for, when there is one: the MCP server logs it.
+   */
+  put(key: string, bytes: Uint8Array, contentType: string, path?: string): Promise<boolean>;
 }
 
 export class DirBlobStore implements BlobStore {
@@ -107,6 +110,8 @@ export interface WriteTarget {
   dir?: string;
   /** A bucket by name, over the config and the stack. */
   bucket?: string;
+  /** How to write: AWS credentials, or the MCP server. Default: KAD_ASSET_WRITER, else aws. */
+  writer?: string;
 }
 
 /**
@@ -116,6 +121,13 @@ export interface WriteTarget {
  */
 export async function openWriteStore(config: AssetConfig, target: WriteTarget): Promise<BlobStore> {
   if (target.dir) return new DirBlobStore(path.resolve(target.dir));
+  const writer = target.writer ?? process.env.KAD_ASSET_WRITER ?? "aws";
+  if (writer === "mcp") {
+    if (!config.mcpUrl) throw new Error('Writing through the MCP server needs its URL: "mcpUrl" in assets.config.json, or KAD_MCP_URL.');
+    const { McpBlobStore } = await import("./mcp-store.ts");
+    return new McpBlobStore(config.mcpUrl, process.env.KAD_MCP_TOKEN || null);
+  }
+  if (writer !== "aws") throw new Error(`Unknown writer "${writer}": aws (AWS credentials) or mcp (the MCP server and a key).`);
   const s3sdk = await import("@aws-sdk/client-s3");
   let bucket = target.bucket ?? config.bucket ?? undefined;
   if (!bucket) {

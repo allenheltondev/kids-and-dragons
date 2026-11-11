@@ -31,6 +31,8 @@ export interface AssetConfig extends AssetRules {
   storeUrl: string | null;
   /** The bucket writers upload to. Null means: read it from the stack's outputs. */
   bucket: string | null;
+  /** The MCP server `assets:push --writer mcp` asks for upload URLs (docs/mcp-server.md). */
+  mcpUrl: string | null;
   /** The CloudFormation stack infra/asset-store.yaml was deployed as. */
   stack: string;
   region: string;
@@ -43,6 +45,7 @@ export function loadConfig(root: string): AssetConfig {
   const config: AssetConfig = {
     storeUrl: raw.storeUrl ?? null,
     bucket: raw.bucket ?? null,
+    mcpUrl: raw.mcpUrl ?? null,
     stack: raw.stack ?? "kad-asset-store",
     region: raw.region ?? "us-east-1",
     untracked: raw.untracked ?? false,
@@ -53,6 +56,7 @@ export function loadConfig(root: string): AssetConfig {
   // The environment wins, so a fork, a trial store or a test can point elsewhere without an edit.
   if (process.env.KAD_ASSET_STORE_URL) config.storeUrl = process.env.KAD_ASSET_STORE_URL;
   if (process.env.KAD_ASSET_BUCKET) config.bucket = process.env.KAD_ASSET_BUCKET;
+  if (process.env.KAD_MCP_URL) config.mcpUrl = process.env.KAD_MCP_URL;
   return config;
 }
 

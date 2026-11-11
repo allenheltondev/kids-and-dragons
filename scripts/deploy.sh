@@ -174,6 +174,7 @@ if [ "${KAD_PREBUILT:-}" = "1" ]; then
       infra/.build/api \
       infra/.build/channel-authorizer \
       infra/.build/sweep \
+      infra/.build/mcp \
       packages/client/dist; do
     if [ ! -d "$dir" ] || [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
       echo "error: KAD_PREBUILT=1 but $dir is missing or empty." >&2

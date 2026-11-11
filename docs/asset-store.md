@@ -79,7 +79,7 @@ saved by hand all write into `assets/` or `art/` as before. Then:
 Drafts that are not ready stay in `staging/` (gitignored), as before. Push
 happens once the art has passed `art:verify` and the human gate.
 
-With no write credentials, `push` says so and changes nothing. Do not commit the
+With neither an MCP key nor AWS credentials, `push` says so and changes nothing. Do not commit the
 binaries instead. Leave the files on disk and say which paths need pushing.
 
 ### The dev server
@@ -116,22 +116,30 @@ before the cutover and changes nothing until then.
 
 ## Credentials
 
-Writers need the `kad-asset-writer` managed policy (a stack output). It allows
-upload and look-up under `sha256/` and `history/` only. It has no delete, and the
-bucket policy makes every blob write conditional, so a writer cannot overwrite
-anything either.
+Reading needs none. Writing goes one of two ways, chosen by `--writer` or
+`KAD_ASSET_WRITER` (default `aws`):
 
-- **Your laptop, and agents running on it:** attach the policy to the IAM user or
-  role your AWS profile uses. `push` finds the bucket from the stack's outputs.
-- **Cloud agent sessions (claude.ai/code):** make an IAM user with only this
-  policy (say `kad-asset-agent`), and give its access key to the environment in
-  its settings as `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`, with
-  `AWS_REGION=us-east-1` and `KAD_ASSET_BUCKET=<the BucketName output>` (which
-  saves a CloudFormation call). Allow the hosts it talks to:
-  `<bucket>.s3.us-east-1.amazonaws.com` and the CloudFront domain in `storeUrl`.
-- **GitHub Actions:** an OIDC role with the policy attached, as in
-  [deploy.md](./deploy.md#turning-the-automated-deploys-on). Nothing in CI writes today.
-  Reads need no role.
+- **`mcp`: an MCP key, no AWS credentials.** `push` asks the MCP server
+  ([mcp-server.md](./mcp-server.md)) for a presigned upload URL per new blob and
+  PUTs the bytes there. The URL can only add those exact bytes under their hash:
+  S3 checks the checksum, and refuses to overwrite. This is the way for **cloud
+  agent sessions**. Mint a key with `assets:write`
+  (`npm run mcp:keys -- create --stage prod --label cloud-agent --scope assets:write`).
+  Give it to the environment as a **network secret** for the site's host
+  (`Authorization: Bearer <key>`), so the key never enters the session. Set the
+  environment variables `KAD_ASSET_WRITER=mcp` and `NODE_USE_ENV_PROXY=1` (node's
+  fetch then uses the sandbox proxy). `mcpUrl` in `assets.config.json` says
+  where the server is. Outside a sandbox, `KAD_MCP_TOKEN` carries the key instead.
+- **`aws`: AWS credentials with the `kad-asset-writer` policy** (a store stack
+  output). It allows upload and look-up under `sha256/` and `history/` only, has
+  no delete, and the bucket policy makes every blob write conditional. This is the
+  way on **your laptop**: attach the policy to the IAM user or role your AWS
+  profile uses, and `push` finds the bucket from the stack's outputs. The cutover
+  (`migrate`, `archive-history`) needs this way, since history archives are not
+  blobs and the MCP server stores blobs only.
+
+GitHub Actions writes nothing today. If it ever needs to, an OIDC role with the
+policy attached, as in [deploy.md](./deploy.md#turning-the-automated-deploys-on).
 
 ## Standing the store up
 

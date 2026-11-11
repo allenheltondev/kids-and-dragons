@@ -10,8 +10,9 @@
  *   npm run assets:archive-history              every historical version into the store, before a rewrite
  *   npm run assets:filter-args                  the git filter-repo command for the rewrite
  *
- * Write commands take `--bucket NAME` or `--dir FOLDER` (a trial store), and
- * `--dry-run`. `pull`, `status`, `verify`, `url` and `filter-args` need no
+ * Write commands take `--writer aws|mcp` (AWS credentials, or the MCP server and
+ * a key; default KAD_ASSET_WRITER, else aws), `--bucket NAME` or `--dir FOLDER`
+ * (a trial store), and `--dry-run`. `pull`, `status`, `verify`, `url` and `filter-args` need no
  * credentials and no node_modules.
  */
 
@@ -31,6 +32,7 @@ const { values, positionals } = parseArgs({
     "dry-run": { type: "boolean" },
     bucket: { type: "string" },
     dir: { type: "string" },
+    writer: { type: "string" },
     untrack: { type: "boolean" },
     present: { type: "string", multiple: true },
     "no-store": { type: "boolean" },
@@ -45,7 +47,7 @@ const root = values.root ?? REPO_ROOT;
 /** The store a write command uses; a dry run touches none, so it needs no credentials. */
 async function writeStore(): Promise<BlobStore> {
   if (values["dry-run"]) return { name: "(dry run)", has: () => Promise.resolve(true), put: () => Promise.resolve(false) };
-  return openWriteStore(loadConfig(root), { dir: values.dir, bucket: values.bucket });
+  return openWriteStore(loadConfig(root), { dir: values.dir, bucket: values.bucket, writer: values.writer });
 }
 const log = (line: string): void => console.log(line);
 const errlog = (line: string): void => console.error(line);

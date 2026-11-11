@@ -209,6 +209,23 @@ Resources:
         AttributeName: ttl
         Enabled: true
 
+  # The MCP server's API keys (docs/mcp-server.md): one row per key, holding a hash of its secret,
+  # its scopes, expiry and last use, never the key. Its own table so the MCP function's role names
+  # this and the asset store, and nothing that holds a family's data. Minted and revoked by an
+  # operator with `npm run mcp:keys`. Losing it only means minting keys again, so nothing is
+  # retained on delete.
+  McpKeysTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "kad-mcp-keys-${StageName}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+
   Table:
     Type: AWS::DynamoDB::Table
     # A family's characters are not recreatable. Keep the table if the stack is
@@ -730,6 +747,56 @@ Resources:
             # includes POST /api/client-error (#317): the client's crash reports
             # take this path, and CloudFront's /api/* behavior forwards POST.
             Path: /{proxy+}
+            Method: ANY
+
+  # The MCP server (docs/mcp-server.md), at /api/mcp through CloudFront's /api/* behavior, which
+  # forwards Authorization. An explicit route, so it wins over ApiFunction's /{proxy+}. It checks
+  # the bearer key itself on every request rather than through an authorizer: the HTTP API's
+  # authorizer caches answers for minutes, which would let a revoked key keep working.
+  #
+  # Its role: read and touch the keys table, and sign upload URLs into the asset store
+  # (infra/asset-store.yaml, one bucket for every stage). It cannot read the game's table, the
+  # timing table, or any parameter. The store's bucket policy still refuses any blob write that
+  # is not conditional, so a URL signed by this role can only add a blob, never replace one.
+  McpFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/mcp
+      Description: MCP server for agents and operators (asset upload URLs)
+      MemorySize: 512
+      Environment:
+        Variables:
+          MCP_KEYS_TABLE: !Ref McpKeysTable
+          # The asset store stack's bucket, by its fixed name. Not an import, so this stack deploys
+          # before the store exists; until it does, upload requests fail and nothing else does.
+          ASSET_STORE_BUCKET: !Sub "kad-asset-store-${AWS::AccountId}"
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:UpdateItem
+              Resource: !GetAtt McpKeysTable.Arn
+            - Effect: Allow
+              # PutObject is what a presigned PUT carries: the URL acts with this role's rights,
+              # under sha256/ only. GetObject is the HEAD that says a blob is already stored.
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+              Resource: !Sub "arn:${AWS::Partition}:s3:::kad-asset-store-${AWS::AccountId}/sha256/*"
+            - Effect: Allow
+              # Without it, S3 answers a HEAD on a missing blob 403 rather than 404.
+              Action: s3:ListBucket
+              Resource: !Sub "arn:${AWS::Partition}:s3:::kad-asset-store-${AWS::AccountId}"
+              Condition:
+                StringLike:
+                  s3:prefix: "sha256/*"
+      Events:
+        Mcp:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/mcp
             Method: ANY
 
   # ---------------------------------------------------------------------------
@@ -1375,6 +1442,17 @@ Outputs:
   DistributionId:
     Description: For cache invalidation after a deploy
     Value: !Ref Distribution
+
+  McpServerUrl:
+    Description: The MCP server (docs/mcp-server.md). Agents send Authorization Bearer with a key from npm run mcp:keys.
+    Value: !If
+      - CustomDomain
+      - !Sub "https://${AppDomainName}/api/mcp"
+      - !Sub "https://${Distribution.DomainName}/api/mcp"
+
+  McpKeysTableName:
+    Description: Where npm run mcp:keys keeps the MCP keys
+    Value: !Ref McpKeysTable
 
   ApiEndpoint:
     Description: The HTTP API's own domain; CloudFront is the one clients use

@@ -284,7 +284,7 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
     const key = blobKey(entry.sha256, p);
     if (!options.dryRun) {
       if (!(await store.has(key))) {
-        if (await store.put(key, bytes, contentTypeFor(p))) {
+        if (await store.put(key, bytes, contentTypeFor(p), p)) {
           result.uploaded.push(p);
           result.bytesUploaded += bytes.length;
         }
