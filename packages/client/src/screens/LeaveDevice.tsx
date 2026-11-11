@@ -9,7 +9,9 @@
  * It asks twice, in words that say what is kept, because the usual reader is
  * a parent worried about losing a hero. And where leaving *would* lose one (a
  * kid who exists only here, in a household nobody has saved) it offers no
- * button at all and says what to do first.
+ * button at all and says what to do first. The reason is the server's
+ * (`staysBecause`): a founding device whose kid is also on another device is
+ * not her only device, it is the only one that can save her.
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -81,8 +83,9 @@ export function LeaveDevice({
 
       {!standing.canLeave ? (
         <p className="home__hint kad-muted">
-          {name}&rsquo;s heroes are only on this device. Save them to an account first, and then this device can
-          leave.
+          {standing.staysBecause === "founder"
+            ? `${name}’s heroes are not saved to an account yet, and this is the device that can save them. Save them first, and then this device can leave.`
+            : `${name}’s heroes are only on this device. Save them to an account first, and then this device can leave.`}
         </p>
       ) : confirming ? (
         <>

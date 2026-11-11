@@ -68,6 +68,19 @@ describe("LeaveDevice", () => {
     expect(screen.queryByRole("button")).toBeNull();
   });
 
+  it("does not call a founding device her only one when she is on another too", async () => {
+    render(
+      <LeaveDevice
+        load={async () => ({ displayName: "Ada", kept: false, canLeave: false, staysBecause: "founder" as const })}
+        leave={vi.fn()}
+        onLeft={vi.fn()}
+      />,
+    );
+    expect(await screen.findByText(/this is the device that can save them/)).toBeTruthy();
+    expect(screen.queryByText(/only on this device/)).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
   it("stays put and says why when leaving fails", async () => {
     const user = userEvent.setup();
     const onLeft = vi.fn();

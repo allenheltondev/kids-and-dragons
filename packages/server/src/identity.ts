@@ -81,6 +81,8 @@ export interface SessionIdentity {
   playerId: string;
   /** Epoch millis. */
   expiresAt: number;
+  /** The device this session was handed to (`IssueSessionTokenInput.deviceId`). */
+  deviceId?: string;
 }
 
 export interface IssueDeviceTokenInput {
@@ -98,6 +100,14 @@ export interface IssueSessionTokenInput {
   playerId: string;
   /** Epoch millis. Rooms live ≤ 6 hours, so sessions never outlive them. */
   expiresAt: number;
+  /**
+   * The device the session is handed to: the kid's own, or the family tablet
+   * she was picked on. A session is a second credential cut from that
+   * device's, so it dies with the binding (`sessionDeviceRevoked`): a device
+   * that leaves, is lost or is forgotten takes its open sessions with it, in
+   * every tab that holds one.
+   */
+  deviceId?: string;
 }
 
 /**
@@ -143,6 +153,7 @@ export interface IdentityService {
    */
   resolveSharedDevice(token: string): Promise<SharedDeviceIdentity | null>;
   issueSessionToken(input: IssueSessionTokenInput): Promise<string>;
+  /** `null` for an unknown, malformed or expired token, and for one whose device was revoked. */
   resolveSession(token: string): Promise<SessionIdentity | null>;
   /** Read-only, room-scoped, no player. For the TV. */
   issueViewerToken(input: IssueViewerTokenInput): Promise<string>;
@@ -281,6 +292,7 @@ export class DevIdentity implements IdentityService {
     const claims = decode<SessionIdentity>(token, SESSION_PREFIX);
     if (!claims) return null;
     if (claims.expiresAt <= this.now()) return null;
+    if (await sessionDeviceRevoked(this.repo, claims.householdId, claims.deviceId)) return null;
     return claims;
   }
 
@@ -336,6 +348,29 @@ export async function movedBinding(
     from = to;
   }
   return null;
+}
+
+/**
+ * Has the device a session was handed to been revoked since? A session token
+ * is signed on its own and lives as long as its room, so without this a device
+ * that left (`handlers/leave-device.ts`), was lost or was forgotten kept
+ * playing, and reading its kid's page, from any tab still holding one.
+ *
+ * Read by primary key, strongly consistent, as a device token's own check is,
+ * and following a kid who moved home (`movedBinding`). Only a binding that says
+ * `revoked` ends a session: one that is not there at all proves nothing, and a
+ * session minted before sessions named their device has none to ask about. Those
+ * run out with their room, six hours at most.
+ */
+export async function sessionDeviceRevoked(
+  repo: Pick<GameRepository, "getDevice" | "getMovedDevice">,
+  householdId: string,
+  deviceId: string | undefined,
+): Promise<boolean> {
+  if (deviceId === undefined) return false;
+  const binding =
+    (await repo.getDevice(householdId, deviceId)) ?? (await movedBinding(repo, householdId, deviceId));
+  return binding?.revoked === true;
 }
 
 /** Tokens are stored hashed, never in the clear — true in dev and in prod. */

@@ -1937,6 +1937,30 @@ describe("a device and leaving it", () => {
     const rt = runtimeFor(makeHarness());
     expect((await respond(event("POST", "/api/device/leave"), rt)).statusCode).toBe(401);
   });
+
+  it("ends the room session a second tab still holds: no state, no journal, no page", async () => {
+    // A ward's tablet with the game open in two tabs. One leaves; the other
+    // still has the session it joined with, signed and hours from expiring.
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    const device = { "x-kad-device-token": room.player.deviceToken };
+    const joined = await respond(event("POST", `/api/room/${room.code}/join`, { headers: device }), rt);
+    const { sessionToken } = bodyOf(joined) as unknown as { sessionToken: string };
+    const session = { authorization: `Bearer ${sessionToken}` };
+    const state = () => respond(event("GET", "/api/state", { query: { code: room.code }, headers: session }), rt);
+    const journal = () => respond(event("GET", "/api/journal", { headers: session }), rt);
+
+    expect((await state()).statusCode).toBe(200);
+    expect((await journal()).statusCode).toBe(200);
+
+    expect((await respond(event("POST", "/api/device/leave", { headers: device }), rt)).statusCode).toBe(200);
+
+    expect((await state()).statusCode).not.toBe(200);
+    expect((await journal()).statusCode).toBe(401);
+    expect((await respond(event("POST", "/api/journal/kit", { headers: session, body: {} }), rt)).statusCode).toBe(401);
+    expect((await respond(event("POST", "/api/presence", { headers: session, body: {} }), rt)).statusCode).not.toBe(200);
+  });
 });
 
 describe("POST /api/auth/start", () => {

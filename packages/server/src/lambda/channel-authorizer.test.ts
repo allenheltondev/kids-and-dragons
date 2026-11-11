@@ -46,6 +46,24 @@ describe("channel authorizer", () => {
     expect(result.handlerContext).toMatchObject({ runId: "r_1", playerId: "p_1" });
   });
 
+  it("refuses a session whose device has left, though the token is hours from expiring", async () => {
+    const { identity, clock, repo } = setup();
+    const { deviceId } = await identity.issueDeviceToken({ householdId: "h_1", playerId: "p_1" });
+    const token = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: clock.now() + ROOM_TTL,
+      deviceId,
+    });
+    expect((await authorize(event({ token }), identity, clock.now)).isAuthorized).toBe(true);
+
+    await repo.revokeDevice("h_1", deviceId);
+    expect((await authorize(event({ token }), identity, clock.now)).isAuthorized).toBe(false);
+    expect((await authorize(event({ token, operation: "EVENT_CONNECT", channel: null }), identity, clock.now)).isAuthorized).toBe(false);
+  });
+
   it("refuses a valid token pointed at somebody else's room", async () => {
     /*
      * The one that matters. Four letters is a small space, and the room code is

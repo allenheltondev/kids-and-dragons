@@ -930,6 +930,14 @@ export interface DeviceStanding {
   kept: boolean;
   /** Leaving still leaves a way back to her: a sign-in, or another of her devices. */
   canLeave: boolean;
+  /**
+   * Why it may not leave, when it may not, so the refusal is said in true
+   * words. `onlyDevice`: no other device is her and nobody has saved the
+   * household, so her heroes are reachable from here alone. `founder`: another
+   * device is her, but this is the one that started the household and the
+   * only one that can ever save it (`Household.founderDeviceId`).
+   */
+  staysBecause?: "onlyDevice" | "founder";
 }
 
 /**

@@ -45,7 +45,10 @@ describe("what a device is told about itself", () => {
     const harness = makeHarness();
     const { bound } = await seedGuest(harness);
     const result = await deviceStanding(bound[0]!.principal, harness.deps);
-    expect(result).toEqual({ ok: true, value: { displayName: "Ada", kept: false, canLeave: false } });
+    expect(result).toEqual({
+      ok: true,
+      value: { displayName: "Ada", kept: false, canLeave: false, staysBecause: "onlyDevice" },
+    });
   });
 
   it("lets a borrowed device leave an unkept household while her own device is still her", async () => {
@@ -54,8 +57,18 @@ describe("what a device is told about itself", () => {
     const { bound } = await seedGuest(harness, 2);
     const [phone, tablet] = bound;
     expect(await deviceStanding(tablet!.principal, harness.deps)).toMatchObject({ value: { kept: false, canLeave: true } });
-    // The phone that started the household is the only one that can ever keep it.
-    expect(await deviceStanding(phone!.principal, harness.deps)).toMatchObject({ value: { kept: false, canLeave: false } });
+    // The phone that started the household is the only one that can ever keep it,
+    // and it is told that: her heroes are not "only on this device".
+    expect(await deviceStanding(phone!.principal, harness.deps)).toMatchObject({
+      value: { kept: false, canLeave: false, staysBecause: "founder" },
+    });
+  });
+
+  it("gives no reason to stay to a device that may leave", async () => {
+    const harness = makeHarness();
+    const { bound } = await seedGuest(harness, 2);
+    const result = await deviceStanding(bound[1]!.principal, harness.deps);
+    expect(result.ok && "staysBecause" in result.value).toBe(false);
   });
 
   it("does not count another device that was revoked, or whose token has run out", async () => {
@@ -117,7 +130,41 @@ describe("leaving a device", () => {
     const { bound } = await seedGuest(harness);
     const result = await leaveDevice(bound[0]!.principal, harness.deps);
     expect(result).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(result.ok ? "" : result.error.message).toContain("only on this device");
     expect(result.ok ? "" : result.error.message).toContain("Save them to an account first");
     expect(await harness.identity.resolveDevice(bound[0]!.deviceToken)).not.toBeNull();
+  });
+
+  it("tells a founding device with a second device the true reason, not that it is her only one", async () => {
+    const harness = makeHarness();
+    const { bound } = await seedGuest(harness, 2);
+    const result = await leaveDevice(bound[0]!.principal, harness.deps);
+    expect(result).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    const said = result.ok ? "" : result.error.message;
+    expect(said).not.toContain("only on this device");
+    expect(said).toContain("this is the device that can save them");
+    expect(await harness.identity.resolveDevice(bound[0]!.deviceToken)).not.toBeNull();
+  });
+
+  it("ends the room sessions the device was handed, and nobody else's", async () => {
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 2);
+    const [ada, ben] = players;
+    const session = (who: typeof ada) =>
+      harness.identity.issueSessionToken({
+        runId: "r_1",
+        roomCode: "ABCD",
+        householdId,
+        playerId: who!.principal.playerId,
+        expiresAt: harness.clock.now() + 3600_000,
+        deviceId: who!.principal.deviceId,
+      });
+    const [hers, his] = [await session(ada), await session(ben)];
+    expect(await harness.identity.resolveSession(hers)).not.toBeNull();
+
+    await leaveDevice(ada!.principal, harness.deps);
+
+    expect(await harness.identity.resolveSession(hers)).toBeNull();
+    expect(await harness.identity.resolveSession(his)).not.toBeNull();
   });
 });
