@@ -53,10 +53,10 @@ and keep their own pipeline ([voice-narration-plan.md](./voice-narration-plan.md
 | Link to a picture (a PR, a review doc, a chat) | `npm run assets:url -- assets/cast/pib/assembled.png` |
 | Find out where a painting came from | `npm run assets:provenance -- assets/cast/pib/assembled.png` ([Provenance](#provenance)) |
 | Say which art issue a push is for | `npm run assets:push -- --issue 704 <folder>` (stamped on each new blob) |
+| Check everything is consistent | `npm run assets:verify` |
 
 `push` refuses to run before the cutover (no `assets.lock.json`): the art is still in git then, and
 a push would write a lock naming only the new files, which every other tool would read as "migrated".
-| Check everything is consistent | `npm run assets:verify` |
 
 `pull` behaves the way `git checkout` does with your edits. It fetches what is
 missing, updates what it put there itself when the lock moves on, and removes
