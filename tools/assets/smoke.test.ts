@@ -143,8 +143,10 @@ describe("npm run assets:smoke, run as a command", () => {
       const copy = path.join(dir, "tools", "assets");
       fs.mkdirSync(copy, { recursive: true });
       for (const f of fs.readdirSync(path.join(root, "tools", "assets"))) if (f.endsWith(".ts")) fs.copyFileSync(path.join(root, "tools", "assets", f), path.join(copy, f));
-      fs.symlinkSync(path.join(root, "packages"), path.join(dir, "packages"));
-      fs.symlinkSync(path.join(root, "node_modules"), path.join(dir, "node_modules"));
+      // Junctions on Windows: a directory symlink there needs admin rights or Developer Mode.
+      const linkType = process.platform === "win32" ? "junction" : "dir";
+      fs.symlinkSync(path.join(root, "packages"), path.join(dir, "packages"), linkType);
+      fs.symlinkSync(path.join(root, "node_modules"), path.join(dir, "node_modules"), linkType);
       fs.copyFileSync(path.join(root, "assets.config.json"), path.join(dir, "assets.config.json"));
       const env = { ...process.env };
       delete env.KAD_MCP_TOKEN;
