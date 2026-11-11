@@ -106,6 +106,14 @@ describe("upload URLs", () => {
     expect(answers[1]).toMatchObject({ key: `sha256/cd/${SHA2}.webm`, method: "PUT", headers: { "Content-Type": "audio/webm", "If-None-Match": "*" } });
   });
 
+  it("refuses a file whose stamp would not fit, rather than store a shortened one", async () => {
+    const s3 = new S3Client({ region: "us-east-1", credentials: { accessKeyId: "AKIAEXAMPLE", secretAccessKey: "secret" }, requestChecksumCalculation: "WHEN_REQUIRED" });
+    const signer = new S3UploadSigner("kad-asset-store-test", s3);
+    signer.has = () => Promise.resolve(false);
+    const [answer] = await planUploads(signer, [{ path: `assets/${"é".repeat(400)}.png`, sha256: SHA, bytes: 10 }], { uploader: "agent", via: "mcp" });
+    expect(answer).toMatchObject({ status: "refused", reason: expect.stringMatching(/stamp .* over S3's 2048/) });
+  });
+
   it("signs the write-once and checksum headers, so an uploader cannot drop them", async () => {
     const s3 = new S3Client({ region: "us-east-1", credentials: { accessKeyId: "AKIAEXAMPLE", secretAccessKey: "secret" }, requestChecksumCalculation: "WHEN_REQUIRED" });
     const stamp = { uploader: "cloud agent", via: "mcp" as const, agent: "codex", tags: { env: "codex-cloud" }, path: "assets/cast/pib/assembled.png", issue: 704, at: "2026-11-11T12:00:00.000Z" };

@@ -53,6 +53,9 @@ and keep their own pipeline ([voice-narration-plan.md](./voice-narration-plan.md
 | Link to a picture (a PR, a review doc, a chat) | `npm run assets:url -- assets/cast/pib/assembled.png` |
 | Find out where a painting came from | `npm run assets:provenance -- assets/cast/pib/assembled.png` ([Provenance](#provenance)) |
 | Say which art issue a push is for | `npm run assets:push -- --issue 704 <folder>` (stamped on each new blob) |
+
+`push` refuses to run before the cutover (no `assets.lock.json`): the art is still in git then, and
+a push would write a lock naming only the new files, which every other tool would read as "migrated".
 | Check everything is consistent | `npm run assets:verify` |
 
 `pull` behaves the way `git checkout` does with your edits. It fetches what is
@@ -133,6 +136,10 @@ anyone. A key's label, agent and tags are therefore plain words checked at mint 
 agents or tags, no emails, no secrets). An AWS-credentialed write is stamped with
 `KAD_UPLOADED_BY` (default `operator`), never with the AWS identity, which would name the
 account and the user.
+
+A stamp is never shortened: it is written once and can never be repaired, so a value too long
+for S3's 2 KB of object metadata refuses the upload instead (a 512-character path with a key's
+full eight tags fits). Printable ASCII is stored as it is; anything else is percent-encoded.
 
 The stamp names only the first uploader of some bytes, because a blob is written once; the
 same bytes used again at another path, or by another key, show in git and not in the stamp.

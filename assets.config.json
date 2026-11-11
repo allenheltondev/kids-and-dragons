@@ -1,8 +1,8 @@
 {
-  "$comment": "The asset store (docs/asset-store.md). Media under these roots with these extensions live in S3, content-addressed; git keeps assets.lock.json. storeUrl is the store stack's StoreUrl output (infra/asset-store.yaml): the public, credential-free read URL every clone, CI job and deploy pulls from. bucket null means writers read it from the stack. untracked flips to true at the cutover (npm run assets:migrate -- --untrack) and arms the guard that keeps media out of git. exclude: generated output a push does not pick up unless named. mcpUrl is the stack's McpServerUrl output, for assets:push --writer mcp (docs/mcp-server.md).",
+  "$comment": "The asset store (docs/asset-store.md). Media under these roots with these extensions live in S3, content-addressed; git keeps assets.lock.json. storeUrl is the store stack's StoreUrl output (infra/asset-store.yaml): the public, credential-free read URL every clone, CI job and deploy pulls from. bucket null means writers read it from the stack. untracked flips to true at the cutover (npm run assets:migrate -- --untrack) and arms the guard that keeps media out of git. exclude: generated output a push does not pick up unless named. mcpUrl is production's MCP server (the stack's McpServerUrl output), for assets:push --writer mcp (docs/mcp-server.md); KAD_MCP_URL points elsewhere, e.g. staging.",
   "storeUrl": null,
   "bucket": null,
-  "mcpUrl": null,
+  "mcpUrl": "https://kd.readysetcloud.io/api/mcp",
   "stack": "kad-asset-store",
   "region": "us-east-1",
   "untracked": false,

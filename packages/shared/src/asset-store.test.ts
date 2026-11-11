@@ -9,7 +9,13 @@ import {
   matchesRules,
   mergeLocks,
   parseLock,
+  readStamp,
   serializeLock,
+  stampMetadata,
+  stampValue,
+  STAMP_MAX_BYTES,
+  StampTooLargeError,
+  type BlobStamp,
   underAny,
   type AssetLock,
   type AssetRules,
@@ -112,5 +118,40 @@ describe("leaving git", () => {
     expect(re.test("art/source/deep/x.WEBM")).toBe(true);
     expect(re.test("assets/manifest.json")).toBe(false);
     expect(re.test("packages/client/src/assets/x.png")).toBe(false);
+  });
+});
+
+describe("provenance stamps (#732)", () => {
+  const longest = (): BlobStamp => ({
+    // The longest every field can be: a 60-character label, a 32-character agent, eight tags of
+    // 32-character keys and 64-character values, a 512-character path.
+    uploader: "l".repeat(60),
+    via: "mcp",
+    agent: "a".repeat(32),
+    tags: Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`${i}`.padEnd(32, "k"), `v/${i}:`.padEnd(64, "x")])),
+    path: `assets/${"p/".repeat(250)}x.png`.slice(0, 512),
+    issue: 123456,
+    at: "2026-11-11T12:00:00.000Z",
+  });
+
+  it("keeps the longest stamp keys and tags allow whole, and reads it back exactly", () => {
+    const stamp = longest();
+    expect(stamp.path).toHaveLength(512);
+    const meta = stampMetadata(stamp);
+    expect(meta["kad-path"]).toBe(stamp.path);
+    expect(readStamp((k) => meta[k])).toEqual(stamp);
+  });
+
+  it("never cuts an escape in half: % and non-ASCII round-trip", () => {
+    const stamp: BlobStamp = { uploader: "codex", via: "mcp", path: "assets/cast/zoë/100%/assembled.png", at: "t" };
+    expect(stampValue(stamp.path!)).toBe("assets/cast/zo%C3%AB/100%25/assembled.png");
+    expect(readStamp((k) => stampMetadata(stamp)[k])).toEqual(stamp);
+    expect(stampValue("plain/ascii:path-1.png")).toBe("plain/ascii:path-1.png");
+  });
+
+  it("refuses a stamp over S3's limit instead of shortening it", () => {
+    const stamp: BlobStamp = { uploader: "codex", via: "mcp", path: `assets/${"é".repeat(400)}.png`, at: "t" };
+    expect(() => stampMetadata(stamp)).toThrow(StampTooLargeError);
+    expect(() => stampMetadata(stamp)).toThrow(new RegExp(`over S3's ${STAMP_MAX_BYTES}`));
   });
 });

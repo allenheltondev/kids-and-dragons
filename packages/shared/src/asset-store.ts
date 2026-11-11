@@ -272,14 +272,40 @@ export const STAMP_FIELDS = {
   at: "kad-at",
 } as const;
 
-const STAMP_VALUE_MAX = 256;
+/**
+ * S3's limit on an object's user metadata: the UTF-8 bytes of every key and value together.
+ * Counted here with the `x-amz-meta-` prefix on each key, which is stricter than S3 needs.
+ */
+export const STAMP_MAX_BYTES = 2048;
 
-/** Header-safe: S3 metadata values must be ASCII, so anything else is percent-encoded. */
-function stampValue(value: string): string {
-  return encodeURIComponent(value).slice(0, STAMP_VALUE_MAX);
+export class StampTooLargeError extends Error {}
+
+/**
+ * Header-safe, and never shortened: a stamp is written once and can never be repaired, so a
+ * value is kept whole or the upload is refused (stampMetadata). Printable ASCII passes through
+ * as it is, which keeps repo paths and key tags their own size; anything else (non-ASCII,
+ * control characters) and `%` itself are percent-encoded as UTF-8, so `decodeURIComponent`
+ * reads every value back exactly.
+ */
+export function stampValue(value: string): string {
+  let out = "";
+  for (const ch of value) {
+    const code = ch.codePointAt(0)!;
+    out += code >= 0x20 && code < 0x7f && ch !== "%" ? ch : encodeURIComponent(ch);
+  }
+  return out;
 }
 
-/** The stamp as S3 object metadata (`Metadata` for the SDK; send each as `x-amz-meta-<name>`). */
+/** The bytes a stamp takes against STAMP_MAX_BYTES. */
+export function stampBytes(metadata: Record<string, string>): number {
+  const encoder = new TextEncoder();
+  return Object.entries(metadata).reduce((sum, [k, v]) => sum + encoder.encode(`x-amz-meta-${k}`).length + encoder.encode(v).length, 0);
+}
+
+/**
+ * The stamp as S3 object metadata (`Metadata` for the SDK; send each as `x-amz-meta-<name>`).
+ * Throws StampTooLargeError rather than shorten anything.
+ */
 export function stampMetadata(stamp: BlobStamp): Record<string, string> {
   const out: Record<string, string> = {
     [STAMP_FIELDS.uploader]: stampValue(stamp.uploader),
@@ -297,6 +323,12 @@ export function stampMetadata(stamp: BlobStamp): Record<string, string> {
   }
   if (stamp.path) out[STAMP_FIELDS.path] = stampValue(stamp.path);
   if (stamp.issue !== undefined) out[STAMP_FIELDS.issue] = String(stamp.issue);
+  const bytes = stampBytes(out);
+  if (bytes > STAMP_MAX_BYTES) {
+    throw new StampTooLargeError(
+      `the provenance stamp would be ${bytes} bytes, over S3's ${STAMP_MAX_BYTES}: shorten the path or the key's tags (a stamp is never cut short)`,
+    );
+  }
   return out;
 }
 

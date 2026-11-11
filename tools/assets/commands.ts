@@ -249,6 +249,16 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
   if (options.prune && prefixes.length === 0) {
     throw new Error("push --prune needs the folders or files whose deletions to record (e.g. --prune assets/cast/old-goblin).");
   }
+  // Before the cutover there is no lock, and the art is in git. A push then would write a lock
+  // naming only the new files, and every tool would read the presence of a lock as "migrated":
+  // the ~2,700 paintings still in git would fail CI's pull and the deploy check as unrecorded.
+  // migrate passes `files` and is the one push allowed to create the first lock.
+  if (!options.files && !hasLock(root) && !config.untracked) {
+    throw new Error(
+      `No ${LOCK_FILE}: this repository's art is still in git, so there is nothing to push to yet. ` +
+        "Commit the art as before (the art-creation skill, step 5), or run the cutover first (npm run assets:migrate; docs/asset-store.md).",
+    );
+  }
   const state = loadState(root);
   const lock = loadLock(root);
   const result: PushResult = { recorded: [], uploaded: [], pruned: [], bytesUploaded: 0 };

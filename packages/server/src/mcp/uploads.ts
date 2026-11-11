@@ -21,7 +21,15 @@
 
 import { HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { BLOB_CACHE_CONTROL, blobKey, contentTypeFor, isSha256, stampMetadata, type BlobStamp } from "../../../shared/src/asset-store.ts";
+import {
+  BLOB_CACHE_CONTROL,
+  StampTooLargeError,
+  blobKey,
+  contentTypeFor,
+  isSha256,
+  stampMetadata,
+  type BlobStamp,
+} from "../../../shared/src/asset-store.ts";
 
 /** Fifteen minutes: long enough for a slow upload of a large painting, short enough to be useless later. */
 export const UPLOAD_URL_SECONDS = 900;
@@ -84,7 +92,14 @@ export async function planUploads(
       }
       const key = blobKey(file.sha256, file.path);
       if (await signer.has(key)) return { path: file.path, key, status: "stored" };
-      const put = await signer.presignPut(key, contentType, file.sha256, file.bytes, { ...stamp, path: file.path, at: now.toISOString() });
+      let put: PresignedPut;
+      try {
+        put = await signer.presignPut(key, contentType, file.sha256, file.bytes, { ...stamp, path: file.path, at: now.toISOString() });
+      } catch (error) {
+        // Refused, not shortened: the stamp is permanent, so it is whole or not written.
+        if (error instanceof StampTooLargeError) return refuse(file.path, error.message);
+        throw error;
+      }
       return { path: file.path, key, status: "upload", method: "PUT", url: put.url, headers: put.headers, expires_at: expires };
     }),
   );

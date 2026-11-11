@@ -140,6 +140,8 @@ export function formatProvenance(p: Provenance): string[] {
       e.uploadedBy ? `uploaded by ${String(e.uploadedBy)}` : null,
     ].filter(Boolean);
     lines.push(`  prompt     ${r.file}${e.id ? ` (${String(e.id)})` : ""}${bits.length ? `: ${bits.join(", ")}` : ""}`);
+    // Where the generator's untouched file is: full size, with any content credentials (C2PA).
+    if (typeof e.original === "string") lines.push(`  original   ${e.original}  (npm run assets:pull -- ${e.original})`);
     if (typeof e.prompt === "string") lines.push(`             "${e.prompt.slice(0, 140)}${e.prompt.length > 140 ? "…" : ""}"`);
   }
   if (!p.stamp) lines.push("  store      no stamp (uploaded before stamps existed, or the store is not configured)");

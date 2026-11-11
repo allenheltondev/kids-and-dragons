@@ -477,3 +477,16 @@ describe("stamps on AWS-credentialed writes (#732)", () => {
     expect(JSON.stringify(stamp)).not.toMatch(/arn:|amazonaws|@/);
   });
 });
+
+describe("push before the cutover", () => {
+  it("refuses, rather than write a lock naming only the new files", async () => {
+    const root = makeRepo();
+    write(root, "assets/cast/new/assembled.png", "a new painting");
+    await expect(push(root, new DirBlobStore(storeDir), { cacheDir, prefixes: ["assets/cast/new"] })).rejects.toThrow(/still in git.*assets:migrate/);
+    expect(fs.existsSync(path.join(root, "assets.lock.json"))).toBe(false);
+    expect(fs.existsSync(path.join(storeDir, "sha256"))).toBe(false);
+    // migrate is the one push allowed to write the first lock.
+    await migrate(root, new DirBlobStore(storeDir), { cacheDir });
+    expect(fs.existsSync(path.join(root, "assets.lock.json"))).toBe(true);
+  });
+});

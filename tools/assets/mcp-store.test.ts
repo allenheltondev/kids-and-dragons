@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mcpEndpoint } from "../../packages/server/src/mcp/handler";
 import { MemoryKeyStore, mintKey } from "../../packages/server/src/mcp/keys";
 import { checksumHeader, type UploadSigner } from "../../packages/server/src/mcp/uploads";
-import { stampMetadata } from "../../packages/shared/src/asset-store";
+import { emptyLock, serializeLock, stampMetadata } from "../../packages/shared/src/asset-store";
 import { push, pull } from "./commands";
 import { loadLock } from "./lib";
 import { McpBlobStore } from "./mcp-store";
@@ -102,6 +102,8 @@ function repo(): string {
     JSON.stringify({ storeUrl: `file://${storeDir}`, mcpUrl: `${base}/api/mcp`, roots: ["assets"], extensions: ["png"], exclude: [] }),
   );
   fs.writeFileSync(path.join(root, "assets/cast/pib/assembled.png"), "pib, painted by an agent");
+  // Migrated: an (empty) lock is what says the art lives in the store.
+  fs.writeFileSync(path.join(root, "assets.lock.json"), serializeLock(emptyLock()));
   return root;
 }
 
@@ -136,7 +138,7 @@ describe("assets:push through the MCP server", () => {
   it("says what to do without a key, and writes no lock", async () => {
     const root = repo();
     await expect(push(root, new McpBlobStore(`${base}/api/mcp`, null), { cacheDir: path.join(tmp, "c") })).rejects.toThrow(/wants a key: set KAD_MCP_TOKEN/);
-    expect(fs.existsSync(path.join(root, "assets.lock.json"))).toBe(false);
+    expect(fs.readFileSync(path.join(root, "assets.lock.json"), "utf8")).toBe(serializeLock(emptyLock()));
   });
 
   it("is refused with a read-only key", async () => {
@@ -169,7 +171,7 @@ describe("assets:provenance (#732)", () => {
     fs.mkdirSync(path.join(root, "docs"), { recursive: true });
     fs.writeFileSync(
       path.join(root, "docs/cast-prompts.json"),
-      JSON.stringify({ issue: 704, paintings: [{ id: "pib", path: "assets/cast/pib/assembled.png", issue: 704, generator: "imagegen", uploadedBy: "codex cloud", prompt: "Use case: illustration-story. Pib, a small round mapmaker." }] }),
+      JSON.stringify({ issue: 704, paintings: [{ id: "pib", path: "assets/cast/pib/assembled.png", issue: 704, generator: "imagegen", uploadedBy: "codex cloud", original: "art/source/originals/704/pib.png", prompt: "Use case: illustration-story. Pib, a small round mapmaker." }] }),
     );
     g("add", "-A");
     g("commit", "-qm", "Paint Pib (#900)");
@@ -182,6 +184,7 @@ describe("assets:provenance (#732)", () => {
     const text = formatProvenance(p).join("\n");
     expect(text).toMatch(/PR #900/);
     expect(text).toMatch(/via mcp by codex cloud, agent codex, env=codex-cloud, for issue #704/);
+    expect(text).toMatch(/original +art\/source\/originals\/704\/pib\.png/);
   });
 
   it("says plainly what it does not know", async () => {
