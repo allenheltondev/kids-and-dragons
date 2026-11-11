@@ -223,6 +223,8 @@ export interface PushOptions {
   log?: Log;
   /** Push exactly these files, whatever status says: migrate's whole tracked set. */
   files?: string[];
+  /** The art issue the files are for, stamped on each new blob (#732). */
+  issue?: number;
 }
 
 export interface PushResult {
@@ -246,6 +248,16 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
   const cacheDir = options.cacheDir ?? defaultCacheDir();
   if (options.prune && prefixes.length === 0) {
     throw new Error("push --prune needs the folders or files whose deletions to record (e.g. --prune assets/cast/old-goblin).");
+  }
+  // Before the cutover there is no lock, and the art is in git. A push then would write a lock
+  // naming only the new files, and every tool would read the presence of a lock as "migrated":
+  // the ~2,700 paintings still in git would fail CI's pull and the deploy check as unrecorded.
+  // migrate passes `files` and is the one push allowed to create the first lock.
+  if (!options.files && !hasLock(root) && !config.untracked) {
+    throw new Error(
+      `No ${LOCK_FILE}: this repository's art is still in git, so there is nothing to push to yet. ` +
+        "Commit the art as before (the art-creation skill, step 5), or run the cutover first (npm run assets:migrate; docs/asset-store.md).",
+    );
   }
   const state = loadState(root);
   const lock = loadLock(root);
@@ -288,7 +300,7 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
     const key = blobKey(entry.sha256, p);
     if (!options.dryRun) {
       if (!(await store.has(key))) {
-        if (await store.put(key, bytes, contentTypeFor(p), p)) {
+        if (await store.put(key, bytes, contentTypeFor(p), { path: p, ...(options.issue !== undefined ? { issue: options.issue } : {}) })) {
           result.uploaded.push(p);
           result.bytesUploaded += bytes.length;
         }
@@ -631,7 +643,7 @@ export async function archiveHistory(root: string, store: BlobStore, options: { 
     const keys = new Map<string, string>();
     for (const file of wanted.get(blob)!) keys.set(blobKey(entry.sha256, file), file);
     for (const [key, file] of keys) {
-      if (!options.dryRun && !(await store.has(key)) && (await store.put(key, bytes, contentTypeFor(file)))) uploaded++;
+      if (!options.dryRun && !(await store.has(key)) && (await store.put(key, bytes, contentTypeFor(file), { path: file }))) uploaded++;
     }
     tick(++done);
   });

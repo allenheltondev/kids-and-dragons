@@ -30,12 +30,15 @@ export async function runKeysCli(argv: string[], open: (table: string) => KeySto
       table: { type: "string" },
       label: { type: "string" },
       scope: { type: "string", multiple: true },
+      agent: { type: "string" },
+      tag: { type: "string", multiple: true },
       days: { type: "string" },
     },
   });
   const usage = (): number => {
     io.err("usage: npm run mcp:keys -- <create|list|revoke> --stage <prod|staging|dev> [--table NAME]");
-    io.err("  create --label NAME --scope SCOPE [--scope SCOPE…] [--days N]   scopes: " + SCOPES.join(", "));
+    io.err("  create --label NAME --scope SCOPE [--scope SCOPE…] [--agent NAME] [--tag k=v…] [--days N]   scopes: " + SCOPES.join(", "));
+    io.err("  (label, agent and tags are stamped, in public, on every blob the key uploads)");
     io.err("  revoke <id>");
     return 2;
   };
@@ -43,7 +46,9 @@ export async function runKeysCli(argv: string[], open: (table: string) => KeySto
   const table = values.table ?? `kad-mcp-keys-${values.stage}`;
   const store = open(table);
   const row = (k: KeyInfo): string =>
-    `${k.id}  ${k.label.padEnd(20)} ${k.scopes.join(",").padEnd(28)} expires ${k.expiresAt.slice(0, 10)}  last used ${k.lastUsedAt?.slice(0, 16).replace("T", " ") ?? "never"}`;
+    `${k.id}  ${k.label.padEnd(20)} ${(k.agent ?? "-").padEnd(10)} ${k.scopes.join(",").padEnd(28)} expires ${k.expiresAt.slice(0, 10)}  last used ${k.lastUsedAt?.slice(0, 16).replace("T", " ") ?? "never"}${
+      Object.keys(k.tags ?? {}).length ? `  ${Object.entries(k.tags).map(([t, v]) => `${t}=${v}`).join(" ")}` : ""
+    }`;
 
   try {
     switch (command) {
@@ -52,9 +57,11 @@ export async function runKeysCli(argv: string[], open: (table: string) => KeySto
         const { key, info } = await mintKey(store, {
           label: values.label,
           scopes: values.scope ?? [],
+          agent: values.agent,
+          tags: values.tag ?? [],
           days: values.days === undefined ? undefined : Number(values.days),
         });
-        io.out(`Minted ${info.id} (${info.label}: ${info.scopes.join(", ")}), expires ${info.expiresAt.slice(0, 10)}.`);
+        io.out(`Minted ${info.id} (${info.label}${info.agent ? `, agent ${info.agent}` : ""}: ${info.scopes.join(", ")}), expires ${info.expiresAt.slice(0, 10)}.`);
         io.out("");
         io.out(`  ${key}`);
         io.out("");

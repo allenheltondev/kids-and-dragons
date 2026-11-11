@@ -40,15 +40,15 @@ export function buildServer(key: VerifiedKey, deps: ServerDeps): McpServer {
     "whoami",
     {
       title: "Who am I",
-      description: "This key's label, scopes and expiry.",
+      description: "This key's label, agent, tags, scopes and expiry. The label, agent and tags are stamped on every blob it uploads.",
       inputSchema: z.object({}),
       outputSchema: z.looseObject({ label: z.string(), scopes: z.array(z.string()), expires_at: z.string() }),
       annotations: READ,
     },
-    guarded(async () => ({ label: key.label, scopes: key.scopes, expires_at: key.expiresAt })),
+    guarded(async () => ({ label: key.label, agent: key.agent, tags: key.tags, scopes: key.scopes, expires_at: key.expiresAt })),
   );
 
-  registerAssetTools(scoped(server, "assets", key.scopes), { signer: deps.signer, keyLabel: key.label });
+  registerAssetTools(scoped(server, "assets", key.scopes), { signer: deps.signer, key });
   // Operator tools (area "operator") register here once they are chosen. Anything
   // returning a household's data needs the privacy review in #525 first: what a
   // tool returns goes into a model's context.

@@ -49,6 +49,7 @@
     "assets:push": "node tools/assets/cli.ts push",
     "assets:verify": "node tools/assets/cli.ts verify",
     "assets:url": "node tools/assets/cli.ts url",
+    "assets:provenance": "node tools/assets/cli.ts provenance",
     "assets:migrate": "node tools/assets/cli.ts migrate",
     "assets:archive-history": "node tools/assets/cli.ts archive-history",
     "assets:filter-args": "node tools/assets/cli.ts filter-args",
