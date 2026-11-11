@@ -213,6 +213,35 @@ sees nothing and never fires. `tools/assets/deploy-guard.test.ts` pins the tag o
 - Downloads: CI pulls through the Actions cache, so a cache that keeps missing (a changed
   key, an evicted cache) shows as CDN transfer. Check the runs' "Pull assets" steps.
 
+### Smoke test
+
+The unit tests stand in for S3. `npm run assets:smoke` checks the real deployment: the MCP
+server, the upload URLs S3 signs and the CDN (#723). Run it after standing the store up, and
+after any change to `infra/asset-store.yaml` or `packages/server/src/mcp/uploads.ts`:
+
+```bash
+npm run mcp:keys -- create --stage staging --label "smoke test" --scope assets:write --agent smoke --days 1
+KAD_MCP_TOKEN=kadmcp_… npm run assets:smoke -- --mcp-url <McpServerUrl> --store-url <StoreUrl>
+npm run mcp:keys -- revoke --stage staging <id>
+```
+
+It uploads one fresh test blob and then checks each of these:
+
+- A made-up key is refused, and `whoami` answers for the real one.
+- The upload URL stores the blob, and a second PUT of the same blob gets 412 (write-once).
+- These PUTs are refused: bytes that don't match the hash, a body of a different size, an
+  upload without `If-None-Match`, and a changed provenance stamp. None of them stores anything.
+- The CDN serves the blob without credentials, with its stamp (this key's label, `mcp`, the
+  issue, the path), and doesn't serve a blob that isn't there.
+
+It prints a line per check and exits 1 if any fails. The flags default to `mcpUrl` and
+`storeUrl` in `assets.config.json` (production). It leaves two small blobs at their hashes,
+stamped with `smoke/…` paths: the one that landed, and the one an unsafe store would have let in.
+No lock names them, so they're never pulled. Blobs are write-once, so they stay, like every
+blob. `tools/assets/smoke.test.ts` runs the smoke test against a local stand-in that refuses
+whatever doesn't match the signed headers. It also checks that a store that overwrites, leaves
+the stamp unsigned, or loses the stamp at the CDN fails the matching check.
+
 ## The cutover
 
 Do this from a **full** clone (not shallow; `archive-history` refuses one, since a partial archive would look complete), with every branch and tag fetched, and with write credentials. Each step is
