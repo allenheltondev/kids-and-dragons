@@ -633,8 +633,9 @@ does not ([docs/camp.md §3.2](../docs/camp.md#32-indoor-and-outdoor-rest-scenes
 Read the narration and the picture, not the keywords: "under the bridge" is outdoors, "a warm
 room" is not. A rest whose words put the party somewhere far from the chapter's terrain (a glacier
 chapter's ending on a foothills bank) is tagged indoor too, so the camp never contradicts the words.
-An ending is a rest like any other. The field is presentation only: it moves no flag, XP, item or
-route, so tagging a Gemfall chapter re-takes its file hashes and nothing else.
+An ending is a rest like any other. The field moves no flag, XP, item or route, but it does decide
+whether the camp can be edited there, so tagging a Gemfall chapter re-takes its play pin
+(`npm run content:pin`) and nothing else.
 
 ## Camp finds: `findForCamp` and `findForKit` (#618)
 

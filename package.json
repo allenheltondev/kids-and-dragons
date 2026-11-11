@@ -20,6 +20,7 @@
     "test:coverage": "vitest run --coverage",
     "content:validate": "node tools/content/validate.mjs",
     "content:proofs": "node tools/content/graph-proofs.ts",
+    "content:pin": "node tools/content/pin-gemfall.ts",
     "content:continuity": "node tools/content/continuity.mjs",
     "content:balance": "tsx tools/content/balance.ts",
     "content:pacing": "tsx tools/content/pacing.ts",
