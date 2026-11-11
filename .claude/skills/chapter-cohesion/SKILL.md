@@ -287,13 +287,16 @@ More worked findings from the audit, and the shape of the #364 / #365 fixes, are
 
 ## Gemfall is pinned
 
-`packages/server/src/handlers/gemfall-compat.test.ts` hashes every Gemfall file, and below the
-hashes it digests the endings, roads, setbacks and resumed saves.
+`packages/server/src/handlers/gemfall-compat.test.ts` pins how every Gemfall file plays (a hash
+of the file with what is only shown or said taken out, `packages/shared/src/play-shape.ts`), and
+below the pins it digests the endings, roads, setbacks and resumed saves.
 
-- **Wording-only edit** (text, labels, prompts, `checkKind`, `priority`, cast): re-take only the
-  edited files' hashes in `GEMFALL_FILES`, add a "Re-pinned for ..." paragraph to the comment
-  above them saying what changed and that no scene, edge, flag, effect, stat or TN moved, and say
-  why in the commit. The digests must not move; if one does, the edit was not wording-only.
+- **Wording-only edit** (text, labels, prompts, `checkKind`, `priority`, cast, art): moves no pin
+  and needs nothing here. If the test fails after one, the edit was not wording-only: read which
+  file `npm run content:pin -- --check` names before going further.
+- **A deliberate change to play that keeps the digests** (a check's `tn`, a gate, an effect in
+  the middle of a chapter, a `spotlight` mark, a rest's `setting`): run `npm run content:pin`,
+  commit the pins file with the change, and say why in the commit. The digests must not move.
 - **Graph change** (anything that moves a digest, such as 08's setback reroutes or a check's
   stat): needs the owner's sign-off before it is written, its own issue or PR, and re-taken
   digests via `gemfall-compat-probe.ts` as its header describes.

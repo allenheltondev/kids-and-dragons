@@ -11,6 +11,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm test` — vitest (includes the `tools/**/*.test.mjs` content suites)
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table
 - `npm run content:proofs` — after changing a graph campaign's graph or the flags its chapters set: re-walks it and writes `content/graph-proofs/`, which the server trusts at start
+- `npm run content:pin` — after a deliberate change to how a Gemfall chapter plays: re-takes its play pin and says which files moved (`--check` writes nothing); wording, art and voice edits never need it
 - `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
 - `npm run play:jump -- <chapter> [scene]` — a TV and phones seated at any scene of any chapter,
   out of campaign order and unlocked (`--flag`, `--fact`, `--players`), shot side by side into
@@ -168,6 +169,8 @@ in [gemfall-authoring.md](docs/campaigns/gemfall-authoring.md#priority-scenes).
 
 ### Gemfall is pinned
 
-`packages/server/src/handlers/gemfall-compat.test.ts` hashes every Gemfall file. A deliberate
-content edit re-takes those hashes and says why in the commit; the gameplay digests below them
-must not move.
+`packages/server/src/handlers/gemfall-compat.test.ts` pins how every Gemfall file plays: a hash of
+the file with what is only shown or said taken out (`packages/shared/src/play-shape.ts`).
+Rewording a line, adding art or retuning a voice moves no pin. A deliberate change to exits,
+checks, effects, gates, fights or interactions' rules re-takes them with `npm run content:pin`
+and says why in the commit; the gameplay digests below them must not move.

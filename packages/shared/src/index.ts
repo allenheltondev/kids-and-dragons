@@ -55,6 +55,7 @@ export * from "./story-so-far.js";
 export * from "./narration.js";
 export * from "./voice-clips.js";
 export * from "./routes.js";
+export * from "./play-shape.js";
 export * from "./campaign-graph.js";
 export * from "./journey.js";
 export * from "./rifts.js";
