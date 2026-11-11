@@ -347,3 +347,24 @@ jobs:
             echo "- **Table:** \`${{ steps.outputs.outputs.table-name }}\`"
             echo "- **Commit:** \`${{ github.event.workflow_run.head_sha || github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # The asset store (docs/asset-store.md): one stack for every stage, holding
+      # the art and audio. This is what creates it and what changes it; nobody
+      # stands it up by hand. Its address is `storeUrl` in assets.config.json,
+      # and the script fails unless the stack serves there and it answers.
+      #
+      # Last, on purpose: the site is live and its summary written before this
+      # runs, so a store that will not deploy fails the run without keeping a
+      # fix from the families.
+      #
+      # Not on a rollback. A dispatch that names a ref ships an older commit of
+      # the site, and deploying that commit's store template would take the
+      # store backwards with it (a budget, a bucket rule). The store only ever
+      # follows the tip of main.
+      - name: Deploy the asset store
+        if: github.event_name == 'workflow_run' || inputs.ref == ''
+        run: ./scripts/deploy-asset-store.sh
+        env:
+          # The same zone the site's own domain lives in (readysetcloud.io);
+          # the step above the site deploy has already refused an empty one.
+          APP_HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}

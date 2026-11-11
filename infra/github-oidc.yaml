@@ -368,6 +368,91 @@ Resources:
               StringEquals:
                 "aws:ResourceTag/aws:cloudformation:stack-name": "kad-${aws:PrincipalTag/kad:stage}"
 
+  # The asset store (infra/asset-store.yaml, docs/asset-store.md): one stack
+  # for every stage, created and updated by the last step of the production
+  # deploy (scripts/deploy-asset-store.sh). Production's role alone holds this.
+  # The staging role runs repository-controlled code on every pull request, and
+  # the store holds the only copy of the art once history is rewritten.
+  #
+  # Bucket-level actions only: the role can create and configure the bucket,
+  # never read, write or delete what is in it (DeleteBucket is refused by S3
+  # while the bucket holds anything). The one thing in IAM it may touch is the
+  # writer policy, by name.
+  AssetStoreDeployPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: kad-deploy-asset-store
+      Description: What deploying the Kids & Dragons asset store touches, on top of kad-deploy
+      Roles:
+        - !Ref ProdDeployRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: CloudFormationAssetStoreStack
+            Effect: Allow
+            Action: cloudformation:*
+            Resource: !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/kad-asset-store/*"
+
+          - Sid: S3AssetStoreBucketItself
+            Effect: Allow
+            Action:
+              - s3:CreateBucket
+              - s3:DeleteBucket
+              - s3:DeleteBucketPolicy
+              - s3:GetBucketOwnershipControls
+              - s3:GetBucketPolicy
+              - s3:GetBucketPublicAccessBlock
+              - s3:GetBucketTagging
+              - s3:GetBucketVersioning
+              - s3:GetEncryptionConfiguration
+              - s3:GetLifecycleConfiguration
+              - s3:PutBucketOwnershipControls
+              - s3:PutBucketPolicy
+              - s3:PutBucketPublicAccessBlock
+              - s3:PutBucketTagging
+              - s3:PutBucketVersioning
+              - s3:PutEncryptionConfiguration
+              - s3:PutLifecycleConfiguration
+            Resource: !Sub "arn:${AWS::Partition}:s3:::kad-asset-store-${AWS::AccountId}"
+
+          # The budget (#733). ModifyBudget is create, update and delete.
+          - Sid: AssetStoreBudget
+            Effect: Allow
+            Action:
+              - budgets:ModifyBudget
+              - budgets:ViewBudget
+            Resource: !Sub "arn:${AWS::Partition}:budgets::${AWS::AccountId}:budget/kad-asset-store"
+
+          # The policy a writer is given (kad-asset-writer), and no other.
+          # Nothing here attaches it to anyone.
+          - Sid: AssetWriterPolicyByName
+            Effect: Allow
+            Action:
+              - iam:CreatePolicy
+              - iam:CreatePolicyVersion
+              - iam:DeletePolicy
+              - iam:DeletePolicyVersion
+              - iam:GetPolicy
+              - iam:GetPolicyVersion
+              - iam:ListPolicyVersions
+            Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/kad-asset-writer"
+
+          # The store's own host (storeUrl in assets.config.json): a
+          # certificate, and A/AAAA records in the zone that holds it. Neither
+          # service takes a useful resource scope at create time.
+          - Sid: AssetStoreCertificateAndRecords
+            Effect: Allow
+            Action:
+              - acm:AddTagsToCertificate
+              - acm:DeleteCertificate
+              - acm:DescribeCertificate
+              - acm:RequestCertificate
+              - route53:ChangeResourceRecordSets
+              - route53:GetChange
+              - route53:GetHostedZone
+              - route53:ListResourceRecordSets
+            Resource: "*"
+
 Outputs:
   StagingRoleArn:
     Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Staging environment (not Production)
