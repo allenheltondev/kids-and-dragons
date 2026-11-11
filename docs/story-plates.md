@@ -374,8 +374,7 @@ epilogue carries what the scene before (`keepers` or `listened`) decided:
 1. Write the `prologue` (and any chapter `plate`s and `epilogues`), following section 2.
 2. Add each `art` id to `assets/manifest.json` → `storyPlates.ids`.
 3. Add the prompts to [story-plates-prompts.json](story-plates-prompts.json).
-4. `npm run content:validate`. For a **graph** campaign, also `npm run content:proofs` and commit
-   what it writes (it re-fingerprints the campaign).
+4. `npm run content:validate`.
 5. Gemfall is pinned by how it plays (`gemfall-compat.test.ts`, `packages/shared/src/play-shape.ts`).
    A prologue, an epilogue or a chapter's plate is only shown, so adding one to Gemfall moves no pin
    and needs nothing re-taken; the gameplay digests must not move either.

@@ -15,7 +15,13 @@ import { ContentSet } from "./content-set.ts";
 import { formatEvent, validateContent } from "./validate-content.ts";
 
 export interface CliInput {
-  /** The arguments after the script name. `--write-proofs` records clean graph walks. */
+  /**
+   * The arguments after the script name. Clean graph walks are recorded in
+   * `content/graph-proofs/` unless `--no-write-proofs` is given: the folder is
+   * an ignored cache, so refreshing it is what a run is for. `--write-proofs`
+   * is still accepted and changes nothing; it was how the proofs were re-taken
+   * when they were committed.
+   */
   argv: readonly string[];
   /**
    * - `KAD_CONTENT_ROOT`: which tree to validate. Defaults to this repo. It
@@ -37,7 +43,7 @@ export interface CliInput {
 export function runCli({ argv, env, color, print }: CliInput): number {
   const root = env.KAD_CONTENT_ROOT ? resolve(env.KAD_CONTENT_ROOT) : fileURLToPath(new URL("../..", import.meta.url));
   const result = validateContent(ContentSet.load(root), {
-    writeProofs: argv.includes("--write-proofs"),
+    writeProofs: !argv.includes("--no-write-proofs"),
     classPlaces: env.KAD_CLASS_PLACES !== "off",
     schemaCacheDir: env.KAD_SCHEMA_CACHE || null,
     onEvent: (event) => {

@@ -303,7 +303,7 @@ below the pins it digests the endings, roads, setbacks and resumed saves.
 
 Before pushing any chapter edit: `npm run typecheck`, `npm test`, `content:validate`,
 `content:continuity`, and the pacing before and after in the PR (#364's table is the model).
-When a graph campaign's flag writes or graph changes, regenerate `npm run content:proofs`. For interaction edits, verify
+A graph campaign's proof is a cache nobody commits: `content:validate` re-walks and records it when the graph or a flag write changes. For interaction edits, verify
 real engine controls, assistance and recovery, plus complete routes through the changed decisions;
 use the relevant content tests rather than relying on a schema pass. Report the duration target,
 what fills it and any family timing still unmeasured.

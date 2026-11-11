@@ -73,14 +73,14 @@ export function pythonCandidates(platform = process.platform) {
 /**
  * @param {string} root
  * @param {{ env?: NodeJS.ProcessEnv, io?: SetupIo, platform?: NodeJS.Platform }} [options]
- * @returns {{ node: "installed" | "current", python: "installed" | "current" | "missing" | "failed", driver: boolean, art: "pulled" | "failed" | "skipped" | "no lock" }}
+ * @returns {{ node: "installed" | "current", python: "installed" | "current" | "missing" | "failed", proofs: "current" | "failed" | "no tool", driver: boolean, art: "pulled" | "failed" | "skipped" | "no lock" }}
  */
 export function setup(root, options = {}) {
   const env = options.env ?? process.env;
   const io = options.io ?? realIo(root);
   const platform = options.platform ?? process.platform;
   /** @type {ReturnType<typeof setup>} */
-  const done = { node: "current", python: "missing", driver: false, art: "no lock" };
+  const done = { node: "current", python: "missing", proofs: "no tool", driver: false, art: "no lock" };
 
   // --- Node -------------------------------------------------------------------
   // The workspaces (packages/shared, server, client) install from the root.
@@ -115,6 +115,19 @@ export function setup(root, options = {}) {
       if (!ok) io.warn("could not install requirements-dev.txt: the art commands will explain what is missing");
       done.python = ok ? "installed" : "failed";
     }
+  }
+
+  // --- Graph proofs -------------------------------------------------------------
+  // A graph campaign's route search takes seconds, and a proof that it was run lets the
+  // server skip it. The proofs are a cache nobody commits (tools/content/graph-proofs.ts),
+  // so a fresh checkout has none: make them now, or the first dev server start and the
+  // first test run each walk Riftlight themselves. Never fatal: `--soft` exits 0 on content
+  // that does not validate, and says so.
+  if (fs.existsSync(path.join(root, "tools", "content", "graph-proofs.ts"))) {
+    io.say("checking the graph proofs");
+    const code = io.run(process.execPath, ["tools/content/graph-proofs.ts", "--soft"]);
+    done.proofs = code === 0 ? "current" : "failed";
+    if (code !== 0) io.warn("could not refresh the graph proofs (npm run content:validate says why); servers and tests will walk the graph themselves");
   }
 
   // --- The asset store ----------------------------------------------------------

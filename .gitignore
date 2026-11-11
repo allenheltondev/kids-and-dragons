@@ -33,6 +33,10 @@ infra/.build/
 # local dev-server table (DynamoDB Local's stand-in)
 .data/
 
+# Graph proofs: a cache of each graph campaign's route search, made where it is needed
+# (tools/content/graph-proofs.ts). Committed, any two Riftlight branches conflicted here.
+content/graph-proofs/
+
 # local
 .env
 .env.local

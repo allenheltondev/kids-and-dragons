@@ -21,6 +21,10 @@ export default defineConfig({
       "tools/**/*.test.ts",
     ],
     environment: "node",
+    // Graph proofs are a cache nobody commits (tools/content/graph-proofs.ts). Refreshed once
+    // here, before any worker starts: without a current one, every test file that loads the
+    // real content would walk Riftlight itself, five seconds a file.
+    globalSetup: ["./tools/content/graph-proofs.ts"],
     // Tests that spawn tools/content/validate.mjs inherit this: it keeps the compiled schemas
     // (about 0.4 s of every run) instead of compiling them again in each spawn. Most of the
     // gate's tests call it in process now (tools/content/validate-harness.ts) and compile once

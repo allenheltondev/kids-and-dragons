@@ -167,6 +167,26 @@ describe("setup: the asset store", () => {
   });
 });
 
+describe("setup: graph proofs", () => {
+  it("refreshes them where the tool is, with node, and only warns when the content does not validate", () => {
+    const without = machine();
+    expect(setup(root, { io: without.io, env: {} }).proofs).toBe("no tool");
+    expect(lines(without).some((l) => l.includes("graph-proofs"))).toBe(false);
+
+    fs.mkdirSync(path.join(root, "tools", "content"), { recursive: true });
+    fs.writeFileSync(path.join(root, "tools", "content", "graph-proofs.ts"), "");
+    const m = machine();
+    expect(setup(root, { io: m.io, env: {} }).proofs).toBe("current");
+    const call = m.calls.find((c) => c.line.endsWith("tools/content/graph-proofs.ts --soft"));
+    expect(call.line.startsWith(process.execPath)).toBe(true);
+
+    const broken = machine((line) => (line.includes("graph-proofs.ts") ? 1 : 0));
+    expect(setup(root, { io: broken.io, env: {} }).proofs).toBe("failed");
+    expect(broken.warned.join("\n")).toMatch(/could not refresh the graph proofs/);
+    expect(broken.said.at(-1)).toBe("ready");
+  });
+});
+
 describe("setup, run as a command", () => {
   it("runs with node alone in a scratch clone and registers the merge driver", () => {
     fs.mkdirSync(path.join(root, "scripts"));

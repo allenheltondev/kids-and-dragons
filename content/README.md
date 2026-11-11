@@ -215,12 +215,15 @@ Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, 
 
 - `npm run content:validate` — parses the declaration and lints it (unreachable places, dead ends,
   softlocks, rifts that strand a party).
-- `npm run content:proofs` — the same check, recording each clean walk of the route search in
-  `content/graph-proofs/<campaign>.json`. The search takes seconds (Riftlight walks over a hundred
-  thousand states), so the server trusts a proof that matches the content it loads instead of
-  walking at every start (`packages/shared/src/graph-proof.ts`). Changing a graph campaign's
-  `graph`, `routeSets` or any flag its chapters set makes the proof stale, and
-  `content:validate` fails until you run this and commit the proof. Prose edits do not.
+- **Graph proofs.** The route search takes seconds (Riftlight walks over two hundred thousand
+  states), so each clean walk is recorded in `content/graph-proofs/<campaign>.json`, and the
+  server trusts a proof that matches the content it loads instead of walking at every start
+  (`packages/shared/src/graph-proof.ts`). Changing a graph campaign's `graph`, `routeSets` or
+  any flag its chapters set makes the proof stale. Prose edits do not. The proofs are a cache:
+  the folder is ignored by git and there is nothing to commit. `content:validate` records a
+  walk as it makes it, and the test run, the build, `npm run setup` and `npm run dev` refresh a
+  stale proof themselves (`tools/content/graph-proofs.ts`). `npm run content:proofs` does only
+  that, by hand.
 - `npm run content:journey -- --campaign <file-or-id>` — an outline of the places, doors and
   endings; `--format mermaid|dot|json` for a diagram or script-ready data; route coverage (what is
   reachable, the shortest way to each ending, what a used-up door leaves behind, where a party can
@@ -475,7 +478,6 @@ later chapter, including road and pursuit variants):
   (`tools/content/story-plates.test.mjs`). The opening chapter takes the prologue **or** a plate.
 - A plate whose painting has not shipped is left out when the story plays, so content can land
   before its art. `npm run art:inventory` lists what is owed.
-- On a graph campaign, `npm run content:proofs` after adding one.
 
 And at the other end, in the campaign file, an epilogue for each way it can end (2 to 4 plates,
 after the ending scene's words and before the summary, on the completion that ends the campaign):

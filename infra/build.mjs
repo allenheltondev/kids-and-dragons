@@ -46,6 +46,35 @@ const FUNCTIONS = [
 
 await rm(OUT, { recursive: true, force: true });
 
+/*
+ * The content gate, before any of it is packaged (tools/content/graph-proofs.ts,
+ * `contentGateForBuild`). Two things, and both are checked rather than assumed:
+ *
+ *  - The content passes `npm run content:validate`, all of it. The validator
+ *    runs here every build and its verdict is what decides, so a package is
+ *    not made from content that fails any rule. CI and deploy.sh run the same
+ *    gate before they get here; this is the copy that cannot be skipped by
+ *    calling the build directly. It reads the art on disk, as that gate does,
+ *    so the art has to be pulled first (`npm run assets:pull`).
+ *
+ *  - Every graph campaign has a current proof. The API loads `content/` at
+ *    every cold start, and a graph with no proof is walked there: over five
+ *    seconds before the first tap is answered, where a proof makes it 88
+ *    milliseconds. The proofs are not committed, so this run is where a package
+ *    gets them, and the package itself is checked again below.
+ */
+const { contentGateForBuild, staleGraphProofs } = await import("../tools/content/graph-proofs.ts");
+const gate = contentGateForBuild(ROOT);
+if (gate.refreshed.length > 0) console.log(`graph proofs: walked and recorded ${gate.refreshed.join(", ")}`);
+if (!gate.ok) {
+  console.error(gate.report);
+  throw new Error(
+    gate.unproven.length > 0
+      ? `content gate: ${gate.unproven.join(", ")} did not validate, so it has no graph proof and the API would walk it at every cold start. Fix the content (npm run content:validate) and build again.`
+      : "content gate: the content does not pass npm run content:validate (the report is above). A package is not built from it. Fix the content and build again.",
+  );
+}
+
 for (const fn of FUNCTIONS) {
   const dir = path.join(OUT, fn.name);
   await mkdir(dir, { recursive: true });
@@ -89,6 +118,11 @@ for (const fn of FUNCTIONS) {
   if (fn.content) {
     // `KAD_CONTENT_DIR` (see paths.ts) points the loader here at runtime.
     await cp(path.join(ROOT, "content"), path.join(dir, "content"), { recursive: true });
+    // What ships, not what was on disk a moment ago: the copy itself must carry the proofs.
+    const unproven = staleGraphProofs(dir);
+    if (unproven.length > 0) {
+      throw new Error(`graph proofs: the ${fn.name} package has no current proof for ${unproven.join(", ")}; it would walk at every cold start.`);
+    }
   }
 
   // Marks the bundle as ESM for the runtime, and stops Lambda looking for deps
