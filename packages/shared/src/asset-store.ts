@@ -228,3 +228,144 @@ export function filterRepoArgs(rules: AssetRules): string[] {
   const exts = rules.extensions.map((e) => e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
   return ["--invert-paths", "--path-regex", `(?i)^(${roots})/.*\\.(${exts})$`];
 }
+
+// ---------------------------------------------------------------------------
+// Provenance stamps (#732)
+//
+// Every blob is written with a few x-amz-meta-* headers saying who first put
+// it there and why. They are part of the presigned URL's signature, so an
+// uploader holding an MCP key can neither drop nor forge them.
+//
+// **Stamps are public.** The store's CDN returns an object's metadata with it,
+// so a stamp holds only what the repository already shows: a key's label and
+// agent, its tags, the repo path, an issue number, a time. Never an AWS
+// identity, an email or a secret. And it names only the *first* uploader of
+// some bytes, since a blob is written once; git (the lock's history and the
+// prompt records) is the durable record of who used it where.
+// ---------------------------------------------------------------------------
+
+export interface BlobStamp {
+  /** Who uploaded: an MCP key's label, or the operator's chosen name for an AWS write. */
+  uploader: string;
+  /** How: through the MCP server, or with AWS credentials. */
+  via: "mcp" | "aws";
+  /** The agent the key was minted for (e.g. "codex"), when it says. */
+  agent?: string;
+  /** The key's free-form tags. */
+  tags?: Record<string, string>;
+  /** The repo path the bytes were uploaded for. */
+  path?: string;
+  /** The art issue the upload was for. */
+  issue?: number;
+  /** ISO time of the upload. */
+  at: string;
+}
+
+/** The metadata key names, without S3's `x-amz-meta-` prefix. */
+export const STAMP_FIELDS = {
+  uploader: "kad-uploader",
+  via: "kad-via",
+  agent: "kad-agent",
+  tags: "kad-tags",
+  path: "kad-path",
+  issue: "kad-issue",
+  at: "kad-at",
+} as const;
+
+/**
+ * S3's limit on an object's user metadata: the UTF-8 bytes of every key and value together.
+ * Counted here with the `x-amz-meta-` prefix on each key, which is stricter than S3 needs.
+ */
+export const STAMP_MAX_BYTES = 2048;
+
+export class StampTooLargeError extends Error {}
+
+/**
+ * Header-safe, and never shortened: a stamp is written once and can never be repaired, so a
+ * value is kept whole or the upload is refused (stampMetadata). Printable ASCII passes through
+ * as it is, which keeps repo paths and key tags their own size; anything else (non-ASCII,
+ * control characters) and `%` itself are percent-encoded as UTF-8, so `decodeURIComponent`
+ * reads every value back exactly.
+ */
+export function stampValue(value: string): string {
+  let out = "";
+  for (const ch of value) {
+    const code = ch.codePointAt(0)!;
+    out += code >= 0x20 && code < 0x7f && ch !== "%" ? ch : encodeURIComponent(ch);
+  }
+  return out;
+}
+
+/** The bytes a stamp takes against STAMP_MAX_BYTES. */
+export function stampBytes(metadata: Record<string, string>): number {
+  const encoder = new TextEncoder();
+  return Object.entries(metadata).reduce((sum, [k, v]) => sum + encoder.encode(`x-amz-meta-${k}`).length + encoder.encode(v).length, 0);
+}
+
+/**
+ * The stamp as S3 object metadata (`Metadata` for the SDK; send each as `x-amz-meta-<name>`).
+ * Throws StampTooLargeError rather than shorten anything.
+ */
+export function stampMetadata(stamp: BlobStamp): Record<string, string> {
+  const out: Record<string, string> = {
+    [STAMP_FIELDS.uploader]: stampValue(stamp.uploader),
+    [STAMP_FIELDS.via]: stamp.via,
+    [STAMP_FIELDS.at]: stampValue(stamp.at),
+  };
+  if (stamp.agent) out[STAMP_FIELDS.agent] = stampValue(stamp.agent);
+  if (stamp.tags && Object.keys(stamp.tags).length > 0) {
+    out[STAMP_FIELDS.tags] = stampValue(
+      Object.keys(stamp.tags)
+        .sort()
+        .map((k) => `${k}=${stamp.tags![k]}`)
+        .join(";"),
+    );
+  }
+  if (stamp.path) out[STAMP_FIELDS.path] = stampValue(stamp.path);
+  if (stamp.issue !== undefined) out[STAMP_FIELDS.issue] = String(stamp.issue);
+  const bytes = stampBytes(out);
+  if (bytes > STAMP_MAX_BYTES) {
+    throw new StampTooLargeError(
+      `the provenance stamp would be ${bytes} bytes, over S3's ${STAMP_MAX_BYTES}: shorten the path or the key's tags (a stamp is never cut short)`,
+    );
+  }
+  return out;
+}
+
+/** A stamp back from metadata or response headers (either `kad-uploader` or `x-amz-meta-kad-uploader`). Null when unstamped. */
+export function readStamp(get: (name: string) => string | null | undefined): BlobStamp | null {
+  const field = (name: string): string | undefined => {
+    const raw = get(name) ?? get(`x-amz-meta-${name}`);
+    if (raw === null || raw === undefined || raw === "") return undefined;
+    try {
+      return decodeURIComponent(raw);
+    } catch {
+      return raw;
+    }
+  };
+  const uploader = field(STAMP_FIELDS.uploader);
+  if (!uploader) return null;
+  const via = field(STAMP_FIELDS.via) === "mcp" ? "mcp" : "aws";
+  const tagsText = field(STAMP_FIELDS.tags);
+  const tags = tagsText
+    ? Object.fromEntries(
+        tagsText
+          .split(";")
+          .filter(Boolean)
+          .map((pair) => {
+            const eq = pair.indexOf("=");
+            return eq < 0 ? [pair, ""] : [pair.slice(0, eq), pair.slice(eq + 1)];
+          }),
+      )
+    : undefined;
+  const issue = field(STAMP_FIELDS.issue);
+  return {
+    uploader,
+    via,
+    ...(field(STAMP_FIELDS.agent) ? { agent: field(STAMP_FIELDS.agent) } : {}),
+    ...(tags ? { tags } : {}),
+    ...(field(STAMP_FIELDS.path) ? { path: field(STAMP_FIELDS.path) } : {}),
+    ...(issue && /^\d+$/.test(issue) ? { issue: Number(issue) } : {}),
+    at: field(STAMP_FIELDS.at) ?? "",
+  };
+}

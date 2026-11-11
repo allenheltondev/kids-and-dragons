@@ -9,7 +9,8 @@ AWSTemplateFormatVersion: "2010-09-09"
 #     --template-file infra/asset-store.yaml \
 #     --stack-name kad-asset-store \
 #     --capabilities CAPABILITY_NAMED_IAM \
-#     --region us-east-1
+#     --region us-east-1 \
+#     --parameter-overrides AlarmTopicArn=<kad-prod's AlarmTopicArn output> MonthlyBudgetUsd=10
 #
 # then put its `StoreUrl` output in assets.config.json as `storeUrl`.
 #
@@ -32,6 +33,27 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Kids & Dragons asset store — content-addressed art and audio, served by CloudFront
 
 Parameters:
+  MonthlyBudgetUsd:
+    Type: Number
+    Default: 10
+    MinValue: 1
+    Description: >-
+      What the store (its bucket and CDN) may cost in a month before the budget
+      alerts (#733). An upload key cannot overwrite or delete, but a leaked or
+      looping one could upload without end; this is the backstop.
+
+  AlarmTopicArn:
+    Type: String
+    Default: ""
+    Description: >-
+      Where budget alerts go: the production stack's AlarmTopicArn output
+      (kad-prod-alarms, which posts to Slack). Empty for none.
+
+  BudgetEmail:
+    Type: String
+    Default: ""
+    Description: An email the budget alerts too. Empty for none.
+
   PriceClass:
     Type: String
     Default: PriceClass_100
@@ -40,6 +62,12 @@ Parameters:
       Edge locations for the read CDN. Its readers are CI runners, deploy jobs
       and developers' machines, not players (the site serves players from its
       own bucket), so the cheapest class is plenty.
+
+Conditions:
+  HasAlarmTopic: !Not [!Equals [!Ref AlarmTopicArn, ""]]
+  HasBudgetEmail: !Not [!Equals [!Ref BudgetEmail, ""]]
+  # A budget with nobody to tell is noise; it is made only when someone listens.
+  HasBudgetSubscriber: !Or [!Condition HasAlarmTopic, !Condition HasBudgetEmail]
 
 Resources:
   StoreBucket:
@@ -74,6 +102,11 @@ Resources:
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerEnforced
+      # What the budget below filters on. A cost-allocation tag counts only once it is
+      # activated in Billing (docs/asset-store.md, "The budget").
+      Tags:
+        - Key: kad:component
+          Value: asset-store
 
   StoreBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -153,6 +186,44 @@ Resources:
           # another origin (a review page, the dev client, the wiki) can draw a
           # blob into a canvas or a Pixi texture without tainting it.
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
+      Tags:
+        - Key: kad:component
+          Value: asset-store
+
+  # The backstop on spend (#733): the bucket and the CDN, by their tag, against
+  # MonthlyBudgetUsd. Alerts at 80% of actual spend and when the month is
+  # forecast to pass it, to the alarm topic (Slack) and/or an email.
+  StoreBudget:
+    Type: AWS::Budgets::Budget
+    Condition: HasBudgetSubscriber
+    Properties:
+      Budget:
+        BudgetName: kad-asset-store
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit:
+          Amount: !Ref MonthlyBudgetUsd
+          Unit: USD
+        CostFilters:
+          TagKeyValue:
+            - "user:kad:component$asset-store"
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - !If [HasAlarmTopic, { SubscriptionType: SNS, Address: !Ref AlarmTopicArn }, !Ref "AWS::NoValue"]
+            - !If [HasBudgetEmail, { SubscriptionType: EMAIL, Address: !Ref BudgetEmail }, !Ref "AWS::NoValue"]
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - !If [HasAlarmTopic, { SubscriptionType: SNS, Address: !Ref AlarmTopicArn }, !Ref "AWS::NoValue"]
+            - !If [HasBudgetEmail, { SubscriptionType: EMAIL, Address: !Ref BudgetEmail }, !Ref "AWS::NoValue"]
 
   # What a writer needs: an agent's session, a developer's laptop, the
   # migration. Attach it to the IAM user or role that runs `npm run assets:push`

@@ -76,9 +76,21 @@ Record every painting you deliver in a prompts file for its kind, in the existin
   "mode": "imagegen",
   "useCase": "illustration-story",
   "output": { "width": 1600, "height": 900, "format": "WebP", "opaque": true, "encoding": "RGB, Lanczos resize, WebP quality 90 method 6" },
-  "paintings": [{ "id": "…", "path": "assets/…", "prompt": "Use case: illustration-story. …" }]
+  "paintings": [{
+    "id": "…",
+    "path": "assets/…",
+    "issue": 123,
+    "generator": "imagegen (<the model it reports>)",
+    "uploadedBy": "codex cloud",
+    "original": "art/source/originals/123/….png",
+    "prompt": "Use case: illustration-story. …"
+  }]
 }
 ```
+
+The per-painting `issue`, `generator` (the skill and the model it used), `uploadedBy` (the MCP
+key's label) and `original` are its provenance in git (#732): `npm run assets:provenance --
+<path>` reads them back beside the commit, the PR and the store's stamp.
 
 Append to the file for that kind when one exists; otherwise start `docs/<kind>-prompts.json`.
 A repaint replaces its entry's prompt. Attach the reference images the prompt names (an
@@ -87,6 +99,11 @@ existing piece of the same set) when you generate.
 ## 3. Generate into staging, then fit the contract
 
 - Generate into `staging/` (gitignored), never straight into `assets/`.
+- **Keep the untouched original.** Copy the generator's file, unchanged, to
+  `art/source/originals/<issue>/<id>.<ext>` and name it in the record's `original`. It carries
+  whatever content credentials (C2PA) the generator attached, which the fitting below strips,
+  and it is the full-size source if the art is ever refitted. It is pushed to the store with the
+  rest; nothing under `art/` ships to players.
 - Bring the result to the contract: exact canvas, format and encoding from the prompt
   record's `output`, true alpha where the contract says transparent (no baked white or
   checkerboard), the feet or ground line where the contract puts it. Pillow is installed
@@ -125,7 +142,8 @@ commit the file with its prompts record, as before, and skip the store steps bel
 
 Only after the gates pass, and for character art only once the user has approved it:
 
-1. `npm run assets:push -- <the folder you worked in>` uploads the new bytes to the asset store
+1. `npm run assets:push -- --issue <the art issue> <the folder you worked in> art/source/originals/<the issue>`
+   uploads the new bytes to the asset store, stamps each with the issue and the uploading key,
    and records them in `assets.lock.json` ([docs/asset-store.md](../../../docs/asset-store.md)).
    In a cloud session it goes through the MCP server: the environment sets
    `KAD_ASSET_WRITER=mcp` and holds an `assets:write` key, as a network secret for the site's

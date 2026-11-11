@@ -16,9 +16,12 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mcpEndpoint } from "../../packages/server/src/mcp/handler";
 import { MemoryKeyStore, mintKey } from "../../packages/server/src/mcp/keys";
 import { checksumHeader, type UploadSigner } from "../../packages/server/src/mcp/uploads";
+import { emptyLock, serializeLock, stampMetadata } from "../../packages/shared/src/asset-store";
 import { push, pull } from "./commands";
 import { loadLock } from "./lib";
 import { McpBlobStore } from "./mcp-store";
+import { formatProvenance, provenance } from "./provenance";
+import { DirBlobStore } from "./stores";
 
 let tmp: string;
 let server: http.Server;
@@ -34,10 +37,16 @@ beforeEach(async () => {
   puts.length = 0;
   const signer: UploadSigner = {
     has: (key) => Promise.resolve(fs.existsSync(path.join(storeDir, key))),
-    presignPut: (key, contentType, sha256, bytes) =>
+    presignPut: (key, contentType, sha256, bytes, stamp) =>
       Promise.resolve({
         url: `${base}/s3/${key}`,
-        headers: { "Content-Length": String(bytes), "Content-Type": contentType, "If-None-Match": "*", "x-amz-checksum-sha256": checksumHeader(sha256) },
+        headers: {
+          "Content-Length": String(bytes),
+          "Content-Type": contentType,
+          "If-None-Match": "*",
+          "x-amz-checksum-sha256": checksumHeader(sha256),
+          ...Object.fromEntries(Object.entries(stampMetadata(stamp)).map(([k, v]) => [`x-amz-meta-${k}`, v])),
+        },
       }),
   };
   const endpoint = mcpEndpoint({ keys, signer });
@@ -56,6 +65,13 @@ beforeEach(async () => {
         if (req.headers["x-amz-checksum-sha256"] !== digest) return res.writeHead(400).end("BadDigest");
         fs.mkdirSync(path.dirname(file), { recursive: true });
         fs.writeFileSync(file, body);
+        // Keep the stamp the way S3 keeps metadata, where a folder store keeps it.
+        const meta = Object.fromEntries(
+          Object.entries(req.headers)
+            .filter(([k]) => k.startsWith("x-amz-meta-"))
+            .map(([k, v]) => [k.slice("x-amz-meta-".length), String(v)]),
+        );
+        fs.writeFileSync(`${file}.stamp.json`, JSON.stringify(meta));
         puts.push(key);
         return res.writeHead(200).end();
       }
@@ -86,6 +102,8 @@ function repo(): string {
     JSON.stringify({ storeUrl: `file://${storeDir}`, mcpUrl: `${base}/api/mcp`, roots: ["assets"], extensions: ["png"], exclude: [] }),
   );
   fs.writeFileSync(path.join(root, "assets/cast/pib/assembled.png"), "pib, painted by an agent");
+  // Migrated: an (empty) lock is what says the art lives in the store.
+  fs.writeFileSync(path.join(root, "assets.lock.json"), serializeLock(emptyLock()));
   return root;
 }
 
@@ -120,7 +138,7 @@ describe("assets:push through the MCP server", () => {
   it("says what to do without a key, and writes no lock", async () => {
     const root = repo();
     await expect(push(root, new McpBlobStore(`${base}/api/mcp`, null), { cacheDir: path.join(tmp, "c") })).rejects.toThrow(/wants a key: set KAD_MCP_TOKEN/);
-    expect(fs.existsSync(path.join(root, "assets.lock.json"))).toBe(false);
+    expect(fs.readFileSync(path.join(root, "assets.lock.json"), "utf8")).toBe(serializeLock(emptyLock()));
   });
 
   it("is refused with a read-only key", async () => {
@@ -135,8 +153,53 @@ describe("assets:push through the MCP server", () => {
     const bytes = new TextEncoder().encode("same bytes");
     const sha = createHash("sha256").update(bytes).digest("hex");
     const blob = `sha256/${sha.slice(0, 2)}/${sha}.png`;
-    expect(await store.put(blob, bytes, "image/png", "assets/a.png")).toBe(true);
-    expect(await store.put(blob, bytes, "image/png", "assets/a.png")).toBe(false);
+    expect(await store.put(blob, bytes, "image/png", { path: "assets/a.png" })).toBe(true);
+    expect(await store.put(blob, bytes, "image/png", { path: "assets/a.png" })).toBe(false);
     await expect(store.put("history/x.json", bytes, "application/json")).rejects.toThrow(/AWS credentials/);
+  });
+});
+
+describe("assets:provenance (#732)", () => {
+  it("joins the commit and PR, the prompt record and the store's signed stamp", async () => {
+    const root = repo();
+    const g = (...args: string[]) => execFileSync("git", args, { cwd: root, encoding: "utf8" });
+    g("config", "user.email", "test@example.com");
+    g("config", "user.name", "test");
+    const { key } = await mintKey(keys, { label: "codex cloud", scopes: ["assets:write"], agent: "codex", tags: ["env=codex-cloud"] });
+    await push(root, new McpBlobStore(`${base}/api/mcp`, key), { cacheDir: path.join(tmp, "cache"), issue: 704 });
+
+    fs.mkdirSync(path.join(root, "docs"), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, "docs/cast-prompts.json"),
+      JSON.stringify({ issue: 704, paintings: [{ id: "pib", path: "assets/cast/pib/assembled.png", issue: 704, generator: "imagegen", uploadedBy: "codex cloud", original: "art/source/originals/704/pib.png", prompt: "Use case: illustration-story. Pib, a small round mapmaker." }] }),
+    );
+    g("add", "-A");
+    g("commit", "-qm", "Paint Pib (#900)");
+
+    const p = await provenance(root, "assets/cast/pib/assembled.png");
+    expect(p.commits).toHaveLength(1);
+    expect(p.commits[0]).toMatchObject({ pr: 900, subject: "Paint Pib (#900)" });
+    expect(p.prompts).toEqual([expect.objectContaining({ file: "docs/cast-prompts.json", entry: expect.objectContaining({ id: "pib", generator: "imagegen" }) })]);
+    expect(p.stamp).toMatchObject({ uploader: "codex cloud", via: "mcp", agent: "codex", tags: { env: "codex-cloud" }, path: "assets/cast/pib/assembled.png", issue: 704 });
+    const text = formatProvenance(p).join("\n");
+    expect(text).toMatch(/PR #900/);
+    expect(text).toMatch(/via mcp by codex cloud, agent codex, env=codex-cloud, for issue #704/);
+    expect(text).toMatch(/original +art\/source\/originals\/704\/pib\.png/);
+  });
+
+  it("says plainly what it does not know", async () => {
+    const root = repo();
+    execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: root });
+    execFileSync("git", ["config", "user.name", "test"], { cwd: root });
+    // Pushed with AWS credentials into a folder store with no stamp recorded, no prompt, no commit.
+    await push(root, new DirBlobStore(path.join(tmp, "other-store")), { cacheDir: path.join(tmp, "cache") });
+    const p = await provenance(root, "assets/cast/pib/assembled.png");
+    expect(p.commits).toEqual([]);
+    expect(p.prompts).toEqual([]);
+    expect(p.stamp).toBeNull();
+    const text = formatProvenance(p).join("\n");
+    expect(text).toMatch(/no commit records these bytes/);
+    expect(text).toMatch(/no prompt record names this path/);
+    expect(text).toMatch(/no stamp/);
   });
 });

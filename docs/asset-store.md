@@ -51,7 +51,12 @@ and keep their own pipeline ([voice-narration-plan.md](./voice-narration-plan.md
 | Save generated output on purpose (a contact sheet under `art/review/`) | `npm run assets:push -- art/review/my-sheet` (name it; it is not picked up otherwise) |
 | Record a deletion | delete the file, then `npm run assets:push -- --prune assets/cast/old-goblin` |
 | Link to a picture (a PR, a review doc, a chat) | `npm run assets:url -- assets/cast/pib/assembled.png` |
+| Find out where a painting came from | `npm run assets:provenance -- assets/cast/pib/assembled.png` ([Provenance](#provenance)) |
+| Say which art issue a push is for | `npm run assets:push -- --issue 704 <folder>` (stamped on each new blob) |
 | Check everything is consistent | `npm run assets:verify` |
+
+`push` refuses to run before the cutover (no `assets.lock.json`): the art is still in git then, and
+a push would write a lock naming only the new files, which every other tool would read as "migrated".
 
 `pull` behaves the way `git checkout` does with your edits. It fetches what is
 missing, updates what it put there itself when the lock moves on, and removes
@@ -114,7 +119,36 @@ in the lock, merge locally.
 Every one of these is a no-op on a commit without a lock, so this all ships
 before the cutover and changes nothing until then.
 
-## Credentials
+## Provenance
+
+`npm run assets:provenance -- <path>` says where a painting came from, joined from three
+places that each know part of it (#732):
+
+| Source | What it knows | How durable |
+|---|---|---|
+| **git** | the commits that recorded these bytes at this path in the lock, and the PR each came in by | the durable record |
+| **the prompt record** | the painting's entry in its `docs/*-prompts.json`: `issue`, `generator`, `uploadedBy`, `original`, the prompt | durable, written by the `art-creation` skill |
+| **the store's stamp** | who *first* put these bytes in the store: the key's label, agent and tags (or `KAD_UPLOADED_BY` for an AWS write), the path, the issue, the time | written once at upload, can never change |
+
+**The stamp is signed and public.** An upload URL signs the `x-amz-meta-kad-*` headers, so the
+uploader can neither drop nor change them, and the store's CDN returns them with the blob to
+anyone. A key's label, agent and tags are therefore plain words checked at mint (no spaces in
+agents or tags, no emails, no secrets). An AWS-credentialed write is stamped with
+`KAD_UPLOADED_BY` (default `operator`), never with the AWS identity, which would name the
+account and the user.
+
+A stamp is never shortened: it is written once and can never be repaired, so a value too long
+for S3's 2 KB of object metadata refuses the upload instead (a 512-character path with a key's
+full eight tags fits). Printable ASCII is stored as it is; anything else is percent-encoded.
+
+The stamp names only the first uploader of some bytes, because a blob is written once; the
+same bytes used again at another path, or by another key, show in git and not in the stamp.
+Art stored before stamps existed has none.
+
+**The generator's original** is kept, unchanged, under `art/source/originals/<issue>/` and
+named in the prompt record's `original`. Fitting a painting to its contract re-encodes it,
+which strips any content credentials (C2PA) the generator attached; the original keeps them.
+
 
 Reading needs none. Writing goes one of two ways, chosen by `--writer` or
 `KAD_ASSET_WRITER` (default `aws`):
@@ -148,7 +182,8 @@ aws cloudformation deploy \
   --template-file infra/asset-store.yaml \
   --stack-name kad-asset-store \
   --capabilities CAPABILITY_NAMED_IAM \
-  --region us-east-1
+  --region us-east-1 \
+  --parameter-overrides AlarmTopicArn=<kad-prod's AlarmTopicArn output> MonthlyBudgetUsd=10
 
 aws cloudformation describe-stacks --stack-name kad-asset-store --region us-east-1 \
   --query "Stacks[0].Outputs" --output table
@@ -158,6 +193,25 @@ Put `StoreUrl` in `assets.config.json` as `storeUrl` and commit it. Attach
 `WriterPolicyArn` to whoever will push. The bucket is `DeletionPolicy: Retain`.
 Once history is rewritten it holds the only copy of the art, so deleting the
 stack leaves it in place.
+
+### The budget
+
+The stack makes a monthly AWS Budget, `kad-asset-store` (#733), on the bucket and the CDN,
+against `MonthlyBudgetUsd` (default $10). It alerts at 80% of actual spend, and when the month
+is forecast to pass the limit, to `AlarmTopicArn` (the production stack's alarm topic, so the
+same Slack channel as the stack's alarms) and/or `BudgetEmail`. With neither, no budget is made.
+
+**One manual step, once per account:** in the Billing console, under Cost allocation tags,
+activate `kad:component`. The bucket and the CDN carry `kad:component=asset-store`, and the
+budget filters on it. Until the tag is active (it can take a day to appear), the budget
+sees nothing and never fires. `tools/assets/deploy-guard.test.ts` pins the tag on both.
+
+**When it fires:** something is uploading or downloading far more than painting does.
+- Uploads: `npm run mcp:keys -- list --stage prod` shows which key was used last. The store's
+  stamps (`npm run assets:provenance`) and the MCP function's log lines name the key and agent.
+  Revoke the key; it can only have added blobs, never replaced or deleted any.
+- Downloads: CI pulls through the Actions cache, so a cache that keeps missing (a changed
+  key, an evicted cache) shows as CDN transfer. Check the runs' "Pull assets" steps.
 
 ## The cutover
 

@@ -7,6 +7,7 @@
 
 import { z } from "zod";
 import { blobKey, isSha256 } from "../../../../shared/src/asset-store.ts";
+import type { VerifiedKey } from "../keys.ts";
 import type { ToolRegistrar } from "../server.ts";
 import { READ, WRITE, guarded } from "../shared.ts";
 import { planUploads, type UploadSigner } from "../uploads.ts";
@@ -16,7 +17,7 @@ const MAX_FILES = 200;
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/).describe("Hex SHA-256 of the file's bytes, lower case.");
 const path = z.string().min(1).max(512).describe("The repo path the file is for, e.g. assets/cast/pib/assembled.png. The extension sets its type.");
 
-export function registerAssetTools(server: ToolRegistrar, ctx: { signer: UploadSigner; keyLabel: string }): void {
+export function registerAssetTools(server: ToolRegistrar, ctx: { signer: UploadSigner; key: VerifiedKey }): void {
   server.registerTool(
     "request_uploads",
     {
@@ -28,17 +29,26 @@ export function registerAssetTools(server: ToolRegistrar, ctx: { signer: UploadS
         "Then record the file in assets.lock.json (npm run assets:push does all of this).",
       inputSchema: z.object({
         files: z.array(z.object({ path, sha256, bytes: z.number().int().positive() })).min(1).max(MAX_FILES),
+        issue: z.number().int().positive().optional().describe("The art issue these files are for. Stamped on each blob with the key's label and agent."),
       }),
       outputSchema: z.looseObject({ uploads: z.array(z.looseObject({ path: z.string(), status: z.string() })) }),
       // Asking twice is harmless: a stored blob reads as stored, a pending one gets a fresh URL.
       annotations: { ...WRITE, idempotentHint: true },
     },
-    guarded(async ({ files }: { files: Array<{ path: string; sha256: string; bytes: number }> }) => {
-      const uploads = await planUploads(ctx.signer, files);
+    guarded(async ({ files, issue }: { files: Array<{ path: string; sha256: string; bytes: number }>; issue?: number }) => {
+      const uploads = await planUploads(ctx.signer, files, {
+        uploader: ctx.key.label,
+        via: "mcp",
+        ...(ctx.key.agent ? { agent: ctx.key.agent } : {}),
+        ...(Object.keys(ctx.key.tags).length ? { tags: ctx.key.tags } : {}),
+        ...(issue !== undefined ? { issue } : {}),
+      });
       console.info(
         JSON.stringify({
           msg: "MCP upload URLs",
-          key: ctx.keyLabel,
+          key: ctx.key.label,
+          agent: ctx.key.agent,
+          issue,
           upload: uploads.filter((u) => u.status === "upload").map((u) => u.path),
           stored: uploads.filter((u) => u.status === "stored").length,
           refused: uploads.filter((u) => u.status === "refused").length,

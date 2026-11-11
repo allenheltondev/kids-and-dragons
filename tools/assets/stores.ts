@@ -16,18 +16,38 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { BLOB_CACHE_CONTROL } from "../../packages/shared/src/asset-store.ts";
+import { BLOB_CACHE_CONTROL, BLOB_PREFIX, stampMetadata, type BlobStamp } from "../../packages/shared/src/asset-store.ts";
 import { writeAtomic } from "../../packages/shared/src/asset-cache.ts";
 import type { AssetConfig } from "./lib.ts";
+
+/** What an upload is for: the repo path and the art issue. The store adds who and when (#732). */
+export interface UploadInfo {
+  path?: string;
+  issue?: number;
+}
+
+/**
+ * Who an AWS-credentialed write is stamped as. Never the AWS identity: stamps are public with
+ * the blob, and an ARN names the account and the user. KAD_UPLOADED_BY names it instead.
+ */
+export function awsStamp(info: UploadInfo | undefined, now: Date = new Date()): BlobStamp {
+  return {
+    uploader: process.env.KAD_UPLOADED_BY || "operator",
+    via: "aws",
+    ...(info?.path ? { path: info.path } : {}),
+    ...(info?.issue !== undefined ? { issue: info.issue } : {}),
+    at: now.toISOString(),
+  };
+}
 
 export interface BlobStore {
   readonly name: string;
   has(key: string): Promise<boolean>;
   /**
    * Keep bytes under a key. Returns false when the key was already there (nothing written).
-   * `path` is the repo path the bytes are for, when there is one: the MCP server logs it.
+   * `info` says what the upload is for; the store stamps it on the blob with who and when.
    */
-  put(key: string, bytes: Uint8Array, contentType: string, path?: string): Promise<boolean>;
+  put(key: string, bytes: Uint8Array, contentType: string, info?: UploadInfo): Promise<boolean>;
 }
 
 export class DirBlobStore implements BlobStore {
@@ -40,10 +60,12 @@ export class DirBlobStore implements BlobStore {
   has(key: string): Promise<boolean> {
     return Promise.resolve(fs.existsSync(path.join(this.root, key)));
   }
-  put(key: string, bytes: Uint8Array): Promise<boolean> {
+  put(key: string, bytes: Uint8Array, _contentType: string, info?: UploadInfo): Promise<boolean> {
     const file = path.join(this.root, key);
     if (fs.existsSync(file)) return Promise.resolve(false);
     writeAtomic(file, bytes);
+    // The stamp beside the blob, as S3 keeps it on the object. Blobs only: the history log is not art.
+    if (key.startsWith(`${BLOB_PREFIX}/`)) writeAtomic(`${file}.stamp.json`, new TextEncoder().encode(JSON.stringify(stampMetadata(awsStamp(info)))));
     return Promise.resolve(true);
   }
 }
@@ -79,10 +101,11 @@ export class S3BlobStore implements BlobStore {
       throw error;
     }
   }
-  async put(key: string, bytes: Uint8Array, contentType: string): Promise<boolean> {
+  async put(key: string, bytes: Uint8Array, contentType: string, info?: UploadInfo): Promise<boolean> {
     try {
       await this.s3.send(
         new this.commands.PutObjectCommand({
+          Metadata: stampMetadata(awsStamp(info)),
           Bucket: this.bucket,
           Key: key,
           Body: bytes,
