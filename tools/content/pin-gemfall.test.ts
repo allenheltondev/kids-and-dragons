@@ -25,6 +25,22 @@ function* objects(value: unknown): Generator<Record<string, unknown>> {
   }
 }
 
+interface ClueGame {
+  clues: string[];
+  options?: { id: string; label: string }[];
+}
+
+/** Every interaction in a chapter that is solved from written clues, archived ones included. */
+function clueGames(chapter: Record<string, unknown>): ClueGame[] {
+  return [...objects(chapter)].filter((object) => Array.isArray(object.clues)) as unknown as ClueGame[];
+}
+
+/** The ids of the scenes those games are in. */
+function clueGameIds(chapter: Record<string, unknown>): string[] {
+  const scenes = { ...(chapter.resumeInteractions as Record<string, { interaction?: { clues?: unknown } }> | undefined), ...(chapter.scenes as Record<string, { interaction?: { clues?: unknown } }>) };
+  return Object.entries(scenes).filter(([, scene]) => Array.isArray(scene.interaction?.clues)).map(([id]) => id);
+}
+
 describe("Gemfall's play pins", () => {
   it("are the pins of the content as it stands: the campaign file and its sixteen chapters", () => {
     const now = takePins(ROOT);
@@ -35,10 +51,12 @@ describe("Gemfall's play pins", () => {
   it.each(chapters)("%s: every word, picture and voice can change without moving its pin", (file) => {
     const chapter = read(file);
     const before = playDigest(JSON.stringify(chapter));
+    // In a game solved from clues, an option's label is what the clues name, so it is play.
+    const named = new Set<unknown>(clueGames(chapter).flatMap((game) => game.options ?? []));
     let rewritten = 0;
     for (const object of objects(chapter)) {
       for (const key of Object.keys(object)) {
-        if (!PRESENTATION_KEYS.has(key)) continue;
+        if (!PRESENTATION_KEYS.has(key) || (key === "label" && named.has(object))) continue;
         object[key] = typeof object[key] === "string" ? `${object[key]} (reworded)` : null;
         rewritten++;
       }
@@ -69,6 +87,37 @@ describe("Gemfall's play pins", () => {
         expect(name, `${file} has no ${name} to edit`).toBe("a check's difficulty");
         continue;
       }
+      expect(playDigest(JSON.stringify(chapter)), `${file}: ${name}`).not.toBe(before);
+    }
+  });
+
+  // The review on the change that introduced the pins: a sequence game is solved from its clues,
+  // and `interactionClues` deals them to phones by their place in the list. With `clues` treated as
+  // words, emptying the list, reordering it, or rewording a clue to contradict the answer left
+  // the pin where it was.
+  const withClues = chapters.filter((file) => clueGames(read(file)).length > 0);
+
+  it("finds Gemfall's clue games, the ones the review named among them", () => {
+    const games = chapters.flatMap((file) => clueGameIds(read(file)).map((id) => `${file.replace(/^chapters\/|\.json$/g, "")}/${id}`));
+    expect(games).toEqual(expect.arrayContaining(["gemfall-07h/interaction_price_clues", "gemfall-03a/interaction_markers"]));
+    expect(games.filter((game) => game.startsWith("gemfall-08/")).length).toBeGreaterThanOrEqual(2);
+    expect(withClues.length).toBeGreaterThanOrEqual(10);
+  });
+
+  it.each(withClues)("%s: a clue game's clues cannot be removed, reordered or reworded without moving its pin", (file) => {
+    const before = playDigest(JSON.stringify(read(file)));
+    const edits: [string, (game: ClueGame) => void][] = [
+      ["every clue removed", (game) => (game.clues = [])],
+      ["one clue dropped", (game) => game.clues.pop()],
+      ["the clues reordered", (game) => game.clues.reverse()],
+      ["a clue reworded", (game) => (game.clues[0] = `${game.clues[0]} Or the other way round.`)],
+      ["an option the clues name, renamed", (game) => (game.options![0]!.label = `${game.options![0]!.label} (renamed)`)],
+    ];
+    for (const [name, edit] of edits) {
+      const chapter = read(file);
+      const game = clueGames(chapter)[0]!;
+      expect(game.clues.length, `${file}: its first clue game has clues`).toBeGreaterThan(1);
+      edit(game);
       expect(playDigest(JSON.stringify(chapter)), `${file}: ${name}`).not.toBe(before);
     }
   });

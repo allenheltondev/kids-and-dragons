@@ -35,6 +35,13 @@
  * Before adding a name, check what reads it. `spotlight` looks like staging
  * and ends a player's beat; a rest's `setting` looks like a backdrop and
  * decides whether the camp can be edited there. Both stay pinned.
+ *
+ * And words are not presentation where the words are the game. A sequence
+ * game's `clues` are how the table solves it, and the engine deals them to the
+ * phones by their place in the list (`interactionClues`): a clue reworded to
+ * contradict the answer, the list reordered, or emptied, is a different game.
+ * So `clues` is not on this list, and stays whole. See `isClueGame` for the
+ * labels the clues talk about.
  */
 export const PRESENTATION_KEYS: ReadonlySet<string> = new Set([
   // Words: narrated, printed on a button, or read by a voice.
@@ -52,7 +59,6 @@ export const PRESENTATION_KEYS: ReadonlySet<string> = new Set([
   "objectLabel",
   "supportLabel",
   "reaction",
-  "clues",
   // Pictures and sound.
   "icon",
   "art",
@@ -91,12 +97,35 @@ function isNarrationVariant(value: unknown): boolean {
   return typeof value === "object" && value !== null && typeof (value as { text?: unknown }).text === "string";
 }
 
+/**
+ * A game solved from written clues (a `sequence` interaction). Its clues name
+ * the options by what they are called ("The harbor bag loads before the valley
+ * bag"), so in such a game an option's `label` is part of the puzzle: rename
+ * the harbor bag and the clue points at nothing. Everywhere else a label is
+ * only what a button says.
+ */
+function isClueGame(value: Record<string, unknown>): boolean {
+  return Array.isArray(value.clues);
+}
+
+/** An option of a clue game: its play shape, with the label the clues refer to kept. */
+function clueGameOption(option: unknown): unknown {
+  const shape = playShape(option);
+  const label = typeof option === "object" && option !== null ? (option as { label?: unknown }).label : undefined;
+  return typeof shape === "object" && shape !== null && !Array.isArray(shape) && typeof label === "string" ? { ...shape, label } : shape;
+}
+
 /** The file with what is only shown or said taken out. Arrays keep their order: the order of choices is play. */
 export function playShape(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(playShape);
   if (typeof value !== "object" || value === null) return value;
   const out: Record<string, unknown> = {};
+  const clueGame = isClueGame(value as Record<string, unknown>);
   for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+    if (clueGame && key === "options" && Array.isArray(child)) {
+      out[key] = child.map(clueGameOption);
+      continue;
+    }
     if (PRESENTATION_KEYS.has(key)) continue;
     if (COUNTED_KEYS.has(key) && Array.isArray(child)) {
       out[key] = { count: child.length };

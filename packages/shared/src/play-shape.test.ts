@@ -48,6 +48,41 @@ const chapter = () => ({
       onSuccess: { goto: "scene_far_side" },
       onFailure: { goto: "scene_far_side" },
     },
+    game_bags: {
+      type: "interaction",
+      narration: "Load the bags.",
+      interaction: {
+        kind: "sequence",
+        cue: "Load them in the right order.",
+        actionLabel: "Load",
+        options: [
+          { id: "harbor", label: "Harbor bag", icon: "bag" },
+          { id: "valley", label: "Valley bag", icon: "bag" },
+          { id: "mountain", label: "Mountain bag", icon: "bag" },
+        ],
+        answer: ["harbor", "valley", "mountain"],
+        clues: ["The harbor bag loads before the valley bag.", "The valley bag is between harbor and mountain.", "The mountain bag loads last."],
+      },
+      onSuccess: { goto: "scene_far_side" },
+      onFailure: { goto: "scene_far_side" },
+    },
+    game_lamps: {
+      type: "interaction",
+      narration: "Watch the lamps.",
+      interaction: {
+        kind: "memory",
+        cue: "Remember the order.",
+        actionLabel: "Light",
+        options: [
+          { id: "red", label: "Red lamp", icon: "lamp" },
+          { id: "blue", label: "Blue lamp", icon: "lamp" },
+        ],
+        answer: ["red", "blue"],
+        stepMs: 600,
+      },
+      onSuccess: { goto: "scene_far_side" },
+      onFailure: { goto: "scene_far_side" },
+    },
     fight_crab: {
       type: "encounter",
       map: "bridge",
@@ -90,6 +125,11 @@ describe("what does not move the play shape", () => {
     ["a clock's label", (c: Chapter) => (c.scenes.fight_crab.environment.clock.label = "High water")],
     ["a mini-game's cue and button", (c: Chapter) => Object.assign(c.scenes.game_cups.interaction, { cue: "Eyes on the cups!", actionLabel: "Choose" })],
     ["what a cup is called", (c: Chapter) => (c.scenes.game_cups.interaction.covers[0] = "Left hat")],
+    ["an option's label in a game with no clues", (c: Chapter) => (c.scenes.game_lamps.interaction.options[0]!.label = "Crimson lamp")],
+    ["a clue game's cue, button and icons", (c: Chapter) => {
+      Object.assign(c.scenes.game_bags.interaction, { cue: "Put them in order.", actionLabel: "Stack" });
+      c.scenes.game_bags.interaction.options[0]!.icon = "sack";
+    }],
     ["a narration variant's words", (c: Chapter) => (c.scenes.scene_bridge.variants[0]!.text = "The rope is coiled and ready.")],
     ["a narration variant added or dropped", (c: Chapter) => (c.scenes.scene_bridge.variants = [])],
     ["a comment", (c: Chapter) => Object.assign(c, { $comment: "reviewed" })],
@@ -123,6 +163,12 @@ describe("what moves the play shape", () => {
     ["a fight's variant, which changes the fight and not the words", (c: Chapter) => (c.scenes.fight_crab.environment.variants[0]!.clock.rounds = 2)],
     ["a mini-game's rules", (c: Chapter) => (c.scenes.game_cups.interaction.swaps = [[1, 2]])],
     ["how many cups a mini-game has", (c: Chapter) => c.scenes.game_cups.interaction.covers.push("Far cup")],
+    // A sequence game is solved from its clues, and the engine deals them to phones by their place in the list.
+    ["a clue reworded, here to contradict the answer", (c: Chapter) => (c.scenes.game_bags.interaction.clues[0] = "The harbor bag loads after the valley bag.")],
+    ["the clues reordered, which changes who is dealt which", (c: Chapter) => c.scenes.game_bags.interaction.clues.reverse()],
+    ["one clue dropped", (c: Chapter) => c.scenes.game_bags.interaction.clues.pop()],
+    ["every clue removed", (c: Chapter) => (c.scenes.game_bags.interaction.clues = [])],
+    ["what a clue game's option is called, which its clues name", (c: Chapter) => (c.scenes.game_bags.interaction.options[0]!.label = "Dock bag")],
     ["an ending's outcome", (c: Chapter) => (c.scenes.scene_far_side.outcome = "setback")],
     ["a scene removed", (c: Chapter) => delete (c.scenes as Partial<Chapter["scenes"]>).game_cups],
     ["the entry scene", (c: Chapter) => (c.entry = "check_wade")],
@@ -155,11 +201,22 @@ describe("the shape itself", () => {
     expect(shape.scenes.fight_crab!.environment!.variants).toHaveLength(1);
   });
 
-  it("carries no words out of a chapter", () => {
+  it("carries no words out of a chapter, but for a clue game's clues and the labels they name", () => {
     const text = canonicalJson(playShape(chapter()));
-    for (const words of ["sways", "Wade across", "Push through", "Glassback", "Left cup", "The tide", "Frayed", "Hesper", "warm"]) {
+    for (const words of ["sways", "Wade across", "Push through", "Glassback", "Left cup", "The tide", "Frayed", "Hesper", "warm", "Red lamp", "Load them in the right order", "Watch the lamps"]) {
       expect(text, words).not.toContain(words);
     }
+    for (const words of ["The harbor bag loads before the valley bag.", "The mountain bag loads last.", "Harbor bag", "Mountain bag"]) {
+      expect(text, words).toContain(words);
+    }
+  });
+
+  it("keeps a clue game's clues whole and in order", () => {
+    const shape = playShape(chapter()) as { scenes: { game_bags: { interaction: { clues: string[]; options: Record<string, unknown>[] } } } };
+    expect(shape.scenes.game_bags.interaction.clues).toEqual(chapter().scenes.game_bags.interaction.clues);
+    // The label the clues name stays; the picture does not.
+    expect(shape.scenes.game_bags.interaction.options[0]).toEqual({ id: "harbor", label: "Harbor bag" });
+    expect(PRESENTATION_KEYS.has("clues")).toBe(false);
   });
 
   it("never lists a name an effect uses, so no effect can lose a field", () => {

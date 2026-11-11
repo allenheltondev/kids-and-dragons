@@ -2,21 +2,21 @@
   "$comment": "Gemfall's play pins: a hash of each file with what is only shown or said taken out (packages/shared/src/play-shape.ts). Re-take with npm run content:pin after a deliberate change to how Gemfall plays, and say why in the commit. One line per file, so two branches that change different chapters do not collide here.",
   "files": {
     "campaigns/gemfall.json": "dbc7a399e3bc7ce056cf122e537aad988b6bf05d987ee576e6e7659e9268a010",
-    "chapters/gemfall-01.json": "32ef471b46d9c808a518609238a655d1e4152c501b2aa391575cf91d6a13fc94",
-    "chapters/gemfall-02.json": "ee72527f6c582e5e7a6cd72a1bd089ecebf414d8682c58a6b533a7f6cc718628",
-    "chapters/gemfall-03a.json": "dd1af2ac9db2da688accabef18fe1bc46ddb014d8a95a6b0e510240a4f289278",
+    "chapters/gemfall-01.json": "576e80e279c951e2831bcc2674ac97cf1241c6e0f6c75ee2a7085e1ffe7d76db",
+    "chapters/gemfall-02.json": "3a96a466840ee8c3a947215bbac65104f162b6046ea1f55604570bf7ff08b2c3",
+    "chapters/gemfall-03a.json": "45cdc84c141a31efcceaaaac97a25efdba5954446ddfc5f37a3957c171765603",
     "chapters/gemfall-03b.json": "8f642fb8b3f7a319fba0126c29f8aa0734e35b865502b17e15287824e1092755",
     "chapters/gemfall-03c.json": "0dd5b757ffe2fbf354314227b4f363e68f7f73aade3ef4f94dcd0a9337710083",
-    "chapters/gemfall-04a.json": "e80f7d9e994957340571bf3c827e278a9398cd5ada4e4c95946d9e8a1086977b",
-    "chapters/gemfall-04b.json": "8cd4a65bf3393c4c46f14a4ab9e5eda7df6b90f2a747536b313390ee84691e33",
-    "chapters/gemfall-04c.json": "64d695fbd9869ef9b3f4a2180c2b0c7111a80bbc587abe356e8791378c94d350",
-    "chapters/gemfall-05a.json": "fd6e5b4ed0e7fb16432a52c606728faf6c7e94c662e320a64103d60381fece61",
-    "chapters/gemfall-05b.json": "ca2bfaefcf6e40f88c13426616f915046e13f046679f55692e2e5a4344439cc8",
+    "chapters/gemfall-04a.json": "c5ecd648d71df149298163e6323e4130b597170202bd09134e269c2706dcf190",
+    "chapters/gemfall-04b.json": "f32154ca9f79fabd3d5e894ff07f662ae083dfb183b52561fce93de93db5112f",
+    "chapters/gemfall-04c.json": "c5379ca33968aa993d6a6b9f8930ce6dac80eaede90bbad992b0813d113b521f",
+    "chapters/gemfall-05a.json": "bd18f6c8b7d820682bfe313c129966915b69d192a1471521038ba33566d143c9",
+    "chapters/gemfall-05b.json": "1e89a4e7c5c49f661622b63e8f86c8b92d2930d49056fb8da5867fa614438c33",
     "chapters/gemfall-05c.json": "8ef4fb01838dc5b642c03642f9a5b9916dd3be7751e7023bf39f6b5b5278e051",
-    "chapters/gemfall-06.json": "11cd81d94efbc64cab8634359ea4a38eb3feb37a29f0b4f6475871bf707fe545",
-    "chapters/gemfall-07h.json": "45a1eb14e3d93367f2cec3ba3a6d08aa52003753f828cbfaf8c33886847bab9f",
-    "chapters/gemfall-07l.json": "25210cee1ee522e194a98218100cd9417ca92f3e50ed1b407c6232f2e8dd461e",
+    "chapters/gemfall-06.json": "de7f82e4d423c25945441633580758bff011a1090d9e705ab27948cde3653b2d",
+    "chapters/gemfall-07h.json": "1ea53cd8d8656f6a8db5f88ae12a4b0b39aa3bad5797826cb45150da2f5d9002",
+    "chapters/gemfall-07l.json": "4a5ad579b914230069886d0b265372329f96907651e86258eaf1f44fc3f779b5",
     "chapters/gemfall-07r.json": "a018d6db67271e641a1b8752ee007c776358a91c0421f9b94aeb1bbbf9439a37",
-    "chapters/gemfall-08.json": "132510ddb506ea9eff610622f326a52b1fe28e6cea8798cf2ba7204c58fcda17"
+    "chapters/gemfall-08.json": "dd9d474ffbc32a18a0f23294cbd379527e6d3b189978d0c97bf810e06626664f"
   }
 }
