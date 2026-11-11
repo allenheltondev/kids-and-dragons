@@ -28,6 +28,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { environmentCoverage } from "./environment-coverage.ts";
+import { unpulledArt, unpulledMessage } from "../assets/lib.ts";
 import { campArtOwed, type CampManifest } from "./camp-art.ts";
 
 const tty = process.stdout.isTTY;
@@ -73,6 +74,15 @@ interface Manifest extends CampManifest {
 const SPECIFIED_NOT_DECLARED: { id: string; frames: number; why: string }[] = [];
 
 const root = process.cwd();
+
+// After the cutover the art lives in the asset store (#725). On a checkout that has not pulled
+// it, every delivered painting would read as owed, and an agent would set about repainting it.
+const unpulled = unpulledArt(root);
+if (unpulled.length > 0) {
+  console.error(unpulledMessage("art:inventory", unpulled));
+  process.exit(1);
+}
+
 const manifest = JSON.parse(
   readFileSync(join(root, "assets/manifest.json"), "utf8"),
 ) as Manifest;
