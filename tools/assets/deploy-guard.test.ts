@@ -83,15 +83,3 @@ describe("the store's budget (#733)", () => {
     expect(policy).toContain(":budgets::${AWS::AccountId}:*");
   });
 });
-
-describe("the store's address", () => {
-  it("is the same in assets.config.json and in the store stack's deploy command", () => {
-    const config = loadConfig(ROOT);
-    const store = fs.readFileSync(path.join(ROOT, "infra", "asset-store.yaml"), "utf8");
-    const docs = fs.readFileSync(path.join(ROOT, "docs", "asset-store.md"), "utf8");
-    const host = new URL(config.storeUrl!).host;
-    expect(config.storeUrl).toBe(`https://${host}`);
-    expect(store).toContain(`StoreDomainName=${host}`);
-    expect(docs).toContain(`StoreDomainName=${host}`);
-  });
-});

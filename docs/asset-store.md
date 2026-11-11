@@ -183,32 +183,16 @@ aws cloudformation deploy \
   --stack-name kad-asset-store \
   --capabilities CAPABILITY_NAMED_IAM \
   --region us-east-1 \
-  --parameter-overrides \
-    StoreDomainName=assets.kd.readysetcloud.io \
-    StoreHostedZoneId=<the readysetcloud.io hosted zone, the Production HOSTED_ZONE_ID> \
-    AlarmTopicArn=<kad-prod's AlarmTopicArn output> MonthlyBudgetUsd=10
+  --parameter-overrides AlarmTopicArn=<kad-prod's AlarmTopicArn output> MonthlyBudgetUsd=10
 
 aws cloudformation describe-stacks --stack-name kad-asset-store --region us-east-1 \
   --query "Stacks[0].Outputs" --output table
 ```
 
-The store has its own address, `https://assets.kd.readysetcloud.io`, so `storeUrl` in
-`assets.config.json` is already set and nothing needs committing after the deploy. Check the
-`StoreUrl` output matches it. CloudFormation writes the certificate's DNS validation record and
-the A/AAAA records in the hosted zone itself; the first deploy waits a few minutes for the
-certificate. Without `StoreDomainName` the store serves on its CloudFront domain, and `storeUrl`
-must then be changed to that.
-
-Attach `WriterPolicyArn` to whoever will push with AWS credentials. The bucket is
-`DeletionPolicy: Retain`. Once history is rewritten it holds the only copy of the art, so
-deleting the stack leaves it in place.
-
-**Keep an offline copy before the rewrite.** S3's durability covers hardware, not losing the
-AWS account, a mistaken deletion by someone with admin rights, or a deletion unnoticed past the
-90 days versioning keeps. Before running the history rewrite, save the whole old repository:
-`git bundle create kad-pre-rewrite.bundle --all` from the full clone (about 2 GB), kept on a
-drive or in cold storage. It holds every version of every file and needs no infrastructure
-(#726).
+Put `StoreUrl` in `assets.config.json` as `storeUrl` and commit it. Attach
+`WriterPolicyArn` to whoever will push. The bucket is `DeletionPolicy: Retain`.
+Once history is rewritten it holds the only copy of the art, so deleting the
+stack leaves it in place.
 
 ### The budget
 
@@ -289,6 +273,13 @@ The `grep` counts every managed extension in a real run; widen it to the full li
 `assets:filter-args` printed if you want the exact check.
 
 Things to know before you do it:
+
+- **Keep an offline copy first (#726).** S3's durability covers hardware, not losing the AWS
+  account, a mistaken deletion by someone with admin rights, or a deletion unnoticed past the
+  90 days versioning keeps. From the full clone, before rewriting:
+  `git bundle create kad-pre-rewrite.bundle --all` (about 2 GB). Keep it off AWS (a drive, or
+  another provider's cold storage), and check it restores:
+  `git clone kad-pre-rewrite.bundle check && git -C check log --oneline -1`.
 
 - **Every commit hash changes.** Everyone re-clones. Open pull requests need their
   branches rebased onto the new history (or recreated).

@@ -42,6 +42,10 @@ You upload through the project's MCP server, not with AWS credentials
   adds for `kd.readysetcloud.io`;
 - `NODE_USE_ENV_PROXY=1` where the sandbox needs a proxy.
 
-If `assets:push` says it has no key, or that the repository's art is still in git (before the
-cutover), stop. Report which paths need storing, and leave the files on disk. Do not commit
-images instead.
+What to do when `assets:push` refuses depends on which refusal it is:
+
+- **"The art is still in git"** means there is no `assets.lock.json` yet: the cutover has not
+  happened. Nothing is wrong. Commit the approved image with its prompt record, as step 5 above
+  says.
+- **No key** (or no AWS credentials) after the cutover: stop. Leave the files on disk, and report
+  which paths need storing. Do not commit the images instead; `assets:verify` fails CI on them.
