@@ -5,7 +5,7 @@
   "mcpUrl": "https://kd.readysetcloud.io/api/mcp",
   "stack": "kad-asset-store",
   "region": "us-east-1",
-  "untracked": false,
+  "untracked": true,
   "roots": [
     "assets",
     "art",
