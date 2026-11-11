@@ -338,6 +338,8 @@ Things to know before you do it:
 | A painting is committed to git after the cutover | `assets:verify` in CI |
 | The store serves bytes that do not hash to their name | `pull` and the dev server refuse them |
 | A deploy runs with art missing or unpushed | `deploy.sh`: `assets:verify --present assets` before the `--delete` sync |
+| Hero art lands without the owner looking | The **character art** check (`.github/workflows/character-art.yml`) fails the PR until it carries the `art-approved` label (#729) |
+| The store stops enforcing its upload URLs (write-once, checksum, size, stamp) | `npm run assets:smoke` against the deployment (#723) |
 | Someone overwrites a blob | the bucket policy (conditional writes only); versioning keeps 90 days anyway |
 | A partial pull is mistaken for deletions | `push` never prunes unless told where |
 | Two branches add art to one folder | the merge driver |
