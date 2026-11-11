@@ -10,7 +10,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run typecheck` — tsc across shared, server, client and tools
 - `npm test` — vitest (includes the `tools/**/*.test.mjs` content suites)
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table
-- `npm run content:proofs` — after changing a graph campaign's graph or the flags its chapters set: re-walks it and writes `content/graph-proofs/`, which the server trusts at start
+- `npm run content:proofs` — refreshes the graph proofs in `content/graph-proofs/`: a cache of each graph campaign's route search, which the server trusts at start. Nothing to commit (the folder is ignored), and rarely needed by hand: `content:validate`, `npm test`, the build, `npm run setup` and `npm run dev` each refresh a stale one
 - `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
 - `npm run play:jump -- <chapter> [scene]` — a TV and phones seated at any scene of any chapter,
   out of campaign order and unlocked (`--flag`, `--fact`, `--players`), shot side by side into

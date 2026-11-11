@@ -133,7 +133,6 @@ describe("validateContent", () => {
      * validate-cli.test.ts writes Riftlight's own proof, through the command
      * line, and holds it to the one that ships.
      */
-    const campaignFile = "content/campaigns/the-hollow-crown.json";
     const proof = "content/graph-proofs/the-hollow-crown.json";
     const tree = copyTree();
     const base = readJson(tree, "content", "chapters", "bramblewood-01.json");
@@ -161,10 +160,12 @@ describe("validateContent", () => {
     // The fixture is about proofs; it has no class places and is not on their allow list.
     const options = { classPlaces: false };
 
-    const refused = validateContent(tree, options);
-    expect(refused.findings).toEqual([expect.objectContaining({ file: campaignFile, at: "/graph", rule: "campaign", message: expect.stringContaining("no graph proof") })]);
-    expect(refused.written).toEqual([]);
+    // No proof is a walk, not a failure: the proof is a cache nobody commits. Unasked, nothing is written.
+    const walked = validateContent(tree, options);
+    expect(walked.findings).toEqual([]);
+    expect(walked.written).toEqual([]);
     expect(tree.has(proof)).toBe(false);
+    expect(renderReport(walked)).toMatch(/the-hollow-crown\.json {2}campaign .*no proof recorded\)/);
 
     const handed: [path: string, text: string][] = [];
     const written = validateContent(tree, { ...options, writeProofs: true, write: (path, text) => handed.push([path, text]) });

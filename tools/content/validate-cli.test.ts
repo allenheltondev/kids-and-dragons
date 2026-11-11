@@ -112,17 +112,18 @@ describe("node tools/content/validate.mjs", () => {
     }
   }, 60_000);
 
-  it("refuses a graph campaign with no proof, writes one to disk under --write-proofs, and trusts it afterwards", () => {
+  it("walks a graph campaign with no proof and passes, records the walk unless told not to, and trusts it afterwards", () => {
     try {
       const shipped = JSON.parse(readFileSync(join(staged, PROOF), "utf8")) as unknown;
       write(PROOF, null);
 
-      const refused = run(staged);
-      expect(refused.stdout).toMatch(/no graph proof \(content\/graph-proofs\/riftlight\.json\)/);
-      expect(refused.code).toBe(1);
+      // The proof is a cache nobody commits: its absence is a walk, not a failure.
+      const checked = run(staged, ["--no-write-proofs"]);
+      expect(checked.stdout).toMatch(/riftlight\.json {2}campaign .*no proof recorded\)/);
+      expect(checked.code).toBe(0);
       expect(existsSync(join(staged, PROOF))).toBe(false);
 
-      const written = run(staged, ["--write-proofs"]);
+      const written = run(staged);
       expect(written.stdout).toMatch(/riftlight\.json {2}campaign .*proof written\)/);
       expect(written.code).toBe(0);
       expect(JSON.parse(readFileSync(join(staged, PROOF), "utf8"))).toEqual(shipped);

@@ -9,7 +9,10 @@
  * Usage:
  *     npm run content:validate            # everything
  *     node tools/content/validate.mjs     # same thing
- *     npm run content:proofs              # --write-proofs: record clean graph walks
+ *     node tools/content/validate.mjs --no-write-proofs   # check only: leave content/graph-proofs alone
+ *
+ * A clean graph walk is recorded in content/graph-proofs/ as it is made. That folder is a
+ * cache git ignores (tools/content/graph-proofs.ts), so there is nothing to commit.
  */
 
 import { runCli } from "./validate-cli.ts";

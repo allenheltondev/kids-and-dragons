@@ -46,6 +46,22 @@ const FUNCTIONS = [
 
 await rm(OUT, { recursive: true, force: true });
 
+/*
+ * Graph proofs (tools/content/graph-proofs.ts). The API loads `content/` at
+ * every cold start, and a graph campaign with no current proof is walked there:
+ * over five seconds before the first tap is answered, where a proof makes it 88
+ * milliseconds. The proofs are not committed, so this is where a package gets
+ * them: refreshed here, and checked again inside the package below. Content
+ * that does not validate has no proof to give, and does not ship.
+ */
+const { ensureGraphProofs, staleGraphProofs } = await import("../tools/content/graph-proofs.ts");
+const proofs = ensureGraphProofs(ROOT);
+if (proofs.refreshed.length > 0) console.log(`graph proofs: walked and recorded ${proofs.refreshed.join(", ")}`);
+if (proofs.failed.length > 0) {
+  console.error(proofs.report);
+  throw new Error(`graph proofs: ${proofs.failed.join(", ")} did not validate, so the API would walk it at every cold start. Fix the content (npm run content:validate) and build again.`);
+}
+
 for (const fn of FUNCTIONS) {
   const dir = path.join(OUT, fn.name);
   await mkdir(dir, { recursive: true });
@@ -89,6 +105,11 @@ for (const fn of FUNCTIONS) {
   if (fn.content) {
     // `KAD_CONTENT_DIR` (see paths.ts) points the loader here at runtime.
     await cp(path.join(ROOT, "content"), path.join(dir, "content"), { recursive: true });
+    // What ships, not what was on disk a moment ago: the copy itself must carry the proofs.
+    const unproven = staleGraphProofs(dir);
+    if (unproven.length > 0) {
+      throw new Error(`graph proofs: the ${fn.name} package has no current proof for ${unproven.join(", ")}; it would walk at every cold start.`);
+    }
   }
 
   // Marks the bundle as ESM for the runtime, and stops Lambda looking for deps
