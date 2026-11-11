@@ -401,3 +401,61 @@ describe("review fixes", () => {
     expect((await verify(origin, { store: false, present: ["assets"] })).problems.join("\n")).toMatch(/unpushed\/assembled\.png: on disk but not in assets\.lock\.json/);
   });
 });
+
+describe("archive-history, before a rewrite deletes the git copies", () => {
+  const keyOf = (bytes: string, ext: string) => {
+    const sha = hashBytes(new TextEncoder().encode(bytes));
+    return path.join(storeDir, blobKey(sha, `x.${ext}`));
+  };
+
+  it("stores the same bytes under every extension history used them with", async () => {
+    const root = makeRepo();
+    // The temp repo manages png and webm: the same bytes under the other extension.
+    write(root, "assets/audio/pib.webm", "pib v1");
+    sh(root, "add", "-A");
+    sh(root, "commit", "-qm", "the same bytes, under another extension");
+    const result = await archiveHistory(root, new DirBlobStore(storeDir));
+    expect(fs.existsSync(keyOf("pib v1", "png"))).toBe(true);
+    expect(fs.existsSync(keyOf("pib v1", "webm"))).toBe(true);
+    // Every change the log records can be fetched back by the key it implies.
+    for (const c of result.changes.filter((c) => c.sha256)) {
+      expect(fs.existsSync(path.join(storeDir, blobKey(c.sha256!, c.path))), c.path).toBe(true);
+    }
+  });
+
+  it("stores bytes that only exist in a merge commit's resolution", async () => {
+    const root = makeRepo();
+    sh(root, "checkout", "-qb", "left");
+    write(root, "assets/cast/pib/assembled.png", "pib, left");
+    sh(root, "commit", "-qam", "left");
+    sh(root, "checkout", "-q", "main");
+    write(root, "assets/cast/pib/assembled.png", "pib, right");
+    sh(root, "commit", "-qam", "right");
+    try {
+      sh(root, "merge", "-q", "--no-edit", "left");
+    } catch {
+      // The expected conflict: resolve it to bytes neither side had.
+    }
+    write(root, "assets/cast/pib/assembled.png", "pib, resolved in the merge");
+    sh(root, "add", "assets/cast/pib/assembled.png");
+    sh(root, "commit", "-qm", "merge, repainted");
+    expect(sh(root, "rev-list", "--parents", "-n", "1", "HEAD").trim().split(" ")).toHaveLength(3);
+
+    const result = await archiveHistory(root, new DirBlobStore(storeDir));
+    expect(fs.existsSync(keyOf("pib, resolved in the merge", "png"))).toBe(true);
+    const merge = sh(root, "rev-parse", "HEAD").trim();
+    expect(result.changes.find((c) => c.commit === merge && c.path === "assets/cast/pib/assembled.png")?.sha256).toBe(
+      hashBytes(new TextEncoder().encode("pib, resolved in the merge")),
+    );
+  });
+
+  it("refuses a shallow clone instead of archiving part of history", async () => {
+    const origin = makeRepo();
+    write(origin, "assets/cast/pib/assembled.png", "pib v2");
+    sh(origin, "commit", "-qam", "v2");
+    const shallow = path.join(tmp, "shallow");
+    sh(tmp, "clone", "-q", "--depth", "1", `file://${origin}`, shallow);
+    await expect(archiveHistory(shallow, new DirBlobStore(storeDir))).rejects.toThrow(/shallow.*git fetch --unshallow/);
+    expect(fs.existsSync(path.join(storeDir, "history"))).toBe(false);
+  });
+});

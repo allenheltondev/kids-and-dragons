@@ -161,12 +161,13 @@ stack leaves it in place.
 
 ## The cutover
 
-Do this from a **full** clone (not shallow), with write credentials. Each step is
+Do this from a **full** clone (not shallow; `archive-history` refuses one, since a partial archive would look complete), with every branch and tag fetched, and with write credentials. Each step is
 safe to stop after and re-run.
 
 1. **Archive history.** `npm run assets:archive-history` uploads every version of
    every managed file that history has ever held, plus a change log (commit,
-   date, path, sha256) to `history/<stamp>.json` in the store and `.assets/`
+   date, path, sha256; merge commits are diffed against their first parent, and every
+   blob reachable from any ref is stored too, under each extension it was used with) to `history/<stamp>.json` in the store and `.assets/`
    locally. Keep the `.git/filter-repo/commit-map` the rewrite writes later. With
    the two, any old commit's art can be rebuilt after its blobs leave git.
 2. **Migrate.** `npm run assets:migrate` uploads every media file git tracks and
@@ -202,13 +203,33 @@ cd kad.git
 # GitHub's pull-request refs are read-only; pushing them back would fail the mirror push.
 git for-each-ref --format='delete %(refname)' refs/pull | git update-ref --stdin
 <paste the printed git filter-repo command>
-git push --force --mirror
+
+# Inspect before anything leaves this machine: the media are gone, everything else is not.
+git log --oneline -5 --all
+git rev-list --objects --all | grep -ciE '\.(png|webp|webm)$'    # managed media left: expect 0
+git count-objects -vH                                           # size-pack: the new size
+
+# filter-repo removes the origin remote on purpose, so nothing is pushed by accident.
+# Put it back only now, then push.
+git remote add origin git@github.com:allenheltondev/kids-and-dragons.git
+git push --force --mirror origin
 ```
+
+The `grep` counts every managed extension in a real run; widen it to the full list
+`assets:filter-args` printed if you want the exact check.
 
 Things to know before you do it:
 
 - **Every commit hash changes.** Everyone re-clones. Open pull requests need their
   branches rebased onto the new history (or recreated).
+- **A stale clone can put the old history back.** Any clone, worktree or cloud
+  session made before the rewrite still holds every old blob, and one ordinary
+  `git push` of a branch based on the old history uploads all of it again. After
+  the rewrite, delete old clones (and `.claude/worktrees/`) rather than pulling
+  into them, close or recreate pull requests opened from the old history, and
+  delete remote branches you do not mean to keep before the mirror push (a mirror
+  push writes every ref the mirror has). If one does slip through, it shows as
+  the repository growing back: `git count-objects -vH` on a fresh clone.
 - **Commits from before the cutover have no art and no lock.** Do not deploy one
   (a production rollback to a ref before the cutover). Its own `deploy.sh` predates
   the guard and would sync an empty `assets/` with `--delete`. The

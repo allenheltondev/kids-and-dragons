@@ -571,10 +571,15 @@ export interface ArchiveResult {
 export async function archiveHistory(root: string, store: BlobStore, options: { log?: Log; dryRun?: boolean } = {}): Promise<ArchiveResult> {
   const log = options.log ?? quiet;
   const config = loadConfig(root);
+  // The rewrite after this deletes the only git copy of every version, so an archive of part of
+  // history is worse than none: it looks complete. Refuse rather than warn.
   if (git(root, ["rev-parse", "--is-shallow-repository"]).trim() === "true") {
-    log("  warning: this clone is shallow, so the archive covers only the history it has. git fetch --unshallow first for all of it.");
+    throw new Error("This clone is shallow, so its history is incomplete and so would the archive be. Run git fetch --unshallow (and fetch every branch and tag) first.");
   }
-  const raw = git(root, ["log", "--all", "--raw", "--no-abbrev", "--no-renames", "--format=@@%H %cI", "--", ...config.roots]);
+
+  // The change log. Merge commits are diffed against their first parent: by default git log shows
+  // them no changes at all, and bytes created while resolving a merge would never be seen.
+  const raw = git(root, ["log", "--all", "--root", "--raw", "--no-abbrev", "--no-renames", "--diff-merges=first-parent", "--format=@@%H %cI", "--", ...config.roots]);
   const changes: Array<Omit<HistoryChange, "sha256" | "bytes"> & { blob: string | null }> = [];
   let commit = "";
   let date = "";
@@ -583,13 +588,35 @@ export async function archiveHistory(root: string, store: BlobStore, options: { 
       [commit, date] = line.slice(2).split(" ") as [string, string];
       continue;
     }
-    const m = /^:\d+ \d+ [0-9a-f]+ ([0-9a-f]+) ([A-Z])\d*\t(.+)$/.exec(line);
+    const m = /^:+(?:\d+ )+(?:[0-9a-f]+ )+([A-Z]+)\d*\t(.+)$/.exec(line);
     if (!m) continue;
-    const [, blob, kind, file] = m as unknown as [string, string, string, string];
+    // The last object id on the line is the result's; with --raw it precedes the status letters.
+    const ids = line.split("\t")[0]!.split(" ").filter((t) => /^[0-9a-f]{40,64}$/.test(t));
+    const blob = ids.at(-1)!;
+    const [, kind, file] = m as unknown as [string, string, string];
     if (!matchesRules(file, config)) continue;
-    changes.push({ commit, date, path: file, blob: kind === "D" ? null : blob });
+    changes.push({ commit, date, path: file, blob: kind.startsWith("D") ? null : blob });
   }
-  const blobs = [...new Set(changes.map((c) => c.blob).filter((b): b is string => b !== null))];
+
+  // What to upload: every distinct store key, which is the hash *and* the extension. The same
+  // bytes saved as foo.png and bar.webp are two objects in the store, and the change log will
+  // ask for each. Keyed by git blob and extension here; the hash is known once the bytes are read.
+  const wanted = new Map<string, Set<string>>();
+  const want = (blob: string, file: string): void => {
+    let exts = wanted.get(blob);
+    if (!exts) wanted.set(blob, (exts = new Set()));
+    exts.add(file);
+  };
+  for (const c of changes) if (c.blob) want(c.blob, c.path);
+  // A safety net under the log: every managed blob reachable from any commit's tree, whatever
+  // diff did or did not show it. rev-list names each object once, with one path it was seen at.
+  for (const line of git(root, ["rev-list", "--objects", "--all"]).split("\n")) {
+    const space = line.indexOf(" ");
+    if (space < 0) continue;
+    const file = line.slice(space + 1);
+    if (matchesRules(file, config)) want(line.slice(0, space), file);
+  }
+  const blobs = [...wanted.keys()];
   log(`archive-history: ${changes.length} change(s) to managed files, ${blobs.length} distinct blob(s)`);
 
   const info = new Map<string, LockEntry>();
@@ -601,9 +628,11 @@ export async function archiveHistory(root: string, store: BlobStore, options: { 
     const bytes = await catBlob(root, blob);
     const entry = { sha256: hashBytes(bytes), bytes: bytes.length };
     info.set(blob, entry);
-    const sample = changes.find((c) => c.blob === blob)!.path;
-    const key = blobKey(entry.sha256, sample);
-    if (!options.dryRun && !(await store.has(key)) && (await store.put(key, bytes, contentTypeFor(sample)))) uploaded++;
+    const keys = new Map<string, string>();
+    for (const file of wanted.get(blob)!) keys.set(blobKey(entry.sha256, file), file);
+    for (const [key, file] of keys) {
+      if (!options.dryRun && !(await store.has(key)) && (await store.put(key, bytes, contentTypeFor(file)))) uploaded++;
+    }
     tick(++done);
   });
 
@@ -621,7 +650,7 @@ export async function archiveHistory(root: string, store: BlobStore, options: { 
     writeAtomic(file, body);
     await store.put(`history/${stamp}.json`, body, "application/json");
   }
-  log(`  uploaded ${uploaded} blob(s); change log at ${path.relative(root, file)} and history/${stamp}.json in the store`);
+  log(`  uploaded ${uploaded} object(s); change log at ${path.relative(root, file)} and history/${stamp}.json in the store`);
   return { changes: out, uploaded, file };
 }
 
