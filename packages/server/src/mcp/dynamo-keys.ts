@@ -22,6 +22,8 @@ function fromItem(item: Record<string, unknown>): KeyRecord {
     id: String(item.id),
     label: String(item.label),
     scopes: (item.scopes as KeyRecord["scopes"]) ?? [],
+    agent: (item.agent as string | null | undefined) ?? null,
+    tags: (item.tags as Record<string, string> | undefined) ?? {},
     secretHash: String(item.secretHash),
     createdAt: String(item.createdAt),
     expiresAt: String(item.expiresAt),

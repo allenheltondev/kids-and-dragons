@@ -34,6 +34,14 @@ export const KEY_PREFIX = "kadmcp_";
 const KEY_SHAPE = /^kadmcp_([A-Za-z0-9_-]{16})\.([A-Za-z0-9_-]{43})$/;
 
 export const DEFAULT_KEY_DAYS = 90;
+/**
+ * An agent name and tags are stamped, in public, on every blob a key uploads (#732), so they
+ * are short plain words: no spaces, no personal data, no secrets.
+ */
+const AGENT_SHAPE = /^[a-z0-9][a-z0-9._-]{0,31}$/;
+const TAG_KEY_SHAPE = /^[a-z0-9][a-z0-9._-]{0,31}$/;
+const TAG_VALUE_SHAPE = /^[A-Za-z0-9._:/-]{1,64}$/;
+const MAX_TAGS = 8;
 export const MAX_KEY_DAYS = 366;
 const LABEL_MAX = 60;
 
@@ -42,6 +50,10 @@ export interface KeyRecord {
   id: string;
   label: string;
   scopes: Scope[];
+  /** The agent the key was minted for (e.g. "codex"), stamped on its uploads. */
+  agent: string | null;
+  /** Free-form tags (e.g. env=codex-cloud), stamped on its uploads. */
+  tags: Record<string, string>;
   /** Hex SHA-256 of the key's secret half. */
   secretHash: string;
   createdAt: string;
@@ -80,6 +92,9 @@ export function publicInfo(record: KeyRecord): KeyInfo {
 export interface MintInput {
   label: string;
   scopes: string[];
+  agent?: string;
+  /** `key=value` pairs, or an object. */
+  tags?: string[] | Record<string, string>;
   days?: number;
   now?: Date;
 }
@@ -91,6 +106,10 @@ export async function mintKey(store: KeyStore, input: MintInput): Promise<{ key:
   if (input.scopes.length === 0) throw new KeyError(`Name at least one scope: ${SCOPES.join(", ")}.`);
   const bad = input.scopes.filter((s) => !isScope(s));
   if (bad.length > 0) throw new KeyError(`Unknown scope ${bad.join(", ")}. Scopes: ${SCOPES.join(", ")}.`);
+  if (/[^A-Za-z0-9 ._:/-]/.test(label)) throw new KeyError("A label is plain words (letters, digits, spaces, . _ : / -): it is stamped, in public, on every blob the key uploads.");
+  const agent = input.agent?.trim() || null;
+  if (agent !== null && !AGENT_SHAPE.test(agent)) throw new KeyError("An agent is one lower-case word (letters, digits, . _ -), e.g. codex.");
+  const tags = parseTags(input.tags);
   const days = input.days ?? DEFAULT_KEY_DAYS;
   if (!Number.isInteger(days) || days < 1 || days > MAX_KEY_DAYS) throw new KeyError(`A key lives 1 to ${MAX_KEY_DAYS} days.`);
 
@@ -101,6 +120,8 @@ export async function mintKey(store: KeyStore, input: MintInput): Promise<{ key:
     id,
     label,
     scopes: [...new Set(input.scopes as Scope[])].sort(),
+    agent,
+    tags,
     secretHash: hashSecret(secret),
     createdAt: now.toISOString(),
     expiresAt: new Date(now.getTime() + days * 86_400_000).toISOString(),
@@ -114,6 +135,8 @@ export interface VerifiedKey {
   id: string;
   label: string;
   scopes: Scope[];
+  agent: string | null;
+  tags: Record<string, string>;
   expiresAt: string;
 }
 
@@ -133,7 +156,14 @@ export async function verifyKey(store: KeyStore, presented: string, now: Date = 
   if (want.length !== got.length || !timingSafeEqual(want, got)) return null;
   if (Date.parse(record.expiresAt) <= now.getTime()) return null;
   await store.touch(id, now.toISOString()).catch(() => undefined);
-  return { id: record.id, label: record.label, scopes: record.scopes.filter(isScope), expiresAt: record.expiresAt };
+  return {
+    id: record.id,
+    label: record.label,
+    scopes: record.scopes.filter(isScope),
+    agent: record.agent ?? null,
+    tags: record.tags ?? {},
+    expiresAt: record.expiresAt,
+  };
 }
 
 export async function listKeys(store: KeyStore): Promise<KeyInfo[]> {
@@ -143,6 +173,24 @@ export async function listKeys(store: KeyStore): Promise<KeyInfo[]> {
 
 export async function revokeKey(store: KeyStore, id: string): Promise<void> {
   if (!(await store.delete(id))) throw new KeyError(`No key ${id}.`);
+}
+
+function parseTags(input: MintInput["tags"]): Record<string, string> {
+  const pairs: Array<[string, string]> = Array.isArray(input)
+    ? input.map((raw) => {
+        const eq = raw.indexOf("=");
+        if (eq <= 0) throw new KeyError(`A tag is key=value: ${raw}`);
+        return [raw.slice(0, eq).trim(), raw.slice(eq + 1).trim()];
+      })
+    : Object.entries(input ?? {});
+  if (pairs.length > MAX_TAGS) throw new KeyError(`At most ${MAX_TAGS} tags.`);
+  const tags: Record<string, string> = {};
+  for (const [k, v] of pairs) {
+    if (!TAG_KEY_SHAPE.test(k)) throw new KeyError(`A tag's key is one lower-case word: ${k}`);
+    if (!TAG_VALUE_SHAPE.test(v)) throw new KeyError(`A tag's value is up to 64 plain characters (letters, digits, . _ : / -): ${k}=${v}`);
+    tags[k] = v;
+  }
+  return tags;
 }
 
 /** The bearer key from an Authorization header value, or null. */

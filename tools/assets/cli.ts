@@ -6,6 +6,7 @@
  *   npm run assets:push   [-- paths…] [--prune] upload new and changed art, record it in the lock
  *   npm run assets:verify [-- --present P…]     the CI and deploy gate
  *   npm run assets:url    -- <path>             a file's public store URL
+ *   npm run assets:provenance -- <path>         where a painting came from: commit, PR, prompt, uploader
  *   npm run assets:migrate [-- --untrack]       the one-time cutover out of git
  *   npm run assets:archive-history              every historical version into the store, before a rewrite
  *   npm run assets:filter-args                  the git filter-repo command for the rewrite
@@ -33,12 +34,14 @@ const { values, positionals } = parseArgs({
     bucket: { type: "string" },
     dir: { type: "string" },
     writer: { type: "string" },
+    issue: { type: "string" },
     untrack: { type: "boolean" },
     present: { type: "string", multiple: true },
     "no-store": { type: "boolean" },
     "store-paths-from": { type: "string" },
     "fix-ignore": { type: "boolean" },
     quiet: { type: "boolean" },
+    json: { type: "boolean" },
   },
 });
 
@@ -51,6 +54,14 @@ async function writeStore(): Promise<BlobStore> {
 }
 const log = (line: string): void => console.log(line);
 const errlog = (line: string): void => console.error(line);
+
+/** `--issue 704` or `--issue #704`: the art issue the push is for, stamped on its blobs. */
+function issueOf(raw: string | undefined): number | undefined {
+  if (raw === undefined) return undefined;
+  const n = Number(raw.replace(/^#/, ""));
+  if (!Number.isInteger(n) || n <= 0) throw new Error(`--issue takes an issue number: ${raw}`);
+  return n;
+}
 
 async function main(): Promise<number> {
   switch (command) {
@@ -79,7 +90,7 @@ async function main(): Promise<number> {
     }
     case "push": {
       const store = await writeStore();
-      await push(root, store, { prefixes: positionals, prune: values.prune, dryRun: values["dry-run"], log });
+      await push(root, store, { prefixes: positionals, prune: values.prune, dryRun: values["dry-run"], issue: issueOf(values.issue), log });
       return 0;
     }
     case "migrate": {
@@ -107,6 +118,15 @@ async function main(): Promise<number> {
       });
       return problems.length === 0 ? 0 : 1;
     }
+    case "provenance": {
+      if (positionals.length === 0) throw new Error("usage: npm run assets:provenance -- <path> [path…] [--json]");
+      const { formatProvenance, provenance } = await import("./provenance.ts");
+      const results = [];
+      for (const p of positionals) results.push(await provenance(root, p));
+      if (values.json) log(JSON.stringify(results, null, 2));
+      else for (const r of results) for (const line of formatProvenance(r)) log(line);
+      return 0;
+    }
     case "url": {
       if (positionals.length === 0) throw new Error("usage: npm run assets:url -- <path> [path…]");
       for (const p of positionals) log(urlFor(root, p));
@@ -122,7 +142,7 @@ async function main(): Promise<number> {
       return 0;
     }
     default:
-      errlog("usage: node tools/assets/cli.ts <status|pull|push|verify|url|migrate|archive-history|filter-args> [args]  (docs/asset-store.md)");
+      errlog("usage: node tools/assets/cli.ts <status|pull|push|verify|url|provenance|migrate|archive-history|filter-args> [args]  (docs/asset-store.md)");
       return 2;
   }
 }

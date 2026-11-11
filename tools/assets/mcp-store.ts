@@ -15,7 +15,7 @@
  */
 
 import { BLOB_PREFIX } from "../../packages/shared/src/asset-store.ts";
-import type { BlobStore } from "./stores.ts";
+import type { BlobStore, UploadInfo } from "./stores.ts";
 
 const VERSION = "2026-07-28";
 
@@ -44,11 +44,15 @@ export class McpBlobStore implements BlobStore {
     return Promise.resolve(false);
   }
 
-  async put(key: string, bytes: Uint8Array, _contentType: string, path?: string): Promise<boolean> {
+  async put(key: string, bytes: Uint8Array, _contentType: string, info?: UploadInfo): Promise<boolean> {
+    const path = info?.path;
     const m = new RegExp(`^${BLOB_PREFIX}/[0-9a-f]{2}/([0-9a-f]{64})(\\.[a-z0-9]+)?$`).exec(key);
     if (!m) throw new Error(`${key}: the MCP server stores blobs only; this needs AWS credentials (--writer aws)`);
     const sha256 = m[1]!;
-    const result = (await this.callTool("request_uploads", { files: [{ path: path ?? `blob${m[2] ?? ""}`, sha256, bytes: bytes.length }] })) as {
+    const result = (await this.callTool("request_uploads", {
+      files: [{ path: path ?? `blob${m[2] ?? ""}`, sha256, bytes: bytes.length }],
+      ...(info?.issue !== undefined ? { issue: info.issue } : {}),
+    })) as {
       uploads: UploadAnswer[];
     };
     const answer = result.uploads[0];

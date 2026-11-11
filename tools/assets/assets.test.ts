@@ -13,6 +13,7 @@ import { blobKey, parseLock, serializeLock } from "../../packages/shared/src/ass
 import { hashBytes } from "../../packages/shared/src/asset-cache";
 import { archiveHistory, migrate, pull, push, readIgnoreBlock, status, untrack, urlFor, verify } from "./commands";
 import { loadConfig, loadLock } from "./lib";
+import { storeStamp } from "./provenance";
 import { DirBlobStore, S3BlobStore } from "./stores";
 
 let tmp: string;
@@ -457,5 +458,22 @@ describe("archive-history, before a rewrite deletes the git copies", () => {
     sh(tmp, "clone", "-q", "--depth", "1", `file://${origin}`, shallow);
     await expect(archiveHistory(shallow, new DirBlobStore(storeDir))).rejects.toThrow(/shallow.*git fetch --unshallow/);
     expect(fs.existsSync(path.join(storeDir, "history"))).toBe(false);
+  });
+});
+
+describe("stamps on AWS-credentialed writes (#732)", () => {
+  it("stamps the operator's chosen name, the path and the time, never an AWS identity", async () => {
+    const root = makeRepo();
+    process.env.KAD_UPLOADED_BY = "cutover";
+    try {
+      await migrate(root, new DirBlobStore(storeDir), { cacheDir });
+    } finally {
+      delete process.env.KAD_UPLOADED_BY;
+    }
+    const sha = loadLock(root).files["assets/cast/pib/assembled.png"]!.sha256;
+    const stamp = await storeStamp(`file://${storeDir}`, blobKey(sha, "x.png"));
+    expect(stamp).toMatchObject({ uploader: "cutover", via: "aws", path: "assets/cast/pib/assembled.png" });
+    expect(Date.parse(stamp!.at)).not.toBeNaN();
+    expect(JSON.stringify(stamp)).not.toMatch(/arn:|amazonaws|@/);
   });
 });

@@ -21,7 +21,7 @@ fallback.
 
 | | |
 |---|---|
-| Mint | `npm run mcp:keys -- create --stage prod --label cloud-agent --scope assets:write [--days 90]` |
+| Mint | `npm run mcp:keys -- create --stage prod --label "codex cloud" --scope assets:write --agent codex [--tag env=codex-cloud] [--days 90]` |
 | List | `npm run mcp:keys -- list --stage prod` (label, scopes, expiry, last use; never the key) |
 | Revoke | `npm run mcp:keys -- revoke --stage prod <id>`. The next request with it is refused. |
 
@@ -30,6 +30,12 @@ Being able to write that table is what makes someone the operator. Unlike
 content-tracking, there is no "mint a key" page: sign-in here is open to any
 family, so being signed in proves nothing about being the operator. Nothing
 reachable over the internet can mint a key, and a key cannot mint another.
+
+A key's label, agent and tags are stamped on every blob it uploads, signed into the upload URL
+and public with the blob ([asset-store.md, "Provenance"](./asset-store.md#provenance)). So
+they are plain words, checked at mint: a label of letters, digits, spaces and `. _ : / -`, an
+agent of one lower-case word (`codex`), up to eight `key=value` tags. Never a person's name,
+an email or anything secret.
 
 A key is `kadmcp_<id>.<secret>`, shown once. The row keeps the SHA-256 of the
 secret, the scopes, the expiry (90 days by default, at most 366) and when it was
@@ -60,8 +66,8 @@ operator's read key cannot upload.
 
 | Tool | Area | What it does |
 |---|---|---|
-| `whoami` | every key | The key's label, scopes and expiry. |
-| `request_uploads` | `assets:write` | For up to 200 files (`path`, `sha256`, `bytes`): `stored` (already there), `upload` (a presigned PUT URL and the headers to send with it, valid 15 minutes), or `refused` with the reason. |
+| `whoami` | every key | The key's label, agent, tags, scopes and expiry. |
+| `request_uploads` | `assets:write` | For up to 200 files (`path`, `sha256`, `bytes`), and optionally the art `issue` they are for: `stored` (already there), `upload` (a presigned PUT URL and the headers to send with it, valid 15 minutes), or `refused` with the reason. Each new blob is stamped with the key, the path and the issue. |
 | `check_uploads` | `assets:read` | Whether the store holds each file's bytes. For checking before committing a lock. |
 
 Agents rarely call these by hand. `npm run assets:push` with
@@ -80,6 +86,7 @@ send unchanged:
 | `If-None-Match: *` | S3 refuses the write if the blob exists (412, which the CLI treats as done). The store's bucket policy refuses any blob write without it. |
 | `x-amz-checksum-sha256` | S3 hashes what arrives and refuses a mismatch. A URL for one hash can never store other bytes. |
 | `Content-Length` | The size asked for, capped at 100 MB. |
+| `x-amz-meta-kad-*` | The provenance stamp: the key's label, agent and tags, the path, the issue, the time. |
 | `Content-Type`, `Cache-Control` | What the store's CDN serves the blob with. SVG is refused (it can carry script, and the CDN serves any origin); SVGs stay in git. |
 
 So an `assets:write` key lets its holder add correct blobs and nothing else. It

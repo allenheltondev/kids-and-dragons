@@ -223,6 +223,8 @@ export interface PushOptions {
   log?: Log;
   /** Push exactly these files, whatever status says: migrate's whole tracked set. */
   files?: string[];
+  /** The art issue the files are for, stamped on each new blob (#732). */
+  issue?: number;
 }
 
 export interface PushResult {
@@ -288,7 +290,7 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
     const key = blobKey(entry.sha256, p);
     if (!options.dryRun) {
       if (!(await store.has(key))) {
-        if (await store.put(key, bytes, contentTypeFor(p), p)) {
+        if (await store.put(key, bytes, contentTypeFor(p), { path: p, ...(options.issue !== undefined ? { issue: options.issue } : {}) })) {
           result.uploaded.push(p);
           result.bytesUploaded += bytes.length;
         }
@@ -631,7 +633,7 @@ export async function archiveHistory(root: string, store: BlobStore, options: { 
     const keys = new Map<string, string>();
     for (const file of wanted.get(blob)!) keys.set(blobKey(entry.sha256, file), file);
     for (const [key, file] of keys) {
-      if (!options.dryRun && !(await store.has(key)) && (await store.put(key, bytes, contentTypeFor(file)))) uploaded++;
+      if (!options.dryRun && !(await store.has(key)) && (await store.put(key, bytes, contentTypeFor(file), { path: file }))) uploaded++;
     }
     tick(++done);
   });
