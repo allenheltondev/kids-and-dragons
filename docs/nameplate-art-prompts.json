@@ -1,0 +1,137 @@
+{
+  "issues": [
+    665,
+    680
+  ],
+  "mode": "imagegen",
+  "useCase": "illustration-story",
+  "output": {
+    "width": 512,
+    "height": 192,
+    "format": "WebP",
+    "opaque": false,
+    "encoding": "RGBA, alpha retained, crop to alpha >200 bounds plus 8px source margin, Lanczos resize to 504x184, centered on transparent 512x192, lossless WebP method 6"
+  },
+  "ownerDecisions": {
+    "680": "Four earned designs: tier, Master rank, shared campaign, camp. Golden keeps its shipped Mythic unlock. Master and campaign receipts each retain their own catalog id and share identical design bytes. Camp Friends unlocks on the first friend."
+  },
+  "paintings": [
+    {
+      "id": "ribbon",
+      "path": "assets/nameplates/ribbon.webp",
+      "issue": 665,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/665/ribbon.png",
+      "prompt": "Use case: illustration-story. One finished storybook gouache game UI nameplate, ribbon design, transparent background. Wide horizontal rectangle aspect 8:3, entire isolated plaque visible with generous transparent outer margin. A subdued dark plum flat center for TWO rows of light name text (do NOT paint text); fine antique gold edge, restrained folded plum ribbon ends entirely confined to outermost left and right 12.5 percent. Nine-slice asset to be resized to 512x192, inset left/right64 top/bottom48. Keep all elaborate corner details within these caps; middle horizontal edges straight and seamless; middle 75 percent of width has a perfectly quiet dark plum interior. No letters, no icons in center, no shadows outside, no perspective, no watermark. Warm tactile hand painted gold and plum storybook style, modest rather than ornate. Transparent canvas."
+    },
+    {
+      "id": "leafy",
+      "path": "assets/nameplates/leafy.webp",
+      "issue": 665,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/665/leafy.png",
+      "prompt": "Use case: illustration-story. Paint one leafy starter nameplate frame, matching a warm storybook gouache game UI. Wide 8:3 horizontal plaque, isolated on TRANSPARENT background, no glow or cast shadow. Dark plum flat quiet center left completely empty for two text rows; restrained antique gold rim with small sage green painted leaves tucked into the four corner caps. Nine slice target 512x192: left and right 64px caps, top/bottom48; leaves must stay within corner regions, middle edges straight and stretchable, central 75 percent width empty. Whole plaque front-on, no perspective, outer transparent margin, no text letters logos or watermark. Modest simple starter design, gold and plum palette."
+    },
+    {
+      "id": "starry",
+      "path": "assets/nameplates/starry.webp",
+      "issue": 665,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/665/starry.png",
+      "prompt": "Use case: illustration-story. One starry starter nameplate frame for storybook gouache game, gold and plum. Wide 8:3 horizontal plaque, front-facing isolated on TRUE transparent background with NO glow NO external shadow. Quiet dark plum center EMPTY for two text rows. Delicate antique gold straight rim; tiny gold stars and one plum-blue gem tucked ONLY into the far left and right corner caps, modest starter ornament. Target nine slice canvas512x192 inset64 left/right48 top/bottom: keep ornaments within these corner regions, straight seamless stretchable middle edges, uninterrupted empty middle75percent. Complete frame visible with transparent margins. Hand painted textured edges, warm enchanting style for children, no words letters logos watermark."
+    },
+    {
+      "id": "golden",
+      "path": "assets/nameplates/golden.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/golden.png",
+      "prompt": "Use case: illustration-story. Paint ONE earned tier nameplate frame named Golden for a children's storybook gouache game. Gold and dark plum, subtly grander than starter frames. Wide horizontal 8:3 rectangle, front-on, TRUE transparent background, no external glow or shadow. Empty dark plum center for two rows of light text, NO text painted. Substantial antique gold double straight rim, small radiant sunburst corner medallions and tiny warm amber jewels ONLY within far left/right corner caps. Nine-slice target512x192 inset64 left/right48 top/bottom; all ornament within caps, top/bottom middle edges straight seamless, middle75percent empty dark plum. Complete isolated frame visible. Warm hand painted texture, elegant restrained silhouette, no letters logos watermark."
+    },
+    {
+      "id": "master_thornguard_frame",
+      "path": "assets/nameplates/master_thornguard_frame.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/master.png",
+      "prompt": "Use case: illustration-story. ONE earned Master class-rank nameplate frame, storybook gouache painted UI in antique gold and plum. Wide8:3 horizontal rectangle front-facing isolated true transparent background, NO external glow or cast shadow. Empty quiet dark plum center for two text rows, no text. Double gold rim with modest braided gold knot corner medallions, small purple gems and tiny laurel tips only inside the far left/right corner caps. Suggest craftsmanship and mastery without weapons. Grander than a plain starter but restrained. Nine-slice target512x192 inset64left/right48top/bottom, corners contained there, middle75percent unornamented, straight seamless middle edges. Complete frame visible, no lettering logo watermark."
+    },
+    {
+      "id": "master_duskrunner_frame",
+      "path": "assets/nameplates/master_duskrunner_frame.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/master.png",
+      "prompt": "Use case: illustration-story. ONE earned Master class-rank nameplate frame, storybook gouache painted UI in antique gold and plum. Wide8:3 horizontal rectangle front-facing isolated true transparent background, NO external glow or cast shadow. Empty quiet dark plum center for two text rows, no text. Double gold rim with modest braided gold knot corner medallions, small purple gems and tiny laurel tips only inside the far left/right corner caps. Suggest craftsmanship and mastery without weapons. Grander than a plain starter but restrained. Nine-slice target512x192 inset64left/right48top/bottom, corners contained there, middle75percent unornamented, straight seamless middle edges. Complete frame visible, no lettering logo watermark."
+    },
+    {
+      "id": "master_starweaver_frame",
+      "path": "assets/nameplates/master_starweaver_frame.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/master.png",
+      "prompt": "Use case: illustration-story. ONE earned Master class-rank nameplate frame, storybook gouache painted UI in antique gold and plum. Wide8:3 horizontal rectangle front-facing isolated true transparent background, NO external glow or cast shadow. Empty quiet dark plum center for two text rows, no text. Double gold rim with modest braided gold knot corner medallions, small purple gems and tiny laurel tips only inside the far left/right corner caps. Suggest craftsmanship and mastery without weapons. Grander than a plain starter but restrained. Nine-slice target512x192 inset64left/right48top/bottom, corners contained there, middle75percent unornamented, straight seamless middle edges. Complete frame visible, no lettering logo watermark."
+    },
+    {
+      "id": "master_songkeeper_frame",
+      "path": "assets/nameplates/master_songkeeper_frame.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/master.png",
+      "prompt": "Use case: illustration-story. ONE earned Master class-rank nameplate frame, storybook gouache painted UI in antique gold and plum. Wide8:3 horizontal rectangle front-facing isolated true transparent background, NO external glow or cast shadow. Empty quiet dark plum center for two text rows, no text. Double gold rim with modest braided gold knot corner medallions, small purple gems and tiny laurel tips only inside the far left/right corner caps. Suggest craftsmanship and mastery without weapons. Grander than a plain starter but restrained. Nine-slice target512x192 inset64left/right48top/bottom, corners contained there, middle75percent unornamented, straight seamless middle edges. Complete frame visible, no lettering logo watermark."
+    },
+    {
+      "id": "campaign_first_steps",
+      "path": "assets/nameplates/campaign_first_steps.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/campaign.png",
+      "prompt": "Use case: illustration-story. Paint ONE earned campaign-completion nameplate frame shared by all campaigns, warm storybook gouache game UI. Wide8:3 rectangle front-facing, isolated TRUE transparent background with no external glow or shadow. Deep plum empty center for two rows light name text; no text painted. Double antique gold straight rim, small OPEN BOOK medallions at far left and right cap, tiny gold trail-dot and leaf corner flourishes. Grander than starter frames, quiet and readable. Nine-slice target512x192 inset64left/right48top/bottom: keep book ornaments entirely in outer12.5percent left and right, straight continuous middle edges, no motifs anywhere in central75percent width. Full frame visible, soft tactile painted texture, no letters logos watermark."
+    },
+    {
+      "id": "campaign_gemfall",
+      "path": "assets/nameplates/campaign_gemfall.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/campaign.png",
+      "prompt": "Use case: illustration-story. Paint ONE earned campaign-completion nameplate frame shared by all campaigns, warm storybook gouache game UI. Wide8:3 rectangle front-facing, isolated TRUE transparent background with no external glow or shadow. Deep plum empty center for two rows light name text; no text painted. Double antique gold straight rim, small OPEN BOOK medallions at far left and right cap, tiny gold trail-dot and leaf corner flourishes. Grander than starter frames, quiet and readable. Nine-slice target512x192 inset64left/right48top/bottom: keep book ornaments entirely in outer12.5percent left and right, straight continuous middle edges, no motifs anywhere in central75percent width. Full frame visible, soft tactile painted texture, no letters logos watermark."
+    },
+    {
+      "id": "campaign_riftlight",
+      "path": "assets/nameplates/campaign_riftlight.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/campaign.png",
+      "prompt": "Use case: illustration-story. Paint ONE earned campaign-completion nameplate frame shared by all campaigns, warm storybook gouache game UI. Wide8:3 rectangle front-facing, isolated TRUE transparent background with no external glow or shadow. Deep plum empty center for two rows light name text; no text painted. Double antique gold straight rim, small OPEN BOOK medallions at far left and right cap, tiny gold trail-dot and leaf corner flourishes. Grander than starter frames, quiet and readable. Nine-slice target512x192 inset64left/right48top/bottom: keep book ornaments entirely in outer12.5percent left and right, straight continuous middle edges, no motifs anywhere in central75percent width. Full frame visible, soft tactile painted texture, no letters logos watermark."
+    },
+    {
+      "id": "campaign_the_hollow_crown",
+      "path": "assets/nameplates/campaign_the_hollow_crown.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/campaign.png",
+      "prompt": "Use case: illustration-story. Paint ONE earned campaign-completion nameplate frame shared by all campaigns, warm storybook gouache game UI. Wide8:3 rectangle front-facing, isolated TRUE transparent background with no external glow or shadow. Deep plum empty center for two rows light name text; no text painted. Double antique gold straight rim, small OPEN BOOK medallions at far left and right cap, tiny gold trail-dot and leaf corner flourishes. Grander than starter frames, quiet and readable. Nine-slice target512x192 inset64left/right48top/bottom: keep book ornaments entirely in outer12.5percent left and right, straight continuous middle edges, no motifs anywhere in central75percent width. Full frame visible, soft tactile painted texture, no letters logos watermark."
+    },
+    {
+      "id": "camp_friend_frame",
+      "path": "assets/nameplates/camp_friend_frame.webp",
+      "issue": 680,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/680/camp.png",
+      "prompt": "Use case: illustration-story. ONE earned first-friend camp nameplate frame, hand painted storybook gouache gold and plum game UI. Wide8:3 rectangle front-facing isolated on TRUE transparent background, no external glow no cast shadow. Quiet dark plum center completely empty for two lines light text. Antique gold rim with tiny friendly pawprint medallions at left/right ends and small gold leafy corner flourishes, tiny teal accents; welcoming fireside feeling, slightly grander than starters but restrained. Nine-slice target512x192 inset64left/right48top/bottom, all motifs confined to outer12.5percent left/right caps, middle75percent empty and straight continuous stretchable edges. Full plaque visible with transparent margin; no text letters logos watermark."
+    }
+  ]
+}
