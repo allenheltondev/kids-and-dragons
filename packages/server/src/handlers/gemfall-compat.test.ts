@@ -447,24 +447,25 @@ const DIGESTS: PreEpicSave["digests"] = {
 // the owner): Wend is a she, as her recorded voice is, so the soup bowls' two results read
 // "Kindness first," she says. Two narration strings only: no scene, edge, flag, effect, stat or TN
 // moved, and the gameplay digests below are unchanged.
+// Re-pinned for #704: scene paintings and interaction props only; gameplay digests unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "09f25a62e25d82b3385d4e658fd037b9cefde9e761c9deddafc3881a187f4980",
-  "chapters/gemfall-02.json": "9df094d30ed0195ead96f6d125dad51aac67c2b66ebcc28bd8008bb844ac5acf",
-  "chapters/gemfall-03a.json": "97a4159a757cf09eb9bec67c9ed07fc8fef6bdef6036e340415cb97d1cab8cf2",
-  "chapters/gemfall-03b.json": "66c1f2a850f57220f4fb6b906e74db7cd092441f8506936a1aca2efc2f320b9b",
-  "chapters/gemfall-03c.json": "16fd48666d8942394febfcc9b51ae2aa0df5af05c97e85509349b3874e2d4c4c",
+  "chapters/gemfall-02.json": "aa117455f1f3fd9c06ed4e557657dba82f90fed1e7737840cdac02efa1ca0c57",
+  "chapters/gemfall-03a.json": "40d08fa180c092bf038288649a378f77ea07bcb585d906b85205e7691fbe9845",
+  "chapters/gemfall-03b.json": "14a49693cf63bb9c5032c86f31cced25421a6325ee6d6c479aa9d945158c491b",
+  "chapters/gemfall-03c.json": "30b17b5cc1a4f21c67d2a21bcdafdef71d4806fbe016327af5d8ec9ba7d335df",
   "chapters/gemfall-04a.json": "c587238d2c6bd0764a9a974c720499bfa0c340e50c7862020d919597b1784af0",
-  "chapters/gemfall-04b.json": "a050a8eb39c95867821eeb51f2456f91f46c528d7372e44eb44116774ba17781",
+  "chapters/gemfall-04b.json": "8509d817b675c2573feb33359ba7b1a9950a84c0ea357f4878122953b1d03531",
   "chapters/gemfall-04c.json": "f04af270136af692a14a4f722d091095ee5122050ae5ccd08aec94097a2aa237",
   "chapters/gemfall-05a.json": "6158555dba9c779162530effc81a014f11e439f24b6b541e69cc68ec95671d50",
-  "chapters/gemfall-05b.json": "301dff09a54dae678710e08571435bde4c5ce3f21c8eb850a22e844cad1888a1",
+  "chapters/gemfall-05b.json": "e2ea525a5626f8c65f58c84e452c725cabff01107a83bb54e91733973536238e",
   "chapters/gemfall-05c.json": "90a16af66db92710fe611f1f2d972781cbe7e6078fd398a56f1aab265ab47aad",
-  "chapters/gemfall-06.json": "75590fa20fe5e7f299f3f62a3bec8ddf51b95a1a3d2fea56db87e0e12533ad5e",
-  "chapters/gemfall-07h.json": "7babdc465737d55e32b6ee4fa4fdae6c49d4f99e81360bdb13d1047b7f21b6d4",
-  "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
+  "chapters/gemfall-06.json": "94772c9e9cff27213593912a520d92b3fc0aeec4056d398ff4043fa7c399b862",
+  "chapters/gemfall-07h.json": "c5dfd9e0e12850f410e8aa5028d297e5fe965ec85c7496de801510433f70d3fe",
+  "chapters/gemfall-07l.json": "b2d57428383e74073abce0739b65cf1b67508d950eff54ee3ae80e8b9138a0ef",
   "chapters/gemfall-07r.json": "6555ab01bd48cb40cd944cb91c5a65b841518058d708ac943f79cfb54a13e295",
-  "chapters/gemfall-08.json": "c6fecdab6736bda28bf9ac5cb11785f0c75951b1131b9aed8c06f668a72e7d7a",
+  "chapters/gemfall-08.json": "1d59923bb99a7205296e29e938e1fbfdfb69aec6e7e31aaec95e5784af13d3b2",
 };
 
 describe("Gemfall's reviewed files and legacy contracts", () => {
@@ -662,8 +663,17 @@ describe("Gemfall saves from before the epic", () => {
     // The pre-epic build's own continuation, step for step (`playOn`).
     const now = await playOn(h, table, save.run.id, content);
     const afterFight = now.fight;
-    expect(now).toEqual(resumed);
-    expect(digest(now)).toBe(DIGESTS.resumed);
+    // #704 paints the previously bare bridge reached after this saved fight.
+    // Assert that presentation addition, then keep the pre-epic gameplay digest.
+    const gameplay = structuredClone(now);
+    for (const beat of gameplay.beats) {
+      if (beat?.kind === "COMBAT_SEQUENCE" && beat.after?.kind === "SCENE_ENTER" && beat.after.sceneId === "scene_plank_bridge") {
+        expect(beat.after.art).toBe("scenes/gemfall/canal-bridge-cracked");
+        delete beat.after.art;
+      }
+    }
+    expect(gameplay).toEqual(resumed);
+    expect(digest(gameplay)).toBe(DIGESTS.resumed);
     expect(afterFight.phase).not.toBe("encounter");
     // Nothing the epic added was grown on the way.
     expect(await state()).not.toHaveProperty("journeyVisit");

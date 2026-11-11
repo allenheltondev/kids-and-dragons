@@ -3258,6 +3258,11 @@
         "props": [
           "prop_rope_pole"
         ]
+      },
+      "interaction_ribbon_duck": {
+        "props": [
+          "wind-bells"
+        ]
       }
     },
     "fights": [

@@ -6,6 +6,29 @@ import { roomState } from "./room-state";
 
 test.use({ trace: "retain-on-failure" });
 
+test("a long bridge cue leaves the full relay visible on a 720p TV", async ({ browser }) => {
+  const table = await seedTable({ mode: "party", tv: true, chapterId: "gemfall-02", sceneId: "interaction_bridge_load", heroes: [
+    { name: "Moonlightbramble", species: "unicorn" }, { name: "Emberwingfeather", species: "griffin" },
+    { name: "Skyclawthunderer", species: "dragonling" }, { name: "Whisperwillow", species: "bigfoot" },
+  ] });
+  const tv = await openTv(browser, table, { viewport: { width: 1280, height: 720 } });
+  const phone = await openPhone(browser, table.phones[0]!, { viewport: { width: 360, height: 640 } });
+  try {
+    await Promise.all([onAir(tv.page), onAir(phone.page)]);
+    await phone.page.getByRole("button", { name: "You", exact: true }).click();
+    await openPlayerTask(phone.page);
+    await phone.page.getByRole("button", { name: "We’re ready" }).click();
+    await expect(tv.page.locator(".game--relay.game--active")).toBeVisible();
+    await expect.poll(async () => tv.page.evaluate(() => {
+      const board = document.querySelector(".game--tv .game__board")!.getBoundingClientRect();
+      const stage = document.querySelector(".relay-world__stage")!.getBoundingClientRect();
+      const labels = [...document.querySelectorAll(".relay-world__hero > strong")].map(el => el.getBoundingClientRect());
+      return stage.top >= board.top && stage.bottom <= board.bottom + 1 && labels.length === 4 &&
+        labels.every(label => label.top >= board.top && label.bottom <= board.bottom + 1);
+    })).toBe(true);
+  } finally { await Promise.all([phone.context.close(), tv.context.close()]); }
+});
+
 test("relay throws change the next flight and a dropped delivery can be saved", async ({ browser }, info) => {
   const table = await seedTable({ mode: "party", tv: true, chapterId: "first-steps-01", sceneId: "interaction_spark", heroes: [
     { name: "Aster", species: "unicorn" }, { name: "Fern", species: "griffin" },

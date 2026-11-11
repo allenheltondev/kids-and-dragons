@@ -12,7 +12,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-li
 import type { ClientIntent, HeroLookView } from "@kad/shared";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 import { fakeUrls, pixelIO, servePainting } from "../testing/coat-fixture";
-import { LOOKS } from "../world/hero-name";
+import { heroNameStyle, LOOKS } from "../world/hero-name";
 import { setCoatMaskPaintings } from "../world/coat-masks";
 import { characterPortraitArtUrl } from "../world/art-paths";
 import { CoatCache, setHeroCoats } from "../world/hero-coat-cache";
@@ -40,7 +40,8 @@ describe("her name in the DOM", () => {
   });
 
   it("draws no frame, and asks for no painting, while a frame's art is not delivered", () => {
-    const { container } = render(<HeroName name="Pip" look={look({ nameplate: "songbird", title: "the_kind" })} />);
+    const pending = look({ nameplate: "songbird", title: "the_kind" });
+    const { container } = render(<HeroName name="Pip" look={pending} style={heroNameStyle(pending, LOOKS, new Set())} />);
     expect(container.querySelector(".hero-name--framed")).toBeNull();
     expect(container.innerHTML).not.toContain("nameplates/");
   });

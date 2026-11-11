@@ -6194,6 +6194,16 @@
         "props": [
           "prop_stone_board"
         ]
+      },
+      "check_bell_code": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "check_hear_titan": {
+        "props": [
+          "prop_stone_board"
+        ]
       }
     },
     "fights": [

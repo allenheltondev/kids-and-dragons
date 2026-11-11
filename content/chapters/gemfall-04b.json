@@ -2723,12 +2723,12 @@
       },
       "interaction_small_mend": {
         "props": [
-          "prop_fern"
+          "prop_mending_crumb"
         ]
       },
       "interaction_mending_circle": {
         "props": [
-          "prop_fern"
+          "prop_mending_hum"
         ]
       },
       "interaction_calf_load": {
@@ -2743,7 +2743,7 @@
       },
       "interaction_gray_route": {
         "props": [
-          "prop_fern"
+          "prop_letters"
         ]
       }
     },

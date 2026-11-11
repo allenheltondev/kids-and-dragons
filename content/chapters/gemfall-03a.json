@@ -2593,6 +2593,11 @@
         "props": [
           "rope-loop"
         ]
+      },
+      "interaction_markers": {
+        "props": [
+          "prop_post_ropes"
+        ]
       }
     },
     "fights": [

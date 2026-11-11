@@ -1163,7 +1163,14 @@
     "scenes/gemfall/warm-rock-chimney",
     "scenes/riftlight/stone-counters-routes",
     "scenes/riftlight/reading-room-memory",
-    "scenes/riftlight/island-mooring-stone"
+    "scenes/riftlight/island-mooring-stone",
+    "scenes/gemfall/canal-bridge-cracked",
+    "scenes/gemfall/canal-bridge-mended",
+    "scenes/gemfall/wolf-sneak-lane",
+    "scenes/gemfall/grandmother-doorstep",
+    "scenes/gemfall/pinch-price-board",
+    "scenes/gemfall/returning-stone-cart",
+    "scenes/first-steps/practice-meadow-picnic"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
@@ -1276,7 +1283,7 @@
   "nameplateFrames": {
     "canvas": { "width": 512, "height": 192 },
     "slice": { "left": 64, "top": 48, "right": 64, "bottom": 48 },
-    "ids": ["ribbon", "leafy", "starry", "golden", "master_thornguard_frame", "master_duskrunner_frame", "master_starweaver_frame", "master_songkeeper_frame", "campaign_first_steps", "campaign_gemfall", "campaign_riftlight", "campaign_the_hollow_crown", "camp_friend_frame"]
+    "ids": ["ribbon", "leafy", "starry", "golden", "master_thornguard_frame", "master_duskrunner_frame", "master_starweaver_frame", "master_songkeeper_frame", "campaign_first_steps", "campaign_gemfall", "campaign_riftlight", "campaign_the_hollow_crown", "camp_friend_frame", "songbird"]
   },
   "camp": {
     "$comment": "The crew's camp (docs/camp.md §3.1, §4.1, §8.3 and §8.4; brief docs/briefs/camp.md; prompts docs/camp-art-prompts.json, docs/camp-kit-art-prompts.json and docs/camp-art-prompts-phase2.json). Every coordinate is a fraction of backdropCanvas: x from the left edge, y from the top. A lane's y is the ground line its figures' and pieces' ground contact (the canvas origin, 512,900) stands on. backdrops: one opaque 1920x1080 WebP per terrain family (biomeFamilies) at assets/<path>; open_plains is the fallback for every family not painted yet. A backdrop's lanes are its walkable floor, back to near; a nearer lane draws in front and at its larger scale, and x0..x1 is how far along it a figure may walk. A figure changes lanes only at a crossing, between the lanes the crossing lists. frames: one per frame stage (§4.1). pieces are 1024x1024 RGBA cutouts on the figure canvas, standing on a lane at x; movingParts are cutouts on the same canvas, laid exactly over their piece and animated only while a figure uses it (§8.4). standPoints are where one figure at a time may stand, the way it faces (face), and optionally what it does there (action: warmUp, lookUp, peek, rest, greet or pet), the piece it does it at (hotspot, a piece id, or from stage 2 a frame hotspot id, $crewPiecesComment) and, for a bedroll or tent, whose seat it is (seat, 0-3). trailhead is where a ready hero walks to before Begin. Lanes, and so stand points, lie in the open, nearly level grass band the backdrop prompt promises (y 0.45 to 0.75), so the client can slide the cover-fitted painting to stand the camp in the lobby's window (camp-framing.ts); the backdrop spans the screen's whole width, so the camp spreads across the clearing: the campfire at the center, the bedrolls two to each side of it, free wander spots out toward the edges, and every piece and stand point within x 0.08 to 0.92, which a portrait phone keeps (the trailhead, where the party leaves, is the one exception). verify.py checks this layout and the format of any camp art present; missing art is owed in art:inventory, not a failure, and the client draws a stand-in until it lands.",
@@ -3974,9 +3981,17 @@
       "sausage-wagon",
       "prop_mule_cart",
       "prop_rock",
-      "prop_cracked_rock"
+      "prop_cracked_rock",
+      "prop_empty_bowl",
+      "prop_prospector_pick",
+      "prop_mending_hum",
+      "prop_mending_crumb"
     ],
     "motions": {
+      "prop_empty_bowl": {"preset": "still", "durationMs": 3200},
+      "prop_prospector_pick": {"preset": "swing", "durationMs": 3200},
+      "prop_mending_hum": {"preset": "pulse", "durationMs": 3200},
+      "prop_mending_crumb": {"preset": "pulse", "durationMs": 3200},
       "sausage-wagon": { "preset": "still", "durationMs": 3200 },
       "rope-loop": {
         "preset": "swing",

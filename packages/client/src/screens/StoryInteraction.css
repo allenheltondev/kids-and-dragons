@@ -31,6 +31,9 @@
 /* On the TV the name sits beside the cue: one line less, and the board gets it. */
 .game--tv .game__head { flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--space-2, 0.5em) var(--space-3, 0.75em); }
 .game--tv .game__badge { align-self: center; }
+/* Once play starts, these boards already give the current task in their
+   caption/status. Repeating the long cue clips the relay or sequence on a 720p TV. */
+.game--tv:is(.game--active, .game--result):is(.game--relay, .game--sequence, .game--memory) > .game__head { display: none; }
 
 .game__badge {
   align-self: flex-start;

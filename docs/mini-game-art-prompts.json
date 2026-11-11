@@ -1,0 +1,387 @@
+{
+  "issue": 704,
+  "mode": "imagegen",
+  "useCase": "illustration-story",
+  "paintings": [
+    {
+      "id": "canal-bridge-cracked",
+      "path": "assets/scenes/gemfall/canal-bridge-cracked.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/canal-bridge-cracked.png",
+      "prompt": "Use case: illustration-story. Reference image: Gemfall farmland scene, match its warm detailed storybook gouache style, soft dimensional shading, natural light, textured foliage. Paint one opaque full-bleed16:9 game scene for a broken farm canal bridge. A shallow blue-green canal crosses a sunny golden farmland lane diagonally, a small low wooden cart bridge at right of center with one visibly cracked missing support beam and crooked planks, safe not ruined. Hay carts stranded on the far bank near a red-brown timber barn in the upper-left distance, hedges and rolling fields, tiny duck on a floating hay bale as a funny ambient detail. Reserve a broad calm grassy/muddy near-bank foreground across lower half for the game to draw heroes, moving replacement beam and targets. Bridge and carts stay upper/right, no foreground obstruction. No people, heroes, fauns, hands, UI, controls, signs, readable text, logos, watermarks. Warm adventurous age8 never scary. 1920x1080 landscape intended.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "canal-bridge-mended",
+      "path": "assets/scenes/gemfall/canal-bridge-mended.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/canal-bridge-mended.png",
+      "prompt": "Use case: illustration-story. EDIT TARGET is the supplied broken canal bridge scene. Preserve the exact camera, warm storybook gouache style, landscape, grass foreground, barn, carts, hedges, canal and little duck. Change ONLY the bridge from cracked to repaired: straight continuous sound level wooden planks across the small bridge, solid replacement support beam below, no broken gaps or hanging beams. A tiny carved pumpkin emblem on the new beam, no words. The far-bank hay carts can remain waiting ready to roll. Full-bleed opaque16:9, no people heroes fauns labels UI text logos watermark. This is the matching success-result painting at1920x1080.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "wolf-sneak-lane",
+      "path": "assets/scenes/gemfall/wolf-sneak-lane.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/wolf-sneak-lane.png",
+      "prompt": "Use case: illustration-story. Reference: Gemfall stuck-wagon farmland painting for warm detailed storybook gouache style. Create opaque full-bleed16:9 landscape, a country lane at late golden afternoon near the same green hedges and sunward farms. A small wooden sausage wagon with a brass hanging bell waits on the road at UPPER RIGHT; two friendly sleepy charcoal-furred cinder wolves with very subtle warm ember freckles lie LOW in long grass at UPPER LEFT beside the lane, mouths closed, relaxed ears, cute not threatening. Broad clear calm earthen foreground and grass lower half reserved for moving game prop/marker and heroes; wolves and wagon stay outside center gameplay area. The scene is about waiting for a bell and quietly slipping past, never a fight. No people heroes hands UI symbols signs text logos watermarks. Painterly storybook warm gold/green palette, 1920x1080 intended.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "grandmother-doorstep",
+      "path": "assets/scenes/gemfall/grandmother-doorstep.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/grandmother-doorstep.png",
+      "prompt": "Use case: illustration-story. Reference Gemfall Redspire citadel painting for warm detailed gouache storybook mountains, red stone and sunset palette. Paint opaque16:9 scene at a dragonling grandmother's snug stone-and-canvas house in a foothills tent town. Upper LEFT a welcoming curved wooden front door above one broad low rounded doorstep, round window with little cream curtains, small empty claim flag on a short stake beside the step. A cookie tin just visible inside the open doorway. Tents cluster beyond at right, and a slender BLACK tower on the distant ridge. Broad calm reddish earth foreground lower half for the game to draw heroes and a moving prospector pick; door and step clear upper-left, open center. No people, grandmother, prospector, heroes or hands baked in; no pick baked in because the game draws it. No signs text symbols UI logos watermark. Warm age8 not scary, friendly home worth protecting. 1920x1080 intended.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "pinch-price-board",
+      "path": "assets/scenes/gemfall/pinch-price-board.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/pinch-price-board.png",
+      "prompt": "Use case: illustration-story. Reference image Gemfall Redspire citadel for warm detailed storybook gouache, red foothills and late sun. Paint full-bleed opaque16:9 scene at the Pinch tent-town market. UPPER RIGHT stands an oversized wooden blackboard price board as tall as a small house, leaning sturdy ladder beside it, chalk tray below. Board has a few faint chalk smudges and abstract short tally strokes but ABSOLUTELY no readable letters numerals symbols or text. Tent awnings, stacked small crates and distant red hills upper edges. Broad calm red-earth foreground lower half and open center for sequence tiles/heroes/props. No dragonlings fauns heroes people hands UI or controls baked in; no logos watermark. Friendly bustling place shown empty so the game draws cast, detailed warm plum/gold accents. 1920x1080 intended.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "returning-stone-cart",
+      "path": "assets/scenes/gemfall/returning-stone-cart.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/returning-stone-cart.png",
+      "prompt": "Use case: illustration-story. Reference Gemfall Redspire citadel for warm detailed gouache storybook red mountains. Paint one opaque full-bleed16:9 scene on a quiet steep foothills road returning from the Pinch in late afternoon. Upper RIGHT a modest two-wheeled grandmother's handcart loaded with smooth rounded small stones, one wheel caught in a shallow uphill rut, clearly only a little stuck. Upper LEFT a low flat roadside rock suitable for resting a small humming stone; no actual magic stone on it because the game draws the prop. A few moss tufts and tiny wildflowers, winding route toward warm distant red hills, calm atmosphere for careful practice. Keep broad open level-looking foreground lower half for heroes and moving timing marker. This is not the later wagon hairpin scene: no caravan, no bells, no sheer precipice. No characters grandmother heroes hands readable text signs UI logos watermark. Warm safe storybook age8, 1920x1080 intended.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "practice-meadow-picnic",
+      "path": "assets/scenes/first-steps/practice-meadow-picnic.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/practice-meadow-picnic.png",
+      "prompt": "Use case: illustration-story. Reference Gemfall farmland painting for warm detailed storybook gouache, hedges and wildflowers. Paint ONE shared Practice Meadow picnic-clearing backdrop for a children's tutorial game. Opaque full-bleed16:9 landscape. A sunny safe meadow with broad FLAT QUIET grassy clearing occupying center and lower half for large game props/targets/heroes. Along the upper and side edges only: a small simple wooden gate at far left, a little brass bell hanging from a crooked branch beside it; a shallow pond with three stepping stones in upper center distance; far right a cozy picnic blanket with basket and cushions under an apple tree, and one friendly mossy sleepy tree stump (no face, the game animates its awakening). Distant gentle farmland hedges. Keep recognizable landmarks but no clutter in the playable center. No people heroes Bun animals hands readable signs text UI targets letters logos watermark. Bright gold/green warm first-adventure mood,1920x1080 intended.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+      }
+    },
+    {
+      "id": "prop_empty_bowl",
+      "path": "assets/story-props/prop_empty_bowl.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/prop_empty_bowl.png",
+      "prompt": "Use case: illustration-story. Reference: existing painted prop_soup_bowl for warm storybook gouache cutout style and terracotta glaze. Create one EMPTY shallow terracotta soup bowl, three-quarter view, open interior plainly visible, no soup no food no steam no spoon no hands. Warm orange-brown pottery, cream curved rim decoration, broad sturdy silhouette readable at64px, subtle hand painted shading. Isolated true transparent background with no external shadow. Target512x512 WebP, object centered inside24px clear margin, fill about80percent canvas width. No letters numerals logo watermark, no ground or backdrop.",
+      "output": {
+        "width": 512,
+        "height": 512,
+        "format": "WebP",
+        "opaque": false,
+        "encoding": "RGBA, alpha bbox crop, Lanczos fit inside 440x440 centered on 512x512, lossless WebP method 6"
+      }
+    },
+    {
+      "id": "prop_prospector_pick",
+      "path": "assets/story-props/prop_prospector_pick.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/prop_prospector_pick.png",
+      "prompt": "Use case: illustration-story. Create ONE prospector's pick tool cutout in warm hand painted storybook gouache style matching Kids & Dragons props: thick honey-brown wooden handle, a friendly chunky rounded dark iron two-ended pick head attached across its top with brass bands. Tool lies diagonally from lower left handle to upper right head, fully visible, simple strong recognizable silhouette at64px. It is a mining tool, never a weapon in anyone's hands. No hands people ground backdrop cast shadow or extra stones. True transparent alpha background. Square512 target with24px clear margin around every tip, warm dimensional painted shading, no letters numbers logos watermark.",
+      "output": {
+        "width": 512,
+        "height": 512,
+        "format": "WebP",
+        "opaque": false,
+        "encoding": "RGBA, alpha bbox crop, Lanczos fit inside 440x440 centered on 512x512, lossless WebP method 6"
+      }
+    },
+    {
+      "id": "prop_mending_hum",
+      "path": "assets/story-props/prop_mending_hum.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/prop_mending_hum.png",
+      "prompt": "Use case: illustration-story. One magical mending hum cutout for a storybook gouache woodland relay game. Represent sound becoming green growth: a compact flowing loop of soft emerald and warm gold luminous THREAD, like a small seed-shaped wisp with a curled trailing ribbon of light and two tiny fresh leaf tips, a bright creamy-gold core. Reads as moving magic/sound, NOT a solid fern bush, jar, rock, letters, music note icon, or character. Rich painterly edges and inner shading, strong warm core visible at48px. Isolated true transparent alpha, glow softly fades into transparency without opaque rectangle; NO black or white backdrop. Square512 target, all glow within24px clear margin. No words logos watermark, no hands ground shadows.",
+      "output": {
+        "width": 512,
+        "height": 512,
+        "format": "WebP",
+        "opaque": false,
+        "encoding": "RGBA, alpha bbox crop, Lanczos fit inside 440x440 centered on 512x512, lossless WebP method 6"
+      }
+    },
+    {
+      "id": "prop_mending_crumb",
+      "path": "assets/story-props/prop_mending_crumb.webp",
+      "issue": 704,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/704/prop_mending_crumb.png",
+      "prompt": "Use case: illustration-story. One small humming CRUMB OF STONE for a storybook gouache precision game. A single irregular warm gray-brown pebble fragment, walnut-like rounded angular chunky shape with a small soft golden glowing seam and a fresh tiny emerald moss tuft along one side. Clearly a crumb broken from a magical stone, not food, not a whole garden. Strong simple tangible silhouette, painterly shading, warm creamy gold core contrasts with dark gray stone, readable at48px. Isolated true transparent alpha with no ground no cast shadow no backdrop, target512 square with24px clear margin, centered object fills75percent canvas. No hands people letters symbols logos watermark.",
+      "output": {
+        "width": 512,
+        "height": 512,
+        "format": "WebP",
+        "opaque": false,
+        "encoding": "RGBA, alpha bbox crop, Lanczos fit inside 440x440 centered on 512x512, lossless WebP method 6"
+      }
+    }
+  ],
+  "sceneAssignments": [
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_bell",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_roots",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_stones",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_cups",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_echo",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_sneak",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_balance",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_spark",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_feed",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_camp",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_cheer",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "first-steps-01",
+      "scene": "interaction_wake",
+      "art": "scenes/first-steps/practice-meadow-picnic"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "interaction_bridge_load",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "interaction_hay_line",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "interaction_wolf_sneak",
+      "art": "scenes/gemfall/wolf-sneak-lane"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "scene_plank_bridge",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "check_bridge_beam",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "scene_bridge_ferry",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "scene_plank_bridge_carry",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "scene_plank_bridge_shoulders",
+      "art": "scenes/gemfall/canal-bridge-cracked"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "scene_bridge_mended",
+      "art": "scenes/gemfall/canal-bridge-mended"
+    },
+    {
+      "chapter": "gemfall-02",
+      "scene": "scene_plank_bridge_sing",
+      "art": "scenes/gemfall/canal-bridge-mended"
+    },
+    {
+      "chapter": "gemfall-06",
+      "scene": "scene_doorstep",
+      "art": "scenes/gemfall/grandmother-doorstep"
+    },
+    {
+      "chapter": "gemfall-06",
+      "scene": "interaction_doorstep",
+      "art": "scenes/gemfall/grandmother-doorstep"
+    },
+    {
+      "chapter": "gemfall-07h",
+      "scene": "scene_price_board",
+      "art": "scenes/gemfall/pinch-price-board"
+    },
+    {
+      "chapter": "gemfall-07h",
+      "scene": "interaction_price_clues",
+      "art": "scenes/gemfall/pinch-price-board"
+    },
+    {
+      "chapter": "gemfall-07l",
+      "scene": "scene_returning_cart",
+      "art": "scenes/gemfall/returning-stone-cart"
+    },
+    {
+      "chapter": "gemfall-07l",
+      "scene": "interaction_small_hum",
+      "art": "scenes/gemfall/returning-stone-cart"
+    }
+  ],
+  "presentationProps": {
+    "gemfall-02": {
+      "interaction_wolf_sneak": [
+        "sausage-wagon"
+      ]
+    },
+    "gemfall-03a": {
+      "interaction_markers": [
+        "prop_post_ropes"
+      ]
+    },
+    "gemfall-03b": {
+      "interaction_ribbon_duck": [
+        "wind-bells"
+      ]
+    },
+    "gemfall-03c": {
+      "interaction_soup_bowls": [
+        "prop_empty_bowl"
+      ],
+      "interaction_clear_lane": [
+        "wind-blanket"
+      ],
+      "interaction_bracken_crossing": [
+        "prop_mule_cart"
+      ]
+    },
+    "gemfall-04b": {
+      "interaction_small_mend": [
+        "prop_mending_crumb"
+      ],
+      "interaction_mending_circle": [
+        "prop_mending_hum"
+      ],
+      "interaction_gray_route": [
+        "prop_letters"
+      ]
+    },
+    "gemfall-05b": {
+      "check_plot": [
+        "prop_knotted_cords"
+      ]
+    },
+    "gemfall-06": {
+      "interaction_doorstep": [
+        "prop_prospector_pick"
+      ]
+    },
+    "gemfall-08": {
+      "check_bell_code": [
+        "prop_hand_bell"
+      ],
+      "check_hear_titan": [
+        "prop_stone_board"
+      ]
+    },
+    "gemfall-07h": {
+      "interaction_price_clues": [
+        "prop_letters"
+      ]
+    }
+  }
+}
