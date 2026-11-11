@@ -53,6 +53,7 @@
     "assets:migrate": "node tools/assets/cli.ts migrate",
     "assets:archive-history": "node tools/assets/cli.ts archive-history",
     "assets:filter-args": "node tools/assets/cli.ts filter-args",
+    "assets:smoke": "node tools/assets/smoke.ts",
     "mcp:keys": "tsx tools/mcp/keys.ts",
     "audio:verify": "tsx tools/audio/verify.ts",
     "audio:import": "tsx tools/audio/import.ts",
