@@ -5,9 +5,13 @@
  * fail, by name, against one that does not.
  */
 
+import { spawnSync } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
+import fs from "node:fs";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
+import os from "node:os";
+import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { mcpEndpoint } from "../../packages/server/src/mcp/handler";
 import { MemoryKeyStore, mintKey } from "../../packages/server/src/mcp/keys";
@@ -127,5 +131,28 @@ describe("npm run assets:smoke", () => {
 
     const cdn = await deployment({ cdnDropsStamp: true });
     expect(failed(await runSmoke({ ...cdn, issue: 723 }))).toEqual(["the served stamp names this key and issue"]);
+  });
+});
+
+describe("npm run assets:smoke, run as a command", () => {
+  it("starts from a folder whose path has a space, and without a key prints its usage and exits 2", () => {
+    const root = path.resolve(import.meta.dirname, "..", "..");
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kad smoke "));
+    try {
+      // A copy of the script beside a link to the repo's code, so its imports still resolve.
+      const copy = path.join(dir, "tools", "assets");
+      fs.mkdirSync(copy, { recursive: true });
+      for (const f of fs.readdirSync(path.join(root, "tools", "assets"))) if (f.endsWith(".ts")) fs.copyFileSync(path.join(root, "tools", "assets", f), path.join(copy, f));
+      fs.symlinkSync(path.join(root, "packages"), path.join(dir, "packages"));
+      fs.symlinkSync(path.join(root, "node_modules"), path.join(dir, "node_modules"));
+      fs.copyFileSync(path.join(root, "assets.config.json"), path.join(dir, "assets.config.json"));
+      const env = { ...process.env };
+      delete env.KAD_MCP_TOKEN;
+      const result = spawnSync(process.execPath, [path.join(copy, "smoke.ts")], { cwd: dir, encoding: "utf8", env });
+      expect(result.status, result.stderr).toBe(2);
+      expect(result.stderr).toContain("usage: KAD_MCP_TOKEN=");
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
