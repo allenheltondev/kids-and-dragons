@@ -7,7 +7,8 @@ export interface ListedTest {
   seconds?: number;
 }
 export interface Shard {
-  locations: string[];
+  /** Test keys ("file › describe › title"), the lines of the shard's --test-list. */
+  tests: string[];
   seconds: number;
 }
 export function keyOf(file: string, titles: string[]): string;
