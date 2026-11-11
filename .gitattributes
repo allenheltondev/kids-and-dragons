@@ -1,5 +1,6 @@
 # The asset lock merges by path, not by line (tools/assets/merge-lock.ts; npm run setup registers the driver).
-assets.lock.json merge=kad-assets-lock
+# It is checked out with Unix line endings on every OS, which is how the tools write it.
+assets.lock.json merge=kad-assets-lock text eol=lf
 
 # Shell scripts keep Unix line endings on every OS. With core.autocrlf a Windows checkout gave
 # them CRLF, which bash reads as part of each command.

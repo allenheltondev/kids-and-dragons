@@ -284,6 +284,27 @@ describe("verify", () => {
     fs.writeFileSync(path.join(origin, "assets.lock.json"), JSON.stringify(parseLock(serializeLock(lock))));
     expect((await verify(origin, { store: false })).problems.join("\n")).toMatch(/canonical/);
   });
+
+  // A fresh clone on Windows (core.autocrlf) checked the lock out with CRLF, and verify
+  // called an untouched lock hand-edited.
+  it("passes a lock a Windows checkout gave CRLF line endings, and still fails a reordered one", async () => {
+    const origin = makeRepo();
+    await cutover(origin);
+    const file = path.join(origin, "assets.lock.json");
+    const canonical = fs.readFileSync(file, "utf8");
+    expect(canonical).not.toContain("\r");
+
+    fs.writeFileSync(file, canonical.replace(/\n/g, "\r\n"));
+    expect((await verify(origin, { store: false })).problems).toEqual([]);
+
+    fs.writeFileSync(file, JSON.stringify(parseLock(canonical)).replace(/\n/g, "\r\n"));
+    expect((await verify(origin, { store: false })).problems.join("\n")).toMatch(/canonical/);
+  });
+
+  it("is checked out with LF on every OS", () => {
+    const attributes = fs.readFileSync(path.resolve(".gitattributes"), "utf8");
+    expect(attributes).toMatch(/^assets\.lock\.json merge=kad-assets-lock text eol=lf\r?$/m);
+  });
 });
 
 describe("merging the lock", () => {
