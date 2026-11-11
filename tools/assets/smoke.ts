@@ -16,6 +16,7 @@
  */
 
 import { createHash, randomBytes } from "node:crypto";
+import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 import { blobKey, readStamp } from "../../packages/shared/src/asset-store.ts";
 import { loadConfig, REPO_ROOT } from "./lib.ts";
@@ -152,7 +153,9 @@ export async function runSmoke(options: SmokeOptions): Promise<SmokeCheck[]> {
   return checks;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Compare URLs, not a URL with a path: on Windows, or with a space in the path, the two never
+// match and the tool would print nothing and exit 0 (#739).
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const { values } = parseArgs({
     args: process.argv.slice(2),
     options: { "mcp-url": { type: "string" }, "store-url": { type: "string" }, issue: { type: "string" } },
