@@ -1,0 +1,205 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+# The asset store: where the game's art and audio live once they are out of git
+# (docs/asset-store.md).
+#
+# One stack for the whole project, shared by every stage, deployed by hand once:
+#
+#   aws cloudformation deploy \
+#     --template-file infra/asset-store.yaml \
+#     --stack-name kad-asset-store \
+#     --capabilities CAPABILITY_NAMED_IAM \
+#     --region us-east-1
+#
+# then put its `StoreUrl` output in assets.config.json as `storeUrl`.
+#
+# Separate from infra/template.yaml on purpose. That stack is one per stage and
+# can be torn down and rebuilt; this one holds the only copy of the art once
+# git history is rewritten, so nothing a stage deploy does can reach it, and
+# deleting it is refused while it has objects (DeletionPolicy: Retain).
+#
+# Content-addressed: every file is `sha256/<hh>/<sha256>.<ext>`, written once
+# with a conditional put and never replaced. assets.lock.json in git says which
+# blob sits at which path. Because a key names its bytes, the CDN caches every
+# blob for a year and nothing ever needs invalidating.
+#
+# Reads are public, through CloudFront: the art is already public on the site
+# and on the wiki, and a credential-free read is what lets CI, the wiki build,
+# a fresh clone and an agent's session all `npm run assets:pull` with nothing
+# to configure. Writes need AWS credentials with the `AssetWriterPolicy`
+# below: upload only, under `sha256/` and `history/`, no delete, no overwrite.
+
+Description: Kids & Dragons asset store — content-addressed art and audio, served by CloudFront
+
+Parameters:
+  PriceClass:
+    Type: String
+    Default: PriceClass_100
+    AllowedValues: [PriceClass_100, PriceClass_200, PriceClass_All]
+    Description: >-
+      Edge locations for the read CDN. Its readers are CI runners, deploy jobs
+      and developers' machines, not players (the site serves players from its
+      own bucket), so the cheapest class is plenty.
+
+Resources:
+  StoreBucket:
+    Type: AWS::S3::Bucket
+    # The art's only copy once history is rewritten. Never deleted with the stack.
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "kad-asset-store-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      # Blobs are never overwritten (the bucket policy enforces it), so versioning
+      # only ever holds a second copy of something deleted by hand: an undo for
+      # the one mistake the writer policy cannot make but an admin can.
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: keep-deleted-blobs-90-days
+            Status: Enabled
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 90
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+
+  StoreBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StoreBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # The CDN reads blobs. Not `history/` (the change logs written before
+          # the rewrite), which stays private.
+          - Sid: CloudFrontReadsBlobs
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${StoreBucket.Arn}/sha256/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${Distribution}"
+          # A blob is named by its hash, so replacing one is always a bug. Every
+          # write must be conditional (If-None-Match: *), which S3 refuses when
+          # the key exists: two agents uploading the same painting both succeed,
+          # and nobody can swap the bytes under a published key.
+          - Sid: BlobsAreWriteOnce
+            Effect: Deny
+            Principal: "*"
+            Action: s3:PutObject
+            Resource: !Sub "${StoreBucket.Arn}/sha256/*"
+            Condition:
+              "Null":
+                s3:if-none-match: "true"
+          - Sid: TlsOnly
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource:
+              - !GetAtt StoreBucket.Arn
+              - !Sub "${StoreBucket.Arn}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: kad-asset-store
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: Kids & Dragons asset store (content-addressed, read-only)
+        Enabled: true
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        PriceClass: !Ref PriceClass
+        Origins:
+          - Id: store
+            DomainName: !GetAtt StoreBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: store
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          # Paintings are already compressed; recompressing them buys nothing.
+          Compress: false
+          # Managed-CachingOptimized: blobs carry a one-year immutable Cache-Control.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # Managed-SimpleCORS (Access-Control-Allow-Origin: *), so a page on
+          # another origin (a review page, the dev client, the wiki) can draw a
+          # blob into a canvas or a Pixi texture without tainting it.
+          ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
+
+  # What a writer needs: an agent's session, a developer's laptop, the
+  # migration. Attach it to the IAM user or role that runs `npm run assets:push`
+  # (docs/asset-store.md, "Credentials"). Upload and look, nothing else: no
+  # delete, no listing beyond the store's own prefixes, and the bucket policy
+  # above makes every blob write conditional, so a writer cannot overwrite.
+  AssetWriterPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: kad-asset-writer
+      Description: Upload new blobs to the Kids & Dragons asset store (no delete, no overwrite)
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: WriteAndCheckBlobs
+            Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+            Resource:
+              - !Sub "${StoreBucket.Arn}/sha256/*"
+              - !Sub "${StoreBucket.Arn}/history/*"
+          # Without ListBucket, S3 answers a HEAD on a missing key with 403
+          # instead of 404, and "not there yet" becomes indistinguishable from
+          # "not allowed".
+          - Sid: TellMissingFromForbidden
+            Effect: Allow
+            Action: s3:ListBucket
+            Resource: !GetAtt StoreBucket.Arn
+            Condition:
+              StringLike:
+                s3:prefix: ["sha256/*", "history/*"]
+          # `assets:push` finds the bucket from this stack's outputs.
+          - Sid: FindTheBucket
+            Effect: Allow
+            Action: cloudformation:DescribeStacks
+            Resource: !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*"
+
+Outputs:
+  BucketName:
+    Description: Where assets:push writes. Writers read it from here.
+    Value: !Ref StoreBucket
+  StoreUrl:
+    Description: The public read URL. Put it in assets.config.json as storeUrl.
+    Value: !Sub "https://${Distribution.DomainName}"
+  DistributionId:
+    Value: !Ref Distribution
+  WriterPolicyArn:
+    Description: Attach to whoever runs assets:push (an agent's IAM user or role, your own).
+    Value: !Ref AssetWriterPolicy

@@ -99,6 +99,13 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      # The art and audio, from the asset store once they leave git (docs/asset-store.md):
+      # art:verify, audio:verify and the canon checks read them from disk.
+      - uses: ./.github/actions/pull-assets
+        with:
+          paths: assets art
+          cache-name: full
+
       # Python 3.11 for the art tooling and cfn-lint. The set lives in
       # requirements-dev.txt so every workflow and scripts/setup.sh install the
       # same thing, and `cache: pip` stops each run re-downloading the wheels.
@@ -192,6 +199,11 @@ jobs:
       - name: Verify art assets
         run: npm run art:verify
 
+      # The asset store's gate (docs/asset-store.md): the lock is canonical, every blob it
+      # names is in the store, and once the media are out of git, none has crept back in.
+      - name: Verify the asset store
+        run: npm run assets:verify
+
 
       - name: Verify audio assets
         run: npm run audio:verify
@@ -236,6 +248,12 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+
+      # The suite reads paintings and audio from disk (docs/asset-store.md).
+      - uses: ./.github/actions/pull-assets
+        with:
+          paths: assets art
+          cache-name: full
 
       # The suite shells out to Python for the art checks it covers
       # (tools/art/verify_entity_states.test.ts, the manifest's maskable
@@ -315,6 +333,12 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+
+      # The contact sheets below are drawn from the art itself (docs/asset-store.md).
+      - uses: ./.github/actions/pull-assets
+        with:
+          paths: assets art
+          cache-name: full
 
       # Python 3.11 for the art tooling and cfn-lint. The set lives in
       # requirements-dev.txt so every workflow and scripts/setup.sh install the
@@ -457,6 +481,13 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+
+      # The dev server serves assets/ and runtime-art.spec decodes it (docs/asset-store.md).
+      # Only the game's art: the sparse checkout above leaves art/ out for the same reason.
+      - uses: ./.github/actions/pull-assets
+        with:
+          paths: assets
+          cache-name: game
 
       # ~1-2 minutes of download per run without the cache. Keyed on the lock
       # file because that is what pins @playwright/test, whose version decides

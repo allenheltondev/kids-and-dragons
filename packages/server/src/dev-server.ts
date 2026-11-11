@@ -79,7 +79,8 @@ import {
   type SessionIdentity,
   type SharedDeviceIdentity,
 } from "./identity.ts";
-import { assetsDir, contentDir, dataDir } from "./paths.ts";
+import { REPO_ROOT, assetsDir, contentDir, dataDir } from "./paths.ts";
+import { assetStoreFallback } from "./dev-assets.ts";
 import { verifyDevToken } from "./dev-auth.ts";
 import { readSeedRequest, seedRoom, withSeededDice } from "./dev-seed.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
@@ -1166,7 +1167,10 @@ async function main(): Promise<void> {
     app.use("/content/voice/manifest", express.static(path.join(voiceDir, "content", "voice", "manifest")));
   }
 
-  // Same URLs as prod, where CloudFront serves both prefixes from S3.
+  // Same URLs as prod, where CloudFront serves both prefixes from S3. Art not on disk yet (a
+  // fresh clone that has not run `npm run assets:pull`) comes from the asset store (dev-assets.ts).
+  const storeFallback = assetStoreFallback(REPO_ROOT, assetsDir());
+  if (storeFallback) app.use("/assets", storeFallback);
   app.use("/assets", express.static(assetsDir(), { fallthrough: false }));
   app.use("/content", express.static(contentDir(), { fallthrough: false }));
 

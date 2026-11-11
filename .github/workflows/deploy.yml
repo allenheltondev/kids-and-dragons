@@ -139,6 +139,13 @@ jobs:
           npm ci
           python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
+      # The art and audio deploy.sh checks and uploads, from the asset store (docs/asset-store.md).
+      # deploy.sh would pull them itself; here they come through the Actions cache.
+      - uses: ./.github/actions/pull-assets
+        with:
+          paths: assets art
+          cache-name: full
+
       - name: Deploy
         # `scripts/deploy.sh` is the same command that runs from a laptop: it
         # runs the checks, bundles the Lambdas, deploys the stack, uploads the

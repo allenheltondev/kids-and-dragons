@@ -48,6 +48,25 @@ else
     || warn "could not install requirements-dev.txt — the art commands will explain what is missing"
 fi
 
+# --- The asset store ----------------------------------------------------------
+# docs/asset-store.md. The lock merges by path rather than by line, so two agents
+# adding art to one folder never conflict. git reads merge drivers only from
+# local config, never from the repo, so each clone registers it here.
+if git rev-parse --git-dir >/dev/null 2>&1; then
+  git config merge.kad-assets-lock.name "asset lock, merged by path (tools/assets/merge-lock.ts)"
+  git config merge.kad-assets-lock.driver "node tools/assets/merge-lock.ts %O %A %B"
+fi
+# Once the art lives in the store, a fresh checkout has none of it. Pull the game's
+# art (what the tests, the art gate and the dev server read); `npm run assets:pull`
+# with no arguments also brings art/ and the docs' screenshots. Never fatal: the
+# dev server fetches what is missing on demand. NODE_USE_ENV_PROXY lets node's
+# fetch use HTTPS_PROXY where a sandbox requires one. KAD_SKIP_ASSET_PULL=1 skips it.
+if [ -f assets.lock.json ] && [ "${KAD_SKIP_ASSET_PULL:-}" != "1" ]; then
+  say "pulling the game's art from the asset store"
+  NODE_USE_ENV_PROXY=1 node tools/assets/cli.ts pull assets \
+    || warn "could not pull the art (npm run assets:pull); the tests and art:verify need it on disk"
+fi
+
 say "ready"
 cat <<'EOF'
   npm run typecheck          tsc across shared, server, client
@@ -55,5 +74,6 @@ cat <<'EOF'
   npm run content:validate   schemas + scene graphs  (tools/content/validate.mjs)
   npm run art:verify         the art gate            (tools/art/verify.py)
   npm run art:sheet          contact sheets for review -> art/review/
+  npm run assets:push        new or changed art/audio -> the S3 asset store (docs/asset-store.md)
   npm run dev                server + client
 EOF

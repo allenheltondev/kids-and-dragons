@@ -17,6 +17,7 @@
 #
 # Order matters and is not arbitrary:
 #
+#   0. the art and audio from the asset store, checked against assets.lock.json
 #   1. the checks, because a broken chapter must fail here and never at the table
 #   2. both builds (the Lambda bundles and the client), and the voice-clip
 #      check, because anything that can fail without touching AWS should fail
@@ -123,6 +124,21 @@ for tool in sam aws node npm; do
 done
 
 # ---------------------------------------------------------------------------
+
+# The art and audio (docs/asset-store.md). Once they live in the asset store, a
+# checkout has assets.lock.json and no paintings, so they are pulled before
+# anything reads them: the checks below, and the `--delete` sync of assets/ to
+# the site. Plain node and a public URL, so ship mode needs neither
+# node_modules nor any permission on the store. A commit from before the store
+# has no lock and keeps its art in git; both commands say so and pass.
+#
+# The verify is what makes the sync safe: it refuses unless assets/ holds
+# exactly the bytes the lock names. Without it, a pull that half-failed, or a
+# laptop with an agent's unpushed paintings, would publish a site that matches
+# no commit, and a sync with --delete would take the missing art off it.
+say "Art and audio from the asset store"
+node tools/assets/cli.ts pull assets
+node tools/assets/cli.ts verify --no-store --present assets
 
 # CI has already run every one of these on the same commit, and running them
 # twice buys nothing but minutes. Never set this by hand — the whole point of
@@ -313,6 +329,7 @@ aws s3 sync packages/client/dist/bundle "s3://$BUCKET/bundle" \
 # Art and content are *not* hashed — they are versioned by the manifest and by
 # git. Short cache plus the invalidation below, so a new chapter is live in
 # seconds rather than whenever a phone decides to re-check.
+# assets/ was checked against assets.lock.json at the top of this script.
 aws s3 sync assets "s3://$BUCKET/assets" --delete --cache-control "public,max-age=300"
 aws s3 sync content "s3://$BUCKET/content" --delete --cache-control "public,max-age=60"
 
