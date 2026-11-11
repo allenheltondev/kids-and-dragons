@@ -23,6 +23,10 @@
 
 /* A delivered frame (#665), nine-sliced to the name's width. */
 .hero-name--framed {
+  /* The painted center is plum even inside a gold "your turn" strip. */
+  color: #f6f3ff;
+  text-shadow: -1px -1px 0 #120f26, 1px -1px 0 #120f26,
+    -1px 1px 0 #120f26, 1px 1px 0 #120f26;
   border-style: solid;
   border-width: 0.45em 0.9em;
   border-image-source: var(--hero-name-frame);

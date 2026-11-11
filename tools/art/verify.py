@@ -1159,6 +1159,33 @@ def check_painted_icons(rep: Report, mf: dict, section: str = "paintedIcons", di
         rep.ok(f"{label}  {size[0]}x{size[1]} RGBA")
 
 
+def check_nameplate_frames(rep: Report, mf: dict) -> None:
+    """Delivered nine-slice frames keep their canvas, alpha and usable center (#665, #680)."""
+    spec = mf.get("nameplateFrames", {})
+    canvas = spec.get("canvas", {})
+    size = (canvas.get("width"), canvas.get("height"))
+    for frame_id in spec.get("ids", []):
+        label = f"nameplates/{frame_id}"
+        path = os.path.join(ROOT, "assets", "nameplates", f"{frame_id}.webp")
+        if not os.path.isfile(path):
+            rep.fail(label, "delivered frame present", "missing")
+            continue
+        with Image.open(path) as im:
+            if im.format != "WEBP" or im.size != size:
+                rep.fail(label, f"WEBP {size}", f"{im.format} {im.size}")
+                continue
+            alpha = np.asarray(im.convert("RGBA"))[:, :, 3]
+        if not (alpha == 0).any() or not (alpha > 200).any():
+            rep.fail(label, "transparent margins and visible painting", "missing alpha or empty painting")
+            continue
+        cut = spec["slice"]
+        center = alpha[cut["top"]:size[1] - cut["bottom"], cut["left"]:size[0] - cut["right"]]
+        if center.size == 0 or float((center > 200).mean()) < 0.95:
+            rep.fail(label, "opaque center behind light name and title", "empty or translucent center")
+            continue
+        rep.ok(f"{label}  {size[0]}x{size[1]} nine-slice, alpha margins")
+
+
 def check_guide_art(rep: Report, mf: dict) -> None:
     """Guide banners are opaque; the two isolated part emblems retain alpha."""
     for asset in mf.get("guideArt", []):
@@ -1421,6 +1448,7 @@ def main() -> int:
     check_painted_icons(rep, mf)
     check_painted_icons(rep, mf, "badgeArt", "badges")
     check_guide_art(rep, mf)
+    check_nameplate_frames(rep, mf)
     check_story_props(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
