@@ -103,4 +103,21 @@ describe("DevIdentity — session tokens", () => {
     clock.advance(6 * 3600_000 + 1);
     expect(await identity.resolveSession(token)).toBeNull();
   });
+
+  it("ends a session when the device it was handed to is revoked", async () => {
+    const { clock, identity, repo } = setup();
+    const { deviceId } = await identity.issueDeviceToken({ householdId: "h_1", playerId: "p_1" });
+    const token = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: clock.now() + 3600_000,
+      deviceId,
+    });
+    expect(await identity.resolveSession(token)).toMatchObject({ playerId: "p_1", deviceId });
+
+    await repo.revokeDevice("h_1", deviceId);
+    expect(await identity.resolveSession(token)).toBeNull();
+  });
 });

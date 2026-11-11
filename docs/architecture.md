@@ -1441,8 +1441,29 @@ tables they visited, and their `VISIT#` rows with it.
 #### Recovery and revocation
 
 - **Lost phone** → the household owner revokes `DEVICE#<deviceId>` from their own device. That token is dead immediately.
+- **A revoked device takes its room sessions with it.** A session token is
+  signed on its own and lasts as long as its room, so it names the device it
+  was handed to (`dev`), and every resolve reads that binding by primary key
+  as a device token's does (`sessionDeviceRevoked`, identity.ts), in the API
+  and in the channel authorizer. A second tab still holding a session cannot
+  go on playing, or read the kid's page, after the device left, was lost or
+  was forgotten. A subscription already open is not cut: it ends when its
+  socket does, as a removed player's does.
 - **New phone** → join the room, which makes it a new player, or the owner signs in on it and binds it to an existing player (`POST /api/auth/device`) to bring that player's heroes back.
 - **Nobody who only plays can manage anything.** Without a sign-in a phone cannot claim the household, bind another phone to a player, or revoke one.
+- **Except give up its own binding.** A device that plays as a kid can stop
+  (`POST /api/device/leave`, `handlers/leave-device.ts`; "This device" on the
+  Accounts and devices screen): a ward's tablet at discharge, a phone handed
+  down, a borrowed one going back. The device's own token is the whole proof,
+  so whoever is holding it can do it with no grown-up signed in; it revokes
+  that one binding, ends the room sessions it was handed, and drops the turn
+  notifications it asked for. The kid, her heroes and her other devices are
+  untouched. It is refused where it would strand her: `GET /api/device`
+  answers `canLeave` only when a grown-up keeps the household, or another of
+  her devices is still live and this is not the device that founded an unkept
+  household (the only one that can ever keep it). A refusal says which
+  (`staysBecause`): `onlyDevice`, or `founder` for a founding device whose kid
+  is on another device too, which is not her only device.
 
 #### The practice (#255)
 

@@ -58,6 +58,7 @@ import { saveFlair } from "../handlers/profile.ts";
 import { getState } from "../handlers/state.ts";
 import { organizerRoute } from "../handlers/organizer.ts";
 import { isSlowDown, pairFromDevice, redeemPairingCode } from "../handlers/pairing.ts";
+import { deviceStanding, leaveDevice } from "../handlers/leave-device.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -189,6 +190,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
     if (req.path === "/api/pair/code") return (deps) => postPairCode(req, deps);
+    if (req.path === "/api/device/leave") return (deps) => postLeaveDevice(req, deps);
     if (req.path === "/api/pair/redeem") return (deps) => postPairRedeem(req, deps);
     if (req.path === "/api/screens/redeem") return (deps) => postScreenRedeem(req, deps);
     if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
@@ -271,6 +273,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "POST" && req.path === "/api/journal/kit") return (deps) => postBookKitRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/profile/flair") return (deps) => postFlairRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
+  if (req.method === "GET" && req.path === "/api/device") return (deps) => getDeviceRoute(req, deps);
   // "It's your turn" while the app is in the background (#466).
   if (req.method === "GET" && req.path === "/api/push/key") return async (deps) => json(200, pushKey(deps));
   if (req.method === "POST" && req.path === "/api/push/subscribe") return (deps) => postPushSubscription(req, deps, true);
@@ -1139,6 +1142,27 @@ async function getSharedPlayers(req: Req, deps: HandlerDeps) {
   if (!shared) return forgottenDevice();
   const result = await listSharedPlayers(shared, deps);
   return result.ok ? json(200, result.value, shared) : fromError(result.error);
+}
+
+/** What a personally bound device is told about itself (`handlers/leave-device.ts`). */
+async function getDeviceRoute(req: Req, deps: HandlerDeps) {
+  const found = await resolvePrincipal(req, deps);
+  if (!found) return error(401, "FORBIDDEN", "This device isn't anybody.");
+  const result = await deviceStanding(found.principal, deps);
+  return result.ok ? json(200, result.value, found.principal) : fromError(result.error);
+}
+
+/**
+ * "Leave this device": it stops being the kid it plays as. The device's own
+ * token is the whole proof, so whoever is holding it can do this with no
+ * grown-up signed in. No renewed token rides back, whatever the resolve
+ * minted: the device has just given its binding up.
+ */
+async function postLeaveDevice(req: Req, deps: HandlerDeps) {
+  const found = await resolvePrincipal(req, deps);
+  if (!found) return error(401, "FORBIDDEN", "This device isn't anybody.");
+  const result = await leaveDevice(found.principal, deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
 /**

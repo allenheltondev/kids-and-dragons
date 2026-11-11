@@ -511,6 +511,33 @@ describe("TokenIdentity — tokens from before profiles lost their role (#265)",
 });
 
 describe("TokenIdentity — session tokens", () => {
+  it("ends a session the moment the device it was handed to is revoked", async () => {
+    const { identity, repo, clock } = setup();
+    const { deviceId } = await identity.issueDeviceToken(device);
+    const token = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: clock.now() + 3600_000,
+      deviceId,
+    });
+    expect(await identity.resolveSession(token)).toMatchObject({ playerId: "p_1", deviceId });
+
+    // Still perfectly signed and hours from expiring; it must still be dead.
+    await repo.revokeDevice("h_1", deviceId);
+    expect(await identity.resolveSession(token)).toBeNull();
+  });
+
+  it("keeps a session that names no device, or one whose binding is not there, to its own expiry", async () => {
+    // Tokens minted before sessions named a device are still out there for the
+    // life of their room, and an absent binding is not a revoked one.
+    const { identity, clock } = setup();
+    const base = { runId: "r_1", roomCode: "ABCD", householdId: "h_1", playerId: "p_1", expiresAt: clock.now() + 3600_000 };
+    expect(await identity.resolveSession(await identity.issueSessionToken(base))).not.toBeNull();
+    expect(await identity.resolveSession(await identity.issueSessionToken({ ...base, deviceId: "d_never" }))).not.toBeNull();
+  });
+
   it("round-trips the run it is scoped to", async () => {
     const { identity, clock } = setup();
     const expiresAt = clock.now() + 6 * 3600_000;

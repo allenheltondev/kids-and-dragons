@@ -203,6 +203,8 @@ function harness(state: RunState = makeState()): Harness {
     createPairingCode: vi.fn(),
     pairProfile: vi.fn(),
     redeemPairingCode: vi.fn(),
+    deviceStanding: vi.fn(),
+    leaveDevice: vi.fn(),
     // Another TV in another place (handlers/screens.ts).
     addScreen: vi.fn(async () => ({ code: "ABCDEFGH", expiresAt: "2026-07-05T00:10:00.000Z" })),
     redeemScreenCode: vi.fn(async () => ({

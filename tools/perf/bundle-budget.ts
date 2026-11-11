@@ -330,7 +330,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // footer. 1797KB measured; main measured 1792KB, exactly at its budget, so none of the +5KB
 // could come from slack. First paint 331KB (main 330KB), the footer's Terms link and the
 // route, under its 332KB cap. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1799;
+// 1799 -> 1802 on 2026-11-10 for "This device" on the Accounts and devices screen
+// (screens/LeaveDevice.tsx, store/leave-device.ts): who a device plays as, and a way for it to
+// stop. 1800KB measured against main's 1797KB, so the 2KB of slack covered all but the last
+// 1KB. The card and its logic are in the account screen's lazy chunk; the two API calls and
+// `forgetPlayerDevice` are in the entry. First paint 331KB, unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1802;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

@@ -1903,6 +1903,66 @@ describe("/api/organizer/* (#248)", () => {
   });
 });
 
+describe("a device and leaving it", () => {
+  it("tells a bound device who it plays as, and nobody else anything", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+
+    const known = await respond(event("GET", "/api/device", { headers: { "x-kad-device-token": room.player.deviceToken } }), rt);
+    expect(known.statusCode).toBe(200);
+    expect(bodyOf(known)).toEqual({ displayName: "Player 1", kept: true, canLeave: true });
+
+    expect((await respond(event("GET", "/api/device"), rt)).statusCode).toBe(401);
+    expect((await respond(event("GET", "/api/device", { headers: { "x-kad-device-token": "forged" } }), rt)).statusCode).toBe(401);
+  });
+
+  it("leaves on the device's own token, with no sign-in, and that token is dead at once", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    const headers = { "x-kad-device-token": room.player.deviceToken };
+
+    const left = await respond(event("POST", "/api/device/leave", { headers }), rt);
+    expect(left.statusCode).toBe(200);
+    expect(bodyOf(left)).toEqual({ left: true });
+    // The device gave its binding up: no renewed token rides back on the answer.
+    expect(left.headers?.["x-kad-device-token"]).toBeUndefined();
+
+    expect((await respond(event("GET", "/api/device", { headers }), rt)).statusCode).toBe(401);
+    expect((await respond(event("POST", "/api/device/leave", { headers }), rt)).statusCode).toBe(401);
+  });
+
+  it("will not let anybody leave who was never somebody", async () => {
+    const rt = runtimeFor(makeHarness());
+    expect((await respond(event("POST", "/api/device/leave"), rt)).statusCode).toBe(401);
+  });
+
+  it("ends the room session a second tab still holds: no state, no journal, no page", async () => {
+    // A ward's tablet with the game open in two tabs. One leaves; the other
+    // still has the session it joined with, signed and hours from expiring.
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    const device = { "x-kad-device-token": room.player.deviceToken };
+    const joined = await respond(event("POST", `/api/room/${room.code}/join`, { headers: device }), rt);
+    const { sessionToken } = bodyOf(joined) as unknown as { sessionToken: string };
+    const session = { authorization: `Bearer ${sessionToken}` };
+    const state = () => respond(event("GET", "/api/state", { query: { code: room.code }, headers: session }), rt);
+    const journal = () => respond(event("GET", "/api/journal", { headers: session }), rt);
+
+    expect((await state()).statusCode).toBe(200);
+    expect((await journal()).statusCode).toBe(200);
+
+    expect((await respond(event("POST", "/api/device/leave", { headers: device }), rt)).statusCode).toBe(200);
+
+    expect((await state()).statusCode).not.toBe(200);
+    expect((await journal()).statusCode).toBe(401);
+    expect((await respond(event("POST", "/api/journal/kit", { headers: session, body: {} }), rt)).statusCode).toBe(401);
+    expect((await respond(event("POST", "/api/presence", { headers: session, body: {} }), rt)).statusCode).not.toBe(200);
+  });
+});
+
 describe("POST /api/auth/start", () => {
   const SECRET = "s3cret-from-ssm";
   const from = (address: string) => ({ "x-kad-viewer": address, "x-kad-origin": SECRET });
@@ -2445,6 +2505,9 @@ const SHARED = [
   // Pairing a new device to a kid (#281, handlers/pairing.ts): her own phone
   // makes a code, the new device redeems it.
   { path: "/api/pair/code", method: "POST", probe: "/api/pair/code" },
+  // What a device is told about itself, and "Leave this device" (handlers/leave-device.ts).
+  { path: "/api/device", method: "GET", probe: "/api/device" },
+  { path: "/api/device/leave", method: "POST", probe: "/api/device/leave" },
   { path: "/api/pair/redeem", method: "POST", probe: "/api/pair/redeem" },
   // "It's your turn" while the app is in the background (#466, handlers/push.ts).
   { path: "/api/push/key", method: "GET", probe: "/api/push/key" },
