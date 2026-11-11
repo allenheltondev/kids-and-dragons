@@ -1,6 +1,6 @@
 ---
 name: art-creation
-description: "Make, deliver or replace Kids & Dragons game art (cast, entities, scenes, story plates, camp pieces, key art, props, icons, frames) with the imagegen skill, from finding what is owed through review to the asset store. Use for any new or repainted image under assets/. Not for UI code, chapter writing, or audio."
+description: "Make, deliver or replace Kids & Dragons game art (cast, entities, scenes, story plates, camp pieces, key art, props, icons, frames) with the imagegen skill, from finding what is owed to the asset store. Use for any new or repainted image under assets/. Not for UI code, chapter writing, or audio."
 ---
 
 # Art creation
@@ -11,8 +11,8 @@ background where alpha belongs is invisible or broken at the table. This skill i
 order of operations that keeps that from happening. It does not replace the docs; it says
 which to read and when.
 
-Generate with the **imagegen** skill. Everything else here (contracts, review, upload,
-records) is this repository's.
+Codex generates the art, with the **imagegen** skill. Everything else here (contracts,
+checks, review of character art, upload, records) is this repository's.
 
 ## 1. Find the work and its contract
 
@@ -76,27 +76,35 @@ existing piece of the same set) when you generate.
   `art:portraits` for derived page-sized portraits.
 - Then place it at its contract path under `assets/`.
 
-## 4. Check it: the machine gate, then a person
+## 4. Check it: the machine gate, and a person for character art
 
 1. `npm run art:verify`. Format, transparency, ground placement and the shared checks. A
    failure is fixed, never waved through.
 2. The tests that pin its kind: `npx vitest run tools/art` (camp, stage figures, story
    props, together art and others live there), and `npm test` before you finish.
-3. **A person approves it.** Show each painting at the size it is seen in play, beside the
-   neighbours it must match (`npm run art:sheet` builds contact sheets into `art/review/`;
-   `npm run play:jump -- <chapter> <scene>` shows it on the TV and phones). Nothing goes to the
-   store until the user has approved that painting. "The agent says it's finished" is not
-   acceptance ([art-pipeline.md](../../../docs/art-pipeline.md)).
+3. **Character art: the user approves it.** Art that depicts a player's hero needs the
+   user's approval before it is stored:
 
-Wait for the approval. A rejected painting goes back to step 2 or 3 and costs nothing,
-because it never left `staging/` or the working tree.
+   - `assets/characters/` (species and tier illustrations)
+   - `assets/character-rigs/` (class figures)
+   - `assets/gear-portraits/`
+
+   Show each at the size it is seen in play, beside the neighbours it must match
+   (`npm run art:sheet` builds contact sheets into `art/review/`;
+   `npm run play:jump -- <chapter> <scene>` shows it on the TV and phones), and wait for the
+   user's approval of that painting. A rejected one goes back to step 2 or 3 and costs
+   nothing, because it never left `staging/` or the working tree.
+
+   **Everything else** (story cast, entities, scenes, plates, camp, key art, props, icons,
+   frames) needs no review: it is ready once steps 1 and 2 pass. Still look at it yourself
+   at play size against its neighbours, and redo anything that does not match the set.
 
 ## 5. Store it and commit it
 
 **Before the cutover** (no `assets.lock.json` at the repo root yet), art still lives in git:
-commit the approved file with its prompts record, as before, and skip the store steps below.
+commit the file with its prompts record, as before, and skip the store steps below.
 
-Only approved art, only after the gates pass:
+Only after the gates pass, and for character art only once the user has approved it:
 
 1. `npm run assets:push -- <the folder you worked in>` uploads the new bytes to the asset store
    and records them in `assets.lock.json` ([docs/asset-store.md](../../../docs/asset-store.md)).
@@ -121,7 +129,7 @@ Only approved art, only after the gates pass:
 ## Do not
 
 - Pick a path, size or format the contract does not give.
-- Push before a person has approved the painting.
+- Push character art before the user has approved it.
 - Leave drafts under `assets/`: anything there that is not in the lock fails the deploy check.
 - Put names, text, logos or watermarks in a painting, or anything scary: the players are
   about eight (the house rules are in each prompt record; keep them).
