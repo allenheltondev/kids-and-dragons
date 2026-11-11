@@ -1237,6 +1237,20 @@ Resources:
                 aws:SourceAccount: !Ref AWS::AccountId
               ArnLike:
                 aws:SourceArn: !Sub "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:kad-${StageName}-*"
+          # The asset store's budget (infra/asset-store.yaml, #733) alerts here too, so its
+          # warning reaches the same Slack channel. AWS Budgets publishes from no region,
+          # hence the region-less source ARN.
+          - Sid: BudgetsMayPublish
+            Effect: Allow
+            Principal:
+              Service: budgets.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref AlarmTopic
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+              ArnLike:
+                aws:SourceArn: !Sub "arn:${AWS::Partition}:budgets::${AWS::AccountId}:*"
 
   # The API crashed or timed out: an invocation Lambda itself counts as failed.
   # One is enough. A handled failure returns normally and shows up in the 5xx

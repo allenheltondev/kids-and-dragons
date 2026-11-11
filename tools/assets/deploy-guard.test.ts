@@ -58,3 +58,28 @@ describe("assets.config.json", () => {
     expect(config.roots).not.toContain("voice");
   });
 });
+
+describe("the store's budget (#733)", () => {
+  const store = fs.readFileSync(path.join(ROOT, "infra", "asset-store.yaml"), "utf8");
+  const resource = (name: string): string => {
+    const start = store.indexOf(`\n  ${name}:\n`);
+    expect(start, name).toBeGreaterThan(0);
+    const rest = store.slice(start + 1);
+    const next = rest.slice(1).search(/\n  [A-Za-z]+:\n/);
+    return rest.slice(0, next < 0 ? undefined : next + 1);
+  };
+
+  it("filters on the tag the bucket and the CDN both carry, so it sees their cost", () => {
+    const tag = /Key: kad:component\s+Value: asset-store/;
+    expect(resource("StoreBucket")).toMatch(tag);
+    expect(resource("Distribution")).toMatch(tag);
+    expect(resource("StoreBudget")).toContain('"user:kad:component$asset-store"');
+  });
+
+  it("may publish to the production alarm topic", () => {
+    const template = fs.readFileSync(path.join(ROOT, "infra", "template.yaml"), "utf8");
+    const policy = template.slice(template.indexOf("  AlarmTopicPolicy:"), template.indexOf("  ApiErrorsAlarm:"));
+    expect(policy).toContain("budgets.amazonaws.com");
+    expect(policy).toContain(":budgets::${AWS::AccountId}:*");
+  });
+});
