@@ -33,8 +33,8 @@ An art issue says what to paint and how. Read all of it before generating anythi
   whether a tier gets its own aura) are settled with the user before painting. An agent does not
   decide them.
 - **Done when.** What counts as finished: often the manifest entry, the chapter mapping, a
-  re-measured paint box or a re-taken Gemfall hash, not only the file. Those are part of the
-  work.
+  re-measured paint box, not only the file. Those are part of the work. (Art in a Gemfall
+  chapter no longer needs a hash re-taken: its pin ignores art, `npm run content:pin`.)
 
 **New art needs an issue first.** If something needs painting and no issue covers it, write
 one before painting, in the same shape: `Art: …` title, "Part of #…" where an epic applies,
@@ -156,7 +156,7 @@ Only after the gates pass, and for character art only once the user has approved
    neither a key nor AWS credentials, `push` says so: stop, and tell the user which paths
    need pushing. Never commit the image instead.
 2. Everything the issue's **Done when** asks for is in place (manifest entry, chapter
-   mapping, re-measured box, re-taken hash), and `npm run art:inventory` no longer lists the
+   mapping, re-measured box), and `npm run art:inventory` no longer lists the
    paths as owed.
 3. Commit together: `assets.lock.json`, the prompts record, and any manifest or content
    change the art belongs to. Never the image file itself; `assets:verify` fails CI on a

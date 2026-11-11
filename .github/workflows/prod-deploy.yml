@@ -324,9 +324,22 @@ jobs:
             exit 1
           fi
           # A stack output proves CloudFormation is happy, not that the site
-          # serves. One request through CloudFront catches the deploy that
-          # succeeded into a broken bundle — before the family finds out.
-          curl -fsS --retry 3 --retry-delay 5 -o /dev/null "$SITE_URL"
+          # serves. The smoke test asks the deployed site for what a phone
+          # opening the game needs: the page and the bundle it names, an API
+          # that booted, holds chapters and can read its table, the content
+          # and the art (tools/deploy/smoke.ts). It reads nothing private and
+          # writes nothing. A failure rolls nothing back: the deploy has
+          # happened, and this makes the run red so the break is found here
+          # and not by a family.
+          #
+          # A rollback to a commit from before the smoke test has no such file
+          # in its checkout, and an API that cannot answer it; that commit gets
+          # the one request it always had.
+          if [ -f tools/deploy/smoke.ts ]; then
+            node tools/deploy/smoke.ts --site "$SITE_URL"
+          else
+            curl -fsS --retry 3 --retry-delay 5 -o /dev/null "$SITE_URL"
+          fi
 
           echo "::notice title=Production is live::${SITE_URL}"
           echo

@@ -151,7 +151,7 @@ The field is **required on every rest scene**, so `npm run content:validate` ref
 without it and nothing has to guess. Tagging today's 112 rest scenes is a one-time pass: a keyword
 scan already flags 31 of them as possibly indoor (rooms, bunks, cupboards, "inside"), but every
 scene gets a human read, since "under the bridge" is outdoors and "a warm room" is not. Tagging
-a Gemfall chapter re-takes its hashes (§10, "Gemfall is pinned").
+a Gemfall chapter re-takes its play pin (§10, "Gemfall is pinned").
 
 *Done* (#625): every rest scene is tagged, 75 outdoor and 37 indoor. Besides rooms, huts, caves
 and halls, these are indoor because no campsite fits: a raft, a river floe, a ferry deck, a
@@ -1224,10 +1224,10 @@ written, and milestone tent styles for each tier as its art is painted.
 Milestone kit pieces (§5.4) arrive with the kit in Phase 2, for the tiers and distinctions whose art
 exists.
 
-**Gemfall is pinned.** `gemfall-compat.test.ts` hashes every Gemfall file, so adding a find, a
-befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate re-hash with its
-reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here may
-move the gameplay digests below the hashes: `findForCamp`, `findForKit` and `setting` change nothing
+**Gemfall is pinned.** `gemfall-compat.test.ts` pins how every Gemfall file plays, so adding a find, a
+befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate re-pin
+(`npm run content:pin`) with its reason in the commit. Re-taking those pins for the camp is approved
+(*decided*). Nothing here may move the gameplay digests below the pins: `findForCamp`, `findForKit` and `setting` change nothing
 the digests measure (no flag, XP, item or route), and that should be checked when the mosshorn is
 added and the rest scenes are tagged. *Checked* for the rest scenes (#625): all sixteen chapters
 were re-hashed and the endings, roads, setbacks and resumed-save digests did not move.

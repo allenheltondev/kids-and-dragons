@@ -82,10 +82,41 @@ strictly larger set — e2e, `cfn-lint`, and the rig contract included — on th
 same commit, and re-running the smaller set would buy minutes of nothing. What
 production adds instead is a **strict art gate** (`art:verify:strict`, which
 fails on *undelivered* art — noise on a PR where sets land over time, a real
-regression in prod). Both workflows finish by `curl`ing the site URL, so a
-deploy that succeeded into a broken bundle is caught before the family finds
-out. A **manual dispatch** of either workflow has no green CI run to lean on,
-so it keeps the checks.
+regression in prod). Both workflows finish with the **smoke test** below, so a
+deploy that succeeded into a site that cannot run a game is caught before the
+family finds out. A **manual dispatch** of either workflow has no green CI run
+to lean on, so it keeps the checks.
+
+### The smoke test after every deploy
+
+```bash
+npm run deploy:smoke -- --site https://kd.readysetcloud.io
+```
+
+`tools/deploy/smoke.ts` asks the deployed site for what a phone opening the game
+needs, reads nothing private and writes nothing:
+
+- the page, and the script bundle it names;
+- `GET /api/health?deep=1`: the API booted, holds chapters, and can read its table;
+- `GET /api/config`: what the client needs before it can sign in or subscribe;
+- a routed request refused in the API's own error shape, so a handler really ran;
+- `/content/rules.json` on the site, at the same version the API loaded (the two
+  ship in one deploy by different routes: the Lambda's package and the site bucket);
+- `/assets/manifest.json`, the art's index.
+
+It prints a line per check and exits 1 if any fails. It runs after the deploy, so
+a failure rolls nothing back; it turns the run red. Run it by hand against either
+site at any time.
+
+`GET /api/health` itself (`packages/server/src/handlers/health.ts`) answers 200
+only when the API can boot and holds chapters, and 503 with `failed: "boot"`,
+`"content"` or `"store"` otherwise. The plain form never touches the table, so it
+still answers when the table is what is broken; `?deep=1` adds one read of it.
+The body names the part that failed and nothing else, because the endpoint is
+public; the detail is in the function's log.
+
+A rollback to a commit from before the smoke test (2026-11-11) gets the single
+request of the home page those commits always had.
 
 **Production does not rebuild either — it ships CI's artifact.** After its
 build steps, `ci.yml` uploads `infra/.build/` and `packages/client/dist/` as an

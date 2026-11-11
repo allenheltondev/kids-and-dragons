@@ -11,6 +11,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm test` — vitest (includes the `tools/**/*.test.mjs` content suites)
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table
 - `npm run content:proofs` — after changing a graph campaign's graph or the flags its chapters set: re-walks it and writes `content/graph-proofs/`, which the server trusts at start
+- `npm run content:pin` — after a deliberate change to how a Gemfall chapter plays: re-takes its play pin and says which files moved (`--check` writes nothing); wording, art and voice edits never need it
 - `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
 - `npm run play:jump -- <chapter> [scene]` — a TV and phones seated at any scene of any chapter,
   out of campaign order and unlocked (`--flag`, `--fact`, `--players`), shot side by side into
@@ -27,6 +28,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run voice:library -- <step>` — casts from the voice bank in `content/voice/casting.json`: `accents`, `slots`, `shortlist`, `add`, `assign`, `listen` ([docs/voice-species.md](docs/voice-species.md#casting-with-the-tool)); only `add` changes the ElevenLabs account, and `voice:generate` renders only approved voices
 - `npm run assets:pull` / `assets:push` / `assets:status` / `assets:verify` — the art and audio in the S3 asset store (below, and [docs/asset-store.md](docs/asset-store.md)); `assets:provenance -- <path>` says where a painting came from (commit, PR, prompt, uploader)
 - `npm run mcp:keys -- create|list|revoke --stage <stage>` — the MCP server's API keys, minted by an operator with AWS credentials ([docs/mcp-server.md](docs/mcp-server.md)); a key is shown once
+- `npm run deploy:smoke -- --site <url>` — asks a deployed site for what a phone needs to start a game: the page and its bundle, a healthy API (`/api/health?deep=1`), the content and the art; reads nothing private, writes nothing, and both deploy workflows end with it ([docs/deploy.md](docs/deploy.md#the-smoke-test-after-every-deploy))
 - `npm run voice:verify` — the recorded-narration gate: fails a voice manifest that would play old words, a malformed clip or a broken script, never a line with no clips yet; `--fix` drops entries whose words changed (free, offline), `--site URL` / `--stage S` / `--dir F` also checks every clip is there (`deploy.sh` does this for the site it deploys)
 
 ## Art and audio live in S3
@@ -167,6 +169,8 @@ in [gemfall-authoring.md](docs/campaigns/gemfall-authoring.md#priority-scenes).
 
 ### Gemfall is pinned
 
-`packages/server/src/handlers/gemfall-compat.test.ts` hashes every Gemfall file. A deliberate
-content edit re-takes those hashes and says why in the commit; the gameplay digests below them
-must not move.
+`packages/server/src/handlers/gemfall-compat.test.ts` pins how every Gemfall file plays: a hash of
+the file with what is only shown or said taken out (`packages/shared/src/play-shape.ts`).
+Rewording a line, adding art or retuning a voice moves no pin. A deliberate change to exits,
+checks, effects, gates, fights or interactions' rules re-takes them with `npm run content:pin`
+and says why in the commit; the gameplay digests below them must not move.
