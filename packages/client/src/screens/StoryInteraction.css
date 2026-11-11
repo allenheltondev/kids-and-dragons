@@ -31,6 +31,15 @@
 /* On the TV the name sits beside the cue: one line less, and the board gets it. */
 .game--tv .game__head { flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--space-2, 0.5em) var(--space-3, 0.75em); }
 .game--tv .game__badge { align-self: center; }
+/* The board already gives the current task during play. Keep the matchup
+   reminder, but give the repeated badge/cue's room back to the action. */
+.game--tv:is(.game--active, .game--result):is(.game--relay, .game--sequence, .game--memory) > .game__head { gap: 0.2em 0.8em; }
+.game--tv:is(.game--active, .game--result):is(.game--relay, .game--sequence, .game--memory) > .game__head > :is(.game__badge, .game__cue) { display: none; }
+.game--tv:is(.game--active, .game--result):is(.game--relay, .game--sequence, .game--memory) > .game__head:not(:has(.game__edge)) { display: none; }
+.game--tv:is(.game--active, .game--result):is(.game--relay, .game--sequence, .game--memory) > .game__head > .game__edge { flex-basis: auto; }
+/* Keep the tune's prop beside its stones so the reminder leaves room for both. */
+.game--tv:is(.game--active, .game--result):is(.game--sequence, .game--memory) .skill-mechanism { display: flex; align-items: center; justify-content: center; gap: 1em; padding-top: 0; }
+.game--tv:is(.game--active, .game--result):is(.game--sequence, .game--memory) .skill-mechanism__prop { height: 5em; max-width: 25%; margin: 0; }
 
 .game__badge {
   align-self: flex-start;

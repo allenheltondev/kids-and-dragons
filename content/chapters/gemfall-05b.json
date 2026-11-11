@@ -2514,6 +2514,11 @@
         "props": [
           "prop_knotted_cords"
         ]
+      },
+      "check_plot": {
+        "props": [
+          "prop_knotted_cords"
+        ]
       }
     },
     "fights": [

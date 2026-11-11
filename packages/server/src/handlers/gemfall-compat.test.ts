@@ -349,8 +349,17 @@ describe("Gemfall saves from before the epic", () => {
     // The pre-epic build's own continuation, step for step (`playOn`).
     const now = await playOn(h, table, save.run.id, content);
     const afterFight = now.fight;
-    expect(now).toEqual(resumed);
-    expect(digest(now)).toBe(DIGESTS.resumed);
+    // #704 paints the previously bare bridge reached after this saved fight.
+    // Assert that presentation addition, then keep the pre-epic gameplay digest.
+    const gameplay = structuredClone(now);
+    for (const beat of gameplay.beats) {
+      if (beat?.kind === "COMBAT_SEQUENCE" && beat.after?.kind === "SCENE_ENTER" && beat.after.sceneId === "scene_plank_bridge") {
+        expect(beat.after.art).toBe("scenes/gemfall/canal-bridge-cracked");
+        delete beat.after.art;
+      }
+    }
+    expect(gameplay).toEqual(resumed);
+    expect(digest(gameplay)).toBe(DIGESTS.resumed);
     expect(afterFight.phase).not.toBe("encounter");
     // Nothing the epic added was grown on the way.
     expect(await state()).not.toHaveProperty("journeyVisit");

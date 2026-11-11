@@ -180,7 +180,8 @@
           "icon": "clever",
           "goto": "check_price_board"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pinch-price-board"
     },
     "check_price_board": {
       "type": "check",
@@ -3138,7 +3139,8 @@
           "figure": "cast/bryony",
           "name": "Bryony"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pinch-price-board"
     },
     "interaction_wagon_watch": {
       "type": "interaction",
@@ -3245,7 +3247,7 @@
       },
       "interaction_price_clues": {
         "props": [
-          "prop_word_scroll"
+          "prop_letters"
         ]
       },
       "interaction_wagon_watch": {

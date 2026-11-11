@@ -1,7 +1,8 @@
 {
   "issues": [
     665,
-    680
+    680,
+    747
   ],
   "mode": "imagegen",
   "useCase": "illustration-story",
@@ -132,6 +133,15 @@
       "uploadedBy": "codex",
       "original": "art/source/originals/680/camp.png",
       "prompt": "Use case: illustration-story. ONE earned first-friend camp nameplate frame, hand painted storybook gouache gold and plum game UI. Wide8:3 rectangle front-facing isolated on TRUE transparent background, no external glow no cast shadow. Quiet dark plum center completely empty for two lines light text. Antique gold rim with tiny friendly pawprint medallions at left/right ends and small gold leafy corner flourishes, tiny teal accents; welcoming fireside feeling, slightly grander than starters but restrained. Nine-slice target512x192 inset64left/right48top/bottom, all motifs confined to outer12.5percent left/right caps, middle75percent empty and straight continuous stretchable edges. Full plaque visible with transparent margin; no text letters logos watermark."
+    },
+    {
+      "id": "songbird",
+      "path": "assets/nameplates/songbird.webp",
+      "issue": 747,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/747/songbird.png",
+      "prompt": "Use case: illustration-story. Reference image is the delivered Ribbon frame: match its painted gold-and-plum gouache style and nine-slice composition. Create one Songbird earned nameplate frame. Wide horizontal8:3 front-on isolated plaque on TRUE transparent background. Quiet dark plum center EMPTY for two rows of light text; no painted letters. Fine antique gold rim and small warm gold songbirds perched within the far left and far right end caps, tiny teal wing accents and curling golden twigs in corners. Nine slice target512x192, left/right64 top/bottom48: ornament confined to caps, middle75percent width empty with straight seamless stretchable edges. Slightly grander than starter ribbon, restrained and readable. Full frame visible with transparent margin, no external glow/shadow, no text, logos, watermark."
     }
   ]
 }

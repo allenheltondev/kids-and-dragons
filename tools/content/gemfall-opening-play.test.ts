@@ -199,7 +199,13 @@ it.each([city,fields])("$id keeps scene art registered and present",chapter=>{
 const legacy = read<Record<string, Record<string, CheckScene>>>("tools/content/fixtures/gemfall-opening-legacy-checks.json");
 it.each([city, fields])("$id still resumes every shipped roll prompt to its original branch", chapter => {
   for (const [id, old] of Object.entries(legacy[chapter.id]!)) {
-    expect(chapter.scenes[id], `${chapter.id}/${id}: old roll contract`).toEqual(old);
+    // Presentation paintings may land later; every part of the shipped roll stays pinned.
+    expect(chapter.scenes[id], `${chapter.id}/${id}: shipped roll still exists`).toBeDefined();
+    const current = structuredClone(chapter.scenes[id]!);
+    const original = structuredClone(old);
+    delete current.art;
+    delete original.art;
+    expect(current, `${chapter.id}/${id}: old roll contract`).toEqual(original);
     const before = structuredClone(chapter); before.scenes[id] = old;
     for (const face of [1, 20]) for (const size of sizes) {
       let state = enterScene(initial(before, size), id, context(before)).state;

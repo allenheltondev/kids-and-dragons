@@ -2986,6 +2986,21 @@
         "props": [
           "prop_plank"
         ]
+      },
+      "interaction_soup_bowls": {
+        "props": [
+          "prop_empty_bowl"
+        ]
+      },
+      "interaction_clear_lane": {
+        "props": [
+          "wind-blanket"
+        ]
+      },
+      "interaction_bracken_crossing": {
+        "props": [
+          "prop_mule_cart"
+        ]
       }
     }
   },

@@ -222,7 +222,8 @@
           "goto": "check_doorstep",
           "icon": "hand"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/grandmother-doorstep"
     },
     "check_doorstep": {
       "type": "check",
@@ -3356,7 +3357,8 @@
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/grandmother-doorstep"
     },
     "interaction_morning_ring": {
       "type": "interaction",
@@ -3824,7 +3826,7 @@
       },
       "interaction_doorstep": {
         "props": [
-          "rope-loop"
+          "prop_prospector_pick"
         ]
       },
       "interaction_morning_ring": {

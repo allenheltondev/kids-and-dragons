@@ -1244,7 +1244,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/returning-stone-cart"
     },
     "check_returning_cart": {
       "type": "check",
@@ -2763,7 +2764,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/returning-stone-cart"
     },
     "interaction_practiced_hold": {
       "type": "interaction",

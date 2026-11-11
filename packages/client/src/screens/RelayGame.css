@@ -103,14 +103,14 @@
 
 /* The television is a landscape with the party standing in it. */
 .game--tv .relay-world { display: flex; flex-direction: column; flex: 1 1 0; min-block-size: 0; gap: 0.3em; }
-.game--tv .relay-world__stage { flex: 1 1 0; block-size: auto; min-block-size: 8em; }
+.game--tv .relay-world__stage { flex: 1 1 0; block-size: auto; min-block-size: 0; container-type: size; }
 .relay-world__stage { overflow: hidden; border: 1px solid #e7ca8570; border-radius: 0.85em; box-shadow: inset 0 0 0 0.15em #423e3540; }
 .relay-world__stage .relay-landscape > img { object-position: 50% 68%; }
 .relay-world__stage .relay-landscape__wash { background: linear-gradient(transparent 30%, #0f243028 60%, #101a2ab8), radial-gradient(ellipse, transparent 40%, #151a2840); }
 .game--tv .relay-world__caption { font-size: 0.95em; }
 .game--tv .relay-score { flex: 0 0 auto; margin: 0; padding: 0.3em 0.5em; font-size: 0.85em; gap: 0.15em 0.6em; }
 .game--tv .relay-world > .game-note { display: none; }
-.game--tv .relay-world__hero { inset-block-start: 57%; block-size: 4.6em; max-inline-size: 7em; }
+.game--tv .relay-world__hero { inset-block-start: 50%; block-size: min(4.6em, 45cqh); max-inline-size: 7em; }
 .relay-world__hero > :is(img, .hero-sparkle-host) { position: relative; z-index: 1; filter: drop-shadow(0 0.2em 0.15em #13282780); }
 .relay-world__footlight { position: absolute; inset-inline: 15%; inset-block-end: -0.05em; block-size: 0.7em; border-radius: 50%; background: #12211755; box-shadow: 0 0 0.35em #12211755; }
 .relay-world__hero[data-active="true"] .relay-world__footlight { background: #ffe09b7a; box-shadow: 0 0 0.8em 0.3em #ffe09b77, 0 0 0 0.12em #ffe09ba1; }

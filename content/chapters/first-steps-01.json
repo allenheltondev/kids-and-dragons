@@ -853,7 +853,7 @@
     },
     "interaction_bell": {
       "type": "interaction",
-      "narration": "Tansy hangs a little bell from the gate. \u201cSend this soft seed into the bell,\u201d she says. Flick floats beside it. \u201cI will provide encouragement. DING. Like that.\u201d",
+      "narration": "Tansy hangs a little bell from the gate. “Send this soft seed into the bell,” she says. Flick floats beside it. “I will provide encouragement. DING. Like that.”",
       "cast": [
         {
           "figure": "entities/faun",
@@ -875,20 +875,21 @@
       },
       "onSuccess": {
         "goto": "interaction_roots",
-        "narration": "Ding! Flick glows bright enough to light Tansy\u2019s clipboard."
+        "narration": "Ding! Flick glows bright enough to light Tansy’s clipboard."
       },
       "onFailure": {
         "goto": "interaction_roots",
-        "narration": "The seed lands in Tansy\u2019s pocket. \u201cExcellent pocket aim,\u201d she says, and rings the bell herself."
+        "narration": "The seed lands in Tansy’s pocket. “Excellent pocket aim,” she says, and rings the bell herself."
       },
       "onAssisted": {
         "goto": "interaction_roots",
         "narration": "Tansy steadies your hand. The bell gives a little ding, and Flick gives a very big one."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_roots": {
       "type": "interaction",
-      "narration": "Bun has tucked her ribbon beneath a springy branch. \u201cSomebody hold the branch while somebody fetches it,\u201d says Tansy. \u201cA sturdy prop works too.\u201d Bun nods. She seems very pleased with this lesson.",
+      "narration": "Bun has tucked her ribbon beneath a springy branch. “Somebody hold the branch while somebody fetches it,” says Tansy. “A sturdy prop works too.” Bun nods. She seems very pleased with this lesson.",
       "cast": [
         {
           "figure": "entities/faun",
@@ -916,12 +917,13 @@
       },
       "onAssisted": {
         "goto": "interaction_stones",
-        "narration": "Together you tuck a prop beneath the branch. Out comes Bun\u2019s ribbon."
-      }
+        "narration": "Together you tuck a prop beneath the branch. Out comes Bun’s ribbon."
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_stones": {
       "type": "interaction",
-      "narration": "Three painted stepping stones lead back to the picnic. Tansy hands out scraps from her clipboard. \u201cThe scraps hold clues. Share what you find!\u201d Flick peers at his empty hands. \u201cI know I would like more picnic.\u201d",
+      "narration": "Three painted stepping stones lead back to the picnic. Tansy hands out scraps from her clipboard. “The scraps hold clues. Share what you find!” Flick peers at his empty hands. “I know I would like more picnic.”",
       "cast": [
         {
           "figure": "entities/faun",
@@ -971,12 +973,13 @@
       },
       "onFailure": {
         "goto": "scene_team_tricks_done",
-        "narration": "The stones wiggle and carry you gently back to Tansy. \u201cA very scenic route,\u201d she says."
+        "narration": "The stones wiggle and carry you gently back to Tansy. “A very scenic route,” she says."
       },
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "You lay every clue side by side. Frog, owl, fox. Together you find the way."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "scene_team_tricks_done": {
       "type": "story",
@@ -1115,7 +1118,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_echo": {
       "type": "interaction",
@@ -1176,7 +1180,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_sneak": {
       "type": "interaction",
@@ -1216,7 +1221,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_balance": {
       "type": "interaction",
@@ -1254,7 +1260,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_spark": {
       "type": "interaction",
@@ -1283,16 +1290,17 @@
       },
       "onSuccess": {
         "goto": "scene_team_tricks_done",
-        "narration": "The little star reaches the picnic lantern. It shines with everybody\u2019s help."
+        "narration": "The little star reaches the picnic lantern. It shines with everybody’s help."
       },
       "onFailure": {
         "goto": "scene_team_tricks_done",
-        "narration": "The little star lands in Tansy\u2019s pocket. Her clipboard glows."
+        "narration": "The little star lands in Tansy’s pocket. Her clipboard glows."
       },
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "scene_playful_meadow": {
       "type": "story",
@@ -1396,7 +1404,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_camp": {
       "type": "interaction",
@@ -1454,7 +1463,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_cheer": {
       "type": "interaction",
@@ -1477,7 +1487,7 @@
       ],
       "interaction": {
         "kind": "play",
-        "cue": "Show everyone your hero\u2019s celebration.",
+        "cue": "Show everyone your hero’s celebration.",
         "actionLabel": "Take a happy bow",
         "participation": "everyone",
         "options": [
@@ -1512,7 +1522,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     },
     "interaction_wake": {
       "type": "interaction",
@@ -1564,7 +1575,8 @@
       "onAssisted": {
         "goto": "scene_team_tricks_done",
         "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
-      }
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     }
   },
   "voiceGuide": {
@@ -1586,13 +1598,43 @@
   },
   "presentation": {
     "interactions": {
-      "interaction_roots": { "props": ["rope-loop"] },
-      "interaction_bell": { "props": ["oat-crumbs"] },
-      "interaction_balance": { "props": ["rope-basket"] },
-      "interaction_stones": { "props": ["prop_stepping_stones"] },
-      "interaction_echo": { "props": ["prop_hand_bell"] },
-      "interaction_sneak": { "props": ["prop_striped_gate"] },
-      "interaction_cups": { "coverIcons": ["prop_brass_cup", "prop_brass_cup", "prop_brass_cup"] }
+      "interaction_roots": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "interaction_bell": {
+        "props": [
+          "oat-crumbs"
+        ]
+      },
+      "interaction_balance": {
+        "props": [
+          "rope-basket"
+        ]
+      },
+      "interaction_stones": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      },
+      "interaction_echo": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "interaction_sneak": {
+        "props": [
+          "prop_striped_gate"
+        ]
+      },
+      "interaction_cups": {
+        "coverIcons": [
+          "prop_brass_cup",
+          "prop_brass_cup",
+          "prop_brass_cup"
+        ]
+      }
     }
   }
 }

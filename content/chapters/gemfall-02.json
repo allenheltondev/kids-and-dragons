@@ -898,7 +898,8 @@
           "goto": "check_bridge_beam",
           "icon": "hand"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "check_bridge_beam": {
       "type": "check",
@@ -925,7 +926,8 @@
       "onFailure": {
         "goto": "scene_bridge_ferry",
         "narration": "Heave. Shove. Splash. The beam slides off the bank and into the canal, and floats there. The fauns look at it. Then they look at each other."
-      }
+      },
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "scene_bridge_mended": {
       "type": "story",
@@ -948,7 +950,8 @@
           "type": "setFlag",
           "flag": "helped_at_the_bridge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/canal-bridge-mended"
     },
     "scene_bridge_ferry": {
       "type": "story",
@@ -971,7 +974,8 @@
           "type": "setFlag",
           "flag": "helped_at_the_bridge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "scene_plank_bridge_carry": {
       "type": "story",
@@ -994,7 +998,8 @@
           "type": "setFlag",
           "flag": "helped_at_the_bridge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "scene_plank_bridge_shoulders": {
       "type": "story",
@@ -1017,7 +1022,8 @@
           "type": "setFlag",
           "flag": "helped_at_the_bridge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "scene_plank_bridge_sing": {
       "type": "story",
@@ -1040,7 +1046,8 @@
           "type": "setFlag",
           "flag": "helped_at_the_bridge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/canal-bridge-mended"
     },
     "scene_embermoths": {
       "type": "story",
@@ -2895,7 +2902,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "interaction_hay_line": {
       "type": "interaction",
@@ -2934,7 +2942,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/canal-bridge-cracked"
     },
     "interaction_hedge_brace": {
       "type": "interaction",
@@ -3180,7 +3189,8 @@
       "onAssisted": {
         "goto": "scene_plank_bridge",
         "narration": "The drover rattles the bell for you, right on time, and the caravan slips past."
-      }
+      },
+      "art": "scenes/gemfall/wolf-sneak-lane"
     },
     "check_signs_add_up": {
       "type": "check",
@@ -3309,6 +3319,11 @@
       "interaction_hedge_brace": {
         "props": [
           "prop_plank"
+        ]
+      },
+      "interaction_wolf_sneak": {
+        "props": [
+          "sausage-wagon"
         ]
       }
     }

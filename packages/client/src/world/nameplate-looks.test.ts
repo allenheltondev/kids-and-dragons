@@ -213,7 +213,7 @@ describe("a frame with no art delivered (§7.2, #665)", () => {
     const load = vi.spyOn(Assets, "load");
     const { scene, app } = stage();
     const undelivered = party(4, true);
-    for (const member of undelivered) member.character.look!.nameplate = "songbird";
+    for (const member of undelivered) member.character.look!.nameplate = "not_delivered";
     scene.setParty(undelivered);
     settle(app);
     const asked = load.mock.calls.map((c) => String(c[0]));
