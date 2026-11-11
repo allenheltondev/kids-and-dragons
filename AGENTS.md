@@ -7,9 +7,10 @@ agent that is not Claude Code needs on top of it.
 
 ## Setting up
 
-- Run `scripts/setup.sh` once per fresh checkout. It installs the Node and Python dependencies,
+- Run `npm run setup` once per fresh checkout. It installs the Node and Python dependencies,
   registers the git merge driver for `assets.lock.json`, and, once the art lives in the asset
-  store, pulls `assets/` onto disk.
+  store, pulls `assets/` onto disk. It needs only Node, so it runs the same in PowerShell, cmd
+  and bash; `scripts/setup.sh` is the same thing for a shell that has bash.
 - If your environment did not run it, nothing in `assets/` may be on disk. Before reading,
   checking or replacing any art, run `npm run assets:pull` (add `-- art` or `-- docs` when you need
   those). `art:inventory` and `art:verify` refuse to run on a tree that has not pulled.

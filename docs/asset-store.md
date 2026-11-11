@@ -101,7 +101,7 @@ Two branches that each add a painting to one folder change neighboring lines of
 the lock, and git's line merge calls that a conflict. A merge driver
 ([`tools/assets/merge-lock.ts`](../tools/assets/merge-lock.ts)) merges by path
 instead. It stops only when both sides changed the same path differently.
-`scripts/setup.sh` registers it, because git reads drivers only from local config.
+`npm run setup` registers it, because git reads drivers only from local config.
 GitHub's web merge button does not run custom drivers. If it reports a conflict
 in the lock, merge locally.
 
@@ -113,7 +113,7 @@ in the lock, merge locally.
 | **The game, in dev** | Disk, then the store fallback above. |
 | **CI** | [`.github/actions/pull-assets`](../.github/actions/pull-assets/action.yml) in each job that reads art, cached on the lock's hash. The checks job runs `assets:verify`. |
 | **The wiki** | `wiki-deploy.yml` pulls `assets` and `art/reference` before Hugo, which mounts them and resizes from them. It also rebuilds when `assets.lock.json` changes. |
-| **Agents' sessions** | `scripts/setup.sh` (the SessionStart hook) pulls `assets/`. |
+| **Agents' sessions** | `npm run setup` pulls `assets/`: Claude Code's SessionStart hook runs it through `scripts/setup.sh`, and it is Codex's setup command on any OS. |
 | **Review docs on GitHub** | Once untracked, a relative image link in `docs/` shows only after a local pull. For a page meant to be read on GitHub, link `npm run assets:url` output instead. |
 
 Every one of these is a no-op on a commit without a lock, so this all ships

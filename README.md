@@ -71,7 +71,7 @@ far. See [docs/class-mastery.md](docs/class-mastery.md).
 Needs Node 22.18 or newer. Python 3 is only needed for the art gate.
 
 ```bash
-./scripts/setup.sh     # npm install, plus Pillow, numpy and cfn-lint for the art and infra checks
+npm run setup          # npm install, plus Pillow, numpy and cfn-lint for the art and infra checks
 npm run dev            # dev server on :8787, Vite on :5173
 ```
 
