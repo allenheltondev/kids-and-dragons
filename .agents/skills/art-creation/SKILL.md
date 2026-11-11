@@ -1,6 +1,6 @@
 ---
 name: art-creation
-description: "Make, deliver or replace Kids & Dragons game art (cast, entities, scenes, story plates, camp pieces, key art, props, icons, frames) with the imagegen skill, from finding what is owed to the asset store. Use for any new or repainted image under assets/. Not for UI code, chapter writing, or audio."
+description: "Make, deliver or replace Kids & Dragons game art (cast, entities, scenes, story plates, camp pieces, key art, props, icons, frames) with the imagegen skill, from the art issue to the asset store. Use for any new or repainted image under assets/. Not for UI code, chapter writing, or audio."
 ---
 
 # Art creation
@@ -14,22 +14,41 @@ which to read and when.
 Codex generates the art, with the **imagegen** skill. Everything else here (contracts,
 checks, review of character art, upload, records) is this repository's.
 
-## 1. Find the work and its contract
+## 1. Start from the art issue
 
-Run `npm run art:inventory`. It is the queue: every category, how much is delivered, and
-under **Outstanding** the exact paths still owed. Its note under each category names the
-contract doc to read.
+The work queue is GitHub issues. Every piece of art the game needs has an open issue titled
+**`Art: …`** (or **`Art brief: …`** for a design still being settled), for example "Art:
+finish the mini-games" or "Art: starter nameplate frames". Find the open ones with
+`gh issue list --search "Art in:title" --state open`, or the session's GitHub tools. Work from
+the issue you were given. Without one, ask which issue to take; do not pick work from
+anywhere else.
 
-- **Owed art is already declared.** The inventory derives what is owed *from*
-  `assets/manifest.json`, so an owed path already has its manifest entry. Delivering the file
-  is the whole job; do not edit the manifest for it.
-- **New art is declared first.** A new cast member, plate or camp piece is added to the
-  manifest (and to the content that uses it) *before* it is painted, following that
-  category's doc. Then it shows as owed, and the rest of this skill delivers it.
-- **The path comes from the contract, never from you.** Characters, figures, cast and
-  entities follow the conventions in `packages/client/src/world/art-paths.ts`
-  (`assets/cast/<id>/assembled.png`, `assets/entities/<id>/assembled.png`, …); everything
-  else is the path the manifest names.
+An art issue says what to paint and how. Read all of it before generating anything:
+
+- **Format.** Canvas, alpha or opaque, ground point, file type, style. Where it differs from
+  the general contract below, the issue wins: it is the newer decision.
+- **The checklist.** Each item names its subject and usually its id or path
+  (`cast/snowhorn_kid`, `assets/scenes/gemfall/…`). Paint what is listed, nothing more.
+- **Owner decisions.** Items marked as the owner's call (which friend gets a spotted coat,
+  whether a tier gets its own aura) are settled with the user before painting. An agent does not
+  decide them.
+- **Done when.** What counts as finished: often the manifest entry, the chapter mapping, a
+  re-measured paint box or a re-taken Gemfall hash, not only the file. Those are part of the
+  work.
+
+**New art needs an issue first.** If something needs painting and no issue covers it, write
+one before painting, in the same shape: `Art: …` title, "Part of #…" where an epic applies,
+**Format**, a checklist with ids or paths, **Done when**.
+
+**The path comes from the issue and the contract, never from you.** Characters, figures, cast
+and entities follow `packages/client/src/world/art-paths.ts` (`assets/cast/<id>/assembled.png`,
+`assets/entities/<id>/assembled.png`, …); everything else is the path the issue or the manifest
+names. If the issue and the code disagree on a path, ask; the game only finds the code's.
+
+`npm run art:inventory` is a cross-check, not the queue. It lists art the manifest declares
+that is not on disk. Use it to confirm an issue's paths and, at the end, that they are no
+longer owed. Pull first (`npm run assets:pull`): on a checkout without the art it reports
+everything as owed.
 
 Read the contract before writing a prompt. The main ones:
 
@@ -39,7 +58,7 @@ Read the contract before writing a prompt. The main ones:
 | Camp backdrops, pieces, tents, decorations | `assets/manifest.json` → `camp`, [docs/briefs/camp.md](../../../docs/briefs/camp.md) |
 | Story plates (prologue, chapter, epilogue) | [docs/story-plates.md](../../../docs/story-plates.md): 1600 x 900 |
 | Hero looks, coat masks, nameplate frames | [docs/hero-looks.md](../../../docs/hero-looks.md) |
-| Anything else | the category's note in `art:inventory`, and [docs/asset-brief.md](../../../docs/asset-brief.md) |
+| Anything else | the art issue's Format section, and [docs/asset-brief.md](../../../docs/asset-brief.md) |
 
 ## 2. Write the prompt, and keep it
 
@@ -113,11 +132,15 @@ Only after the gates pass, and for character art only once the user has approved
    host or as `KAD_MCP_TOKEN` ([docs/mcp-server.md](../../../docs/mcp-server.md)). With
    neither a key nor AWS credentials, `push` says so: stop, and tell the user which paths
    need pushing. Never commit the image instead.
-2. `npm run art:inventory` no longer lists it as owed.
+2. Everything the issue's **Done when** asks for is in place (manifest entry, chapter
+   mapping, re-measured box, re-taken hash), and `npm run art:inventory` no longer lists the
+   paths as owed.
 3. Commit together: `assets.lock.json`, the prompts record, and any manifest or content
    change the art belongs to. Never the image file itself; `assets:verify` fails CI on a
    committed PNG, WebP, JPEG, GIF or WebM under `assets/`, `art/` or `docs/`.
 4. To show the painting in a PR: `npm run assets:url -- <path>` gives its public link.
+5. Open the PR as "Part of #<the art issue>", and tick the items it delivers in the issue's
+   checklist. The issue closes when its last item is done; a phase can be its own PR.
 
 ## Replacing and retiring
 
