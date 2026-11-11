@@ -19,12 +19,36 @@ test("a long bridge cue leaves the full relay visible on a 720p TV", async ({ br
     await openPlayerTask(phone.page);
     await phone.page.getByRole("button", { name: "We’re ready" }).click();
     await expect(tv.page.locator(".game--relay.game--active")).toBeVisible();
+    await expect(tv.page.locator(".game--tv .game__edge").filter({ hasText: "Careful:" })).toBeVisible();
+    await expect(tv.page.locator(".game--tv .game__cue")).toBeHidden();
     await expect.poll(async () => tv.page.evaluate(() => {
       const board = document.querySelector(".game--tv .game__board")!.getBoundingClientRect();
       const stage = document.querySelector(".relay-world__stage")!.getBoundingClientRect();
       const labels = [...document.querySelectorAll(".relay-world__hero > strong")].map(el => el.getBoundingClientRect());
       return stage.top >= board.top && stage.bottom <= board.bottom + 1 && labels.length === 4 &&
         labels.every(label => label.top >= board.top && label.bottom <= board.bottom + 1);
+    })).toBe(true);
+  } finally { await Promise.all([phone.context.close(), tv.context.close()]); }
+});
+
+test("an edged memory game keeps its knack visible on a 720p TV", async ({ browser }) => {
+  const table = await seedTable({ mode: "party", tv: true, chapterId: "riftlight-whale-road", sceneId: "sing_road", heroes: [
+    { name: "Willow", species: "kitsune" },
+  ] });
+  const tv = await openTv(browser, table, { viewport: { width: 1280, height: 720 } });
+  const phone = await openPhone(browser, table.phones[0]!);
+  try {
+    await Promise.all([onAir(tv.page), onAir(phone.page)]);
+    await phone.page.getByRole("button", { name: "You", exact: true }).click();
+    await openPlayerTask(phone.page);
+    await phone.page.getByRole("button", { name: "We’re ready" }).click();
+    await expect(tv.page.locator(".game--memory.game--active")).toBeVisible();
+    await expect(tv.page.locator(".game--tv .game__edge").filter({ hasText: "Strong here!" })).toBeVisible();
+    await expect(tv.page.locator(".game--tv .game__cue")).toBeHidden();
+    await expect.poll(() => tv.page.evaluate(() => {
+      const board = document.querySelector(".game--tv .game__board")!.getBoundingClientRect();
+      const pattern = document.querySelector(".game--tv .skill-mechanism")!.getBoundingClientRect();
+      return pattern.top >= board.top && pattern.bottom <= board.bottom + 1;
     })).toBe(true);
   } finally { await Promise.all([phone.context.close(), tv.context.close()]); }
 });
