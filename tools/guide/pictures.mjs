@@ -15,6 +15,7 @@
 import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const E2E = path.join(ROOT, "e2e");
@@ -31,7 +32,10 @@ export function pictureSpecs(dir = E2E) {
   return out;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run directly, not imported. Compared as URLs: a Windows path (C:\git\...) is not
+// what follows file:// in import.meta.url, and a string compare there is never true,
+// so the command printed nothing and exited 0.
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const specs = pictureSpecs();
   if (specs.length === 0) {
     console.error("no spec calls guidePicture()");

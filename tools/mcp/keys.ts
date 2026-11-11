@@ -12,6 +12,7 @@
  */
 
 import { parseArgs } from "node:util";
+import { pathToFileURL } from "node:url";
 import { DynamoKeyStore } from "../../packages/server/src/mcp/dynamo-keys.ts";
 import { KeyError, SCOPES, listKeys, mintKey, revokeKey, type KeyInfo, type KeyStore } from "../../packages/server/src/mcp/keys.ts";
 
@@ -95,7 +96,10 @@ export async function runKeysCli(argv: string[], open: (table: string) => KeySto
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run directly, not imported. Compared as URLs: a Windows path (C:\git\...) is not
+// what follows file:// in import.meta.url, and a string compare there is never true,
+// so the command printed nothing and exited 0.
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   runKeysCli(process.argv.slice(2), (table) => new DynamoKeyStore(table), { out: console.log, err: console.error }).then(
     (code) => process.exit(code),
     (error: unknown) => {

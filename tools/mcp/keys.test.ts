@@ -1,3 +1,7 @@
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { MemoryKeyStore, verifyKey } from "../../packages/server/src/mcp/keys";
 import { runKeysCli } from "./keys";
@@ -58,5 +62,42 @@ describe("npm run mcp:keys", () => {
     expect(await c.run("create", "--stage", "prod", "--table", "custom", "--label", "x", "--scope", "operator:read")).toBe(0);
     expect(c.tables.at(-1)).toBe("custom");
     expect(c.store.rows.size).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Run as a command. Everything above calls `runKeysCli` directly, which is how
+// a tool that never starts went unnoticed: on Windows the "was I run, or
+// imported?" check compared a path with a URL, was never true, and
+// `npm run mcp:keys -- create …` printed nothing and exited 0.
+// ---------------------------------------------------------------------------
+
+describe("the tools, run as commands", () => {
+  const ROOT = path.resolve(import.meta.dirname, "..", "..");
+
+  it("starts: with no arguments the key tool prints its usage and exits 2, on every platform", () => {
+    const result = spawnSync(process.execPath, [fileURLToPath(import.meta.resolve("tsx/cli")), path.join(ROOT, "tools", "mcp", "keys.ts")], {
+      cwd: ROOT,
+      encoding: "utf8",
+    });
+    expect(result.status, result.stderr).toBe(2);
+    expect(result.stderr).toContain("usage: npm run mcp:keys -- <create|list|revoke>");
+  });
+
+  it("never decides it was run directly by comparing a path with a URL", () => {
+    const offenders: string[] = [];
+    const walk = (dir: string): void => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
+        const file = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(file);
+        else if (/\.(ts|mts|mjs|js)$/.test(entry.name) && !/\.test\./.test(entry.name)) {
+          if (fs.readFileSync(file, "utf8").includes("`file://${process.argv[1]}`")) offenders.push(path.relative(ROOT, file));
+        }
+      }
+    };
+    for (const top of ["tools", "scripts", "infra", path.join("packages", "server", "src")]) walk(path.join(ROOT, top));
+    // Use `import.meta.url === pathToFileURL(process.argv[1]).href`.
+    expect(offenders).toEqual([]);
   });
 });
