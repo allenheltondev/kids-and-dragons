@@ -16,7 +16,7 @@
 # issue the certificate and the DNS records for it, and then fails unless
 #
 #   1. the stack says it serves at exactly that URL, and
-#   2. that URL answers.
+#   2. that URL answers the way a healthy store does.
 #
 # Three things it is careful about:
 #
@@ -125,9 +125,20 @@ if [ -z "$STATUS" ]; then
   echo "  No stack yet: this run creates it (a certificate and a CDN take a few minutes)."
 fi
 
-ALARM_TOPIC="$(stack_field "$ALARM_STACK" "Stacks[0].Outputs[?OutputKey=='AlarmTopicArn'].OutputValue | [0]")"
-if [ -z "$ALARM_TOPIC" ]; then
-  echo "  $ALARM_STACK has no alarm topic, so the store gets no budget on this run."
+# Where the budget alerts (#733). No subscriber means no budget, so "there is
+# no topic" is only an answer when there is no production stack to have one
+# (an account that has only ever had a store). A production stack that is
+# there and names no topic is a broken read or a broken stack, and deploying
+# on it would quietly delete the budget the store already has.
+# Assigned on its own line, never inside the test: a read that fails must end
+# the run (set -e), and inside `[ -z "$(...)" ]` it would read as "no stack".
+ALARM_TOPIC=""
+ALARM_STACK_STATUS="$(stack_field "$ALARM_STACK" "Stacks[0].StackStatus")"
+if [ -z "$ALARM_STACK_STATUS" ]; then
+  echo "  There is no $ALARM_STACK stack to alert, so the store gets no budget on this run."
+else
+  ALARM_TOPIC="$(stack_field "$ALARM_STACK" "Stacks[0].Outputs[?OutputKey=='AlarmTopicArn'].OutputValue | [0]")"
+  [ -n "$ALARM_TOPIC" ] || die "$ALARM_STACK exists but has no AlarmTopicArn output. Deploying the store without it would remove the store's budget, so nothing was deployed."
 fi
 
 # Every parameter, every time: one this run did not name would keep whatever
@@ -160,19 +171,34 @@ if [ "$SERVES" != "$STORE_URL" ]; then
   die "assets.config.json says the store is at $STORE_URL, but the stack serves at ${SERVES:-nothing}. Change storeUrl to match, or the stack's domain."
 fi
 
-# Any HTTP answer will do (the root of the store is a 403: there is nothing
-# there to list). What this proves is the name resolves and the certificate
-# is good. A brand-new record can take a minute to be visible.
+# The root of a healthy store is a 403: the CDN reached the bucket, and the
+# bucket lets it read blobs but list nothing. That one answer proves the name
+# resolves, the certificate is good, the CDN is up and the bucket is there.
+# Nothing else counts. A 5xx is the CDN or the bucket failing, a 404 is a
+# bucket that is not there, and neither is a store anyone can pull from. (That
+# every blob in the lock can be fetched is checked where the lock is read:
+# `assets:verify` in CI, and the pull at the top of deploy.sh.)
+#
+# A brand-new record or distribution can take a minute, so it is asked again.
 say "Asking $STORE_URL to answer"
 answered=0
+code="000"
 for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
-  if code="$(curl -sS -o /dev/null -m 20 -w '%{http_code}' "$STORE_URL/" 2>/dev/null)" && [ "$code" != "000" ]; then
-    echo "  It answers (HTTP $code)."
-    answered=1
-    break
-  fi
+  code="$(curl -sS -o /dev/null -m 20 -w '%{http_code}' "$STORE_URL/" 2>/dev/null)" || code="000"
+  case "$code" in
+    200|403)
+      echo "  It answers as a healthy store does (HTTP $code)."
+      answered=1
+      break
+      ;;
+  esac
   [ "$attempt" = "12" ] || sleep "${KAD_STORE_PROBE_WAIT:-10}"
 done
-[ "$answered" = "1" ] || die "$STORE_URL does not answer. The stack deployed, but nothing can pull from the address the repo names."
+if [ "$answered" != "1" ]; then
+  if [ "$code" = "000" ]; then
+    die "$STORE_URL does not answer. The stack deployed, but nothing can pull from the address the repo names."
+  fi
+  die "$STORE_URL answers HTTP $code, which is not a healthy store (its root is a 403). The stack deployed, but nothing can pull from the address the repo names."
+fi
 
 printf "\n\033[1;32m  The asset store is up to date at %s\033[0m\n\n" "$STORE_URL"

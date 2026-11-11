@@ -188,7 +188,9 @@ every clone, CI job and deploy pulls from, so it has to be in the repo before th
 exists. The script reads the host out of it (`assets.kd.readysetcloud.io`), passes it to the
 stack as `StoreDomainName` with the hosted zone, and the stack issues the certificate and
 the DNS records for it. After every deploy the script fails unless the stack's `StoreUrl`
-output equals `storeUrl` and that URL answers. No stack output is copied into a file. To
+output equals `storeUrl` and that URL answers the way a healthy store does: its root is a
+403 (the CDN reached the bucket, which lists nothing). A 5xx, a 404 or no answer fails the
+run. No stack output is copied into a file. To
 move the store to another host, change `storeUrl` and merge.
 
 Things the wiring is careful about (`tools/assets/store-deploy.test.ts` pins each):
@@ -202,9 +204,10 @@ Things the wiring is careful about (`tools/assets/store-deploy.test.ts` pins eac
   is rewritten it holds the only copy of the art), but a first create that rolls back takes
   its empty bucket with it. The script deletes the rolled-back stack and creates again on
   the next run.
-- **It stops rather than drop the budget.** If it cannot read the production stack's alarm
-  topic, it fails before deploying, because deploying with no subscriber would delete the
-  budget.
+- **It stops rather than drop the budget.** No subscriber means no budget, so the only time
+  it deploys without the alarm topic is when there is no production stack at all. If the
+  read fails, or the production stack is there but has no `AlarmTopicArn` output, it fails
+  before deploying.
 - **Production only.** Staging lives in another AWS account and reads art from this store's
   public URL, so it has no store of its own. An upload through staging's MCP server has no
   bucket to land in.

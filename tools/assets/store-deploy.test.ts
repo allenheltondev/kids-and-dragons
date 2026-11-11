@@ -51,6 +51,8 @@ describe("the store's address", () => {
     expect(deploy).toBeGreaterThan(-1);
     expect(code.indexOf('if [ "$SERVES" != "$STORE_URL" ]')).toBeGreaterThan(deploy);
     expect(code.indexOf('curl -sS -o /dev/null -m 20 -w \'%{http_code}\' "$STORE_URL/"')).toBeGreaterThan(deploy);
+    // Only the root's own answer counts as up; a 5xx or a 404 is an answer and not a store.
+    expect(code.slice(deploy)).toMatch(/case "\$code" in\s+200\|403\)/);
   });
 });
 
@@ -130,8 +132,12 @@ case "$1 $2" in
         esac ;;
       kad-prod)
         if [ -n "\${STUB_PROD_ERROR:-}" ]; then echo "$STUB_PROD_ERROR" >&2; exit 254; fi
-        if [ "\${STUB_TOPIC-x}" = "" ]; then gone "$stack"; fi
-        echo "\${STUB_TOPIC-arn:aws:sns:us-east-1:000000000000:kad-prod-alarms}" ;;
+        if [ -n "\${STUB_PROD_GONE:-}" ]; then gone "$stack"; fi
+        case "$query" in
+          *StackStatus*) echo UPDATE_COMPLETE ;;
+          # What the CLI prints, as text, for an output that is not there.
+          *AlarmTopicArn*) echo "\${STUB_TOPIC-arn:aws:sns:us-east-1:000000000000:kad-prod-alarms}" ;;
+        esac ;;
     esac ;;
   "cloudformation delete-stack") touch "$STUB_DIR/deleted" ;;
   "cloudformation wait") ;;
@@ -223,7 +229,7 @@ describe.skipIf(!runnable)("deploy-asset-store.sh, run", () => {
     expect(result.deploy).toContain(
       "--parameter-overrides StoreDomainName=assets.example.org HostedZoneId=Z0000000EXAMPLE AlarmTopicArn=arn:aws:sns:us-east-1:000000000000:kad-prod-alarms MonthlyBudgetUsd=10",
     );
-    expect(result.stdout).toContain("It answers (HTTP 403)");
+    expect(result.stdout).toContain("It answers as a healthy store does (HTTP 403)");
   });
 
   it("refuses from a laptop before it asks AWS anything", () => {
@@ -277,10 +283,21 @@ describe.skipIf(!runnable)("deploy-asset-store.sh, run", () => {
   });
 
   it("deploys with no budget only where there is no production stack to alert", () => {
-    const result = run({ env: { STUB_TOPIC: "" } });
+    const result = run({ env: { STUB_PROD_GONE: "1" } });
     expect(result.status, result.stderr).toBe(0);
     expect(result.deploy).toContain("AlarmTopicArn= MonthlyBudgetUsd=10");
     expect(result.stdout).toContain("no budget on this run");
+  });
+
+  it("stops when production is there but names no alarm topic, which would remove the budget it has", () => {
+    // "None" is the CLI's text for a missing output; empty is one with no value.
+    for (const topic of ["None", ""]) {
+      const result = run({ env: { STUB_TOPIC: topic } });
+      expect(result.status, topic).toBe(1);
+      expect(result.stderr, topic).toContain("kad-prod exists but has no AlarmTopicArn output");
+      expect(result.deploy, topic).toBeUndefined();
+      expect(result.calls.some((call) => call.includes("delete-stack")), topic).toBe(false);
+    }
   });
 
   it("serves a fork with no domain on the CDN's own host, asking for no zone", () => {
@@ -302,6 +319,24 @@ describe.skipIf(!runnable)("deploy-asset-store.sh, run", () => {
     const result = run({ env: { STUB_HTTP: "000" } });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("https://assets.example.org does not answer");
+  });
+
+  it("fails when it answers, but not as a healthy store: a server error, or a bucket that is not there", () => {
+    for (const status of ["503", "502", "504", "500", "404"]) {
+      const result = run({ env: { STUB_HTTP: status } });
+      expect(result.status, status).toBe(1);
+      expect(result.stderr, status).toContain(`https://assets.example.org answers HTTP ${status}, which is not a healthy store`);
+      // Asked again before giving up: a new distribution can take a minute.
+      expect(result.calls.filter((call) => call.startsWith("curl ")), status).toHaveLength(12);
+    }
+  });
+
+  it("takes the store's own root answer, and a root that one day serves a page, as healthy", () => {
+    for (const status of ["403", "200"]) {
+      const result = run({ env: { STUB_HTTP: status } });
+      expect(result.status, status).toBe(0);
+      expect(result.calls.filter((call) => call.startsWith("curl ")), status).toHaveLength(1);
+    }
   });
 
   it("says what CloudFormation refused when the deploy fails, and where the role's permissions are written down", () => {
