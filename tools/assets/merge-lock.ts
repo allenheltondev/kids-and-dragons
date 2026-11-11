@@ -6,7 +6,7 @@
  * not conflict at all, so this merges by path (mergeLocks) and only stops on a
  * path both sides changed differently.
  *
- * Registered per clone by scripts/setup.sh (git does not read drivers from the
+ * Registered per clone by scripts/setup.mjs (git does not read drivers from the
  * repo), and named for the file in .gitattributes:
  *
  *   git config merge.kad-assets-lock.driver "node tools/assets/merge-lock.ts %O %A %B"
