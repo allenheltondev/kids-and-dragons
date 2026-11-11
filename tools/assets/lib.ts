@@ -27,7 +27,7 @@ import {
 export const REPO_ROOT = fileURLToPath(new URL("../../", import.meta.url)).replace(/\/+$/, "");
 
 export interface AssetConfig extends AssetRules {
-  /** The store's public read URL (its CloudFront distribution). Null until the store stack is deployed. */
+  /** The store's public read URL. Declared here; the production deploy builds the store to serve at it (scripts/deploy-asset-store.sh). */
   storeUrl: string | null;
   /** The bucket writers upload to. Null means: read it from the stack's outputs. */
   bucket: string | null;

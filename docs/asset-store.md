@@ -7,7 +7,7 @@ Only how the files reach the disk has changed.
 
 | Piece | Where |
 |---|---|
-| The store: an S3 bucket, content-addressed, write-once, read through CloudFront | [`infra/asset-store.yaml`](../infra/asset-store.yaml), one stack, `kad-asset-store` |
+| The store: an S3 bucket, content-addressed, write-once, read through CloudFront | [`infra/asset-store.yaml`](../infra/asset-store.yaml), one stack, `kad-asset-store`, [deployed by the production deploy](#how-the-store-is-deployed) |
 | What it manages: media under `assets/`, `art/`, `docs/` | [`assets.config.json`](../assets.config.json) |
 | Which bytes belong at each path in this commit | `assets.lock.json` (written by the tools, never by hand) |
 | The commands | [`tools/assets/`](../tools/assets/cli.ts), as `npm run assets:*` |
@@ -30,8 +30,8 @@ so a commit still names exactly the art it shipped with, a diff still says
 which painting changed, and checking out an old commit (from after the cutover)
 and pulling gives back that commit's art.
 
-Reading needs no credentials. The store's CloudFront URL (`storeUrl` in
-`assets.config.json`) is public, as the art already is on the site and the wiki.
+Reading needs no credentials. The store's URL (`storeUrl` in
+`assets.config.json`, served by CloudFront) is public, as the art already is on the site and the wiki.
 That is what lets CI, the wiki build, a deploy, a fresh clone and an agent's
 session all run `npm run assets:pull` with nothing to set up. Writing needs AWS
 credentials with the `kad-asset-writer` policy (see [Credentials](#credentials)).
@@ -175,36 +175,79 @@ Reading needs none. Writing goes one of two ways, chosen by `--writer` or
 GitHub Actions writes nothing today. If it ever needs to, an OIDC role with the
 policy attached, as in [deploy.md](./deploy.md#turning-the-automated-deploys-on).
 
-## Standing the store up
+## How the store is deployed
 
-```bash
-aws cloudformation deploy \
-  --template-file infra/asset-store.yaml \
-  --stack-name kad-asset-store \
-  --capabilities CAPABILITY_NAMED_IAM \
-  --region us-east-1 \
-  --parameter-overrides AlarmTopicArn=<kad-prod's AlarmTopicArn output> MonthlyBudgetUsd=10
+Nobody stands the store up by hand. The production deploy creates it and keeps it up to
+date: the last step of [`prod-deploy.yml`](../.github/workflows/prod-deploy.yml) runs
+[`scripts/deploy-asset-store.sh`](../scripts/deploy-asset-store.sh), which deploys
+`infra/asset-store.yaml` as `kad-asset-store`. A merge to `main` that changes the template
+changes the store; a merge that does not is a no-op there.
 
-aws cloudformation describe-stacks --stack-name kad-asset-store --region us-east-1 \
-  --query "Stacks[0].Outputs" --output table
-```
+**The address is declared, not discovered.** `storeUrl` in `assets.config.json` is what
+every clone, CI job and deploy pulls from, so it has to be in the repo before the stack
+exists. The script reads the host out of it (`assets.kd.readysetcloud.io`), passes it to the
+stack as `StoreDomainName` with the hosted zone, and the stack issues the certificate and
+the DNS records for it. After every deploy the script fails unless the stack's `StoreUrl`
+output equals `storeUrl` and that URL answers. No stack output is copied into a file. To
+move the store to another host, change `storeUrl` and merge.
 
-Put `StoreUrl` in `assets.config.json` as `storeUrl` and commit it. Attach
-`WriterPolicyArn` to whoever will push. The bucket is `DeletionPolicy: Retain`.
-Once history is rewritten it holds the only copy of the art, so deleting the
-stack leaves it in place.
+Things the wiring is careful about (`tools/assets/store-deploy.test.ts` pins each):
+
+- **It runs last, after the site is live.** A store that will not deploy fails the run, but
+  never keeps a fix from reaching the families.
+- **It never follows a rollback.** A dispatch that names an older ref ships that commit of
+  the site only; the store step is skipped, so the store's template never goes backwards.
+- **A failed first create cleans up after itself.** The bucket is
+  `DeletionPolicy: RetainExceptOnCreate`: it survives the stack being deleted (once history
+  is rewritten it holds the only copy of the art), but a first create that rolls back takes
+  its empty bucket with it. The script deletes the rolled-back stack and creates again on
+  the next run.
+- **It stops rather than drop the budget.** If it cannot read the production stack's alarm
+  topic, it fails before deploying, because deploying with no subscriber would delete the
+  budget.
+- **Production only.** Staging lives in another AWS account and reads art from this store's
+  public URL, so it has no store of its own. An upload through staging's MCP server has no
+  bucket to land in.
+
+From a laptop the script refuses unless `KAD_DEPLOY_ANYWAY=1`, as `deploy.sh prod` does. That
+is for the evening the pipeline itself is broken.
+
+Attach the stack's `WriterPolicyArn` output (`kad-asset-writer`) to whoever pushes with AWS
+credentials ([Credentials](#credentials)).
+
+### What the deploy role needs
+
+The role the production deploy assumes must be able to create everything in the stack. On
+top of what the site's stack already needs (CloudFormation, the bucket, the CDN, the
+certificate and the DNS records), the store adds:
+
+| Actions | On | For |
+|---|---|---|
+| `budgets:ModifyBudget`, `budgets:ViewBudget` | `arn:aws:budgets::<account>:budget/kad-asset-store` | the budget (#733) |
+| `iam:CreatePolicy`, `iam:GetPolicy`, `iam:DeletePolicy`, `iam:CreatePolicyVersion`, `iam:DeletePolicyVersion`, `iam:GetPolicyVersion`, `iam:ListPolicyVersions` | `arn:aws:iam::<account>:policy/kad-asset-writer` | the writer policy, and nothing else in IAM |
+| `s3:PutBucketTagging`, `s3:GetBucketTagging`, `s3:GetEncryptionConfiguration`, `s3:GetBucketOwnershipControls` | `arn:aws:s3:::kad-asset-store-<account>` | the tag the budget filters on, and reading the bucket's settings back |
+
+The same statements are written out in [`infra/github-oidc.yaml`](../infra/github-oidc.yaml)
+(`kad-deploy-asset-store`), which is the repo's record of what a deploy role holds. A role
+that lacks one fails the store step with CloudFormation's refusal printed, and the next run
+tries again from a clean slate.
 
 ### The budget
 
 The stack makes a monthly AWS Budget, `kad-asset-store` (#733), on the bucket and the CDN,
-against `MonthlyBudgetUsd` (default $10). It alerts at 80% of actual spend, and when the month
-is forecast to pass the limit, to `AlarmTopicArn` (the production stack's alarm topic, so the
-same Slack channel as the stack's alarms) and/or `BudgetEmail`. With neither, no budget is made.
+against `MonthlyBudgetUsd` (default $10; the deploy passes `ASSET_STORE_BUDGET_USD` when set).
+It alerts at 80% of actual spend, and when the month is forecast to pass the limit, to
+`AlarmTopicArn` and/or `BudgetEmail`. The deploy script reads `AlarmTopicArn` from the
+production stack's output of that name, so the alerts reach the same Slack channel as the
+stack's alarms. With neither, no budget is made.
 
-**One manual step, once per account:** in the Billing console, under Cost allocation tags,
-activate `kad:component`. The bucket and the CDN carry `kad:component=asset-store`, and the
-budget filters on it. Until the tag is active (it can take a day to appear), the budget
-sees nothing and never fires. `tools/assets/deploy-guard.test.ts` pins the tag on both.
+**The one step a deploy cannot do, once per account:** in the Billing console, under Cost
+allocation tags, activate `kad:component`. The bucket and the CDN carry
+`kad:component=asset-store`, and the budget filters on it. AWS only lists a tag for
+activation after it has seen it on a bill, up to a day after the store's first deploy, so
+no template or script can do it at create time. Until the tag is active the budget sees
+nothing and never fires; nothing else depends on it. `tools/assets/deploy-guard.test.ts`
+pins the tag on both.
 
 **When it fires:** something is uploading or downloading far more than painting does.
 - Uploads: `npm run mcp:keys -- list --stage prod` shows which key was used last. The store's

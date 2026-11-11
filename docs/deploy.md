@@ -434,6 +434,13 @@ before deploying if it is missing, because `deploy.sh` passes `AppDomainName` an
 `AppHostedZoneId` on every deploy and an empty zone id would remove the domain.
 From a laptop: `APP_DOMAIN_NAME=kd.readysetcloud.io APP_HOSTED_ZONE_ID=Z... ./scripts/deploy.sh prod`.
 
+The asset store is deployed the same way, by the same run. Once the site is live, the last
+step of `prod-deploy.yml` runs `scripts/deploy-asset-store.sh`, which creates or updates the
+`kad-asset-store` stack at the host `assets.config.json` names (`assets.kd.readysetcloud.io`)
+in the same hosted zone. It is skipped on a rollback dispatch, so the store never follows the
+site backwards. What the role needs for it, and what the script checks, is in
+[asset-store.md](./asset-store.md#how-the-store-is-deployed).
+
 Passkeys follow the domain. If any were registered against the CloudFront domain,
 changing `WEBAUTHN_RP_ID` to `kd.readysetcloud.io` invalidates them (see above);
 leave it alone until you have decided that is acceptable.

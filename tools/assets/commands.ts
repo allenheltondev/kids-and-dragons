@@ -164,7 +164,7 @@ export async function pull(root: string, options: PullOptions = {}): Promise<Pul
     return result;
   }
   const lock = loadLock(root);
-  if (!config.storeUrl) throw new Error(`assets.config.json has no storeUrl (or set KAD_ASSET_STORE_URL). See docs/asset-store.md, "Standing the store up".`);
+  if (!config.storeUrl) throw new Error(`assets.config.json has no storeUrl (or set KAD_ASSET_STORE_URL). See docs/asset-store.md, "How the store is deployed".`);
   const cacheDir = options.cacheDir ?? defaultCacheDir();
   const state = loadState(root);
   const s = await status(root, prefixes, state);
@@ -366,7 +366,7 @@ export interface UntrackResult {
 export async function untrack(root: string, options: { log?: Log } = {}): Promise<UntrackResult> {
   const log = options.log ?? quiet;
   const config = loadConfig(root);
-  if (!config.storeUrl) throw new Error("Set storeUrl in assets.config.json first (the store stack's StoreUrl output): untrack proves every file can be pulled from it.");
+  if (!config.storeUrl) throw new Error("Set storeUrl in assets.config.json first (the address the store is deployed to serve at): untrack proves every file can be pulled from it.");
   const lock = loadLock(root);
   const tracked = trackedMedia(root, config);
   const state = loadState(root);
