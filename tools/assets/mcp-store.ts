@@ -27,16 +27,51 @@ interface UploadAnswer {
   reason?: string;
 }
 
+/**
+ * Calls a second this client allows itself. The MCP server is a route on the game's own API,
+ * which allows 50 requests a second across every route, players' taps included
+ * (infra/template.yaml, DefaultRouteSettings). A migration asks about thousands of blobs the
+ * store already has, with nothing to upload in between, and unpaced that alone passes 50.
+ */
+export const MCP_CALLS_PER_SECOND = 10;
+/** How often a refused-for-now call (429, or a gateway's 502/503/504) is tried again. */
+export const MCP_RETRIES = 6;
+
+export interface McpStoreOptions {
+  callsPerSecond?: number;
+  /** Tests stand in for the clock. */
+  sleep?: (ms: number) => Promise<void>;
+  now?: () => number;
+}
+
+const RETRYABLE = new Set([429, 502, 503, 504]);
+
 export class McpBlobStore implements BlobStore {
   readonly name: string;
   private readonly url: string;
   private readonly token: string | null;
   private nextId = 1;
+  private readonly interval: number;
+  private readonly sleep: (ms: number) => Promise<void>;
+  private readonly now: () => number;
+  /** When the next call may leave. Each call takes the slot and moves it on, so callers queue. */
+  private nextSlot = 0;
 
-  constructor(url: string, token: string | null) {
+  constructor(url: string, token: string | null, options: McpStoreOptions = {}) {
     this.url = url;
     this.token = token;
     this.name = `${url} (MCP)`;
+    this.interval = 1000 / (options.callsPerSecond ?? MCP_CALLS_PER_SECOND);
+    this.sleep = options.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+    this.now = options.now ?? Date.now;
+  }
+
+  /** Wait for this call's turn: calls leave no closer together than the interval, however many ask at once. */
+  private async turn(): Promise<void> {
+    const now = this.now();
+    const at = Math.max(now, this.nextSlot);
+    this.nextSlot = at + this.interval;
+    if (at > now) await this.sleep(at - now);
   }
 
   /** Always "not yet": request_uploads answers "stored" for a blob that is, in the same round trip. */
@@ -75,25 +110,37 @@ export class McpBlobStore implements BlobStore {
       "mcp-name": name,
     };
     if (this.token) headers.authorization = `Bearer ${this.token}`;
-    const res = await fetch(this.url, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: this.nextId++,
-        method: "tools/call",
-        params: {
-          name,
-          arguments: args,
-          _meta: {
-            "io.modelcontextprotocol/protocolVersion": VERSION,
-            "io.modelcontextprotocol/clientCapabilities": {},
-            "io.modelcontextprotocol/clientInfo": { name: "kad-assets-cli", version: "1.0.0" },
-          },
+    const body = JSON.stringify({
+      jsonrpc: "2.0",
+      id: this.nextId++,
+      method: "tools/call",
+      params: {
+        name,
+        arguments: args,
+        _meta: {
+          "io.modelcontextprotocol/protocolVersion": VERSION,
+          "io.modelcontextprotocol/clientCapabilities": {},
+          "io.modelcontextprotocol/clientInfo": { name: "kad-assets-cli", version: "1.0.0" },
         },
-      }),
+      },
     });
-    const text = await res.text();
+    let res: Response;
+    let text: string;
+    for (let attempt = 0; ; attempt++) {
+      await this.turn();
+      res = await fetch(this.url, { method: "POST", headers, body });
+      text = await res.text();
+      if (!RETRYABLE.has(res.status)) break;
+      if (attempt === MCP_RETRIES) {
+        throw new Error(
+          `MCP ${name}: HTTP ${res.status} after ${MCP_RETRIES + 1} tries: ${text.slice(0, 300)}. ` +
+            "The site's API is refusing requests for now (it allows 50 a second across every route). Nothing was recorded; run the command again later.",
+        );
+      }
+      // The server's own wait when it names one; otherwise 1s, 2s, 4s… so a busy API gets room.
+      const named = Number(res.headers.get("retry-after"));
+      await this.sleep(Number.isFinite(named) && named > 0 ? named * 1000 : 1000 * 2 ** attempt);
+    }
     if (res.status === 401) {
       throw new Error(
         `The MCP server at ${this.url} wants a key: set KAD_MCP_TOKEN, or give the cloud environment the key as a network secret for its host (docs/mcp-server.md).`,
