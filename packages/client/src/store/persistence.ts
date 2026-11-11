@@ -390,6 +390,23 @@ export function clearSharedDevice(
   clearAllSessions(tab);
 }
 
+/**
+ * This device stops being a player (`store/leave-device.ts`): its binding, the
+ * book it kept for offline reading, the grown-up's sign-in record and every
+ * room it was seated in. What is left is a device nobody has used. Nothing of
+ * the kid's is lost by this; all of it is on the server.
+ */
+export function forgetPlayerDevice(
+  storage: KeyValueStorage = defaultStorage(),
+  tab: KeyValueStorage = tabStorage(),
+): void {
+  storage.removeItem(DEVICE_KEY);
+  storage.removeItem(JOURNAL_KEY);
+  storage.removeItem(ACCOUNT_KEY);
+  clearAllSessions(storage);
+  clearAllSessions(tab);
+}
+
 function clearAllSessions(storage: KeyValueStorage): void {
   const keys = (storage as Partial<Storage>).key;
   const length = (storage as Partial<Storage>).length;

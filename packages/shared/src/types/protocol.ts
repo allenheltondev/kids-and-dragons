@@ -920,6 +920,27 @@ export interface PairingResult {
 }
 
 /**
+ * `GET /api/device`: what a personally bound device is told about itself, so
+ * it can offer to leave in true words (`POST /api/device/leave`).
+ */
+export interface DeviceStanding {
+  /** The nickname this device plays as. */
+  displayName: string;
+  /** A grown-up's sign-in keeps this household, so signing in finds her again. */
+  kept: boolean;
+  /** Leaving still leaves a way back to her: a sign-in, or another of her devices. */
+  canLeave: boolean;
+  /**
+   * Why it may not leave, when it may not, so the refusal is said in true
+   * words. `onlyDevice`: no other device is her and nobody has saved the
+   * household, so her heroes are reachable from here alone. `founder`: another
+   * device is her, but this is the one that started the household and the
+   * only one that can ever save it (`Household.founderDeviceId`).
+   */
+  staysBecause?: "onlyDevice" | "founder";
+}
+
+/**
  * On a shared tablet, a join or a create names who is playing (#250): one of
  * the household's profiles, or a new kid by name. Sent with the tablet's
  * `x-kad-shared-token`; the answer carries a session token and never a

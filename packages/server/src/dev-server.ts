@@ -65,6 +65,7 @@ import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
 import { isSlowDown, pairFromDevice, redeemPairingCode } from "./handlers/pairing.ts";
+import { deviceStanding, leaveDevice } from "./handlers/leave-device.ts";
 import { isOut } from "./handlers/remove.ts";
 import {
   forgetDevice,
@@ -844,6 +845,24 @@ async function main(): Promise<void> {
     const shared = await resolveShared(req, base);
     if (!shared) return forgottenDevice(res);
     const result = await listSharedPlayers(shared, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // What a personally bound device is told about itself, and "Leave this
+  // device" (handlers/leave-device.ts), as in lambda/http.ts.
+  app.get("/api/device", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    if (!found) return sendError(res, 401, "FORBIDDEN", "This device isn't anybody.");
+    const result = await deviceStanding(found.principal, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  app.post("/api/device/leave", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    if (!found) return sendError(res, 401, "FORBIDDEN", "This device isn't anybody.");
+    const result = await leaveDevice(found.principal, base);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

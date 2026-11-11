@@ -27,7 +27,8 @@
  *                     in `localStorage`, and the reason there is no login screen:
  *                     the phone opens the app and it is already that player.
  *   **session token** `aud: "room"`, expires with the room (≤ 6 hours). Scoped to
- *                     one run, and what actually authorises play.
+ *                     one run, and what actually authorises play. It names the
+ *                     device it was handed to and dies when that is revoked.
  *   **shared token**  `aud: "shared"`, a family tablet's (#250). The device
  *                     token's lifetime, but it names a household and no player:
  *                     every kid on the tablet plays on a session token alone.
@@ -42,6 +43,7 @@ import { GetParameterCommand, PutParameterCommand, SSMClient } from "@aws-sdk/cl
 import {
   hashToken,
   movedBinding,
+  sessionDeviceRevoked,
   type DeviceIdentity,
   type IdentityService,
   type IssueDeviceTokenInput,
@@ -104,6 +106,8 @@ interface SessionClaims {
   run: string;
   code: string;
   hh: string;
+  /** The device it was handed to. Absent on tokens minted before sessions named one. */
+  dev?: string;
   iat: number;
   exp: number;
 }
@@ -319,6 +323,7 @@ export class TokenIdentity implements IdentityService {
       run: input.runId,
       code: input.roomCode,
       hh: input.householdId,
+      ...(input.deviceId !== undefined ? { dev: input.deviceId } : {}),
       iat: Math.floor(this.now() / 1000),
       // A session can never outlive its room, so the caller's expiry is the cap.
       exp: Math.floor(input.expiresAt / 1000),
@@ -328,12 +333,17 @@ export class TokenIdentity implements IdentityService {
   async resolveSession(token: string): Promise<SessionIdentity | null> {
     const claims = await this.verify<SessionClaims>(token, "room");
     if (!claims) return null;
+    const deviceId = typeof claims.dev === "string" ? claims.dev : undefined;
+    // The signature and the expiry are not enough, for the reason they are not
+    // for a device token: revoking the device has to end what it was handed.
+    if (await sessionDeviceRevoked(this.repo, claims.hh, deviceId)) return null;
     return {
       runId: claims.run,
       roomCode: claims.code,
       householdId: claims.hh,
       playerId: claims.sub,
       expiresAt: claims.exp * 1000,
+      ...(deviceId !== undefined ? { deviceId } : {}),
     };
   }
 

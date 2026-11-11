@@ -515,6 +515,9 @@ export async function joinRoom(
     playerId: player.id,
     // A session can never outlive its room.
     expiresAt: Date.parse(room.expiresAt),
+    // Nor the device it is handed to: a phone that leaves, or a tablet a
+    // grown-up forgets, takes this with it (`sessionDeviceRevoked`).
+    deviceId: input.principal.deviceId,
   });
 
   return ok({
