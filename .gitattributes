@@ -1,0 +1,2 @@
+# The asset lock merges by path, not by line (tools/assets/merge-lock.ts; scripts/setup.sh registers the driver).
+assets.lock.json merge=kad-assets-lock

@@ -1,0 +1,44 @@
+# Put the art and audio a job reads back on disk (docs/asset-store.md).
+#
+# Once the media live in the asset store, a checkout has assets.lock.json and no
+# paintings. This pulls the ones under `paths` from the store's public URL (no
+# credentials), through a cache keyed on the lock so a run whose art did not
+# change downloads nothing, and then proves the tree holds exactly the lock's
+# bytes there. A commit from before the store has no lock, and every step skips.
+#
+#   - uses: ./.github/actions/pull-assets
+#     with:
+#       paths: assets art
+#
+# Needs node (actions/setup-node) first; nothing else, not even npm ci.
+
+name: Pull assets
+description: Fetch the media in assets.lock.json from the asset store into the working tree
+inputs:
+  paths:
+    description: Space-separated folders to pull (the lock's paths under them)
+    required: false
+    default: assets
+  cache-name:
+    description: A short name for this set of paths in the cache key (jobs pulling different sets keep separate caches)
+    required: false
+    default: game
+runs:
+  using: composite
+  steps:
+    - name: Cache the asset store's blobs
+      if: hashFiles('assets.lock.json') != ''
+      uses: actions/cache@v6
+      with:
+        path: ~/.cache/kad-assets
+        key: kad-assets-${{ inputs.cache-name }}-${{ hashFiles('assets.lock.json') }}
+        # Any earlier set is mostly the same art: start from it and fetch the difference.
+        restore-keys: |
+          kad-assets-${{ inputs.cache-name }}-
+
+    - name: Pull from the asset store
+      if: hashFiles('assets.lock.json') != ''
+      shell: bash
+      run: |
+        node tools/assets/cli.ts pull ${{ inputs.paths }}
+        node tools/assets/cli.ts verify --no-store $(for p in ${{ inputs.paths }}; do printf -- '--present %s ' "$p"; done)

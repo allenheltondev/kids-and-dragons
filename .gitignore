@@ -8,6 +8,9 @@ __pycache__/
 staging/
 art/review/
 
+# the asset store's per-checkout state: stat cache, what was last pulled (tools/assets/lib.ts)
+.assets/
+
 # build output
 dist/
 .aws-sam/

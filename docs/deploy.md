@@ -39,7 +39,9 @@ or a rollback by hand to an older commit, `KAD_DEPLOY_ANYWAY=1` ships the
 checkout regardless and prints what was wrong with it. The workflows are not
 subject to any of this; `prod-deploy.yml` has its own guard.
 
-It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`, `voice:verify`,
+It first pulls the game's art from the asset store and refuses to go on unless
+`assets/` holds exactly what `assets.lock.json` names ([asset-store.md](./asset-store.md)),
+since the art is synced with `--delete`. Then it runs the checks — typecheck, unit tests, `content:validate`, `art:verify`, `voice:verify`,
 and `infra:lint` when `cfn-lint` is installed — then bundles
 the Lambdas and builds the client, checks that every recorded voice clip the
 manifests in `content/voice/manifest/` play is on the site
