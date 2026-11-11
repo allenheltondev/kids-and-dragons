@@ -481,7 +481,9 @@ export async function verify(root: string, options: VerifyOptions = {}): Promise
   let lock: AssetLock | null = null;
 
   if (hasLock(root)) {
-    const text = fs.readFileSync(lockPath(root), "utf8");
+    // Line endings are not the lock's content. A Windows checkout with core.autocrlf gives the
+    // file CRLF, and compared as it stood every fresh clone there failed this check untouched.
+    const text = fs.readFileSync(lockPath(root), "utf8").replace(/\r\n/g, "\n");
     try {
       lock = parseLock(text);
       if (serializeLock(lock) !== text) problems.push(`${LOCK_FILE} is not in canonical form (unsorted, hand-edited, or a merge left it so). Rewrite it with npm run assets:push.`);
