@@ -259,6 +259,40 @@ pins the tag on both.
 - Downloads: CI pulls through the Actions cache, so a cache that keeps missing (a changed
   key, an evicted cache) shows as CDN transfer. Check the runs' "Pull assets" steps.
 
+### Smoke test
+
+The unit tests stand in for S3. `npm run assets:smoke` checks the real deployment: the MCP
+server, the upload URLs S3 signs and the CDN (#723). Run it after standing the store up, and
+after any change to `infra/asset-store.yaml` or `packages/server/src/mcp/uploads.ts`:
+
+There is one store, in the production account: staging is a separate account with no store,
+and each stage's MCP server signs only for its own account's bucket. So the smoke test runs
+against production, with a key minted for it and revoked straight after:
+
+```bash
+npm run mcp:keys -- create --stage prod --label "smoke test" --scope assets:write --agent smoke --days 1
+KAD_MCP_TOKEN=kadmcp_… npm run assets:smoke -- --store-url https://assets.kd.readysetcloud.io
+npm run mcp:keys -- revoke --stage prod <id>
+```
+
+`--mcp-url` defaults to `mcpUrl` in `assets.config.json` (production's), and `--store-url` to
+`storeUrl` once #735 has set it.
+
+It uploads one fresh test blob and then checks each of these:
+
+- A made-up key is refused, and `whoami` answers for the real one.
+- The upload URL stores the blob, and a second PUT of the same blob gets 412 (write-once).
+- These PUTs are refused: bytes that don't match the hash, a body of a different size, an
+  upload without `If-None-Match`, and a changed provenance stamp. None of them stores anything.
+- The CDN serves the blob without credentials, with its stamp (this key's label, `mcp`, the
+  issue, the path), and doesn't serve a blob that isn't there.
+
+It prints a line per check and exits 1 if any fails. It leaves one small blob in the store,
+stamped with a `smoke/…` path; the second set of bytes lands only on a store that fails a check.
+No lock names it, so it's never pulled. Blobs are write-once, so it stays, like every blob. `tools/assets/smoke.test.ts` runs the smoke test against a local stand-in that refuses
+whatever doesn't match the signed headers. It also checks that a store that overwrites, leaves
+the stamp unsigned, or loses the stamp at the CDN fails the matching check.
+
 ## The cutover
 
 Do this from a **full** clone (not shallow; `archive-history` refuses one, since a partial archive would look complete), with every branch and tag fetched, and with write credentials. Each step is
@@ -355,6 +389,8 @@ Things to know before you do it:
 | A painting is committed to git after the cutover | `assets:verify` in CI |
 | The store serves bytes that do not hash to their name | `pull` and the dev server refuse them |
 | A deploy runs with art missing or unpushed | `deploy.sh`: `assets:verify --present assets` before the `--delete` sync |
+| Hero art lands without the owner looking | The **character art** check (`.github/workflows/character-art.yml`) fails the PR until it carries the `art-approved` label (#729) |
+| The store stops enforcing its upload URLs (write-once, checksum, size, stamp) | `npm run assets:smoke` against the deployment (#723) |
 | Someone overwrites a blob | the bucket policy (conditional writes only); versioning keeps 90 days anyway |
 | A partial pull is mistaken for deletions | `push` never prunes unless told where |
 | Two branches add art to one folder | the merge driver |

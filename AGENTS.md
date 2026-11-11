@@ -26,7 +26,8 @@ from the issue to the asset store. In short:
    `art/source/originals/<issue>/`.
 3. Fit the image to its contract, then run `npm run art:verify` and the kind's tests.
 4. **Character art** (`assets/characters/`, `assets/character-rigs/`, `assets/gear-portraits/`)
-   waits for the user's approval. Other art does not.
+   waits for the user's approval. Other art does not. After the cutover, CI fails the PR until
+   the user labels it `art-approved`; never add that label yourself.
 5. Store it with `npm run assets:push -- --issue <n> <folder>`, then commit `assets.lock.json` and
    the prompt record, never the image files. **Before the cutover** (no `assets.lock.json` at the
    repo root yet), the art is still in git: commit the approved image with its prompt record, as

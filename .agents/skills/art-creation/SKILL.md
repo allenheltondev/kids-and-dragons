@@ -131,6 +131,11 @@ existing piece of the same set) when you generate.
    user's approval of that painting. A rejected one goes back to step 2 or 3 and costs
    nothing, because it never left `staging/` or the working tree.
 
+   CI holds the user to it too, after the cutover: the **character art** check fails a PR
+   whose `assets.lock.json` adds or repaints a path in those folders, until the user adds the
+   `art-approved` label. The check's summary links each painting in the store. Never add that
+   label yourself; it is the user's word that they looked.
+
    **Everything else** (story cast, entities, scenes, plates, camp, key art, props, icons,
    frames) needs no review: it is ready once steps 1 and 2 pass. Still look at it yourself
    at play size against its neighbours, and redo anything that does not match the set.

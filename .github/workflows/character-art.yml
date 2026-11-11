@@ -1,0 +1,41 @@
+# Character art needs the owner's approval (#729, .agents/skills/art-creation/SKILL.md step 4).
+#
+# Fails a pull request whose assets.lock.json adds or repaints art under assets/characters/,
+# assets/character-rigs/ or assets/gear-portraits/, until the owner looks and adds the
+# `art-approved` label. The run's summary links each painting in the store. Its own workflow,
+# not a CI job, so labeling re-runs this check alone and not the whole pipeline.
+#
+# To make it binding, mark "character art" as a required check on main's branch protection.
+
+name: Character art
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+concurrency:
+  group: character-art-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    name: character art
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Only the script: the locks are read from git, a blob at a time, so no art is fetched.
+      - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout: tools/ci
+
+      - name: Check for unapproved character art
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$BASE"
+          node tools/ci/character-art.mjs "$BASE" HEAD --labels "$LABELS"
