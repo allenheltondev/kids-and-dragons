@@ -11,11 +11,14 @@ import { dirname, join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { ContentSet } from "./content-set.ts";
-import { ensureGraphProofs, staleGraphProofs } from "./graph-proofs.ts";
+import { contentGateForBuild, ensureGraphProofs, staleGraphProofs } from "./graph-proofs.ts";
+import { checkerFingerprint } from "./validate-content.ts";
 import { REPO } from "./validate-harness.ts";
 
 const PROOF = "content/graph-proofs/riftlight.json";
 const CAMPAIGN = "content/campaigns/riftlight.json";
+/** A chapter no graph names: breaking it fails the validator and leaves every graph sound. */
+const OTHER_CHAPTER = "content/chapters/bramblewood-01.json";
 const CLI = join(REPO, "tools", "content", "graph-proofs.ts");
 
 describe("graph proofs", () => {
@@ -63,12 +66,12 @@ describe("graph proofs", () => {
       expect(staleGraphProofs(staged)).toEqual(["riftlight"]);
 
       const first = ensureGraphProofs(staged);
-      expect(first).toMatchObject({ stale: ["riftlight"], refreshed: ["riftlight"], failed: [], report: "" });
+      expect(first).toEqual({ stale: ["riftlight"], refreshed: ["riftlight"], failed: [], validator: 0, report: "" });
       expect(JSON.parse(readFileSync(join(staged, PROOF), "utf8"))).toMatchObject({ campaign: "riftlight", fingerprint: shipped.fingerprint, states: shipped.states });
 
       // Current now: nothing is stale, so the validator is not even started.
       const started = Date.now();
-      expect(ensureGraphProofs(staged)).toEqual({ stale: [], refreshed: [], failed: [], report: "" });
+      expect(ensureGraphProofs(staged)).toEqual({ stale: [], refreshed: [], failed: [], validator: null, report: "" });
       expect(Date.now() - started).toBeLessThan(2000);
     } finally {
       restore();
@@ -87,6 +90,36 @@ describe("graph proofs", () => {
       restore();
     }
   }, 120_000);
+
+  // Review on #751. The validator trusts a proof only from the checker that made it
+  // (`proof.checker === rep.checker`), so a change to the route search re-walks every campaign.
+  // The refresh paths compared the content's fingerprint alone, and kept an old proof.
+  it("a proof made by another checker is stale, though the content has not changed, and is replaced", () => {
+    try {
+      const proof = JSON.parse(readFileSync(join(staged, PROOF), "utf8")) as { fingerprint: string; checker: string };
+      expect(proof.checker).toBe(checkerFingerprint());
+      write(PROOF, JSON.stringify({ ...proof, checker: "0".repeat(32) }));
+      expect(staleGraphProofs(staged)).toEqual(["riftlight"]);
+
+      const result = ensureGraphProofs(staged);
+      expect(result).toMatchObject({ stale: ["riftlight"], refreshed: ["riftlight"], failed: [], validator: 0 });
+      const rewritten = JSON.parse(readFileSync(join(staged, PROOF), "utf8")) as { fingerprint: string; checker: string };
+      expect(rewritten).toMatchObject({ fingerprint: proof.fingerprint, checker: checkerFingerprint() });
+      expect(staleGraphProofs(staged)).toEqual([]);
+    } finally {
+      restore();
+    }
+  }, 120_000);
+
+  it("a proof with no checker at all is stale", () => {
+    try {
+      const { checker: _checker, ...rest } = JSON.parse(readFileSync(join(staged, PROOF), "utf8")) as Record<string, unknown>;
+      write(PROOF, JSON.stringify(rest));
+      expect(staleGraphProofs(staged)).toEqual(["riftlight"]);
+    } finally {
+      restore();
+    }
+  });
 
   it("rewording a chapter leaves its campaign's proof current: only the graph and the flags are in it", () => {
     try {
@@ -118,6 +151,72 @@ describe("graph proofs", () => {
   }, 120_000);
 });
 
+// Review on #751. The validator judges all the content and its exit code was thrown away:
+// with a sound graph and a broken chapter elsewhere it wrote the proof and returned 1, the
+// proofs then read as current, and the build packaged content that had failed the gate.
+describe("when the content fails a rule that is not a graph's", () => {
+  let staged = "";
+
+  beforeAll(() => {
+    staged = mkdtempSync(join(tmpdir(), "kad-graph-proofs-gate-"));
+    const real = ContentSet.load(REPO);
+    for (const path of real.paths()) {
+      mkdirSync(dirname(join(staged, path)), { recursive: true });
+      writeFileSync(join(staged, path), real.text(path));
+    }
+    cpSync(join(REPO, "assets", "world"), join(staged, "assets", "world"), { recursive: true });
+  }, 120_000);
+
+  afterAll(() => rmSync(staged, { recursive: true, force: true }), 60_000);
+
+  const breakOtherChapter = () => {
+    const chapter = JSON.parse(readFileSync(join(staged, OTHER_CHAPTER), "utf8")) as { entry: string };
+    writeFileSync(join(staged, OTHER_CHAPTER), JSON.stringify({ ...chapter, entry: "a_scene_that_is_not_there" }));
+  };
+
+  it("the staged tree passes the build's gate as it stands", () => {
+    expect(contentGateForBuild(staged)).toEqual({ ok: true, refreshed: [], unproven: [], report: "" });
+  }, 120_000);
+
+  it("the build's gate fails even though every proof is current, because it does not skip the validator", () => {
+    breakOtherChapter();
+    expect(staleGraphProofs(staged)).toEqual([]);
+
+    const gate = contentGateForBuild(staged);
+    expect(gate.ok).toBe(false);
+    expect(gate.unproven).toEqual([]);
+    expect(gate.report).toMatch(/bramblewood-01\.json/);
+
+    // The refresh has nothing to refresh, does not run the validator, and says so: null, not a pass.
+    expect(ensureGraphProofs(staged)).toEqual({ stale: [], refreshed: [], failed: [], validator: null, report: "" });
+  }, 120_000);
+
+  it("a refresh records the proof and still reports that the validator failed", () => {
+    rmSync(join(staged, PROOF));
+    const result = ensureGraphProofs(staged);
+    // The graph is sound, so its proof is written; the tree is not, and that is not hidden.
+    expect(result).toMatchObject({ stale: ["riftlight"], refreshed: ["riftlight"], failed: [], validator: 1 });
+    expect(result.report).toMatch(/bramblewood-01\.json/);
+    expect(existsSync(join(staged, PROOF))).toBe(true);
+
+    expect(contentGateForBuild(staged).ok).toBe(false);
+  }, 120_000);
+
+  it("the command exits 1 for it, says the proofs were recorded and the content was not passed, and exits 0 under --soft", () => {
+    rmSync(join(staged, PROOF));
+    const env = { ...process.env, KAD_CONTENT_ROOT: staged };
+    const hard = spawnSync(process.execPath, [CLI], { encoding: "utf8", env });
+    expect(hard.status).toBe(1);
+    expect(hard.stderr).toMatch(/recorded, but the rest of the content does not pass npm run content:validate/);
+    expect(hard.stderr).toMatch(/bramblewood-01\.json/);
+
+    rmSync(join(staged, PROOF));
+    const soft = spawnSync(process.execPath, [CLI, "--soft"], { encoding: "utf8", env });
+    expect(soft.status).toBe(0);
+    expect(soft.stderr).toMatch(/does not pass npm run content:validate/);
+  }, 180_000);
+});
+
 describe("graph proofs, run as a command", () => {
   it("--check says the proofs are current here and exits 0", () => {
     const result = spawnSync(process.execPath, [CLI, "--check"], { encoding: "utf8" });
@@ -129,10 +228,13 @@ describe("graph proofs, run as a command", () => {
 describe("where the proofs get made", () => {
   const read = (file: string) => readFileSync(join(REPO, file), "utf8");
 
-  it("the build refreshes them, refuses content that has none, and checks the package itself", () => {
+  it("the build runs the whole gate, stops on any failure, and checks the package itself", () => {
     const build = read("infra/build.mjs");
-    expect(build).toMatch(/ensureGraphProofs\(ROOT\)/);
-    expect(build).toMatch(/proofs\.failed\.length > 0\) \{[\s\S]*?throw new Error/);
+    expect(build).toMatch(/contentGateForBuild\(ROOT\)/);
+    expect(build).toMatch(/if \(!gate\.ok\) \{[\s\S]*?throw new Error/);
+    // Not the refresh, which skips the validator when the proofs are current and would let
+    // a package be made from content nobody checked.
+    expect(build).not.toMatch(/ensureGraphProofs/);
     // After the copy, on the copy: what ships, not what was on disk before.
     expect(build.indexOf("staleGraphProofs(dir)")).toBeGreaterThan(build.indexOf('cp(path.join(ROOT, "content")'));
   });

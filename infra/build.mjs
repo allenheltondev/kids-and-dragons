@@ -47,19 +47,32 @@ const FUNCTIONS = [
 await rm(OUT, { recursive: true, force: true });
 
 /*
- * Graph proofs (tools/content/graph-proofs.ts). The API loads `content/` at
- * every cold start, and a graph campaign with no current proof is walked there:
- * over five seconds before the first tap is answered, where a proof makes it 88
- * milliseconds. The proofs are not committed, so this is where a package gets
- * them: refreshed here, and checked again inside the package below. Content
- * that does not validate has no proof to give, and does not ship.
+ * The content gate, before any of it is packaged (tools/content/graph-proofs.ts,
+ * `contentGateForBuild`). Two things, and both are checked rather than assumed:
+ *
+ *  - The content passes `npm run content:validate`, all of it. The validator
+ *    runs here every build and its verdict is what decides, so a package is
+ *    not made from content that fails any rule. CI and deploy.sh run the same
+ *    gate before they get here; this is the copy that cannot be skipped by
+ *    calling the build directly. It reads the art on disk, as that gate does,
+ *    so the art has to be pulled first (`npm run assets:pull`).
+ *
+ *  - Every graph campaign has a current proof. The API loads `content/` at
+ *    every cold start, and a graph with no proof is walked there: over five
+ *    seconds before the first tap is answered, where a proof makes it 88
+ *    milliseconds. The proofs are not committed, so this run is where a package
+ *    gets them, and the package itself is checked again below.
  */
-const { ensureGraphProofs, staleGraphProofs } = await import("../tools/content/graph-proofs.ts");
-const proofs = ensureGraphProofs(ROOT);
-if (proofs.refreshed.length > 0) console.log(`graph proofs: walked and recorded ${proofs.refreshed.join(", ")}`);
-if (proofs.failed.length > 0) {
-  console.error(proofs.report);
-  throw new Error(`graph proofs: ${proofs.failed.join(", ")} did not validate, so the API would walk it at every cold start. Fix the content (npm run content:validate) and build again.`);
+const { contentGateForBuild, staleGraphProofs } = await import("../tools/content/graph-proofs.ts");
+const gate = contentGateForBuild(ROOT);
+if (gate.refreshed.length > 0) console.log(`graph proofs: walked and recorded ${gate.refreshed.join(", ")}`);
+if (!gate.ok) {
+  console.error(gate.report);
+  throw new Error(
+    gate.unproven.length > 0
+      ? `content gate: ${gate.unproven.join(", ")} did not validate, so it has no graph proof and the API would walk it at every cold start. Fix the content (npm run content:validate) and build again.`
+      : "content gate: the content does not pass npm run content:validate (the report is above). A package is not built from it. Fix the content and build again.",
+  );
 }
 
 for (const fn of FUNCTIONS) {
