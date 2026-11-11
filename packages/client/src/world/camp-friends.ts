@@ -68,7 +68,7 @@ export const FRIEND_PAINT: Readonly<Record<string, { height: number; width: numb
   "cast/bun": { height: 1.04, width: 1.01 },
   "entities/mosshorn": { height: 1.03, width: 0.73 },
   "entities/duckling": { height: 0.99, width: 0.64 },
-  "cast/snowhorn_kid": { height: 0.99, width: 0.85 },
+  "cast/snowhorn_kid": { height: 1.0, width: 0.63 },
   "entities/quay_gull": { height: 1.0, width: 0.88 },
   "entities/silver_otter": { height: 1.03, width: 0.69 },
 };

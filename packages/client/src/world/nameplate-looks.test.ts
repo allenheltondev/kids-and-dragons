@@ -208,11 +208,13 @@ describe("crowdedTitles", () => {
 
 describe("a frame with no art delivered (§7.2, #665)", () => {
   it("is the plain plate, and nothing is asked for", () => {
-    expect(nameplateFrameArt("ribbon")).toBeNull();
-    expect(heroNameStyle(look({ title: null })).frame).toBeNull();
+    expect(nameplateFrameArt("ribbon", new Set())).toBeNull();
+    expect(heroNameStyle(look({ title: null }), LOOKS, new Set()).frame).toBeNull();
     const load = vi.spyOn(Assets, "load");
     const { scene, app } = stage();
-    scene.setParty(party(4, true));
+    const undelivered = party(4, true);
+    for (const member of undelivered) member.character.look!.nameplate = "songbird";
+    scene.setParty(undelivered);
     settle(app);
     const asked = load.mock.calls.map((c) => String(c[0]));
     expect(asked.filter((url) => url.includes("nameplates/"))).toEqual([]);

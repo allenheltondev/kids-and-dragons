@@ -1,0 +1,24 @@
+{
+  "issue": 659,
+  "mode": "imagegen",
+  "useCase": "illustration-story",
+  "output": {
+    "width": 1024,
+    "height": 1024,
+    "format": "PNG",
+    "opaque": false,
+    "encoding": "RGBA, alpha >10 crop bounds, Lanczos fit inside 820x820, ground at (512,900)"
+  },
+  "ownerDecisions": "Patched coat and teal collar; seated pose with lifted front hoof requested after first repaint. Bun unchanged.",
+  "paintings": [
+    {
+      "id": "snowhorn_kid",
+      "path": "assets/cast/snowhorn_kid/assembled.png",
+      "issue": 659,
+      "generator": "imagegen (gpt-image, as recorded in original C2PA)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/659/snowhorn_kid.png",
+      "prompt": "Use case: illustration-story. Edit the referenced spotted kid goat. KEEP its chocolate brown patches on cream fluffy fur, teal woven collar and brass bell, snow tuft, golden small horns, large warm brown eyes, warm storybook painted fur style. CHANGE POSE COMPLETELY: sit upright on its haunches like an inquisitive little puppy, three-quarter view facing LEFT, head cocked left, one FRONT HOOF lifted playfully at chest height, other front hoof planted, back legs tucked out to sides, short tail peeking. A compact seated triangular silhouette, NOT standing on four legs and NOT the original pose. Full isolated body with genuine transparent alpha, no ground shadow, no text. 1024 square canvas, ground contact centered at x512 y900, ears and horns inside margins. Friendly and charming for eight year old children."
+    }
+  ]
+}

@@ -91,7 +91,16 @@
     { "id": "leafy", "name": "Leafy", "unlock": { "from": "starter" }, "art": "nameplates/leafy.webp" },
     { "id": "starry", "name": "Starry", "unlock": { "from": "starter" }, "art": "nameplates/starry.webp" },
     { "id": "songbird", "name": "Songbird", "unlock": { "from": "found" }, "art": "nameplates/songbird.webp" },
-    { "id": "golden", "name": "Golden", "unlock": { "from": "milestone", "tier": "mythic" }, "art": "nameplates/golden.webp" }
+    { "id": "golden", "name": "Golden", "unlock": { "from": "milestone", "tier": "mythic" }, "art": "nameplates/golden.webp" },
+    {"id": "master_thornguard_frame", "name": "Thornguard Master", "unlock": {"from": "milestone", "classRank": {"class": "thornguard", "rank": "master"}}, "art": "nameplates/master_thornguard_frame.webp"},
+    {"id": "master_duskrunner_frame", "name": "Duskrunner Master", "unlock": {"from": "milestone", "classRank": {"class": "duskrunner", "rank": "master"}}, "art": "nameplates/master_duskrunner_frame.webp"},
+    {"id": "master_starweaver_frame", "name": "Starweaver Master", "unlock": {"from": "milestone", "classRank": {"class": "starweaver", "rank": "master"}}, "art": "nameplates/master_starweaver_frame.webp"},
+    {"id": "master_songkeeper_frame", "name": "Songkeeper Master", "unlock": {"from": "milestone", "classRank": {"class": "songkeeper", "rank": "master"}}, "art": "nameplates/master_songkeeper_frame.webp"},
+    {"id": "campaign_first_steps", "name": "First Steps", "unlock": {"from": "milestone", "campaign": "first-steps"}, "art": "nameplates/campaign_first_steps.webp"},
+    {"id": "campaign_gemfall", "name": "Gemfall", "unlock": {"from": "milestone", "campaign": "gemfall"}, "art": "nameplates/campaign_gemfall.webp"},
+    {"id": "campaign_riftlight", "name": "Riftlight", "unlock": {"from": "milestone", "campaign": "riftlight"}, "art": "nameplates/campaign_riftlight.webp"},
+    {"id": "campaign_the_hollow_crown", "name": "The Hollow Crown", "unlock": {"from": "milestone", "campaign": "the-hollow-crown"}, "art": "nameplates/campaign_the_hollow_crown.webp"},
+    {"id": "camp_friend_frame", "name": "Camp Friends", "unlock": {"from": "milestone", "camp": "firstFriend"}, "art": "nameplates/camp_friend_frame.webp"}
   ],
   "titles": [
     { "id": "the_bold", "text": "the Bold", "unlock": { "from": "starter" } },
