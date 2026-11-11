@@ -246,6 +246,10 @@ Resources:
             Resource:
               - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}"
               - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}/index/*"
+              # The stack's other tables, named kad-<purpose>-<stage>: session timing (#511) and
+              # the MCP server's keys (docs/mcp-server.md).
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-timing-${!aws:PrincipalTag/kad:stage}"
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-mcp-keys-${!aws:PrincipalTag/kad:stage}"
 
           # /kad/<stage>/… holds the token-signing SecureString, which the API
           # function mints at runtime, and the CloudFront origin secret, which

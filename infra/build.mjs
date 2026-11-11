@@ -40,6 +40,8 @@ const FUNCTIONS = [
   { name: "push-sender", entry: "packages/server/src/lambda/push-sender.ts" },
   // Monthly: deletes Lambda log streams older than 30 days (#524).
   { name: "log-sweep", entry: "packages/server/src/lambda/log-sweep.ts" },
+  // The MCP server (docs/mcp-server.md): asset upload URLs, later the operator tools.
+  { name: "mcp", entry: "packages/server/src/lambda/mcp.ts" },
 ];
 
 await rm(OUT, { recursive: true, force: true });

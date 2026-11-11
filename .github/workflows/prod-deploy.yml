@@ -222,6 +222,13 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
+      # The game's art, from the asset store (docs/asset-store.md): the strict gate below
+      # reads it, and deploy.sh syncs it to the site. Plain node, so it works without npm ci.
+      - uses: ./.github/actions/pull-assets
+        with:
+          paths: assets
+          cache-name: game
+
       # Prod-only tightening: the strict pixel gate fails on *undelivered* art,
       # not just malformed art. On a PR that is noise — sets land over time —
       # but production shipping with a missing set is a real regression.

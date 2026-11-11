@@ -1,5 +1,9 @@
 # Character artwork pipeline
 
+Finished art is saved into `assets/` as below, then uploaded with `npm run assets:push`, which
+records it in `assets.lock.json` for the commit. The files themselves live in the S3 asset store,
+not git ([asset-store.md](./asset-store.md)).
+
 Characters are finished transparent illustrations with subtle procedural breathing.
 Rive rigs, split body parts, underpainting, and animation contracts are retired.
 

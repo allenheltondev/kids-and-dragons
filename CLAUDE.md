@@ -25,7 +25,26 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run content:timing -- <export.json>` — how long real family sittings took, per chapter and revision, against the 30-minute budget ([docs/session-timing.md](docs/session-timing.md); observed, never mixed with the predictions above)
 - `npm run timing:export -- --stage prod --out timing.json` — pulls every household's observed timing from a deployed stack using your AWS credentials, for `content:timing`
 - `npm run voice:library -- <step>` — casts from the voice bank in `content/voice/casting.json`: `accents`, `slots`, `shortlist`, `add`, `assign`, `listen` ([docs/voice-species.md](docs/voice-species.md#casting-with-the-tool)); only `add` changes the ElevenLabs account, and `voice:generate` renders only approved voices
+- `npm run assets:pull` / `assets:push` / `assets:status` / `assets:verify` — the art and audio in the S3 asset store (below, and [docs/asset-store.md](docs/asset-store.md))
+- `npm run mcp:keys -- create|list|revoke --stage <stage>` — the MCP server's API keys, minted by an operator with AWS credentials ([docs/mcp-server.md](docs/mcp-server.md)); a key is shown once
 - `npm run voice:verify` — the recorded-narration gate: fails a voice manifest that would play old words, a malformed clip or a broken script, never a line with no clips yet; `--fix` drops entries whose words changed (free, offline), `--site URL` / `--stage S` / `--dir F` also checks every clip is there (`deploy.sh` does this for the site it deploys)
+
+## Art and audio live in S3
+
+Images and audio under `assets/`, `art/` and `docs/` are kept in the asset store (S3), not in
+git. Git keeps `assets.lock.json`, which names the bytes at each path
+([docs/asset-store.md](docs/asset-store.md)). Paths and tools are unchanged; only how files
+reach the disk differs:
+
+- `npm run assets:pull`: put the lock's art on disk (the session hook pulls `assets/`; add `art`
+  or `docs` when you need them). Needs no credentials.
+- Made or changed an image or a sound: `npm run assets:push` (or `-- <folder>`), then commit
+  `assets.lock.json` with the change that uses it. Deleted one: `npm run assets:push -- --prune <folder>`.
+- Never `git add -f` a png, webp, jpg, gif or webm there; `assets:verify` fails CI on it. In a
+  cloud session `push` writes through the MCP server (`KAD_ASSET_WRITER=mcp`). Without a key or
+  AWS credentials, `push` says so: leave the files on disk and report which paths need
+  pushing, rather than committing them.
+- Link to a picture from a PR or a review doc: `npm run assets:url -- <path>`.
 
 ## Writing for the game
 
