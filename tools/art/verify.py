@@ -33,7 +33,8 @@ except ImportError:
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import coat  # noqa: E402  (coat masks: tools/art/coat.py)
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# KAD_REPO_ROOT lets a test point the gate at a temporary tree.
+ROOT = os.environ.get("KAD_REPO_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MANIFEST = os.path.join(ROOT, "assets", "manifest.json")
 
 RED, GREEN, YELLOW, DIM, BOLD, RESET = (
@@ -1323,9 +1324,35 @@ def check_coat_masks(rep: Report, mf: dict) -> None:
                     rep.fail(os.path.relpath(path, ROOT), "a mask beside a declared hero painting", "stray mask")
 
 
+def unpulled_art(prefix: str = "assets") -> list[str]:
+    """The lock's paths under prefix that are not on disk (#725, tools/assets/lib.ts unpulledArt).
+
+    Presence only. Empty when there is no assets.lock.json: before the cutover the art is in git.
+    """
+    lock_path = os.path.join(ROOT, "assets.lock.json")
+    if not os.path.exists(lock_path):
+        return []
+    with open(lock_path, encoding="utf-8") as f:
+        files = json.load(f).get("files", {})
+    return sorted(
+        p for p in files
+        if (p == prefix or p.startswith(prefix + "/")) and not os.path.exists(os.path.join(ROOT, p))
+    )
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
+
+    # After the cutover the art lives in the asset store. Checking an unpulled tree would fail
+    # every delivered painting as missing, so say what to do instead (#725).
+    missing = unpulled_art()
+    if missing:
+        sys.exit(
+            f"art:verify: {len(missing)} file(s) assets.lock.json names under assets/ are not on disk "
+            f"(e.g. {missing[0]}).\n"
+            "  The art lives in the asset store; run npm run assets:pull -- assets first (docs/asset-store.md)."
+        )
 
     if not os.path.exists(MANIFEST):
         sys.exit(f"error: no manifest at {MANIFEST}")

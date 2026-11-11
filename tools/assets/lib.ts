@@ -213,3 +213,26 @@ export function progress(label: string, total: number): (done: number) => void {
     if (done === total || done % step === 0) process.stderr.write(`  ${label} ${done}/${total}\n`);
   };
 }
+
+/**
+ * The lock's paths under `prefix` that are not on disk (#725). Presence only, no hashing, so a
+ * tool can ask it cheaply before reading the art. Empty when there is no lock: a commit from
+ * before the cutover keeps its art in git, and nothing is missing that a pull would bring.
+ */
+export function unpulledArt(root: string, prefix = "assets"): string[] {
+  if (!hasLock(root)) return [];
+  const lock = loadLock(root);
+  return Object.keys(lock.files)
+    .filter((p) => p === prefix || p.startsWith(`${prefix}/`))
+    .filter((p) => !fs.existsSync(path.join(root, p)))
+    .sort();
+}
+
+/** The message every art tool gives when the tree has not been pulled. */
+export function unpulledMessage(tool: string, missing: string[], prefix = "assets"): string {
+  return (
+    `${tool}: ${missing.length} file(s) ${LOCK_FILE} names under ${prefix}/ are not on disk (e.g. ${missing[0]}).\n` +
+    `  The art lives in the asset store; run npm run assets:pull -- ${prefix} first. Reporting now would\n` +
+    `  call delivered art missing (docs/asset-store.md).`
+  );
+}
