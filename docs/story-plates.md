@@ -376,6 +376,6 @@ epilogue carries what the scene before (`keepers` or `listened`) decided:
 3. Add the prompts to [story-plates-prompts.json](story-plates-prompts.json).
 4. `npm run content:validate`. For a **graph** campaign, also `npm run content:proofs` and commit
    what it writes (it re-fingerprints the campaign).
-5. Gemfall is pinned (`gemfall-compat.test.ts` hashes every Gemfall file). A change to its campaign
-   file or a chapter is a deliberate content edit: re-take that file's hash, say why in the test
-   header and the commit, and the gameplay digests must not move. (Its prologue was added this way.)
+5. Gemfall is pinned by how it plays (`gemfall-compat.test.ts`, `packages/shared/src/play-shape.ts`).
+   A prologue, an epilogue or a chapter's plate is only shown, so adding one to Gemfall moves no pin
+   and needs nothing re-taken; the gameplay digests must not move either.
