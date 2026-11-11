@@ -365,3 +365,39 @@ describe("archive-history", () => {
     expect(JSON.parse(fs.readFileSync(path.join(storeDir, "history", stored[0]!), "utf8")).changes).toEqual(result.changes);
   });
 });
+
+describe("review fixes", () => {
+  it("prune never drops art this checkout simply never pulled", async () => {
+    const origin = makeRepo();
+    await cutover(origin);
+    const agent = clone(origin, "agent");
+    await pull(agent, { cacheDir, prefixes: ["assets/cast/pib"] });
+    fs.rmSync(path.join(agent, "assets/cast/pib/assembled.png"));
+    const pruned = await push(agent, new DirBlobStore(storeDir), { cacheDir, prune: true, prefixes: ["assets"] });
+    expect(pruned.pruned).toEqual(["assets/cast/pib/assembled.png"]);
+    expect(loadLock(agent).files["assets/cast/gullet/assembled.png"]).toBeDefined();
+    expect(loadLock(agent).files["assets/audio/rain.webm"]).toBeDefined();
+  });
+
+  it("pull never writes a path the rules do not manage, whatever the lock says", async () => {
+    const origin = makeRepo();
+    await cutover(origin);
+    const lock = loadLock(origin);
+    const blob = lock.files["assets/cast/pib/assembled.png"]!;
+    lock.files[".github/workflows/x.png"] = blob;
+    fs.writeFileSync(path.join(origin, "assets.lock.json"), serializeLock(lock));
+    const work = clone(origin, "work");
+    fs.copyFileSync(path.join(origin, "assets.lock.json"), path.join(work, "assets.lock.json"));
+    await pull(work, { cacheDir });
+    expect(fs.existsSync(path.join(work, ".github/workflows/x.png"))).toBe(false);
+    expect((await verify(work, { store: false })).problems.join("\n")).toMatch(/outside assets\.config\.json/);
+  });
+
+  it("the deploy check refuses new art that was never pushed", async () => {
+    const origin = makeRepo();
+    await cutover(origin);
+    expect((await verify(origin, { store: false, present: ["assets"] })).problems).toEqual([]);
+    write(origin, "assets/cast/unpushed/assembled.png", "an agent's painting");
+    expect((await verify(origin, { store: false, present: ["assets"] })).problems.join("\n")).toMatch(/unpushed\/assembled\.png: on disk but not in assets\.lock\.json/);
+  });
+});

@@ -4,12 +4,13 @@
  * The MCP server never carries a painting: a tool's arguments and results land
  * in a model's context, and a 2 MB PNG as base64 would not fit. It hands out
  * presigned PUT URLs instead, and the bytes go straight to S3. Each URL signs
- * three headers the uploader must send unchanged:
+ * headers the uploader must send unchanged:
  *
  *   If-None-Match: *            the bucket refuses any other kind of blob write,
  *                               and S3 answers 412 if the blob is already there;
  *   x-amz-checksum-sha256       S3 hashes what arrives and refuses a mismatch, so
  *                               a URL for one hash can never store other bytes;
+ *   Content-Length              the size asked for, which is capped;
  *   Content-Type, Cache-Control what the CDN serves the blob with.
  *
  * So holding an upload key lets an agent add correct blobs and nothing else: it
@@ -32,7 +33,7 @@ export interface PresignedPut {
 
 export interface UploadSigner {
   has(key: string): Promise<boolean>;
-  presignPut(key: string, contentType: string, sha256: string): Promise<PresignedPut>;
+  presignPut(key: string, contentType: string, sha256: string, bytes: number): Promise<PresignedPut>;
 }
 
 export interface UploadRequest {
@@ -66,10 +67,13 @@ export async function planUploads(signer: UploadSigner, files: UploadRequest[], 
         return refuse(file.path, `bytes must be between 1 and ${MAX_UPLOAD_BYTES}`);
       }
       const contentType = contentTypeFor(file.path);
-      if (contentType === "application/octet-stream") return refuse(file.path, "not an image or audio type the store serves (by its extension)");
+      // SVG can carry script, and the store's CDN serves it to any origin: SVGs stay in git.
+      if (contentType === "application/octet-stream" || contentType === "image/svg+xml") {
+        return refuse(file.path, "not an image or audio type the store accepts (by its extension)");
+      }
       const key = blobKey(file.sha256, file.path);
       if (await signer.has(key)) return { path: file.path, key, status: "stored" };
-      const put = await signer.presignPut(key, contentType, file.sha256);
+      const put = await signer.presignPut(key, contentType, file.sha256, file.bytes);
       return { path: file.path, key, status: "upload", method: "PUT", url: put.url, headers: put.headers, expires_at: expires };
     }),
   );
@@ -96,8 +100,10 @@ export class S3UploadSigner implements UploadSigner {
     }
   }
 
-  async presignPut(key: string, contentType: string, sha256: string): Promise<PresignedPut> {
+  async presignPut(key: string, contentType: string, sha256: string, bytes: number): Promise<PresignedPut> {
     const headers = {
+      // Signed, so the upload is exactly the size asked for and checked against MAX_UPLOAD_BYTES.
+      "Content-Length": String(bytes),
       "Content-Type": contentType,
       "Cache-Control": BLOB_CACHE_CONTROL,
       "If-None-Match": "*",
@@ -106,6 +112,7 @@ export class S3UploadSigner implements UploadSigner {
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
+      ContentLength: bytes,
       ContentType: headers["Content-Type"],
       CacheControl: headers["Cache-Control"],
       IfNoneMatch: "*",
@@ -115,7 +122,7 @@ export class S3UploadSigner implements UploadSigner {
       expiresIn: UPLOAD_URL_SECONDS,
       // Signed as headers, not hoisted into the query string, so the uploader must send them.
       unhoistableHeaders: new Set(["x-amz-checksum-sha256"]),
-      signableHeaders: new Set(["content-type", "cache-control", "if-none-match", "x-amz-checksum-sha256"]),
+      signableHeaders: new Set(["content-length", "content-type", "cache-control", "if-none-match", "x-amz-checksum-sha256"]),
     });
     return { url, headers };
   }

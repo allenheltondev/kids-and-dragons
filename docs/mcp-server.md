@@ -79,7 +79,8 @@ send unchanged:
 |---|---|
 | `If-None-Match: *` | S3 refuses the write if the blob exists (412, which the CLI treats as done). The store's bucket policy refuses any blob write without it. |
 | `x-amz-checksum-sha256` | S3 hashes what arrives and refuses a mismatch. A URL for one hash can never store other bytes. |
-| `Content-Type`, `Cache-Control` | What the store's CDN serves the blob with. |
+| `Content-Length` | The size asked for, capped at 100 MB. |
+| `Content-Type`, `Cache-Control` | What the store's CDN serves the blob with. SVG is refused (it can carry script, and the CDN serves any origin); SVGs stay in git. |
 
 So an `assets:write` key lets its holder add correct blobs and nothing else. It
 cannot overwrite, delete, read household data, or file bytes under a hash they

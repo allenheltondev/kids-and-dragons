@@ -88,7 +88,9 @@ export async function status(root: string, prefixes: string[] = [], state: State
   const config = loadConfig(root);
   const lock = loadLock(root);
   const result: StatusResult = { ok: [], missing: [], stale: [], modified: [], added: [], deleted: [], dropped: [] };
-  const lockPaths = Object.keys(lock.files).filter((p) => underAny(p, prefixes)).sort();
+  // A lock path outside the rules is never written or read here, whatever the lock says: a lock
+  // naming .github/workflows/x.yml must not make pull write it. verify reports such entries.
+  const lockPaths = Object.keys(lock.files).filter((p) => underAny(p, prefixes) && matchesRules(p, config)).sort();
   const disk = await hashAll(root, lockPaths, state);
   for (const p of lockPaths) {
     const want = lock.files[p]!;
@@ -243,7 +245,7 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
   const prefixes = options.prefixes ?? [];
   const cacheDir = options.cacheDir ?? defaultCacheDir();
   if (options.prune && prefixes.length === 0) {
-    throw new Error("push --prune needs the folders or files whose deletions to record (e.g. --prune assets/cast/old-goblin), so a partial pull can never empty the lock.");
+    throw new Error("push --prune needs the folders or files whose deletions to record (e.g. --prune assets/cast/old-goblin).");
   }
   const state = loadState(root);
   const lock = loadLock(root);
@@ -264,7 +266,9 @@ export async function push(root: string, store: BlobStore, options: PushOptions 
     targets = [...s.modified, ...s.added];
     if (s.stale.length > 0) log(`  ${s.stale.length} file(s) are older than the lock (run npm run assets:pull); not pushed.`);
     if (options.prune) {
-      for (const p of [...s.deleted, ...s.missing]) {
+      // Only files this checkout had and then deleted. A file that was never pulled here is
+      // "missing", not deleted, and pruning it would drop art nobody chose to remove.
+      for (const p of s.deleted) {
         if (!options.dryRun) delete lock.files[p];
         delete state.files[p];
         result.pruned.push(p);
@@ -510,6 +514,10 @@ export async function verify(root: string, options: VerifyOptions = {}): Promise
       const wrong = paths.filter((p) => disk.get(p)?.sha256 !== lock!.files[p]!.sha256).sort();
       for (const p of wrong.slice(0, 20)) problems.push(`${p}: ${disk.get(p) ? "differs from" : "missing; expected"} ${LOCK_FILE} (npm run assets:pull -- ${options.present.join(" ")})`);
       if (wrong.length > 20) problems.push(`… and ${wrong.length - 20} more not as the lock says`);
+      // New art on disk that was never pushed: a deploy would publish files no commit names.
+      const added = (await status(root, options.present, state)).added;
+      for (const p of added.slice(0, 20)) problems.push(`${p}: on disk but not in ${LOCK_FILE} (npm run assets:push, or remove it)`);
+      if (added.length > 20) problems.push(`… and ${added.length - 20} more not in the lock`);
     }
   }
 

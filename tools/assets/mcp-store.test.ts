@@ -34,8 +34,11 @@ beforeEach(async () => {
   puts.length = 0;
   const signer: UploadSigner = {
     has: (key) => Promise.resolve(fs.existsSync(path.join(storeDir, key))),
-    presignPut: (key, contentType, sha256) =>
-      Promise.resolve({ url: `${base}/s3/${key}`, headers: { "Content-Type": contentType, "If-None-Match": "*", "x-amz-checksum-sha256": checksumHeader(sha256) } }),
+    presignPut: (key, contentType, sha256, bytes) =>
+      Promise.resolve({
+        url: `${base}/s3/${key}`,
+        headers: { "Content-Length": String(bytes), "Content-Type": contentType, "If-None-Match": "*", "x-amz-checksum-sha256": checksumHeader(sha256) },
+      }),
   };
   const endpoint = mcpEndpoint({ keys, signer });
   server = http.createServer((req, res) => {
@@ -47,6 +50,7 @@ beforeEach(async () => {
         const key = req.url.slice(4);
         const file = path.join(storeDir, key);
         if (req.headers["if-none-match"] !== "*") return res.writeHead(403).end("unconditional write refused by policy");
+        if (Number(req.headers["content-length"]) !== body.length) return res.writeHead(403).end("SignatureDoesNotMatch");
         if (fs.existsSync(file)) return res.writeHead(412).end();
         const digest = createHash("sha256").update(body).digest("base64");
         if (req.headers["x-amz-checksum-sha256"] !== digest) return res.writeHead(400).end("BadDigest");

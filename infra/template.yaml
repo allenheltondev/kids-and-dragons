@@ -785,12 +785,11 @@ Resources:
                 - s3:GetObject
               Resource: !Sub "arn:${AWS::Partition}:s3:::kad-asset-store-${AWS::AccountId}/sha256/*"
             - Effect: Allow
-              # Without it, S3 answers a HEAD on a missing blob 403 rather than 404.
+              # Without it, S3 answers a HEAD on a missing blob 403 rather than 404. No s3:prefix
+              # condition: the implicit list check behind a HEAD carries no prefix, so a condition
+              # on one would never match and every new blob would read as forbidden.
               Action: s3:ListBucket
               Resource: !Sub "arn:${AWS::Partition}:s3:::kad-asset-store-${AWS::AccountId}"
-              Condition:
-                StringLike:
-                  s3:prefix: "sha256/*"
       Events:
         Mcp:
           Type: HttpApi

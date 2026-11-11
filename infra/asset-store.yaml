@@ -177,14 +177,13 @@ Resources:
               - !Sub "${StoreBucket.Arn}/history/*"
           # Without ListBucket, S3 answers a HEAD on a missing key with 403
           # instead of 404, and "not there yet" becomes indistinguishable from
-          # "not allowed".
+          # "not allowed". No s3:prefix condition: the implicit list check
+          # behind a HEAD carries no prefix, so such a condition never matches.
+          # Listing reveals only hashes, which the public lock names anyway.
           - Sid: TellMissingFromForbidden
             Effect: Allow
             Action: s3:ListBucket
             Resource: !GetAtt StoreBucket.Arn
-            Condition:
-              StringLike:
-                s3:prefix: ["sha256/*", "history/*"]
           # `assets:push` finds the bucket from this stack's outputs.
           - Sid: FindTheBucket
             Effect: Allow

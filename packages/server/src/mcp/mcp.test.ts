@@ -86,20 +86,22 @@ describe("upload URLs", () => {
       { path: "assets/notes.txt", sha256: SHA2, bytes: 10 },
       { path: "assets/x.png", sha256: "nope", bytes: 10 },
       { path: "assets/x.png", sha256: SHA2, bytes: 0 },
+      { path: "assets/brand/logo.svg", sha256: SHA2, bytes: 10 },
     ]);
-    expect(answers.map((a) => a.status)).toEqual(["stored", "upload", "refused", "refused", "refused"]);
+    expect(answers.map((a) => a.status)).toEqual(["stored", "upload", "refused", "refused", "refused", "refused"]);
     expect(answers[1]).toMatchObject({ key: `sha256/cd/${SHA2}.webm`, method: "PUT", headers: { "Content-Type": "audio/webm", "If-None-Match": "*" } });
   });
 
   it("signs the write-once and checksum headers, so an uploader cannot drop them", async () => {
     const s3 = new S3Client({ region: "us-east-1", credentials: { accessKeyId: "AKIAEXAMPLE", secretAccessKey: "secret" }, requestChecksumCalculation: "WHEN_REQUIRED" });
-    const put = await new S3UploadSigner("kad-asset-store-test", s3).presignPut(`sha256/ab/${SHA}.png`, "image/png", SHA);
+    const put = await new S3UploadSigner("kad-asset-store-test", s3).presignPut(`sha256/ab/${SHA}.png`, "image/png", SHA, 1234);
     const url = new URL(put.url);
     expect(url.hostname).toBe("kad-asset-store-test.s3.us-east-1.amazonaws.com");
     expect(url.pathname).toBe(`/sha256/ab/${SHA}.png`);
-    expect(url.searchParams.get("X-Amz-SignedHeaders")!.split(";")).toEqual(["cache-control", "content-type", "host", "if-none-match", "x-amz-checksum-sha256"]);
+    expect(url.searchParams.get("X-Amz-SignedHeaders")!.split(";")).toEqual(["cache-control", "content-length", "content-type", "host", "if-none-match", "x-amz-checksum-sha256"]);
     expect(url.searchParams.get("X-Amz-Expires")).toBe("900");
     expect(put.headers).toEqual({
+      "Content-Length": "1234",
       "Content-Type": "image/png",
       "Cache-Control": "public,max-age=31536000,immutable",
       "If-None-Match": "*",
