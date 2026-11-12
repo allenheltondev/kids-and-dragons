@@ -8,6 +8,11 @@ export async function combatPaintReady(page: Page, chapterId: string, sceneId: s
   const fight = chapter.presentation?.fights?.find((f: { scene: string }) => f.scene === sceneId);
   const urls = new Set<string>([fight?.tileUrl ?? `/assets/biomes/${chapter.biome}/tiles.png`]);
   if (fight?.activeUrl) urls.add(fight.activeUrl);
+  if (fight?.retreatUrl) urls.add(fight.retreatUrl);
+  if (fight?.backdrop) urls.add(`/assets/${fight.backdrop}.webp`);
+  for (const members of Object.values(fight?.outcomeCast ?? {}) as { figure: string }[][]) {
+    for (const member of members) urls.add(`/assets/${member.figure}/assembled.png`);
+  }
   if (scene.art) urls.add(`/assets/${scene.art}.webp`);
   for (const prop of fight?.terrainProps ?? []) urls.add(`/assets/story-props/${prop}.webp`);
   for (const feature of [...(scene.environment?.objectives ?? []), ...(scene.environment?.hazards ?? []), ...(scene.environment?.exits ?? [])]) {
