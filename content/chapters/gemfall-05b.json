@@ -893,7 +893,7 @@
     },
     "scene_runners_post_river": {
       "type": "story",
-      "narration": "\"The river road?\" A runner wipes his brow. The troll at Stone Crossing asks one question now: where did you get that, and where is it going? Out east, the manticore prides bend their roads around something. \"Everybody's noticing,\" he puffs.",
+      "narration": "\"The river road?\" A runner wipes her brow. The troll at Stone Crossing asks one question now: where did you get that, and where is it going? Out east, the manticore prides bend their roads around something. \"Everybody's noticing,\" she puffs.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -912,7 +912,7 @@
     },
     "scene_runners_post_gullet": {
       "type": "story",
-      "narration": "\"Gullet?\" A runner laughs. \"Notched hat, hums a lot?\" Gullet has run out of hat and started on her other hat. \"She says she's not worried,\" he puffs. \"Which means she is.\"",
+      "narration": "\"Gullet?\" A runner laughs. \"Notched hat, hums a lot?\" Gullet has run out of hat and started on her other hat. \"She says she's not worried,\" the runner puffs. \"Which means she is.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -2468,7 +2468,7 @@
       "explaining what the Hollow Gate is"
     ],
     "npcVoices": {
-      "door_archivist": "brisk bigfoot archivist; fussy about feet, warm once she decides you matter",
+      "archivist": "brisk bigfoot archivist; fussy about feet, warm once she decides you matter",
       "oldest_archivist": "very old, very slow, a bird lives in his beard; talks to the knot-cords as much as to you",
       "eldest": "MossHome elder; mild, sips tea between every sentence, asks to be told second and means it",
       "runner": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking",

@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-stuttering-flats/arrival/narration": {
     "source": "sha256:fe238b8314d3069962e6f0cf3e2491f3eb9a66b6881597522ed829eb713e2c67",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-stuttering-flats/herder_blink/narration": {
     "source": "sha256:32b00320cc04215bd12ad53dc07f866999c99efd64888495d8b0465109f3260b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -50,7 +50,7 @@
   },
   "riftlight-stuttering-flats/read/narration": {
     "source": "sha256:e44639b3b680c18cf1160ebd8fb33299e3e556dba0302280f8cedf5dfd47be75",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -76,7 +76,7 @@
   },
   "riftlight-stuttering-flats/watch_blink/narration": {
     "source": "sha256:58cbd4883896d2ca48d2a394c1fe75b6ade99ef8a4d50eb823a806e751bc99e1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -90,7 +90,7 @@
   },
   "riftlight-stuttering-flats/read_star/narration": {
     "source": "sha256:5540a368ade47710c9694efdb7e9a1fb276c57e075926a75c9fbb0a8e53c7d6f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -112,7 +112,7 @@
   },
   "riftlight-stuttering-flats/read_done/narration": {
     "source": "sha256:2276c9c341bf59bc465713ac299af2cedb215f6c0856aeb6fbcd4d2294671cf9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -138,7 +138,7 @@
   },
   "riftlight-stuttering-flats/chime/narration": {
     "source": "sha256:71d5840e4c1b5812316036f497557a36d4e1f693b2f1689dc2b660a21c8ae191",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -168,7 +168,7 @@
   },
   "riftlight-stuttering-flats/chime_rung/narration": {
     "source": "sha256:799f7223594f58fe9ceedb9f4bdb573359192f50893f6ced0376ca5b56a530b8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -190,7 +190,7 @@
   },
   "riftlight-stuttering-flats/chime_quiet/narration": {
     "source": "sha256:beaeda3ee6a2e1fd4d9ba706468c26026fef26c6054455c99a2ab4afdba55b61",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -212,7 +212,7 @@
   },
   "riftlight-stuttering-flats/read_rough/narration": {
     "source": "sha256:a7310d685c6bc19eec64b96495b255e07ccbd769fb70b89861b654f39bfb2fae",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -250,7 +250,7 @@
   },
   "riftlight-stuttering-flats/reach/narration": {
     "source": "sha256:a4ace542b4ab129faffaf9db31fe44b0e30f40324b4b2ada73b5ffdba9cf56c6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -272,7 +272,7 @@
   },
   "riftlight-stuttering-flats/check_wade/narration": {
     "source": "sha256:ec6d2d507b75c0c38a83c54155352d293d68dd228f62d5d44a689f98684ffd96",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -294,7 +294,7 @@
   },
   "riftlight-stuttering-flats/fly_goat/narration": {
     "source": "sha256:179f5be0238c9c5cf6c913c6e2083214150c01197a44cb0ee3f6b918885c41f0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -316,7 +316,7 @@
   },
   "riftlight-stuttering-flats/boot_lost/narration": {
     "source": "sha256:900b465f0701279500978a97517c976482e7897997d3426c8496adc371fda988",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -338,7 +338,7 @@
   },
   "riftlight-stuttering-flats/at_goat/narration": {
     "source": "sha256:468a2d39fc17434d508463301a6112a4f4e722610760a8a1b725d6445238f7ff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -360,7 +360,7 @@
   },
   "riftlight-stuttering-flats/calm/narration": {
     "source": "sha256:6a78bd3d6274d701209754ed6007c0c5dd372419384727fd890c6cc1f218328c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -382,7 +382,7 @@
   },
   "riftlight-stuttering-flats/calm_song/narration": {
     "source": "sha256:e6837a89583b2d5418ae856094fe76305ed944f01479759b21198c576f881c55",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -390,7 +390,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"She knows that song,\""
+        "text": "\"She knows that song,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -398,13 +399,14 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"She's homesick.\""
+        "text": "\"She's homesick.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-stuttering-flats/calmed/narration": {
     "source": "sha256:b507b3de5cfe737a6d0e6627c106782dd1cb1a0d664b34b4af6d4804afb4d945",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -426,7 +428,7 @@
   },
   "riftlight-stuttering-flats/kicked/narration": {
     "source": "sha256:a59981873cc1593a660ed738d4b74335594ebe88fe23100cdad92b1f69273c9d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -448,7 +450,7 @@
   },
   "riftlight-stuttering-flats/free_choice/narration": {
     "source": "sha256:62df3ace60fef317c348eaa0f4bb067c93566ab5a652e101bb67eb72aa0937e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -470,7 +472,7 @@
   },
   "riftlight-stuttering-flats/check_haul/narration": {
     "source": "sha256:e9a1363dda9222e3bfcbd7d3e2bfc03a6e2380dee2693b7659998ab1c1373582",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -492,7 +494,7 @@
   },
   "riftlight-stuttering-flats/hauled/narration": {
     "source": "sha256:a4e60c6135efbba6547caf01bdca6fc5b91099c66194b31138294fbc3c8eb00d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -514,7 +516,7 @@
   },
   "riftlight-stuttering-flats/haul_slip/narration": {
     "source": "sha256:93db7f28cb5b52455ac217303bc5c84def7e04a813d72b1244d11588cea6034a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -536,7 +538,7 @@
   },
   "riftlight-stuttering-flats/bigfoot_lift/narration": {
     "source": "sha256:12fed6beeb6a08950df6ec2618627dabfa32eeb79dd27c78d469da2dc08e31d7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -558,7 +560,7 @@
   },
   "riftlight-stuttering-flats/float_dig/narration": {
     "source": "sha256:71ce82242a7ad9c96b763e53da11f786557b04b60985e4f2a41a06d52c16b8f0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -572,7 +574,7 @@
   },
   "riftlight-stuttering-flats/floated/narration": {
     "source": "sha256:9e34ae53d1a9befaa6b7546923dc2313af525412f2c37b7b1089dfcbcb5f3207",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -594,7 +596,7 @@
   },
   "riftlight-stuttering-flats/floated_late/narration": {
     "source": "sha256:df737436ac78edde8c805a8de59dad6a00c618a9b6daaec40aef402fcb466ac8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -612,7 +614,7 @@
   },
   "riftlight-stuttering-flats/caught/narration": {
     "source": "sha256:c0debeb0a9b6de09130a5c35538f7e5e3584d01322cabdbd7dfefa1b7c753e90",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -634,7 +636,7 @@
   },
   "riftlight-stuttering-flats/goat_ran/narration": {
     "source": "sha256:4fd80548b94f0b6e4d01b6d93388b22c7064ca0c82800b01f74e2421e798429e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -652,7 +654,7 @@
   },
   "riftlight-stuttering-flats/rest/narration": {
     "source": "sha256:823ba4641ef28ef27b91e041d77171f8343cd1970932165425b5398b22d66794",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -674,7 +676,7 @@
   },
   "riftlight-stuttering-flats/rest/variants/0": {
     "source": "sha256:797f5df8937597e6f14855bc4c8c716487f0c383b830a088d06025c2bed7f04b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -696,7 +698,7 @@
   },
   "riftlight-stuttering-flats/fen_back/narration": {
     "source": "sha256:f5548e5572da265650982220b5f479c564b2b69dcebf6ca7b622394ea0983962",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -734,7 +736,7 @@
   },
   "riftlight-stuttering-flats/fen_net/narration": {
     "source": "sha256:718e8df5ff8c112472d14622c288d3ff1a0dfb93916c6a26596b9de6f2b3a72b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -756,7 +758,7 @@
   },
   "riftlight-stuttering-flats/crossing/narration": {
     "source": "sha256:10925064007b0ff5e46bfe3eb0e9218bfe011ea02c3dc8d35ff7d4961b7b9b23",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -774,7 +776,7 @@
   },
   "riftlight-stuttering-flats/check_jump/narration": {
     "source": "sha256:7384126fec8aab9015311ce7b302ac631711c42bf7cee262ffbbad0cefc7fc48",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -796,7 +798,7 @@
   },
   "riftlight-stuttering-flats/cross_float/narration": {
     "source": "sha256:37e02ff0ef6c6ef235d25876040c8951c8555c76127eb7d1428d3a40906a62ae",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -818,7 +820,7 @@
   },
   "riftlight-stuttering-flats/goat_home/narration": {
     "source": "sha256:eff1d7d9630ae21dcb8163f5e66ecf06ad3ddef63c062effa8bc5185254481af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -840,7 +842,7 @@
   },
   "riftlight-stuttering-flats/goat_bolts/narration": {
     "source": "sha256:0aba7caac49a3e20222f8e8f37a268ee080be37d7b1237b281e29399340f1955",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -866,7 +868,7 @@
   },
   "riftlight-stuttering-flats/check_push/narration": {
     "source": "sha256:793886724bb6fa28d7a259be2cac962e295cf64d5d1eaf74f7fb095054c4de3f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -888,7 +890,7 @@
   },
   "riftlight-stuttering-flats/check_call_blink/narration": {
     "source": "sha256:cc6ddc0df932346810f9ca58542f14184929bf9fba38d7b863b0bf0f26cf3510",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -905,12 +907,16 @@
     ]
   },
   "riftlight-stuttering-flats/herder_home/narration": {
-    "source": "sha256:2821fb45ff7a28c33d76edd29c89c1edeff9b4fbc844675516bf2285e210d490",
-    "reviewed": false,
+    "source": "sha256:6c4ab2b1c058e8204dc3637320158f54ceb1f17c4a8bc081e5938f53322ffb37",
+    "reviewed": true,
     "lines": [
       {
+        "by": "party",
+        "text": "\"NOW!\""
+      },
+      {
         "by": "narrator",
-        "text": "\"NOW!\" The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads."
+        "text": "you shout. The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads."
       },
       {
         "by": "yeti_herder",
@@ -928,7 +934,7 @@
   },
   "riftlight-stuttering-flats/herder_boot/narration": {
     "source": "sha256:34a6efed0f7da20923974108ccbadbc67ff18435d3815702f98606415a83f924",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -946,7 +952,7 @@
   },
   "riftlight-stuttering-flats/hare/narration": {
     "source": "sha256:5d69f345f55e0a738cc588a81ffea97cb415401ecadf553ba248a7e1991ca3b9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -972,7 +978,7 @@
   },
   "riftlight-stuttering-flats/hare_home/narration": {
     "source": "sha256:087c14dda6b5276a43af4fd86f5ed3f79299ebab2f24b48490efd4844b4a07a8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -998,7 +1004,7 @@
   },
   "riftlight-stuttering-flats/hare_wild/narration": {
     "source": "sha256:8f2302bbe4565a0eee0b0c6adcf23ddfe9af4a2d521b167374f32221db318014",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1020,7 +1026,7 @@
   },
   "riftlight-stuttering-flats/last_blink/narration": {
     "source": "sha256:7e610d8a3d69882834e5a970bda75a6c48264ba292514b7cf0a1dca968fd4a22",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -1042,7 +1048,7 @@
   },
   "riftlight-stuttering-flats/warning/narration": {
     "source": "sha256:76d40d0f4a8f8f5f050a1e6b208a76ace11efb1ba94cdc6f6ebde6e66fd12267",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1064,7 +1070,7 @@
   },
   "riftlight-stuttering-flats/warning_picture/narration": {
     "source": "sha256:4e91d47677a60622b93e7f5de82c7526bb6af31538b2aa848aec4a46203271f5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1082,7 +1088,7 @@
   },
   "riftlight-stuttering-flats/warning_bank/narration": {
     "source": "sha256:776c82d3fff16231290e9992e209e27779ba5982617199f3a655f24588636d0d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1096,7 +1102,7 @@
   },
   "riftlight-stuttering-flats/ending/narration": {
     "source": "sha256:aaf61216739f4fd9c6d3a0d7b9a601ea47b1988ac472355f2916aa7af582cc7b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1122,7 +1128,7 @@
   },
   "riftlight-stuttering-flats/ending/variants/0": {
     "source": "sha256:bdb51f071523114592f4b79385e1c708690946805c958733d7a2bc3e7982b075",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1136,7 +1142,7 @@
   },
   "riftlight-stuttering-flats/ending/variants/2": {
     "source": "sha256:bc9d1f7a7d5d60a3df12f4e78684cbcdbab4dde114477b3f6eebe83082458324",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "fen",

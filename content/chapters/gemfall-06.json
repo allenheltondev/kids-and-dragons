@@ -2596,7 +2596,7 @@
           "when": {
             "flag": "read_restore"
           },
-          "text": "\"Helping. Fixing. Putting things back,\" he reads. \"That is a different word from the one you just said.\"",
+          "text": "\"Helping. Fixing. Putting things back,\" Pellam reads. \"That is a different word from the one you just said.\"",
           "at": "start"
         },
         {
@@ -2610,7 +2610,7 @@
           "when": {
             "flag": "read_leash"
           },
-          "text": "\"Questions about the power, and who holds it,\" he reads. \"That is a different word from the one you just said.\"",
+          "text": "\"Questions about the power, and who holds it,\" Pellam reads. \"That is a different word from the one you just said.\"",
           "at": "start"
         }
       ],
@@ -3802,11 +3802,12 @@
     ],
     "npcVoices": {
       "hessa": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
-      "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
+      "voss": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
       "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
       "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
       "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well",
-      "claim_pair": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time"
+      "claim_pair": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time",
+      "runner": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking, carries bundles of knotted cords"
     }
   },
   "presentation": {

@@ -162,7 +162,7 @@
           "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Seren Wisp, the kitsune from the glacier, is here on the shrine steps, comparing notes with Pip Thistledown, the young manticore scout who runs errands for Lady Olivia. He has a notebook in one paw and a spoon behind his ear, for prying things. \"Lady Olivia says moved places are the most important places,\" says Pip. \"Help me listen?\" Seren asks you to hum the hall note and listen for an answer. \"A starweaver can learn to answer a rift's hum. That is called Attune.\"",
+      "narration": "Seren Wisp, the kitsune from the glacier, is here on the shrine steps, comparing notes with Pip Thistledown, the young manticore scout who runs errands for Lady Olivia. He has a notebook in one paw and a spoon behind his ear, for prying things. \"Lady Olivia says moved places are the most important places,\" says Pip. \"Help me listen?\" he adds. Seren asks you to hum the hall note and listen for an answer. \"A starweaver can learn to answer a rift's hum. That is called Attune.\"",
       "choices": [
         {
           "id": "continue",

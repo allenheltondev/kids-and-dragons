@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-riftseekers-departure/map/narration": {
     "source": "sha256:f32912434ca3692a0f51ed6186cfe33699a2a9f6ab661534ec2453debde1d201",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -48,19 +48,11 @@
   },
   "riftlight-riftseekers-departure/arrival_story/narration": {
     "source": "sha256:e4e1c5116391f1b7114380ba08ecb0030cdd3512c210bd5376e3b9b0326e8a63",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "You tell them about the snow on the quay, the kid, and the harbor vanishing behind you. Orin writes down"
-      },
-      {
-        "by": "orin_vale",
-        "text": "\"goat\""
-      },
-      {
-        "by": "narrator",
-        "text": "and underlines it twice. Olivia's eyes go wide."
+        "text": "You tell them about the snow on the quay, the kid, and the harbor vanishing behind you. Orin writes down \"goat\" and underlines it twice. Olivia's eyes go wide."
       },
       {
         "by": "olivia",
@@ -82,7 +74,7 @@
   },
   "riftlight-riftseekers-departure/arrival_question/narration": {
     "source": "sha256:b17f7b3e69f9f4228b1c839ca90d22ac1b8328dee385aa0a788ff01c0b3d6e8c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "seren_wisp",
@@ -120,7 +112,7 @@
   },
   "riftlight-riftseekers-departure/seren/variants/0": {
     "source": "sha256:48942d0f363958e4f857fa89a80f0ddcab2b59b0f1466c62d62a8346ec86a51c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -134,7 +126,7 @@
   },
   "riftlight-riftseekers-departure/seren/variants/1": {
     "source": "sha256:d5106335b238f145bea29b31de843f30acd4c8ee855d351c35fdec2ecf8ac3f3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "seren_wisp",
@@ -148,7 +140,7 @@
   },
   "riftlight-riftseekers-departure/fellowship/narration": {
     "source": "sha256:276694f7870e20de310fc3a2bd34ff371960aee5362634651b6448bbcccc71f2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "orin_vale",
@@ -186,7 +178,7 @@
   },
   "riftlight-riftseekers-departure/sledge_lift/narration": {
     "source": "sha256:62fd1958da6f7efb51581b17f49674e18c85f41c371b327c3de4e949502976a0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -212,7 +204,7 @@
   },
   "riftlight-riftseekers-departure/sledge_lift/onSuccess/narration": {
     "source": "sha256:c9a498c12f86ecb48315b88f7f2df322f76dc5a0e6cdd4dbc8d5df39d483070e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -226,7 +218,7 @@
   },
   "riftlight-riftseekers-departure/sledge_lift/onFailure/narration": {
     "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -244,7 +236,7 @@
   },
   "riftlight-riftseekers-departure/sledge_lift/onAssisted/narration": {
     "source": "sha256:8206ebcc0f288bc801ce9b6b092d30d9b1fecc6aa514ee04dc68a8bcb67ad544",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -258,7 +250,7 @@
   },
   "riftlight-riftseekers-departure/sledge_pole/narration": {
     "source": "sha256:3c8cb33adfb9773c4042b90c269164bbe40e9a34c006350182cebdbf0f8efefb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "orin_vale",
@@ -276,7 +268,7 @@
   },
   "riftlight-riftseekers-departure/sledge_pole/onSuccess/narration": {
     "source": "sha256:746b6500b68909b29e6a10afc108a1a0475a37181469e8ed49d12798889c99fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -290,7 +282,7 @@
   },
   "riftlight-riftseekers-departure/sledge_pole/onFailure/narration": {
     "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -308,7 +300,7 @@
   },
   "riftlight-riftseekers-departure/sledge_brace/onSuccess/narration": {
     "source": "sha256:66a5f054a59968f5cbdde2ebe0d15347c8b8ccd82afe56cc9577caec8215d81d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -322,7 +314,7 @@
   },
   "riftlight-riftseekers-departure/sledge_brace/onFailure/narration": {
     "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -340,7 +332,7 @@
   },
   "riftlight-riftseekers-departure/sledge_smash/onSuccess/narration": {
     "source": "sha256:27bc98c5c52209f6bdf2d95e50907a2ff0c6b731377f4f40161fa897b048b972",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -354,7 +346,7 @@
   },
   "riftlight-riftseekers-departure/sledge_smash/onFailure/narration": {
     "source": "sha256:aac6a4d8f1eb1e2f21ed5ceb650836e1da38d6b2015accebe8a271ba773c3db8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -372,7 +364,7 @@
   },
   "riftlight-riftseekers-departure/corner_hunt/narration": {
     "source": "sha256:f301bbcaced95bc4713fc6d0fdf9cd0b8a7228371bdd2fcdeb91d13277a98fab",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -386,7 +378,7 @@
   },
   "riftlight-riftseekers-departure/map_spread/narration": {
     "source": "sha256:b9a0c414818921c7546890bc935b132b8356028130f85d37f7ac8f89d8b8faee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -416,7 +408,7 @@
   },
   "riftlight-riftseekers-departure/map_wrong/narration": {
     "source": "sha256:7f2c6d520cfb7e309f0fbc23c513240f92cea94804d36a3ff50c01c78d292a23",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -454,19 +446,11 @@
   },
   "riftlight-riftseekers-departure/map_wrong/variants/0": {
     "source": "sha256:b31f42ffea90cd8c7c40db491f1bcd34cb50a92fba1f6da7295b0323b2787b03",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "He taps the word"
-      },
-      {
-        "by": "orin_vale",
-        "text": "\"goat\""
-      },
-      {
-        "by": "narrator",
-        "text": "in his notebook."
+        "text": "He taps the word \"goat\" in his notebook."
       },
       {
         "by": "orin_vale",
@@ -476,7 +460,7 @@
   },
   "riftlight-riftseekers-departure/olivia/narration": {
     "source": "sha256:ddaf6a44bba4ab8bc770675d157ff2f6380de390d710cabf9bcbe6028c57b7bc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -514,7 +498,7 @@
   },
   "riftlight-riftseekers-departure/haul_supper/narration": {
     "source": "sha256:14859a70fba330ac3295f6b1ca6066754f110b301fe45f48a8792f887412b543",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -540,7 +524,7 @@
   },
   "riftlight-riftseekers-departure/haul_supper/onSuccess/narration": {
     "source": "sha256:9a4879e8dd660e73c111dbac3c45c831583c3b05e8ce1c856378b66e5657c3d2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -574,7 +558,7 @@
   },
   "riftlight-riftseekers-departure/haul_supper/onFailure/narration": {
     "source": "sha256:24c48a22f053b017a025362d6016d78c0ea55abac95e4a2a89ca7a12b70cd331",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -600,7 +584,7 @@
   },
   "riftlight-riftseekers-departure/chalk_route/narration": {
     "source": "sha256:012401882cf3d9621fe59d680a24bb0d3bf52457e2aa8a1429b66c75988671b9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -626,7 +610,7 @@
   },
   "riftlight-riftseekers-departure/chalk_route/onSuccess/narration": {
     "source": "sha256:d77003f4fa4bed949ac5f93707997c501894c90e6249051cec078ca52675e500",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -644,7 +628,7 @@
   },
   "riftlight-riftseekers-departure/chalk_route/onFailure/narration": {
     "source": "sha256:5607fe8883abfb0a7bde949a042bd6a212fb190b8a2f93052664dc47167f7f7e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -670,7 +654,7 @@
   },
   "riftlight-riftseekers-departure/chime/narration": {
     "source": "sha256:866126e61467f0bdc01874dae8df36188b254c95e5207c26ff3d0a885c4fe86a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -684,7 +668,7 @@
   },
   "riftlight-riftseekers-departure/test_chime/narration": {
     "source": "sha256:363fbaf870a6cd86513bb77f439275fb536327274a8369ab5956bb34f51f3a0a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -718,7 +702,7 @@
   },
   "riftlight-riftseekers-departure/ring_hard/narration": {
     "source": "sha256:38e8ab02d830d297bb969fbf2d81aac59a9846ae2306e5e638da1982918665e2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -740,7 +724,7 @@
   },
   "riftlight-riftseekers-departure/listen_chime/onFailure/narration": {
     "source": "sha256:7fd8d67c4e673c8584bcab9dd3c8d9f2f20635af8a7a2c4f060c02bdae9aa089",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -758,7 +742,7 @@
   },
   "riftlight-riftseekers-departure/chime_jar/narration": {
     "source": "sha256:776b6d64210571d45e5d0f2c7573100f65f1701497473ccdc2aa0774ef5fcd01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -780,7 +764,7 @@
   },
   "riftlight-riftseekers-departure/chime_lean/narration": {
     "source": "sha256:c4a5fa63842c03e773183b92a549de7dd3c166ea029fd9e1fc82533d2d587627",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -788,7 +772,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"There is no opening here,\""
+        "text": "\"There is no opening here,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -796,7 +781,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"And still it listens that way.\""
+        "text": "\"And still it listens that way.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -810,7 +796,7 @@
   },
   "riftlight-riftseekers-departure/trial_intro/narration": {
     "source": "sha256:dd018455900e8327bebf17ce5886e11b9b8349d0d2566a7f3d6f2723f5bf5f22",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -832,7 +818,7 @@
   },
   "riftlight-riftseekers-departure/trial_read/narration": {
     "source": "sha256:6a5a64f460f5bc84cb2f9a3ad3954fa73fc5c5ed5d61d837f1eca4194cb6a3ed",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -850,7 +836,7 @@
   },
   "riftlight-riftseekers-departure/trial_ear/onFailure/narration": {
     "source": "sha256:6985110f9cee646937257e17a2ccb8f1a42e73f0acd9505db07ee51c43083623",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -864,7 +850,7 @@
   },
   "riftlight-riftseekers-departure/trial_chime/onFailure/narration": {
     "source": "sha256:6985110f9cee646937257e17a2ccb8f1a42e73f0acd9505db07ee51c43083623",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -878,7 +864,7 @@
   },
   "riftlight-riftseekers-departure/trial_hum/onFailure/narration": {
     "source": "sha256:6985110f9cee646937257e17a2ccb8f1a42e73f0acd9505db07ee51c43083623",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -892,7 +878,7 @@
   },
   "riftlight-riftseekers-departure/trial_report/narration": {
     "source": "sha256:8a0fa2d7a2714ca25e9af1128669622dc5ae2627e2c0d13163e5c177af812c0a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -918,7 +904,7 @@
   },
   "riftlight-riftseekers-departure/trial_report/variants/0": {
     "source": "sha256:e5330db3d4d533662e134e26ffab9df632081167092a420cc817fecea0d8f2bd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -932,7 +918,7 @@
   },
   "riftlight-riftseekers-departure/route/narration": {
     "source": "sha256:4c60570e82997a5e96a0fb58c8e60a5ce8586de0445648942ffe101a540a0eed",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -962,7 +948,7 @@
   },
   "riftlight-riftseekers-departure/lookout/narration": {
     "source": "sha256:692367739deff3da78d1e570ab8c024a4ab48e911652f42ff0d013f151f92557",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -984,7 +970,7 @@
   },
   "riftlight-riftseekers-departure/lookout_climb/narration": {
     "source": "sha256:b8e3fc2b3cb0f6e54b48dc67badc965d744d89a740eebafbfe068e25d317fa85",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1006,7 +992,7 @@
   },
   "riftlight-riftseekers-departure/lookout_sky/narration": {
     "source": "sha256:db3234817cf999e0ad448352f2018cd97973e168820dc59835d27b091c059c91",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1028,7 +1014,7 @@
   },
   "riftlight-riftseekers-departure/lookout_chalk/narration": {
     "source": "sha256:1e81f085de0ba67e592f0f6cc391a2b93801dc2e4a09546ae8c70c6ca81cf2a7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1046,7 +1032,7 @@
   },
   "riftlight-riftseekers-departure/tarp/narration": {
     "source": "sha256:703749007af46975b01963eb49697262b09467194d45284668540897069ae2e2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1068,7 +1054,7 @@
   },
   "riftlight-riftseekers-departure/tea/narration": {
     "source": "sha256:8345c3baa5128786438af2fab51ea3e32f7fd8fe2038f33451532ca3c0f8a800",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1094,7 +1080,7 @@
   },
   "riftlight-riftseekers-departure/tea_seren/narration": {
     "source": "sha256:96a485174d084c53b292cccb20ba158964c721a96a7526e54ae2765a2c9af070",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1116,7 +1102,7 @@
   },
   "riftlight-riftseekers-departure/tea_olivia/narration": {
     "source": "sha256:d44cc4eb9920350938d3db9e63039d19f8891ba1ab9778b9632d9bb6fee3bbf7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1150,7 +1136,7 @@
   },
   "riftlight-riftseekers-departure/tea_olivia/variants/0": {
     "source": "sha256:ff1ba94a93e6cc6431bc8e2e644dd924b22b2f73bf5f8c0b1a31063d68459d9c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1164,7 +1150,7 @@
   },
   "riftlight-riftseekers-departure/supplies/narration": {
     "source": "sha256:bba33f2512395a52eb417526b61d32c4fe43a0dfbebe31b5aa0e0cb346b1797f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1182,7 +1168,7 @@
   },
   "riftlight-riftseekers-departure/supplies_buy/narration": {
     "source": "sha256:0249a8c7603ffb898acc9cfaffe075aaa22f9b8a5826bb9144e2c06d347b4d3d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1196,7 +1182,7 @@
   },
   "riftlight-riftseekers-departure/herder_thanks/narration": {
     "source": "sha256:d8bc97010119b56e108a7385fdda49a16729ed91dbfdc7f9b1abad85aa6f6ab5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1212,13 +1198,14 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"Quick was kind. But do not tell Lady Olivia I said lucky, too.\""
+        "text": "\"Quick was kind. But do not tell Lady Olivia I said lucky, too.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-riftseekers-departure/supplies_feed/narration": {
     "source": "sha256:4f22d8c7ca1c0d276b8da5fd72f41bf16c4538d6d44e6dfb7da19f02512a7c15",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1240,7 +1227,7 @@
   },
   "riftlight-riftseekers-departure/prep/narration": {
     "source": "sha256:08137c1b4fd9abf06d7d5c8750ae840f85eebaedab0cd807c3221ded94ec9219",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1266,7 +1253,7 @@
   },
   "riftlight-riftseekers-departure/prep_ice/narration": {
     "source": "sha256:4ff173a11a8fadb0740976ce4dd2a64a5feda1b4640e298691918e6005e7fd0f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1284,7 +1271,7 @@
   },
   "riftlight-riftseekers-departure/prep_seam/narration": {
     "source": "sha256:cce094cb206579148b5ea37a2f8eaf86a8d3425ddcc6e792b1db6c29bcb0f280",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1308,23 +1295,9 @@
       }
     ]
   },
-  "riftlight-riftseekers-departure/prep_dash/narration": {
-    "source": "sha256:a0d19ddbc262c1a7e8ac432dc8bca3ef33573acd9206dc1b21ed9c8a4a875704",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "A duskrunner's feet know the quiet way. One hero runs the bank road and comes back breathless: no gaps, no drifts, only a goat on a rock. Orin writes down"
-      },
-      {
-        "by": "orin_vale",
-        "text": "\"goat on rock.\""
-      }
-    ]
-  },
   "riftlight-riftseekers-departure/prep_jar/narration": {
     "source": "sha256:7a4c05afddfc17a3db92e18f6147c5c34c5e403ff80856d8547c780f5e3eb094",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1342,7 +1315,7 @@
   },
   "riftlight-riftseekers-departure/parting/narration": {
     "source": "sha256:7a30c1004015c16be792a700a7fb2ecfffd952c12fc08ec257585c1fe7b31cde",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1372,7 +1345,7 @@
   },
   "riftlight-riftseekers-departure/parting/variants/0": {
     "source": "sha256:48c42ad6239dc06f3f9c174d21ff8db8b213b145dedf89c56cb6ebfc4cda62e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1386,7 +1359,7 @@
   },
   "riftlight-riftseekers-departure/parting/variants/1": {
     "source": "sha256:b68fb86e02103aa5fe45e6a033b09efd88538a772f52ed620f64fbfe9ebfefe4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1394,13 +1367,14 @@
       },
       {
         "by": "orin_vale",
-        "text": "\"Next time, listen first.\""
+        "text": "\"Next time, listen first.\"",
+        "delivery": "gentle"
       }
     ]
   },
   "riftlight-riftseekers-departure/send_off/narration": {
     "source": "sha256:2e8770b660a80fc3847adb05d5870346d3be590b2947118664daa69cfa1d31bc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1418,7 +1392,7 @@
   },
   "riftlight-riftseekers-departure/send_off/variants/1": {
     "source": "sha256:420048d491aafdf851fc9c2255f9e48b14a82abe7d4879cc92b4b49f4055c0d3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

@@ -1535,7 +1535,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "In the night, half a hillside slid onto the road. A heap of red rocks taller than a wagon blocks it. \"Road's closed,\" says a warden, and he writes ROAD CLOSED on his clipboard in very small letters, as if that will help.",
+      "narration": "In the night, half a hillside slid onto the road. A heap of red rocks taller than a wagon blocks it. \"Road's closed,\" says a warden sergeant, and he writes ROAD CLOSED on his clipboard in very small letters, as if that will help.",
       "choices": [
         {
           "id": "shift",
@@ -2822,10 +2822,10 @@
       "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
       "warden_sergeant": "rigid, honest, tired; counts everything; secretly hates making children cry",
       "grandmother": "dragonling gatherer; knits while she talks; 'No, dear' is a complete sentence",
-      "mosshome_runner": "breathless, cheerful, counts knots out loud",
+      "runner": "breathless, cheerful, counts knots out loud",
       "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
-      "ford_witch": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
-      "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
+      "mother_thrum": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
+      "coralie_fenn": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
       "caravan_master": "exhausted, practical, has had a headache since the stone came aboard",
       "odo": "a cheerful man with a wheelbarrow of painted gravel he believes is gems; proud, easily delighted, never sulks",
       "posy": "Corbin the prospector's small daughter; serious, brave, thinks hard before she answers"

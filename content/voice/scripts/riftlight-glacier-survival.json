@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-glacier-survival/arrival/narration": {
     "source": "sha256:96b552bbc2ee609e5d75f162d8c760e6c96c08cdac4b9a75ce420a0217dcf4fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -20,7 +20,7 @@
   },
   "riftlight-glacier-survival/shelter/narration": {
     "source": "sha256:cfe6b176cf110bd7d3eded6bba3478e1a1ffc78be7283bcf5d1dfc29266e7b26",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -38,7 +38,7 @@
   },
   "riftlight-glacier-survival/windbreak/narration": {
     "source": "sha256:fa7e3f661a728634379a79cedb018ea97f88b1aace3ea688891ba06dff6db4a9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -56,7 +56,7 @@
   },
   "riftlight-glacier-survival/rocks/narration": {
     "source": "sha256:22e8c2198b57449265527385fc0cda95ff972951f1138ec6b40aaee9652f6f28",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -74,7 +74,7 @@
   },
   "riftlight-glacier-survival/mend/narration": {
     "source": "sha256:7b4a4ef307ee1b166dbf5c1366f055dccd9e06de46ab13415159291282de3389",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -92,7 +92,7 @@
   },
   "riftlight-glacier-survival/wind_warm/narration": {
     "source": "sha256:cbad2f69e3840c3e9cd6bf646c752f7b4f06a3f8d576e38735d2ddf878fdd3fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -110,7 +110,7 @@
   },
   "riftlight-glacier-survival/prints/narration": {
     "source": "sha256:18dbff9196dbf55275cb46da5c97c496875f09cb6667f01140c749e52c823a3d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -128,7 +128,7 @@
   },
   "riftlight-glacier-survival/prints_read/narration": {
     "source": "sha256:de8141667de070dd9036f5aebbae1bc9e2d81fd1293b54af38aec1f5c15eb476",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -146,7 +146,7 @@
   },
   "riftlight-glacier-survival/prints_march/narration": {
     "source": "sha256:6b29b2812127e431c121f36979c9bcebf9dcb2ee99e95bff7a7be19a0b7032bb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -164,7 +164,7 @@
   },
   "riftlight-glacier-survival/prints_air/narration": {
     "source": "sha256:7e1e962174f53f2dcd764cc07cf4525dd26c3c53e0e7687faa26d0b1fd51e6cb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -178,7 +178,7 @@
   },
   "riftlight-glacier-survival/tracks/narration": {
     "source": "sha256:2bb5a3d98d76048a739d60ddd3a30a04216db69cac8f429b6e5305e5e7225463",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -208,7 +208,7 @@
   },
   "riftlight-glacier-survival/tracks/variants/0": {
     "source": "sha256:47f633606bb01e83b6ee82a1ab648c58b8cb2a9b50419275eb24dea8471b32e2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -222,7 +222,7 @@
   },
   "riftlight-glacier-survival/tracks/variants/1": {
     "source": "sha256:97ccf5d25a3e29f5b77775f4c00ef14539c66237f6cf7f36ef66f549a1907fd2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -236,7 +236,7 @@
   },
   "riftlight-glacier-survival/tracks/variants/2": {
     "source": "sha256:1f1a95058e3a4b1b8b73b99aef30bf8499223b9428972d2696ce835644951271",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -250,7 +250,7 @@
   },
   "riftlight-glacier-survival/tell_rift/narration": {
     "source": "sha256:a03789e3bf91f539fda4a6f7f405a43ade466131486960447e562d7800faeac6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -284,7 +284,7 @@
   },
   "riftlight-glacier-survival/ask_help/narration": {
     "source": "sha256:156ef4eb35ddcafa8dc677b90014ff66cd96cbaabebade4470cd380ffdaa136a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -306,7 +306,7 @@
   },
   "riftlight-glacier-survival/herder_gift/narration": {
     "source": "sha256:284bf68c3af99fd106a71afa36fa3d5522fc06c636802f31749de56f89a94f37",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -336,7 +336,7 @@
   },
   "riftlight-glacier-survival/read_water/narration": {
     "source": "sha256:30525f9f2d2fce8b4ed9129e9b0c648b98a945eaae13db18ad98d55945a89c9b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -354,7 +354,7 @@
   },
   "riftlight-glacier-survival/read_water/onFailure/narration": {
     "source": "sha256:a5b0ccb7c623a9ab27dba2283eb0f1f475b5d93d7d6a8b6b52dae89967f45eb5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -372,7 +372,7 @@
   },
   "riftlight-glacier-survival/channel/narration": {
     "source": "sha256:8ab0ebb1f508b92b9f6b25ad386571ada9571d240e24ef347756b1a6f85147f4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -390,7 +390,7 @@
   },
   "riftlight-glacier-survival/step/narration": {
     "source": "sha256:ded0e1a299fe26a690cc13f88b2d087e4c6edb49e552640d47b46d1d274c1fbd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -404,7 +404,7 @@
   },
   "riftlight-glacier-survival/sledge/narration": {
     "source": "sha256:89d25aace4c6e82b8936b82038514bff2b1bace9fe47e93ff3078ba417d25b27",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -422,7 +422,7 @@
   },
   "riftlight-glacier-survival/wing_line/narration": {
     "source": "sha256:647a0834ca2b938a10bab3de1016952dc19678b12999fb69fe2cfaae48187073",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -440,7 +440,7 @@
   },
   "riftlight-glacier-survival/song_step/narration": {
     "source": "sha256:928278552a0eb85a7d841ecc658e7ddf82e69feadfc3541e8cf69b25b110c7ac",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -458,7 +458,7 @@
   },
   "riftlight-glacier-survival/dry_bank/narration": {
     "source": "sha256:df16e7cabc94a8bb5817dbd47270a29f69c9e398e32fbf2a3f5a4bc6c9022748",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -472,7 +472,7 @@
   },
   "riftlight-glacier-survival/wet_bank/narration": {
     "source": "sha256:a7a043fd2a69ec2b4d2b4908319dcb8323721992c0be8fec290d842007dc943c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -490,7 +490,7 @@
   },
   "riftlight-glacier-survival/settle/narration": {
     "source": "sha256:c8c02a12a9505f348eaa83542df7eda856dd493bb4551f4978b865e9d8056a59",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -512,7 +512,7 @@
   },
   "riftlight-glacier-survival/settle_count/narration": {
     "source": "sha256:197cb5f68f6613e8f50316d997796969456e30d704cd4c40bb39719b242640a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -534,7 +534,7 @@
   },
   "riftlight-glacier-survival/settle_brush/narration": {
     "source": "sha256:6107f6b0ededdb4cbbe5e1130fe6b8f8626efdd9abe16abaf8808af1b42ed34a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -556,7 +556,7 @@
   },
   "riftlight-glacier-survival/settle_feed/narration": {
     "source": "sha256:9b615db07a5a72bb8cad1a999604a08decc5ae487810f14057ae242274e249e0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -574,7 +574,7 @@
   },
   "riftlight-glacier-survival/settle_lull/narration": {
     "source": "sha256:f9760140836f02a534e858de8bb33c1e95a86eba35ab49fb19f6125a1b08f746",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -592,7 +592,7 @@
   },
   "riftlight-glacier-survival/herd/narration": {
     "source": "sha256:72d6617b6521b791e7ac52dd7c4b55e27fcb279729b8fcaac0a2779e192b03cb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -606,7 +606,7 @@
   },
   "riftlight-glacier-survival/carry/narration": {
     "source": "sha256:3d41e6896a080e977c0b63536dd68c2e0ceab721423020650d8f0ef70ae36e52",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -632,11 +632,12 @@
   },
   "riftlight-glacier-survival/hum_door/narration": {
     "source": "sha256:78117df41f248aecc8bad8935607690c916b8a7edb1d964986fcdbdb45a5fab7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
-        "text": "\"Gently,\""
+        "text": "\"Gently,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -644,13 +645,14 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"It is listening for its own.\""
+        "text": "\"It is listening for its own.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-glacier-survival/hum_door/onSuccess/narration": {
     "source": "sha256:f9cc9b1f3299a92e19c72dedce8a46df2630144ff5cf7b80381b122d61797f7d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -672,7 +674,7 @@
   },
   "riftlight-glacier-survival/hum_door/onFailure/narration": {
     "source": "sha256:20e92d3c6bc50020ea6e7f0999e0c77e444fda34013d0fbed90cc41756a26a1f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -694,7 +696,7 @@
   },
   "riftlight-glacier-survival/hall/narration": {
     "source": "sha256:0b550fd928e4b2cba04e845b734661fc6eb9992e9a86c95430e4ced1c21d08fe",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -720,7 +722,7 @@
   },
   "riftlight-glacier-survival/hall/variants/0": {
     "source": "sha256:e43d83054d1d05de8eb07aaf9e8819380daac2b72f4a7eaa103910d7287841fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -734,7 +736,7 @@
   },
   "riftlight-glacier-survival/conservatory/narration": {
     "source": "sha256:a1bd8d1f9367c46adb5c4e408e33bb014929d2046551ac74de75f884e9b3e2ed",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -752,7 +754,7 @@
   },
   "riftlight-glacier-survival/conservatory/variants/0": {
     "source": "sha256:6b61786de9732125cbb857fbbc7f20d4f91827a71934ebc2d1f817e5b7dc93dc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -770,7 +772,7 @@
   },
   "riftlight-glacier-survival/conservatory_sing/narration": {
     "source": "sha256:da12b38fb670d8266a5cca40e0ab88615d28038161cf1b6c217bf7820c772cd9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -778,7 +780,8 @@
       },
       {
         "by": "aunt_bellow",
-        "text": "\"The cactus never turns,\""
+        "text": "\"The cactus never turns,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -786,13 +789,14 @@
       },
       {
         "by": "aunt_bellow",
-        "text": "\"Keep singing.\""
+        "text": "\"Keep singing.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-glacier-survival/listen/narration": {
     "source": "sha256:1c27390b16ed6e12114950a513f3c57ee217f01af371d93b188b45394a2e120c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -830,7 +834,7 @@
   },
   "riftlight-glacier-survival/note_try/narration": {
     "source": "sha256:5279f53ce39904a77a14b807af3284233584a0bd7051dba1acdc2eb1e180a050",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -852,7 +856,7 @@
   },
   "riftlight-glacier-survival/learn_note/narration": {
     "source": "sha256:994c4df71aaed89ac36d36c202f0caac57befa96e1855ad97da3b2e286665899",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -866,7 +870,7 @@
   },
   "riftlight-glacier-survival/learn_note/variants/0": {
     "source": "sha256:5681f3d23e990a7d53c1b3d8c1aeb8ca70ebf81967b35455904bd873f02c2f21",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -880,7 +884,7 @@
   },
   "riftlight-glacier-survival/changing/narration": {
     "source": "sha256:b094981bff39e6142bdfc1a0c53d85fefd136e5e6fa0efaaf4ff0bb69471dae1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -910,7 +914,7 @@
   },
   "riftlight-glacier-survival/changing/variants/0": {
     "source": "sha256:dd35d070bdae8cb9b87423f662bb64a321c8c83ae3dc0bf67f77e6f3e6c586a7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -928,7 +932,7 @@
   },
   "riftlight-glacier-survival/changing/variants/1": {
     "source": "sha256:33fadd1810a15015a9b15bc7b13e0f44d3a0719f191ea862b391a63f8ebd76e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -938,7 +942,7 @@
   },
   "riftlight-glacier-survival/blankets/narration": {
     "source": "sha256:9b44f64fbdbda7d8162411154d23305f5dd510ad58eb75baee79ef3d5d30141c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -956,7 +960,7 @@
   },
   "riftlight-glacier-survival/ledge_look/narration": {
     "source": "sha256:2937f4da7619393bf7ab7aa0a53c8e749591f5d452eff64640c11958b29411a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -978,7 +982,7 @@
   },
   "riftlight-glacier-survival/ledge_poles/narration": {
     "source": "sha256:e0032f923729bc372c5a0e1827b35e3a75660867e23469e69de2f63268f98856",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -996,7 +1000,7 @@
   },
   "riftlight-glacier-survival/ledge_hay/narration": {
     "source": "sha256:df861fbfa56d6564e73884f9a11ccd1900176b1affa63fd8159a87bb2b2d8340",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1018,7 +1022,7 @@
   },
   "riftlight-glacier-survival/ledge_brace/narration": {
     "source": "sha256:1a88bba9c760c792803e367dac134e438bdb4705fa1f4d59b35062bb34963a9e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1036,7 +1040,7 @@
   },
   "riftlight-glacier-survival/ledge_whistle/narration": {
     "source": "sha256:9897af43128bab96b488ac92b55f530c0ffe8bc3a056f2a51d10e3f7ee2d0642",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1062,7 +1066,7 @@
   },
   "riftlight-glacier-survival/shelf_cross/narration": {
     "source": "sha256:1135a119616e4f02f507eb2639432d52376c3842668a5f91d271c3c3862d565f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1088,7 +1092,7 @@
   },
   "riftlight-glacier-survival/shelf_cross/onFailure/narration": {
     "source": "sha256:096e5b7380341378ff7bf68d5744afc0ba88f6cc736943e909fb3b8371a52ee4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1106,7 +1110,7 @@
   },
   "riftlight-glacier-survival/ledge_done/narration": {
     "source": "sha256:ec10951f614fd123f34de91c435a2c4ba3d3f1e8f3aedfeba4d2235dbeb18d2c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1140,7 +1144,7 @@
   },
   "riftlight-glacier-survival/kid_friend/narration": {
     "source": "sha256:61c73718a6506a25adb7fc85430c460b83ddf767010233b86d4b35e486cbbcda",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1166,7 +1170,7 @@
   },
   "riftlight-glacier-survival/kid_along/narration": {
     "source": "sha256:0d84d88648743f46785ece5eb3ddae4a26331c5aa005074a58872f9f1568ec46",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1192,7 +1196,7 @@
   },
   "riftlight-glacier-survival/kid_goodbye/narration": {
     "source": "sha256:e01392fb2837d375a63402b74f58c278b6047f679565786800e90e14d1bf2286",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1210,7 +1214,7 @@
   },
   "riftlight-glacier-survival/departure/narration": {
     "source": "sha256:ee662a7d5fd512b7ac445be3f00bfd8eb54a62cf57414b4e81376199044e5402",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1228,7 +1232,7 @@
   },
   "riftlight-glacier-survival/departure/variants/0": {
     "source": "sha256:232628e13b2cbdb576436efca7f4845f794ab98a3584c85fbe2d890459ba4e95",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1242,7 +1246,7 @@
   },
   "riftlight-glacier-survival/drift_probe/narration": {
     "source": "sha256:82cec26f8aa07c23dcd6b1d6082ffc9f4ee170b9ea208af565f71f5e0d25b8b8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1260,7 +1264,7 @@
   },
   "riftlight-glacier-survival/drift_detour/narration": {
     "source": "sha256:9264fa0419a91a7df109f1d2d2d43276c8c646d88a93a7f5c4cbe45fa3e4f8b9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1278,7 +1282,7 @@
   },
   "riftlight-glacier-survival/drift_slip/narration": {
     "source": "sha256:b58a3509fa4681ef5d54e56437198f044e1f7bce50347460c316971c5ac91167",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1296,7 +1300,7 @@
   },
   "riftlight-glacier-survival/cairn/narration": {
     "source": "sha256:7ec80877a0e1b5c64d8f43e12c2b41e825cf7a38da77ee1413558de45b3b1215",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1314,7 +1318,7 @@
   },
   "riftlight-glacier-survival/cairn_dig/narration": {
     "source": "sha256:ade9d51a4b77b0ac8172d4aa366fbfc5688f11852d35eebdd8320481780e8779",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1332,7 +1336,7 @@
   },
   "riftlight-glacier-survival/cairn_smash/narration": {
     "source": "sha256:0f677a89be24e57867e57e30401ff774093373f63ea9569e14ab63ad07af0d61",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1350,7 +1354,7 @@
   },
   "riftlight-glacier-survival/seam_response/variants/0": {
     "source": "sha256:bd537268c76a1b5b53b0affe06d8aec948f68eb8b9119b56cbd5a8d8cdf913f1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -1368,7 +1372,7 @@
   },
   "riftlight-glacier-survival/seam_hum/narration": {
     "source": "sha256:431ca6d5a02e3de907af11f31bd1b920b066af2f42b1e4834330125690f05908",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1386,7 +1390,7 @@
   },
   "riftlight-glacier-survival/seam_touch/narration": {
     "source": "sha256:054d6dc752d2b08ce46cb58bc54c92a9618571bc37e9d43add20e73282ff5d39",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1408,7 +1412,7 @@
   },
   "riftlight-glacier-survival/seam_listen/narration": {
     "source": "sha256:96a1a2f820566818d9c4825069432aa55adc2681f973548bfbf5648f51a4178d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1416,7 +1420,8 @@
       },
       {
         "by": "young_yeti_singer",
-        "text": "\"Tick,\""
+        "text": "\"Tick,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1424,7 +1429,8 @@
       },
       {
         "by": "young_yeti_singer",
-        "text": "\"Tick. Hear it?\""
+        "text": "\"Tick. Hear it?\"",
+        "delivery": "whisper"
       }
     ]
   }

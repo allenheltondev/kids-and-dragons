@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight, the road out (docs/campaigns/continental-rift/arc.md, boundary-stone-bank; design note road-out-review.md). Revised in November 2026. Question: why did the river shove the stones? Tally, the dragonling who keeps the boundary stones (and, in stone-counters, the counting stones), carries it; she is greeted in words true whether or not a party met her there first. Adds to the clue trail: the flood came above every notch in the count (notch_plan), and the oldest stone carves an eruption that no one's count matches, under a mountain shaped differently from today's (clue, p2). The Listening Chime leans toward the glacier (lean). Force or understand: heave Splash up now, or dig aaround him first. Sets no journey flag.",
+  "$comment": "Riftlight, the road out (docs/campaigns/continental-rift/arc.md, boundary-stone-bank; design note road-out-review.md). Revised in November 2026. Question: why did the river shove the stones? Tally, the dragonling who keeps the boundary stones (and, in stone-counters, the counting stones), carries it; she is greeted in words true whether or not a party met her there first. Adds to the clue trail: the flood came above every notch in the count (notch_plan), and the oldest stone carves an eruption that no one's count matches, under a mountain shaped differently from today's (clue, p2). The Listening Chime leans toward the glacier (lean). Force or understand: heave Splash up now, or dig around him first. Sets no journey flag.",
   "id": "riftlight-boundary-stone-bank",
   "campaignId": "riftlight",
   "index": 4,
@@ -367,7 +367,7 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "Splash is stuck in the clay, leaning as if he might still run off to the sea. The old count cord has snapped. \"We could heave him up now, before the river comes back,\" says Tally. \"Or dig aaround him first, and see how the river did it. That's slower.\" She counts the ripples on the water. \"The river might not wait.\"",
+      "narration": "Splash is stuck in the clay, leaning as if he might still run off to the sea. The old count cord has snapped. \"We could heave him up now, before the river comes back,\" says Tally. \"Or dig around him first, and see how the river did it. That's slower.\" She counts the ripples on the water. \"The river might not wait.\"",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -384,7 +384,7 @@
         },
         {
           "id": "dig",
-          "label": "Dig aaround him first",
+          "label": "Dig around him first",
           "icon": "clever",
           "goto": "trench_check"
         },
@@ -438,7 +438,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "You dig aaround Splash with Tally's little spade, one careful scoop at a time. Tally counts the scoops.",
+      "narration": "You dig around Splash with Tally's little spade, one careful scoop at a time. Tally counts the scoops.",
       "prompt": "Work out which way the river pushed him, then dig so Splash slides upright by himself.",
       "roller": "party",
       "cast": [
@@ -469,7 +469,7 @@
       "stat": "might",
       "tn": 8,
       "narration": "Your bigfoot cracks the clay like a pie crust.",
-      "prompt": "Your bigfoot smashes the clay aaround Splash. Can you steer him upright as he tips?",
+      "prompt": "Your bigfoot smashes the clay around Splash. Can you steer him upright as he tips?",
       "roller": "best",
       "cast": [
         {
@@ -558,7 +558,7 @@
     },
     "splash_slip": {
       "type": "story",
-      "narration": "Splash sits down in the shallows. Sploosh! Tally does not scold. She loops a rope aaround him, and everyone hauls from the bank. It takes twice as long and half the dignity.",
+      "narration": "Splash sits down in the shallows. Sploosh! Tally does not scold. She loops a rope around him, and everyone hauls from the bank. It takes twice as long and half the dignity.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -656,7 +656,7 @@
     },
     "surge_safe": {
       "type": "story",
-      "narration": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. The duck sails past, quacking its opinion. \"Kettle saved,\" says Tally. \"The river has no idea how to make tea.\" She gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
+      "narration": "The surge slaps the gravel and swirls around Splash's feet. Splash stands firm. The duck sails past, quacking its opinion. \"Kettle saved,\" says Tally. \"The river has no idea how to make tea.\" She gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -684,7 +684,7 @@
           "when": {
             "flag": "kettle_lost"
           },
-          "text": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. Tally looks downriver after her kettle. \"Nine years that kettle and I counted together,\" she says. Then she sniffs and gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
+          "text": "The surge slaps the gravel and swirls around Splash's feet. Splash stands firm. Tally looks downriver after her kettle. \"Nine years that kettle and I counted together,\" she says. Then she sniffs and gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
           "replace": true
         }
       ]

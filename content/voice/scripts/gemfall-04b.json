@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "gemfall-04b/scene_flooded_paths/narration": {
     "source": "sha256:af0380a0734799f615f507206fcd4389a978fda52b339f274d637a4394ea92aa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "gemfall-04b/scene_runner_path/narration": {
     "source": "sha256:d461f141c882f752c9f40aa19010f9913adc16f9705be7579c08ab0e7c28aebb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -46,7 +46,7 @@
   },
   "gemfall-04b/check_runner_path/onSuccess/narration": {
     "source": "sha256:6ca9cbe569da3c4911a9fbde525ed75a5cd7677a42ad70f66674e2ba7f7664a2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -68,7 +68,7 @@
   },
   "gemfall-04b/check_runner_path/onFailure/narration": {
     "source": "sha256:2b2922e0ea579a9e000457c51c64cc9203063a2c56a2c239449a5f17a41a76a2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -86,7 +86,7 @@
   },
   "gemfall-04b/scene_runner_path_carry/narration": {
     "source": "sha256:1c8efbfe721de26f0950f6d5cb4b47e9c3972d077f99cee81bcdce536f0864b0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -104,7 +104,7 @@
   },
   "gemfall-04b/scene_runner_path_knock/narration": {
     "source": "sha256:42ec71fff936d17788e3fba5c8e674089fed5a29730dd08a084e504c8682034d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -126,7 +126,7 @@
   },
   "gemfall-04b/scene_roll_call_here/narration": {
     "source": "sha256:328593bad94d64394c0876e72746b6828a009b173a14bcc4659c71e4a3441f97",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -140,7 +140,7 @@
   },
   "gemfall-04b/scene_attendance/narration": {
     "source": "sha256:a8923abff9d2c7ed97fb361bf84468524dfb486404b931a147dae79c260c0d6d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -158,7 +158,7 @@
   },
   "gemfall-04b/scene_hedge/narration": {
     "source": "sha256:8f7ab9e83875f8db2a71b5ac39d5768fa751b7fe89a85c7e3831b63846960be0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -176,7 +176,7 @@
   },
   "gemfall-04b/scene_hedge_empty/narration": {
     "source": "sha256:61e0d539ec7fd432c903f2bb4cdef5915bd751a9d7c67d9867106580402f1a37",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -194,7 +194,7 @@
   },
   "gemfall-04b/scene_unicorns/narration": {
     "source": "sha256:aeed1a8720edc1424839a6271cb2147ffeea599ad4b11e1c5bb67069d5dae20b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -220,7 +220,7 @@
   },
   "gemfall-04b/scene_unicorns_patch/narration": {
     "source": "sha256:18fcd9515716266bd18b9bbb7d2a667dea26918d6c0c4f0d2c87a8111f9a8eb0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -246,7 +246,7 @@
   },
   "gemfall-04b/scene_finding/narration": {
     "source": "sha256:efea6eb0f001ed8374a7b42842e0469183e2aae355376071aae737d054b3c7c2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -276,7 +276,7 @@
   },
   "gemfall-04b/scene_finding_before/narration": {
     "source": "sha256:709c7c72c7d89ae9202ab53dacd192750e7534de9bd61472407d14ab0f900229",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -294,7 +294,7 @@
   },
   "gemfall-04b/scene_finding_how/narration": {
     "source": "sha256:c5c0710a97a414a72275729c035b73f381111bb53a3ef768967b2bc0625983d6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "elder_unicorn",
@@ -316,7 +316,7 @@
   },
   "gemfall-04b/scene_sitting_beech/narration": {
     "source": "sha256:80fbc913873071a1919f80303d78760f5439a5c48d9a681e5df9f12a4693fc06",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -324,7 +324,8 @@
       },
       {
         "by": "beech_tree",
-        "text": "\"Why did you come?\""
+        "text": "\"Why did you come?\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -334,7 +335,7 @@
   },
   "gemfall-04b/scene_sitting_beech_stones/narration": {
     "source": "sha256:55bd5ce12b259b31544f4c008eda1a07175166d5382d8f22f88477b837ce8cc2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -350,7 +351,8 @@
       },
       {
         "by": "narrator",
-        "text": "it whispers at last, and shuffles aside."
+        "text": "it whispers at last, and shuffles aside.",
+        "delivery": "whisper"
       },
       {
         "by": "beech_tree",
@@ -360,7 +362,7 @@
   },
   "gemfall-04b/scene_sitting_beech_passing/narration": {
     "source": "sha256:a5590c41a51f7214ff7cfc080cd44e80abeb3d3e32c3bccf1b8929815ff77698",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "beech_tree",
@@ -382,7 +384,7 @@
   },
   "gemfall-04b/scene_sitting_beech_curious/narration": {
     "source": "sha256:cfca55b7a742338cf2c28cfd40b3c3e3f2729757468c2a52cfd1b4cb5a839a31",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "beech_tree",
@@ -404,7 +406,7 @@
   },
   "gemfall-04b/scene_sitting_beech_told/narration": {
     "source": "sha256:384a685ab666c0a98c483fabc29836ac36920bf52510fe876ccc59f8aa05b4d0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -420,7 +422,8 @@
       },
       {
         "by": "narrator",
-        "text": "it whispers."
+        "text": "it whispers.",
+        "delivery": "whisper"
       },
       {
         "by": "beech_tree",
@@ -434,7 +437,7 @@
   },
   "gemfall-04b/scene_glade_heart/narration": {
     "source": "sha256:84e979a92cd3e65679540d7447723c76febd95af72b85c086b0b6cf9f41596ea",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -460,7 +463,7 @@
   },
   "gemfall-04b/scene_pile_glimpsed_sorry/narration": {
     "source": "sha256:7595211012d2c959fe99ba53a44fe2c8026acf29fc579b3a259858a5c51cb0e7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -482,7 +485,7 @@
   },
   "gemfall-04b/ending_marked_present/narration": {
     "source": "sha256:58dea3c953e29f975042db35afe0cf7f0d51f1fad1f0936b2630c250f848a257",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -500,7 +503,7 @@
   },
   "gemfall-04b/ending_marked_something/narration": {
     "source": "sha256:4601acf0c65c6052f8beb85115e848c0432136d87be3b2ef2c744f833d993889",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -518,7 +521,7 @@
   },
   "gemfall-04b/ending_shown_the_door/narration": {
     "source": "sha256:29fba8005f2186b5407105ee166f243c579297cb7a71c952849c0374a20f926c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -530,9 +533,27 @@
       }
     ]
   },
+  "gemfall-04b/scene_stepping_logs/narration": {
+    "source": "sha256:0e901453c373ff4b0c8e128168faf7510d5bbfa26b0e96a4886137bf2f6129c1",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Two mossy logs cross the only brook into the worst glade. A row of left boots waits on the bank. A toadstool opens an eye and says, in a voice exactly like yours,"
+      },
+      {
+        "by": "party",
+        "text": "\"Right boot, please.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Mire mimics! They want your right boots too."
+      }
+    ]
+  },
   "gemfall-04b/scene_beech_squirrel/narration": {
-    "source": "sha256:e2cae4865372459b95e016708b7213eda4a2bd067fa3fce95de38c15fe6859b9",
-    "reviewed": false,
+    "source": "sha256:896795763f154454ecac68c855a6483bd70adff7bcfbf11d231fa369b7fd495e",
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -544,7 +565,19 @@
       },
       {
         "by": "narrator",
-        "text": "creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn. \"Throw it hard. It goes bang.\""
+        "text": "creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Throw it hard,\""
+      },
+      {
+        "by": "narrator",
+        "text": "creaks the beech."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"It goes bang.\""
       }
     ]
   }

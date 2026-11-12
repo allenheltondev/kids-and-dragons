@@ -1463,7 +1463,7 @@
       },
       "onFailure": {
         "goto": "scene_crack_string",
-        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you around the side of the tent."
+        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an apprentice pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you around the side of the tent."
       },
       "art": "scenes/gemfall/bridge-engineers-tent"
     },

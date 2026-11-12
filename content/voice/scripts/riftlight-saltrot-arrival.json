@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-saltrot-arrival/flats/narration": {
     "source": "sha256:159b2202019e71e1a0c99937ffdebb12a4a1937af234ec6c5c74259f03c08dc4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -32,7 +32,7 @@
   },
   "riftlight-saltrot-arrival/shells/narration": {
     "source": "sha256:8751c8e1ea6b55240ffd1d70adf51016ddab0b6753a14696710ecb915ddddbef",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -58,7 +58,7 @@
   },
   "riftlight-saltrot-arrival/shells_a_check/onSuccess/narration": {
     "source": "sha256:c5c910d0dab9ed56d8df3082454752b69c413eae86811466ee1dfb94d8f14ccb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -76,7 +76,7 @@
   },
   "riftlight-saltrot-arrival/shells_off/narration": {
     "source": "sha256:34d4f1beab1497b551f50bbe5158d155fa52fde7193c05fd36ead95f683b7c3e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -98,7 +98,7 @@
   },
   "riftlight-saltrot-arrival/shell_path/narration": {
     "source": "sha256:9bf7dd90ad0053bc9f24999fa382d89134522db1a17aa96864c5739cc3ccdd9b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -120,7 +120,7 @@
   },
   "riftlight-saltrot-arrival/shell_path/onFailure/narration": {
     "source": "sha256:742fd3d369509450b0cc5953d9820e8e57dd90ad639572de677455fdc828cb67",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -138,7 +138,7 @@
   },
   "riftlight-saltrot-arrival/town/narration": {
     "source": "sha256:8b0a1b47bf3973668cf1e9bb9523c5803123717aa1a4497fc9e451204110871e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -168,7 +168,7 @@
   },
   "riftlight-saltrot-arrival/town_a_check/narration": {
     "source": "sha256:9f450502ce97538a76b6d39e4d5e059160ae30081695288c502bb3e2e49247f6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -182,7 +182,7 @@
   },
   "riftlight-saltrot-arrival/town_b_check/narration": {
     "source": "sha256:c8d0dd2d307a4f567dab6f6a90817286bae62d0497b6f61ead210ab95f9f41eb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -196,7 +196,7 @@
   },
   "riftlight-saltrot-arrival/town_brace/narration": {
     "source": "sha256:af61ee67512b8f33e7547375b49345a9d66d5788d41744fb09ebd5912bba0b5a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -214,7 +214,7 @@
   },
   "riftlight-saltrot-arrival/town_done/narration": {
     "source": "sha256:f0523f61a646ee8cfeddb0e1a798d531c72a9457561c0d9aa73a90734cbdaaf9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -232,7 +232,7 @@
   },
   "riftlight-saltrot-arrival/town_off/narration": {
     "source": "sha256:c5a23f9109f40f3ab26c4c72e390068d8140a544c2a50109f6e0c861a95cb554",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -250,7 +250,7 @@
   },
   "riftlight-saltrot-arrival/hatch_party/narration": {
     "source": "sha256:41a57babaaae878bd957bce0d004bc72f47c69be6c1a82e66d9575018ea9b483",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -276,7 +276,7 @@
   },
   "riftlight-saltrot-arrival/silt/narration": {
     "source": "sha256:565f362446e0abc5720f92d318d4c733eba705e2397056ecd78b86fdfbc55481",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -310,7 +310,7 @@
   },
   "riftlight-saltrot-arrival/local/narration": {
     "source": "sha256:981dee4f304384e229bd5de8da9d2e3d8a43d13943708cae7c4523d5b45344bb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
@@ -344,7 +344,7 @@
   },
   "riftlight-saltrot-arrival/path_check/narration": {
     "source": "sha256:18a0ef1efc053bfb59c37475a4659e5e4b6691aae8eae11bc0ea4371c04cc4d3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -358,7 +358,7 @@
   },
   "riftlight-saltrot-arrival/path_check/onSuccess/narration": {
     "source": "sha256:a0048c31784b2abed6f3d3d1b255db405c054fa2fee6dfd4f929e770c0156b63",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -376,7 +376,7 @@
   },
   "riftlight-saltrot-arrival/traveler_done/narration": {
     "source": "sha256:2157625a2eb373bd53fa1d375e4c39e4fbbc27ba12dc1a20025d130de655ef3e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -394,7 +394,7 @@
   },
   "riftlight-saltrot-arrival/traveler_off/narration": {
     "source": "sha256:1fedab13f53f0273e42e10d94407a1fba71453e32893612cbb2a5c51aae92447",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -412,7 +412,7 @@
   },
   "riftlight-saltrot-arrival/puff/narration": {
     "source": "sha256:87dbd22f373002b4edc99cdbeebf759602796dc141d571a311b7236591a21525",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -434,11 +434,12 @@
   },
   "riftlight-saltrot-arrival/puff_b/narration": {
     "source": "sha256:6638b39790d4fd1dc746d24c6f4a9e162768d044b0ba2ff6e6c824cd6983e602",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
-        "text": "\"Low and slow,\""
+        "text": "\"Low and slow,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -446,13 +447,14 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"Like the tide going out.\""
+        "text": "\"Like the tide going out.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-saltrot-arrival/puff_done/narration": {
     "source": "sha256:ffc6df8947e54561daf69437735fcadc2cf19180509233fda40f51f1fb8f6350",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -470,7 +472,7 @@
   },
   "riftlight-saltrot-arrival/puff_off/narration": {
     "source": "sha256:22cafc62b7a5b47318479a52b1d99d3d08158d5b9c52c7d683326ff9f27a0835",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -492,7 +494,7 @@
   },
   "riftlight-saltrot-arrival/ossley/narration": {
     "source": "sha256:8b42ba5d6c46fe0a36f056dc54535b0528efdecdb6e1bba6714a6d407a842e9f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -500,7 +502,8 @@
       },
       {
         "by": "old_ossley",
-        "text": "\"It's this cold silt,\""
+        "text": "\"It's this cold silt,\"",
+        "delivery": "gruff"
       },
       {
         "by": "narrator",
@@ -514,7 +517,7 @@
   },
   "riftlight-saltrot-arrival/ossley/variants/0": {
     "source": "sha256:ef203a24c4f1386865f45f1ad702f06de2357e0a33c2d4ea72de95228f016519",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -528,7 +531,7 @@
   },
   "riftlight-saltrot-arrival/ossley_b/narration": {
     "source": "sha256:18520deeb011912503984dd317e35eec8beca5b327e9a89e080bf78b3423c49d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "old_ossley",
@@ -546,7 +549,7 @@
   },
   "riftlight-saltrot-arrival/ossley_done/narration": {
     "source": "sha256:4b9a928936260c2bea6bfa0e4c3d29b527b6e21eb6c001cc8e51718e8f168c0e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -568,7 +571,7 @@
   },
   "riftlight-saltrot-arrival/ossley_off/narration": {
     "source": "sha256:795be865d161b61c9c3eb2e650c68ac6d0039f7a2290cfc468e0c97c6295f5e0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -590,7 +593,7 @@
   },
   "riftlight-saltrot-arrival/camp/narration": {
     "source": "sha256:1291819e270525e9d9f68ae89168b7d83d8681e7727ce8d20bd73a6c1c49eddf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -608,7 +611,7 @@
   },
   "riftlight-saltrot-arrival/camp_story/narration": {
     "source": "sha256:24be1e019bf32eed069d71df107ebd13469d345b02d42da22360503166392096",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "grandmother_winkle",
@@ -642,7 +645,7 @@
   },
   "riftlight-saltrot-arrival/camp_story/variants/0": {
     "source": "sha256:c5941ef04a73394bbfcd209572782cada2b90efc9ba6574a419801238a2ddb16",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "grandmother_winkle",
@@ -664,7 +667,7 @@
   },
   "riftlight-saltrot-arrival/camp_gift/narration": {
     "source": "sha256:3c1e6eb1a9994916cc5b5e18c793ae2f7452589be926915d40a638b6d79da594",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -690,7 +693,7 @@
   },
   "riftlight-saltrot-arrival/lesson/narration": {
     "source": "sha256:0f5645d0c3d5004ad00691967e79a31311ffb4b02900e78effe27997e0ca851d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -724,7 +727,7 @@
   },
   "riftlight-saltrot-arrival/lesson/variants/0": {
     "source": "sha256:65df45b032244759057b87310a5b2eb795a4c239498fb93f7d056737d81993c2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -742,7 +745,7 @@
   },
   "riftlight-saltrot-arrival/hum_done/narration": {
     "source": "sha256:6033562317ec65dedbb40d19cc9b43b361533fc0452b2a64a95a38ebd4d54f7f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -750,7 +753,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"The silt comes from the ice,\""
+        "text": "\"The silt comes from the ice,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -758,13 +762,14 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"From your ice.\""
+        "text": "\"From your ice.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-saltrot-arrival/hum_off/narration": {
     "source": "sha256:d744e44f2c72c9e7c7dc56a7b1108f8309f3c7cfcf0452c27ad87cbbbf188d94",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +777,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"The silt comes from the ice,\""
+        "text": "\"The silt comes from the ice,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -780,13 +786,14 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"From your ice.\""
+        "text": "\"From your ice.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-saltrot-arrival/trail/narration": {
     "source": "sha256:d462489cdec2716c8dc714ebcb9975936912f090f7fe1a99623fae14694b25ae",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -808,7 +815,7 @@
   },
   "riftlight-saltrot-arrival/trail_b_check/narration": {
     "source": "sha256:4878268df1d9865fc33373eb823434daca63e27707748235457a38db1616f96e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
@@ -826,7 +833,7 @@
   },
   "riftlight-saltrot-arrival/trail_done/narration": {
     "source": "sha256:514cda463a335cf9afbda9dcae65ce48bdbc4b75639a3ce3ed126b847a800476",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -844,7 +851,7 @@
   },
   "riftlight-saltrot-arrival/crabs/narration": {
     "source": "sha256:446880b21e70fdbc3609d42c45a266cb3409c400cafc708b292ad2b28e5f0083",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -874,7 +881,7 @@
   },
   "riftlight-saltrot-arrival/crabs_leap_check/narration": {
     "source": "sha256:b1ee93d4430ea9c263d65833096fb728570a02c3be8e309425e6d932804348f4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -888,7 +895,7 @@
   },
   "riftlight-saltrot-arrival/crabs_done/narration": {
     "source": "sha256:223ac875122bd2b6c802f2985b1cff910b5fb8f8cd86b1a2edb36df05796a893",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -922,7 +929,7 @@
   },
   "riftlight-saltrot-arrival/crabs_off/narration": {
     "source": "sha256:88a828029f24e92dded95ab4fbb02a69121c742ffa4b2e819be57c7cbfe5d911",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -948,7 +955,7 @@
   },
   "riftlight-saltrot-arrival/crab_warn/narration": {
     "source": "sha256:c00611954512cf38e3cb439ea36671b681f9fe99e83adb4339b7b07642bc0b35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -956,7 +963,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"Glassback crabs,\""
+        "text": "\"Glassback crabs,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -990,7 +998,7 @@
   },
   "riftlight-saltrot-arrival/crab_done/narration": {
     "source": "sha256:d4ad1f7d39905461dbeeadd21adcb7f55d32a2d5c2476b9818445b4ecdcaac00",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1024,7 +1032,7 @@
   },
   "riftlight-saltrot-arrival/crab_lead/narration": {
     "source": "sha256:b72715329137b273a0680d8fb4c70ef3d9445547be17ecd80c580935f1e7b1ef",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1038,7 +1046,7 @@
   },
   "riftlight-saltrot-arrival/crab_led/narration": {
     "source": "sha256:372f05c3dac097644c4c85c28528e7f14a6d68e66875b2d1ce4cbe8a6cde5d97",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1072,7 +1080,7 @@
   },
   "riftlight-saltrot-arrival/crab_nipped/narration": {
     "source": "sha256:fdce52beeb6e873472388aa26f3b9a4ebafe45287847f193a36c64e30c8477c3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1106,7 +1114,7 @@
   },
   "riftlight-saltrot-arrival/tide/narration": {
     "source": "sha256:48b6071df955c11dbfbd7f8d2b4940e5611a89d0f587c4bac53e2dc01b655296",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1120,7 +1128,7 @@
   },
   "riftlight-saltrot-arrival/tide_a/narration": {
     "source": "sha256:b3343dd34011b25dee135947be7ac213b711ac953c6cb59dfe4cb4ca48ab0027",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
@@ -1138,7 +1146,7 @@
   },
   "riftlight-saltrot-arrival/tide_done/narration": {
     "source": "sha256:f5a4f50a85673065b17edd022d26ef9eb4b53769643e3a32169fe287d4a1c3f6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1156,7 +1164,7 @@
   },
   "riftlight-saltrot-arrival/tide_dash/narration": {
     "source": "sha256:f0d4f796b9d78698150e5e22cc5d7fbd3fe0a3782b9656ae161e6c960bd4eec8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1178,7 +1186,7 @@
   },
   "riftlight-saltrot-arrival/tide_dash/onFailure/narration": {
     "source": "sha256:1b437b15b88719dde36476983f6ad70cbe11740377dd101d66db1be9c5f56082",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1192,7 +1200,7 @@
   },
   "riftlight-saltrot-arrival/lead/narration": {
     "source": "sha256:8748b70f383283bda0eb0a73aae44e499fc14f6bfcd4b81b3d11aaf2ae02bd48",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1222,7 +1230,7 @@
   },
   "riftlight-saltrot-arrival/ending/narration": {
     "source": "sha256:ebcf6d235d5bb14c90301fb82ee0b5f366324aa20684618cda22f53af5df0489",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

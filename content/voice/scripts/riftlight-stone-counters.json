@@ -2,14 +2,14 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-stone-counters/arrival/narration": {
     "source": "sha256:6dee43f17e50706783851594ede065c64380eb4c59623ff8a4db9952065a1028",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "On a hilltop in the foothills, under a reddish sky, stands a ring of old stones. A dragonling taps each one with her tail."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Ten, eleven. Eleven?\""
       },
       {
@@ -17,7 +17,7 @@
         "text": "She starts again from one. She sees you."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'm Tally. I keep the boundary stones by the river, and these counting stones. If we've met, hello again. If not, hello.\""
       },
       {
@@ -25,14 +25,14 @@
         "text": "She points at an empty dent in the grass."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Twelve stones have stood here since my grandmother's grandmother. Today, eleven. A counter's stones never move. So how can a stone that never moves have moved?\""
       }
     ]
   },
   "riftlight-stone-counters/the_road/narration": {
     "source": "sha256:d92d485801ddb98a45ad45020e6af4b1e2a6f5e3c16fb488170e7017128a9dfe",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -43,7 +43,7 @@
         "text": "\"Lady Olivia says a moved stone is the best sample in the world!\""
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Stone thief!\""
       },
       {
@@ -54,7 +54,7 @@
   },
   "riftlight-stone-counters/check_spoon/onSuccess/narration": {
     "source": "sha256:9dfb11bc88e29a1c363ada0fdfbf86d83480e171318a6d82342de7ba4be888be",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -72,14 +72,14 @@
   },
   "riftlight-stone-counters/check_calm/narration": {
     "source": "sha256:6625cdcb4066d96415214c022b2a1b22930ed3af153028cb2c7be7903f7920d8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally's tail lashes. She is counting under her breath, very fast."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"One two three four. One. One two three.\""
       },
       {
@@ -90,14 +90,14 @@
   },
   "riftlight-stone-counters/check_calm/onSuccess/narration": {
     "source": "sha256:d1c6fa117fb19914a94a3109d1a8f8ebf6edb9f6de8b84b2c668ba3a02fa887a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You count with her, slow and steady, until her tail slows too."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Fine,\""
       },
       {
@@ -105,21 +105,21 @@
         "text": "she says."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Fine. Let him talk.\""
       }
     ]
   },
   "riftlight-stone-counters/check_calm/onFailure/narration": {
     "source": "sha256:3cb3d4bedb47e8ce60329d200772d82c44ef0d5cd2ceced4e7f8d922b0abe469",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally grabs Pip by the tail and lifts him off the stone."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Caught in the act,\""
       },
       {
@@ -130,7 +130,7 @@
   },
   "riftlight-stone-counters/pip_says/narration": {
     "source": "sha256:b949758b61e4ab32060ecb134577b17138eb6fc9dd1c5bd09f8cc9c034be54c1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pip_thistledown",
@@ -149,7 +149,7 @@
         "text": "Tally narrows her eyes."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Stones don't move by themselves. Somebody pushed it.\""
       },
       {
@@ -160,7 +160,7 @@
   },
   "riftlight-stone-counters/lesson/narration": {
     "source": "sha256:7d5c6cccc30dfef64948d9edfd9f1e2209c3602a0f993a2151c859b35d2f82d7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -198,7 +198,7 @@
   },
   "riftlight-stone-counters/lesson/variants/0": {
     "source": "sha256:cb6f03d3a55b2b65708cfcbddd29f496a9fd16af55e4ec47236df3da7e3d54ac",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -224,7 +224,7 @@
   },
   "riftlight-stone-counters/fold/narration": {
     "source": "sha256:7fb928497ed37eb3233ea0b78f8242f449493d22e3dabc257478c9cd4bee893e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "seren_wisp",
@@ -258,14 +258,14 @@
   },
   "riftlight-stone-counters/grass/narration": {
     "source": "sha256:d1b9dbfb2c1e27c66fb46001e1c67649cc9ec4f2693af3d276d280a29440697b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally stamps her foot."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"If somebody pushed the Eldest up here, they dragged it. A stone that big leaves a scrape.\""
       },
       {
@@ -276,15 +276,16 @@
   },
   "riftlight-stone-counters/check_grass/narration": {
     "source": "sha256:4100f266cf7d0a73d54d9ef8e35028b70e632f1dd9c9a3cc2e404eb63ea7b6e4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You part the grass, slow and careful. A beetle glares at you for opening its front door."
       },
       {
-        "by": "dragonling_stone_keeper",
-        "text": "\"Gently,\""
+        "by": "tally",
+        "text": "\"Gently,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -294,7 +295,7 @@
   },
   "riftlight-stone-counters/grass_wind/onAssisted/narration": {
     "source": "sha256:480f07ec519ffc9be9b0810be7a849976e4529ff364d2bc521a91ec725afef9c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -302,7 +303,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"now\""
+        "text": "\"now\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -312,7 +314,7 @@
   },
   "riftlight-stone-counters/wind_drops/narration": {
     "source": "sha256:6cb5a99641153d76151dbd20dfc9677828c9fd7043cd1d0566afaf1438bfc791",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -320,7 +322,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"Nobody dragged anything through that,\""
+        "text": "\"Nobody dragged anything through that,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -330,14 +333,14 @@
   },
   "riftlight-stone-counters/sniff/narration": {
     "source": "sha256:dc939564e2a9c4e268e5c472d706e2c568b4201efdb53bdb47ff9e1c21ff60b4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You and Pip sniff along the grass, noses down, tails up. It smells of grass, beetle and nothing else at all. No stone has been dragged through here. Pip sneezes on Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Bless you,\""
       },
       {
@@ -348,14 +351,14 @@
   },
   "riftlight-stone-counters/no_drag/narration": {
     "source": "sha256:6e2165ad1717ce19f37ed8ca95f7cffa50c90eafec0058980f476d3d830bd5ab",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "No scrape. No track. Nothing between the dent and the road but grass and one cross beetle. Tally sits down hard."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"So it didn't slide. Did it fly?\""
       },
       {
@@ -374,14 +377,14 @@
   },
   "riftlight-stone-counters/hollow/narration": {
     "source": "sha256:27934c16f6f778c7c1e1fffc4942f44bcb736358c4a80bef3419e4c1b8baacc0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Back at the ring, Tally lays her counting cord around the empty dent. It fits the Eldest's shape exactly, edge for edge. The grass inside is pressed flat and pale, and three worms are very confused about the sunshine. Then the hill gurgles. A trickle of meltwater starts toward the dent."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"No!\""
       },
       {
@@ -389,21 +392,21 @@
         "text": "cries Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"It'll wash the edge away!\""
       }
     ]
   },
   "riftlight-stone-counters/check_trickle/narration": {
     "source": "sha256:8a426821c8b345e8055dec88b6e56afce77513eda8a7be334df3cc4b098cd680",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally hands you a flat stone."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Shovel. Go.\""
       },
       {
@@ -414,14 +417,14 @@
   },
   "riftlight-stone-counters/under/narration": {
     "source": "sha256:cc8c2b205ab08bae2c06c6237b648ae72eab9ccb74d821cc77cef32c6efb6a60",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "So the dent is where the Eldest stood. But why is it up on the road now?"
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Look underneath it,\""
       },
       {
@@ -429,7 +432,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Stones keep secrets underneath. Usually woodlice.\""
       },
       {
@@ -440,7 +443,7 @@
   },
   "riftlight-stone-counters/check_rock/narration": {
     "source": "sha256:90b64f1d500180dbf57cfa448c28ec3e971ac293a07e889aa4b0ccfc7accde5c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -458,14 +461,14 @@
   },
   "riftlight-stone-counters/check_dig/narration": {
     "source": "sha256:682ae2a6af838fb1bc227db30c6a75570690d4e471ea040d1135352e80370b2a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "The road is packed hard under loose gravel."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Dig in the wrong spot,\""
       },
       {
@@ -473,30 +476,32 @@
         "text": "says Tally,"
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"and the hole falls in.\""
       }
     ]
   },
   "riftlight-stone-counters/old_socket/narration": {
     "source": "sha256:5cfe8905e2d1250d53d11c5eb7886b533a5153ac5db360bb04f9db5c31ec8b7c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Under the Eldest is a socket, worn deep into the rock of the road. It is the Eldest's exact shape, smooth as an old bowl and packed with ancient dark grit. It is far older than the counting ring."
       },
       {
-        "by": "dragonling_stone_keeper",
-        "text": "\"It didn't wander off,\""
+        "by": "tally",
+        "text": "\"It didn't wander off,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
         "text": "Tally whispers."
       },
       {
-        "by": "dragonling_stone_keeper",
-        "text": "\"It went back. Back to where it stood long, long ago, before there was a ring at all.\""
+        "by": "tally",
+        "text": "\"It went back. Back to where it stood long, long ago, before there was a ring at all.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -506,14 +511,14 @@
   },
   "riftlight-stone-counters/pebble/narration": {
     "source": "sha256:86dcd27cb766e28e8e45658289aa71da7d7dc3752c464662de9a2b1b2cd72092",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "By the fold, a little counting pebble twitches. Then it is gone, and back again a step away. Hop. Hop."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"If it moves again, I want to SEE it,\""
       },
       {
@@ -524,7 +529,7 @@
   },
   "riftlight-stone-counters/seen/narration": {
     "source": "sha256:4f55b44c7120d22f37e700160d694b182591e8c8b4d561b402577b8b0842a3fb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -532,7 +537,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"It went where it used to be,\""
+        "text": "\"It went where it used to be,\"",
+        "delivery": "gentle"
       },
       {
         "by": "narrator",
@@ -542,10 +548,10 @@
   },
   "riftlight-stone-counters/verdict/variants/0": {
     "source": "sha256:45d9d889814b4dc78e3a8b2d5716b8f6dfa45a3a00a91dd7169616ec41c01861",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"But things got trampled, and I missed things,\""
       },
       {
@@ -553,21 +559,21 @@
         "text": "she says slowly."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'm not sure.\""
       }
     ]
   },
   "riftlight-stone-counters/check_vouch/onSuccess/narration": {
     "source": "sha256:9e7910c0c8b86e1891863f6268034500a4d868a62f9fec1c697e79f9aa11883f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally's tail stops lashing."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"All right,\""
       },
       {
@@ -575,17 +581,17 @@
         "text": "she says."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I believe you both.\""
       }
     ]
   },
   "riftlight-stone-counters/check_vouch/onFailure/narration": {
     "source": "sha256:7dc02e2c1ce8b75f55547da1390cb2c45f4d2ca5e4ad4e962b3655acc81574f7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Maybe,\""
       },
       {
@@ -593,7 +599,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Maybe not. I'll keep this spoon while I decide.\""
       },
       {
@@ -604,10 +610,10 @@
   },
   "riftlight-stone-counters/pip_cleared/narration": {
     "source": "sha256:8fffcd9ac4aef8137aad58734fe2efe30c8d3d5220cb13ef523cfdd46ea8c82d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"A stone that never moves has moved,\""
       },
       {
@@ -615,7 +621,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"By itself. Back to an older place.\""
       },
       {
@@ -626,10 +632,10 @@
   },
   "riftlight-stone-counters/pip_cleared/variants/0": {
     "source": "sha256:3fe6b157bc333f6a91cdcd90513947f9e064d9bcba6801303fcbcfa70a0ea3a2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Pip,\""
       },
       {
@@ -637,14 +643,14 @@
         "text": "says Tally,"
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'm sorry I called you a thief.\""
       }
     ]
   },
   "riftlight-stone-counters/what_now/narration": {
     "source": "sha256:bdabc805df34161b0bee9b68e4610dd78f61916ab8821330303732edfdba50f9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -678,14 +684,14 @@
   },
   "riftlight-stone-counters/check_push/narration": {
     "source": "sha256:348683b4bb0738705e00f11f7624aeeabc06c1942d02d21873fed32f117abdb3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Everyone gets a shoulder on the Eldest. Pip gets his tail on it."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"One, two, THREE,\""
       },
       {
@@ -696,14 +702,14 @@
   },
   "riftlight-stone-counters/bigfoot_carry/narration": {
     "source": "sha256:c162f9c737ef959145e3719a2f522ae6a7c1ac76a9dfd506694fb900af0d4d3d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Your bigfoot hugs the Eldest and stands up with it, grunting. Tally counts every step down the hill."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Forty-one, forty-two, put it DOWN.\""
       },
       {
@@ -714,14 +720,14 @@
   },
   "riftlight-stone-counters/pushed_home/narration": {
     "source": "sha256:d16b86a6771d3e19e2be1efa59cb83e1b478bd0e6b1073ca6730e6e849f33539",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally counts the ring."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Ten, eleven, twelve!\""
       },
       {
@@ -736,7 +742,7 @@
   },
   "riftlight-stone-counters/creak/narration": {
     "source": "sha256:1a0fc9dfa8f54cfd71981ce6f1493e419bf0ba63e1a802d53b3590a648aba020",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -754,7 +760,7 @@
   },
   "riftlight-stone-counters/gourd_clear/narration": {
     "source": "sha256:9bf58657c05344b4b967a63cda7ec0efc33821c53c71ce89f1493567f45c6fff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +778,7 @@
   },
   "riftlight-stone-counters/check_goat/narration": {
     "source": "sha256:5104263a671ff5ac809b464ac8421b15391bd7dca73383deb2408a6854982a6b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -790,14 +796,14 @@
   },
   "riftlight-stone-counters/leave_it/narration": {
     "source": "sha256:9cf3e2ab5de527434dff478d8340fa1be8682aeb058c194cbc17d3453664d5cf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally walks once around the Eldest. Then she sits down beside it and pats it."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"All right,\""
       },
       {
@@ -805,7 +811,7 @@
         "text": "she says, very small."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"You stood here first. I'll count you here.\""
       },
       {
@@ -813,7 +819,7 @@
         "text": "She ties a new knot in her counting cord."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Twelve. Twelve, in a new shape.\""
       },
       {
@@ -823,29 +829,33 @@
     ]
   },
   "riftlight-stone-counters/check_bend/narration": {
-    "source": "sha256:b1c59b870e469af6d91384de8f22d1a43c3bb838eacedf23696e889eb7caa8c8",
-    "reviewed": false,
+    "source": "sha256:9e3c213859f2c019f5edba374a868a051bbf824dac43b2ef140741c045965cf6",
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Seren holds the cord. Tally counts paces. Pip counts them differently."
       },
       {
-        "by": "dragonling_stone_keeper",
-        "text": "\"There are no halves in paces, Pip.\""
+        "by": "tally",
+        "text": "\"There are no halves in paces, Pip,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
       }
     ]
   },
   "riftlight-stone-counters/stuck/narration": {
     "source": "sha256:933a49f4213b62af29a0c6765f3166dc3c749939d7891ed92fca683be1942ee8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally sits down in the road."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Well. Now it's stuck in a new wrong place.\""
       },
       {
@@ -864,7 +874,7 @@
   },
   "riftlight-stone-counters/gourd_gap/narration": {
     "source": "sha256:a4df0c58cecd8d0c092127978d9c0d7d376e45d9aa0b093232ac81baad8a25a4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -882,7 +892,7 @@
   },
   "riftlight-stone-counters/gourd_tight/narration": {
     "source": "sha256:a4df0c58cecd8d0c092127978d9c0d7d376e45d9aa0b093232ac81baad8a25a4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -900,7 +910,7 @@
   },
   "riftlight-stone-counters/squeeze/narration": {
     "source": "sha256:2601524cb07914dc4baf18d87f714655aadbb6b8e685700c91c853f5272e32b7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -922,7 +932,7 @@
   },
   "riftlight-stone-counters/squeeze_tight/narration": {
     "source": "sha256:f9434698a142e02326ceffdf8afb41f46ac4a4ae85d3722cc4f613cbea349982",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -944,7 +954,7 @@
   },
   "riftlight-stone-counters/squeeze_time/onFailure/narration": {
     "source": "sha256:ad975cfc5ace9a7f11bd7db26758581b3cbad7deca6d1ebcd45abe0adcfcf801",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -958,7 +968,7 @@
   },
   "riftlight-stone-counters/squeeze_time/onAssisted/narration": {
     "source": "sha256:2d52ebcb90d5d0dfbf9b5326fd2dd610d490ceffc203c8aafe497f1c4492b23a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -976,7 +986,7 @@
   },
   "riftlight-stone-counters/squeeze_close/onFailure/narration": {
     "source": "sha256:ad975cfc5ace9a7f11bd7db26758581b3cbad7deca6d1ebcd45abe0adcfcf801",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -990,7 +1000,7 @@
   },
   "riftlight-stone-counters/squeeze_close/onAssisted/narration": {
     "source": "sha256:1bd265fa3ff15a0866d740235ba0a1885feae745e2391bfe4d0793e57f71eb01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1008,7 +1018,7 @@
   },
   "riftlight-stone-counters/turnip_relay/narration": {
     "source": "sha256:80ac5ec2b6b365fadf72eea9604f95509b680c474a5a2603be40340ac926bf1b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1026,7 +1036,7 @@
   },
   "riftlight-stone-counters/dusk_run/narration": {
     "source": "sha256:14f3d883ad945fbc5fe044ef277d83a181c94dc850942bbdd53c7cd7cd420d6c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1044,7 +1054,7 @@
   },
   "riftlight-stone-counters/past/narration": {
     "source": "sha256:3c4311b79b8fa43c18a7aa733b3a045747e35f05e9b86b82bed21138f60aebf4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1070,10 +1080,10 @@
   },
   "riftlight-stone-counters/past/variants/0": {
     "source": "sha256:4cd8eb5a3163cf59982cb93dd321b04f2d51d7b7c26606037e75ef8887846803",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Minus a few,\""
       },
       {
@@ -1084,7 +1094,7 @@
   },
   "riftlight-stone-counters/past_slow/narration": {
     "source": "sha256:b32955fd7f75716a4c3d747c105eb4895ba697c9e140f962e5844077d66ab578",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1110,7 +1120,7 @@
   },
   "riftlight-stone-counters/fold_window/narration": {
     "source": "sha256:a085eab02b6d16954c2a5e74464fcea561a199fb67b241c2565cd4c8d349bc91",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1132,7 +1142,7 @@
   },
   "riftlight-stone-counters/fold_small/narration": {
     "source": "sha256:f57434558f0f6174f0978ccbb42f563b38b7e1a8956f7e04f2663760bd64e588",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1154,7 +1164,7 @@
   },
   "riftlight-stone-counters/chime_listen/narration": {
     "source": "sha256:9a3401e497c99971fd31d98226981064d71266fecf10ec6748c4f08c9e454adb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1176,7 +1186,7 @@
   },
   "riftlight-stone-counters/check_peek/onSuccess/narration": {
     "source": "sha256:ba159868b675970fa013dcf099d0a9c63bf92b2cfc0400f9f7ff6b9b1c47840b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1198,7 +1208,7 @@
   },
   "riftlight-stone-counters/check_peek/onFailure/narration": {
     "source": "sha256:a99c6773a553736be26da7fa485970111ef1d91ac49e47a5765dc1175ed4798b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1216,7 +1226,7 @@
   },
   "riftlight-stone-counters/check_count/onSuccess/narration": {
     "source": "sha256:6b9705a148ab54fb49282676b0e4e7ce42f91c7add147acad2092298ee154dbe",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1238,7 +1248,7 @@
   },
   "riftlight-stone-counters/check_count/onFailure/narration": {
     "source": "sha256:236258d04aa35c35a4bf3030102d47018271ad5f9c0a1e09a2e9f0c6513c1e34",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1252,7 +1262,7 @@
   },
   "riftlight-stone-counters/attuned/narration": {
     "source": "sha256:fca5bca5ad4f92b6a07b3ad911d8a35aff4716aa47b5ce46d20b45e71126e4eb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1274,7 +1284,7 @@
   },
   "riftlight-stone-counters/rest/narration": {
     "source": "sha256:3fd6a505d359870c79e93d82e901d20e5f6e48edea6d73f011d8d55050db3880",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1292,7 +1302,7 @@
   },
   "riftlight-stone-counters/route_copy/narration": {
     "source": "sha256:33392b25786a2aa72ae3ee69af8b855e9d77f615d890a1c6ec6d0ebebf254f4d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1306,14 +1316,14 @@
   },
   "riftlight-stone-counters/carving_copy/narration": {
     "source": "sha256:6b5ec0da74fba9599ffc3c45414055e1b8660dce437af0b09aed856dcd8074ac",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Pip lays the page over the Eldest's carving and rubs it with charcoal: a mountain, throwing sparks."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"An eruption,\""
       },
       {
@@ -1321,7 +1331,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Our oldest counts can't agree when it was. Nobody's count matches.\""
       },
       {
@@ -1332,14 +1342,14 @@
   },
   "riftlight-stone-counters/goodbye/narration": {
     "source": "sha256:112bc261d04e9692cccaf633c8d1b113533b578d1d841bc97c29467687c48adc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Tally walks you to the edge of the hill, counting your steps."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"A counter's stones must never move,\""
       },
       {
@@ -1347,7 +1357,7 @@
         "text": "she says."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Mine did. So now I'll count the moving too.\""
       },
       {
@@ -1355,21 +1365,21 @@
         "text": "She looks north."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"My cousin up the valley says the river has gone the wrong way as well. Strange days for counting.\""
       }
     ]
   },
   "riftlight-stone-counters/goodbye/variants/0": {
     "source": "sha256:1595ff7f43dd0d105181278154993eb0fdb23ebadb43e2ee1d8f600a09f2f8a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Behind her, the Eldest creaks in its dent, leaning toward the road."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'll push it back every morning,\""
       },
       {
@@ -1377,21 +1387,21 @@
         "text": "she sighs."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Every single morning.\""
       }
     ]
   },
   "riftlight-stone-counters/goodbye/variants/1": {
     "source": "sha256:3653062791ad06e0f8a974e56a424bf1e9bc9cdb446ec4261e82415f89d936c7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Behind her, the Eldest lies stuck sideways across the road."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"My cousins and I will roll it somewhere sensible,\""
       },
       {
@@ -1399,21 +1409,21 @@
         "text": "she sighs."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Tomorrow. With a lot of cousins.\""
       }
     ]
   },
   "riftlight-stone-counters/goodbye/variants/2": {
     "source": "sha256:30258440dd61ebe03590681b421f3056147f9919a1d93f86c00adf22faffadf0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Behind her, the Eldest stands in its old socket, with the new bend curving around it."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Twelve, in a new shape,\""
       },
       {
@@ -1424,14 +1434,14 @@
   },
   "riftlight-stone-counters/goodbye/variants/3": {
     "source": "sha256:c9ff30dc1393928126eb96ed55944fcbd9b8bcca3314f289316618f96993acba",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Then she hands Pip his spoon at last."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Don't pry anything else.\""
       },
       {
@@ -1442,7 +1452,7 @@
   },
   "riftlight-stone-counters/ending/narration": {
     "source": "sha256:5f32c771f8630ee0df90d786de9667955dfc69ff600d3a1d1c18c34fdf392009",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

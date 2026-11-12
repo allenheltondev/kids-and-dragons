@@ -286,7 +286,7 @@ ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stag
   `Cache-Control: public,max-age=31536000,immutable`, `Content-Type: audio/webm` and its length in
   object metadata, by a conditional write (`If-None-Match: *`): a clip that exists is never replaced,
   even by two runs racing. A `HEAD` before the provider call is the generation cache.
-- **Caps.** `--max-dollars` (default 75) and `--max-chars` stop the run *before* the request that
+- **Caps.** `--max-dollars` (default 85) and `--max-chars` stop the run *before* the request that
   would cross them, priced with the same model as `voice:cost`, with in-flight requests reserved
   against the cap. Every provider call counts, retries included, and a failed call is not refunded
   (it may have been billed), so a clip's retries cannot spend past the cap. The total is an
@@ -519,7 +519,7 @@ summaries. Check the unconfirmed ones before spending on them. Three things chan
   run (`measured ... tokens a second`), so after the staging smoke test `audioTokensPerSecond` can be
   set from a real number.
 
-**Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
+**Budget: $75 cap on the first run** (raised to $85 on 2026-11-12, below). `voice:generate` takes `--max-dollars` and stops before
 the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers
 the whole game with room for a second pass, and on ElevenLabs v4 Turbo the whole game once. On
 ElevenLabs v4 it covers Gemfall ($66.47) or Riftlight ($45.22) with the small campaigns, and on v3
@@ -541,7 +541,7 @@ Each phase ships on its own and leaves the game working.
 | 5 | **Client** | `clip-speaker`, ducking, prefetch, SW `voice` strategy, CDN policy, device-voice fallback | bramblewood-01 plays fully voiced on a TV, and a 404 falls back cleanly |
 | 6 | **Review & lock** | `voice:review` page, approvals, `voice.lock.json` | a regenerated take never replaces an approved one silently |
 | 7 | **Dialogue pass** | `content:dialogue` report, house-rule additions to content/README and CLAUDE.md, chapter-by-chapter rewrites | the dialogue target met on the reference chapters, then campaign by campaign |
-| 8 | **Full render** | campaigns rendered and reviewed in the phase-3 order, first run capped at $75 | `voice:status` clean for a whole campaign |
+| 8 | **Full render** | campaigns rendered and reviewed in the phase-3 order, first run capped at $85 | `voice:status` clean for a whole campaign |
 | 9 | **Stretch** | word-highlight follow-along, cast pulse, offline chapter packs, voiced choice labels on phones | — |
 
 Phases 2–3 and the dialogue writing (7) can run alongside 4–5. The writing doesn't need the
@@ -555,9 +555,9 @@ pipeline, and rewriting before the full render (8) avoids paying to render text 
   casts the whole game in Gemini voices; ElevenLabs stays in the bake-off for comparison.
 
 - **The TV reads aloud by default**, with the switch to turn it off remembered per device. Built.
-- **Budget:** $75 cap for the first render run (`--max-dollars 75`).
+- **Budget:** $85 cap for the first render run (`--max-dollars`, default 85), raised from $75 on 2026-11-12: after the script review the whole game estimates at $75.48 on Eleven v4 before the billed accent and delivery tags, so $85 renders all of it in one run.
 - **Storage:** clips go in the existing site bucket, under a `voice/` prefix next to `assets/`
   (not inside it, so deploy's `--delete` never touches them).
 - **One narrator voice** for the whole game.
 - **Names:** text on screen can say a player's name; audio always says "hero", from the recorded voice and the device voice alike. A name never reaches any speaker or provider; every name-bearing surface gets a sweep (section 8).
-- **Provider and model:** ElevenLabs, decided by the owner on 2026-11-05, replacing the 2026-10-28 choice of Gemini 3.8 Flash TTS. `voice:generate`, `voice:status` and `voice:verify` default to Eleven v4 (`eleven_v4`; `--model eleven_v3` or any `pricing.json` id or API model takes another). Voices are the ones picked on the cast page (docs/voice-cast.md, docs/voice-species.md), not assigned. At the §9 estimate the whole game is about $113 on v4 and $57 on v4 Turbo against $30 on Gemini, so the $75 first-run cap covers one campaign at a time on v4: render with `--chapter`. The accent, direction and delivery tags in front of each line are billed characters: `voice:generate` counts them against `--max-dollars` and `--max-chars`, but `voice:status` and `voice:cost` estimate from the words alone, so expect a few percent more than they show. A speaker on the sheet with no ElevenLabs voice yet is a `voice-not-selected` line: the device voice reads it, `voice:verify` notes it and does not fail on it. Gemini stays in the bake-off for comparison only.
+- **Provider and model:** ElevenLabs, decided by the owner on 2026-11-05, replacing the 2026-10-28 choice of Gemini 3.8 Flash TTS. `voice:generate`, `voice:status` and `voice:verify` default to Eleven v4 (`eleven_v4`; `--model eleven_v3` or any `pricing.json` id or API model takes another). Voices are the ones picked on the cast page (docs/voice-cast.md, docs/voice-species.md), not assigned. At the §9 estimate the whole game is about $113 on v4 and $57 on v4 Turbo against $30 on Gemini, so a $75 cap covered one campaign at a time on v4. Re-estimated on 2026-11-12 with `voice:status` (words only, no retakes), the game is $75.48, Gemfall $38.80 and Riftlight $35.23, and the $85 default covers it in one run. The accent, direction and delivery tags in front of each line are billed characters: `voice:generate` counts them against `--max-dollars` and `--max-chars`, but `voice:status` and `voice:cost` estimate from the words alone, so expect a few percent more than they show. A speaker on the sheet with no ElevenLabs voice yet is a `voice-not-selected` line: the device voice reads it, `voice:verify` notes it and does not fail on it. Gemini stays in the bake-off for comparison only.

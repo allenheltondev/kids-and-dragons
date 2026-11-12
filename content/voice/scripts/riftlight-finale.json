@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-finale/arrival/narration": {
     "source": "sha256:9c832642dfc841f6205c43a3db1c375d52f7032d5b5f7be9c77e73cc8fb199ab",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-finale/herder/narration": {
     "source": "sha256:aa46602b84dc076fe0df4fef126f6f7cfdbd0f4eca742713059345af5220873c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -46,7 +46,7 @@
   },
   "riftlight-finale/check_rope/narration": {
     "source": "sha256:09fafa6e184656977385ce183479ef885fa37d90385cdef6fd9791ee48f3a80f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -72,7 +72,7 @@
   },
   "riftlight-finale/kid_bridge/narration": {
     "source": "sha256:1828522139abc3a98e560e1ef52fef15442e457ce33693ab712b4444abb8a452",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -94,7 +94,7 @@
   },
   "riftlight-finale/check_kid/onSuccess/narration": {
     "source": "sha256:5ab77d1afec60b8ef037f30ffa776782c8b48c71b8d54a923beea95c46272bb2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -112,7 +112,7 @@
   },
   "riftlight-finale/herder_goes/narration": {
     "source": "sha256:1ad956b5518255494d9cbcdad8f20d574924f14700fcff16639445a812b17632",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -138,7 +138,7 @@
   },
   "riftlight-finale/ridge_look/narration": {
     "source": "sha256:5562b3f04a35c40a9e428db3c314608a2053126f328d4544c211cb771f0ade68",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -146,7 +146,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"See that ridge?\""
+        "text": "\"See that ridge?\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -154,7 +155,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"Brace it, and anything open beside it closes faster.\""
+        "text": "\"Brace it, and anything open beside it closes faster.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -164,7 +166,7 @@
   },
   "riftlight-finale/broth/narration": {
     "source": "sha256:f7033684fc4e26685e453bd5376173ef6dff0928925faff2550dece3b4d53171",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -182,7 +184,7 @@
   },
   "riftlight-finale/old_ice/narration": {
     "source": "sha256:bf8a25a21ec347a050d57f318df69881739c84114d8a126b8f8487f64cd3b1a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -190,7 +192,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"This ice is very old,\""
+        "text": "\"This ice is very old,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -198,13 +201,14 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"Walk softly.\""
+        "text": "\"Walk softly.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-finale/frozen/narration": {
     "source": "sha256:7d60347486204ac394a2704e4695a0b7320652e0caa8ffa7c5ab88fa0f9be553",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -225,8 +229,8 @@
     ]
   },
   "riftlight-finale/figure/narration": {
-    "source": "sha256:36fc884985a05532302fb19558cba8a12b40ee29fb57d6ae023907609c4f8696",
-    "reviewed": false,
+    "source": "sha256:c297e731c09675cb383bfb4b9a0931bf8f0821075a69d1ce69cb3138f1432dcb",
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -241,18 +245,18 @@
         "text": "he asks the map."
       },
       {
-        "by": "orin_vale",
-        "text": "\"It was never on that side.\""
+        "by": "corvane",
+        "text": "\"It was never on that side,\""
       },
       {
         "by": "narrator",
-        "text": "In your pack, the chime rings all by itself."
+        "text": "the figure mutters. In your pack, the chime rings all by itself."
       }
     ]
   },
   "riftlight-finale/reveal/narration": {
     "source": "sha256:82d25122c9d1d5c82f32e743e51be3e75dcfd85e4a6d60a9f70869cea8879385",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -270,7 +274,7 @@
   },
   "riftlight-finale/his_story/narration": {
     "source": "sha256:88320509d5a43eb275eca6abbd7384bd18253509d989e63e89c7250f5dc4f16e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -292,7 +296,7 @@
   },
   "riftlight-finale/why_home/narration": {
     "source": "sha256:36ef059619d2c894a6ee5edf6c4c053baa1f23787d36c28e13d206a6a9bf3c93",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -322,7 +326,7 @@
   },
   "riftlight-finale/told_no/narration": {
     "source": "sha256:638d3fc858ce7cb08c92b22acbae94753b63f484319897f24bf97d5042b0f2fa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -364,7 +368,7 @@
   },
   "riftlight-finale/his_map/narration": {
     "source": "sha256:6e8c1785f258356860f1c6d2f657b0c8403d48190674fba8dd7f8695c240ad8f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -390,7 +394,7 @@
   },
   "riftlight-finale/check_force/narration": {
     "source": "sha256:fc7cb9acedae8deda56ab391cce18fc2fdb3fa5ad4f6d05e9db62b7be0d5227a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -404,7 +408,7 @@
   },
   "riftlight-finale/check_force_bram/narration": {
     "source": "sha256:213abef9f7dac06f274d5cfb86b21d57bccfd1a4ee71b5c923a4488415ed433c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -422,7 +426,7 @@
   },
   "riftlight-finale/check_force_bram/onSuccess/narration": {
     "source": "sha256:6e61ac324aeca4378fa520c2bec8cff7320e4b30f76d04c9914902ff36a53f84",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -440,7 +444,7 @@
   },
   "riftlight-finale/check_show/narration": {
     "source": "sha256:dcb1a5249317d12aa603d283c3bbd93fbffdf87d1a9d858a0329acb41718ee61",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -466,7 +470,7 @@
   },
   "riftlight-finale/check_show/onSuccess/narration": {
     "source": "sha256:3ab9678add9f3e467cba294a601c47a347447009892b45d178dad86945115c41",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -484,7 +488,7 @@
   },
   "riftlight-finale/check_show/onFailure/narration": {
     "source": "sha256:5784fb28554cc150aee426f1df7b0da235babc22e24a29962a4da4abb10cdadc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "corvane",
@@ -498,7 +502,7 @@
   },
   "riftlight-finale/asked_home/narration": {
     "source": "sha256:b2241450cd86642f374fafd21ef0934ed10e3759712dea654add48502c8476de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -536,7 +540,7 @@
   },
   "riftlight-finale/olivia_tells/narration": {
     "source": "sha256:994622b0dfdcb05cfc81d3f9833a81566c96b22b3950a3dd5e4f702744fe3e0f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -578,7 +582,7 @@
   },
   "riftlight-finale/wrong_colors/narration": {
     "source": "sha256:de8b0bd396aa04258c95c9281ef7c2065e630d5a6b2e338ed51ca6e70ca89906",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -594,7 +598,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"He can open them, but he can't tell them what to do,\""
+        "text": "\"He can open them, but he can't tell them what to do,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -602,17 +607,19 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"Nobody can. Now, while he's surprised. Your pieces. Show the land where it belongs today.\""
+        "text": "\"Nobody can. Now, while he's surprised. Your pieces. Show the land where it belongs today.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-finale/wrong_colors/variants/0": {
     "source": "sha256:82920d8b0d28be2c3affc1b9fd8f3d9337626c446863820399654bd6d24de838",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
-        "text": "\"That's exactly what happened to me,\""
+        "text": "\"That's exactly what happened to me,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -622,11 +629,12 @@
   },
   "riftlight-finale/wrong_colors/variants/1": {
     "source": "sha256:82920d8b0d28be2c3affc1b9fd8f3d9337626c446863820399654bd6d24de838",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
-        "text": "\"That's exactly what happened to me,\""
+        "text": "\"That's exactly what happened to me,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -636,7 +644,7 @@
   },
   "riftlight-finale/corvane_one/narration": {
     "source": "sha256:f947d643f7f4806f2c5589fd82d8c043cdc02dec21abf3ab14c5340fe9402b37",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -662,7 +670,7 @@
   },
   "riftlight-finale/corvane_two/narration": {
     "source": "sha256:295f0452b302e5c51c5c727cbfd310865f17d31f7d364689a1ecedd70c57d443",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -692,7 +700,7 @@
   },
   "riftlight-finale/corvane_two/variants/2": {
     "source": "sha256:f9c9e2d452b03dc2714853244deaaa685e15c52a715d48e320b9b311a6f68d22",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -714,7 +722,7 @@
   },
   "riftlight-finale/olivia_anchor/narration": {
     "source": "sha256:6dd94c3a18c9e37f86e98032a9456e7d18226b1a2765121ce3a5497d501d4655",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -736,7 +744,7 @@
   },
   "riftlight-finale/olivia_anchor/onSuccess/narration": {
     "source": "sha256:10647b7bf13802064be6075c44a943126248d94abb2247999bb5448e09664a93",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -744,13 +752,14 @@
       },
       {
         "by": "olivia",
-        "text": "\"It listened!\""
+        "text": "\"It listened!\"",
+        "delivery": "excited"
       }
     ]
   },
   "riftlight-finale/seam/narration": {
     "source": "sha256:a59490bf05360c7b87ecea330bbfccd53d3ab2c834d4f96cc6bc620e9d6aed01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +781,7 @@
   },
   "riftlight-finale/seam_weak/narration": {
     "source": "sha256:86e3e5cb455097f187ee6f5585b2512cfff13fa966d28eca1791f1fe5b4c4e52",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -794,7 +803,7 @@
   },
   "riftlight-finale/fight_standard/narration": {
     "source": "sha256:0c9659a6f28989e267db47f5a3a5dcdadf06d00a471a676a4c971cc9e3f438e1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -812,7 +821,7 @@
   },
   "riftlight-finale/fight_standard_braced/narration": {
     "source": "sha256:0729611832857ec8d04a0ae117e64b12ad02d133538f0f4910eb41430aec0fee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -830,7 +839,7 @@
   },
   "riftlight-finale/fight_weakened/narration": {
     "source": "sha256:f89a28237a7aad8bf65c585727bc43b430c2642f15d14ccf0ad99c5a7b2b1604",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -848,7 +857,7 @@
   },
   "riftlight-finale/fight_weakened_braced/narration": {
     "source": "sha256:fbdf2c8956767e227918b3f4d2f5ec39aa647ea9809d16bd5f959fabe02774a1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -866,7 +875,7 @@
   },
   "riftlight-finale/spent/narration": {
     "source": "sha256:54cd0511bf9da54febef1b6ed14a212d766278831c971260484c67426091c7e0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -884,7 +893,7 @@
   },
   "riftlight-finale/help_him/narration": {
     "source": "sha256:ab6a994f5dcb0f38ae16a042515c993270f5462dcac818f71236d4ec5dac1db9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -892,7 +901,8 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"Ask before you wrap him,\""
+        "text": "\"Ask before you wrap him,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -902,7 +912,7 @@
   },
   "riftlight-finale/wrap/narration": {
     "source": "sha256:d88d802c0c0efa8c7b1f3529239ed1c784fecc4afd1cda4956fe301c85b8aaa9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -924,7 +934,7 @@
   },
   "riftlight-finale/maps_side/narration": {
     "source": "sha256:f04c4f2fca296e99c3278424c275045c09d4e4b5b141707ab7576b7dda81bc19",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -946,7 +956,7 @@
   },
   "riftlight-finale/chime_straight/narration": {
     "source": "sha256:5960adc7ae8f1636206eb3cbe201dc2a7aa22d3f8a1cb754f96139e81de0f4cf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -968,7 +978,7 @@
   },
   "riftlight-finale/fate/narration": {
     "source": "sha256:b3fd4462dfa5164e265a6e8c56f26a1b76285bfcd4468356e7a42b43cc69420a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1006,7 +1016,7 @@
   },
   "riftlight-finale/keepers_epilogue/narration": {
     "source": "sha256:a8497894ca3f0b5d1b1e9f931a8a16e87f36a8a22e9958f0900b500797156734",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1024,7 +1034,7 @@
   },
   "riftlight-finale/listened_epilogue/narration": {
     "source": "sha256:938d61682f7897bc8e16bcfc0a9fab34b3b0b1d3d4fb8fb545df06c47a6cb258",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1042,7 +1052,7 @@
   },
   "riftlight-finale/loss_plan/narration": {
     "source": "sha256:4070e7cf1325d1c53f1f9668859e46706fd01ddba19e84be2314c73e8bf7eda8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1068,7 +1078,7 @@
   },
   "riftlight-finale/recover_ask/onSuccess/narration": {
     "source": "sha256:c7816ed8fdcbb2b6817ed8d7a7dcd79012a33d43dccc0e89f2683611d15bc834",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -1090,7 +1100,7 @@
   },
   "riftlight-finale/recover_reserve/narration": {
     "source": "sha256:d6cdaafc890f896103a73b0f7de15a59fb1b12990d6cb580c2fc42e491612008",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1108,7 +1118,7 @@
   },
   "riftlight-finale/recover_pip/narration": {
     "source": "sha256:0b91f8a1d7470db76ea29b68bf97ab56c207118a9f3dbfeea0ee47879a9551af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1130,7 +1140,7 @@
   },
   "riftlight-finale/loss_second_failed/narration": {
     "source": "sha256:06ef1da40eba765c1202ec7a63cf31a0ffc3857e4fc453aaa316eefd7b09dd91",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1148,7 +1158,7 @@
   },
   "riftlight-finale/loss_epilogue/narration": {
     "source": "sha256:584f9e8324ae3ec5a97a21696379bf5728b6c8090c5a7338a870c4ef2dfc8909",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

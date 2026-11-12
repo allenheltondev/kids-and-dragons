@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "gemfall-03c/scene_spilled_pannier/narration": {
     "source": "sha256:35ed7ba31520004ffde9797de48a431c0a3d9ce65e0deed3b42c5a0990b22010",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -20,7 +20,7 @@
   },
   "gemfall-03c/scene_spilled_pannier_spot_all/narration": {
     "source": "sha256:7edabf0f407dc9332f933bd892eb011a62fa6ec593639538149f66cfedef10f1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -42,7 +42,7 @@
   },
   "gemfall-03c/scene_number_pebble/narration": {
     "source": "sha256:a5830e5b3474b39c4bc55284fa7671db4ccca367c6e683a3f3e8485727d85ca0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -60,7 +60,7 @@
   },
   "gemfall-03c/scene_number_pebble_buy_cake/narration": {
     "source": "sha256:6e9ed1b73140bef2a5fb23de478769e414030d28bcc07289e1c8d5fcf8009bdf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -78,7 +78,7 @@
   },
   "gemfall-03c/choice_runaway_goat/narration": {
     "source": "sha256:dbc0ba5802b891f759f7c8a564198edec0a2c3bed90c1300207dec0129c68df6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -96,7 +96,7 @@
   },
   "gemfall-03c/check_goat_chase/narration": {
     "source": "sha256:d303a67b23f96775a72eefe0dc2fabb66630811f9b99745c5c1ddc7393baf3c3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -118,7 +118,7 @@
   },
   "gemfall-03c/choice_runaway_goat_sort/narration": {
     "source": "sha256:e5731e44502c969b0b9af4aa5eafb3a201752eb993a3a795d0da55511f1fba76",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -144,7 +144,7 @@
   },
   "gemfall-03c/scene_three_cards/narration": {
     "source": "sha256:a16003df0f55059e2e74310058f473d3a26a700717b1b03449f39c7e0951808a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -162,7 +162,7 @@
   },
   "gemfall-03c/scene_three_cards_walk_by/narration": {
     "source": "sha256:54059c96fc53bc2918b5e6fee9a2bd42a91ef6fa49702883230e34411cd82bc5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -180,7 +180,7 @@
   },
   "gemfall-03c/scene_soup_line/narration": {
     "source": "sha256:68f4118d736b3c4d4d2c2e910e2c5d7242664f0b754426282a0c32d19d4751fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -198,7 +198,7 @@
   },
   "gemfall-03c/scene_soup_line_ask_crystal/narration": {
     "source": "sha256:564912d1c6fedb9a981c043de088462ee8779001620e793b9daec401678425fc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "wend",
@@ -220,7 +220,7 @@
   },
   "gemfall-03c/scene_soup_line_thank_wend/narration": {
     "source": "sha256:3079eae8403ca0f7aeebb51e20262d192ade48a6e434639743c01e7d5512591a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -238,7 +238,7 @@
   },
   "gemfall-03c/scene_queue_jumpers/narration": {
     "source": "sha256:6cd6d8bea28484db8cd0184f469353d7991c7f19acc5549eba80a0a6b47931fb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -254,9 +254,27 @@
       }
     ]
   },
+  "gemfall-03c/scene_queue_jumpers_call_drovers/narration": {
+    "source": "sha256:9529ba350988385e6a3baa84d1b8172c69ccfcb1c7075583d712513d7a62c486",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You fetch the lead drover. He strolls up the line, stands in front of the red scarves, and says one word."
+      },
+      {
+        "by": "lead_drover",
+        "text": "\"BACK.\""
+      },
+      {
+        "by": "narrator",
+        "text": "It rattles the wagon wheels. They go back."
+      }
+    ]
+  },
   "gemfall-03c/scene_queue_jumpers_send_back/narration": {
     "source": "sha256:df911e4a495f87ee545ccc90fc4f4abe21caadd3594b0f1f60184bf78cd8d6e3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -274,7 +292,7 @@
   },
   "gemfall-03c/scene_queue_jumpers_tamsin_help/narration": {
     "source": "sha256:09fddf657d0dec10d72b8ebbc69416466ce5d0e07d4c4406e4900ef186675461",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -292,7 +310,7 @@
   },
   "gemfall-03c/scene_relay_message/narration": {
     "source": "sha256:6ed3974a2af6f2fb1abf8467c4a59e391508ee37c2606e1bfaed0b139a4ddd37",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -310,7 +328,7 @@
   },
   "gemfall-03c/check_run_message/onSuccess/narration": {
     "source": "sha256:ece88c5ca59d6c825c5fcdb0f0b7305e73cbfe0e578b48982b3038a1f8c24a09",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -328,7 +346,7 @@
   },
   "gemfall-03c/scene_relay_message_fly/narration": {
     "source": "sha256:f725d28957345c6c75dd7ae522dcd5069c6c81267f4a56b8b4da3f54e1dde69e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -342,7 +360,7 @@
   },
   "gemfall-03c/choice_tolls/narration": {
     "source": "sha256:f1265bfd1e1df9f9b6c4c5a08554c89fb44d5f018ac3898b1cc76b9107291bbd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -360,7 +378,7 @@
   },
   "gemfall-03c/scene_markers_restored/narration": {
     "source": "sha256:b9baaf548b9b0dabb12edf3d82542b26ca26b2dfdf9b11535298163f7225f8be",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -374,7 +392,7 @@
   },
   "gemfall-03c/scene_campfire_play/narration": {
     "source": "sha256:c7164937a6d820d2e7a129d807465c73b0779639a4c526e77463920c3fe5c083",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -392,7 +410,7 @@
   },
   "gemfall-03c/check_play_mountain/narration": {
     "source": "sha256:ed1bbd314e29c82c367a50f19425474756dc4a2fe32a41f0d149ad77ecb388e1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -406,7 +424,7 @@
   },
   "gemfall-03c/scene_campfire_play_tell_true/narration": {
     "source": "sha256:49d7213699a0126622cbfb05ce369ee4b494b1c50c87345617ad79bd1175e8ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -414,7 +432,8 @@
       },
       {
         "by": "troupe_leader",
-        "text": "\"Much spookier,\""
+        "text": "\"Much spookier,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -424,7 +443,7 @@
   },
   "gemfall-03c/scene_campfire_play_rewrite/narration": {
     "source": "sha256:d46dc6f5e8308f42879976894ed99897cd44c95db50cd6fce5d91fac2e8c63c9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -442,7 +461,7 @@
   },
   "gemfall-03c/scene_witch_stall/narration": {
     "source": "sha256:87a9bec679c4f7f9fa87ff2193aaf78b52916b417a5fff896db0b3082caafea1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -460,7 +479,7 @@
   },
   "gemfall-03c/scene_witch_stall_sore_feet/narration": {
     "source": "sha256:bf9e53db99e1dc9217056ebcab9e118427f69ac244952da3246de472c5590554",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -478,7 +497,7 @@
   },
   "gemfall-03c/scene_tuned_charm/narration": {
     "source": "sha256:e2315af4cd15c258aa49876e04b6bd2108d5f552aaf2e0f40fa443e06f82cb79",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -496,7 +515,7 @@
   },
   "gemfall-03c/scene_tuned_charm_leave_it/narration": {
     "source": "sha256:e74310092733d19d500455e6e90d0f891191b0743e265af062f11d4d0aa4b3c8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -514,7 +533,7 @@
   },
   "gemfall-03c/scene_tuned_charm_take_it_home/narration": {
     "source": "sha256:75adc495bfbf77fcaf35bb73ac81c50805312415755f2908337387357846d516",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -536,7 +555,7 @@
   },
   "gemfall-03c/check_answer/onSuccess/narration": {
     "source": "sha256:60adc16cd22da00e857eb70b7ace471aa842347fe10ecb7dcaf1ae8a679d96ff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -558,7 +577,7 @@
   },
   "gemfall-03c/check_answer/onFailure/narration": {
     "source": "sha256:4dfde14dbad3ffe30fdda7ac17b8c784b0203034747c0815d5119e7514be03ba",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -580,7 +599,7 @@
   },
   "gemfall-03c/scene_crossing_verse/narration": {
     "source": "sha256:b122cabd67b3f37cec2d7b7191326f2827c2f45e5479259a04627c885976c2c0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -598,7 +617,7 @@
   },
   "gemfall-03c/check_learn_verse/narration": {
     "source": "sha256:08978c9d59529008d566e28ab901341604aa7872c53bc2811dc4ba0aaeb379ac",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -620,7 +639,7 @@
   },
   "gemfall-03c/check_learn_verse/onSuccess/narration": {
     "source": "sha256:e9f6bb76ed9516cc7dd9b09628535c8992a32615a9b5b95662993339051ad554",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -644,9 +663,23 @@
       }
     ]
   },
+  "gemfall-03c/scene_crossing_verse_drover_teaches/narration": {
+    "source": "sha256:7ef111564dd262a5d0d919e5b3d39e57dc1d293c1693c2956a0989462047fd3e",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "lead_drover",
+        "text": "\"Mudlarks! Over here!\""
+      },
+      {
+        "by": "narrator",
+        "text": "The lead drover teaches you each line until you can echo it. His eyebrows conduct the whole lesson. Now you know the crossing verse."
+      }
+    ]
+  },
   "gemfall-03c/choice_ford/narration": {
     "source": "sha256:2018e2804ebc7671ae6a81748effba29892a0246ccec7daa2726e79ce5599b72",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -664,7 +697,7 @@
   },
   "gemfall-03c/scene_surge_scarves_help/narration": {
     "source": "sha256:53ce30b3c6090557ce0b3d2344def2b4625e03503f1129fc0bd4c2667ee55db3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -686,7 +719,7 @@
   },
   "gemfall-03c/scene_reed_crabs/narration": {
     "source": "sha256:118b0028a2b5e6290f78255be29deeb3ca4bdb0aa302a2ba187e6837b6a1d491",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -704,7 +737,7 @@
   },
   "gemfall-03c/scene_crabs_cleared/narration": {
     "source": "sha256:d84cf8e5f4a7290c7a2539ff8d42680c629181f2217ab459eb3266f2f1b1eee8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -722,7 +755,7 @@
   },
   "gemfall-03c/interaction_soup_bowls/onSuccess/narration": {
     "source": "sha256:82c0a0f62cd312e9afb6c98a7ace354d815ed4c23de7fe4ee91451446afc2dba",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -740,7 +773,7 @@
   },
   "gemfall-03c/interaction_soup_bowls/onFailure/narration": {
     "source": "sha256:38f8c21d5933936b976f4406da1afc4cd69e04e9c66f5b634ac252476ccc1e19",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -758,7 +791,7 @@
   },
   "gemfall-03c/interaction_clear_lane/onSuccess/narration": {
     "source": "sha256:b2b8af5d801a8f6cc114f91fb07b015367541ee19727830fe207e9e9a08b4398",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +805,7 @@
   },
   "gemfall-03c/interaction_clear_lane/onFailure/narration": {
     "source": "sha256:d4c8fb46ddf9a3c20d19d268ccefff4b64db203f859069e786256916da128b68",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -790,7 +823,7 @@
   },
   "gemfall-03c/interaction_wagon_level/narration": {
     "source": "sha256:875be5023ffe4911cd0f17edcd7321cd2490d36409da7833cf737dd0984e47da",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

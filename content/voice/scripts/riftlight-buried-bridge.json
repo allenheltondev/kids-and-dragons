@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-buried-bridge/walk_out/narration": {
     "source": "sha256:8e0dd1deef712160599a61fbe2fde1e58a26813de010c8ec7141a145891f40e1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -32,7 +32,7 @@
   },
   "riftlight-buried-bridge/check_hop/narration": {
     "source": "sha256:f316dc84dd3265ad21727fd3c973ef66fa5f88f545fa2980c8d9fcf6daa21dc0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
@@ -46,7 +46,7 @@
   },
   "riftlight-buried-bridge/check_posts/onSuccess/narration": {
     "source": "sha256:8389638dff9c2d53704ab277654e25d031eba5311368c237091fb37ddde65640",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -64,7 +64,7 @@
   },
   "riftlight-buried-bridge/fly_rope/narration": {
     "source": "sha256:2ffca9ab5b3dd233207dec91af6dbc9871483490a05d1caf556c8f81bc8853ef",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -78,7 +78,7 @@
   },
   "riftlight-buried-bridge/walk_stuck/narration": {
     "source": "sha256:7b2a9a5321e1f7a2209318c9e8c76374e6b4f478523ec78552444e4917dd146c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -96,7 +96,7 @@
   },
   "riftlight-buried-bridge/bank/narration": {
     "source": "sha256:a78246e07ff5ebd2b5535c8635ace6da4148d8fcbaa6e93ff4ba10e56743a4af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -114,7 +114,7 @@
   },
   "riftlight-buried-bridge/orin/narration": {
     "source": "sha256:105e119426c1d3cf1f35d67ea5556400ccd69e465250e81f6479b721656fc2e1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -144,7 +144,7 @@
   },
   "riftlight-buried-bridge/share/narration": {
     "source": "sha256:a5ea27481c03609fe0f4df36ea39c600cc142d002b8b6ef98c20abd135de0c01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -170,7 +170,7 @@
   },
   "riftlight-buried-bridge/keep/narration": {
     "source": "sha256:87e21d7bb5ed95580bd2e64c98bd296d8f8794c79da2e53de6c6e5c4f88e6534",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -204,7 +204,7 @@
   },
   "riftlight-buried-bridge/pip_runs/narration": {
     "source": "sha256:40707453ae67e9f59828fa8b90e2869a7ed19423dc128cc12c184e4e4c630d26",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -226,7 +226,7 @@
   },
   "riftlight-buried-bridge/check_call/onSuccess/narration": {
     "source": "sha256:e0e6f897920b68b4d18d0fa141bf0d9135f50a2c0e935f084dbbd730a7376311",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pip_thistledown",
@@ -240,7 +240,7 @@
   },
   "riftlight-buried-bridge/pip_back/narration": {
     "source": "sha256:609121596345bcc77484a91933ca325f080be7fd8aed7099d6a713c3aa13ba5f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -282,7 +282,7 @@
   },
   "riftlight-buried-bridge/pip_falls/narration": {
     "source": "sha256:abcebbbe3da0ddd3ecdcdbc7b9025d195d6bc3eec8c267c1e6a01b0d060eff13",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -312,7 +312,7 @@
   },
   "riftlight-buried-bridge/silt_choice/narration": {
     "source": "sha256:c0823daae24b9ff60c9db19750c23ba779e8339adfaee44ddaab48926a393c4e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -350,7 +350,7 @@
   },
   "riftlight-buried-bridge/dug_out/narration": {
     "source": "sha256:b089660bffe762ca7af307607686969e58bbbe08f735cf6c10af9709627fac55",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -372,7 +372,7 @@
   },
   "riftlight-buried-bridge/dug_slow/narration": {
     "source": "sha256:3d238047c23060c1f26becf8a2f3532ff9658d70506ff2c80ed2f690866411bf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -390,7 +390,7 @@
   },
   "riftlight-buried-bridge/bigfoot_smash/narration": {
     "source": "sha256:a74bdaaae88ccbb77778335991f68b8d151cd0387bf3c2860b55583927fd6e95",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -412,7 +412,7 @@
   },
   "riftlight-buried-bridge/thornguard_brace/narration": {
     "source": "sha256:0dc51716bee786f3cc7a77b66a26f2443d687d48bbf5fa94d5596598cf8767bf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -438,7 +438,7 @@
   },
   "riftlight-buried-bridge/wash_out/narration": {
     "source": "sha256:1a3ad16c0fc868c5ccc1efd34511a5d0c7ea906658fdbecac47af67790646c15",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -452,7 +452,7 @@
   },
   "riftlight-buried-bridge/washed/narration": {
     "source": "sha256:e8c03c2295a63f2c2836edf937c021b1a1aabb2d10c53c438a60a99052c55ab2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -474,7 +474,7 @@
   },
   "riftlight-buried-bridge/under_arch/narration": {
     "source": "sha256:1565c21462343c60aa3c802cad486b709c7afd2feeb329800677f613e16003e6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -496,7 +496,7 @@
   },
   "riftlight-buried-bridge/measure/narration": {
     "source": "sha256:3b8d425aa9b301855a2efef6a93bfe9b0c752efbe0fedf40fe1fd0334397c766",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -514,7 +514,7 @@
   },
   "riftlight-buried-bridge/check_pole/onSuccess/narration": {
     "source": "sha256:11a48389fc66d67e9c4c9300c3b3e311a8851a1c9694ed48d5b3eb393ef121b2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "orin_vale",
@@ -528,7 +528,7 @@
   },
   "riftlight-buried-bridge/check_spot/onSuccess/narration": {
     "source": "sha256:97795a300d3256c611df57a2a28493fa2962766b8921f032568222762be46256",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -542,7 +542,7 @@
   },
   "riftlight-buried-bridge/measured/narration": {
     "source": "sha256:09fcdbf7d02fbcbc3e2d1adc11da24bdf840493aa5c89b8aa2e1f25d8bd2ea08",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -560,7 +560,7 @@
   },
   "riftlight-buried-bridge/measured_rough/narration": {
     "source": "sha256:a601803af8dd048918a3ecf59bbd1b24f562d99f270e3bc10aaba174251cd42c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -586,7 +586,7 @@
   },
   "riftlight-buried-bridge/samples/narration": {
     "source": "sha256:3e0ac0db33fe68d3f4e45289de1d2512046f5b9ab3e532938b4dfc68cf195448",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -612,7 +612,7 @@
   },
   "riftlight-buried-bridge/follow/narration": {
     "source": "sha256:aa3f6692b02eaf60d7c05fe2deb40e63847c3be6490962783afcfc72b43ebc84",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
@@ -634,7 +634,7 @@
   },
   "riftlight-buried-bridge/riverbed_end/narration": {
     "source": "sha256:fbea88334ef6c9a1a9aed1c66c5415ae71ad5efa04356cec08a3a22b4b68d88b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -660,7 +660,7 @@
   },
   "riftlight-buried-bridge/tide/narration": {
     "source": "sha256:08dd9334c9b6df7df4aae9e8f9c7457f2e40d3c927b8bd1fb04018cc8ff41c07",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -686,7 +686,7 @@
   },
   "riftlight-buried-bridge/drawings_saved/narration": {
     "source": "sha256:4e183c22659315bd2907267b7f819880871af72e5a1e04bb4046822e7c1655a5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -694,7 +694,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"My drawings for Lady Olivia,\""
+        "text": "\"My drawings for Lady Olivia,\"",
+        "delivery": "sad"
       },
       {
         "by": "narrator",
@@ -704,7 +705,7 @@
   },
   "riftlight-buried-bridge/drawings_soaked/narration": {
     "source": "sha256:56db1a71d0497ec0ed21f55ed08da29db7f561e3597e4566549c48fb63a27c47",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -730,7 +731,7 @@
   },
   "riftlight-buried-bridge/notebook_saved/narration": {
     "source": "sha256:b52d3c2c4e60940201e08f6c30aac8642cd3d1fb6b9415c1037edaf9a44b4f74",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -752,7 +753,7 @@
   },
   "riftlight-buried-bridge/notebook_soggy/narration": {
     "source": "sha256:069e4e53ef8e6e9a48ffc3a50cc3daf4806e3b5ee7c40c7f701b7f2546de9871",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -782,7 +783,7 @@
   },
   "riftlight-buried-bridge/both_saved/narration": {
     "source": "sha256:cd66e249a4c0836f4c9459584e1fe18f5b36939f2796e6817bae42fc6a4cdd72",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -804,7 +805,7 @@
   },
   "riftlight-buried-bridge/flood/narration": {
     "source": "sha256:7ccdfa0305ce4f74109c77ad90774090a55dd8e458e0fc944233a27b95a45d04",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -826,7 +827,7 @@
   },
   "riftlight-buried-bridge/pip_after/narration": {
     "source": "sha256:410fa84c3bf3b618f9441bfbe0111af07cf4a194b146400b9af89971649c51ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -844,7 +845,7 @@
   },
   "riftlight-buried-bridge/pip_after/variants/0": {
     "source": "sha256:e7b3ee7a430721eef7b109f9e440268538f7b1d7e0c487e9185b6389f1154ff1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -870,7 +871,7 @@
   },
   "riftlight-buried-bridge/rest/narration": {
     "source": "sha256:934544ff67597a7e84746569dc675b1803dd8dda772fd36a050fb1845e002d2f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -900,7 +901,7 @@
   },
   "riftlight-buried-bridge/old_river/narration": {
     "source": "sha256:a8a42ed496a4b4a5cfac4c03e4e0ffeba68c4c2d9d71ff70e3dac64fef6c8b5e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -942,7 +943,7 @@
   },
   "riftlight-buried-bridge/north/narration": {
     "source": "sha256:7e1188d46f260f8d676a39a788f2a406697107e783a55e84f45f6d45f466e41c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -968,7 +969,7 @@
   },
   "riftlight-buried-bridge/home/narration": {
     "source": "sha256:836daf3f461c4e6f13b165aab4ec37adae8926acb9eac1f4bd8d8f309a3ac819",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -982,7 +983,7 @@
   },
   "riftlight-buried-bridge/check_low/onFailure/narration": {
     "source": "sha256:80ad24a2af46cbe36dddc079d76116bd60c014975e3ed9a5e2da7be1d3dba53f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1000,7 +1001,7 @@
   },
   "riftlight-buried-bridge/ending/narration": {
     "source": "sha256:c63015c263d43a5f0827b0001d7c0be8161615fd42678294fbf68a78530b630a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1026,7 +1027,7 @@
   },
   "riftlight-buried-bridge/ending/variants/1": {
     "source": "sha256:5374a63bc944564c5e355633c1b722a143555bc7ff18caede11273477137a822",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

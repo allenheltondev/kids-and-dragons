@@ -19,7 +19,7 @@
  *   … --bucket kad-site-prod-123456   # a bucket by name
  *
  * Flags: --chapter ID (a chapter, `_<campaign>` or `_help`), --speaker ID,
- * --max-dollars N (default 75, stops before the request that would cross it),
+ * --max-dollars N (default 85, stops before the request that would cross it),
  * --max-chars N, --concurrency N, --model ID (a pricing.json id or its API model; default eleven_v4), --prune (drop manifest entries
  * nothing asks for any more), --with-choices, --region R, --fake (tones in place of a provider:
  * free, offline; with --dir its manifest goes beside the clips, never into content/).
@@ -60,7 +60,7 @@ const { values } = parseArgs({
     render: { type: "boolean", default: false },
     prune: { type: "boolean", default: false },
     "with-choices": { type: "boolean", default: false },
-    "max-dollars": { type: "string", default: "75" },
+    "max-dollars": { type: "string", default: "85" },
     "max-chars": { type: "string" },
     concurrency: { type: "string", default: "4" },
     fake: { type: "boolean", default: false },

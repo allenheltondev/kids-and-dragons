@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "gemfall-05b/scene_mosshome/narration": {
     "source": "sha256:11490330f62e2bb106ac3d6178ec200c905c6e48ca1ba0a7de69083a997a3c46",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -20,14 +20,14 @@
   },
   "gemfall-05b/scene_mosshome_feet/narration": {
     "source": "sha256:0246a8576888200b6938ef8c72b7386951f6a7ead9e9132f5ea55247e098a6c4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You wipe your feet on the welcome moss by the archive door. Then you wipe them again. The door flies open."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Twice!\""
       },
       {
@@ -35,7 +35,7 @@
         "text": "breathes an archivist."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Nobody from outside wipes twice.\""
       },
       {
@@ -46,14 +46,14 @@
   },
   "gemfall-05b/scene_mosshome_glade_word/narration": {
     "source": "sha256:721fff868a512178a83d424dfe31bb6a4dfe4bac3397f2fe6d79fd1e6d738d49",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You mention the glade. The archivist at the door runs her thumb along a cord to a knot."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"That glade's record changed this morning. It got better.\""
       },
       {
@@ -61,35 +61,35 @@
         "text": "She beams."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"In. Feet.\""
       }
     ]
   },
   "gemfall-05b/scene_mosshome_ask_door/narration": {
     "source": "sha256:8ca0248cd1d28b497afe836d7b0daf1d7960b039e13f84ae48399ee77d8d4e52",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "Your bigfoot knocks on the archive door three slow times, the MossHome way. The door opens by itself. An archivist drops an armful of cords."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Nobody's done that in years. Come in. Wipe your feet.\""
       }
     ]
   },
   "gemfall-05b/check_archive_door/narration": {
     "source": "sha256:8812a08a94c1438c6e415d745ab5ab70bb55fc506bfbad67266ba82116ea2e1a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "The archivist folds her arms on the doorstep."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Don't tell me your road,\""
       },
       {
@@ -97,35 +97,35 @@
         "text": "she says."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Show me. Every path that moved under your boots.\""
       }
     ]
   },
   "gemfall-05b/check_archive_door/onSuccess/narration": {
     "source": "sha256:bf83a4e1e5261f9d87cffb88da476795e4d5bd340540bc8e05dc4995473cf0a4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You stomp the last bend of your road into the moss. The archivist's eyebrows go up, and up again."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Come in. Wipe your feet. Twice.\""
       }
     ]
   },
   "gemfall-05b/check_archive_door/onFailure/narration": {
     "source": "sha256:990d802b288968817edb4aa3ad042ed0fb9370f7b8c3f03e6feb47f16414717c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "You stomp the wrong way and sit down hard in the moss."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Wait on the bench,\""
       },
       {
@@ -136,7 +136,7 @@
   },
   "gemfall-05b/scene_archive_table_newest/narration": {
     "source": "sha256:835725ef1e91258f0b5c955c1d71b728cdfdc038fb2729d6a2534927d4d2d85d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -154,7 +154,7 @@
   },
   "gemfall-05b/check_plot/narration": {
     "source": "sha256:e79c07c94ee3a92445ccefcb4b1519ed9f0aa1905e4c63350b5139b3633bb6a0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -168,7 +168,7 @@
   },
   "gemfall-05b/scene_spiral_on/narration": {
     "source": "sha256:88ce24c435f6fc5d4db2855071e7f11cba8220097b089ce57cdbee4c81999097",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "archivist",
@@ -182,7 +182,7 @@
   },
   "gemfall-05b/scene_spiral_hum/narration": {
     "source": "sha256:6cad74cd6e9b2dbea0ace462adac37dd080f5fef7458504a37d34df88b4342a5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -190,7 +190,8 @@
       },
       {
         "by": "archivist",
-        "text": "\"The oldest knots were tied to that note,\""
+        "text": "\"The oldest knots were tied to that note,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -200,7 +201,7 @@
   },
   "gemfall-05b/scene_knot_cords/narration": {
     "source": "sha256:4d00a8a03e5c387ef62b5487a67f7ce55d7b5becba68c15f40f03d66e404946b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -222,7 +223,7 @@
   },
   "gemfall-05b/scene_knot_cords_rest/narration": {
     "source": "sha256:5015b9fbcd14e7f00c7d0065556fffbfbeeb67243bc12b1728be5bd2f23e1c19",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -240,7 +241,7 @@
   },
   "gemfall-05b/scene_pile_question/narration": {
     "source": "sha256:9448dae325be9242e3acec7f90f9a328c5228b4dc914c59669e8770f3a443b63",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -262,7 +263,7 @@
   },
   "gemfall-05b/check_trust/onFailure/narration": {
     "source": "sha256:d6d99e0dbdaedafdc66a1756197904933e113137c76e4d4fe15a5c5c5ad8aeb6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "archivist",
@@ -276,7 +277,7 @@
   },
   "gemfall-05b/scene_pile_visit/narration": {
     "source": "sha256:b96b65b9d10aace7410f1b2a305f16ee71d1c002d81d841e7ff0c26ec0fc0e24",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -298,7 +299,7 @@
   },
   "gemfall-05b/scene_pile_visit_leave/narration": {
     "source": "sha256:339d63901e46a6d9c2473e42832aeacec49006db156a8b3a3844f8734c1d67e2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -316,7 +317,7 @@
   },
   "gemfall-05b/scene_pile_visit_carry/narration": {
     "source": "sha256:ff964fa2290c26c92187f08ffa759bfd33ad98df15d5b2234dc513a34fad46bb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -338,7 +339,7 @@
   },
   "gemfall-05b/scene_runners_post/narration": {
     "source": "sha256:48cb466fc64fea7161e68662e85bc3e4c2aea359cbe91a6da8ae655703e7720a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -356,7 +357,7 @@
   },
   "gemfall-05b/scene_runners_post_rush/narration": {
     "source": "sha256:8436d80d560a8fcb05e8682bfce254d8bfb227828c77b093c17985b1f20d391d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "runner",
@@ -380,9 +381,61 @@
       }
     ]
   },
+  "gemfall-05b/scene_runners_post_river/narration": {
+    "source": "sha256:e023515365e2dc52e0ed853d497120dcca3a788efdededb20ee94cf6de2e675b",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "\"The river road?\" A runner wipes her brow. The troll at Stone Crossing asks one question now: where did you get that, and where is it going? Out east, the manticore prides bend their roads around something."
+      },
+      {
+        "by": "runner",
+        "text": "\"Everybody's noticing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs."
+      }
+    ]
+  },
+  "gemfall-05b/scene_runners_post_gullet/narration": {
+    "source": "sha256:a0627205e50d8ca40abeeb8d6f019adc44dc4122f2e0e73e4a365c8934f44301",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "runner",
+        "text": "\"Gullet?\""
+      },
+      {
+        "by": "narrator",
+        "text": "A runner laughs."
+      },
+      {
+        "by": "runner",
+        "text": "\"Notched hat, hums a lot?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet has run out of hat and started on her other hat."
+      },
+      {
+        "by": "runner",
+        "text": "\"She says she's not worried,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the runner puffs."
+      },
+      {
+        "by": "runner",
+        "text": "\"Which means she is.\""
+      }
+    ]
+  },
   "gemfall-05b/scene_cloud_gatherer/narration": {
     "source": "sha256:f60f2002443dabb56d010d99aaa8c8601ad7ef7fddf76f25f62872e51f6a3bfe",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -412,7 +465,7 @@
   },
   "gemfall-05b/scene_cloud_gatherer_walk/narration": {
     "source": "sha256:1d2f9a15a453eb5648e1727bbd84b8de314e4c084a95c88ae3f9ce4e5c7ea547",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -434,7 +487,7 @@
   },
   "gemfall-05b/check_follow_moths/onSuccess/narration": {
     "source": "sha256:02ab7cfa939ec643974b9094aa5425ad70f68a0ca3bab5a6d55ca17bd015ad17",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -442,7 +495,8 @@
       },
       {
         "by": "young_gatherer",
-        "text": "\"I'm telling my grandmother,\""
+        "text": "\"I'm telling my grandmother,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -452,7 +506,7 @@
   },
   "gemfall-05b/check_follow_moths/onFailure/narration": {
     "source": "sha256:3b502fa37c485f18888449f54e2f2a940f8216ba3295133b83e26e20f9a5611f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -470,7 +524,7 @@
   },
   "gemfall-05b/scene_cloud_gatherer_greet/narration": {
     "source": "sha256:1f24be50e4ba0dee65038e5cdc6f97b9cba18aca70625616a11dbb94a9d3b335",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -496,7 +550,7 @@
   },
   "gemfall-05b/choice_elders/narration": {
     "source": "sha256:1cc7a2d1a538e624c3aef5c29bb39afaabf38a192734779895bcee5c828d5631",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -530,7 +584,7 @@
   },
   "gemfall-05b/choice_elders_close/narration": {
     "source": "sha256:1bc8ac862729c212030b830041d14ff9a4e7eeceb08cee7d8a1fa1544961a06c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "eldest",
@@ -556,7 +610,7 @@
   },
   "gemfall-05b/choice_elders_gatherers/narration": {
     "source": "sha256:d84bbf49c86eddd636d447c3c93520c9e321ce1514613f240d4d5bf568f67919",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "eldest",
@@ -582,7 +636,7 @@
   },
   "gemfall-05b/choice_elders_wardens/narration": {
     "source": "sha256:3bfbf532bf17779b39bb1eff08d6e084c5e32415a8b1d101883751d43156ace4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "eldest",
@@ -612,7 +666,7 @@
   },
   "gemfall-05b/scene_runner/narration": {
     "source": "sha256:9836bc6a45eb9928f37fd3a43f94c66f49859b3ac665324e422d15bf099be5e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -630,7 +684,7 @@
   },
   "gemfall-05b/scene_falls_stair/narration": {
     "source": "sha256:96a96217821c3c06ab3a63cdb361ec0671473349abaa88412e37bf52d85a0b28",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -648,7 +702,7 @@
   },
   "gemfall-05b/check_falls_logs/onSuccess/narration": {
     "source": "sha256:5f99f37c76ef427b694032f7bfd3c83474358a55480a3dcbf17c6924a9e65bc3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -666,7 +720,7 @@
   },
   "gemfall-05b/check_falls_logs/onFailure/narration": {
     "source": "sha256:17fa98b1708e434a61c90dba1ffe0caa4d270b4268827bf579df85cbdf6de03c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -684,7 +738,7 @@
   },
   "gemfall-05b/scene_falls_stair_dripping/narration": {
     "source": "sha256:41eba65b49ba080516db3abdb183d6acaccebcb0f21c5c96e3f6488def34b04b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "flood_warden",
@@ -714,7 +768,7 @@
   },
   "gemfall-05b/scene_soup_tent/narration": {
     "source": "sha256:b5b0e43b41187843f760a0ccc129ba6c6f7dede79109f37caf5bcb417f4605f0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -740,7 +794,7 @@
   },
   "gemfall-05b/scene_soup_tent_coins/narration": {
     "source": "sha256:c904cbe490e4c1cf979c4f4a5aca8bb8368a80b5d06442ef75230f4c78f1914c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -748,7 +802,8 @@
       },
       {
         "by": "soup_woman",
-        "text": "\"It'll wake so gently,\""
+        "text": "\"It'll wake so gently,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -758,7 +813,7 @@
   },
   "gemfall-05b/scene_soup_tent_refuse/narration": {
     "source": "sha256:93fb0c64dd2b7e4ebbec088d9d97ba1de00cbcba704ebdbcd3b03c978ca667b6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -780,7 +835,7 @@
   },
   "gemfall-05b/scene_halfway_hut/narration": {
     "source": "sha256:2fede3c90b2c7811b98091db18666c042556dd24269ec7bf3fd365bf1b23a8ff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -798,7 +853,7 @@
   },
   "gemfall-05b/scene_halfway_hut_sign/narration": {
     "source": "sha256:f569cc90b9d43e05cac2f77c186f758b92afd30ef44ace3ef9fdaff5f81e0556",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -816,7 +871,7 @@
   },
   "gemfall-05b/check_hut_pages/onSuccess/narration": {
     "source": "sha256:dcb5be8b0fd1da595159360e7db219804775eb6dcfb9c65a74f2dbf6c3215a09",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -838,7 +893,7 @@
   },
   "gemfall-05b/check_hut_pages/onFailure/narration": {
     "source": "sha256:4e7adf0bfa246eeee2ac2fa6896e309a0adefa270044c5639bd0631731954676",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -860,7 +915,7 @@
   },
   "gemfall-05b/interaction_post_relay/narration": {
     "source": "sha256:153d5374e54ed36f6e6ba36e9375336dff7b76bbbaa4778e44e9db323199a0b7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -878,7 +933,7 @@
   },
   "gemfall-05b/interaction_cord_knots/narration": {
     "source": "sha256:71b369970b4930def8ddb961ede29985a9fa049ac54cfc431a5d5a92691bd0ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -900,7 +955,7 @@
   },
   "gemfall-05b/scene_hut_honeycake/narration": {
     "source": "sha256:9147f92e092d4c6c2529b2ebdf8c9ce436ecaf9eb3fcf49e285d89fba7891bdd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
