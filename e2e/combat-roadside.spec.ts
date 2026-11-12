@@ -304,9 +304,22 @@ for (const fight of roadFights) {
         // Screen-reader progress must describe the same destination as the visible counter.
         await expect(display.page.getByLabel("Friends past the boundary")).toContainText("0/2 past the boundary");
       }
-      await display.page.evaluate(() => { document.documentElement.dataset.text = "largest"; });
+      await display.page.evaluate(async () => {
+        document.documentElement.dataset.text = "largest";
+        await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+        await document.fonts.ready;
+      });
       await display.page.screenshot({ path: info.outputPath("tv-largest.png") });
       await expect.poll(() => panel.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+      // Keep the mission and forecast physically inside the panel, even if a
+      // future overflow rule would conceal them from the scroll-height check.
+      await expect.poll(() => panel.evaluate(el => {
+        const box = el.getBoundingClientRect();
+        return [...el.querySelectorAll(".rift-status__clock, .rift-status__lines, .fight-log__plan")].every(row => {
+          const rect = row.getBoundingClientRect();
+          return rect.top >= box.top && rect.bottom <= box.bottom;
+        });
+      })).toBe(true);
       await display.page.evaluate(() => { delete document.documentElement.dataset.text; });
 
       let movedThroughUi = false;

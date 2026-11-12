@@ -52,3 +52,10 @@ Windows recording/trace teardown stalled after reaching an outcome in earlier ru
 - One painted-rift test initially lacked its original source painting. Pulling `art/` resolved it. That test and the player-panel suite whose worker failed both pass on rerun: 135 tests. The combat-panel worker failure is covered by the passing 334-test affected run.
 
 The full run remains red; the focused and browser passes above do not replace that result. No fresh family timing or enjoyment observations were collected.
+## CI review follow-up, November 12
+
+The initial Linux CI run passed its unit, build and content checks but failed the largest-text TV containment assertion in the river-drake, crawler-box and wolf-cart browser cases. Those failures were regressions in this PR, separate from the Windows findings above.
+
+The three missions now use the same compact layout as the other objective fights: their current objective replaces the repeated chapter goal inside the combat panel. The clock, objective and forecast remain visible at the original text size. The browser check waits for fonts, keeps the original scroll-height containment assertion, and also measures the critical rows against the panel bounds so hidden overflow cannot produce a false pass.
+
+After merging main, all three previously failing browser cases pass locally, as do 30 combat UI tests, typecheck and the production build/bundle gate (331/332 KB first paint; 1802/1802 KB total). The captures and recordings above document the original encounter pass; the three repeated chapter-goal rows shown there are removed by this follow-up.
