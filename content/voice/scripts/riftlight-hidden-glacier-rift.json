@@ -1235,7 +1235,7 @@
     ]
   },
   "riftlight-hidden-glacier-rift/listen/narration": {
-    "source": "sha256:6d1d73f889251d00d11654dd22d80113915bed9bb43cd1bcaeaff0bb232f9ca9",
+    "source": "sha256:ffe4a4cc8a597bf682c5d44eb0aaebfb421641fc8cbc2b830c77b62d32d274b3",
     "reviewed": true,
     "lines": [
       {
@@ -1249,11 +1249,12 @@
       },
       {
         "by": "narrator",
-        "text": "someone whispers."
+        "text": "you whisper."
       },
       {
         "by": "party",
-        "text": "\"The hall song. Down here.\""
+        "text": "\"The hall song. Down here.\"",
+        "delivery": "whisper"
       }
     ]
   },

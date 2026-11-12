@@ -533,24 +533,6 @@
       }
     ]
   },
-  "gemfall-04b/scene_beech_squirrel/narration": {
-    "source": "sha256:e2cae4865372459b95e016708b7213eda4a2bd067fa3fce95de38c15fe6859b9",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "You press a coin into the squirrel's paw. It bites the coin and whispers in the beech's ear."
-      },
-      {
-        "by": "beech_tree",
-        "text": "\"Fine,\""
-      },
-      {
-        "by": "narrator",
-        "text": "creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn. \"Throw it hard. It goes bang.\""
-      }
-    ]
-  },
   "gemfall-04b/scene_stepping_logs/narration": {
     "source": "sha256:0e901453c373ff4b0c8e128168faf7510d5bbfa26b0e96a4886137bf2f6129c1",
     "reviewed": true,
@@ -566,6 +548,36 @@
       {
         "by": "narrator",
         "text": "Mire mimics! They want your right boots too."
+      }
+    ]
+  },
+  "gemfall-04b/scene_beech_squirrel/narration": {
+    "source": "sha256:896795763f154454ecac68c855a6483bd70adff7bcfbf11d231fa369b7fd495e",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "You press a coin into the squirrel's paw. It bites the coin and whispers in the beech's ear."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Fine,\""
+      },
+      {
+        "by": "narrator",
+        "text": "creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"Throw it hard,\""
+      },
+      {
+        "by": "narrator",
+        "text": "creaks the beech."
+      },
+      {
+        "by": "beech_tree",
+        "text": "\"It goes bang.\""
       }
     ]
   }

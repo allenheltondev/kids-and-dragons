@@ -636,6 +636,20 @@
       }
     ]
   },
+  "riftlight-wyrm-nest/check_pots/narration": {
+    "source": "sha256:b54b81ec681bd1e995f1cc64d9629542d61bd17fd4122c541a3fa5ccb17340ff",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "pip_thistledown",
+        "text": "\"One, two, three!\""
+      },
+      {
+        "by": "narrator",
+        "text": "calls Pip. On three, everyone bangs: builders, Pip, even Flurry, with her needles on the kettle."
+      }
+    ]
+  },
   "riftlight-wyrm-nest/check_roar/narration": {
     "source": "sha256:3f7b966b3d8c61aeb1a2236a7b208e78ba89b2d575e646f3c40b6a6bfb0d7023",
     "reviewed": true,

@@ -177,7 +177,7 @@
     ]
   },
   "riftlight-boundary-stone-bank/plan/narration": {
-    "source": "sha256:538c3969d31f56bfef2a5121b9b80edbb9993075234c79e38c3ee3cb1d63ef8b",
+    "source": "sha256:ee4d271577908059bd0a518a4b95c796a5b5bc5821b6860ee37b293e652a9f0d",
     "reviewed": true,
     "lines": [
       {
@@ -194,7 +194,7 @@
       },
       {
         "by": "tally",
-        "text": "\"Or dig aaround him first, and see how the river did it. That's slower.\""
+        "text": "\"Or dig around him first, and see how the river did it. That's slower.\""
       },
       {
         "by": "narrator",
@@ -323,12 +323,12 @@
     ]
   },
   "riftlight-boundary-stone-bank/surge_safe/narration": {
-    "source": "sha256:aaae92bbd6ad2aa28a9a4a067ae1b734de2ded7f6c8074a0af6b445e09bc7e83",
+    "source": "sha256:776d6439ce80d3634e626c577cc9d7c6939166b870b882f43ee36648834aeec4",
     "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. The duck sails past, quacking its opinion."
+        "text": "The surge slaps the gravel and swirls around Splash's feet. Splash stands firm. The duck sails past, quacking its opinion."
       },
       {
         "by": "tally",
@@ -353,12 +353,12 @@
     ]
   },
   "riftlight-boundary-stone-bank/surge_safe/variants/0": {
-    "source": "sha256:1a5be0f87ba3387dc88eb5069b01cab3afcb1ecf917b8d8cbd56afb84f82e53e",
+    "source": "sha256:ad7559a792198c04ce58eca82b6a0b6a5eb133478ac70c41a31c17c78481ca0a",
     "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. Tally looks downriver after her kettle."
+        "text": "The surge slaps the gravel and swirls around Splash's feet. Splash stands firm. Tally looks downriver after her kettle."
       },
       {
         "by": "tally",

@@ -1518,6 +1518,24 @@
       }
     ]
   },
+  "riftlight-exchange-rift/together/narration": {
+    "source": "sha256:1af669e4a11c719781914443a76c1f4874f15c7e11422beb96d772370aa553f2",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The kid scrambles into the loop of rope between you. You pull it close."
+      },
+      {
+        "by": "dock_worker",
+        "text": "\"Hold on!\""
+      },
+      {
+        "by": "narrator",
+        "text": "a dock worker shouts, far away. The line holds you together as the quay folds out of sight."
+      }
+    ]
+  },
   "riftlight-exchange-rift/tumbled/narration": {
     "source": "sha256:e30970269b36d2fdac13f4519b6a33737ebe834a98ac5e24e1259901852515ca",
     "reviewed": true,
@@ -1559,6 +1577,24 @@
       {
         "by": "party",
         "text": "\"Nearly warm.\""
+      }
+    ]
+  },
+  "riftlight-exchange-rift/ridge_drift/narration": {
+    "source": "sha256:0f73eb0f7b26b9ec470c8945122872a963ab527b96f0eba1977cb30590034dcc",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wind shoves, and you all slide across the snow in a heap, like a sled with elbows. You stop against the low ridge, laughing a little. The kid peeks out and looks proud of you anyway."
+      },
+      {
+        "by": "party",
+        "text": "\"Again?\""
+      },
+      {
+        "by": "narrator",
+        "text": "somebody groans, and everyone laughs."
       }
     ]
   },
@@ -1631,42 +1667,6 @@
       {
         "by": "barge_pilot",
         "text": "\"And mind the puddles. Potatoes hate puddles.\""
-      }
-    ]
-  },
-  "riftlight-exchange-rift/together/narration": {
-    "source": "sha256:c85090412364a875fae3ff928f7cb1d707821a39f416c5f9ac96ddcab7e9849d",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The kid scrambles into the loop of rope between you. You pull it close."
-      },
-      {
-        "by": "dock_worker",
-        "text": "\"Hold on!\""
-      },
-      {
-        "by": "narrator",
-        "text": "somebody shouts, far away. The line holds you together as the quay folds out of sight."
-      }
-    ]
-  },
-  "riftlight-exchange-rift/ridge_drift/narration": {
-    "source": "sha256:0f73eb0f7b26b9ec470c8945122872a963ab527b96f0eba1977cb30590034dcc",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The wind shoves, and you all slide across the snow in a heap, like a sled with elbows. You stop against the low ridge, laughing a little. The kid peeks out and looks proud of you anyway."
-      },
-      {
-        "by": "party",
-        "text": "\"Again?\""
-      },
-      {
-        "by": "narrator",
-        "text": "somebody groans, and everyone laughs."
       }
     ]
   }

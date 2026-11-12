@@ -381,6 +381,58 @@
       }
     ]
   },
+  "gemfall-05b/scene_runners_post_river/narration": {
+    "source": "sha256:e023515365e2dc52e0ed853d497120dcca3a788efdededb20ee94cf6de2e675b",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "\"The river road?\" A runner wipes her brow. The troll at Stone Crossing asks one question now: where did you get that, and where is it going? Out east, the manticore prides bend their roads around something."
+      },
+      {
+        "by": "runner",
+        "text": "\"Everybody's noticing,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she puffs."
+      }
+    ]
+  },
+  "gemfall-05b/scene_runners_post_gullet/narration": {
+    "source": "sha256:a0627205e50d8ca40abeeb8d6f019adc44dc4122f2e0e73e4a365c8934f44301",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "runner",
+        "text": "\"Gullet?\""
+      },
+      {
+        "by": "narrator",
+        "text": "A runner laughs."
+      },
+      {
+        "by": "runner",
+        "text": "\"Notched hat, hums a lot?\""
+      },
+      {
+        "by": "narrator",
+        "text": "Gullet has run out of hat and started on her other hat."
+      },
+      {
+        "by": "runner",
+        "text": "\"She says she's not worried,\""
+      },
+      {
+        "by": "narrator",
+        "text": "the runner puffs."
+      },
+      {
+        "by": "runner",
+        "text": "\"Which means she is.\""
+      }
+    ]
+  },
   "gemfall-05b/scene_cloud_gatherer/narration": {
     "source": "sha256:f60f2002443dabb56d010d99aaa8c8601ad7ef7fddf76f25f62872e51f6a3bfe",
     "reviewed": true,

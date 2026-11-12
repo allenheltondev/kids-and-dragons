@@ -109,7 +109,7 @@
     ]
   },
   "riftlight-sky-islands-arrival/lesson/narration": {
-    "source": "sha256:0a604e67274daac7c973bccb51b0846256577db1e30e384c74da9352d10711a1",
+    "source": "sha256:aaa4a73c6f28c2d669d2075ca217bc9e5eb3cbfcd3df8bc8484f515eacc36c3f",
     "reviewed": true,
     "lines": [
       {
@@ -130,7 +130,7 @@
       },
       {
         "by": "narrator",
-        "text": "Seren asks you to hum the hall note and listen for an answer."
+        "text": "he adds. Seren asks you to hum the hall note and listen for an answer."
       },
       {
         "by": "seren_wisp",

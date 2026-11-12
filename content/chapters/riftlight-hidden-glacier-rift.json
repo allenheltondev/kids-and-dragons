@@ -1688,7 +1688,7 @@
     },
     "listen": {
       "type": "story",
-      "narration": "You put an ear near the rock. Under the gull cries, a low note rises and falls. \"That's our song,\" someone whispers. \"The hall song. Down here.\"",
+      "narration": "You put an ear near the rock. Under the gull cries, a low note rises and falls. \"That's our song,\" you whisper. \"The hall song. Down here.\"",
       "choices": [
         {
           "id": "continue",

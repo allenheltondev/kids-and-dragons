@@ -2054,7 +2054,7 @@
     },
     "scene_beech_squirrel": {
       "type": "story",
-      "narration": "You press a coin into the squirrel's paw. It bites the coin and whispers in the beech's ear. \"Fine,\" creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn. \"Throw it hard. It goes bang.\"",
+      "narration": "You press a coin into the squirrel's paw. It bites the coin and whispers in the beech's ear. \"Fine,\" creaks the beech, shuffling aside. The squirrel hands you a plum-sized acorn. \"Throw it hard,\" creaks the beech. \"It goes bang.\"",
       "choices": [
         {
           "id": "on",

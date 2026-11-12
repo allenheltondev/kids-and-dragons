@@ -1252,7 +1252,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "Seren holds the cord. Tally counts paces. Pip counts them differently. \"There are no halves in paces, Pip.\"",
+      "narration": "Seren holds the cord. Tally counts paces. Pip counts them differently. \"There are no halves in paces, Pip,\" says Tally.",
       "prompt": "Pace out a new bend in the road, as far from the fold as it will go",
       "roller": "party",
       "cast": [

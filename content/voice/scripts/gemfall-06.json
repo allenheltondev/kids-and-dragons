@@ -1141,7 +1141,7 @@
     ]
   },
   "gemfall-06/scene_record_hoard/variants/6": {
-    "source": "sha256:ee85f8172a2ed1633f259f7a3c5ac141a8186491af0f0c93aaaebea457c0ccdd",
+    "source": "sha256:f8f7c73eca4ba4bae41217225ad6f26a9f5827e1ea589e6584e23ed9e46d1f37",
     "reviewed": true,
     "lines": [
       {
@@ -1150,7 +1150,7 @@
       },
       {
         "by": "narrator",
-        "text": "he reads."
+        "text": "Pellam reads."
       },
       {
         "by": "pellam",
@@ -1177,7 +1177,7 @@
     ]
   },
   "gemfall-06/scene_record_hoard/variants/8": {
-    "source": "sha256:2a5dd2be2710c62b906595f7d22bb03ef4b8ce2f8cc97122d0f4c86e5fa88477",
+    "source": "sha256:b1d72fe53304f1b45df10197dc1c26e15dd28ac31f46c3a0a1ee0dca6ed214a8",
     "reviewed": true,
     "lines": [
       {
@@ -1186,7 +1186,7 @@
       },
       {
         "by": "narrator",
-        "text": "he reads."
+        "text": "Pellam reads."
       },
       {
         "by": "pellam",

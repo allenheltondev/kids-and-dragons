@@ -602,24 +602,6 @@
       }
     ]
   },
-  "gemfall-05a/check_tibbet/onFailure/narration": {
-    "source": "sha256:f05e7d1ab18ad6890bf91b0bc46348747c6f63c4d5c99c06a58ae52ff9790850",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says"
-      },
-      {
-        "by": "apprentice",
-        "text": "\"Tibbet, let them hold the string,\""
-      },
-      {
-        "by": "narrator",
-        "text": "and pulls you around the side of the tent."
-      }
-    ]
-  },
   "gemfall-05a/scene_survey_guard_clerks_stone/narration": {
     "source": "sha256:f2d02598bc88b7444806d8732f539c60b5697470a4cb1d1ce91349bf9045da9f",
     "reviewed": true,
@@ -1107,6 +1089,24 @@
       {
         "by": "flag_warden",
         "text": "\"Learn my flags before your turn.\""
+      }
+    ]
+  },
+  "gemfall-05a/check_tibbet/onFailure/narration": {
+    "source": "sha256:3458f1a7cd0754de9422a92ec95a571de1350b511d35455858635219f67bb176",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an apprentice pokes her head out, says"
+      },
+      {
+        "by": "apprentice",
+        "text": "\"Tibbet, let them hold the string,\""
+      },
+      {
+        "by": "narrator",
+        "text": "and pulls you around the side of the tent."
       }
     ]
   }

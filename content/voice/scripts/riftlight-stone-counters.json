@@ -829,7 +829,7 @@
     ]
   },
   "riftlight-stone-counters/check_bend/narration": {
-    "source": "sha256:b1c59b870e469af6d91384de8f22d1a43c3bb838eacedf23696e889eb7caa8c8",
+    "source": "sha256:9e3c213859f2c019f5edba374a868a051bbf824dac43b2ef140741c045965cf6",
     "reviewed": true,
     "lines": [
       {
@@ -838,7 +838,11 @@
       },
       {
         "by": "dragonling_stone_keeper",
-        "text": "\"There are no halves in paces, Pip.\""
+        "text": "\"There are no halves in paces, Pip,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tally."
       }
     ]
   },

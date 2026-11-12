@@ -41,12 +41,20 @@
     ]
   },
   "gemfall-05c/check_not_diggers/onSuccess/narration": {
-    "source": "sha256:9498682851f4cf243876c1d4f8d4444f363dd35b1fde61ee7ec036938713b549",
+    "source": "sha256:bd0f1c8a100aca5d16701d9a40153dc0ec03c7e1b0ab34edf5b3c134cd37c835",
     "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes."
+        "text": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Not diggers,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she writes. Then she looks up."
       },
       {
         "by": "grandmother",
@@ -702,6 +710,24 @@
       }
     ]
   },
+  "gemfall-05c/scene_crowd_at_stones/narration": {
+    "source": "sha256:3bc7cccdf0272ef9f707fe1010775ac909b95eac8d4909fd3fbe3e2dbcc3a968",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the stones, the morning crowd is pushing. A man in a feathered hat shouts from a cart that they are only rocks."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Not one step back, dears,\""
+      },
+      {
+        "by": "narrator",
+        "text": "say the grandmothers. Help make room, share what you know, or use your bell job."
+      }
+    ]
+  },
   "gemfall-05c/scene_centaur_whisper/narration": {
     "source": "sha256:c8760d16657e26b0e8e1d18dfda0b7ce10bf50fc514c7ea9383b96bb11f3014f",
     "reviewed": true,
@@ -1102,24 +1128,6 @@
       {
         "by": "narrator",
         "text": "The stone stays on its list."
-      }
-    ]
-  },
-  "gemfall-05c/scene_crowd_at_stones/narration": {
-    "source": "sha256:3bc7cccdf0272ef9f707fe1010775ac909b95eac8d4909fd3fbe3e2dbcc3a968",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "At the stones, the morning crowd is pushing. A man in a feathered hat shouts from a cart that they are only rocks."
-      },
-      {
-        "by": "grandmother",
-        "text": "\"Not one step back, dears,\""
-      },
-      {
-        "by": "narrator",
-        "text": "say the grandmothers. Help make room, share what you know, or use your bell job."
       }
     ]
   }

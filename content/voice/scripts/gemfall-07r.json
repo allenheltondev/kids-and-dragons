@@ -542,7 +542,7 @@
     ]
   },
   "gemfall-07r/scene_morning_slide/narration": {
-    "source": "sha256:412b6be4725c60f96019a67404705859d4954475e266d5c50e295ce8d3b2d090",
+    "source": "sha256:9df98e64371e56e8c94f2e4bf8485487e04186c99ed9c605bdd90bca207e7337",
     "reviewed": true,
     "lines": [
       {
@@ -555,7 +555,7 @@
       },
       {
         "by": "narrator",
-        "text": "says a warden, and he writes ROAD CLOSED on his clipboard in very small letters, as if that will help."
+        "text": "says a warden sergeant, and he writes ROAD CLOSED on his clipboard in very small letters, as if that will help."
       }
     ]
   },

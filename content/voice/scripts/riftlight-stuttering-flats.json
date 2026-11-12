@@ -907,7 +907,7 @@
     ]
   },
   "riftlight-stuttering-flats/herder_home/narration": {
-    "source": "sha256:2821fb45ff7a28c33d76edd29c89c1edeff9b4fbc844675516bf2285e210d490",
+    "source": "sha256:6c4ab2b1c058e8204dc3637320158f54ceb1f17c4a8bc081e5938f53322ffb37",
     "reviewed": true,
     "lines": [
       {
@@ -916,7 +916,7 @@
       },
       {
         "by": "narrator",
-        "text": "The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads."
+        "text": "you shout. The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads."
       },
       {
         "by": "yeti_herder",

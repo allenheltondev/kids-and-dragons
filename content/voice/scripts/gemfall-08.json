@@ -1938,12 +1938,12 @@
     ]
   },
   "gemfall-08/interaction_verdict_council_response_helped/narration": {
-    "source": "sha256:f2f972d0eda0ad980d999129e95f61ea4c02744eec381d8d4859928d55b21d6e",
+    "source": "sha256:502a4f23a8d9b5582db66355f3d91c37cbc6a8a4675574c1e5bcc0438024644c",
     "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "An embermoth settles closer to listen. Then it moves aside."
+        "text": "An embermoth settles closer to listen. Then it flutters aside."
       },
       {
         "by": "seal_keeper",
@@ -1951,7 +1951,7 @@
       },
       {
         "by": "narrator",
-        "text": "it says."
+        "text": "says the Seal-Keeper."
       }
     ]
   },

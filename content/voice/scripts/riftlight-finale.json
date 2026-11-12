@@ -229,7 +229,7 @@
     ]
   },
   "riftlight-finale/figure/narration": {
-    "source": "sha256:36fc884985a05532302fb19558cba8a12b40ee29fb57d6ae023907609c4f8696",
+    "source": "sha256:c297e731c09675cb383bfb4b9a0931bf8f0821075a69d1ce69cb3138f1432dcb",
     "reviewed": true,
     "lines": [
       {
@@ -246,11 +246,11 @@
       },
       {
         "by": "corvane",
-        "text": "\"It was never on that side.\""
+        "text": "\"It was never on that side,\""
       },
       {
         "by": "narrator",
-        "text": "In your pack, the chime rings all by itself."
+        "text": "the figure mutters. In your pack, the chime rings all by itself."
       }
     ]
   },

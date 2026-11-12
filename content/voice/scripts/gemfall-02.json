@@ -682,12 +682,12 @@
     ]
   },
   "gemfall-02/interaction_stuck_wagon/narration": {
-    "source": "sha256:735114ba3702e61eff4f55461eec83102a4622de5eb7ba02dd6533287b162ff6",
+    "source": "sha256:cf09b760befd503fd4f861d476fedc60b3c5016b370b8ae37c309304a31f53e2",
     "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a very polite centaur, waves you over."
+        "text": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a centaur in a great hurry, waves you over."
       },
       {
         "by": "drover",
