@@ -127,7 +127,23 @@
       }
     ]
   },
+  "bramblewood-01/encounter_bramblewisps/narration": {
+    "": [
+      {
+        "clip": "7b1add6efb98e388a459e64b0f62693d8cf60ca4e9b3e5bc32e87608dcebbf83",
+        "ms": 18307
+      }
+    ]
+  },
   "bramblewood-01/encounter_bramblewisps/onDefeat/narration": {
+    "": [
+      {
+        "clip": "8ab9cc793511657e36931506a8673a0a3dcdd03b53515682644285ea480956ba",
+        "ms": 6307
+      }
+    ]
+  },
+  "bramblewood-01/encounter_bramblewisps/onTimeout/narration": {
     "": [
       {
         "clip": "8ab9cc793511657e36931506a8673a0a3dcdd03b53515682644285ea480956ba",

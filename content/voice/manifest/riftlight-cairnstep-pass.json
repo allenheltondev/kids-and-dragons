@@ -15,7 +15,35 @@
       }
     ]
   },
+  "riftlight-cairnstep-pass/cache_fight/narration": {
+    "": [
+      {
+        "clip": "47b423db6b6710a34c6b0c0802fac6efc924092f6b6d5263f288f23dc3823090",
+        "ms": 17007
+      }
+    ]
+  },
   "riftlight-cairnstep-pass/cache_fight/onDefeat/narration": {
+    "": [
+      {
+        "clip": "9b233ce08f3f780d49b42fb21b5ef2030d858c2dbe21c8a1027fe1b99fdf5c37",
+        "ms": 2600
+      },
+      {
+        "clip": "5402812e8c0e81cbcdf64ecb38ceb58d97ee99775c3702426f457c1e1b4d1e76",
+        "ms": 1650
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "f568cb36ff4589b53e6b9861cf2f4370ba40430e97a2fc60e60932cc1fec2005",
+        "ms": 1661
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cache_fight/onTimeout/narration": {
     "": [
       {
         "clip": "9b233ce08f3f780d49b42fb21b5ef2030d858c2dbe21c8a1027fe1b99fdf5c37",
@@ -40,6 +68,14 @@
       {
         "clip": "000f5b71457362840f4e6da288bfc29d14b390eb973f5234edacd1012d13cff0",
         "ms": 6807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cache_fight/onVictory/variants/0": {
+    "": [
+      {
+        "clip": "359bdabfe47c66da8d3695e545bd5e65b1df917ef1b676cddcc045a022db47fb",
+        "ms": 7607
       }
     ]
   },

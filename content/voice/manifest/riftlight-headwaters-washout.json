@@ -651,6 +651,30 @@
       }
     ]
   },
+  "riftlight-headwaters-washout/drake_fight/narration": {
+    "": [
+      {
+        "clip": "f8ab89b4a8c01c071be739d418f1c3c32684b3fd6b852c907ad29a9780753bf7",
+        "ms": 19007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/drake_fight/onVictory/narration": {
+    "": [
+      {
+        "clip": "d80c23afa11f305cfbf3edc13475fa60480a44de92ff8f89e716410170123296",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/drake_fight/onVictory/variants/0": {
+    "": [
+      {
+        "clip": "662c3664beac946b45669dcdd94d23321f033ea3d02baa6fb9a0574d8e23f713",
+        "ms": 6307
+      }
+    ]
+  },
   "riftlight-headwaters-washout/drake_rescued/narration": {
     "": [
       {
