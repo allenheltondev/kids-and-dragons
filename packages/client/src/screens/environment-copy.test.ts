@@ -175,6 +175,7 @@ describe("objectives (#220)", () => {
       "Close the tear: end your turn on it or next to it. 1 of 3. Do it and the fight is won.",
     );
     expect(objectiveLine({ ...hold, progress: 3, done: true })).toBe("Hold the stones: done!");
+    expect(objectiveLine({ ...hold, art: "fight-warm-mud-hollow", endsFight: true })).toBe("Hold the stones (1/3). End rounds with a hero on it and no monsters to win.");
     expect(objectiveIcon("hold")).not.toBe(objectiveIcon("close"));
     expect(tileWords({ kind: "objective", label: "Hold the stones", active: true })).toBe("Hold the stones, stop here");
   });

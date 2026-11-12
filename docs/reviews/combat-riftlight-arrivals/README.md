@@ -8,13 +8,13 @@ After the final six Gemfall encounters in #753, the next catalog pass covers thr
 | Frostfang gravel bar | Clear the blocked burrow with two helping turn ends, while avoiding or interrupting committed claw sweeps. | A sweep hits the ground already marked. Fox Fire interrupts one crab while the other can still strike. Taking a hit does not reset burrow work. Failure still costs the afternoon and luckstone before the goat-carry scene. |
 | Sky Islands signal basket | Free and steady the basket while distracting its tugger and avoiding the other wisp's committed sparks. | Leaving the basket alone lets the tugger pull it loose. Defeating the wisps does not substitute for saving the beacon. Failure still gets Sorrel's bell rescue and loses the jar; the recovery now shows her catching the pole and rekindling the ember. |
 
-The compact boards reuse existing painted props and terrain. The Frostfang mission replaces the repeated chapter goal in the combat panel, keeping the deadline, objective and forecast visible. Physical basket loss says it is gone, retaining the old rift wording for legacy captives.
+The compact boards reuse existing painted props and terrain. Painted missions replace the repeated chapter goal in the combat panel, keeping the deadline, objective and forecast visible. Physical basket loss says it is gone, retaining the old rift wording for legacy captives.
 
 ## Captured play
 
 | Encounter | 320px phone | Largest-text TV |
 | --- | --- | --- |
-| Saltrot | [Phone](https://assets.kd.readysetcloud.io/sha256/29/29c31b4b530c779a66cd8cdcf4ef845017bd7eb0b2db2c9cc4589c2d647178d2.png) | [TV](https://assets.kd.readysetcloud.io/sha256/62/629eef8b768540092745cf0b99f717ebb41de7f06c424af5cb5920761b20a31b.png) |
+| Saltrot | [Phone](https://assets.kd.readysetcloud.io/sha256/3c/3c05d71f51695e8c9e71f8c0dff646aee989a65deb0a231db4071e1a0400fcca.png) | [TV](https://assets.kd.readysetcloud.io/sha256/88/8820c80626092ffa1ffd805f740dc5984411659120b49b8c9729dc732fe6ea72.png) |
 | Frostfang | [Phone](https://assets.kd.readysetcloud.io/sha256/2a/2a28ec20e36348150806f45f256e3b0993c290c4a2cdd7059e065b3906a358ae.png) | [TV](https://assets.kd.readysetcloud.io/sha256/0c/0c54d21bcee8918d12246dec72da9f1b77c7c73c3b46e09ca17779e687896f4c.png) |
 | Sky Islands | [Phone](https://assets.kd.readysetcloud.io/sha256/84/84c967f76795aa5ba9499ecf5fa2e4070185d7acddad1f7f5930380ad4f3b514.png) | [TV](https://assets.kd.readysetcloud.io/sha256/65/653bf39983a8dc737f00244737f9ac57b0ed1587614a6c8efa755b6d5bcd3d8d.png) |
 
@@ -33,5 +33,9 @@ Frostfang also captures [the phone-triggered interruption](https://assets.kd.rea
 Browser success uses controlled misses to isolate movement, objectives and UI behavior. Separate engine checks use damaging rolls to verify that standing in the claw sweep hurts and recovery remains possible. These checks establish behavior and presentation, not children's enjoyment; no fresh family observation was collected.
 
 The first Linux CI run exposed two regressions: the persisted-art test still manufactured a basket victory by downing every wisp, and the basket's verbose rescue instructions overflowed the largest-text TV panel. The fixture now saves the basket before asserting victory art. The painted rescue line keeps work progress and remaining tugs concise beside the already visible clock, preserving the containment assertions and text size. The browser interruption waits for the confirmed server action and removal of the pending sweep. The engine-to-caption check confirms that the interrupted crab lowers its claws. Reload restores the actual phone encounter; play continues with reduced motion on every device.
+
+A later Linux run passed all 12,121 unit tests (13 skipped), but also exposed Saltrot's tight largest-text panel. Painted hold missions now use shorter instructions with the same progress, round-end condition and win rule; Saltrot's repeated browser run passes. The chapter-goal omission uses objective art instead of a growing list of mission IDs, retaining the original wagon exception. An audit confirmed that every other previous exception has painted objective art. This also keeps the production payload inside the existing budget.
+
+The local UI sweep passed 1,251 tests across 84 files, with two Windows worker-start errors. Both affected files and the caption suite pass on rerun: 95 tests. Final CI status is on the PR.
 
 Remaining ordinary Riftlight fights: Ashspan Bridge mimic, Cairnstep Pass cache and Headwaters Washout drake. Hollow Crown's Bramblewood fight also remains in the broader catalog.
