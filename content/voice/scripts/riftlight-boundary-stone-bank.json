@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-boundary-stone-bank/stones/narration": {
     "source": "sha256:fad1fcbc3653d360051b38c5e648325898b76f4699b509a07ab2e4412d1eb5bd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -32,7 +32,7 @@
   },
   "riftlight-boundary-stone-bank/markings/narration": {
     "source": "sha256:fd5c5816224cfc64affa83d4d93037694d66165dcdffb17de4174e1fb4a8e447",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -54,7 +54,7 @@
   },
   "riftlight-boundary-stone-bank/carving/narration": {
     "source": "sha256:73856056a9e55dc4b355fb7ff466b808590d8e9601334f01f9dbc88c1f60a59a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -80,7 +80,7 @@
   },
   "riftlight-boundary-stone-bank/rubbed/narration": {
     "source": "sha256:567228f8032f784bef00162ce27b730758b0d072a5b95f4ca4572002867bc9b7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -98,7 +98,7 @@
   },
   "riftlight-boundary-stone-bank/rub_torn/narration": {
     "source": "sha256:44fc340524af38d8dbb8bae3c12b1480ef8bb57c6ce78007cf9bfdf2ec2ca4d8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -116,7 +116,7 @@
   },
   "riftlight-boundary-stone-bank/marker/narration": {
     "source": "sha256:e172f7a783bdc0cc1ea707fb5ef431763e4db463a3f42ef8ac795a5176d87107",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -142,7 +142,7 @@
   },
   "riftlight-boundary-stone-bank/marker_set/narration": {
     "source": "sha256:00d046cd9d7f552065bed48dcfb9ee588c3ab0063002cc4f8152eed1f8e7ff5a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -156,7 +156,7 @@
   },
   "riftlight-boundary-stone-bank/row/narration": {
     "source": "sha256:23c9e12bcaca41d4111c557e292bc641bfd6877dfa65a271f799c9cbda7aacb2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -178,7 +178,7 @@
   },
   "riftlight-boundary-stone-bank/plan/narration": {
     "source": "sha256:538c3969d31f56bfef2a5121b9b80edbb9993075234c79e38c3ee3cb1d63ef8b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -208,7 +208,7 @@
   },
   "riftlight-boundary-stone-bank/lever_check/narration": {
     "source": "sha256:a0a973d1c3425a19da47e44e27bb412a0555f0aedea1958627ca3b7a94cc6832",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -238,7 +238,7 @@
   },
   "riftlight-boundary-stone-bank/dug_found/narration": {
     "source": "sha256:c050cc69245408d190dd32964a834a33e4dc5f5d39a9f41f84227c78c37efb35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -246,7 +246,8 @@
       },
       {
         "by": "tally",
-        "text": "\"It came over the top,\""
+        "text": "\"It came over the top,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -254,7 +255,8 @@
       },
       {
         "by": "tally",
-        "text": "\"Over the bank, and back down. It pushed him from above.\""
+        "text": "\"Over the bank, and back down. It pushed him from above.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -264,7 +266,7 @@
   },
   "riftlight-boundary-stone-bank/splash_up/narration": {
     "source": "sha256:0b38b87e00d0e540369b43ac67d125518cbb04ba5b88b7b98cac159e572bf830",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -286,7 +288,7 @@
   },
   "riftlight-boundary-stone-bank/splash_up/variants/0": {
     "source": "sha256:09ac578479bce2f400f1859a97343161857b9c196c58adb47e7e6a7204e26f9f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -300,7 +302,7 @@
   },
   "riftlight-boundary-stone-bank/splash_up/variants/1": {
     "source": "sha256:b14ed020d2cb0bcf106bbfee743dd2d40d4e373693cd8069a147a93eb526e248",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -322,7 +324,7 @@
   },
   "riftlight-boundary-stone-bank/surge_safe/narration": {
     "source": "sha256:aaae92bbd6ad2aa28a9a4a067ae1b734de2ded7f6c8074a0af6b445e09bc7e83",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -352,7 +354,7 @@
   },
   "riftlight-boundary-stone-bank/surge_safe/variants/0": {
     "source": "sha256:1a5be0f87ba3387dc88eb5069b01cab3afcb1ecf917b8d8cbd56afb84f82e53e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -374,7 +376,7 @@
   },
   "riftlight-boundary-stone-bank/notch_plan/narration": {
     "source": "sha256:c91fcc474c8d9da5938c48d2502ba9cb623cc62e82e8b2aa43c1c2a5c511d8b7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -404,7 +406,7 @@
   },
   "riftlight-boundary-stone-bank/chisel_check/narration": {
     "source": "sha256:573e45f2d8edd15c99c31797d363794233c68bfa2ee9ce4e89d6f651a63ef7a4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -412,7 +414,8 @@
       },
       {
         "by": "tally",
-        "text": "\"One, two, three,\""
+        "text": "\"One, two, three,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -422,7 +425,7 @@
   },
   "riftlight-boundary-stone-bank/notch_cut/narration": {
     "source": "sha256:a39c8e5e16bbc88ba195e2ed570695de4a90bc81c1de8bd502db32e789bf42b7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -444,7 +447,7 @@
   },
   "riftlight-boundary-stone-bank/notch_crooked/narration": {
     "source": "sha256:7d280845e300d245514c709627e55a6387eef1709bef306274084bb41667d9eb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -474,7 +477,7 @@
   },
   "riftlight-boundary-stone-bank/cord_plan/narration": {
     "source": "sha256:0c3fed6171fd38f8030fe78ccd47e248ab7b7812c047c69e3b02fc7db1ab60d7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -492,7 +495,7 @@
   },
   "riftlight-boundary-stone-bank/cord_run/narration": {
     "source": "sha256:3599dacfb478ec27bbb5c14675ad09ec925a7ef5364fb605313529aef785bbe5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -514,7 +517,7 @@
   },
   "riftlight-boundary-stone-bank/tighten/narration": {
     "source": "sha256:31470b0fb5496008bb0b29b169be6b98a1d9a46c07315bb1eb00321fca930a46",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -532,7 +535,7 @@
   },
   "riftlight-boundary-stone-bank/tight/narration": {
     "source": "sha256:395c730b789e6f1902febf5a87b0b1837b5cc8742cbe99622fb257520065e6a7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -550,7 +553,7 @@
   },
   "riftlight-boundary-stone-bank/tight/variants/0": {
     "source": "sha256:5e03216f9be604e261175eb948d41154472f9b97581b1505a71e888390bd5375",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -568,7 +571,7 @@
   },
   "riftlight-boundary-stone-bank/push_check/narration": {
     "source": "sha256:7c0a391eb7d750f22fa8459e19b19783ca775a445d668db685581e063ac7250f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tally",
@@ -586,7 +589,7 @@
   },
   "riftlight-boundary-stone-bank/fourth_ok/narration": {
     "source": "sha256:460c9214d159639665081a05ebb7ca4c49f5767f4d77cc42c8e1062b4a2fc141",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -612,7 +615,7 @@
   },
   "riftlight-boundary-stone-bank/fourth_shift/narration": {
     "source": "sha256:4dbed23c2bbe88f582c710828045329cd2927c98f04cbded9636c343092212fe",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -630,7 +633,7 @@
   },
   "riftlight-boundary-stone-bank/top_stone/narration": {
     "source": "sha256:441e2d4cfa26b1a33f6862002b66eace1e42b964e347293de518588d028d4339",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -652,7 +655,7 @@
   },
   "riftlight-boundary-stone-bank/lean/narration": {
     "source": "sha256:5c3b3e2853ecdbfeaf6e8e735ec66d2e3a18f760ade3dae66b145d8b180ad8fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -670,7 +673,7 @@
   },
   "riftlight-boundary-stone-bank/compare/variants/0": {
     "source": "sha256:2eb1a4d002ec106e9ab39046d95cb5b062468f6615683883178e9593d12cd9ce",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tally",
@@ -688,7 +691,7 @@
   },
   "riftlight-boundary-stone-bank/notch_count_check/narration": {
     "source": "sha256:a043e46621f9e894445654175762a9bf3f43580572bf200080ab4d55278da71a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tally",
@@ -706,7 +709,7 @@
   },
   "riftlight-boundary-stone-bank/muddle/narration": {
     "source": "sha256:e2b920eb48ce279ee773e72b9d27b043d6688b7df8b693331dede728db5a8269",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -724,7 +727,7 @@
   },
   "riftlight-boundary-stone-bank/clue/narration": {
     "source": "sha256:ac27edc5abf5b4a5e125fbd4d288565e8121128f2d66852064bd82eb9d891fd9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -746,7 +749,7 @@
   },
   "riftlight-boundary-stone-bank/record_plan/narration": {
     "source": "sha256:e15116d7037b8ce3a0bd3b9a125b5a92030af22404c690a255de695e091c3949",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -760,19 +763,11 @@
   },
   "riftlight-boundary-stone-bank/wrote_plain/narration": {
     "source": "sha256:ac7dc8bc09a996254faa40b46f35dccac7cd30aebc998e94af54fbcc5536084c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "She writes one line:"
-      },
-      {
-        "by": "tally",
-        "text": "\"Three counts. None match the eruption.\""
-      },
-      {
-        "by": "narrator",
-        "text": "She does not write why. Then she adds a tiny mountain wearing a hat."
+        "text": "She writes one line: \"Three counts. None match the eruption.\" She does not write why. Then she adds a tiny mountain wearing a hat."
       },
       {
         "by": "tally",
@@ -790,7 +785,7 @@
   },
   "riftlight-boundary-stone-bank/drew_both/narration": {
     "source": "sha256:7a1d7b864f8ffe4dc5e10624c104d1d2eb3f7149b20e988c3fb959044b418b30",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -808,7 +803,7 @@
   },
   "riftlight-boundary-stone-bank/runner/narration": {
     "source": "sha256:d246691da8f5226be265520acb170370ccd22ce9d264860363e1a9e50b55475c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -816,7 +811,8 @@
       },
       {
         "by": "boundary_runner",
-        "text": "\"Keeper! Keeper! The counters need you! A counting stone moved, no drag marks, no nothing, and they've run out of string measuring it!\""
+        "text": "\"Keeper! Keeper! The counters need you! A counting stone moved, no drag marks, no nothing, and they've run out of string measuring it!\"",
+        "delivery": "excited"
       },
       {
         "by": "narrator",
@@ -838,7 +834,7 @@
   },
   "riftlight-boundary-stone-bank/rest_row/narration": {
     "source": "sha256:02a0c664fb3999acf58df170351d234f17549f926694a32b97f50076e5b98827",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -856,7 +852,7 @@
   },
   "riftlight-boundary-stone-bank/rest_row/variants/0": {
     "source": "sha256:26f3d20802fff62d7000dcb061b5cd7e40588aeaffc71aec7e15b7bfa09da4fb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -874,7 +870,7 @@
   },
   "riftlight-boundary-stone-bank/honey_buy/narration": {
     "source": "sha256:62292b03394649fa733cb3e7cc9a85f74f9a5e4995fc54f3567e010a1c9579c6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -896,7 +892,7 @@
   },
   "riftlight-boundary-stone-bank/share_supper/narration": {
     "source": "sha256:71076c47e517a97464922af0c6914bcb7f49b4a4352ee0ecd34d9e19b306faca",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -914,7 +910,7 @@
   },
   "riftlight-boundary-stone-bank/watch/narration": {
     "source": "sha256:e62173d261d68c83537e6b02e30663563dbc49b19cecde2e0e49c0765e3b7be1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -932,7 +928,7 @@
   },
   "riftlight-boundary-stone-bank/bank_rest/narration": {
     "source": "sha256:6438375f2ee07eac5f02f3d9ff9afdb1660f06bb57a232eedb1f3d4e39e43479",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tally",

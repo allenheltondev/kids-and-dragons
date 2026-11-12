@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-the-island-due-back/arrival/narration": {
     "source": "sha256:158fd95368894950b5e68c894708132329d80f2ba81f251a770065d770986397",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-the-island-due-back/due_song/narration": {
     "source": "sha256:77b413d1b8cdf9bb10ff7ef3a5dc722cecab407574372c5c77041e70fd81f616",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -74,7 +74,7 @@
   },
   "riftlight-the-island-due-back/spot/narration": {
     "source": "sha256:9dd8633152aece866562709a0b245609616c73e83a60b06dca8d75dbd6e5d38a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -104,7 +104,7 @@
   },
   "riftlight-the-island-due-back/spot/variants/0": {
     "source": "sha256:7aa39bdcfd60fe14858f0fe86caca590e21704ba66e6942a325a6aad5c916449",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -112,7 +112,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"They're swimming around something,\""
+        "text": "\"They're swimming around something,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -122,7 +123,7 @@
   },
   "riftlight-the-island-due-back/spot/variants/1": {
     "source": "sha256:5d77c392604c91791945d48642442c003f29a840834d007de598c312f04ae497",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -144,7 +145,7 @@
   },
   "riftlight-the-island-due-back/check_tower/narration": {
     "source": "sha256:ce128300c908e3285ac8276a0bf54f495ecf73fb9e6d94aeed88e2710c1b8501",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -162,7 +163,7 @@
   },
   "riftlight-the-island-due-back/check_sticks/onSuccess/narration": {
     "source": "sha256:c91662724270463eff22295c24b837304e9a69ced11375d530e7e3858d250600",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -180,7 +181,7 @@
   },
   "riftlight-the-island-due-back/whales_lead/narration": {
     "source": "sha256:8b6dc727b6e6fbe4a6900753af91d67fdcfb67ad6112c07a96ae168d8dec2303",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -206,7 +207,7 @@
   },
   "riftlight-the-island-due-back/fly_look/narration": {
     "source": "sha256:6b8d0808e3e4d09a46c9d62268f815092e594e0d32f39ed0e20308725d0c6814",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -224,7 +225,7 @@
   },
   "riftlight-the-island-due-back/wrong_side/narration": {
     "source": "sha256:4170f87c2a25fd2d89c6c9dc837dc0d2916315b3a833c87cf2ff2b6d7002c631",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -246,7 +247,7 @@
   },
   "riftlight-the-island-due-back/spotted/narration": {
     "source": "sha256:3b09cceb6192561f857beba7b5f196f1255926e744ce18b778b5a7ddcc741757",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -268,7 +269,7 @@
   },
   "riftlight-the-island-due-back/spotted/variants/0": {
     "source": "sha256:ffd7090040ee6ef1179d1d992da12e4e470b67c9e7a3e6c11b5a2bed63b106f2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -286,7 +287,7 @@
   },
   "riftlight-the-island-due-back/tumble/narration": {
     "source": "sha256:b118ce683d98acbf16b5d0fd6acb2f904a31d884f3fed542d3b92b26bc1e925b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -316,7 +317,7 @@
   },
   "riftlight-the-island-due-back/gust/narration": {
     "source": "sha256:b1b1c34d4a48cbeed262ad939adee3830d86134c47c889b5518b77d77447dbf0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -338,7 +339,7 @@
   },
   "riftlight-the-island-due-back/gust_after/narration": {
     "source": "sha256:ba6804e02a6dcccc4fe2d4b1593d8be4e48cca29fd7321d3ffbbd1c32d17f92f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -360,7 +361,7 @@
   },
   "riftlight-the-island-due-back/gust_after/variants/0": {
     "source": "sha256:41a68084f2646728381ca76b298be14da58aea1d2d70024d6d2acb51ab702b4f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -382,7 +383,7 @@
   },
   "riftlight-the-island-due-back/gust_after/variants/1": {
     "source": "sha256:30b518b2a2be3d5169b1830ec3a36406005f96d7a2d0eaada1af73e842e7272e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -404,7 +405,7 @@
   },
   "riftlight-the-island-due-back/gust_after/variants/2": {
     "source": "sha256:233a76917f57c139969aa024bc0184769c8b5b0d4548ee7624be32808d9df461",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -418,7 +419,7 @@
   },
   "riftlight-the-island-due-back/gust_after/variants/3": {
     "source": "sha256:472bd6ca2320068eb14d9bce3283647adbaabf249115c78697c68e1f73bc3988",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -436,7 +437,7 @@
   },
   "riftlight-the-island-due-back/crossing/narration": {
     "source": "sha256:18ea691a888b4187631045a193bf8c32616c720c4ae9a998291f9b6db1687fce",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -462,7 +463,7 @@
   },
   "riftlight-the-island-due-back/check_walk/onSuccess/narration": {
     "source": "sha256:d5424c4ee153345258e17d932bddfb5e977be2d68c9d31caa6efb2ef3e753359",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -476,7 +477,7 @@
   },
   "riftlight-the-island-due-back/whale_note/narration": {
     "source": "sha256:516d3a5c2c7612785f33b23a465840e2001fa609ae1d5eede38356e52da1cae2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -498,7 +499,7 @@
   },
   "riftlight-the-island-due-back/whale_note/onSuccess/narration": {
     "source": "sha256:afbdab4746754d2875f2aa219eb27685a48cd53bba95fa9a3fd6f87faea9d500",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -506,7 +507,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"They're helping,\""
+        "text": "\"They're helping,\"",
+        "delivery": "gentle"
       },
       {
         "by": "narrator",
@@ -516,7 +518,7 @@
   },
   "riftlight-the-island-due-back/leap/narration": {
     "source": "sha256:60532c94bcdf9cab8798618ad9298a47cde5c3362c2735300dcba16614405a0c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -534,7 +536,7 @@
   },
   "riftlight-the-island-due-back/on_island/narration": {
     "source": "sha256:eadfffe1cfa2cd5648f38fe959e61f358fffe77d494fd14c54dbd4609130dc4e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -548,7 +550,7 @@
   },
   "riftlight-the-island-due-back/on_island/variants/0": {
     "source": "sha256:a3960e579f44c9ea24d13ab7dabb8ca3e7e97af886b45372ef317b5bc2244b6a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -556,7 +558,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"All my Lady Olivia notes,\""
+        "text": "\"All my Lady Olivia notes,\"",
+        "delivery": "sad"
       },
       {
         "by": "narrator",
@@ -566,7 +569,7 @@
   },
   "riftlight-the-island-due-back/pip_hen/narration": {
     "source": "sha256:f156fce155286a36f9b5efa36fb6b5a8b283a0d0d151f5f5a430917175bd8d96",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -600,7 +603,7 @@
   },
   "riftlight-the-island-due-back/hen_kept/narration": {
     "source": "sha256:69490b6b4050a38bd5b0a8e1033f15a0b57df248443557d2e54506e040ce5fee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -618,7 +621,7 @@
   },
   "riftlight-the-island-due-back/hen_left/narration": {
     "source": "sha256:66f89dddfcf379e7ef696680688611fdc4e0fcc3a29772228fd3439c4a7c899a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -644,7 +647,7 @@
   },
   "riftlight-the-island-due-back/explore/narration": {
     "source": "sha256:84ba33bba016d961e12a7ace8ba9605df9413b0130d86392c59cd09115354dbb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_juniper",
@@ -666,7 +669,7 @@
   },
   "riftlight-the-island-due-back/lost_orchard/narration": {
     "source": "sha256:05fb2a77eddef4c6ac8f32cf492d5e7ca3864f6727af28c7e4167273faa6ae2a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -684,7 +687,7 @@
   },
   "riftlight-the-island-due-back/stone/narration": {
     "source": "sha256:8acab6d257ed5b6af282342257f6598f4bba477526fa6f58ff4aeb777a0f5966",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -706,7 +709,7 @@
   },
   "riftlight-the-island-due-back/copy/onSuccess/narration": {
     "source": "sha256:981461686ed9175d697086262e117dc367e59aa2833b1abbeff2b4b037e7ca28",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -720,7 +723,7 @@
   },
   "riftlight-the-island-due-back/pull/narration": {
     "source": "sha256:a48723c71c2c065beba858086e3f95a3d6f57d50ea8561e2c11bbde191e71416",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -728,7 +731,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"So that's why it's early,\""
+        "text": "\"So that's why it's early,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -736,13 +740,14 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"It isn't coming home. Something is pulling it.\""
+        "text": "\"It isn't coming home. Something is pulling it.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-the-island-due-back/hold/narration": {
     "source": "sha256:669b3a0d1a9270158f2ec4b148d5b956b7e4ae9d629fafba885a26aacbe44863",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -764,7 +769,7 @@
   },
   "riftlight-the-island-due-back/tied/narration": {
     "source": "sha256:a9f29d8b1e493f780fa83a518c8cad95e35264f367c886985206ab87092e3f57",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -794,7 +799,7 @@
   },
   "riftlight-the-island-due-back/walk_back/narration": {
     "source": "sha256:120b8eb962813c80bcdb409791ce5f16a3626a939620dddf1205e9a4fd31b64e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -816,7 +821,7 @@
   },
   "riftlight-the-island-due-back/run_back/variants/0": {
     "source": "sha256:8bc8d4371eed2de1778b4d9d97cbd94a9af8db95ff142b8f425f8bac10202075",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -838,7 +843,7 @@
   },
   "riftlight-the-island-due-back/check_return/onFailure/narration": {
     "source": "sha256:ec1a59f3be86e8d322d38f547ec248b19d9b2658c58335f1e4b1e89c4b259cbf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -860,7 +865,7 @@
   },
   "riftlight-the-island-due-back/tumble_line/narration": {
     "source": "sha256:92b2f9d4f68477368805a2a3184330b4908929f3d21f3eed9d7c65b0b1239e52",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -886,7 +891,7 @@
   },
   "riftlight-the-island-due-back/back/narration": {
     "source": "sha256:f57164f027d75628ec75e7b417a5da08795760027884dc166c77e0438c503879",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -908,7 +913,7 @@
   },
   "riftlight-the-island-due-back/back/variants/1": {
     "source": "sha256:5d5ba1bde3241f2b30cb871f85e1852cf2976d9f5f1e227a3433fe6efb259d65",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -934,7 +939,7 @@
   },
   "riftlight-the-island-due-back/drift_on/narration": {
     "source": "sha256:0823a76068370d3cb8b0b026870f4feedbcf83c0868df93ea9732d38125fa46b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -960,7 +965,7 @@
   },
   "riftlight-the-island-due-back/rest/narration": {
     "source": "sha256:5e928775c6af807486072787dd95afa65ea74a8e46ba838d87522c8998a1bcef",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -982,7 +987,7 @@
   },
   "riftlight-the-island-due-back/warn/narration": {
     "source": "sha256:6d00530556ea1112e81bf210608cd60d77d5e2613d1a82d00958ebb302e73171",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1004,7 +1009,7 @@
   },
   "riftlight-the-island-due-back/welcome/narration": {
     "source": "sha256:c888fb176205e6c5b0d8e98c15912ea73acd2961a56d41d0004653908b8e72a0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1034,7 +1039,7 @@
   },
   "riftlight-the-island-due-back/dispatch/narration": {
     "source": "sha256:22fae73a767635e283970ea4ae5eb2e2053a6ab5cad5962274b0d5b5dafd6ccb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_juniper",
@@ -1056,7 +1061,7 @@
   },
   "riftlight-the-island-due-back/by_tumble/narration": {
     "source": "sha256:9b8805dcad15483b80dcf36d4aad2afe482871de2ae2b8a6ee0d19720e38d305",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1086,7 +1091,7 @@
   },
   "riftlight-the-island-due-back/by_frame/narration": {
     "source": "sha256:a44882dd3c6ce8a869e9513d99a2f2eba2cff822ae849dd8f510e911b5e08f5c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1108,7 +1113,7 @@
   },
   "riftlight-the-island-due-back/by_hand/narration": {
     "source": "sha256:6c9ff79089038e3d1d48c9a27983013ecd2e1638702d4b93a5d81daa618cd34f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1130,7 +1135,7 @@
   },
   "riftlight-the-island-due-back/welcome_rung/narration": {
     "source": "sha256:1ea7ceb83513b308892320912c3223151e1a52b504b2d0ebc01cd652778fe025",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1148,7 +1153,7 @@
   },
   "riftlight-the-island-due-back/farewell/narration": {
     "source": "sha256:ce2bb5591fe17b70ccdd7f6bf1d23c23d39b5807a43a16db3e5b9a7ed402a930",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1170,7 +1175,7 @@
   },
   "riftlight-the-island-due-back/farewell/variants/0": {
     "source": "sha256:d2611b3e48061ddb353544995c03f9a975a09edaa32d57b9be143f555e1406ca",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1184,7 +1189,7 @@
   },
   "riftlight-the-island-due-back/pip_doubt/narration": {
     "source": "sha256:8f6be6390dd6e6f52359c900646c6c82b64f65328ce005c21952d60c67aa4e18",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1202,7 +1207,7 @@
   },
   "riftlight-the-island-due-back/pip_loyal/narration": {
     "source": "sha256:569567564236be278a507f7c8ce3e1a675f2049404fb96f36cc23980b447f909",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1228,7 +1233,7 @@
   },
   "riftlight-the-island-due-back/ending/narration": {
     "source": "sha256:4496519719f36002598daa6251685d2ee99fd926b82ca02ee102d183de345042",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-hidden-glacier-rift/search/narration": {
     "source": "sha256:6e635d481b1bf28ed8e0707cba148193ddb3bd94a9bc86beb788dde0a62512ee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-hidden-glacier-rift/plan/narration": {
     "source": "sha256:4f211b931c4d5b2de14debb8f01a688aab100e01ac813ca300f432cf7a2f7f03",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -54,7 +54,7 @@
   },
   "riftlight-hidden-glacier-rift/plan_a/narration": {
     "source": "sha256:3bf011eddc36bee02970703771789663d3301d54ed9fdadbad72d27af667feb5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -76,7 +76,7 @@
   },
   "riftlight-hidden-glacier-rift/plan_b/narration": {
     "source": "sha256:5faf1d181a81f31613c724f14332ab2991dfe47692e5a49808e3cf59b559631a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -98,7 +98,7 @@
   },
   "riftlight-hidden-glacier-rift/climb_a/narration": {
     "source": "sha256:d10d61522076e3e6bcdb262eb30343ed66fe7d27d09415d0faf1d2101d823e74",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -120,7 +120,7 @@
   },
   "riftlight-hidden-glacier-rift/climb_b/narration": {
     "source": "sha256:0a68f7d881a72e24df0fe57f27cfe807da83ade7698f7430582a767900d93f2d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -138,7 +138,7 @@
   },
   "riftlight-hidden-glacier-rift/climb_done/narration": {
     "source": "sha256:120e931efa5d17e13b79285217beafc3f8b0ebe409e069f2bba0b03e9eff4649",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -160,7 +160,7 @@
   },
   "riftlight-hidden-glacier-rift/climb_slip/narration": {
     "source": "sha256:b2e34432ed777680d6061a501bf1162bba0c0cf077010ee4a3daae3731d2b719",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -178,7 +178,7 @@
   },
   "riftlight-hidden-glacier-rift/ridge/narration": {
     "source": "sha256:59bbbc5841e67ced80e50ac76602a0ece7448b577a5adf5111de988f5972bbca",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -204,7 +204,7 @@
   },
   "riftlight-hidden-glacier-rift/ridge_a/narration": {
     "source": "sha256:ae4d82de74f0542b8257a7c9f938ed8ad17897fd4fcd7b37b282058eca35d3ec",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -226,7 +226,7 @@
   },
   "riftlight-hidden-glacier-rift/ridge_b/narration": {
     "source": "sha256:6139b3052c31336655d527cfb80b995c411498aaf9f4203a38f9147b7fb10d26",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -248,7 +248,7 @@
   },
   "riftlight-hidden-glacier-rift/ridge_chime/narration": {
     "source": "sha256:d2959aa120e8f0e3de78523a6adf241f0bb77fe7ed376a7281aa23fc34a1f205",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -274,7 +274,7 @@
   },
   "riftlight-hidden-glacier-rift/ridge_done/narration": {
     "source": "sha256:885504d06bbec3ceffd9b415bb7475973459370ded0d87c6c4ad4c41b37208df",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -292,7 +292,7 @@
   },
   "riftlight-hidden-glacier-rift/ridge_off/narration": {
     "source": "sha256:fbf4b1ded3daf3c038a0536c713bceb14f134010ff863d7ed5652197cf955e8b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -310,7 +310,7 @@
   },
   "riftlight-hidden-glacier-rift/holes/narration": {
     "source": "sha256:739ddf3faa2a06e3b9c331c0a5cad9f78dc45fea1b00098b9afb41cec5b94ca9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -332,7 +332,7 @@
   },
   "riftlight-hidden-glacier-rift/holes/onFailure/narration": {
     "source": "sha256:4160b2e3e9c6ef6d0e91db894e58460bdbece1e1911e0446b68cf116bc0e703e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -350,7 +350,7 @@
   },
   "riftlight-hidden-glacier-rift/kid/narration": {
     "source": "sha256:f3994bf0b991dfc816e9df49bd39e42978840bda4d9362f18228d557ac073233",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -368,7 +368,7 @@
   },
   "riftlight-hidden-glacier-rift/kid_a/narration": {
     "source": "sha256:b139ec7797174535dc2ff014b858357c32d5bfe50c90dee80ea052ae705de497",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -386,7 +386,7 @@
   },
   "riftlight-hidden-glacier-rift/kid_b/narration": {
     "source": "sha256:754f49ae3b1805f1990e7d0afcdf998695f4347a677d7736652fd653f4574603",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -408,7 +408,7 @@
   },
   "riftlight-hidden-glacier-rift/kid_wing_check/narration": {
     "source": "sha256:755b0e6dc2c72cf74253e7a101b54656f668434485394bb17ea640bce5def213",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -426,7 +426,7 @@
   },
   "riftlight-hidden-glacier-rift/kid_done/narration": {
     "source": "sha256:ade430d8a7ad0090401437bfa930e619fe91ea3569c20eda504c4702d512921c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -456,7 +456,7 @@
   },
   "riftlight-hidden-glacier-rift/kid_off/narration": {
     "source": "sha256:f2ace6eeb3f450bf5b61bce591866e06983f90e3595128c1d8fea2b916b6a8ce",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -474,7 +474,7 @@
   },
   "riftlight-hidden-glacier-rift/crack/narration": {
     "source": "sha256:0ec335da0a8972fef25793cedff62d3e2f3e775fb8359b74a60e5b663210400d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -496,7 +496,7 @@
   },
   "riftlight-hidden-glacier-rift/crack_a/narration": {
     "source": "sha256:99cd32e1a8f39003ba60ba6cfd7330d7c61284908e74f2f8d5ad2c1b121e136d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -518,7 +518,7 @@
   },
   "riftlight-hidden-glacier-rift/crack_b/narration": {
     "source": "sha256:1f465a1b1b2e8e0f05cd6cea88ed884ccd5841e1295a0765032175abdaceb85a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -540,7 +540,7 @@
   },
   "riftlight-hidden-glacier-rift/crack_wing_check/narration": {
     "source": "sha256:6925a1cb56bdcb6c0df1b0b2a100697428eb9a3550071c85bab1ce2b07f39ed6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -562,7 +562,7 @@
   },
   "riftlight-hidden-glacier-rift/crack_done/narration": {
     "source": "sha256:962bc4a908148355a2adff9e66592be5fa4e606c7b0d31e225f97c857ac4b410",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -588,7 +588,7 @@
   },
   "riftlight-hidden-glacier-rift/crack_slip/narration": {
     "source": "sha256:c3b9e407a9c35251d7e9cf42658c15e33419140f4eadc1cf08f0d7a0f9092360",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -614,7 +614,7 @@
   },
   "riftlight-hidden-glacier-rift/post/narration": {
     "source": "sha256:365d2368569cc1d810b6f2e42808772af99472137f52e527fa2437d732fb687e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -640,7 +640,7 @@
   },
   "riftlight-hidden-glacier-rift/post_a/narration": {
     "source": "sha256:420d5089994bd26306ca70e2d63a1a05f28efcea8188eeba6747d982ea1d3848",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -654,7 +654,7 @@
   },
   "riftlight-hidden-glacier-rift/post_b/narration": {
     "source": "sha256:bfcaaf11ec5e8d0e10f52e83b3318d233856e408f182d1d3ece52c0800b4a081",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -672,7 +672,7 @@
   },
   "riftlight-hidden-glacier-rift/post_a_check/narration": {
     "source": "sha256:728888408ebe69d91710b0e3002346039ce211a26a41bd8473f6ab73ad2cf103",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -694,7 +694,7 @@
   },
   "riftlight-hidden-glacier-rift/post_b_check/narration": {
     "source": "sha256:490104017963674541cbbef7ac83e0b9d55f0b52494f84f0ba0be40edb9c7782",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -716,7 +716,7 @@
   },
   "riftlight-hidden-glacier-rift/post_done/narration": {
     "source": "sha256:fed3c7066a5ca4ccb7b670a32524b01c009568e95cc6dceccb5a2db60bdc4afb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -738,7 +738,7 @@
   },
   "riftlight-hidden-glacier-rift/warm/narration": {
     "source": "sha256:236813a4ace922d04f78ed7592d5043654edb0ad999ca43421be41ac72404e2a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -768,7 +768,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel/narration": {
     "source": "sha256:f9ea1edd653fa6c40a66e70925f513fce90e9c69fc6d7c7dc497223322f18640",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -786,7 +786,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel_moss_check/narration": {
     "source": "sha256:ad8ab885ed89f3b6d57c8f92f7e5c20276cda4b36d133097a8a58e571f90d7be",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -794,7 +794,8 @@
       },
       {
         "by": "party",
-        "text": "\"Follow the bright bits,\""
+        "text": "\"Follow the bright bits,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -804,7 +805,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel_a_check/narration": {
     "source": "sha256:5090df5198ab00458c60de660745d754064a3912d0a686b6220e25e762c6b31b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -812,7 +813,8 @@
       },
       {
         "by": "party",
-        "text": "\"Is that a stitch or a feather?\""
+        "text": "\"Is that a stitch or a feather?\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -834,7 +836,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel_b_check/narration": {
     "source": "sha256:17ec3eee0d64b033506a35ee544295bdb76a1426820c47134b72ccb32d07d972",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -856,7 +858,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel_star_check/narration": {
     "source": "sha256:b298e2ced8a3cfd1e91f79829c65e9e52abff3b9205d27bc34347d67e4d4f549",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -874,7 +876,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel_done/narration": {
     "source": "sha256:cba93f693b9f4c76f1d06f1cbd068116319c9bd0f1e505a0c40be0ab4664e66c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -882,7 +884,8 @@
       },
       {
         "by": "party",
-        "text": "\"Found you,\""
+        "text": "\"Found you,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -892,7 +895,7 @@
   },
   "riftlight-hidden-glacier-rift/tunnel_off/narration": {
     "source": "sha256:113b4e75b36331c6943c0be76bce03b6c267b67f614dfb5d7920a245ef2c4682",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -910,7 +913,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze/narration": {
     "source": "sha256:fa2cd2cb51251f75e3c690f0fcf7fe0206650d556bec020b727a0306c418d899",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -936,7 +939,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze_a/narration": {
     "source": "sha256:7e7e1bb7e7f4f400c6d13f3061688ffeec917f626d2f4072caa17b99a5b4e1b5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -958,7 +961,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze_b/narration": {
     "source": "sha256:637bdd3ca56d5b37f2d1d4dc30dedf4ab78d88465bbbf5103917f1943d7a0708",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -976,7 +979,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze_brace_check/narration": {
     "source": "sha256:9a5ef312a38b03e6cbceb20c25b4250e5ea234e6ba87a50967a5cb10846b34a0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -998,7 +1001,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze_slip_check/narration": {
     "source": "sha256:f9e7b0f617dda3df28d5a73b349d398f694a05d1dfcf04512a726fc16175fa21",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1006,7 +1009,8 @@
       },
       {
         "by": "party",
-        "text": "\"Rope coming!\""
+        "text": "\"Rope coming!\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1014,13 +1018,14 @@
       },
       {
         "by": "party",
-        "text": "\"Mind your noses.\""
+        "text": "\"Mind your noses.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-hidden-glacier-rift/squeeze_done/narration": {
     "source": "sha256:504de0eb0841d25617ca83ea1a68adbcc973de42f8ddc625c9498ba005eb23d2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1042,7 +1047,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze_off/narration": {
     "source": "sha256:0f3dba7acaafcfc863137667bf6d7748ffaba364aa990ead2e590f57db4c6f87",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1060,7 +1065,7 @@
   },
   "riftlight-hidden-glacier-rift/squeeze_hold/narration": {
     "source": "sha256:25b88fbc25be415d14fbb3e6f8b08e6fefac1d2fb62506ab2e4b961551495887",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1068,7 +1073,8 @@
       },
       {
         "by": "party",
-        "text": "\"Now,\""
+        "text": "\"Now,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1082,7 +1088,7 @@
   },
   "riftlight-hidden-glacier-rift/seam_back/narration": {
     "source": "sha256:8a000c30260ed588938a8ab0dacac9725a161bb232494b8638ce925c18e37ad9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1100,7 +1106,7 @@
   },
   "riftlight-hidden-glacier-rift/seam_done/narration": {
     "source": "sha256:8aa0d94b6cc981ef8a60d5548c6bfbb2da914f26d20f017716a90bee4a844bcd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1122,7 +1128,7 @@
   },
   "riftlight-hidden-glacier-rift/seam_echo/narration": {
     "source": "sha256:789e684800818980b6b1bc6f9c8c505aeb480f670d11c69639d80230e112ced2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1140,7 +1146,7 @@
   },
   "riftlight-hidden-glacier-rift/behind/narration": {
     "source": "sha256:20671df38593bce462b827758ac13b1f742ce0181d7f4d8947503e13d5122f39",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1148,7 +1154,8 @@
       },
       {
         "by": "party",
-        "text": "\"Smell that?\""
+        "text": "\"Smell that?\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1166,7 +1173,7 @@
   },
   "riftlight-hidden-glacier-rift/passage/narration": {
     "source": "sha256:4e30876f859e6360cf9cd1f673e0817073f8fe7d70b5acc65f1a824cbbab3a08",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1174,7 +1181,8 @@
       },
       {
         "by": "party",
-        "text": "\"It's talking back,\""
+        "text": "\"It's talking back,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1184,7 +1192,7 @@
   },
   "riftlight-hidden-glacier-rift/chime/narration": {
     "source": "sha256:19a2a9c5ece801327178ecfb8dff088b1e22783b39606e59732a50ff0972e0d1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1210,7 +1218,7 @@
   },
   "riftlight-hidden-glacier-rift/read/narration": {
     "source": "sha256:4bd5543cce42e9997bbc18cc8fe64785886f6f929a4b2fb98797a502ee1714f7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1228,11 +1236,20 @@
   },
   "riftlight-hidden-glacier-rift/listen/narration": {
     "source": "sha256:6d1d73f889251d00d11654dd22d80113915bed9bb43cd1bcaeaff0bb232f9ca9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "You put an ear near the rock. Under the gull cries, a low note rises and falls. \"That's our song,\" someone whispers."
+        "text": "You put an ear near the rock. Under the gull cries, a low note rises and falls."
+      },
+      {
+        "by": "party",
+        "text": "\"That's our song,\"",
+        "delivery": "whisper"
+      },
+      {
+        "by": "narrator",
+        "text": "someone whispers."
       },
       {
         "by": "party",
@@ -1242,7 +1259,7 @@
   },
   "riftlight-hidden-glacier-rift/look/narration": {
     "source": "sha256:ba17b9c8c1384260aab671cbe392e6aa8ed014ab0c505380f787515291d8cc35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1250,7 +1267,8 @@
       },
       {
         "by": "party",
-        "text": "\"Somebody came here before us,\""
+        "text": "\"Somebody came here before us,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1264,7 +1282,7 @@
   },
   "riftlight-hidden-glacier-rift/beat_done/narration": {
     "source": "sha256:06f1b9f885165f2ed540cf56c81271e6f6139032944f25177a09efc9a978d495",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1272,7 +1290,8 @@
       },
       {
         "by": "party",
-        "text": "\"It knows the hall song,\""
+        "text": "\"It knows the hall song,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1286,7 +1305,7 @@
   },
   "riftlight-hidden-glacier-rift/beat_off/narration": {
     "source": "sha256:c0e8d8a9b7dbd4984db0713c512f2dc74add53a74ceb27ff1782039507c3b124",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1304,7 +1323,7 @@
   },
   "riftlight-hidden-glacier-rift/cairn/narration": {
     "source": "sha256:79566e78f9fef01d94d16f96f01ac208d0793aa2262838669f036666c7608906",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1326,7 +1345,7 @@
   },
   "riftlight-hidden-glacier-rift/cairn_a/narration": {
     "source": "sha256:99636f9b77ef209db39d0f362328afb01c7b9b3a64f6c39d2df9343dae1db13e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1348,7 +1367,7 @@
   },
   "riftlight-hidden-glacier-rift/cairn_b/narration": {
     "source": "sha256:c54834996a28cff0bec95cb1eb100e912ef8f6581b4da0806132596518c8cd09",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1366,7 +1385,7 @@
   },
   "riftlight-hidden-glacier-rift/cairn_smash/narration": {
     "source": "sha256:ca8a9d54dda2e56183538261f66b268d82dc2418ba89d9baacde902d302a0edb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1384,7 +1403,7 @@
   },
   "riftlight-hidden-glacier-rift/cairn_smash_check/narration": {
     "source": "sha256:d857d015952b8753bfb21ed4df3b2ac394319ee7271a69bbeb580801962e7984",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1402,7 +1421,7 @@
   },
   "riftlight-hidden-glacier-rift/cairn_done/narration": {
     "source": "sha256:b628e99787d4aa887470e6a09ac08d10722f39bca62d7b0f7f11f0e97f4b4310",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1416,7 +1435,7 @@
   },
   "riftlight-hidden-glacier-rift/herder_say/narration": {
     "source": "sha256:03156d61058eaa520bdac0b58ea83da535efd8888f347343c075280673be0bb9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1454,7 +1473,7 @@
   },
   "riftlight-hidden-glacier-rift/herder_say/variants/0": {
     "source": "sha256:5cb8dca29e20b691a17b1ad83c681962f7a66716e9738db67ab2cb1bb1ef9d2b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "yeti_herder",
@@ -1472,7 +1491,7 @@
   },
   "riftlight-hidden-glacier-rift/herder_share/narration": {
     "source": "sha256:d6f90cd9eb90c659ea29f545c6b24348bf00e7663e27e7a360e3ee8e894a29de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1490,7 +1509,7 @@
   },
   "riftlight-hidden-glacier-rift/footing/narration": {
     "source": "sha256:ae4cca6d018e64b9b0d89caa4d3cfad39ed0b78933478129ac6627f4aa730699",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1508,7 +1527,7 @@
   },
   "riftlight-hidden-glacier-rift/footing_a/narration": {
     "source": "sha256:9cea997ea7d012587bbfa1b3bc6028394d862fb1c9556422a8763c48c62575a2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1530,7 +1549,7 @@
   },
   "riftlight-hidden-glacier-rift/footing_b/narration": {
     "source": "sha256:1d2f18faf59abdb9efe9031d3b75364fe1c48ac39e8ae2bc124991f818ff0cf9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1552,7 +1571,7 @@
   },
   "riftlight-hidden-glacier-rift/footing_buy/narration": {
     "source": "sha256:e84d05a845af75beb8c7ed6cd6b249a906bf454a353a17231d57b234926890e2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1570,7 +1589,7 @@
   },
   "riftlight-hidden-glacier-rift/footing_done/narration": {
     "source": "sha256:439aa49d83af6cff2f6cc6352575fd282150f79800197c74324c62a6eb3e0dbf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1588,7 +1607,7 @@
   },
   "riftlight-hidden-glacier-rift/footing_off/narration": {
     "source": "sha256:73503af592789fbab45315911ee61b8429397068e01114ef73ff448b75656e1f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1606,7 +1625,7 @@
   },
   "riftlight-hidden-glacier-rift/decide/narration": {
     "source": "sha256:9f247bc76665031b95203d97bee0ebc24032a2b17ced325d9c295427eacdbcfb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1628,7 +1647,7 @@
   },
   "riftlight-hidden-glacier-rift/hold/narration": {
     "source": "sha256:e298ccdd7924c78d0f1a8d073c4c0cfb0293f87892457990c5421ee092b0655d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1650,7 +1669,7 @@
   },
   "riftlight-hidden-glacier-rift/sing_wobble/narration": {
     "source": "sha256:be83460b373deb2ba07692c31fe337dcaf938cc6bf97b33cbe1a650fce5466b9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1676,7 +1695,7 @@
   },
   "riftlight-hidden-glacier-rift/sing/narration": {
     "source": "sha256:fb53e300bbbde291bb0d8ce2cf90f5d1d5c21d622545cbd6a2f5ad3642a8cbe5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1684,7 +1703,8 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"You answered it,\""
+        "text": "\"You answered it,\"",
+        "delivery": "gentle"
       },
       {
         "by": "narrator",
@@ -1692,13 +1712,14 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"You didn't push it. You answered.\""
+        "text": "\"You didn't push it. You answered.\"",
+        "delivery": "gentle"
       }
     ]
   },
   "riftlight-hidden-glacier-rift/test_open/narration": {
     "source": "sha256:46cd7184e78cdc5e3554e60ba12d44de59e87ae2c078ddd60506002a12a24cd9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1724,7 +1745,7 @@
   },
   "riftlight-hidden-glacier-rift/ready/narration": {
     "source": "sha256:542da1aa3e6360d52279f14e040401eeb08709467273068630a871e6c5f495d2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1750,7 +1771,7 @@
   },
   "riftlight-hidden-glacier-rift/leave/narration": {
     "source": "sha256:bb1b90c2946b68f3a2f04cbc50df889229fe0ad30015b23c0ecfdaf1ff829170",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1776,7 +1797,7 @@
   },
   "riftlight-hidden-glacier-rift/kid_scoop/narration": {
     "source": "sha256:de34065dee6dba332519ec8488df7cc21e8230ed038c4ba5b92a1525dfe99535",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1784,7 +1805,8 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"Now,\""
+        "text": "\"Now,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1792,13 +1814,14 @@
       },
       {
         "by": "yeti_herder",
-        "text": "\"Before it thinks.\""
+        "text": "\"Before it thinks.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-hidden-glacier-rift/post_off/narration": {
     "source": "sha256:4d74002d5682131ffce0e9ef403f595804f512f4263d1bb228ef6140daa2442e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1820,7 +1843,7 @@
   },
   "riftlight-hidden-glacier-rift/seam_pry/narration": {
     "source": "sha256:ac161731c72e5e06ba813c25646131ba6e2a7f8af9fcfcf42b8c9302cb38d4fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1838,7 +1861,7 @@
   },
   "riftlight-hidden-glacier-rift/hold_hard/narration": {
     "source": "sha256:558dab9fe12f4c80934282a886b92e15d40c936b7deddc5ca413f9937bbbdd3b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

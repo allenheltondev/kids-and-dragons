@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "gemfall-05c/scene_dragonling_home/narration": {
     "source": "sha256:f1eadcd5625f04dc617145ad19178a31019bbadd4ee4984ac80e4b7c286ccd8c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "gemfall-05c/scene_inspection/narration": {
     "source": "sha256:709f28f0c14ee7f999c89936ba8f356c7d9805804477b7c692ebd34bad49f1e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -42,19 +42,11 @@
   },
   "gemfall-05c/check_not_diggers/onSuccess/narration": {
     "source": "sha256:9498682851f4cf243876c1d4f8d4444f363dd35b1fde61ee7ec036938713b549",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth."
-      },
-      {
-        "by": "grandmother",
-        "text": "\"Not diggers,\""
-      },
-      {
-        "by": "narrator",
-        "text": "she writes."
+        "text": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes."
       },
       {
         "by": "grandmother",
@@ -68,7 +60,7 @@
   },
   "gemfall-05c/scene_inspection_open_packs/narration": {
     "source": "sha256:7565e698d9fb2d20fb749e54ae2635aea2ebc1a0249bd7f421e372524377b24d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -86,7 +78,7 @@
   },
   "gemfall-05c/scene_inspection_show_charm/narration": {
     "source": "sha256:f212664b896a0127ceeefcaf91f7bf345cec233a46c83e711c70cae3781dd6c4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -108,7 +100,7 @@
   },
   "gemfall-05c/scene_gate_town/narration": {
     "source": "sha256:fd87c1452c137e21d70642e1d32aff5dceaa7531251aa049f7c089e7cebe3d04",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -134,7 +126,7 @@
   },
   "gemfall-05c/scene_gate_town_explain_home/narration": {
     "source": "sha256:b9e73bd4e6880c089e626e37f9c466231422fd7f9e0bf034b204de86979e3fdc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -150,27 +142,9 @@
       }
     ]
   },
-  "gemfall-05c/check_one_rule/onSuccess/narration": {
-    "source": "sha256:19b8c56668de9d9091b1fd2604129854c7f4c48729e5f5014ceb39358c5f00d6",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "You do not shout the rule at him. You act it out: pick up a pebble the mountain dropped, nice and easy, then pretend to pry at the hill, and pretend the hill sits on you. You fall over flat, very slowly, like a tree. Somewhere in the middle he stops saying"
-      },
-      {
-        "by": "prospector",
-        "text": "\"right, right\""
-      },
-      {
-        "by": "narrator",
-        "text": "and starts actually watching."
-      }
-    ]
-  },
   "gemfall-05c/check_one_rule/onFailure/narration": {
     "source": "sha256:19f87215631796e8a7e9bfcb58be2f94da8f5c8ffb379abbd59ac0c4bd9c1665",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -188,7 +162,7 @@
   },
   "gemfall-05c/scene_rule_heard/narration": {
     "source": "sha256:c338e0b608696dbb89185b1a0b3f93c0631d10fdd77abd6d81f7942d7b0c46e4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -206,7 +180,7 @@
   },
   "gemfall-05c/scene_crabs_rescue/narration": {
     "source": "sha256:9fc1511ac77d6cb07b0bdb5f922f70ac8819177bc1492b36dbbee0ad1125c32b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -224,7 +198,7 @@
   },
   "gemfall-05c/check_ask_wend/onSuccess/narration": {
     "source": "sha256:22092d94036c48f00640ad254d27338d2f2465bdc6c6c92f721ed324b0f8aa08",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -250,7 +224,7 @@
   },
   "gemfall-05c/scene_turned_back_said_no/narration": {
     "source": "sha256:2f3855c32b0cee9722852489fa98180327bfe818c7e3063de6ea6e94684d5f39",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -288,7 +262,7 @@
   },
   "gemfall-05c/scene_turned_back_coin/narration": {
     "source": "sha256:2bf16d61d032edeb6e175146ea58542f7e68bcc455726b1651346744f4245943",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -306,7 +280,7 @@
   },
   "gemfall-05c/scene_tallies/narration": {
     "source": "sha256:4013505e491b882ae270128ec7c9a67c05174154bdb7ed1ec5131b2b716ac288",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -328,7 +302,7 @@
   },
   "gemfall-05c/scene_charm_rings/narration": {
     "source": "sha256:658f43fe2f5a1ad7cae77cb3079c27e2ce0b570f9d419df8206dea59eaa845b1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -342,7 +316,7 @@
   },
   "gemfall-05c/check_outline/narration": {
     "source": "sha256:29e8bf554dbf63cd9ac9023fe094e513dd5b5f0a86c8175fc03cd4979d32fb0c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -364,7 +338,7 @@
   },
   "gemfall-05c/scene_here_first/narration": {
     "source": "sha256:89d63da2b2e5bd2a85d9121ecaf220af2bc25ef878558081f6c2d86b2385b90d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "great_gran_ashby",
@@ -386,7 +360,7 @@
   },
   "gemfall-05c/check_read_stone/onSuccess/narration": {
     "source": "sha256:6a0db802c40dacd8b3b87954308b8eedfbf1d409111926d04c28a442adda2038",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -400,7 +374,7 @@
   },
   "gemfall-05c/check_read_stone/onFailure/narration": {
     "source": "sha256:f42198e10bae9ed89c36e80fa0833bfa4f9092de6ef111d1d26a466b9c764635",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -422,7 +396,7 @@
   },
   "gemfall-05c/scene_here_first_onward/narration": {
     "source": "sha256:fb6357f35f40a022b364bf64f8171abb3b6f195b5b9d474ac69aba2714275887",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -444,7 +418,7 @@
   },
   "gemfall-05c/scene_unassigned/narration": {
     "source": "sha256:1505bd11395588e6f326a227a8ddc8fc8651578b965148d44f278f88d09dfa55",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -470,7 +444,7 @@
   },
   "gemfall-05c/scene_unassigned_leave_kept/narration": {
     "source": "sha256:155a68749b4323f1680794ccef206cf9d5ad3ee06b412f9b52be37f2073fecd6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -488,7 +462,7 @@
   },
   "gemfall-05c/scene_unassigned_ask_proper/narration": {
     "source": "sha256:690cd5519d4bf0fff98664f53691a70642bfe4904ad351b8a5d2512b539acb7c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -502,7 +476,7 @@
   },
   "gemfall-05c/check_carry/onSuccess/narration": {
     "source": "sha256:6fd981471bdb676dc65f386e7a28e2a4aa89ccffbcaf03a891a8ac20b374b6e4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -516,7 +490,7 @@
   },
   "gemfall-05c/check_carry/onFailure/narration": {
     "source": "sha256:5fa59919f498cd222b777cd61121516d0aa9577fc566f9c956c0a771b7ebb0da",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -534,7 +508,7 @@
   },
   "gemfall-05c/scene_moths_leaving/narration": {
     "source": "sha256:4a2377781300cbc0111288b3e5802040f87bf86bed2c975f2e72684858e76a3e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -556,24 +530,24 @@
   },
   "gemfall-05c/scene_moths_leaving_hold_one/narration": {
     "source": "sha256:e47d8faefd6aed157396fb4a4a727578f45d27e00174f09ed43784afea4f3316",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "An embermoth lands in your hands, warm as cocoa. Then it notices your pack. It lifts off and loops wide around the humming thing inside, then flies south with the others. The small dragonling pats your arm."
       },
       {
-        "by": "small_dragonling",
+        "by": "bell_code_expert",
         "text": "\"They all do that.\""
       }
     ]
   },
   "gemfall-05c/scene_moths_leaving_ask_bells/narration": {
     "source": "sha256:573028a46d3977fb5dbf06b745c200de643e7c6d3393317e3b1ddca2703fc2ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
-        "by": "small_dragonling",
+        "by": "bell_code_expert",
         "text": "\"They always leave a little before the mountain wakes,\""
       },
       {
@@ -581,7 +555,7 @@
         "text": "says the small dragonling, very fast,"
       },
       {
-        "by": "small_dragonling",
+        "by": "bell_code_expert",
         "text": "\"and come back after. Grandmothers count everything.\""
       },
       {
@@ -589,14 +563,14 @@
         "text": "She frowns."
       },
       {
-        "by": "small_dragonling",
+        "by": "bell_code_expert",
         "text": "\"But never this many. And they haven't come back.\""
       }
     ]
   },
   "gemfall-05c/scene_bell_house_supper/narration": {
     "source": "sha256:3e188fe228a6b11f34e06fc542c767fe07e20833b1b99731195700c726f569c7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -614,7 +588,7 @@
   },
   "gemfall-05c/scene_bell_house_supper_depot_tag/narration": {
     "source": "sha256:745a5197b9cea5a3d917fb8c6ccd6fe1d488812848545643898b6e988c034125",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -636,7 +610,7 @@
   },
   "gemfall-05c/scene_night_lights/narration": {
     "source": "sha256:aa9f1fcb64aa6a702b717081428b8c3bdc817d46fc38bcd1b544534fc18d76e0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -644,7 +618,8 @@
       },
       {
         "by": "bell_code_expert",
-        "text": "\"That cave's on the list,\""
+        "text": "\"That cave's on the list,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -652,7 +627,8 @@
       },
       {
         "by": "bell_code_expert",
-        "text": "\"Nobody gathers there.\""
+        "text": "\"Nobody gathers there.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -662,7 +638,7 @@
   },
   "gemfall-05c/scene_night_lights_wake_grans/narration": {
     "source": "sha256:891ed98e513cd2ee13685b51e537231a91c38c825c55c9715029a72313720d90",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -676,7 +652,7 @@
   },
   "gemfall-05c/scene_morning_bells/narration": {
     "source": "sha256:7229d0fe192530971633af7a47d54794aaec462a396b7807ecbd6d9e6e9fa2bc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -702,14 +678,14 @@
   },
   "gemfall-05c/scene_morning_bells_unrung/narration": {
     "source": "sha256:b6d90d2678999798ac660d7be68a9246e3c196be264bf6033f51ca1bf767cca2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
         "text": "The small dragonling, who has talked nonstop since yesterday, stops."
       },
       {
-        "by": "small_dragonling",
+        "by": "bell_code_expert",
         "text": "\"Nobody rings that one,\""
       },
       {
@@ -717,7 +693,7 @@
         "text": "she says quietly."
       },
       {
-        "by": "small_dragonling",
+        "by": "bell_code_expert",
         "text": "\"Not ever. Great-Grandma says we'll know.\""
       },
       {
@@ -728,7 +704,7 @@
   },
   "gemfall-05c/scene_centaur_whisper/narration": {
     "source": "sha256:c8760d16657e26b0e8e1d18dfda0b7ce10bf50fc514c7ea9383b96bb11f3014f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -736,7 +712,8 @@
       },
       {
         "by": "perrin",
-        "text": "\"There's a Shortcut through the hills,\""
+        "text": "\"There's a Shortcut through the hills,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -744,13 +721,14 @@
       },
       {
         "by": "perrin",
-        "text": "\"My family has argued about it for nine generations. Will you walk it?\""
+        "text": "\"My family has argued about it for nine generations. Will you walk it?\"",
+        "delivery": "whisper"
       }
     ]
   },
   "gemfall-05c/scene_shortcut/narration": {
     "source": "sha256:d2766d70ea4170a6f99a2b92618c56b166fcb5ea844a0442a3607e64387c5529",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +750,7 @@
   },
   "gemfall-05c/scene_centaur_whisper_caravan_road/narration": {
     "source": "sha256:83f62eb36bb778c0d49c16eee23d77faebb3e5547c44f98b1fdbc37ae173346b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -798,7 +776,7 @@
   },
   "gemfall-05c/scene_centaur_whisper_show_bark/narration": {
     "source": "sha256:ec44ceac807c902b32634951617ee0ff12f334fdc515ca645665bdb98fa3a201",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -820,7 +798,7 @@
   },
   "gemfall-05c/scene_warden_count/narration": {
     "source": "sha256:48e19a509860fb48f2c72497dbc7de4fb8cdf07f2003eb8cfb18c8db0a6bbf30",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -834,7 +812,7 @@
   },
   "gemfall-05c/check_count_picks/onSuccess/narration": {
     "source": "sha256:af506c2ab58855cb1c9fb8737f3d06852cf286ce59f72785ee03da369b39313c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -856,7 +834,7 @@
   },
   "gemfall-05c/check_count_picks/onFailure/narration": {
     "source": "sha256:4c3d5cba938717a57808b9235a49ad1a869b8d67df3a861a910be94aa33bc5d6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -878,7 +856,7 @@
   },
   "gemfall-05c/scene_warden_count_ask_logs/narration": {
     "source": "sha256:fb5cd4338dcc5cef4f87c9aa4a2184540a0681bced6a77e566bf72cd15d958ef",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "sergeant_holloway",
@@ -904,7 +882,7 @@
   },
   "gemfall-05c/scene_warden_count_sky_news/narration": {
     "source": "sha256:2f3f05b2aa593c5b0ac8c8ddec93b22f4ded0655788c8ed00973921410ab81db",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -922,7 +900,7 @@
   },
   "gemfall-05c/scene_who_to_tell/narration": {
     "source": "sha256:f8a71095dfd9f7a4be46e71489754001f903534fe4331d92ba64d32ac11a87c4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -948,7 +926,7 @@
   },
   "gemfall-05c/scene_tell_wardens/narration": {
     "source": "sha256:b9137bc718a2fd9314da159bbd9adbb21bd8c74acc640b4d00c7552593054114",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -966,7 +944,7 @@
   },
   "gemfall-05c/scene_keep_close/narration": {
     "source": "sha256:970f9d956a6bfa17db7e35a2d3ffade78d8559472f90d278b69ca8c926785d89",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -984,7 +962,7 @@
   },
   "gemfall-05c/interaction_pry_bars/narration": {
     "source": "sha256:0476f4b71a817f80641398f383c50c8ec454568b59e3bfc8827b29b17d16e39b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -998,7 +976,7 @@
   },
   "gemfall-05c/interaction_bell_cart/narration": {
     "source": "sha256:a62e294ad9e94ebd226f9bc0d7c5b7b572d104e4e50b77226bff792da1b0ffff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1020,7 +998,7 @@
   },
   "gemfall-05c/scene_crawlers_porch/narration": {
     "source": "sha256:a152c92ccdf92dcbb61a0bb2dfdb08e8eb1d5adfc236aa598b294d49cb1cc3b1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1042,7 +1020,7 @@
   },
   "gemfall-05c/scene_crawlers_shooed/narration": {
     "source": "sha256:aaf11729b3b8081e7e5830e585cbae50556c9556aa3a0f047c3dfc96706d2777",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1060,7 +1038,7 @@
   },
   "gemfall-05c/scene_bell_house_supper_honey/narration": {
     "source": "sha256:452bf3b3399a894da88f2d118ce6e85da1ee2f28f598a5610194c70fe1e0a43e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1074,7 +1052,7 @@
   },
   "gemfall-05c/interaction_bell_tuck/narration": {
     "source": "sha256:447cba9aa9ce90936906bdf02c622212e7c97f6e88217575c5de77050b70c238",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1082,7 +1060,8 @@
       },
       {
         "by": "grandmother",
-        "text": "\"Breakfast,\""
+        "text": "\"Breakfast,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1092,7 +1071,7 @@
   },
   "gemfall-05c/interaction_one_rule/onFailure/narration": {
     "source": "sha256:cac9964afb400158a5ae437cb52daf6688d9e5b917a7819504cc8d54cc82a06b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1110,7 +1089,7 @@
   },
   "gemfall-05c/interaction_kept_stone/onFailure/narration": {
     "source": "sha256:f8bd276274a49037df3a8795bdc1c582bbc1d898163249c32addcc2fed9de3d7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1123,6 +1102,24 @@
       {
         "by": "narrator",
         "text": "The stone stays on its list."
+      }
+    ]
+  },
+  "gemfall-05c/scene_crowd_at_stones/narration": {
+    "source": "sha256:3bc7cccdf0272ef9f707fe1010775ac909b95eac8d4909fd3fbe3e2dbcc3a968",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "At the stones, the morning crowd is pushing. A man in a feathered hat shouts from a cart that they are only rocks."
+      },
+      {
+        "by": "grandmother",
+        "text": "\"Not one step back, dears,\""
+      },
+      {
+        "by": "narrator",
+        "text": "say the grandmothers. Help make room, share what you know, or use your bell job."
       }
     ]
   }

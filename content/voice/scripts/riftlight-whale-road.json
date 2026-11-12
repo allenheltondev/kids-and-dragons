@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-whale-road/arrive/narration": {
     "source": "sha256:b972253f0a9c64bd4c8274dc2c9dee5d17ad22a107bc10e8ebf4e46db637c76f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -32,7 +32,7 @@
   },
   "riftlight-whale-road/low_pass/narration": {
     "source": "sha256:6a40976c93cc5a0181506c065dff9e9d22289992ade72be40e8b6cccb42a3b1c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -50,7 +50,7 @@
   },
   "riftlight-whale-road/check_yarn/onFailure/narration": {
     "source": "sha256:00c2817bbf6e780c1d57a0fdbc171e2d6752e1d711a8bae1e9e710848d8a4c32",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -64,7 +64,7 @@
   },
   "riftlight-whale-road/check_fly/onSuccess/narration": {
     "source": "sha256:0f0e29b610a614f85ce657720a0362b225084024e6b285188b0ba8b7fc737f32",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -86,7 +86,7 @@
   },
   "riftlight-whale-road/check_fly/onFailure/narration": {
     "source": "sha256:3a2b85eef45862e150b47cbc23cb656b635b44d552f30254dc2eebf80a1b114e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -108,7 +108,7 @@
   },
   "riftlight-whale-road/whale_eye/narration": {
     "source": "sha256:8644f0e555dea490eb7390520ec8ba02994f6f214fddd5a0353ef980c00cf8de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -138,7 +138,7 @@
   },
   "riftlight-whale-road/turn_watch/narration": {
     "source": "sha256:ed16b8fc3ab0d15769843bd729976ffe7d7035bd05e5d4591bed0670cd1d39b0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -164,7 +164,7 @@
   },
   "riftlight-whale-road/check_listen/onFailure/narration": {
     "source": "sha256:e48f1e3135a28d7ba66437cc28ea26708738572e744447f603decd5992dd8bd9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -182,7 +182,7 @@
   },
   "riftlight-whale-road/pair_seen/narration": {
     "source": "sha256:2ab408bb2430dc50add593cf39cf8c8c18f8e68b21764c5bdbc798e59f901942",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -190,7 +190,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"Those weren't there in the spring,\""
+        "text": "\"Those weren't there in the spring,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -200,7 +201,7 @@
   },
   "riftlight-whale-road/olivia_here/narration": {
     "source": "sha256:6e1520472037eed78a8cbe942cb84aa45d5c5a46205e2592bd5a81fd06fb7279",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -238,7 +239,7 @@
   },
   "riftlight-whale-road/echo_test/narration": {
     "source": "sha256:984831e0d08c9cdaa5377c9669399f4075293debff6edd6f0d10dcad430fe470",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -256,7 +257,7 @@
   },
   "riftlight-whale-road/why_circle/narration": {
     "source": "sha256:94c255c1e269a006450e187c7e3006bb75b74086f046e0b1dbb8457007accf1f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -274,7 +275,7 @@
   },
   "riftlight-whale-road/calf_stuck/narration": {
     "source": "sha256:069beabf514863e93c176d71275e150aeaf8b66f3a3bc4c0722a1a7069149007",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -312,7 +313,7 @@
   },
   "riftlight-whale-road/check_haul/narration": {
     "source": "sha256:a9e5990f7a4b263fbbba270ed2244a6d8edbd7ff3641cab146586ea52215d357",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -326,7 +327,7 @@
   },
   "riftlight-whale-road/hauled/narration": {
     "source": "sha256:ec222da46e2dac1ee9b70c4b2f6ca6ed19ce5f543689ebc896bdd2d51385999f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -344,7 +345,7 @@
   },
   "riftlight-whale-road/hauled/variants/0": {
     "source": "sha256:cdf22912bf3f01096098bd785bde8884f89a4098fb389e6463e5729c7f414e81",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -358,7 +359,7 @@
   },
   "riftlight-whale-road/sung_out/narration": {
     "source": "sha256:92f12c9ffc7ca9d8680b90763b774efabafe8b49d3003c8a80b9cf533b3c677e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -388,7 +389,7 @@
   },
   "riftlight-whale-road/sung_slow/narration": {
     "source": "sha256:0ea416e3c28bd0905a5566c10a0378df2756a1ec8977e8668172b63edf772f38",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -410,7 +411,7 @@
   },
   "riftlight-whale-road/olivia_offer/narration": {
     "source": "sha256:a6c90904a1afc22b10d1b9c26c9596714ec1cdbe781b936582d628a7eecb9641",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -436,7 +437,7 @@
   },
   "riftlight-whale-road/island_tug/narration": {
     "source": "sha256:54cd9b657992d7966de45971199d4dff36844cb3fcb9f43976c943df552cabf0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -462,7 +463,7 @@
   },
   "riftlight-whale-road/check_tether/onFailure/narration": {
     "source": "sha256:d0233e4099af12a36c80d9beb2b5ef918a721a3ac1054585632979c2ed534fd5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -484,7 +485,7 @@
   },
   "riftlight-whale-road/check_anchor/onFailure/narration": {
     "source": "sha256:d0233e4099af12a36c80d9beb2b5ef918a721a3ac1054585632979c2ed534fd5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -506,7 +507,7 @@
   },
   "riftlight-whale-road/check_brace/onFailure/narration": {
     "source": "sha256:d0233e4099af12a36c80d9beb2b5ef918a721a3ac1054585632979c2ed534fd5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -528,7 +529,7 @@
   },
   "riftlight-whale-road/juniper_answer/narration": {
     "source": "sha256:f7870d904912cb7e18b915cd8be629452b2238daf29b85a2c0df1cd8c15f3064",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -550,7 +551,7 @@
   },
   "riftlight-whale-road/pip_bell/narration": {
     "source": "sha256:aa3082cedbf9f2548b643231c305588bf795f40f84fce4d0533ee0540ea4a704",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -558,7 +559,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"Lady Olivia needs this hung at the far opening, for the big note,\""
+        "text": "\"Lady Olivia needs this hung at the far opening, for the big note,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -566,7 +568,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"If I do it right, she'll let me ring it!\""
+        "text": "\"If I do it right, she'll let me ring it!\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -584,7 +587,7 @@
   },
   "riftlight-whale-road/bell_hung/narration": {
     "source": "sha256:290e54797f046814b7256cd86529e14a827ee88f8b6af7c7f57a47f712ad5227",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -614,7 +617,7 @@
   },
   "riftlight-whale-road/pip_lanterns/narration": {
     "source": "sha256:c209f615d90dcca845423d79a6586bbec4dc0e2ead382ac6a6519fadce12dc87",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -640,7 +643,7 @@
   },
   "riftlight-whale-road/rest/variants/3": {
     "source": "sha256:1510fb6b24a2bf34f6ea4c10e9154b9fd2d2a48ba7ffd542e27458969cb1e7c0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -662,7 +665,7 @@
   },
   "riftlight-whale-road/pip_notebook/narration": {
     "source": "sha256:7add1c7da69231123a041b14517e2954d47cca0a890701d0041d9edad1bfe4ae",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -684,7 +687,7 @@
   },
   "riftlight-whale-road/chime_lean/narration": {
     "source": "sha256:a334e217d18720b4ab4dfa883a06a07f5a305aa94fdcfa02b627d4fc829ba2b6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -692,7 +695,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"Something is pulling them,\""
+        "text": "\"Something is pulling them,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -700,7 +704,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"The openings. The whales. Maybe my island too.\""
+        "text": "\"The openings. The whales. Maybe my island too.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -710,7 +715,7 @@
   },
   "riftlight-whale-road/lead_test/narration": {
     "source": "sha256:82dd9955b7d9fb14bd9d18230141ce999586837e577eee36dc8436d341678169",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -718,7 +723,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"Let's try my way once,\""
+        "text": "\"Let's try my way once,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -726,7 +732,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"Auntie Billow first. Show her the true road in the quiet beat, and she might hear it over the echo.\""
+        "text": "\"Auntie Billow first. Show her the true road in the quiet beat, and she might hear it over the echo.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -736,7 +743,7 @@
   },
   "riftlight-whale-road/check_lantern_pip/narration": {
     "source": "sha256:8b7346955fcfe3e6095b5df82c3d5f1f95153a23746d97872549ed94aa9cd975",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -750,7 +757,7 @@
   },
   "riftlight-whale-road/hiccup_leads/narration": {
     "source": "sha256:f5d71fa6c29cf3dc78d13489a5ca3fc8b01c0ba4c2c7b7b4356425b9ee9f1a2f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +779,7 @@
   },
   "riftlight-whale-road/billow_out/narration": {
     "source": "sha256:0e07e0f534fff8126865256007cdbc6278873db601107cffd41948f8fdc97efb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -780,7 +787,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"One,\""
+        "text": "\"One,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -788,7 +796,8 @@
       },
       {
         "by": "keeper_juniper",
-        "text": "\"Eleven to go.\""
+        "text": "\"Eleven to go.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -806,7 +815,7 @@
   },
   "riftlight-whale-road/billow_balks/narration": {
     "source": "sha256:8c891933d54ab16a7d3453ba12faf44c6ebd9558709ed3a967a6a0364f489ca6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -832,7 +841,7 @@
   },
   "riftlight-whale-road/two_ways/narration": {
     "source": "sha256:ab7d2216ca567f9c151a39fb213ecc7f0ce997e163a4302330e97c373f8597af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -866,7 +875,7 @@
   },
   "riftlight-whale-road/two_ways/variants/0": {
     "source": "sha256:e6445f3612e762f2931d3098c1eaa75af7991e8bed15beaa93571575c1601324",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -880,7 +889,7 @@
   },
   "riftlight-whale-road/two_ways/variants/2": {
     "source": "sha256:af7c21bb5ced4827eac48761fb51f2d5cec5a47dcf44e6ac4e33d4f21c1f8c7a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -894,7 +903,7 @@
   },
   "riftlight-whale-road/promise/narration": {
     "source": "sha256:a80fbe4f26d543e04ec6b342c97bd448cc8277465b82781755f113895f6ebd40",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -908,7 +917,7 @@
   },
   "riftlight-whale-road/promised/narration": {
     "source": "sha256:1260491d324ae5f605d685bc486a3ffea090f2bbe8641bdff684c7432aaebe39",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_juniper",
@@ -930,7 +939,7 @@
   },
   "riftlight-whale-road/not_promised/narration": {
     "source": "sha256:ac14e59bd0ee5af7aa0145bb5fa318c87603eaed0a4b524b4d5d94f5a9ee74b6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -948,7 +957,7 @@
   },
   "riftlight-whale-road/decide/narration": {
     "source": "sha256:aeeada5a9716676ea786de0cdbf3dbd1139bc86d07bbf3a66dd75189fdd7d17c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -982,7 +991,7 @@
   },
   "riftlight-whale-road/hiccup_night/narration": {
     "source": "sha256:dc2002833d73abefeccb60830d090310056b413259ff2c97786e9a3bd11c8e50",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1000,7 +1009,7 @@
   },
   "riftlight-whale-road/guided/narration": {
     "source": "sha256:adb3ef66217eef33a52ad490dd1cb7d0a16b8bb1924fbcb9df15aa41e3f535f5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1018,7 +1027,7 @@
   },
   "riftlight-whale-road/olivia_night/narration": {
     "source": "sha256:70fb5e42214eb4f316e8bdb825997670e1458a6f73912766f462e4dfcf866c40",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1056,7 +1065,7 @@
   },
   "riftlight-whale-road/juniper_night/narration": {
     "source": "sha256:bcc2192f9730a429abe9b83523b368580586068d8a0af523a8851097a364551a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

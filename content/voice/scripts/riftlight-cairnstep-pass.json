@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-cairnstep-pass/cairns/narration": {
     "source": "sha256:d6e6bdf887703ccfc312e800628462d2693aaca053f12e1929744cbf349237d1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-cairnstep-pass/steps/narration": {
     "source": "sha256:45e378ed99467c48f5f506ccb7c6b5fdece15c554bef5d31ef6e1d9d3597e886",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -50,7 +50,7 @@
   },
   "riftlight-cairnstep-pass/climb_line/narration": {
     "source": "sha256:3978a7e5a42682abc912112b765b1ba5620e69367825570803e33db0f23e2de0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -72,7 +72,7 @@
   },
   "riftlight-cairnstep-pass/notch/narration": {
     "source": "sha256:6422bbd33fb8bb9f3644e07e9e2a0d94bd66a57b58104433767b905002d4084d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -86,7 +86,7 @@
   },
   "riftlight-cairnstep-pass/ledger/narration": {
     "source": "sha256:e9a5302a61b805d1d4f190437f4eb9b09175b2b74a73d011ceb3735d150ac35c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -108,7 +108,7 @@
   },
   "riftlight-cairnstep-pass/ridge/narration": {
     "source": "sha256:5fc043ee388b3367e21c74c67a94ca9afcd785bccc682138c3f088128fdf434a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -126,7 +126,7 @@
   },
   "riftlight-cairnstep-pass/supplies/narration": {
     "source": "sha256:151a343a777f2dc1242d97731379f8b769775188ce6d2011ccae25848dd832de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -152,7 +152,7 @@
   },
   "riftlight-cairnstep-pass/ledger_sky/narration": {
     "source": "sha256:0849729b989815b852d5a247ff5bfb3f83d42b767dd169f0d9bd84a2e3258d72",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -170,7 +170,7 @@
   },
   "riftlight-cairnstep-pass/compared/narration": {
     "source": "sha256:fe3423641e2aec3e4061070c239a1416b4de5d37f4f74448dc8ba8bdd131b510",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -200,7 +200,7 @@
   },
   "riftlight-cairnstep-pass/pebble/narration": {
     "source": "sha256:ff43c446d6bfa2f65667650164acb6e86ebaa40b24287ba209dcca1bcde1125a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -230,7 +230,7 @@
   },
   "riftlight-cairnstep-pass/pebble_help/narration": {
     "source": "sha256:17a57858abde8a7fdfdd78f0010c38006d87804ed14167b6e5e426dc833b2e2f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -238,7 +238,8 @@
       },
       {
         "by": "pebble",
-        "text": "\"Brask says a page is a promise,\""
+        "text": "\"Brask says a page is a promise,\"",
+        "delivery": "sad"
       },
       {
         "by": "narrator",
@@ -248,7 +249,7 @@
   },
   "riftlight-cairnstep-pass/pebble_walk/narration": {
     "source": "sha256:8b679baf5e64a0ac7919e73feb4a0704ed16313f4d9c834dedece550e173d310",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -270,7 +271,7 @@
   },
   "riftlight-cairnstep-pass/pebble_walk/onSuccess/narration": {
     "source": "sha256:9060bd2dc7e161b8fa12d705d2a0fb32afbb33724d8c622db1b8d42de3871287",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -288,7 +289,7 @@
   },
   "riftlight-cairnstep-pass/pebble_page/narration": {
     "source": "sha256:40c4c70a0e84b25952389888f22776262c4c5b7c63116f4d9f062657d7ffce33",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -310,7 +311,7 @@
   },
   "riftlight-cairnstep-pass/pebble_mend/narration": {
     "source": "sha256:262c13722bc0d6288ea48ae684dbad51661161a976bc2964f7d5c5ff14a512c8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -328,7 +329,7 @@
   },
   "riftlight-cairnstep-pass/pebble_done/narration": {
     "source": "sha256:70a3be192004b8e2a2118aa79a5d98fe194a6b7cb92cee7e2a04adb9b65d8006",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -366,7 +367,7 @@
   },
   "riftlight-cairnstep-pass/old_page/narration": {
     "source": "sha256:44bd112cb9a24b67cf34fdb8e5cd91fe4648d4ed73b24da476677ebcf981dd1b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -404,7 +405,7 @@
   },
   "riftlight-cairnstep-pass/drawing_memory/narration": {
     "source": "sha256:502862bdd72ab90e07f09c923a0592387900e9405d2dcaf8175984563f89d846",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pebble",
@@ -430,7 +431,7 @@
   },
   "riftlight-cairnstep-pass/drawing_memory/onSuccess/narration": {
     "source": "sha256:ccc8d2f67db1fa60555c0a612d245074498c659b0a0c935718a3502b736ba491",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -444,7 +445,7 @@
   },
   "riftlight-cairnstep-pass/drawing_memory/onFailure/narration": {
     "source": "sha256:eb24025a80375ffa8c81ef20e937cabc9930d57a16ea93321701272ba6b42bd7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -462,7 +463,7 @@
   },
   "riftlight-cairnstep-pass/moved/narration": {
     "source": "sha256:62e3c14b64981fc535bddf986efc1a08245e3d0203dc60866d6af3a6876907fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -496,7 +497,7 @@
   },
   "riftlight-cairnstep-pass/tested/narration": {
     "source": "sha256:3cd21e9133c19e6e8cd10b0ab0b74c9e2ab2d94a0c14dfa60c766cb892b945fa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -518,7 +519,7 @@
   },
   "riftlight-cairnstep-pass/tested/variants/1": {
     "source": "sha256:890890558005dca75ca4c6c082426b06433f3485a3647cdadccf417091c8738f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pebble",
@@ -536,27 +537,11 @@
   },
   "riftlight-cairnstep-pass/survey_done/narration": {
     "source": "sha256:4a3681a0874cb98f9ad063939ecd0aa9cd6255a8fd048719552fd6d28bccaf88",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
-        "text": "Brask pulls out a long knotted cord, and everyone walks a stretch of it along the shelf. It hums in the wind like a harp. Pebble counts in griffin, which has different numbers."
-      },
-      {
-        "by": "brask_pass_keeper",
-        "text": "\"Four hundred steps long,\""
-      },
-      {
-        "by": "narrator",
-        "text": "Brask writes."
-      },
-      {
-        "by": "brask_pass_keeper",
-        "text": "\"Two goats wide. One hollow neck.\""
-      },
-      {
-        "by": "narrator",
-        "text": "He pays you six coins from the aerie's purse and an owlfeather clasp."
+        "text": "Brask pulls out a long knotted cord, and everyone walks a stretch of it along the shelf. It hums in the wind like a harp. Pebble counts in griffin, which has different numbers. \"Four hundred steps long,\" Brask writes. \"Two goats wide. One hollow neck.\" He pays you six coins from the aerie's purse and an owlfeather clasp."
       },
       {
         "by": "brask_pass_keeper",
@@ -564,27 +549,9 @@
       }
     ]
   },
-  "riftlight-cairnstep-pass/rest_tea/narration": {
-    "source": "sha256:366684ff9ee3aa91ce40c6ceb31b3e180b525149f33210f610b4466f2f8dd7ea",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "Brask lights a tiny stove that hisses like a cat. His tea tastes of pine needles and warm stones. Everyone gets a mug. Pebble gets a thimble. Brask writes:"
-      },
-      {
-        "by": "brask_pass_keeper",
-        "text": "\"Tea. Good.\""
-      },
-      {
-        "by": "narrator",
-        "text": "The neck can wait a minute."
-      }
-    ]
-  },
   "riftlight-cairnstep-pass/tea_share/narration": {
     "source": "sha256:5d1333d6dd59ed3a0b0c9eb253f07e471f724e6ebfe5c9904bdb95301ba65d42",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -614,7 +581,7 @@
   },
   "riftlight-cairnstep-pass/tea_x/narration": {
     "source": "sha256:e6cc751dcc13ee4ecdcd2a05cc86f69aba7c015e17a399d0c62e5fd6b460184a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -644,7 +611,7 @@
   },
   "riftlight-cairnstep-pass/pages_x/narration": {
     "source": "sha256:22ecba81ceccf2ada65d9c919147b2680eabf286700d9014301f8fe7a8a0c1a8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -666,7 +633,7 @@
   },
   "riftlight-cairnstep-pass/shelter/narration": {
     "source": "sha256:a9891d87b8657f2b92a067a6988c0dd2159e97d8493036fb99ac48cda6a641f0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -684,7 +651,7 @@
   },
   "riftlight-cairnstep-pass/shelter_drip/narration": {
     "source": "sha256:a3b1ca43ca7490dc7114d688b2e49771af479e338a968d61a1325ffc91b5f9c9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -702,7 +669,7 @@
   },
   "riftlight-cairnstep-pass/shelter_found/narration": {
     "source": "sha256:b9818b4b505cb543076188e119f5fedf8c01497117c8c15d9aea75cf51523a91",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -724,7 +691,7 @@
   },
   "riftlight-cairnstep-pass/shelter_found/variants/0": {
     "source": "sha256:a3e4d762c620a18c9b8a8c4c019febaf9b4e1b2100dc852dde53afe689a0e4d6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -746,7 +713,7 @@
   },
   "riftlight-cairnstep-pass/cache_fight/onDefeat/narration": {
     "source": "sha256:f1095f8b977de58669d19a766e3d30422b6268bdd948881f887f00055a642c35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -768,7 +735,7 @@
   },
   "riftlight-cairnstep-pass/neck/narration": {
     "source": "sha256:41acab0aa4d462c0fbb98dfb9a50bbaf62fb32c9785aa9b5a6832e2db47bba5b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -794,7 +761,7 @@
   },
   "riftlight-cairnstep-pass/neck/variants/0": {
     "source": "sha256:40066816ebd8e0c6eb2d600b719f52d0abb62cf2766282515e415c3e305b592a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -816,7 +783,7 @@
   },
   "riftlight-cairnstep-pass/neck_tap/narration": {
     "source": "sha256:a92857fcbf059bfe5019ebcea622c7136ba06232c7584ee3df1e836b7bb786c3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -824,7 +791,8 @@
       },
       {
         "by": "pebble",
-        "text": "\"Donk is bad,\""
+        "text": "\"Donk is bad,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -834,7 +802,7 @@
   },
   "riftlight-cairnstep-pass/neck_heard/narration": {
     "source": "sha256:3e5bba79f50c47ce9a4104e96b0bd1b6122cbe384ab5c211bf8d39ce67a6d94e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -856,7 +824,7 @@
   },
   "riftlight-cairnstep-pass/neck_done/narration": {
     "source": "sha256:ef12b4bb711d3fbdd9b7d8a77b7dee184e6480dfcc2bb4fd46a97b22a150a9f5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -886,7 +854,7 @@
   },
   "riftlight-cairnstep-pass/mark/narration": {
     "source": "sha256:e598876f324e111603bbdedf61c32c16ee050e35e5d4a27093742a5f6e1ae95b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -904,7 +872,7 @@
   },
   "riftlight-cairnstep-pass/mark/variants/0": {
     "source": "sha256:f1318f2bae7ab7b1b13bdb93b8adc291bc7b1d2b0368606679e89361a78e4e52",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "brask_pass_keeper",
@@ -922,7 +890,7 @@
   },
   "riftlight-cairnstep-pass/mark_open/narration": {
     "source": "sha256:1b8d1b4f8b84c21800201dbd481405a6f406ff44341d49e6ce6519c7a69d1d9e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -952,7 +920,7 @@
   },
   "riftlight-cairnstep-pass/mark_warn/narration": {
     "source": "sha256:6159f1286a1623ce02135e31e14c339a8f09ab3d8c37951597a012238d81fa61",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -982,7 +950,7 @@
   },
   "riftlight-cairnstep-pass/mark_closed/narration": {
     "source": "sha256:cb1b6d1c06cc238f434e9f955fe1dfbffb99d31b7a52818ce7a422a20db636a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1012,7 +980,7 @@
   },
   "riftlight-cairnstep-pass/capstone/narration": {
     "source": "sha256:a00d11411f09ac884668e52deed680f3871499557143c9a1fa46bfa332f0b903",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1038,7 +1006,7 @@
   },
   "riftlight-cairnstep-pass/capstone_fall/narration": {
     "source": "sha256:f082edaf7b0360dc620e53b65fa6a15f30d18e5f7bec7860db13f3232ed97d83",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1060,7 +1028,7 @@
   },
   "riftlight-cairnstep-pass/capstone_done/narration": {
     "source": "sha256:db36473f50a2663c5e469c758316826ccdbc165823873085e7987cb803ee80b0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1090,7 +1058,7 @@
   },
   "riftlight-cairnstep-pass/signal/narration": {
     "source": "sha256:a7b6ea27dea5aa766f8ae7bdd6172ec58da9e1a540455032a3c018f546017e57",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "brask_pass_keeper",
@@ -1108,7 +1076,7 @@
   },
   "riftlight-cairnstep-pass/signal_wave/narration": {
     "source": "sha256:453ef0730de0f9d340210e1a7c6fc41f41b0642ed8b366785aa0208da22aa788",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1116,7 +1084,8 @@
       },
       {
         "by": "brask_pass_keeper",
-        "text": "\"Oh, nicely done,\""
+        "text": "\"Oh, nicely done,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1126,7 +1095,7 @@
   },
   "riftlight-cairnstep-pass/signal_back/narration": {
     "source": "sha256:a79f5d2c1c329db30b53c828c82c2b9b252056c3dc5d2143c5e25e67ee5ae58a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1156,7 +1125,7 @@
   },
   "riftlight-cairnstep-pass/signal_back/variants/0": {
     "source": "sha256:f45626beabad0a25e73f01658de7033cc1577097db01d0a2b0f2b6f4789304aa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1186,7 +1155,7 @@
   },
   "riftlight-cairnstep-pass/message/narration": {
     "source": "sha256:c4e8c5542bfcd9e32e2d235657a49a1559dcb990d0ba4ba35e736bad6cd5141c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1212,7 +1181,7 @@
   },
   "riftlight-cairnstep-pass/message/variants/5": {
     "source": "sha256:9f22591aa7323218800f089b9c6dcc47abc118b66ffd6d04c1143b50001130c1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

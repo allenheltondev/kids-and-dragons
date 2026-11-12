@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-bone-yard/arrival/narration": {
     "source": "sha256:b36018b4d5f23649914cd4f661d6bd3c67b33be8d344da90a027eaf3d8ffe6a6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -32,7 +32,7 @@
   },
   "riftlight-bone-yard/rule/narration": {
     "source": "sha256:98ccff0df4fa67125cfaa0765731dbba687b04cbca2f657e964d509a864a0db8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -62,7 +62,7 @@
   },
   "riftlight-bone-yard/check_rib/narration": {
     "source": "sha256:2a60103fa5ba6979c782a4377755b2fb9fb3a03617a5a3aa559da782c068e2be",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -84,7 +84,7 @@
   },
   "riftlight-bone-yard/check_wade/narration": {
     "source": "sha256:ec88ffac7d9d2351a0e552fbd2a8633167e081e57ba5e37a86e0dd4bdfad2059",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -98,7 +98,7 @@
   },
   "riftlight-bone-yard/check_wade/onSuccess/narration": {
     "source": "sha256:a94b4c45a165dc1d2b9dee392f415f4757a15c6c61f8350df17445595213e30e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -116,7 +116,7 @@
   },
   "riftlight-bone-yard/check_wade/onFailure/narration": {
     "source": "sha256:7a6464ccca8180a8f4b319fed1353db9c97b12798d730e0b2b5115db6adbbe39",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -134,7 +134,7 @@
   },
   "riftlight-bone-yard/fly_over/narration": {
     "source": "sha256:dd9cdb5df9c66d1dcb31ce491dc77583e7f1ea351ad7744e45ed563020553471",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -152,7 +152,7 @@
   },
   "riftlight-bone-yard/skull/narration": {
     "source": "sha256:15243d31885f2443a1c242991644f297b3304064efc1e8ff90a4edb20fb4cfee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -160,7 +160,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"Speak low,\""
+        "text": "\"Speak low,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -168,13 +169,14 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"The bones aren't angry. They're tired.\""
+        "text": "\"The bones aren't angry. They're tired.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-bone-yard/ruins_edge/narration": {
     "source": "sha256:d07ff2a7b363fcd3803093d425764f9bb5689b8bf735f22123b5818a6d78a267",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -196,7 +198,7 @@
   },
   "riftlight-bone-yard/lullaby/narration": {
     "source": "sha256:365e694abfc781b9526e3771d6bf513a909158703b318539715ad8448f69b6aa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -214,7 +216,7 @@
   },
   "riftlight-bone-yard/crawler_tail/narration": {
     "source": "sha256:8c248c5294c380b7d44b7841d1f99efc11dbb02f86614d21bfce8ed751860a12",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -236,7 +238,7 @@
   },
   "riftlight-bone-yard/ruins_gate/narration": {
     "source": "sha256:8526b7b17c74e28018fcb0cd2275597730fb28b6e4c77d5860260acc87b2e7e3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -258,7 +260,7 @@
   },
   "riftlight-bone-yard/pip_chip/narration": {
     "source": "sha256:24e805231427b9e06749e17b01629b8be940098c957603e2284bb03d3ea3d56d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -288,7 +290,7 @@
   },
   "riftlight-bone-yard/check_pip/onSuccess/narration": {
     "source": "sha256:54b2d8ce99fd416fb900312bf229501533178225e8a59a1a2d82f55af0c904f7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -302,7 +304,7 @@
   },
   "riftlight-bone-yard/check_pip/onFailure/narration": {
     "source": "sha256:e95bab50a72cac84e7653a90be1a6f27f36861d7da27277f1f5222da22f03b94",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pip_thistledown",
@@ -316,7 +318,7 @@
   },
   "riftlight-bone-yard/manticore_talk/narration": {
     "source": "sha256:7c893cad07e16fb0bb90367c92a7566a3340d0b12c49b4f2921365ec0238e9b3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -334,7 +336,7 @@
   },
   "riftlight-bone-yard/pip_draws/narration": {
     "source": "sha256:1c42ec80aa5b3203a7aef90d05a136402255113175ee8ad459a113888544ac49",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -360,7 +362,7 @@
   },
   "riftlight-bone-yard/explore/narration": {
     "source": "sha256:7c1851f861eb1689992bd3370261e775b52de31dd1bcacc6ccbaf7004b088bdd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -386,7 +388,7 @@
   },
   "riftlight-bone-yard/stair_top/narration": {
     "source": "sha256:8426ae8017ce0d3dae11a19d7d0dbd923cfe32d4fb96f0fa4aa0839e385753e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -408,7 +410,7 @@
   },
   "riftlight-bone-yard/doorway_step/narration": {
     "source": "sha256:73c5a9cf63ec7175b74c724c04e035281783bbe159f0c567c3dced6be676b158",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -416,7 +418,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"Somebody lived here,\""
+        "text": "\"Somebody lived here,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -426,7 +429,7 @@
   },
   "riftlight-bone-yard/doorway_nest/narration": {
     "source": "sha256:d890120fa8fab1b407044428b76c8dba0e73dcdd692767003c9ba2cbeb529bfb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -444,7 +447,7 @@
   },
   "riftlight-bone-yard/carvings/narration": {
     "source": "sha256:b7abb394f9c0f0a5ce5db31af1929704ee8ea44ae7ebcfae2c01e76a3495a578",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -462,7 +465,7 @@
   },
   "riftlight-bone-yard/carvings/onSuccess/narration": {
     "source": "sha256:23f0646dab917c25fefd50d0eda7faae2ff7521dbc5a909918a8334e7c0d30cc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -484,7 +487,7 @@
   },
   "riftlight-bone-yard/same_stone/narration": {
     "source": "sha256:e848d81b9f9e3042ff33ac6a29cdbc3cf789adf22597ffcdf49d9069b6a3101f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -492,7 +495,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"The bridge has family,\""
+        "text": "\"The bridge has family,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -502,7 +506,7 @@
   },
   "riftlight-bone-yard/lean/narration": {
     "source": "sha256:c19834ea33853c0c2a0a9642a4ea377804e1b44ec05f02ced2ec9eced922ee8a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -528,7 +532,7 @@
   },
   "riftlight-bone-yard/catch_pip/onSuccess/narration": {
     "source": "sha256:c7f80ba58dab29c26ff57c1e8fe0d0d458ee44c0371553b62d825543cf92bb24",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -542,7 +546,7 @@
   },
   "riftlight-bone-yard/catch_pip/onFailure/narration": {
     "source": "sha256:30ab6059d9ee8432a8b4eaa68563978d7879a49665240a0769aae5b747ddc54f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -560,7 +564,7 @@
   },
   "riftlight-bone-yard/pip_idea/narration": {
     "source": "sha256:c678f752410be25679079d94ff099b899574c1b38b256495c99469b6ade6e22e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -578,7 +582,7 @@
   },
   "riftlight-bone-yard/pip_amazing/narration": {
     "source": "sha256:b7c64f5d08544abc0079a646ecd8ddce9cb2a877fe14166909b73000b320ba63",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -600,7 +604,7 @@
   },
   "riftlight-bone-yard/dam/narration": {
     "source": "sha256:2e7e67c3adc15c881ac2fa12e1f8e1830c301772aa4b398cc09ca93cc67f8477",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -622,7 +626,7 @@
   },
   "riftlight-bone-yard/dam/variants/0": {
     "source": "sha256:0fd6560b176b620b4ca1e6fad482b2017ae74f851483924b2e628ce2c4b58bf3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -636,7 +640,7 @@
   },
   "riftlight-bone-yard/dam/variants/1": {
     "source": "sha256:3211736cc1039267e826a6c0a22f58e7fc9cf1f804f287143c4872d852477102",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -650,7 +654,7 @@
   },
   "riftlight-bone-yard/check_shove/narration": {
     "source": "sha256:abb37db7fb5514a979bd113fb804eb1077415c25789e4191d606ec60b1c1dcf7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -672,7 +676,7 @@
   },
   "riftlight-bone-yard/shoved/narration": {
     "source": "sha256:5ededb3f2822eca5633c33cd7978a076fde4ad0be4986bd97ecba9c810183442",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -690,7 +694,7 @@
   },
   "riftlight-bone-yard/cracked/narration": {
     "source": "sha256:5b85392aca32730b046763a6399f391cf8873a6e0b318cd501f542000e0d58c0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -716,7 +720,7 @@
   },
   "riftlight-bone-yard/bigfoot_lift/narration": {
     "source": "sha256:ebc5f267ce5b07f279a04bfee15a65837927dc2dcc9a0dc252a6efc8ff84be35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -734,7 +738,7 @@
   },
   "riftlight-bone-yard/watch_lean/narration": {
     "source": "sha256:6b2d4f64b572200383114374f23dd4d5b274973587c830cb600e186f00586a13",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -760,7 +764,7 @@
   },
   "riftlight-bone-yard/nudged/narration": {
     "source": "sha256:1682e657e341abc5707ee2a461f937310fb8d71c965f02185fa41ade7f8a3edd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -778,7 +782,7 @@
   },
   "riftlight-bone-yard/nudged_slow/narration": {
     "source": "sha256:e8df461ff7f8a384c9680af2931984750e2bdd5546433de3e61b57874e2d63db",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -804,7 +808,7 @@
   },
   "riftlight-bone-yard/court_quick/variants/0": {
     "source": "sha256:85d43d849f2cd1682e29fcf94b36a0953557cf150cc08961be72512add828e20",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -812,7 +816,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"I would like to give this back now!\""
+        "text": "\"I would like to give this back now!\"",
+        "delivery": "nervous"
       },
       {
         "by": "narrator",
@@ -822,7 +827,7 @@
   },
   "riftlight-bone-yard/court_quick/variants/1": {
     "source": "sha256:e545c5ce9eee87099fd9f4fe05a51d127fbb2d1d8d92dc936c1b1c5d1533d291",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -836,7 +841,7 @@
   },
   "riftlight-bone-yard/court_quick/variants/2": {
     "source": "sha256:671bc8b43af78883e1aa84964b8771df75f95318844d40ed3cb25ecb2f4058fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -850,7 +855,7 @@
   },
   "riftlight-bone-yard/court_grown/variants/0": {
     "source": "sha256:85d43d849f2cd1682e29fcf94b36a0953557cf150cc08961be72512add828e20",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -858,7 +863,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"I would like to give this back now!\""
+        "text": "\"I would like to give this back now!\"",
+        "delivery": "nervous"
       },
       {
         "by": "narrator",
@@ -868,7 +874,7 @@
   },
   "riftlight-bone-yard/court_grown/variants/1": {
     "source": "sha256:e545c5ce9eee87099fd9f4fe05a51d127fbb2d1d8d92dc936c1b1c5d1533d291",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -882,7 +888,7 @@
   },
   "riftlight-bone-yard/court_grown/variants/2": {
     "source": "sha256:671bc8b43af78883e1aa84964b8771df75f95318844d40ed3cb25ecb2f4058fd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -896,7 +902,7 @@
   },
   "riftlight-bone-yard/court_after/variants/1": {
     "source": "sha256:249bb041fb5a7c3a6d2e05fafffe2c57d3349749580611823117b54f3e0b1497",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -918,7 +924,7 @@
   },
   "riftlight-bone-yard/court_after/variants/2": {
     "source": "sha256:91f82b6fc8d0906605934a35af21fa371826f6dce572a8cd2e15d593aae4cfbc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -940,7 +946,7 @@
   },
   "riftlight-bone-yard/court_after/variants/3": {
     "source": "sha256:f19a08c170a32df6272bfaf5f6c2b4b93443f3878a1521e64a524ab2a5d709a2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -958,7 +964,7 @@
   },
   "riftlight-bone-yard/puddle_court/narration": {
     "source": "sha256:3f5b5b4c25218c2b03c2a4194f414ec682bb452fd4d7b3defadc3ad43a88153d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -980,7 +986,7 @@
   },
   "riftlight-bone-yard/puddle_court/variants/0": {
     "source": "sha256:ff910a5fd5a1e1b98b4330e3f7077f84b0dc0b8e92fcd77aaf9d283a93d41708",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1002,7 +1008,7 @@
   },
   "riftlight-bone-yard/swarmed/narration": {
     "source": "sha256:4074bf24a0cd15d9052a7e342818fc50625567406962b6e1aac8a9edbd80bfdc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1020,7 +1026,7 @@
   },
   "riftlight-bone-yard/float_out/narration": {
     "source": "sha256:34ca813e1fa3327114bebb839f8c4dfbd56a89195377f5fbbce0ea5cea1cdd32",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1042,7 +1048,7 @@
   },
   "riftlight-bone-yard/rest/narration": {
     "source": "sha256:4a9ec5c679bfd4623acc0e43d6544820e7ab2ce54cbd3b9d95d077ff6206de87",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1072,7 +1078,7 @@
   },
   "riftlight-bone-yard/rest/variants/0": {
     "source": "sha256:aeeece53b7cb55e93800b5c100e10a35590017b41e007b835930d30f77b19702",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1094,7 +1100,7 @@
   },
   "riftlight-bone-yard/cut_off/narration": {
     "source": "sha256:2415596017239065ae9c754abab7887bfed6fb142d633895979afa022afc6b95",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "saltrot_guide",
@@ -1116,7 +1122,7 @@
   },
   "riftlight-bone-yard/watch_tide/narration": {
     "source": "sha256:12c2e8eda50bd5ea8acfcc65e6088483eaa2b19a9516556e3965b71fd51b34ab",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1124,7 +1130,8 @@
       },
       {
         "by": "saltrot_guide",
-        "text": "\"Look,\""
+        "text": "\"Look,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1134,7 +1141,7 @@
   },
   "riftlight-bone-yard/tide_turns/narration": {
     "source": "sha256:5c53a740a872a72d556d67d12bc363a30bcffbb4c74b62711c7698543394ede2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1148,7 +1155,7 @@
   },
   "riftlight-bone-yard/tide_turns/variants/0": {
     "source": "sha256:a819ee3dfc7bcc45efa1e76703a226421b893bbeda2a6e9d0c9176436bf2a2a8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1162,7 +1169,7 @@
   },
   "riftlight-bone-yard/tide_turns/variants/1": {
     "source": "sha256:792e973463f06f1bb367574f2e60b6c38cccf7b17e9ba55a16dd1a51471ff190",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1180,7 +1187,7 @@
   },
   "riftlight-bone-yard/drawing/narration": {
     "source": "sha256:41b013b3b7be821049b84676d42e920fb8e16acc27acbb80adbd202e5201073b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1210,7 +1217,7 @@
   },
   "riftlight-bone-yard/drawing/variants/0": {
     "source": "sha256:b10032f2d8e672e418c275b5b5ed7c42a73f1234cfa523457c6a3f8ef52ae599",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1240,7 +1247,7 @@
   },
   "riftlight-bone-yard/to_puddle/narration": {
     "source": "sha256:a92fc7369a2e1bcd03ee104ba9ff9b8ed9a84b331a2a9ffba2fc427eb1ac3f4a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1270,7 +1277,7 @@
   },
   "riftlight-bone-yard/to_puddle/variants/0": {
     "source": "sha256:8bc4e49e27efe483dfa2d5b4055db50ef0e12478694cbdfc716d6a125c741824",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1292,7 +1299,7 @@
   },
   "riftlight-bone-yard/to_pip/narration": {
     "source": "sha256:e043c043f7edb752b6ad6fb446791b2a98e4bda895e03c0637393eb9027797a8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1330,7 +1337,7 @@
   },
   "riftlight-bone-yard/to_pip/variants/0": {
     "source": "sha256:8cb6b53686ee324c125c38b3f132485e3f920187611fc70efbdaf1a2b1935db3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1368,7 +1375,7 @@
   },
   "riftlight-bone-yard/to_pip/variants/1": {
     "source": "sha256:89744666d442edf21f328bee2e9056aefceda381ef107fede2e772f1104bd02e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1390,7 +1397,7 @@
   },
   "riftlight-bone-yard/ending/narration": {
     "source": "sha256:417d1d685bbb7455e1036f177facb7623c1e3c786c79d3f06ee9a4f50b3d3e51",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1416,7 +1423,7 @@
   },
   "riftlight-bone-yard/ending/variants/2": {
     "source": "sha256:3d1b6496185e237f27f3e14b2af470c634627cc52916b9e595b447b25ae2b8f1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
