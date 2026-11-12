@@ -54,6 +54,7 @@ import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import { usePrefetchUpcoming, useWarmChapter } from "../sw/prefetch";
+import { useVoicePrefetch } from "../speech/voice-prefetch";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -97,6 +98,9 @@ export function WorldView({
   // must never be parked on the creation preview waiting for one.
   const isDisplay = (useSession()?.playerId ?? "") === "";
   useWarmChapter(isDisplay && prefetch);
+  // The narration ahead, so a slow connection has its clips by the time a line is spoken; the
+  // shared screen also takes the rest of the chapter.
+  useVoicePrefetch(prefetch, isDisplay);
 
   // Same trigger PlayerView uses: "I have no character yet", not the run phase.
   const creating = (phase === "lobby" || phase === "creation") && me === null && !isDisplay;

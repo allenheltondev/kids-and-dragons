@@ -42,9 +42,20 @@ export interface SpeakOptions {
   parts?: readonly NarrationPart[];
 }
 
+/** How soon a prefetch wants its clips: `near` is the next scenes, `background` the rest of the chapter. */
+export interface PrefetchOptions {
+  background?: boolean;
+}
+
 export type Speaker = ((text: string, opts?: SpeakOptions) => void) & {
   /** Silence whatever is being said or queued. Optional: a speaker that cannot is simply left to finish. */
   cancel?: () => void;
+  /**
+   * Fetch the recordings for the lines at these addresses (or under these address prefixes,
+   * `<chapter>/<scene>/`) before they are spoken. Optional: only a recorded voice has anything to
+   * fetch (speech/clip-speaker.ts).
+   */
+  prefetch?: (prefixes: readonly string[], opts?: PrefetchOptions) => void;
 };
 
 let current: Speaker | null = null;
@@ -72,6 +83,37 @@ export function spokenText(text: string): string {
 export function setSpeaker(speaker: Speaker | null): void {
   if (current !== speaker) stopSpeaking();
   current = speaker;
+  // A prefetch asked for while the speaker was still loading is made now it is here.
+  if (speaker?.prefetch) for (const [prefixes, opts] of asked) callPrefetch(speaker, prefixes, opts);
+}
+
+/** The latest prefetch requests, kept for a speaker that arrives after them (the read-aloud engine loads lazily). */
+const asked: [readonly string[], PrefetchOptions | undefined][] = [];
+const ASKED_KEPT = 8;
+
+function callPrefetch(speaker: Speaker, prefixes: readonly string[], opts: PrefetchOptions | undefined): void {
+  try {
+    speaker.prefetch?.(prefixes, opts);
+  } catch {
+    // A prefetch is a favour; failing at it must never reach the scene.
+  }
+}
+
+/**
+ * Asks the speaker to fetch the recordings for lines it is about to be given, so a slow
+ * connection has them by the time they are spoken. Nothing without a recorded speaker, and a
+ * request made before one is installed waits for it (the last few are kept).
+ */
+export function prefetchNarration(prefixes: readonly string[], opts?: PrefetchOptions): void {
+  if (prefixes.length === 0) return;
+  asked.push([prefixes, opts]);
+  if (asked.length > ASKED_KEPT) asked.shift();
+  if (current?.prefetch) callPrefetch(current, prefixes, opts);
+}
+
+/** Tests: forget what was asked for. */
+export function resetPrefetchRequests(): void {
+  asked.length = 0;
 }
 
 /** Stops the current line and anything queued behind it. Never throws. */

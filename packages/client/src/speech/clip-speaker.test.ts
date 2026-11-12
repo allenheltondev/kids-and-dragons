@@ -52,12 +52,15 @@ function fakeDevice() {
 }
 
 /** The engine's voice channel: decodes a clip's bytes into a buffer named after them, and plays on request. */
-function fakeChannel(options: { ready?: boolean; failDecode?: string } = {}) {
+function fakeChannel(options: { ready?: boolean; failDecode?: string; detach?: boolean } = {}) {
   const plays: { buffers: string[]; onEnd: () => void; stopped: boolean }[] = [];
   const channel: VoiceChannel = {
     ready: () => options.ready ?? true,
     decode: (bytes) => {
+      // A real decodeAudioData takes the buffer it is given: a second decode of it finds it empty.
+      if (options.detach && bytes.byteLength === 0) return Promise.reject(new Error("detached"));
       const name = new TextDecoder().decode(bytes);
+      if (options.detach) structuredClone(bytes, { transfer: [bytes] });
       if (name === options.failDecode) return Promise.reject(new Error("EncodingError"));
       return Promise.resolve({ duration: 0.5, name } as VoiceBuffer);
     },
@@ -77,14 +80,16 @@ type Route = FetchedLike | "offline" | "hang";
 /** A fetch over a table of URLs: a clip's body is its key, so the decode above can name it. */
 function fakeFetch(routes: Record<string, Route>) {
   const asked: string[] = [];
-  const fetch = (url: string): Promise<FetchedLike> => {
+  const inits: Record<string, unknown> = {};
+  const fetch = (url: string, init?: { priority?: "low" }): Promise<FetchedLike> => {
     asked.push(url);
+    inits[url] = init;
     const route = routes[url];
     if (route === "offline") return Promise.reject(new TypeError("Failed to fetch"));
     if (route === "hang") return new Promise(() => undefined);
     return Promise.resolve(route ?? { ok: false, status: 404, json: () => Promise.reject(new Error("404")), arrayBuffer: () => Promise.reject(new Error("404")) });
   };
-  return { fetch, asked };
+  return { fetch, asked, inits };
 }
 
 const json = (body: unknown): FetchedLike => ({ ok: true, json: () => Promise.resolve(body), arrayBuffer: () => Promise.reject(new Error("not bytes")) });
@@ -94,7 +99,11 @@ function allThere(): Record<string, Route> {
   return { [manifestPath("ch")]: json(MANIFEST), [clipPath(A)]: bytes(A), [clipPath(B)]: bytes(B), [clipPath(C)]: bytes(C) };
 }
 
-function setup(routes: Record<string, Route> = allThere(), channelOptions: Parameters<typeof fakeChannel>[0] = {}) {
+function setup(
+  routes: Record<string, Route> = allThere(),
+  channelOptions: Parameters<typeof fakeChannel>[0] = {},
+  saveData = false,
+) {
   const device = fakeDevice();
   const { channel, plays } = fakeChannel(channelOptions);
   const net = fakeFetch(routes);
@@ -104,6 +113,7 @@ function setup(routes: Record<string, Route> = allThere(), channelOptions: Param
     device: device.device,
     channel: () => current,
     fetch: net.fetch,
+    saveData: () => saveData,
     onSpeaking: (on) => speaking.push(on),
   });
   return { speaker, device, plays, net, speaking, unplug: () => void (current = null) };
@@ -165,6 +175,130 @@ describe("lines outside a chapter", () => {
   });
 });
 
+/** A chapter of three scenes: the second has a variant and a branch, and a choice label no recording plays. */
+const D = "d".repeat(64);
+const E = "e".repeat(64);
+const F = "f".repeat(64);
+const AHEAD: VoiceManifest = {
+  "ch/@goal": { "": [{ clip: F, ms: 600 }] },
+  "ch/s1/narration": { "": [{ clip: A, ms: 1000 }] },
+  "ch/s2/narration": { "": [{ clip: B, ms: 500 }] },
+  "ch/s2/variants/0": { "party=3": [{ clip: C, ms: 800 }] },
+  "ch/s2/onSuccess/narration": { "": [{ clip: D, ms: 700 }] },
+  "ch/s2/go/label": { "": [{ clip: E, ms: 300 }] },
+  "ch/s3/narration": { "": [{ clip: E, ms: 400 }] },
+};
+function aheadRoutes(): Record<string, Route> {
+  return {
+    [manifestPath("ch")]: json(AHEAD),
+    ...Object.fromEntries([A, B, C, D, E, F].map((key) => [clipPath(key), bytes(key)])),
+  };
+}
+
+describe("prefetch: the clips for lines not yet spoken", () => {
+  it("fetches the narration, variants and branches under a scene, low priority, and not a choice label", async () => {
+    const t = setup(aheadRoutes());
+    t.speaker.prefetch?.(["ch/s2/"]);
+    await settle();
+    expect(t.net.asked).toEqual([manifestPath("ch"), clipPath(B), clipPath(C), clipPath(D)]);
+    for (const key of [B, C, D]) expect(t.net.inits[clipPath(key)]).toEqual({ priority: "low" });
+    expect(t.plays).toEqual([]);
+    expect(t.device.said).toEqual([]);
+  });
+
+  it("plays a line from what was prefetched without fetching its clips again", async () => {
+    const t = setup(aheadRoutes());
+    t.speaker.prefetch?.(["ch/s1/"]);
+    await settle();
+    const before = t.net.asked.length;
+    t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
+    await settle();
+    expect(t.net.asked).toHaveLength(before);
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
+  });
+
+  it("decodes a clip afresh every time it plays, since decoding takes the bytes it is given", async () => {
+    const t = setup(aheadRoutes(), { detach: true });
+    t.speaker.prefetch?.(["ch/s1/"]);
+    await settle();
+    const line = { source: "narration" as const, parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] };
+    t.speaker("The gate creaks.", line);
+    await settle();
+    t.plays[0]!.onEnd();
+    t.speaker("The gate creaks.", line);
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A], [A]]);
+    expect(t.device.said).toEqual([]);
+  });
+
+  it("fetches the nearer scenes ahead of the rest of the chapter, once it asked for both", async () => {
+    const t = setup(aheadRoutes());
+    t.speaker.prefetch?.(["ch/"], { background: true });
+    t.speaker.prefetch?.(["ch/s3/"]);
+    await settle();
+    const clips = t.net.asked.filter((url) => url !== manifestPath("ch"));
+    // The background request may have started its first clip before the near one was known;
+    // after that the near scene's clip goes before any other background clip.
+    expect(clips.slice(0, 2)).toContain(clipPath(E));
+    expect(clips).toHaveLength(6);
+    expect(new Set(clips).size).toBe(6);
+  });
+
+  it("holds back while a line the table is waiting on is still getting its own clips", async () => {
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    const routes = aheadRoutes();
+    routes[clipPath(A)] = {
+      ok: true,
+      json: () => Promise.reject(new Error("not json")),
+      arrayBuffer: () => held.then(() => new TextEncoder().encode(A).buffer as ArrayBuffer),
+    };
+    const t = setup(routes);
+    t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
+    await settle();
+    t.speaker.prefetch?.(["ch/s2/"]);
+    await settle();
+    await vi.advanceTimersByTimeAsync(400);
+    // Only the manifest and the spoken line's clip: the prefetch waits its turn.
+    expect(t.net.asked).toEqual([manifestPath("ch"), clipPath(A)]);
+    release();
+    await settle();
+    await vi.advanceTimersByTimeAsync(400);
+    await settle();
+    expect(t.net.asked.slice(2)).toEqual([clipPath(B), clipPath(C), clipPath(D)]);
+  });
+
+  it("fetches nothing for a device that asked to save data, and still plays lines", async () => {
+    const t = setup(aheadRoutes(), {}, true);
+    t.speaker.prefetch?.(["ch/s1/"]);
+    await settle();
+    expect(t.net.asked).toEqual([]);
+    t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
+  });
+
+  it("asks again for a clip whose prefetch failed, when its line is spoken", async () => {
+    const routes = aheadRoutes();
+    routes[clipPath(A)] = "offline";
+    const t = setup(routes);
+    t.speaker.prefetch?.(["ch/s1/"]);
+    await settle();
+    routes[clipPath(A)] = bytes(A);
+    t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
+    await settle();
+    expect(t.net.asked.filter((url) => url === clipPath(A))).toHaveLength(2);
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
+  });
+
+  it("does nothing for a chapter with no manifest", async () => {
+    const t = setup({});
+    expect(() => t.speaker.prefetch?.(["ch/s1/"])).not.toThrow();
+    await settle();
+    expect(t.net.asked).toEqual([manifestPath("ch")]);
+  });
+});
+
 describe("a recorded line", () => {
   it("resolves every part through the chapter's manifest and plays the clips in order", async () => {
     const t = setup();
@@ -184,7 +318,8 @@ describe("a recorded line", () => {
     t.speaker("Again.", { parts: S1 });
     await settle();
     expect(t.net.asked.filter((url) => url === manifestPath("ch"))).toHaveLength(1);
-    expect(t.net.asked.filter((url) => url === clipPath(B))).toHaveLength(2);
+    // Kept in memory: the second line's use of B is not a second download.
+    expect(t.net.asked.filter((url) => url === clipPath(B))).toHaveLength(1);
   });
 
   it("marks the panel as speaking while it plays, and not after", async () => {
@@ -495,6 +630,20 @@ describe("narration only while the page is seen (whileSeen)", () => {
     win.dispatchEvent(new Event("pageshow"));
     speak("Here again.");
     expect(said).toEqual(["Here again."]);
+  });
+
+  it("asks for clips only while the page is seen", () => {
+    const { doc, win, show } = page();
+    const asked: string[][] = [];
+    const speaker = (() => undefined) as unknown as Speaker;
+    speaker.prefetch = (prefixes) => void asked.push([...prefixes]);
+    const seen = whileSeen(speaker, doc, win);
+    seen.prefetch?.(["ch/s1/"]);
+    show("hidden");
+    seen.prefetch?.(["ch/s2/"]);
+    show("visible");
+    seen.prefetch?.(["ch/s3/"]);
+    expect(asked).toEqual([["ch/s1/"], ["ch/s3/"]]);
   });
 
   it("passes cancel through", () => {
