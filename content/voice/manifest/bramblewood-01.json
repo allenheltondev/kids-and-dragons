@@ -127,14 +127,6 @@
       }
     ]
   },
-  "bramblewood-01/encounter_bramblewisps/narration": {
-    "": [
-      {
-        "clip": "e11ab21132b005ce2221ed50b37131ae43b47f58ae6f0bc597920639076850fe",
-        "ms": 5407
-      }
-    ]
-  },
   "bramblewood-01/encounter_bramblewisps/onDefeat/narration": {
     "": [
       {

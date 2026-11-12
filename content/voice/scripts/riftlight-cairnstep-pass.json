@@ -733,6 +733,28 @@
       }
     ]
   },
+  "riftlight-cairnstep-pass/cache_fight/onTimeout/narration": {
+    "source": "sha256:f1095f8b977de58669d19a766e3d30422b6268bdd948881f887f00055a642c35",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The wolves dart off with a loaf and some hay."
+      },
+      {
+        "by": "brask_pass_keeper",
+        "text": "\"Hay can be bought,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Brask."
+      },
+      {
+        "by": "brask_pass_keeper",
+        "text": "\"Friends are harder.\""
+      }
+    ]
+  },
   "riftlight-cairnstep-pass/neck/narration": {
     "source": "sha256:41acab0aa4d462c0fbb98dfb9a50bbaf62fb32c9785aa9b5a6832e2db47bba5b",
     "reviewed": true,

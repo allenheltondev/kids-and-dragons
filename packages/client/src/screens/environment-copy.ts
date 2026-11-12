@@ -65,8 +65,9 @@ export function objectiveLine(objective: EnvironmentObjectiveView): string {
   if (objective.kind === "hold" && objective.endsFight && objective.target === 1) {
     return `${objective.label} at round end to win.`;
   }
-  if (objective.art && objective.kind === "hold" && objective.endsFight) {
-    return `${objective.label} (${objective.progress}/${objective.target}). End rounds with a hero on it and no monsters to win.`;
+  if (objective.art && objective.endsFight) {
+    const work = objective.kind === "hold" ? "End rounds with a hero on it and no monsters" : "End turns on or beside it";
+    return `${objective.label} (${objective.progress}/${objective.target}). ${work} to win.`;
   }
   const how =
     objective.kind === "hold"

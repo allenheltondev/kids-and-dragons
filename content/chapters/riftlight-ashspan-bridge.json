@@ -649,13 +649,26 @@
     },
     "mimic_fight": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The mire mimics wobble up, planks clattering down their backs. They want a snack, a nap and some peace, in that order. Shoo them back to the reeds before they eat Tilly's bag!",
+      "map": "boundary_retreat",
+      "narration": "The big mimic raises its planks before slapping the marked ground. Step clear, or daze it first. The little one noses after Tilly's bag. Get every standing friend past the landing ramp to draw both mimics off the unloading lane, or shoo them away. Take turns making room for each other.",
       "enemies": [
         {
           "id": "mimic",
-          "name": "Mire Mimic",
-          "creature": "mire_mimic"
+          "name": "Big Mire Mimic",
+          "creature": "mire_mimic",
+          "count": 1,
+          "windupAttack": {
+            "label": "Plank slap",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          }
+        },
+        {
+          "id": "small",
+          "name": "Little Mire Mimic",
+          "creature": "mire_mimic",
+          "count": 1
         }
       ],
       "onVictory": {
@@ -678,7 +691,48 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The mimics grab Tilly's bag",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "far-bank",
+            "label": "Landing ramp",
+            "art": "fight-landing-ramp",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "mimic_won",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "quickfoot_lace",
+            "to": "party"
+          }
+        ],
+        "narration": "The last friend clears the ramp with Tilly's bag. The mimics snap at empty air, lose interest and shuffle toward the reeds."
+      },
+      "onTimeout": {
+        "goto": "mimic_shooed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
     },
     "mimic_won": {
       "type": "story",
@@ -1795,7 +1849,9 @@
         },
         {
           "type": "findLook",
-          "looks": ["songbird"],
+          "looks": [
+            "songbird"
+          ],
           "rewardId": "riftlight-ashspan-bridge.songbird"
         }
       ]
@@ -1846,7 +1902,9 @@
         },
         {
           "type": "findLook",
-          "looks": ["songbird"],
+          "looks": [
+            "songbird"
+          ],
           "rewardId": "riftlight-ashspan-bridge.songbird"
         }
       ]
@@ -2569,7 +2627,7 @@
       {
         "chapter": "riftlight-ashspan-bridge",
         "scene": "mimic_fight",
-        "board": "reedbank",
+        "board": "boundary_retreat",
         "creature": "mire_mimic",
         "introScenes": [
           "plank_pile"

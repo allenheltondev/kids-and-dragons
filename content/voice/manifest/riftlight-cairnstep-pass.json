@@ -15,14 +15,6 @@
       }
     ]
   },
-  "riftlight-cairnstep-pass/cache_fight/narration": {
-    "": [
-      {
-        "clip": "aba13a52a23794e3da95d5d4427272436cb78dafabbbe1f17666e6b8be67eda9",
-        "ms": 9007
-      }
-    ]
-  },
   "riftlight-cairnstep-pass/cache_fight/onDefeat/narration": {
     "": [
       {

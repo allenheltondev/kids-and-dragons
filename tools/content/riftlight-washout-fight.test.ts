@@ -8,7 +8,7 @@ import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
 import { chapters, context, start } from "./riftlight-test-support.ts";
 
 const chapter = chapters.get("riftlight-headwaters-washout")!;
-const FORD = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../content/maps/ford.json"), "utf8")) as EncounterMap;
+const FORD = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../content/maps/spring_ledge.json"), "utf8")) as EncounterMap;
 const BESTIARY = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../content/bestiary.json"), "utf8")) as Bestiary;
 // The loader fills a fight's enemies from canon; do the same here.
 const resolved = structuredClone(chapter);

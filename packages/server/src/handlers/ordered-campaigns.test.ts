@@ -597,6 +597,13 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
             expect(scene.onTimeout).toEqual(scene.onDefeat);
             continue;
           }
+          if (chapterId === "bramblewood-01" && sceneId === "encounter_bramblewisps") {
+            expect(scene.environment?.clock).toMatchObject({ rounds: 12, onExpire: "collapse" });
+            expect(scene.environment?.hazards?.[0]?.id).toBe("thorn-shortcut");
+            expect(scene.environment?.hazards?.[0]?.slow).toEqual({ steps: 2, turns: 1 });
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

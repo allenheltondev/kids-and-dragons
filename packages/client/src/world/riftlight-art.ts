@@ -10,10 +10,11 @@ export function fightAppearance(chapter: Chapter | null, state: RunState | null)
 export function fightResult(chapter: Chapter | null, state: RunState | null): { art: FightAppearance; won: boolean } | null {
  const receipt = state?.lastEncounter;
  if (!chapter || !state || !receipt || chapter.id !== state.chapterId || receipt.chapterId !== chapter.id ||
-     receipt.destination !== state.sceneId || state.encounter || !["victory","defeat"].includes(receipt.outcome)) return null;
+     receipt.destination !== state.sceneId || state.encounter || !["victory","escaped","defeat","timedOut"].includes(receipt.outcome)) return null;
+ const won = receipt.outcome === "victory" || receipt.outcome === "escaped";
  const art = chapter.presentation?.fights?.find(f => f.chapter === chapter.id && f.scene === receipt.sceneId);
- if (!art || state.sceneId !== (receipt.outcome === "victory" ? art.victoryScene : art.defeatScene)) return null;
- return { art, won: receipt.outcome === "victory" };
+ if (!art || state.sceneId !== (won ? art.victoryScene : art.defeatScene)) return null;
+ return { art, won };
 }
 export function interactionAppearance(chapter: Chapter | null | undefined, sceneId: string | null | undefined): InteractionAppearance | null {
  return sceneId ? chapter?.presentation?.interactions?.[sceneId] ?? null : null;

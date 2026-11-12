@@ -2808,23 +2808,45 @@
     },
     "drake_fight": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The drake slaps the water and rushes at the nearest boots. Shoo it off the ford, and the way on is clear.",
+      "map": "spring_ledge",
+      "narration": "Another drake noses out behind the first. The first lifts its tail before sweeping the marked ground. Step clear, or daze it first. End two hero turns beside the ford stone to roll it clear and send a splash at the drakes. Stopping in the marked current sweeps you back, so find firm ground before ending your turn.",
       "enemies": [
         {
           "id": "drake",
           "creature": "river_drake",
-          "name": "Young river drake"
+          "name": "Young river drake",
+          "count": 1,
+          "quick": 4,
+          "windupAttack": {
+            "label": "Tail sweep",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          }
+        },
+        {
+          "id": "small",
+          "name": "Smaller river drake",
+          "creature": "river_drake",
+          "count": 1
         }
       ],
       "onVictory": {
         "goto": "ledge_ahead",
-        "narration": "The drake hiccups, offended, and slides away tail first. Where it sat lies a smooth charm of river glass. You keep it.",
+        "narration": "The drakes hiccup, offended, and slide away tail first. Where they sat lies a smooth charm of river glass. You keep it.",
         "effects": [
           {
             "type": "grantItem",
             "itemId": "river_charm",
             "to": "party"
+          }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "ford_stone_rolled"
+            },
+            "text": "The stone rolls free. Water spurts through the channel and splashes the drake squarely on the nose."
           }
         ]
       },
@@ -2838,7 +2860,63 @@
           }
         ]
       },
-      "art": "scenes/riftlight/fight-headwaters-ford"
+      "art": "scenes/riftlight/fight-headwaters-ford",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The drake sweeps you downstream",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "ford-sluice",
+            "kind": "close",
+            "label": "Roll the ford stone",
+            "art": "prop_rock",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "ford_stone_rolled",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "hazards": [
+          {
+            "id": "ford-current",
+            "kind": "rift",
+            "label": "Ford current",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 3
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 2
+            }
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "drake_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
     },
     "drake_rescued": {
       "type": "story",
@@ -2949,7 +3027,7 @@
       {
         "chapter": "riftlight-headwaters-washout",
         "scene": "drake_fight",
-        "board": "ford",
+        "board": "spring_ledge",
         "creature": "river_drake",
         "introScenes": [
           "drake_shallows"

@@ -3,6 +3,7 @@ import { actorAt, committedAttacks, currentActorId, inBounds, isPassable, legalM
 import { seedTable, openPhone, openTv, onAir } from "./seed";
 import { roomState } from "./room-state";
 import { API } from "./api";
+import { combatPaintReady } from "./combat-paint";
 
 async function action(page: Page, code: string, intent: ClientIntent) {
   const session = await page.evaluate(room => JSON.parse(localStorage.getItem(`kad.session.${room}`)!), code);
@@ -202,6 +203,9 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_c
 }
 
 const roadFights = [
+  { sceneId: "mimic_fight", chapterId: "riftlight-ashspan-bridge", cue: "Landing ramp", target: { x: 6, y: 3 }, outcome: "escaped", destination: "mimic_won", text: "Hard to unload a pile that argues" },
+  { sceneId: "cache_fight", chapterId: "riftlight-cairnstep-pass", cue: "Guard the winter stores", target: { x: 3, y: 2 }, outcome: "victory", destination: "neck", text: "The wolves nose at the guarded cairn" },
+  { sceneId: "drake_fight", chapterId: "riftlight-headwaters-washout", cue: "Roll the ford stone", target: { x: 4, y: 2 }, outcome: "victory", destination: "ledge_ahead", text: "The stone rolls free" },
   { sceneId: "crab_fight", chapterId: "riftlight-saltrot-arrival", cue: "Hold the warm bank", target: { x: 3, y: 2 }, outcome: "victory", destination: "crab_done", text: "Very good manners" },
   { sceneId: "bar_crab", chapterId: "riftlight-frostfang-shore", cue: "Clear the burrow", target: { x: 4, y: 2 }, outcome: "victory", destination: "bar_carry", text: "The last pebble rolls free" },
   { sceneId: "wisp_fight", chapterId: "riftlight-sky-islands-arrival", cue: "Free the signal basket", target: { x: 4, y: 2 }, outcome: "victory", destination: "wisps_shooed", text: "For emergencies" },
@@ -241,6 +245,9 @@ for (const fight of roadFights) {
   test(`road fights: ${fight.chapterId} ${fight.sceneId} plays through on phone and TV`, async ({ browser }, info) => {
     test.setTimeout(240_000);
     const frostBar = fight.chapterId === "riftlight-frostfang-shore";
+    const remaining = ["riftlight-ashspan-bridge", "riftlight-cairnstep-pass", "riftlight-headwaters-washout"].includes(fight.chapterId);
+    const washout = fight.chapterId === "riftlight-headwaters-washout";
+    const ashspan = fight.chapterId === "riftlight-ashspan-bridge";
     const shellBank = fight.chapterId === "riftlight-saltrot-arrival";
     const arrivalWindup = fight.chapterId === "riftlight-frostfang-shore" || fight.chapterId === "riftlight-sky-islands-arrival";
     const boxes = fight.sceneId === "encounter_boxes";
@@ -291,6 +298,7 @@ for (const fight of roadFights) {
       let state = await roomState<RunState>(phones[0].page, table.code);
       const active = () => phones[state.party.findIndex(m => m.character.id === currentActorId(state.encounter!))].page;
       const opening = active();
+      if (remaining) await combatPaintReady(display.page, fight.chapterId, fight.sceneId);
       for (const surface of [{ width: 320, height: 720, text: "normal" }, { width: 390, height: 844, text: "largest" }]) {
         await opening.setViewportSize(surface);
         await opening.evaluate(text => { if (text === "normal") delete document.documentElement.dataset.text; else document.documentElement.dataset.text = text; }, surface.text);
@@ -391,7 +399,7 @@ for (const fight of roadFights) {
           ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh || bridge ? Math.min(steps(p, goal), steps(p, { x: 6, y: 2 })) : steps(p, goal))
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = legalMoves(encounter).filter(p =>
-          (!shellBank || p.x !== 2 || p.y !== 3) &&
+          (!(shellBank || washout) || p.x !== 2 || p.y !== 3) &&
           (!drain || turn === 0 || p.x !== 3 || p.y !== 3) &&
           (!spring || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
           (!brook || turn === 0 || p.x !== 2 || p.y !== 3) && (!spill || p.x !== 2 || p.y !== 3) && (!marsh || p.x !== 3 || p.y !== 3));
@@ -441,7 +449,7 @@ for (const fight of roadFights) {
         }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
-        if ((shellBank || arrivalWindup) && turn === 1 && state.encounter) {
+        if ((shellBank || arrivalWindup || remaining) && turn === 1 && state.encounter) {
           await page.reload();
           await onAir(page);
           await expect.poll(() => page.evaluate(async () => {
@@ -475,7 +483,7 @@ for (const fight of roadFights) {
       if (coolEdge) expect(sawCoolProgress).toBe(true);
       if (boxes) expect(sawInk).toBe(true);
       if (brook) expect(sawCurrent).toBe(true);
-      if (wisps || echo || dragon || crab || arrivalWindup) expect(sawWarning).toBe(true);
+      if (wisps || echo || dragon || crab || arrivalWindup || washout || ashspan) expect(sawWarning).toBe(true);
       if (spring) expect(sawSpring).toBe(true);
       if (spill) expect(sawSpill).toBe(true);
       if (ford) expect(sawBankOpen).toBe(true);
