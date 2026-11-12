@@ -39,6 +39,11 @@ lines unless they sort next to each other, and git merges them, on GitHub too.
   it. GitHub's merge button does not run merge drivers: if it reports a conflict in the
   manifest, merge `main` into the branch locally. An entry both sides changed differently keeps
   ours and is named in the merge's output for you to decide.
+- The driver calls a merge clean only when the result parses and has its lists in order with
+  nothing declared twice. Where it cannot merge by entry (a side that is not JSON, or one that
+  declares an entry twice) it falls back to git's line merge and holds that result to the same
+  standard: lines that merge into an invalid manifest leave the file conflicted, with what is
+  wrong in the merge's output.
 - A merge that still stops on the manifest is finished with `npm run art:resolve` (or
   `node tools/art/merge-manifest.ts --resolve` when `package.json` is conflicted too). It merges
   the three versions git is holding the way the driver would have, and stages the result when

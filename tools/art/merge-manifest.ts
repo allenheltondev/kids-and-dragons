@@ -13,9 +13,11 @@
  *   git config merge.kad-art-manifest.driver "node tools/art/merge-manifest.ts %O %A %B"
  *
  * git passes the ancestor, ours (which we overwrite with the result) and theirs. Exit 0 is
- * merged. Non-zero leaves the file conflicted: a conflict outside the lists is marked in the
- * file the usual way; for an entry both sides changed differently ours is kept, and the
- * entry is named on stderr. GitHub does not run merge drivers: a pull request it calls
+ * merged, and is only ever returned for a result that parses and has its lists in order.
+ * Non-zero leaves the file conflicted: a conflict outside the lists is marked in the file
+ * the usual way; for an entry both sides changed differently ours is kept, and the entry is
+ * named on stderr; a merge whose lines went together but do not make a valid manifest is
+ * written as merged, with what is wrong with it on stderr. GitHub does not run merge drivers: a pull request it calls
  * conflicted is merged locally, where this runs.
  *
  * git reads which driver a file has from the branch being merged INTO. A branch cut before
@@ -59,22 +61,44 @@ export interface DriverResult {
   conflicts: string[];
 }
 
-/** What the driver writes for three versions of the manifest. Never throws on bad JSON. */
+/**
+ * Why git should not record this text as the merged manifest: it is not JSON, or one of its
+ * ordered lists is out of order or declares an entry twice. Empty when it may.
+ */
+export function manifestProblems(text: string): string[] {
+  try {
+    return orderProblems(text).filter((p) => p.problem !== "missing").map((p) => p.detail);
+  } catch (error) {
+    return [`it is not a manifest: ${error instanceof Error ? error.message : String(error)}`];
+  }
+}
+
+/**
+ * What the driver writes for three versions of the manifest. Never throws on bad JSON.
+ *
+ * No merge is called clean unless its result is a manifest with its lists in order
+ * (manifestProblems), whichever way it was made. A line merge with no conflict markers is
+ * not thereby a valid file, and git records whatever a driver calls clean.
+ */
 export function driveMerge(base: string, ours: string, theirs: string, mergeText: TextMerge = gitTextMerge): DriverResult {
   try {
     const merged = mergeManifests(base, ours, theirs, mergeText);
     if (merged.conflicts.length === 0) {
-      // A clean merge is believed only if it is a manifest with its lists in order.
-      const wrong = orderProblems(merged.text).filter((p) => p.problem !== "missing");
-      if (wrong.length > 0) throw new Error(wrong.map((p) => p.detail).join("; "));
+      const wrong = manifestProblems(merged.text);
+      if (wrong.length > 0) throw new Error(wrong.join("; "));
     }
     return merged;
   } catch (error) {
-    // A side that is not JSON, or a result that is not right: nothing here is better than
-    // git's own line merge, so do exactly that.
+    // A side that is not JSON or declares an entry twice, or a result that is not right:
+    // nothing here is better than git's own line merge, so do exactly that, and hold its
+    // result to the same standard.
     const plain = mergeText(base, ours, theirs);
     const why = error instanceof Error ? error.message : String(error);
-    return { text: plain.text, conflicts: plain.conflicts > 0 ? [`merged by line (${why}): ${plain.conflicts} conflict(s), marked in the file`] : [] };
+    // With conflict markers in it the file is already one git will not record.
+    if (plain.conflicts > 0) return { text: plain.text, conflicts: [`merged by line (${why}): ${plain.conflicts} conflict(s), marked in the file`] };
+    const wrong = manifestProblems(plain.text);
+    if (wrong.length === 0) return { text: plain.text, conflicts: [] };
+    return { text: plain.text, conflicts: wrong.map((problem) => `the lines merged without a conflict, but the result is not a valid manifest: ${problem}`) };
   }
 }
 

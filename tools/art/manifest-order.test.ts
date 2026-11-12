@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { MANIFEST_FILE, REPO_ROOT, SORTED_LISTS, findList, listName, mergeManifests, orderProblems, sortLists } from "./manifest-order.ts";
-import { driveMerge, gitTextMerge, resolveConflict } from "./merge-manifest.ts";
+import { driveMerge, gitTextMerge, manifestProblems, resolveConflict } from "./merge-manifest.ts";
 
 /** A small manifest laid out by hand the way the real one is: inline objects, an escape, a list of each kind. */
 const manifest = (parts: { cast?: string[]; scenes?: string[]; motions?: string[]; tolerance?: string; entities?: string[] } = {}): string => {
@@ -254,15 +254,61 @@ describe("merging the manifest", () => {
     expect(merged.text).toBe(merge(sorted(), sorted({ scenes: [...SCENES, '"scenes/gemfall/cellar"'] }), sorted({ scenes: [...SCENES, '"scenes/gemfall/chapel"'] })).text);
   });
 
-  it("falls back to git's own line merge when a side is not JSON", () => {
+  it("falls back to git's own line merge when a side is not JSON, and takes a result that is a manifest", () => {
+    // The ancestor is broken and ours mended it: the lines merge, and what they make is valid.
+    const ours = sorted();
+    const broken = ours.replace('"tiers": [', '"tiers": [,');
+    const theirs = broken.replace('"scenes/gemfall/bridge",', '"scenes/gemfall/bridge",\n    "scenes/gemfall/chapel",');
+    expect(() => mergeManifests(broken, ours, theirs, gitTextMerge, LISTS)).toThrow();
+    const result = driveMerge(broken, ours, theirs);
+    expect(result.conflicts).toEqual([]);
+    expect(result.text).toBe(gitTextMerge(broken, ours, theirs).text);
+    expect(keys(result.text, ["sceneIllustrations"])).toContain("scenes/gemfall/chapel");
+    expect(manifestProblems(result.text)).toEqual([]);
+  });
+
+  it("never calls a line merge clean when what it made is not JSON", () => {
     const base = sorted();
     const theirs = sorted({ scenes: [...SCENES, '"scenes/gemfall/chapel"'] });
     const broken = base.replace('"tiers": [', '"tiers": [,');
+    // git's line merge has nothing to object to: the two sides changed different lines.
+    const plain = gitTextMerge(base, broken, theirs);
+    expect(plain.conflicts).toBe(0);
+    expect(() => JSON.parse(plain.text)).toThrow();
+
     const result = driveMerge(base, broken, theirs);
-    expect(result.conflicts).toEqual([]);
-    expect(result.text).toBe(gitTextMerge(base, broken, theirs).text);
-    expect(result.text).toContain('"tiers": [,');
-    expect(result.text).toContain("scenes/gemfall/chapel");
+    expect(result.text).toBe(plain.text);
+    expect(result.conflicts).toHaveLength(1);
+    expect(result.conflicts[0]).toMatch(/^the lines merged without a conflict, but the result is not a valid manifest: it is not a manifest: /);
+    // The same when it is theirs that is broken.
+    expect(driveMerge(base, theirs, broken).conflicts).toHaveLength(1);
+  });
+
+  it("never calls a line merge clean when it leaves a list out of order or an entry declared twice", () => {
+    const base = sorted();
+    // Ours declares a scene a second time, at the end: the entry-by-entry merge refuses to
+    // pick one, and the line merge sees only two changes that do not touch.
+    const ours = base.replace('"scenes/gemfall/market"\n', '"scenes/gemfall/market",\n    "scenes/entry/home"\n');
+    const theirs = sorted({ tolerance: "6" });
+    expect(() => mergeManifests(base, ours, theirs, gitTextMerge, LISTS)).toThrow(/sceneIllustrations declares "scenes\/entry\/home" more than once/);
+    const plain = gitTextMerge(base, ours, theirs);
+    expect(plain.conflicts).toBe(0);
+    expect(() => JSON.parse(plain.text)).not.toThrow();
+
+    const result = driveMerge(base, ours, theirs);
+    expect(result.text).toBe(plain.text);
+    expect(result.conflicts).toEqual([
+      'the lines merged without a conflict, but the result is not a valid manifest: sceneIllustrations declares "scenes/entry/home" more than once',
+      'the lines merged without a conflict, but the result is not a valid manifest: sceneIllustrations is out of order: "scenes/entry/home" comes after "scenes/gemfall/market" (3 of 4 out of place)',
+    ]);
+  });
+
+  it("does not quietly drop one of two entries with the same key", () => {
+    const pellamTwice = sorted({ cast: [CAST[0]!, CAST[1]!, '{ "id": "pellam", "name": "Pellam the Younger", "heightCm": 90 }'] });
+    const result = driveMerge(sorted(), pellamTwice, sorted({ tolerance: "6" }));
+    expect(result.conflicts).toEqual(['the lines merged without a conflict, but the result is not a valid manifest: castFigures declares "pellam" more than once']);
+    expect(result.text).toContain("Pellam the Younger");
+    expect(result.text).toContain('"name": "Pellam", "heightCm": 150');
   });
 
   it("merges the real manifest with itself plus a neighbour on each side", () => {
@@ -338,6 +384,34 @@ describe("the merge driver, run by git", () => {
     expect(git("status", "--porcelain")).toMatch(/^UU assets\/manifest\.json$/m);
     // What merged is merged, and the disputed entry is ours, with no markers to break the JSON.
     expect(read()).toBe(real(["scenes/a", "scenes/b"], 155));
+  }, 60_000);
+
+  it("stops git from recording a merge whose lines went together into something that is not a manifest", () => {
+    const tolerance = (text: string, value: number): string => text.replace('"edgeMarginPx": 4', `"edgeMarginPx": ${value}`);
+    write(real(["scenes/a", "scenes/m"]));
+    git("add", "-A");
+    git("commit", "-qm", "base");
+    git("checkout", "-qb", "left");
+    write(tolerance(real(["scenes/a", "scenes/m"]), 6));
+    git("commit", "-qam", "left changes a tolerance");
+    git("checkout", "-q", "main");
+    // Main declares a scene twice, far from the line left changed.
+    write(real(["scenes/a", "scenes/m", "scenes/a"]));
+    git("commit", "-qam", "right declares a scene twice");
+
+    let said = "";
+    try {
+      git("merge", "-q", "--no-edit", "left");
+    } catch (error) {
+      said = String((error as { stderr?: string }).stderr) + String((error as { stdout?: string }).stdout);
+    }
+    // Without the check this merge succeeded, and git committed a manifest the gate fails.
+    expect(said).toMatch(/the lines merged without a conflict, but the result is not a valid manifest: sceneIllustrations declares "scenes\/a" more than once/);
+    expect(git("status", "--porcelain")).toMatch(/^UU assets\/manifest\.json$/m);
+    expect(read()).toBe(tolerance(real(["scenes/a", "scenes/m", "scenes/a"]), 6));
+    // And art:resolve does not stage it either.
+    expect(resolveConflict(repo).outcome).toBe("conflicts");
+    expect(git("status", "--porcelain")).toMatch(/^UU assets\/manifest\.json$/m);
   }, 60_000);
 
   it("is not there for a branch cut before it, whose first merge of main art:resolve finishes", () => {

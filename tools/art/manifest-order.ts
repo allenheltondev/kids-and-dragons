@@ -263,6 +263,10 @@ function takeApart(text: string, lists: readonly (readonly string[])[]): Side {
   // From the last in the file to the first, so cutting one leaves the others where they were found.
   for (const span of [...spans].sort((a, b) => b.open - a.open)) {
     const { entries } = span;
+    // Merged by key, an entry declared twice would be quietly dropped to one. That is not
+    // this merge's call: refuse, and let the caller fall back and report it.
+    const twice = entries.find((entry, index) => entries.findIndex((other) => other.key === entry.key) !== index);
+    if (twice) throw new Error(`${listName(span.path)} declares "${twice.key}" more than once`);
     const first = entries[0];
     const last = entries[entries.length - 1];
     side.lists.set(listName(span.path), {
