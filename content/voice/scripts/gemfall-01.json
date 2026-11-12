@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "gemfall-01/scene_prologue_party_oranges/narration": {
     "source": "sha256:c1350a14bcef6014fcef1f403524872ba3c2d800f09b9b8024a24899c47fa51e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "gemfall-01/scene_prologue_party_lamps/narration": {
     "source": "sha256:1dfeabacf73be7f3ed22b01e4ecdad0ff2812bde444f5cf9d8bd230e6c681c57",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -38,7 +38,7 @@
   },
   "gemfall-01/scene_lighthouse/narration": {
     "source": "sha256:4c19693527f60165a03ce375b74d7014940da41389a0711f8da80496dd01ddc1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -56,7 +56,7 @@
   },
   "gemfall-01/choice_why_north/narration": {
     "source": "sha256:2c1d6cb088d13168dfe2d17076ed61bd6d40afed9252bde5155253c0c317bafe",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -74,7 +74,7 @@
   },
   "gemfall-01/scene_motive_curiosity/narration": {
     "source": "sha256:102d35c4c490e5cdcf52b21fa7ab07bda8cffcfc124864e517c4ddf9cab765bd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -92,7 +92,7 @@
   },
   "gemfall-01/scene_motive_duty/narration": {
     "source": "sha256:589b840900aa37c3480f1c79b6a6bcc68ce8d27d911d46625cee7e0b9e7a56af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -110,7 +110,7 @@
   },
   "gemfall-01/scene_motive_fresh_start/narration": {
     "source": "sha256:7037cd73de357991869256daf139fccdec7306c050cd3e6b660766687aeba355",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -128,7 +128,7 @@
   },
   "gemfall-01/scene_motive_proving/narration": {
     "source": "sha256:96aa476fc04ee183b39dbca8fc76b392f4402bb2e60b6dc144e0e61889b661f3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -154,7 +154,7 @@
   },
   "gemfall-01/scene_newcomers/narration": {
     "source": "sha256:5f04ae2ae4807385f2daafe9079bc7bbb600788c4de6e90ba6afe9067651bf2e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -176,7 +176,7 @@
   },
   "gemfall-01/scene_newcomers_plaque/narration": {
     "source": "sha256:eed03e010edc43315853a2548e1111aa15e01c3092d797de8497e51771ec49d5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -192,9 +192,27 @@
       }
     ]
   },
+  "gemfall-01/scene_boggart/narration": {
+    "source": "sha256:85473f95aceca9aa09c3bebf1301f527ce827487dac5df08aa90b0fdcd45158c",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The boggart sells rumors in jars. You pay with a button. The rumor inside is:"
+      },
+      {
+        "by": "boggart",
+        "text": "\"The mountain is grumpy.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Then the boggart says it again, slowly, looking west toward the marshes."
+      }
+    ]
+  },
   "gemfall-01/scene_three_rumours/narration": {
     "source": "sha256:c758697b7897c22c5214ae22eb395ac5da5e518662efe11ae905800323159f20",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -208,7 +226,7 @@
   },
   "gemfall-01/scene_griffin_post/narration": {
     "source": "sha256:2099183c3729cb9b873b856ed1c82a3fdd90fa15690b49305fc6912c3cfc6e01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -230,7 +248,7 @@
   },
   "gemfall-01/scene_griffin_post_shop/narration": {
     "source": "sha256:884b6b03478a51576590f79221805f31549fdbef809da28fb9998f805b66eca0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -238,7 +256,8 @@
       },
       {
         "by": "courier_griffin",
-        "text": "\"The air up there hums,\""
+        "text": "\"The air up there hums,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -246,13 +265,14 @@
       },
       {
         "by": "courier_griffin",
-        "text": "\"like a kettle.\""
+        "text": "\"like a kettle.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "gemfall-01/scene_gutter_glint_griffin/narration": {
     "source": "sha256:e5ade82dda8f10b5ecf2ebecec72dfa42cbd0434293d275e439ad824002d8f3c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -274,7 +294,7 @@
   },
   "gemfall-01/scene_tavern/narration": {
     "source": "sha256:566fa7629191d2c41775b6c30c09b6b048de0b8a46cc9e2bbc496900b0ec7e25",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -292,7 +312,7 @@
   },
   "gemfall-01/scene_scholar_believed/narration": {
     "source": "sha256:615070bb45344e796f2cd82b0e6abd9aa14eba5f27f35d11a55a287bdec11e01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -318,7 +338,7 @@
   },
   "gemfall-01/scene_scholar_theory/narration": {
     "source": "sha256:94534dcd3f2f6c5526c289223ad16e9bb237e1ba041ea51f17ace0388da4704b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -348,7 +368,7 @@
   },
   "gemfall-01/choice_ember/narration": {
     "source": "sha256:7f69f94ef6509a554e24196f38d84f0a7ab897e031efe71dec5eb0e1f82204ec",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -366,7 +386,7 @@
   },
   "gemfall-01/choice_ember_sell_high/narration": {
     "source": "sha256:d1ba33f5aec242a5a8a77a6061ff283798097be72111bb7f23bd84355aaef20b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -380,7 +400,7 @@
   },
   "gemfall-01/scene_sold/narration": {
     "source": "sha256:2de9828c99deb2e824048c54fc528debed1f876f9fe63d595ffd01fc1e19a625",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -398,7 +418,7 @@
   },
   "gemfall-01/scene_provisions/narration": {
     "source": "sha256:f397793365e95169723b65f6cdd49c2afc0f2436cd1739f2a3ca5390d1070adf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -420,7 +440,7 @@
   },
   "gemfall-01/scene_provisions_sunbloom/narration": {
     "source": "sha256:5a629e4396f4cfb74ae1101aeb73a2289f9740890c15eb3a15572cb8a0c798d6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -442,7 +462,7 @@
   },
   "gemfall-01/scene_provisions_mosslight/narration": {
     "source": "sha256:59a044e012dbe958af001f95ec544f683814d63e56744ebf7aceeefa9bc97a52",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -464,7 +484,7 @@
   },
   "gemfall-01/scene_provisions_stone/narration": {
     "source": "sha256:deca795872c56e72eda90a854cc06d657af96c1a144c92257a8bed5f12b86fd3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -482,7 +502,7 @@
   },
   "gemfall-01/scene_market_spot_fakes/narration": {
     "source": "sha256:3cfc3c9d00a53801120ee43ce19fb62b83b7d4c33696911f81def5e901c5fe7a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -500,7 +520,7 @@
   },
   "gemfall-01/scene_market_fresh_start/narration": {
     "source": "sha256:ba355982d7be82287cdc4d5b7f6898f1a2e67093af40efb7430fc85cea113d8c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -526,7 +546,7 @@
   },
   "gemfall-01/scene_inn_full/narration": {
     "source": "sha256:e5aad87ceb8a24a51d2ed9c8f7d781d2974c6e23f07723b3e8cc9dd5218f4239",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -534,7 +554,8 @@
       },
       {
         "by": "innkeeper_flint",
-        "text": "\"Earn it,\""
+        "text": "\"Earn it,\"",
+        "delivery": "gruff"
       },
       {
         "by": "narrator",
@@ -544,7 +565,7 @@
   },
   "gemfall-01/scene_inn_full_dishes/narration": {
     "source": "sha256:df4e62ac6719d00f027732abf5f3f13d9cb811269c76c8c9ee30857e3ab96883",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -562,7 +583,7 @@
   },
   "gemfall-01/scene_inn_full_selkies/narration": {
     "source": "sha256:e9c7a3aff48b1e83195a9026e70fcffb3ab82a5fbc061330492efbf957bba87c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -580,7 +601,7 @@
   },
   "gemfall-01/scene_last_noodles/narration": {
     "source": "sha256:5cce86e98cdd91fd0cf8b9e50715c5f6860a6a638f6dda85de2540e9e99b82eb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -598,7 +619,7 @@
   },
   "gemfall-01/scene_last_noodles_ask/narration": {
     "source": "sha256:487613e81167705b2dcc01907fbe007f3090616e6a111c0ba7587065b39e7f0b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -616,7 +637,7 @@
   },
   "gemfall-01/scene_last_noodles_bowl/narration": {
     "source": "sha256:94316054c5bd71b01fb0010034e2b7f61000c0e7ae514bd10f9a33d7eec91925",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -638,7 +659,7 @@
   },
   "gemfall-01/scene_last_noodles_listen/narration": {
     "source": "sha256:2b08277e00983d58a271e1fdd998f16c69c0b4b95576487bf43cd85361bf4a74",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -660,7 +681,7 @@
   },
   "gemfall-01/scene_caravan_yard/narration": {
     "source": "sha256:423853a7a311fe8f4d89702214576663bfbda0d03157544425de3d8b316f9df5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -682,7 +703,7 @@
   },
   "gemfall-01/scene_caravan_yard_banner/narration": {
     "source": "sha256:ee04f43cbca82caf8f4de3e8010415d53038b23790233430c068d4653fea898b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -704,7 +725,7 @@
   },
   "gemfall-01/scene_caravan_yard_guard/narration": {
     "source": "sha256:99ae105cc350e0c476208ac62e3e08b0bca646d416dcb86b5b660bcc2ab42b42",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "hesper",
@@ -718,7 +739,7 @@
   },
   "gemfall-01/scene_caravan_yard_mortar/narration": {
     "source": "sha256:35403e30371ea076ef2ef0de5c6f1cedde47011ba9e01ddb0e854e44b9a26dea",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -734,27 +755,9 @@
       }
     ]
   },
-  "gemfall-01/check_signon/onFailure/narration": {
-    "source": "sha256:4887acd3e3785f224f19a524f6d2bfce3acd0674fe79bf8097c7ca5c2db9c85f",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "You get muddled halfway through and say"
-      },
-      {
-        "by": "party",
-        "text": "\"um\""
-      },
-      {
-        "by": "narrator",
-        "text": "eleven times. Hesper is kind about it. Hesper is also busy."
-      }
-    ]
-  },
   "gemfall-01/scene_hired/narration": {
     "source": "sha256:fad2ba205a9113cc4ab6fcc6eb1c945f2474e7a32e9e132b99bc784e460e4b48",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +775,7 @@
   },
   "gemfall-01/scene_turnip_wagon/narration": {
     "source": "sha256:6feaf238bd4b2c042bae3fcc8516fb3cc8470e8dca6f58991f1f4511ad5236b1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "hesper",
@@ -786,7 +789,7 @@
   },
   "gemfall-01/scene_north_gate/narration": {
     "source": "sha256:a0e50616c9dfb71f17381b57ab27731d9d4a4bf9c4c705275259487dfb0ea071",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -804,7 +807,7 @@
   },
   "gemfall-01/scene_north_gate_wave/narration": {
     "source": "sha256:17a584297653e73a74ec67830060561f83fe6e46528cdc4630bb2aba651984df",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -818,7 +821,7 @@
   },
   "gemfall-01/scene_north_gate_tidewell/narration": {
     "source": "sha256:ffaa9a224f801f47d31f71aa12169ce1b971bd6f09c8d82ea4e9bd2017c62944",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -844,7 +847,7 @@
   },
   "gemfall-01/interaction_jars/narration": {
     "source": "sha256:834994b4aa1fe94aae321db1272175ee53bc569d7b0118dbf06e9396ff8e3a80",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -862,7 +865,7 @@
   },
   "gemfall-01/interaction_lantern_pole/narration": {
     "source": "sha256:9739371811828f76fb59e6478a56f4fcbc5715afdae1eaf52507e3de731042ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -884,7 +887,7 @@
   },
   "gemfall-01/scene_caravan_yard_thornguard/narration": {
     "source": "sha256:8f55f907ee9718a0d29feb9ef27a718f7e00927450bf3c5b3f73b6bfe08e0c1c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -897,24 +900,6 @@
       {
         "by": "narrator",
         "text": "says Hesper, and hands over a long pole with a hook."
-      }
-    ]
-  },
-  "gemfall-01/interaction_crew_introduction/onFailure/narration": {
-    "source": "sha256:4887acd3e3785f224f19a524f6d2bfce3acd0674fe79bf8097c7ca5c2db9c85f",
-    "reviewed": false,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "You get muddled halfway through and say"
-      },
-      {
-        "by": "party",
-        "text": "\"um\""
-      },
-      {
-        "by": "narrator",
-        "text": "eleven times. Hesper is kind about it. Hesper is also busy."
       }
     ]
   }

@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-frostfang-shore/bank/narration": {
     "source": "sha256:22c31e6319bd186d483bcd5148bb32ebe0e8c264ac2dd450e699e805db068e9b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -32,7 +32,7 @@
   },
   "riftlight-frostfang-shore/help/narration": {
     "source": "sha256:5a532feb51e7d8ae26c977c71edefb8a9c76b396c24e4c2549fad5caed8f3247",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -54,7 +54,7 @@
   },
   "riftlight-frostfang-shore/haul_foot/narration": {
     "source": "sha256:c6f42ed51b8ec80f6f3d245f6a03999a0a99686233574d70485d0a716f9cdcb2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -76,7 +76,7 @@
   },
   "riftlight-frostfang-shore/lash_foot/narration": {
     "source": "sha256:9c8203b851f01d8ad9e1addd9eed5bdf0a57f85f2c0db1bb9e88088834ad5af5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -98,7 +98,7 @@
   },
   "riftlight-frostfang-shore/brace_foot/narration": {
     "source": "sha256:e09775fb49c5d311e67c1c33cea480e0807ec57c8bc76b2b50bfa00576577e3e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -116,7 +116,7 @@
   },
   "riftlight-frostfang-shore/foot_set/narration": {
     "source": "sha256:409e105757117c13767ef3ca1e9102d632100fef5c9ac3d643b71a034caab3f9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -130,7 +130,7 @@
   },
   "riftlight-frostfang-shore/foot_set/variants/0": {
     "source": "sha256:b93143207cbca613092fa5a0a1e0f24ebbe6659694a7a08021901863e3fb5cf5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -152,7 +152,7 @@
   },
   "riftlight-frostfang-shore/river_line/narration": {
     "source": "sha256:aa9eab70ec61a33ce95d3b30380aa08296bb6050485de7db49b511ff9bb9903e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -176,7 +176,8 @@
       },
       {
         "by": "tamsin_river_keeper",
-        "text": "\"It has never come this high,\""
+        "text": "\"It has never come this high,\"",
+        "delivery": "sad"
       },
       {
         "by": "narrator",
@@ -184,13 +185,14 @@
       },
       {
         "by": "tamsin_river_keeper",
-        "text": "\"Not once, in all the paint.\""
+        "text": "\"Not once, in all the paint.\"",
+        "delivery": "sad"
       }
     ]
   },
   "riftlight-frostfang-shore/driftline/narration": {
     "source": "sha256:23276ae4232de3cf11ea20b93ca4580431e6bb63a588339c38928fc103548ca0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -212,7 +214,7 @@
   },
   "riftlight-frostfang-shore/net_saved/narration": {
     "source": "sha256:aa33a74de675f12a742d4f6b928fd31d3d313084875336d60ee71bf608c1835c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -242,7 +244,7 @@
   },
   "riftlight-frostfang-shore/bar/narration": {
     "source": "sha256:52f9f851d58a0f668ad243e47b25724996630bc8d69e748c058e815fb4561353",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -268,7 +270,7 @@
   },
   "riftlight-frostfang-shore/bar_reached/narration": {
     "source": "sha256:e5e14abe7e613851703bb5367a519a93302ec805c61dda02eafdbcb89cda6b4a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -290,7 +292,7 @@
   },
   "riftlight-frostfang-shore/bar_carry/narration": {
     "source": "sha256:8b845599b2546bccc94ee60a709578c90e14f35daf7f581b25f128f3f0f957d4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -308,7 +310,7 @@
   },
   "riftlight-frostfang-shore/kid_swept/narration": {
     "source": "sha256:aa5e7ac7f5739db0ffca3b0af59859d1ca4912549bf2ba256051599ea1908763",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -334,7 +336,7 @@
   },
   "riftlight-frostfang-shore/goats/narration": {
     "source": "sha256:cc9a0c6cfa62393560f7294344cd74212960f494b63e0327ff39eaa212eec898",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -364,7 +366,7 @@
   },
   "riftlight-frostfang-shore/boss_sulk/narration": {
     "source": "sha256:17424032b2d9d6d2cc22fc70df5f59564ee5104857e43b976caae557b5514dee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -390,7 +392,7 @@
   },
   "riftlight-frostfang-shore/goat_track_seen/narration": {
     "source": "sha256:9fe11e3891866af20d61dd8db631b4a0a3bf7c858163102ba612aa5727340659",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -412,7 +414,7 @@
   },
   "riftlight-frostfang-shore/goat_back/narration": {
     "source": "sha256:156dafd9cdea74aed886b77276c0277e4b59498936ab635c0b4bd45f3137414b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -438,7 +440,7 @@
   },
   "riftlight-frostfang-shore/goat_back/variants/2": {
     "source": "sha256:12b1baf8328d55db39ea22c7106539b50f64a35889864cab2f316d924e17db9e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -452,7 +454,7 @@
   },
   "riftlight-frostfang-shore/rest_fire/narration": {
     "source": "sha256:7d464651d516102371854503c7b9e5c5912294621d8fcfa82d64c387dc81bc95",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -474,7 +476,7 @@
   },
   "riftlight-frostfang-shore/rest_socks/narration": {
     "source": "sha256:222898cec8334429b79b1b246baa6a7ab1f03eca20961208c0a10fc958b8e3c8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -492,7 +494,7 @@
   },
   "riftlight-frostfang-shore/rest_share/narration": {
     "source": "sha256:2e315abf53ac018238c5a80d99ab4f6126de29c5b7e9e87cf728778deda0ffdd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -506,7 +508,7 @@
   },
   "riftlight-frostfang-shore/rest_story/narration": {
     "source": "sha256:038caa568dc6a62f8c0f1b7d8dea152140eb64ff99fd68782d6148ae25bafc61",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tamsin_river_keeper",
@@ -532,7 +534,7 @@
   },
   "riftlight-frostfang-shore/surge/narration": {
     "source": "sha256:66d7960e12ff2ccefcf17e136d3b985dd2193cef86861b6ad923add2c55c1cc7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -550,7 +552,7 @@
   },
   "riftlight-frostfang-shore/surge_after/narration": {
     "source": "sha256:d4921a3071146cd4f1f4d033c28d690edc596ae207ac425e188bad1bb9a93340",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -576,7 +578,7 @@
   },
   "riftlight-frostfang-shore/surge_after/variants/0": {
     "source": "sha256:6ebc1ee60697783f8671501a80b543b6fdbb4f805ce03540ba96d94b50638f28",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -594,7 +596,7 @@
   },
   "riftlight-frostfang-shore/wave_gap/narration": {
     "source": "sha256:4ffc93a34ee41a91a9110e55fed5d42c1b2b38dbc882b364128db80146118454",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -612,7 +614,7 @@
   },
   "riftlight-frostfang-shore/wave_catch/narration": {
     "source": "sha256:c9bf48cf64ab8bf7e8e9f5a9c4d18be4b3477c36e57586586af75bb92ee1d852",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -630,7 +632,7 @@
   },
   "riftlight-frostfang-shore/climb_line/narration": {
     "source": "sha256:dd944cc5a898d42ca3662438ae2547c05dc43d907fb521151a83366c6ff3cf42",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -652,7 +654,7 @@
   },
   "riftlight-frostfang-shore/top/narration": {
     "source": "sha256:301ead243074470fe8d31d60c79e6409063de4d5b90754519b53cb681e4bd1be",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -674,7 +676,7 @@
   },
   "riftlight-frostfang-shore/chime/narration": {
     "source": "sha256:5b87a4b7070935276e2c09836a6bf7bc8b6048b1214d231bb1e0098983feaab5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -696,7 +698,7 @@
   },
   "riftlight-frostfang-shore/safety/narration": {
     "source": "sha256:136fb582c0e5c903a87702105df9829024ff567b119b56fe1f1986ffed5c3154",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -725,8 +727,8 @@
     ]
   },
   "riftlight-frostfang-shore/safety_rope/narration": {
-    "source": "sha256:b60dc6fb5f0c40bdc702d68a2daca546ff8d9061dc9313d6406fcce9823998c7",
-    "reviewed": false,
+    "source": "sha256:f4135ef7d34bb2f4c5268e0296e5a3c59335597cd5a1cf6f945c263f66a1cd32",
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -738,7 +740,7 @@
       },
       {
         "by": "narrator",
-        "text": "she says, and hangs a smooth river charm aaround your neck."
+        "text": "she says, and hangs a smooth river charm around your neck."
       },
       {
         "by": "tamsin_river_keeper",
@@ -747,8 +749,8 @@
     ]
   },
   "riftlight-frostfang-shore/safety_buy/narration": {
-    "source": "sha256:a5779417a474066c9fc0995d88af266ddab1cf27a2813128d1d03b8d21f8a170",
-    "reviewed": false,
+    "source": "sha256:f79a3a9f50e734422334194ad53357ca509c4e996155a16ce4d832b3b6cb22fd",
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -760,7 +762,7 @@
       },
       {
         "by": "narrator",
-        "text": "she says, and hangs a smooth river charm aaround your neck."
+        "text": "she says, and hangs a smooth river charm around your neck."
       },
       {
         "by": "tamsin_river_keeper",
@@ -770,7 +772,7 @@
   },
   "riftlight-frostfang-shore/safety_leave/narration": {
     "source": "sha256:757e4f4bbe51c142490eab2e8cfb5f1371e0eabe0db34dae7c4b185642b16930",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tamsin_river_keeper",
@@ -796,7 +798,7 @@
   },
   "riftlight-frostfang-shore/safety_leave/variants/0": {
     "source": "sha256:32901e94a70376b5b9824aa6ebbc537093962e6ab1137cac1c14822ad459d615",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -810,7 +812,7 @@
   },
   "riftlight-frostfang-shore/climb/variants/0": {
     "source": "sha256:61a5952dda508c9ab925deaccf4974c72ccb5c1195763e9d753b881746796e93",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tamsin_river_keeper",
@@ -828,7 +830,7 @@
   },
   "riftlight-frostfang-shore/climb/variants/1": {
     "source": "sha256:9917951b934bbffdf19720b2a9a6499b02f4b85f4010840f3ef5a4d9936bc1c9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

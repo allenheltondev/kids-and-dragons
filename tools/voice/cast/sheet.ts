@@ -1122,18 +1122,7 @@ export function voiceClashes(sheet: CastSheet, provider: VoiceProvider = "gemini
  * the content uses, and when a chapter's narration names one person two ways with no cast entry tying them, both
  * names become speakers. Each pair here needs a reason a reader can check against the chapter.
  */
-export const ONE_CHARACTER: readonly { chapter: string; ids: readonly string[]; reason: string }[] = [
-  {
-    chapter: "gemfall-05c",
-    ids: ["small_dragonling", "bell_code_expert"],
-    reason: 'The narration introduces her as "A small dragonling, the town\'s bell-code expert" and tags her lines by either name.',
-  },
-  {
-    chapter: "gemfall-05b",
-    ids: ["archivist", "door_archivist"],
-    reason: "The archivist who makes the party wipe its feet at the door is the one at the archive table: every scene casts her as one figure, cast/mosshome_archivist, and the voice notes call her door_archivist.",
-  },
-];
+export const ONE_CHARACTER: readonly { chapter: string; ids: readonly string[]; reason: string }[] = [];
 
 /**
  * The clashes `voice:cast -- --check` fails on. Gemini: every clash, since the builder gives everyone their own voice.
@@ -1141,12 +1130,16 @@ export const ONE_CHARACTER: readonly { chapter: string; ids: readonly string[]; 
  * counts only when two or more of its speakers have lines to say (`lineCount`), counting the ids in
  * {@link ONE_CHARACTER} as one speaker. The narrator always talks.
  */
-export function checkedClashes(sheet: CastSheet, provider: VoiceProvider = "gemini"): { chapter: string; voice: string; speakers: string[] }[] {
+export function checkedClashes(
+  sheet: CastSheet,
+  provider: VoiceProvider = "gemini",
+  oneCharacter: typeof ONE_CHARACTER = ONE_CHARACTER,
+): { chapter: string; voice: string; speakers: string[] }[] {
   const clashes = voiceClashes(sheet, provider);
   if (provider === "gemini") return clashes;
   return clashes.filter(({ chapter, speakers }) => {
     const talking = speakers.filter((id) => id === "narrator" || (sheet.speakers[id]?.lineCount ?? 0) > 0);
-    const characters = new Set(talking.map((id) => ONE_CHARACTER.find((one) => one.chapter === chapter && one.ids.includes(id))?.ids[0] ?? id));
+    const characters = new Set(talking.map((id) => oneCharacter.find((one) => one.chapter === chapter && one.ids.includes(id))?.ids[0] ?? id));
     return characters.size > 1;
   });
 }

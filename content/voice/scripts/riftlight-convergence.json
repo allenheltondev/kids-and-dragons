@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-convergence/arrival/narration": {
     "source": "sha256:e07a637fc48e589e171b9ce3c484805c6594809974adac920c8e46a740f41e99",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-convergence/bram/narration": {
     "source": "sha256:49dea342a94c759f2e64a1824346a8cd6a85559b3e7f67a0b256708da6c5cc49",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -62,7 +62,7 @@
   },
   "riftlight-convergence/check_line/narration": {
     "source": "sha256:0bfdf906c6e91bc7e806836b82ece62f4d4c51986d1c56855aca206c05fde8b5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -80,7 +80,7 @@
   },
   "riftlight-convergence/check_line/onSuccess/narration": {
     "source": "sha256:b80a3c7643559c1e7216f7feb8121b984eea5bb08ad547a3471f631ad1d86713",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -102,7 +102,7 @@
   },
   "riftlight-convergence/check_line/onFailure/narration": {
     "source": "sha256:fc9dc7a6a6733f0a72deddf688def62c25023ca3f765d5b6422f8e29bac1f16d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -124,7 +124,7 @@
   },
   "riftlight-convergence/bigfoot_stakes/narration": {
     "source": "sha256:530a94752db91e46c65dae35649239a730439d9da3f7482b8cd141a2ab42a476",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -150,7 +150,7 @@
   },
   "riftlight-convergence/olivia_plan/narration": {
     "source": "sha256:cb196429dba96ad36f544f0deb71f08ed26fd1e114b008805e9f6c8cf9672fa5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -184,7 +184,7 @@
   },
   "riftlight-convergence/olivia_plan/variants/0": {
     "source": "sha256:49dcf32576c1331b009abb66b98da4d6de00d19d3469a764cc972b920be32595",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -202,7 +202,7 @@
   },
   "riftlight-convergence/olivia_plan/variants/1": {
     "source": "sha256:53df7197a7a0b48479aad85ddcc0a70bc4839be5f141581e0f496c801318a88a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -216,7 +216,7 @@
   },
   "riftlight-convergence/line_held/narration": {
     "source": "sha256:86158096af4b64d6f50354d64bfcef61ab19e4f1bc4c097852d6113162d7d84f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -250,7 +250,7 @@
   },
   "riftlight-convergence/line_held/variants/1": {
     "source": "sha256:e9eaf4d887df2a7ff343371b4fade24c57d240a0c36111df39a15cfc23b0bb98",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -264,7 +264,7 @@
   },
   "riftlight-convergence/tell_rivers/narration": {
     "source": "sha256:62ba785461b6125a50422173e4680b80778b3c978cde33c2fd0a21742db3612c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -286,7 +286,7 @@
   },
   "riftlight-convergence/tell_sky/narration": {
     "source": "sha256:694142f23684aa435ceb4930892430f6bbab7a1e7e710df498a7cd8c54b5c464",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -300,7 +300,7 @@
   },
   "riftlight-convergence/check_trace/narration": {
     "source": "sha256:fc92881ddeb0f45f41379adbe2addb17c7d7ae38b7dd0b7f03084b7d54fa36ff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -326,7 +326,7 @@
   },
   "riftlight-convergence/fit/narration": {
     "source": "sha256:482c3e209298c610d2d78c2c9842afd8d2d117e96eaf63c2f6914dab658a6849",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -364,7 +364,7 @@
   },
   "riftlight-convergence/olivia_sees/narration": {
     "source": "sha256:c518c231dfd38069586e76ce5452757dc6e571258f9203cfaa366bae2edf647f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -402,7 +402,7 @@
   },
   "riftlight-convergence/chime_pull/onSuccess/narration": {
     "source": "sha256:9d025fed011c09ee5a0f552ff8f4d29768f035e83befeafb4d5eca9f5351ab88",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -420,7 +420,7 @@
   },
   "riftlight-convergence/pip_runs/narration": {
     "source": "sha256:3bddb8fc22823b10091dd0b708ae4e1718a2b4cda40e0ae6cee3a4b4d5134267",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pip_thistledown",
@@ -450,7 +450,7 @@
   },
   "riftlight-convergence/check_call/onSuccess/narration": {
     "source": "sha256:4415240fce67b1dbb1313ded6c60417de7f183153c8a262843ca3461b5724ddc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -476,7 +476,7 @@
   },
   "riftlight-convergence/swoop/narration": {
     "source": "sha256:03a505d162bf8f90baa2e22dae18db67fe3081a4737e4bab7cbdaed1378f8132",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -494,7 +494,7 @@
   },
   "riftlight-convergence/passage/narration": {
     "source": "sha256:23c8ffc4b7f03e6b2aecba5eb59b9aee5da04bc832bb0c97e9d2c370aa389b2d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -520,7 +520,7 @@
   },
   "riftlight-convergence/rest_olivia/narration": {
     "source": "sha256:5492f992ebb4490c30422936b074b2cbdaea5f0c1d04230c28fa5ae282245a00",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -550,7 +550,7 @@
   },
   "riftlight-convergence/rest_bram/narration": {
     "source": "sha256:9d76f4e3275060ba3bbf44d8c8dbf178c25791c0638111795e65b28d2f150b95",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -576,7 +576,7 @@
   },
   "riftlight-convergence/olivia_asks/narration": {
     "source": "sha256:5fe7633ee8de82c1baaef44003c45842caf6df2176eddfbba669b0ad0530ec0c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -610,7 +610,7 @@
   },
   "riftlight-convergence/wait_seren/narration": {
     "source": "sha256:ffe6412d40673eaeb7b6849c9c9e32f9721dceddf17e05c8eb3fe4301c0081f2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -618,7 +618,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"If it gets big,\""
+        "text": "\"If it gets big,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -626,7 +627,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"I will try to hold its edge. Only its edge.\""
+        "text": "\"I will try to hold its edge. Only its edge.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -648,7 +650,7 @@
   },
   "riftlight-convergence/go_ahead/narration": {
     "source": "sha256:576aafaff0f02c656674ef79370443bed1c598f81026b32f5ef52e8e5ffbb9cc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -682,7 +684,7 @@
   },
   "riftlight-convergence/summoning/narration": {
     "source": "sha256:bed33f0175073e72bc9e9a474cb30e2b70b79fc124ab401cd4826846e4678423",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -700,7 +702,7 @@
   },
   "riftlight-convergence/rope_holds/narration": {
     "source": "sha256:338b77365259dd3bc044df4105bef93e815dd1bd445acacff90b0cdc260f9079",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -718,7 +720,7 @@
   },
   "riftlight-convergence/seren_holds/narration": {
     "source": "sha256:a7d72355daa8b2d40a27b1d140170d2e24e305ad232b97efeb376ed175129808",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -726,7 +728,8 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"Only its edge,\""
+        "text": "\"Only its edge,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -734,13 +737,14 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"Quickly now.\""
+        "text": "\"Quickly now.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-convergence/decision/narration": {
     "source": "sha256:056c02c9293543d873fc0996a6f9b9349a342324f4c206cb75eb1eba73c84cf8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -778,7 +782,7 @@
   },
   "riftlight-convergence/decision/variants/1": {
     "source": "sha256:8c5028b25b8a7ff828105bcba391fe9023da91f0053516cc9544719355b4e840",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -792,7 +796,7 @@
   },
   "riftlight-convergence/check_bram/narration": {
     "source": "sha256:615b405ba2967c1d3cc03bbc32dea184bf280b5efa3d9e663a3250a7da75d79c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -810,7 +814,7 @@
   },
   "riftlight-convergence/check_olivia/narration": {
     "source": "sha256:19d0305d09707994dcde8495dbfc4e1c7c54fa6721e794a8d18a6ff4b757aa93",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -836,7 +840,7 @@
   },
   "riftlight-convergence/check_olivia/onFailure/narration": {
     "source": "sha256:f9cc758523956a71326e8de1ad88ebe3c94365cc0de0491295a6995feb2ab9ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -850,7 +854,7 @@
   },
   "riftlight-convergence/orin_talks/narration": {
     "source": "sha256:04cad718bc5c0edbe3917aaefc03f4723d0d352017de46a692796e779c563805",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -876,7 +880,7 @@
   },
   "riftlight-convergence/signal_stop/narration": {
     "source": "sha256:60379d004be35829d96a1e04d9d20eee68afc77e07a565d4180038ea22d5016f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -898,7 +902,7 @@
   },
   "riftlight-convergence/remind/narration": {
     "source": "sha256:856ad78c662d39d2c009305b448aa76fbdd4ba8a2d57abad8c5b83e84f00806c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -920,7 +924,7 @@
   },
   "riftlight-convergence/beside_her/narration": {
     "source": "sha256:7d220c5900d2b6614d56bcbe00a4c7a8c6b6eb15de6a8bbb3c3d0ebfdcea65e0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -942,7 +946,7 @@
   },
   "riftlight-convergence/stopped/variants/0": {
     "source": "sha256:c0404c0aa9ebd40e82693c94aa66ac4b2b91437ef893ed9862ccf19e78981065",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -968,7 +972,7 @@
   },
   "riftlight-convergence/stopped/variants/1": {
     "source": "sha256:2427c71399370beb3ab4ec7f144901b9e7a47e1ca549e068ad622143e81521dc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -990,7 +994,7 @@
   },
   "riftlight-convergence/stood/narration": {
     "source": "sha256:31ebc2fcd6e08008025dc2ddaa407836880fe4267c52e544fc66147380355219",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1008,7 +1012,7 @@
   },
   "riftlight-convergence/stood/variants/0": {
     "source": "sha256:b10839f0fa83205e1a86ac6adf07125a524486235d9c8e82195a1ec919c4a198",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "olivia",
@@ -1026,7 +1030,7 @@
   },
   "riftlight-convergence/stood/variants/1": {
     "source": "sha256:b75db0b24bac4db2614a88515da3483e036625d74de5830a40143d966811dd61",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1052,7 +1056,7 @@
   },
   "riftlight-convergence/pip_choice/variants/0": {
     "source": "sha256:af682d05fd3e33ef487a0c0ca7b4465ebb20a063d6ca76885b10e7e6deea8a9a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1078,7 +1082,7 @@
   },
   "riftlight-convergence/pip_choice/variants/1": {
     "source": "sha256:05728e845fd6e72ec686bded2bcaddc187128f5b1c3c19bc2e15e7e0579c2772",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1100,7 +1104,7 @@
   },
   "riftlight-convergence/fish/narration": {
     "source": "sha256:446353b48079865c70529a829e0a15edb36e7d05ca45bf95c1025c300fadcddf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1126,7 +1130,7 @@
   },
   "riftlight-convergence/fish/onSuccess/narration": {
     "source": "sha256:2bec7e90d6ab0a06bb081c25632966bdd422b3a3c28fc3523b36c07aa89e0f5e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1148,7 +1152,7 @@
   },
   "riftlight-convergence/lesson/narration": {
     "source": "sha256:6b9ff8a7abe773c4d68b9bcf1e161187e41509c7118dee51b05f51cf7daf0a91",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1178,7 +1182,7 @@
   },
   "riftlight-convergence/check_hold/narration": {
     "source": "sha256:0acb8a1c2b560751293bdf3f6ad7fcda9921a9b232d8de9222ddb36e564137dc",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1186,13 +1190,14 @@
       },
       {
         "by": "seren_wisp",
-        "text": "\"Don't push. Just keep.\""
+        "text": "\"Don't push. Just keep.\"",
+        "delivery": "whisper"
       }
     ]
   },
   "riftlight-convergence/check_hold/onFailure/narration": {
     "source": "sha256:0ffe022f19283a93afcd95486c408217b3f59acd0efa70b5defa81cac66980a0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1218,7 +1223,7 @@
   },
   "riftlight-convergence/check_pip_hold/narration": {
     "source": "sha256:18bf0c6fee786d738bff034c1ea1d5ffbe10508dc3a2b4f7ba08fb734f344531",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1244,7 +1249,7 @@
   },
   "riftlight-convergence/check_pip_hold/onSuccess/narration": {
     "source": "sha256:72017fd49b46a142419380206e84d778b1541384f47ac31de59bb29fffbc7d01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1252,7 +1257,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"I held it,\""
+        "text": "\"I held it,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1260,7 +1266,8 @@
       },
       {
         "by": "pip_thistledown",
-        "text": "\"I didn't grab. I held.\""
+        "text": "\"I didn't grab. I held.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -1270,7 +1277,7 @@
   },
   "riftlight-convergence/check_pip_hold/onFailure/narration": {
     "source": "sha256:b82b8896d6131b352626df5b5d204dceff6c7c56f93c1f9651b3a4faab5ab576",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1288,7 +1295,7 @@
   },
   "riftlight-convergence/hold_traced/narration": {
     "source": "sha256:02778d4780dcb857b99ed70bd37a197bd9e2542654e27b6168038f90f55d826f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1306,7 +1313,7 @@
   },
   "riftlight-convergence/hold_starweaver/narration": {
     "source": "sha256:536e23f4057098ad9d13390d2956cd817387e7ce781fc2bc55203853c0595868",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1324,7 +1331,7 @@
   },
   "riftlight-convergence/lesson_done/narration": {
     "source": "sha256:0a9a556a500604ae0fde648131b8d75922c3f19f84f6be86d6aa1d21f87c09b2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1346,7 +1353,7 @@
   },
   "riftlight-convergence/joining/narration": {
     "source": "sha256:f1d428514a2902f95b9f0d7ff6dfdf808a8be03033b175234b59ea6a74613a04",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1368,7 +1375,7 @@
   },
   "riftlight-convergence/joining/variants/1": {
     "source": "sha256:e383d622e10459845d976b34e963cbb2cc804cdd8728b7a5dbc72376e8d2f4d2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1382,7 +1389,7 @@
   },
   "riftlight-convergence/ending/narration": {
     "source": "sha256:d4fe409c0a4d4b5540c833940fab2a7187c687c812bf7589f7b3fbaa8e4b327f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1404,7 +1411,7 @@
   },
   "riftlight-convergence/ending/variants/0": {
     "source": "sha256:b61e340c45c65830ecd33652eaa4abf3511f86251dc50de702a4b2c0329ee570",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1426,7 +1433,7 @@
   },
   "riftlight-convergence/ending/variants/1": {
     "source": "sha256:92cd17815ffa827e8355f7954db901d1ce2e349d8d98fd07f0ca02e849a02737",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1452,7 +1459,7 @@
   },
   "riftlight-convergence/ending/variants/2": {
     "source": "sha256:c1dd7ac70168ddb4955ac105a97be83116fff1632c4099f661d01cebd2fa52bd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1470,7 +1477,7 @@
   },
   "riftlight-convergence/ending/variants/3": {
     "source": "sha256:9ff3d7a3c9657ebb22ed6111fdd21813778d723e13bbf705eeb82ed566e7a676",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

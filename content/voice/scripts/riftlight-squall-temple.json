@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-squall-temple/arrival/narration": {
     "source": "sha256:929e8964649626a114bb00bd1e16c75a57710b055f2a4919d53814680850a640",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-squall-temple/arrival/variants/0": {
     "source": "sha256:79f98994275b2004f83f347f3137ec17ee9594e1c3616a1e889eba814f1e3e29",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_clove",
@@ -34,7 +34,7 @@
   },
   "riftlight-squall-temple/arrival/variants/1": {
     "source": "sha256:f7bd011703603f6533d5a102b8933bc0abf054e4e0c8884c7326cc517f4cc485",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_clove",
@@ -44,7 +44,7 @@
   },
   "riftlight-squall-temple/arrival/variants/2": {
     "source": "sha256:2bc106725c2da996b779d60f7d2c1d502fb9ca6db84dab802615abe3cfbe99de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_clove",
@@ -54,7 +54,7 @@
   },
   "riftlight-squall-temple/check_skiff/onFailure/narration": {
     "source": "sha256:ebdd77d053d6b5e2711194393f615c0393a9981392a7ab2d4e7838ef49b19be9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -76,7 +76,7 @@
   },
   "riftlight-squall-temple/tear/narration": {
     "source": "sha256:cdfe5fe864aee6a2014a3e795bdb2beb7f9e7ba8dfcc5098c129f47f3f59639f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -94,7 +94,7 @@
   },
   "riftlight-squall-temple/tear/variants/0": {
     "source": "sha256:700d3768834e91353524c67889ebe4cbc0f922e3c82e8db1d5333c62e77ed5a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -116,7 +116,7 @@
   },
   "riftlight-squall-temple/first/narration": {
     "source": "sha256:3db6f974db77cbd18292c6a4f1b50cb3d04bff09c0850f2e0fb10c3fdfc2ae3c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -134,7 +134,7 @@
   },
   "riftlight-squall-temple/first/variants/0": {
     "source": "sha256:45eec27705b081b0f1c7efabca2be136bc5bfdbdbb85739d23adb6ab4c8d5b23",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_clove",
@@ -144,7 +144,7 @@
   },
   "riftlight-squall-temple/first/variants/1": {
     "source": "sha256:bbcb60efa22e89949bffc74e8fed7373442ea4e9803eb1df03e3d7694525b81a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_clove",
@@ -154,7 +154,7 @@
   },
   "riftlight-squall-temple/first/variants/2": {
     "source": "sha256:dc3b86875dff8a1ec1ca1a7eabb31f59bb132af77dee0d473d5fff1c1af054f7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "keeper_clove",
@@ -164,7 +164,7 @@
   },
   "riftlight-squall-temple/bell_rung/narration": {
     "source": "sha256:08f6e1cd59df24e9c414639bd723cabb266577ec16de62889308989bfcaf6ace",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -182,7 +182,7 @@
   },
   "riftlight-squall-temple/clapper_gone/narration": {
     "source": "sha256:c16755edd3da49c2dde370e2c262ee0b60c45bf6e16cfd59d19e63cc59c86fe4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -208,7 +208,7 @@
   },
   "riftlight-squall-temple/keepers_soaked/narration": {
     "source": "sha256:24d5ac90f84223185025cf64bdc1061a36f595bb7e4bdaea59f38655f542a868",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -230,7 +230,7 @@
   },
   "riftlight-squall-temple/keepers_soaked/variants/0": {
     "source": "sha256:d5a20ce6cc81793f80d6a1902f570f377a89fc359fdac0fc149e2b07d3e2de81",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -248,7 +248,7 @@
   },
   "riftlight-squall-temple/landing/narration": {
     "source": "sha256:f886aae27a99a5e4bbd4fecd910bf68e3a1ba0ac2edbfff16059c8e1dff0dddb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -274,7 +274,7 @@
   },
   "riftlight-squall-temple/tumble_lift/narration": {
     "source": "sha256:5c06a7409db5c6fd2d7f635b6214770ff5782a61d879da457c156d60833a7c84",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -292,7 +292,7 @@
   },
   "riftlight-squall-temple/keepers_in/narration": {
     "source": "sha256:7294cd9dc6f223e9942510153eca356ba68193c8854cc341c26f788afbd81187",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -314,7 +314,7 @@
   },
   "riftlight-squall-temple/stay_together/narration": {
     "source": "sha256:c7ef390c5b297a16e4caf03cb06a00674b6ddb16f40c549e1ea411e79accef48",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -340,7 +340,7 @@
   },
   "riftlight-squall-temple/pip_gone/narration": {
     "source": "sha256:5bdc4539df12ac58ba51df1337f86b9f01e1d6e0e9194d41764dc12aa828cb59",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -366,7 +366,7 @@
   },
   "riftlight-squall-temple/tumble_fly/narration": {
     "source": "sha256:a0cf1b7282e100601a774b58375cf1e9c0ba460d09698c38ba019ddd390efed8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -388,7 +388,7 @@
   },
   "riftlight-squall-temple/pip_found/narration": {
     "source": "sha256:f801185eb2d38d2c859782fb1a612613ac502f5c7e0f9adaee89f6c58390a3ff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -414,7 +414,7 @@
   },
   "riftlight-squall-temple/pip_shove/narration": {
     "source": "sha256:9f5948f2684f4ab8351d06429abba4d1d740371eac43556da3468b845dff598b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -440,7 +440,7 @@
   },
   "riftlight-squall-temple/pip_watch/narration": {
     "source": "sha256:9951cac376ad3957458f57c0c12f518d277122f114abf42f23edef1a6445d0e0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -466,7 +466,7 @@
   },
   "riftlight-squall-temple/towels/narration": {
     "source": "sha256:3fe59f214bbe741462b9facb47ba3ec000238a579740a2f57ded7978e7427553",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -508,7 +508,7 @@
   },
   "riftlight-squall-temple/pip_brave/narration": {
     "source": "sha256:e6a1368f82de50ea4e41422d814bbed29741ea08a9ffd5a86152925e8d7598b1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -534,7 +534,7 @@
   },
   "riftlight-squall-temple/pip_asks/narration": {
     "source": "sha256:70e2d52b81dc0bd018b45128784fbce8d6537b27680792c29fd77d3d70e0657f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -556,7 +556,7 @@
   },
   "riftlight-squall-temple/weather_book/narration": {
     "source": "sha256:c9342711e08e6011a801f7cd31f3e979f7d0356cec6959accaa9afffec338ff2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -582,7 +582,7 @@
   },
   "riftlight-squall-temple/rest/narration": {
     "source": "sha256:fad5ad1247cc6b5da24f1d55c03369c83cc4da6b8e040df06591c3f66dc33617",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -604,7 +604,7 @@
   },
   "riftlight-squall-temple/rest/variants/0": {
     "source": "sha256:160e925f0f1099c48119d7660f6552a644c8f8aef9a7ac2c6eb925353d3d991e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pip_thistledown",
@@ -622,7 +622,7 @@
   },
   "riftlight-squall-temple/rest/variants/1": {
     "source": "sha256:f6fb7aa88090b7b71b4e93fbe15eea7417969475c1b7be379d696d4cfe9046b6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "pip_thistledown",
@@ -640,7 +640,7 @@
   },
   "riftlight-squall-temple/push_plan/narration": {
     "source": "sha256:9ce495bc9c1bf57fcd07a147103697364792bc22eda6dae7b2a78d7d82163fe9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -666,7 +666,7 @@
   },
   "riftlight-squall-temple/shelter_plan/narration": {
     "source": "sha256:582a4eaaf653c5bc2a5d521d1ad750cd502c7aacf5e321a1d8a062549efee183",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -684,7 +684,7 @@
   },
   "riftlight-squall-temple/approach_push/narration": {
     "source": "sha256:3161da19b300aa18643357c083d820313d1d695c9d538969ed099dbbaadba0b0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -702,7 +702,7 @@
   },
   "riftlight-squall-temple/approach_shelter/narration": {
     "source": "sha256:b42eaa037063fbd57453063c54efecac133476712fa0e3d22cc1e1eada51e23e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -720,7 +720,7 @@
   },
   "riftlight-squall-temple/pushed/narration": {
     "source": "sha256:8ebb108f7b352b66f0417066986c13778ccf5b156c4ce198029095dd81bde0e6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -746,7 +746,7 @@
   },
   "riftlight-squall-temple/settled/variants/1": {
     "source": "sha256:b4bcdaccf758feec4eda6817958d0bf0dd35754ef1b4b617cc64d22f314843a3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -760,7 +760,7 @@
   },
   "riftlight-squall-temple/damaged/narration": {
     "source": "sha256:20befe445d1510d18b85f5ab1de3ab87bf98b17af60a54ac653a76bfad1bd801",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -778,7 +778,7 @@
   },
   "riftlight-squall-temple/crawlers_home/narration": {
     "source": "sha256:ac0131ad6c30d1a58e17680b0994e58d1b7153c082bc98bc0f7cb619273a7f3b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -804,7 +804,7 @@
   },
   "riftlight-squall-temple/tear_shut/variants/0": {
     "source": "sha256:4f1a4667a0e8feb7c929348a31bf823e6bb6a47f4d7e5fdf67181d39bc20ed11",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -818,7 +818,7 @@
   },
   "riftlight-squall-temple/farewell/narration": {
     "source": "sha256:8baec8a1c5f5cd5a12038fc311c1d86756ee72227b90c9641570f0602d0229f2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -840,7 +840,7 @@
   },
   "riftlight-squall-temple/clove_pulled/narration": {
     "source": "sha256:eff41e436101f5941bf611d7f9802e224169ce71fea71f7544a3a4ddced9f978",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -858,7 +858,7 @@
   },
   "riftlight-squall-temple/clove_home/narration": {
     "source": "sha256:7d47def80d2f28cb40ab099995c1278a9fc73f973cbc19d8b19cbe9cb8d77f77",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -876,7 +876,7 @@
   },
   "riftlight-squall-temple/ending/narration": {
     "source": "sha256:3f7296def1f01f04ca1a3fa2cf54321a6637de60d32303c2b5103bb5c1cc3630",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

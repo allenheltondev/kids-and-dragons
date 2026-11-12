@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-headwaters-washout/current/narration": {
     "source": "sha256:bf50dcc987e500b99eb14b9b7f7f84ec58c4b4c62703b897d24c04bad6f2bf1c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-headwaters-washout/stock/narration": {
     "source": "sha256:0c7c98e40ee384296b4023b75b519843c0fd3a3337b44d7514babcd44c7fdcad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -50,7 +50,7 @@
   },
   "riftlight-headwaters-washout/count/narration": {
     "source": "sha256:75d9646a7380d106eb8d9e99d8ced5ef89f39662d4037ecfd3303034f08b98a4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -72,7 +72,7 @@
   },
   "riftlight-headwaters-washout/pack_grab/narration": {
     "source": "sha256:cbcc6e0d88821de635f4186fe71b42b9e8b304b458170d145411fd8164bc5764",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -94,7 +94,7 @@
   },
   "riftlight-headwaters-washout/rally_breath/narration": {
     "source": "sha256:d4b2974300e9a8088120c69d84954f2a854506697cdf2c296ede0e66d9f1d231",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -112,7 +112,7 @@
   },
   "riftlight-headwaters-washout/ride/narration": {
     "source": "sha256:ea493c69372220f7346ddb4462e7533888171bfa560f7aac4e6c4dbff8211188",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -138,7 +138,7 @@
   },
   "riftlight-headwaters-washout/feet_first/narration": {
     "source": "sha256:b878dafc9037c0a141e1ccbf5e6fa97dacbce38e265f76aecbfcbdd24f93a9f1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -160,7 +160,7 @@
   },
   "riftlight-headwaters-washout/kick_bank/narration": {
     "source": "sha256:36096535e1f254e012f41a0a1bac6bd28122d653a0bbb09d7897cf071886a6ad",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -182,7 +182,7 @@
   },
   "riftlight-headwaters-washout/floes/narration": {
     "source": "sha256:ad58168a18bd78bfb62a93358932aa319ea29b0c00cf02e91497a06483bab937",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -208,7 +208,7 @@
   },
   "riftlight-headwaters-washout/push_floes/narration": {
     "source": "sha256:473afd01a28eefe34d536f5c53e37b269d5d6b052e5da8a01f93ac3a2a0a387a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -226,7 +226,7 @@
   },
   "riftlight-headwaters-washout/climb_floe/narration": {
     "source": "sha256:f0aa0c29cdb9045f719dea444b4924f7613adadf6dd4995758bb97aaec650085",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -248,7 +248,7 @@
   },
   "riftlight-headwaters-washout/smash_floe/narration": {
     "source": "sha256:2386a6347754066e312efb9e3df448de7c2a40ae71e3f64068d3ca6008a2bafa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -270,7 +270,7 @@
   },
   "riftlight-headwaters-washout/floe_rest/narration": {
     "source": "sha256:866a0ad7881958e112cd1e077f7851699713f8a361c78efccff0560e774d7570",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -288,7 +288,7 @@
   },
   "riftlight-headwaters-washout/floe_warm/narration": {
     "source": "sha256:b832993c97085b89b33f941d4e35914610b05de3845b4e58407b55e58d3f3d35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -310,7 +310,7 @@
   },
   "riftlight-headwaters-washout/floe_look/narration": {
     "source": "sha256:535098d94c44aca07399ffb51083e016ae893015c1e1dc52e4e36ced586d875f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -336,7 +336,7 @@
   },
   "riftlight-headwaters-washout/snag/narration": {
     "source": "sha256:b07ce1ae0a9173e9297e25a3d1dd8b9d40c452b9aaedda4fa2be65b687699d45",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -362,7 +362,7 @@
   },
   "riftlight-headwaters-washout/unhook/narration": {
     "source": "sha256:94ace013128418b0420f790e1e7599bd5283bda33505d83ee358d86919dfca0d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -380,7 +380,7 @@
   },
   "riftlight-headwaters-washout/loop_tie/narration": {
     "source": "sha256:7ec0c517e8ac8ea1e0a9fc8013b03f5fb1ec915a55c920a68cf883aa21508205",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -402,7 +402,7 @@
   },
   "riftlight-headwaters-washout/arch/narration": {
     "source": "sha256:45593157cd66edc448c4616b470eaa92d776b356eeb99d0e5bbb0237ba17a45a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -428,7 +428,7 @@
   },
   "riftlight-headwaters-washout/arch_flat/narration": {
     "source": "sha256:83974df9e3b984927fe199e3ea6874ee9f7da5a2a36cb6e849f7a43b57772616",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -436,7 +436,8 @@
       },
       {
         "by": "party",
-        "text": "\"Noses up,\""
+        "text": "\"Noses up,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -446,7 +447,7 @@
   },
   "riftlight-headwaters-washout/arch_look/narration": {
     "source": "sha256:fbfe2f541d966356789391b9f33eee286bf037e67d09bfd277fe2b3e4ec18eee",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -464,7 +465,7 @@
   },
   "riftlight-headwaters-washout/arch_light/narration": {
     "source": "sha256:904f987eaf9644506a4128cd19acaeb2af62535080726ddda79edca4e20e0e9a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -482,7 +483,7 @@
   },
   "riftlight-headwaters-washout/jam/narration": {
     "source": "sha256:968641ac96d4dfe561d9997408aa91fda59f6a7946a60cfd6b594f8a3d1c4a80",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -508,7 +509,7 @@
   },
   "riftlight-headwaters-washout/jam_gap/narration": {
     "source": "sha256:970beb60ae7cd5c021fbb47fcd6a7c1e4edac8f159a0b27d0aac0bae07d5beed",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -526,7 +527,7 @@
   },
   "riftlight-headwaters-washout/jam_push/narration": {
     "source": "sha256:6cf746a096fe30943ebd2e04733efd18d12bd36a5c7d061835002721b24958f7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -540,7 +541,7 @@
   },
   "riftlight-headwaters-washout/chute/narration": {
     "source": "sha256:b803d5009168c76ca40034370ac2e94e1b3c0ab0b36bb68a7ccfd6fe6dbf07bf",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -566,7 +567,7 @@
   },
   "riftlight-headwaters-washout/chute_ride/narration": {
     "source": "sha256:80ef23e2e397b4cab66f0eca65fe1a659b4f11ddefd53bafb51df665b654879d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -584,7 +585,7 @@
   },
   "riftlight-headwaters-washout/chute_steer/narration": {
     "source": "sha256:107c37a5c5463c099b52c8811e5e0db614f5c811ba95dc34f6bd3ae26060969f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -602,7 +603,7 @@
   },
   "riftlight-headwaters-washout/chute_brace/narration": {
     "source": "sha256:ef540b14dc205206ba6d54bb8d391d24f0de0ff8e859bef3e8c6816da9880cd3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -624,7 +625,7 @@
   },
   "riftlight-headwaters-washout/slip/narration": {
     "source": "sha256:d4dda4e8accca6b70adc5a014836b5b5933b43a17293e986c4151c1352d5f01a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -650,7 +651,7 @@
   },
   "riftlight-headwaters-washout/slip_haul/narration": {
     "source": "sha256:121a5b886052b21190d56f1678eb76de04ef334c1040504d872f1718eb801151",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -672,7 +673,7 @@
   },
   "riftlight-headwaters-washout/slip_swing/narration": {
     "source": "sha256:6fd1fbcfa8235446189766b41caa53267c15b2c294c9466c2e15af870436d858",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -694,7 +695,7 @@
   },
   "riftlight-headwaters-washout/shiver/narration": {
     "source": "sha256:36214c8c4a1f211c6a3f3673d646497318e3692052b4cca26d259b0b10be622d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -720,7 +721,7 @@
   },
   "riftlight-headwaters-washout/shiver_eat/narration": {
     "source": "sha256:38d3abf85e48f99bc516155442893a0e94013bd5b3545176c4306ac43c6fcc5d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -738,7 +739,7 @@
   },
   "riftlight-headwaters-washout/shiver_sing/narration": {
     "source": "sha256:23aff049df9187887446af2f394cbe84a823f2e184a21d1991ab804dcf61764d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -746,7 +747,8 @@
       },
       {
         "by": "skerry",
-        "text": "\"Oh, the river is wet, and the river is wide!\""
+        "text": "\"Oh, the river is wet, and the river is wide!\"",
+        "delivery": "sing-song"
       },
       {
         "by": "narrator",
@@ -756,7 +758,7 @@
   },
   "riftlight-headwaters-washout/shiver_paddle/narration": {
     "source": "sha256:10d1537bf7cf1ff46e9fad95b76af5d7e800659bab0548df181fc57f1bbb2288",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -774,7 +776,7 @@
   },
   "riftlight-headwaters-washout/goats/narration": {
     "source": "sha256:8467bb6a3e99f81d9df185c4c7f506ff43fd8e1914489de22de61196a00f25aa",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -800,7 +802,7 @@
   },
   "riftlight-headwaters-washout/goats_watch/narration": {
     "source": "sha256:f9099029eef1af89c50b00cb12f8e219bf2d1cc91639d97c8077559249d1fd65",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -822,7 +824,7 @@
   },
   "riftlight-headwaters-washout/goats_follow/narration": {
     "source": "sha256:b55889eecbe2e9126f817e20808710e11a092a3def49d0bb37cf3c06137a5c70",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -840,7 +842,7 @@
   },
   "riftlight-headwaters-washout/ledge_ahead/narration": {
     "source": "sha256:4261265d4ed272178aad3de11a56a0f22111c6e21e66b43cfe6a2a8168f2c832",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -866,7 +868,7 @@
   },
   "riftlight-headwaters-washout/aim/narration": {
     "source": "sha256:1848730528c60ce8b613b32292589b48dae309a4da9a443dee291941bacd3977",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -892,7 +894,7 @@
   },
   "riftlight-headwaters-washout/aim_kick/narration": {
     "source": "sha256:80deef149d92bc969d37160bf7c8440737ce988cc3ca0d72865a285ae397466c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -910,7 +912,7 @@
   },
   "riftlight-headwaters-washout/aim_swing/narration": {
     "source": "sha256:93196db7b6db89e156b14427a0f16e255e0b54fc0d91e20ec4dcff4e9bb1e8e4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -928,7 +930,7 @@
   },
   "riftlight-headwaters-washout/aim_sky/narration": {
     "source": "sha256:b4717c9100c3fd77fd7cfd57cfd89393879a9faacbc66e46b265abe2f72a48af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -950,7 +952,7 @@
   },
   "riftlight-headwaters-washout/ledge/narration": {
     "source": "sha256:fbe2fb0d94212050b94bccc88652387d2d53a0efd62934336b7b4dcf0f6839e8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -976,7 +978,7 @@
   },
   "riftlight-headwaters-washout/grab/narration": {
     "source": "sha256:d73753283d3ffd8ccb8f80761c0e8f69d84a8775e98aeeb9de157eb3114268de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -998,7 +1000,7 @@
   },
   "riftlight-headwaters-washout/hook/narration": {
     "source": "sha256:af808478106e7d30fb64fef489b73162be231ae0e4a1946eae8d540f20a5ea47",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1020,7 +1022,7 @@
   },
   "riftlight-headwaters-washout/smash/narration": {
     "source": "sha256:4e936bec4d39578afa4805ab5cd15d764c23c7061a112b8eba7a52c38cbecb3a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1038,7 +1040,7 @@
   },
   "riftlight-headwaters-washout/lift/narration": {
     "source": "sha256:0573ef34f04b8dae7bfeacbfa95b93cc8aa201d509cabdd5baf0bef52f97656d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1056,7 +1058,7 @@
   },
   "riftlight-headwaters-washout/throw_loop/narration": {
     "source": "sha256:a87f1b29f2d7aec264ccaaa57fb8dce891cc6db00a6f6641dff7ed40e5713d39",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1074,7 +1076,7 @@
   },
   "riftlight-headwaters-washout/ashore/narration": {
     "source": "sha256:bd2185140723849f736b683f648641c8b298ce4fe5677d1ed737484f4cc36dd8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1100,7 +1102,7 @@
   },
   "riftlight-headwaters-washout/early/narration": {
     "source": "sha256:0b15bf84f2a83780429658192c65244f9d6751d5bcd7f4d9cbd911df154a4c53",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1126,7 +1128,7 @@
   },
   "riftlight-headwaters-washout/tree/narration": {
     "source": "sha256:59dd5d46fdf7a2b4aa232b1c1c3022dd9220910b09f4f20cb7aae9052b0eaad5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1144,7 +1146,7 @@
   },
   "riftlight-headwaters-washout/tree_choice/narration": {
     "source": "sha256:41d1c68e909418a496b1d0b8ba64158446b5cea1e11d08e6e7be19fe8e8d5a84",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1170,7 +1172,7 @@
   },
   "riftlight-headwaters-washout/climb/narration": {
     "source": "sha256:0f3f7a4afa1e60b6c610b4440e2325e7e24d15faa86570af91c68b70155d9bca",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1192,7 +1194,7 @@
   },
   "riftlight-headwaters-washout/lasso/narration": {
     "source": "sha256:9335f69af1eb5294a938eeb3130556653e255f86610100873c70e2d5e36a34af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1210,7 +1212,7 @@
   },
   "riftlight-headwaters-washout/lane/narration": {
     "source": "sha256:a901cbf53b9bbb30e4309fa255582e9c8dd613b1c7a0ad867aff9f5a22abce8a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1232,7 +1234,7 @@
   },
   "riftlight-headwaters-washout/guide/narration": {
     "source": "sha256:faa50ae4ff5e167506a655837ecd01226cdae03da67e1b625433dc8779695151",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1254,7 +1256,7 @@
   },
   "riftlight-headwaters-washout/call/narration": {
     "source": "sha256:13ece32b1c61516ec6d8b10a614d17a1eeacf6d174c2d853220ca14e2b129632",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1276,7 +1278,7 @@
   },
   "riftlight-headwaters-washout/middle/narration": {
     "source": "sha256:45ce6eed36f7f86692becba804df1d92b72cf515e9d4a162af456353ab474a3e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1310,7 +1312,7 @@
   },
   "riftlight-headwaters-washout/rift/narration": {
     "source": "sha256:0193dccdc8d831c7a54fa2da448db54bf44939280c69b09a3e50e76f03fa4b5a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1332,7 +1334,7 @@
   },
   "riftlight-headwaters-washout/rift_choice/narration": {
     "source": "sha256:d8326f2f8ccf5fe490e8ac0f63152c5adf3afb9277de3e71186d700af594809a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1358,7 +1360,7 @@
   },
   "riftlight-headwaters-washout/river_read/narration": {
     "source": "sha256:ddc8aeb9ed0e90098f1104289e63d5ab0f4552e3c5a587dbdfbccb200fdf612f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1376,7 +1378,7 @@
   },
   "riftlight-headwaters-washout/rift_decision/narration": {
     "source": "sha256:4f5dbc1a5973a60542df2b2b6d68926dc077aa4882e364d1ba2d9eb2769dca53",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1402,7 +1404,7 @@
   },
   "riftlight-headwaters-washout/rift_end/narration": {
     "source": "sha256:7b0f347894e23985348eb83b874ad1356dd8131f6f049f493c6c4e6823304f87",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1428,7 +1430,7 @@
   },
   "riftlight-headwaters-washout/rapids/narration": {
     "source": "sha256:8040ac33ff8f440df48cfdd10a5360e6731c868ad778d52b278d2015c8d54f9f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1454,7 +1456,7 @@
   },
   "riftlight-headwaters-washout/swim/narration": {
     "source": "sha256:22f0cb18be92897c434f62061e059bc54a89b5ff05f05c15e4a2acd8afbaeb69",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1476,7 +1478,7 @@
   },
   "riftlight-headwaters-washout/signal/narration": {
     "source": "sha256:c2bace3341987298fba1bbe501249346ca2294d9eca821e2a67b449ce3c9f1ef",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1490,7 +1492,7 @@
   },
   "riftlight-headwaters-washout/mend_signal/narration": {
     "source": "sha256:f2f454bc27acbbe759ed2ada2fd5a2b943131ca370748b333b193c1277b25b8b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1512,7 +1514,7 @@
   },
   "riftlight-headwaters-washout/late/narration": {
     "source": "sha256:f60eb9e66c27ccad5b11ea64b993a5f96f1da1863a49d355f69a4df988021522",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1542,7 +1544,7 @@
   },
   "riftlight-headwaters-washout/rescue/narration": {
     "source": "sha256:d2687f1ea5bfe14d8bd56ccdd549645ca650eafe2aea7e0567f48fbb818214de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1580,7 +1582,7 @@
   },
   "riftlight-headwaters-washout/rescued/narration": {
     "source": "sha256:5e07668bd8c64dd791626d23171573c2feca0e81c179bcbbbb3dadbf61564f93",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1614,7 +1616,7 @@
   },
   "riftlight-headwaters-washout/floe_hop/narration": {
     "source": "sha256:3dfe8f66502216a7c516104b0095404adaa30e56cd7d4b2f7d9479dd1fb1fd72",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1636,7 +1638,7 @@
   },
   "riftlight-headwaters-washout/jam_hold/narration": {
     "source": "sha256:9b6ec90f13e2e0db655600b3a22dc1d01b9193e907363012b2c7447e44ec1417",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1658,7 +1660,7 @@
   },
   "riftlight-headwaters-washout/knob_toss/narration": {
     "source": "sha256:72c6a1dcd3ad67d91b474202aa1615320b57f458e077b2ee56a39c9281047870",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1684,7 +1686,7 @@
   },
   "riftlight-headwaters-washout/haul_loop/narration": {
     "source": "sha256:6ad510f2feb91759d0104526684b73fabd4948ffbd321330ddce637c2ce844de",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1702,7 +1704,7 @@
   },
   "riftlight-headwaters-washout/drake_shallows/narration": {
     "source": "sha256:f55e6a557ad7f16bb009f8a69a342877a9794d08949d16d9c522252a559c225c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1728,7 +1730,7 @@
   },
   "riftlight-headwaters-washout/drake_rescued/narration": {
     "source": "sha256:e60549edeb84c4a674fe80d98570d61c7bbe7d39efd4924191dfc5bbc2b27158",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1754,7 +1756,7 @@
   },
   "riftlight-headwaters-washout/grab_near/narration": {
     "source": "sha256:0e93f9b937f776b4feeb85a1ea16f1acaff1e517b40f46414249e03644e6f374",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1771,6 +1773,24 @@
       {
         "by": "skerry",
         "text": "\"You earned that one!\""
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/river_chime/narration": {
+    "source": "sha256:84c4f076820aed1e1cc4e1dadaa455eee0dc724c14837725ccca6b8e840d29ab",
+    "reviewed": true,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "One clear note sounds, with no echo. The way is ready, but you cannot count on coming back through it."
+      },
+      {
+        "by": "party",
+        "text": "\"No echo means no way back,\""
+      },
+      {
+        "by": "narrator",
+        "text": "someone says. Nobody can name the land beyond. You will cross together, or not at all."
       }
     ]
   }

@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-the-wrong-valley/arrival/narration": {
     "source": "sha256:ddba8299ad89d775febc858309d430988a419c3341df682379fe06fa18f47052",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -24,7 +24,7 @@
   },
   "riftlight-the-wrong-valley/snowbank/narration": {
     "source": "sha256:260bf2e95b4e8f6a32fd0c12712a72c569624491a8808ea5e453d869b61afa81",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -38,7 +38,7 @@
   },
   "riftlight-the-wrong-valley/snowbank/onFailure/narration": {
     "source": "sha256:faf8694452433c68db9a20be611aafba0bcf5229a1afd4ac13f16785b532f6db",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -52,7 +52,7 @@
   },
   "riftlight-the-wrong-valley/meet_hummock/narration": {
     "source": "sha256:2267e9067e1b08cf9c26f1b3cccb7667f7a69793d2ad29f31e4f2ddb4b213808",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -82,7 +82,7 @@
   },
   "riftlight-the-wrong-valley/look/narration": {
     "source": "sha256:d5dda328a6c7306a3d7b0582f631297f658b266d6243831d5b8b99d8ad365801",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -100,7 +100,7 @@
   },
   "riftlight-the-wrong-valley/look/variants/0": {
     "source": "sha256:bb319a9ddd0bfe4a4852f3eb05bc949263510b61004f160b02fad339d7cc0e5b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -114,7 +114,7 @@
   },
   "riftlight-the-wrong-valley/look/variants/1": {
     "source": "sha256:327052bcc573ee5d6eb95e315ffd145d5eaf0c86723304bb4e3847e854b10c12",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -136,7 +136,7 @@
   },
   "riftlight-the-wrong-valley/check_map/narration": {
     "source": "sha256:d97ec7c6dfea1668b94199011aeb44d6f713775e94405d4d399767682fdddd62",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -154,7 +154,7 @@
   },
   "riftlight-the-wrong-valley/check_climb/narration": {
     "source": "sha256:5eed08eeddd35186c903a440030185367ead072eb0826fb1b12cb1e7a491c0c1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -172,7 +172,7 @@
   },
   "riftlight-the-wrong-valley/check_plan/onSuccess/narration": {
     "source": "sha256:b29a17db3689a320a68d43ba05dbe6b4380691be0ba12f513cf20540d413366d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -190,7 +190,7 @@
   },
   "riftlight-the-wrong-valley/read_valley/narration": {
     "source": "sha256:7a4a464eef2ea9b35bdbdb7163d3e9e680732f6cf413e6661d1cc74f8c991781",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -220,7 +220,7 @@
   },
   "riftlight-the-wrong-valley/bank_path/narration": {
     "source": "sha256:640d998f1c2102153f1076a9eaf23e8705bb9c6e13cb6de9bdc28c6e1368b64e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -238,7 +238,7 @@
   },
   "riftlight-the-wrong-valley/fork/narration": {
     "source": "sha256:8aadddb118dfe85c2576dcfa6de92b861249113faa5a33eb451ac7245b8aea40",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -256,7 +256,7 @@
   },
   "riftlight-the-wrong-valley/old_road/narration": {
     "source": "sha256:fcfc340d57b6ef861570f9d4ef6e8285567f18e88940ed6ba2ab6be2c2dd7cf9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -264,7 +264,8 @@
       },
       {
         "by": "route_worker_yeti",
-        "text": "\"That never made sense,\""
+        "text": "\"That never made sense,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -272,7 +273,8 @@
       },
       {
         "by": "route_worker_yeti",
-        "text": "\"The river never went that way.\""
+        "text": "\"The river never went that way.\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",
@@ -282,7 +284,7 @@
   },
   "riftlight-the-wrong-valley/down_valley/narration": {
     "source": "sha256:c2fa503d279937affacd55446ab5dab4a53c86a75ed5e92148ad9b2c33676606",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -300,7 +302,7 @@
   },
   "riftlight-the-wrong-valley/check_board/narration": {
     "source": "sha256:bff6b403e329b82ffbf2742e341ac84e4c030d2b7c590248e13848195e5ebf49",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -318,7 +320,7 @@
   },
   "riftlight-the-wrong-valley/check_trail/narration": {
     "source": "sha256:2603f019fce0330dc161851cc8fb8d8f96b258a1e1ce65397fbaf023d51a5dfb",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -336,7 +338,7 @@
   },
   "riftlight-the-wrong-valley/old_falls/narration": {
     "source": "sha256:7c2df7f7ddac4f492fedee89183c0e856c13b6184bc23a39be6763dcb161b76e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -358,7 +360,7 @@
   },
   "riftlight-the-wrong-valley/pip_dam/narration": {
     "source": "sha256:62199678f7d38a99da0400562b8e34cbb7901c8d39981eeb4937086d16242d4b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -384,7 +386,7 @@
   },
   "riftlight-the-wrong-valley/check_wall/narration": {
     "source": "sha256:bed8b6ffbd1e867baf7dd3643767f32541555156bd91af96854c64507948652f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -402,7 +404,7 @@
   },
   "riftlight-the-wrong-valley/walled/narration": {
     "source": "sha256:6b41ff87cc5a31421d698cca3840a76dbef1cfea86a8d3c80bc333154d14893f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -424,7 +426,7 @@
   },
   "riftlight-the-wrong-valley/wall_burst/narration": {
     "source": "sha256:2929c5b8df85618c7059eacf628bbe5a2acf463065995a7585a12e4b53c1c8a1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -450,7 +452,7 @@
   },
   "riftlight-the-wrong-valley/follow_water/narration": {
     "source": "sha256:4e981a027d99835421daac9959565d22ccc7175cf93dfd971b7a9bee5d072f28",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -476,7 +478,7 @@
   },
   "riftlight-the-wrong-valley/follow_water/onSuccess/narration": {
     "source": "sha256:e0a6a1e1ea3f4504a07dd027b24ab57c0cfc04fb033d8c738ca4745628376e45",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -490,7 +492,7 @@
   },
   "riftlight-the-wrong-valley/understood/narration": {
     "source": "sha256:55a4ef82d74cc61171dada47fcadd76a939be436ce721b069967fcaee989486b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -512,7 +514,7 @@
   },
   "riftlight-the-wrong-valley/crossing/narration": {
     "source": "sha256:1b73533f58c45cad0bfe1cd28d4b80fa67f66fd4c61775a61e2b0b0aafa9c196",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -534,7 +536,7 @@
   },
   "riftlight-the-wrong-valley/crossing_flooded/narration": {
     "source": "sha256:e490727dd04344937d2d63851069268f4bc860367d339e21a9d5dc17d8706db1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -556,7 +558,7 @@
   },
   "riftlight-the-wrong-valley/check_high/narration": {
     "source": "sha256:2fd085e1892c150ef662ca29f7d583154f1d223de53713158bb9eb2d1d5c551c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -574,7 +576,7 @@
   },
   "riftlight-the-wrong-valley/hold_ice/narration": {
     "source": "sha256:4010c55072d1a9d1a1a9bb19e192bf1f7137b69a21a3d01a6f111a358405b4ae",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -592,7 +594,7 @@
   },
   "riftlight-the-wrong-valley/across_low/narration": {
     "source": "sha256:334023765a1e58839bc1c81e4168171da8d41ddf2c013e7f2b16ccec30eb640a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -606,7 +608,7 @@
   },
   "riftlight-the-wrong-valley/across_high/narration": {
     "source": "sha256:3c1e94cb36011cb36d1770e81788edfb244b0f8edc9750cfe968f33cc8936419",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -624,7 +626,7 @@
   },
   "riftlight-the-wrong-valley/far_bank/narration": {
     "source": "sha256:b9870ba408fd67c71187a1bb274f2fc2dfa15584641ee0f60e9972b7128006e3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -646,7 +648,7 @@
   },
   "riftlight-the-wrong-valley/hummock_jump/onSuccess/narration": {
     "source": "sha256:d3343ac0599f9da2c673b8d491895c5a693c3d841e0b24a6151a395908583cec",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -660,7 +662,7 @@
   },
   "riftlight-the-wrong-valley/lantern_post/variants/0": {
     "source": "sha256:76c444efd1c77c2986aa2c23c27a2e96543c984045198984fbc1bb52943a34f1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -678,7 +680,7 @@
   },
   "riftlight-the-wrong-valley/lantern_post/variants/1": {
     "source": "sha256:bdadbd00355d3eacd7f11c65047f87d69658987baa93a5d9aca6c791cd22a051",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -696,7 +698,7 @@
   },
   "riftlight-the-wrong-valley/light_lantern/narration": {
     "source": "sha256:20db27ff90edc7a8ff22ba90d71c5f1312b7098a8a92a5c0f701bd6c5c733710",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -714,7 +716,7 @@
   },
   "riftlight-the-wrong-valley/light_lantern/onFailure/narration": {
     "source": "sha256:c2a77060db5cc61c8e9c1a55874c7c4b7064d9c7000d3aaa575e1367fb9b7b81",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -732,7 +734,7 @@
   },
   "riftlight-the-wrong-valley/stone_arrow/narration": {
     "source": "sha256:65f85bcf11fe4275cb2b73a7c7c1fe2537398233e61ac06cdd74315a49e1b0e4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -754,7 +756,7 @@
   },
   "riftlight-the-wrong-valley/stone_arrow/onFailure/narration": {
     "source": "sha256:38b16a9fce88a539b072e70445d04b3ffb6269dfca827343c19cde75fd285ec9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -772,7 +774,7 @@
   },
   "riftlight-the-wrong-valley/warning_lit/narration": {
     "source": "sha256:5e437fe18c758287f072e35993f6e13dc30a93abede0b6cfda1e70de3b7bb9da",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -790,7 +792,7 @@
   },
   "riftlight-the-wrong-valley/check_sledge/narration": {
     "source": "sha256:6ede3e89c3560ffe1b352dfbd5eaf66fdfec53241b1e5c424ebc1ff026961f3f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -808,7 +810,7 @@
   },
   "riftlight-the-wrong-valley/sledge_stops/narration": {
     "source": "sha256:7c8b2674d70857897e1edbd9415dc246639db2b60daf766490c9646d80583e68",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -846,7 +848,7 @@
   },
   "riftlight-the-wrong-valley/driver/narration": {
     "source": "sha256:08778fe9d2538965e54eb082444ef51efb3d45011a820b12cdb02a3ae8261114",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "grandma_drift",
@@ -868,7 +870,7 @@
   },
   "riftlight-the-wrong-valley/check_haul/onFailure/narration": {
     "source": "sha256:304d4d589cbc5e97bf5e9d5b1b6b957e57bfaf7895af44b143a74ac2385ac329",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -882,7 +884,7 @@
   },
   "riftlight-the-wrong-valley/check_guide/narration": {
     "source": "sha256:6aad597a82a764d7756a0771906bdc72953c5e78cf3c8745bf265a04ab3d8aa1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -900,7 +902,7 @@
   },
   "riftlight-the-wrong-valley/dusk/narration": {
     "source": "sha256:bd051c8246bdac3502bb18889693314d0dd87112dcda6f0c167d0d5c94a89292",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -914,7 +916,7 @@
   },
   "riftlight-the-wrong-valley/river_back/narration": {
     "source": "sha256:d460d8016b2b8cecc4c2181fad15f55d72d553b9f7bf8c1ff039dae80142f336",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -936,11 +938,12 @@
   },
   "riftlight-the-wrong-valley/river_back/variants/0": {
     "source": "sha256:773b78be94772cff438da9ec566666010a3118916e490b9af0d4b55eeef4ffde",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "route_worker_yeti",
-        "text": "\"It didn't need our wall,\""
+        "text": "\"It didn't need our wall,\"",
+        "delivery": "gentle"
       },
       {
         "by": "narrator",
@@ -948,13 +951,14 @@
       },
       {
         "by": "route_worker_yeti",
-        "text": "\"It came back by itself.\""
+        "text": "\"It came back by itself.\"",
+        "delivery": "gentle"
       }
     ]
   },
   "riftlight-the-wrong-valley/river_back/variants/1": {
     "source": "sha256:71592bcada3fceeee73f819801f84c1f6cb6ddb7a069c3e254ee23c4c6e91395",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -968,7 +972,7 @@
   },
   "riftlight-the-wrong-valley/rest/narration": {
     "source": "sha256:24fccc50adaa0c07749f07293e6eb32f63c174815644274cf61d8f838fc6c4f4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -990,7 +994,7 @@
   },
   "riftlight-the-wrong-valley/check_moon/narration": {
     "source": "sha256:3606cf27e29ef4e24de584b919827a09e4e72a397fa2ffc92bf946f966f83096",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1008,7 +1012,7 @@
   },
   "riftlight-the-wrong-valley/account/narration": {
     "source": "sha256:c9b96065bcbb0586c6b019482e811e6c8e25fbfa5cd6ea2a1062ecea56415523",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1034,7 +1038,7 @@
   },
   "riftlight-the-wrong-valley/ending/narration": {
     "source": "sha256:2e6852a5177b9e4c0bded9ffcd4eeb51839683208e7abfb9361bf6deb614ca5e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

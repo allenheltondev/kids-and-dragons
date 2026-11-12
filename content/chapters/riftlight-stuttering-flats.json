@@ -1946,7 +1946,7 @@
     "herder_home": {
       "type": "story",
       "rift": "steady",
-      "narration": "\"NOW!\" The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads. \"Thank you,\" the herder calls, brushing off mud. \"I'll never complain about snow again.\"",
+      "narration": "\"NOW!\" you shout. The herder tumbles through into the snow, goat and all. A small goat kid comes running, and the two goats bump heads. \"Thank you,\" the herder calls, brushing off mud. \"I'll never complain about snow again.\"",
       "onEnter": [
         {
           "type": "setFlag",

@@ -1854,7 +1854,7 @@
     },
     "safety_rope": {
       "type": "story",
-      "narration": "You tie your rope from the old boulder at the top down to the first ledge, with a fat, neat knot. Tamsin leans her whole chest on it, which is a lot of griffin. It holds. \"Somebody will thank you in the dark,\" she says, and hangs a smooth river charm aaround your neck. \"We give one to anyone who ties a rail.\"",
+      "narration": "You tie your rope from the old boulder at the top down to the first ledge, with a fat, neat knot. Tamsin leans her whole chest on it, which is a lot of griffin. It holds. \"Somebody will thank you in the dark,\" she says, and hangs a smooth river charm around your neck. \"We give one to anyone who ties a rail.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1885,7 +1885,7 @@
     },
     "safety_buy": {
       "type": "story",
-      "narration": "Tamsin sells pegs to buy ink for the aerie. Her best one rings like a bell. You hammer it deep into a crack, thunk, thunk, thunk, and she ties her own spare line to it. \"Somebody will thank you in the dark,\" she says, and hangs a smooth river charm aaround your neck. \"We give one to anyone who ties a rail.\"",
+      "narration": "Tamsin sells pegs to buy ink for the aerie. Her best one rings like a bell. You hammer it deep into a crack, thunk, thunk, thunk, and she ties her own spare line to it. \"Somebody will thank you in the dark,\" she says, and hangs a smooth river charm around your neck. \"We give one to anyone who ties a rail.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",

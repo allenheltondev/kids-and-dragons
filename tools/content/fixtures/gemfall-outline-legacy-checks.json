@@ -153,7 +153,7 @@
       },
       "onFailure": {
         "goto": "scene_crack_string",
-        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you around the side of the tent."
+        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an apprentice pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you around the side of the tent."
       },
       "art": "scenes/gemfall/bridge-engineers-tent"
     },
@@ -389,7 +389,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "scene_gate_town",
-        "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Very tidy.\" She waves you through with a look that is almost respect."
+        "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. Then she looks up. \"Very tidy.\" She waves you through with a look that is almost respect."
       },
       "onFailure": {
         "goto": "scene_gate_town",

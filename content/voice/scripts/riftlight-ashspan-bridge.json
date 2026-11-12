@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "riftlight-ashspan-bridge/bridge/narration": {
     "source": "sha256:4930fcea972fd76c41ecca89575a5c370a5157064bdaf0dd4ee7fe7481e3ae3a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -40,7 +40,7 @@
   },
   "riftlight-ashspan-bridge/bridge/variants/0": {
     "source": "sha256:10e1e234a8eb67713eb420a02ecba0a071530ae6dcfeed1acdb49da6ad40a8e1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -58,7 +58,7 @@
   },
   "riftlight-ashspan-bridge/plank_check/narration": {
     "source": "sha256:f30d2605f5c54ee3b6853f398767345f1e2535dcab3e0dbbf1d8f55bfe5fd469",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -76,7 +76,7 @@
   },
   "riftlight-ashspan-bridge/plank/narration": {
     "source": "sha256:8e28daf5b1913da8cdc946e8bc6da15ffa948f035b3201dcf6f7620197c8e1f0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -94,7 +94,7 @@
   },
   "riftlight-ashspan-bridge/brace_done/narration": {
     "source": "sha256:cbe69d4da7e870ed4292efb6e189cfaed567c22afeb624357a8788d6f5d4c99e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -116,7 +116,7 @@
   },
   "riftlight-ashspan-bridge/board_wet/narration": {
     "source": "sha256:9cd70d253aade7ff2ddf109ff129d5c3e59a71816af6bd681a95384f78e0fbc0",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -142,7 +142,7 @@
   },
   "riftlight-ashspan-bridge/ferry_ask/narration": {
     "source": "sha256:f37ce89b93b97b5864d1049b4b746e262378418713c319cdd7f4be7ab09dae7d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -180,7 +180,7 @@
   },
   "riftlight-ashspan-bridge/ferry_plan/narration": {
     "source": "sha256:585975837be2892f8bcd97d3ea6c23951b0d3f4f56a7a6cb8b22188a9abd2dcd",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -198,7 +198,7 @@
   },
   "riftlight-ashspan-bridge/ferry_hold/narration": {
     "source": "sha256:6aaedf9ea5869056538e7696747074a9e57cf2653c8d3ce74ce40f9c23bd3b6c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "old_ossley",
@@ -228,7 +228,7 @@
   },
   "riftlight-ashspan-bridge/crossing/narration": {
     "source": "sha256:474a1284a67dd60c2ca5b651c33da45d3990665ae7b3149b4081d68d3788ae6c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -254,7 +254,7 @@
   },
   "riftlight-ashspan-bridge/ferry_spin/narration": {
     "source": "sha256:2370ce1f104a13a3d96115d517b3e156e6cc8383c3fb07e0e3a81cff1621cab8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -268,7 +268,7 @@
   },
   "riftlight-ashspan-bridge/ferry_dock/narration": {
     "source": "sha256:a6af24d602284ffaa6514945cdd74ab92096c2d93e91e447d5433235f69b65c2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -294,7 +294,7 @@
   },
   "riftlight-ashspan-bridge/dock_bump/narration": {
     "source": "sha256:81bba4fb70cb343d59bfd99f9d049eaf2c85e9730464728fba390b1db3eef918",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -316,7 +316,7 @@
   },
   "riftlight-ashspan-bridge/far_bank/narration": {
     "source": "sha256:fef7be69ebd7e6f53d91bee3650e715f0dd1613200c7ededbacd38d27fb7ac23",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -346,7 +346,7 @@
   },
   "riftlight-ashspan-bridge/plank_pile/narration": {
     "source": "sha256:70e9495ea0c37ec50cf942823612eca38763c276e9aa1fbdf07f4f96805cb9a9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -372,7 +372,7 @@
   },
   "riftlight-ashspan-bridge/mimic_won/narration": {
     "source": "sha256:85f2588f1d2bb433e4a2cd74e7dce6208fc0903bee93603bc11c9b752b8fae60",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -402,7 +402,7 @@
   },
   "riftlight-ashspan-bridge/mimic_shooed/narration": {
     "source": "sha256:06b67cf238dd7c971d285d847659f7537db1fcbb213c2c0a0e7251403af101ca",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -420,7 +420,7 @@
   },
   "riftlight-ashspan-bridge/cart_plan/narration": {
     "source": "sha256:037b74e1b03295ad65a4fdebb4730e8bc561fe4490b08fcee892c53c060374a6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -446,7 +446,7 @@
   },
   "riftlight-ashspan-bridge/cart_free/narration": {
     "source": "sha256:7e6645dda9db1236fa5df594aba12d25e72b79398593cb351377431bef07d8c7",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -460,7 +460,7 @@
   },
   "riftlight-ashspan-bridge/cart_stuck/narration": {
     "source": "sha256:00874b5204e6e73c0e5db70badbeca62d91ee99a6ab4da10b97d85839f591a21",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -486,7 +486,7 @@
   },
   "riftlight-ashspan-bridge/bridge_head/narration": {
     "source": "sha256:c7f631dac46904b27883fc8ba177ab118182a4e0faf30881845d446cfb0fb264",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -504,7 +504,7 @@
   },
   "riftlight-ashspan-bridge/jam_plan/narration": {
     "source": "sha256:8456bd9fc925c38322920ac939a099fee8a20263140e7ab25931fccccfefc0b8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -546,7 +546,7 @@
   },
   "riftlight-ashspan-bridge/haul_check/narration": {
     "source": "sha256:c2fdc57a17c5141def51be20bfebbeb64f173072f26d4c9f1bb775b6df16d227",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "bryn",
@@ -560,7 +560,7 @@
   },
   "riftlight-ashspan-bridge/jam_shift/narration": {
     "source": "sha256:7bd3f59f245a7e7b3abb03d50aee78ba1e69e97d7785c6e47cf7144d5f108448",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -578,7 +578,7 @@
   },
   "riftlight-ashspan-bridge/jam_clear/narration": {
     "source": "sha256:fbd55ef626b40ac7efaf9e7c626446e39d823db60c68b4de8630823ee6dfeb35",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -596,7 +596,7 @@
   },
   "riftlight-ashspan-bridge/span_stone/narration": {
     "source": "sha256:5ef41c96a105380f6ddd135a2ba55119613f97759e299cbcb73757c38afbd810",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -630,7 +630,7 @@
   },
   "riftlight-ashspan-bridge/carry_beam/narration": {
     "source": "sha256:100e1dee82f3d39c8638dfe30ebb34e95b026d930eff7baa1fccdd8b980b240f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -644,7 +644,7 @@
   },
   "riftlight-ashspan-bridge/beam_plan/variants/0": {
     "source": "sha256:56d85406423958f6f5484c6feffe172375a23aefa4928147725e5c5987c31aac",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -662,7 +662,7 @@
   },
   "riftlight-ashspan-bridge/lift_check/narration": {
     "source": "sha256:ca3a3cc6c5ce07d0cfad6b1bc87560f197c8b52874b57dc73333876e86f77052",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "old_ossley",
@@ -688,7 +688,7 @@
   },
   "riftlight-ashspan-bridge/beam_up/narration": {
     "source": "sha256:502b56dee90a95e0252227f305b7b825215aa54383abb8661519874bde87c040",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -706,7 +706,7 @@
   },
   "riftlight-ashspan-bridge/beam_slip/narration": {
     "source": "sha256:05700bffaf14b2f5aef4ced63febb1f0888d9f175b59b9af7492b59c0d24cbe1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -724,7 +724,7 @@
   },
   "riftlight-ashspan-bridge/hatch/narration": {
     "source": "sha256:a94afb6ea9cb396247081aec3c292fcf9b16ad551ff5e6d1fd67e71ecdf9db68",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -750,7 +750,7 @@
   },
   "riftlight-ashspan-bridge/hatch/variants/0": {
     "source": "sha256:fc32e0a5fa940827c30c50218f1d0190bca7df7560168f8bddb586fb492d2567",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tilly",
@@ -768,7 +768,7 @@
   },
   "riftlight-ashspan-bridge/duck_plan/narration": {
     "source": "sha256:98933c83aa0f6136a75d0a135d73f9b8537c4e511b6801f28a2c4b0490651412",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -794,7 +794,7 @@
   },
   "riftlight-ashspan-bridge/coax_check/narration": {
     "source": "sha256:c84a341153ebe2a21ec298ebc9d88f758662837ec06be9c3ef182afe3448d709",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -816,7 +816,7 @@
   },
   "riftlight-ashspan-bridge/ducks_safe/narration": {
     "source": "sha256:f07a49667a967f39555977a8ee5b030c8f74bc74d57c04b28ca45495414eb374",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -838,7 +838,7 @@
   },
   "riftlight-ashspan-bridge/ducks_loose/narration": {
     "source": "sha256:8e9f9c36f0306e42c723c211afb636828040a1d0a4c954e0ad51cc04187523b3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -856,7 +856,7 @@
   },
   "riftlight-ashspan-bridge/duck_friend/narration": {
     "source": "sha256:4c4d1f8ec7cfb00f84fc7390072b31dbcaf4226de7b2e9d84bff81cea0458ac6",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -882,7 +882,7 @@
   },
   "riftlight-ashspan-bridge/planks_plan/narration": {
     "source": "sha256:c7489415518a462cb62ddaa0f7cfb026354344d8688e6b9a61b5501c4109c309",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -900,7 +900,7 @@
   },
   "riftlight-ashspan-bridge/planks_plan/variants/0": {
     "source": "sha256:a4e368b6c3dafc0ac7e0c0856cdf0da02b0fb7d5a7bbfd8929cfb9e1fec233c8",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -914,7 +914,7 @@
   },
   "riftlight-ashspan-bridge/planks_laid/variants/0": {
     "source": "sha256:12ea21b49b1395dddad0421783acd49172f9c04309b0a27436ea0f323601c279",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -932,7 +932,7 @@
   },
   "riftlight-ashspan-bridge/bridge_open/narration": {
     "source": "sha256:0511396ea3cc12af29ecd0c4f7b7fd962404a10f7d6731809a09176063eb9c8f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -946,7 +946,7 @@
   },
   "riftlight-ashspan-bridge/folk_cross/narration": {
     "source": "sha256:96fc90610ad4f099de6b3b81ff438bd660177e05d036696cfdec0b705b167728",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -976,7 +976,7 @@
   },
   "riftlight-ashspan-bridge/rest_hut/narration": {
     "source": "sha256:887fa5652201fa9bbb9020e0f5568521a6bbee4d87af736ba35f95d16f02245f",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -998,7 +998,7 @@
   },
   "riftlight-ashspan-bridge/rest_hut/variants/0": {
     "source": "sha256:31ff52b45cba1ae92dfbc0723a9ed618e5204cb383f30c35c6569656d048ff8d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1012,7 +1012,7 @@
   },
   "riftlight-ashspan-bridge/share_bryn/narration": {
     "source": "sha256:e491bee55963bd60ae04fd766d42cf685a7d2c1622fc7574e1bd31533805a118",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1026,7 +1026,7 @@
   },
   "riftlight-ashspan-bridge/tie_boat/narration": {
     "source": "sha256:bf40651bfd082bcdd5819584554d5c339ccd94243275ac0a2c4b1efc08d9a327",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1048,7 +1048,7 @@
   },
   "riftlight-ashspan-bridge/ossley_routes/narration": {
     "source": "sha256:1172a7fcbb9e4d777d4d5b1279919e0347057f570aafb0fcdbc9fc05d8f2d94c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1090,7 +1090,7 @@
   },
   "riftlight-ashspan-bridge/routes/narration": {
     "source": "sha256:9d400b56d987cec931de97bc5aa82f2c3f3181a0adb745354b6fc0174c647bff",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1108,7 +1108,7 @@
   },
   "riftlight-ashspan-bridge/mat_return/narration": {
     "source": "sha256:6e77ea741624edb7aff72c2bbd1c6b1dd18fb851148ef903d36dfe991cc4c90e",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1126,7 +1126,7 @@
   },
   "riftlight-ashspan-bridge/mat_return/variants/0": {
     "source": "sha256:70ddadd4cd3630e6d7a5f834d00ce5c2e62af5cd82f17735d8384d333143017d",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1140,7 +1140,7 @@
   },
   "riftlight-ashspan-bridge/academy/narration": {
     "source": "sha256:cb749aae75b5e45e2bde634c4167b93741292c821a1cca1cc7462982800b9384",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1158,7 +1158,7 @@
   },
   "riftlight-ashspan-bridge/academy/variants/0": {
     "source": "sha256:b6467791a5ef6652cce35366b86e020f52502b971749f9377b64c58c3be9fdd1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -1176,7 +1176,7 @@
   },
   "riftlight-ashspan-bridge/academy_stars/narration": {
     "source": "sha256:fb83982ed83db3529a5aac8d0131d557b538d3a542b904c62bc708a3d9f74628",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",

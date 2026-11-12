@@ -2,7 +2,7 @@
   "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
   "first-steps-01/check_latch/onFailure/narration": {
     "source": "sha256:76211e702029935a93fc4ca93fdcbad81d30841400dd6b95e24b9d959235ea01",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -20,7 +20,7 @@
   },
   "first-steps-01/check_climb/onFailure/narration": {
     "source": "sha256:b241eaa15ceb0411d1bf36d22d0e4fa6034c12ce4298ee0b9581816e6aab5712",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -38,7 +38,7 @@
   },
   "first-steps-01/scene_tansy/narration": {
     "source": "sha256:d6cfb36f250fb6cb4eb6c6a0532d7eb6f1bbec601417d3ff8f3e41db95d92ed5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -60,7 +60,7 @@
   },
   "first-steps-01/scene_tansy_meadow/narration": {
     "source": "sha256:dbee45b5e9bc29dade745a12cab33c7d6bb21dca2fb959bb02f299a662607e82",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tansy",
@@ -78,7 +78,7 @@
   },
   "first-steps-01/scene_tansy_clipboard/narration": {
     "source": "sha256:7150caa96f0c662ee93d5db778aed5e30cc35d1806351708a6f0aecdb601aba2",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -96,7 +96,7 @@
   },
   "first-steps-01/scene_flick_wakes/narration": {
     "source": "sha256:d2cecf4223bc5541de8bec510f358e3ff6040e6e541e56bfa005812c06f9ac0b",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -114,7 +114,7 @@
   },
   "first-steps-01/scene_tag_field/narration": {
     "source": "sha256:84d9b303a95277a61b26e33b89da53dbaf0b3951502d8dbbd71f3288d3627de9",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -140,7 +140,7 @@
   },
   "first-steps-01/scene_tag_rules/narration": {
     "source": "sha256:4d6af9d01b055c3ac02f6c9145e196ec975069f0f842fd899c29118202220a14",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tansy",
@@ -162,7 +162,7 @@
   },
   "first-steps-01/encounter_tag/onVictory/narration": {
     "source": "sha256:f06d5e3c08cabb0104fd4a707ed501e8e0bbc90d693ef30dae376478f0892a31",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -184,7 +184,7 @@
   },
   "first-steps-01/scene_bun_waits/narration": {
     "source": "sha256:50e9ce8afc20db3f0785c661b24c38b87386cf052aad18e981b84c4da1ca791a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "party",
@@ -198,7 +198,7 @@
   },
   "first-steps-01/scene_bun_safe/narration": {
     "source": "sha256:dced51945aa0b88a2e9aa5127fa8ef586098c4749cb407660753561db6f72f4a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -220,7 +220,7 @@
   },
   "first-steps-01/rest_picnic/narration": {
     "source": "sha256:bd2f87da9219d558e6b1903ee6664d34f2e34c25d8f869b3b14a40be09e540af",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -242,7 +242,7 @@
   },
   "first-steps-01/scene_favorite_part/narration": {
     "source": "sha256:66c88390ac6438c396fa9ddb79a0cbb4da2632239fccd866971b34a1cbc29799",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -260,7 +260,7 @@
   },
   "first-steps-01/scene_last_tip/narration": {
     "source": "sha256:6e21732c88a4525627e727ddef18f80cb7d97725f7c5352082c5e2b3823757e3",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tansy",
@@ -282,7 +282,7 @@
   },
   "first-steps-01/rest_ready/narration": {
     "source": "sha256:9c4174e09dc941bbfd730f7765837b9167f389b9c72e0943e5154275aafa8730",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -308,7 +308,7 @@
   },
   "first-steps-01/interaction_bell/narration": {
     "source": "sha256:0a59651a5c7d20aad8fd53b2343523bceee2074dc2b7777bf6c6a2df2ecaab80",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -330,7 +330,7 @@
   },
   "first-steps-01/interaction_bell/onFailure/narration": {
     "source": "sha256:c95ed85eb792af7e21fd3316ef85e1c9c1eaea14e84070f1ad0761ff2d3783b5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -348,7 +348,7 @@
   },
   "first-steps-01/interaction_roots/narration": {
     "source": "sha256:896158155d2e3d7d7a2239baf249759233ac1fc45b0c109445147a5839448c62",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -374,7 +374,7 @@
   },
   "first-steps-01/interaction_stones/narration": {
     "source": "sha256:fd583eda43e79bca8f9746e0a51832cc870ca7a9524c1282a4a9ee6ed5491bf4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -396,7 +396,7 @@
   },
   "first-steps-01/interaction_stones/onFailure/narration": {
     "source": "sha256:e0fce05a19a10bc6389fd210b6321eed132b098fbd99d9f1911b7ef56343ed1a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -414,7 +414,7 @@
   },
   "first-steps-01/scene_team_tricks_done/narration": {
     "source": "sha256:66cb1006a3d20fa28a10f5bf4a208ebc4f557305446a3f51485f335e76af6367",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tansy",
@@ -436,7 +436,7 @@
   },
   "first-steps-01/scene_more_meadow_games/narration": {
     "source": "sha256:1946fcbd8644c2a0dd7116f22c939d71093827be74c8bca5c5551e923529514a",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -454,7 +454,7 @@
   },
   "first-steps-01/interaction_cups/narration": {
     "source": "sha256:6559d57aa256cc659ff24c63f62e0031cb134e768dda04712db993caad2d24d5",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -476,7 +476,7 @@
   },
   "first-steps-01/interaction_cups/onSuccess/narration": {
     "source": "sha256:de47461ea87ca6487bc4765f18f4f506795930ab767d1fc2abe84be6450511d4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -494,7 +494,7 @@
   },
   "first-steps-01/interaction_echo/narration": {
     "source": "sha256:a3367e9386c855b873a1edb6318e1c85820e36d5c371d62ab1922c6b541e41ba",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -516,7 +516,7 @@
   },
   "first-steps-01/interaction_echo/onSuccess/narration": {
     "source": "sha256:b915ba645f52ea36a4b26130e9566bd2ae3b721c4b970de303e6322dbfcc9908",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -530,7 +530,7 @@
   },
   "first-steps-01/interaction_echo/onFailure/narration": {
     "source": "sha256:63e4f8ef8736b401651046049691c0fcf33cd943509d686075d53075d3e1c226",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -548,7 +548,7 @@
   },
   "first-steps-01/interaction_sneak/narration": {
     "source": "sha256:c3480f978122d03fe1fd9e9a1c761e480bafca3bef51eadf5afe5b99dc874523",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -566,7 +566,7 @@
   },
   "first-steps-01/interaction_sneak/onFailure/narration": {
     "source": "sha256:79c5b7cefe887f0f7536cacfa6faee27a1513ea4965cb7eb2fac0331b7ce6df1",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -580,7 +580,7 @@
   },
   "first-steps-01/interaction_balance/narration": {
     "source": "sha256:8cc099667b09bc34b5fcb5209ad58c113c20653bff5f226ee9fbb10487a560f4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -606,7 +606,7 @@
   },
   "first-steps-01/interaction_balance/onFailure/narration": {
     "source": "sha256:41654288736937a403de79f8cd45919a9f6f2ba286df17db85e84d16e6da4444",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -620,7 +620,7 @@
   },
   "first-steps-01/interaction_spark/narration": {
     "source": "sha256:e6169967c66e7bd9ce8d9b2446a031e65c93e062a115a0fd2e14ae11fdaf5373",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -642,7 +642,7 @@
   },
   "first-steps-01/scene_playful_meadow/narration": {
     "source": "sha256:e4d344e37978607287a6f943cd2f440c5759b62acfac171c74db0c3170131509",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tansy",
@@ -656,7 +656,7 @@
   },
   "first-steps-01/interaction_feed/narration": {
     "source": "sha256:f1b051bc96b1c36ff72bbeb005e141ca728c7515c99674f907178eed7adb9b44",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -674,7 +674,7 @@
   },
   "first-steps-01/interaction_camp/narration": {
     "source": "sha256:022a9ee1d5147687ae531339c7fd008dfc57bf78239b43b2a60d96a6a6b8892c",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -692,7 +692,7 @@
   },
   "first-steps-01/interaction_cheer/narration": {
     "source": "sha256:67e929b687d8b31658bd71865dc1bf4052b992f1d6fe44011bfb1b13407c96f4",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "tansy",
@@ -706,7 +706,7 @@
   },
   "first-steps-01/interaction_wake/narration": {
     "source": "sha256:1a1a674f69d7651a2a9bb8722067ffd4dd845b2a4e7674fccb23fc19cfd45144",
-    "reviewed": false,
+    "reviewed": true,
     "lines": [
       {
         "by": "narrator",
@@ -714,7 +714,8 @@
       },
       {
         "by": "tansy",
-        "text": "\"He enjoys a gentle hello,\""
+        "text": "\"He enjoys a gentle hello,\"",
+        "delivery": "whisper"
       },
       {
         "by": "narrator",

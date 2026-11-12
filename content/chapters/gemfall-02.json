@@ -2761,7 +2761,7 @@
       "tags": [
         "force"
       ],
-      "narration": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a very polite centaur, waves you over. \"Wait for my pull, then push,\" she says. \"I tip well.\"",
+      "narration": "Near the hedges, a wagon wheel is stuck deep in a rut. Its drover, a centaur in a great hurry, waves you over. \"Wait for my pull, then push,\" she says. \"I tip well.\"",
       "cast": [
         {
           "figure": "entities/centaur",

@@ -639,7 +639,7 @@
       "type": "story",
       "art": "scenes/riftlight/glacier-deep-ice",
       "rift": "steady",
-      "narration": "You peek over the ridge. Below, a great tear hangs in the air, wider than a house. Through it, faraway ground slides past: a valley, a river, a hill, all moving. Under it, a tall figure bends over an old map on the ice. \"Why is the river on the wrong side of the mountain?\" he asks the map. \"It was never on that side.\" In your pack, the chime rings all by itself.",
+      "narration": "You peek over the ridge. Below, a great tear hangs in the air, wider than a house. Through it, faraway ground slides past: a valley, a river, a hill, all moving. Under it, a tall figure bends over an old map on the ice. \"Why is the river on the wrong side of the mountain?\" he asks the map. \"It was never on that side,\" the figure mutters. In your pack, the chime rings all by itself.",
       "variants": [
         {
           "when": {

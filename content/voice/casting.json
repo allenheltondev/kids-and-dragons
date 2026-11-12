@@ -42,7 +42,8 @@
       "search": "bright female dramatic confident",
       "speakers": [
         "skerry",
-        "bracken_swiftmile"
+        "bracken_swiftmile",
+        "tamsin_river_keeper"
       ]
     },
     {
@@ -74,7 +75,6 @@
       "search": "precise cheerful young woman",
       "speakers": [
         "tally",
-        "dragonling_stone_keeper",
         "egg_faun",
         "brask"
       ]
@@ -139,7 +139,6 @@
       "prompt": "A man's voice in his fifties, a gruff baritone with a strong German accent. Blunt and matter-of-fact, flat delivery of numbers and unwelcome news, pauses to work out arithmetic aloud. Honest and never unkind, with a dry warmth. Adult performer, warm and clear, never scary.",
       "search": "gruff blunt male",
       "speakers": [
-        "brask_pass_keeper",
         "prospector"
       ]
     },
@@ -244,9 +243,8 @@
         "bell_code_expert",
         "bryony",
         "nettle",
-        "small_dragonling",
-        "dragonling_runner",
-        "boundary_runner"
+        "boundary_runner",
+        "dragonling_runner"
       ]
     },
     {
@@ -269,8 +267,7 @@
       "search": "calm brisk kind woman",
       "speakers": [
         "keeper_sorrel",
-        "thimble",
-        "tamsin_river_keeper"
+        "thimble"
       ]
     },
     {
@@ -286,9 +283,7 @@
         "centaur_drover",
         "road_warden",
         "fennick",
-        "centaur_relay",
-        "tour_guide",
-        "waystation_centaur"
+        "tour_guide"
       ]
     },
     {
@@ -339,11 +334,9 @@
       "speakers": [
         "archivist",
         "runner",
-        "mosshome_runner",
         "flood_warden",
         "eldest",
-        "hollis",
-        "door_archivist"
+        "hollis"
       ]
     },
     {
@@ -441,7 +434,6 @@
       "search": "dry older woman witch",
       "speakers": [
         "mother_thrum",
-        "ford_witch",
         "stall_witch"
       ]
     },
@@ -532,8 +524,7 @@
       "search": "stern fair woman commander",
       "speakers": [
         "voss",
-        "apprentice",
-        "captain"
+        "apprentice"
       ]
     },
     {
@@ -548,9 +539,9 @@
         "dunnick",
         "warden_clerk",
         "engineers",
-        "warden_sergeant",
         "fishmonger",
-        "brassbuckle_recordkeeper"
+        "brassbuckle_recordkeeper",
+        "brask_pass_keeper"
       ]
     },
     {
@@ -570,7 +561,8 @@
         "rumor_ring",
         "wagon_driver",
         "hob",
-        "muddy_prospector"
+        "muddy_prospector",
+        "warden_sergeant"
       ]
     },
     {
@@ -582,7 +574,8 @@
         "troupe_leader",
         "cook",
         "dilly",
-        "drover"
+        "drover",
+        "coralie_fenn"
       ]
     },
     {
@@ -601,8 +594,6 @@
       "prompt": "",
       "search": "grand theatrical older woman",
       "speakers": [
-        "coralie_fenn",
-        "exchange_merchant",
         "lighthouse_keeper",
         "crying_gem_buyer"
       ]
@@ -677,6 +668,7 @@
     "spotted_kid",
     "frost_wyrm",
     "young_river_drake",
-    "cloud_whale"
+    "cloud_whale",
+    "marsh_wisps"
   ]
 }

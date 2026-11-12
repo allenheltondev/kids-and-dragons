@@ -2262,7 +2262,7 @@
     },
     "together": {
       "type": "story",
-      "narration": "The kid scrambles into the loop of rope between you. You pull it close. \"Hold on!\" somebody shouts, far away. The line holds you together as the quay folds out of sight.",
+      "narration": "The kid scrambles into the loop of rope between you. You pull it close. \"Hold on!\" a dock worker shouts, far away. The line holds you together as the quay folds out of sight.",
       "choices": [
         {
           "id": "continue",

@@ -162,7 +162,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "scene_gate_town",
-        "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Very tidy.\" She waves you through with a look that is almost respect."
+        "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. Then she looks up. \"Very tidy.\" She waves you through with a look that is almost respect."
       },
       "onFailure": {
         "goto": "scene_gate_town",
@@ -2639,7 +2639,7 @@
     "npcVoices": {
       "great_gran_ashby": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
       "grandmother": "a gate-town grandmother; glasses on a chain, counts everything, hugs first and inspects later",
-      "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
+      "bell_code_expert": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
       "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
       "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument",
       "wend": "a Deep Hollow ladler from the north road; gentle, generous, remembers every name, certain the world can be fixed at the root",
