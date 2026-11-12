@@ -325,13 +325,17 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
   /** One fight, both sides played by the monsters' own planner, every event kept. */
   function playFight(party: readonly ResolvedCharacter[], chapterId: string, sceneId: string, seed: string) {
     const scene = content.chapter(chapterId)!.scenes[sceneId] as EncounterScene;
-    // This compatibility probe deliberately plays the shipped ordinary wolf
-    // arena, before the opt-in roadside mission. Keep its arithmetic golden.
-    const map = content.map(chapterId === "gemfall-02" && sceneId === "encounter_wolves" ? "roadside" : scene.map)!;
+    // Freeze the pre-mission wolf arena and drake specs for this arithmetic
+    // probe. Authored mission boards are exercised in combat-roadside.test.
+    const legacyDrake = chapterId === "gemfall-03a" && sceneId === "encounter_drake";
+    const mapId = chapterId === "gemfall-02" && sceneId === "encounter_wolves" ? "roadside" : legacyDrake ? "ford" : scene.map;
+    const map = content.map(mapId)!;
     const ctx = { rules, abilities, rng: makeRng(seed) };
     const enemies: EnemyPlacement[] = [];
     for (const spec of scene.enemies) {
-      for (let n = 0; n < spec.count; n++) enemies.push({ spec, at: map.enemySpawns[enemies.length]! });
+      const { windupAttack, ...ordinary } = spec;
+      const legacySpec = legacyDrake ? ordinary : spec;
+      for (let n = 0; n < spec.count; n++) enemies.push({ spec: legacySpec, at: map.enemySpawns[enemies.length]! });
     }
     let state: EncounterState = beginEncounter(
       {
@@ -554,6 +558,42 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
           }
           if (chapterId === "gemfall-05b" && sceneId === "encounter_drake") {
             expect(scene.environment?.objectives?.[0]?.id).toBe("channel-stone");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-03a" && sceneId === "encounter_drake") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("bargaining-rock");
+            expect(scene.environment?.clock?.onExpire).toBe("collapse");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-03b" && sceneId === "encounter_crabs") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("step-drain");
+            expect(scene.environment?.clock?.onExpire).toBe("collapse");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-07h" && sceneId === "encounter_crabs") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("cool-edge");
+            expect(scene.environment?.clock?.onExpire).toBe("collapse");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-07h" && sceneId === "encounter_echo") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("soup-pot");
+            expect(scene.environment?.clock?.onExpire).toBe("collapse");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-07l" && sceneId === "encounter_crawlers") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("crawler-box");
+            expect(scene.environment?.clock?.onExpire).toBe("collapse");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-07r" && sceneId === "encounter_wolves") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("cart-wheel");
+            expect(scene.environment?.clock?.onExpire).toBe("collapse");
             expect(scene.onTimeout).toEqual(scene.onDefeat);
             continue;
           }

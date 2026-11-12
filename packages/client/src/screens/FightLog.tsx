@@ -193,7 +193,7 @@ export function FightLog(): ReactElement | null {
         {forecastId && <p><b>{combatantById(encounter, forecastId)?.name}:</b> {enemyIntentLine(encounter, forecastId)}</p>}
       </section>}
       <ol className="fight-log__lines" aria-live="polite">
-        {lines.length === 0 ? <li className="fight-log__line fight-log__line--quiet">The fight is on!</li> : null}
+        {lines.length === 0 && !encounter.environment ? <li className="fight-log__line fight-log__line--quiet">The fight is on!</li> : null}
         {lines.map((line) => (
           <li key={line.key} className={`fight-log__line fight-log__line--${line.tone}`}>
             {line.swing ? <SwingLine swing={line.swing} /> : <span>{line.text}</span>}

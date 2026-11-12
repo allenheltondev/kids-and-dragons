@@ -1561,14 +1561,20 @@
     },
     "encounter_crabs": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The gem deposits stand up. They are glassback crabs, and this is their warm spot.",
+      "map": "boundary_retreat",
+      "narration": "The gem deposits stand up. Glassback crabs, guarding their warm spot! Their raised claws mark the ground they will sweep. Slip past along the cool edge, one friend at a time, or shoo them away. The masks are coming up the road behind you.",
       "enemies": [
         {
           "id": "crabs",
           "name": "Glassback Crab",
           "creature": "glassback_crab",
-          "hp": 10
+          "hp": 10,
+          "windupAttack": {
+            "label": "Warm-ground claw sweep",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          }
         }
       ],
       "onVictory": {
@@ -1576,6 +1582,39 @@
         "narration": "The crabs clatter off sideways, grumbling."
       },
       "onDefeat": {
+        "goto": "ending_robbed",
+        "narration": "The crabs shove you into a ditch. Half your packs burst open, and the masks scoop up what rolls out."
+      },
+      "art": "scenes/gemfall/crab-field-guards",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The masks catch up",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "cool-edge",
+            "label": "Cool edge",
+            "art": "prop_stepping_stones",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 3
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_bend_approach",
+        "narration": "The last friend steps off the warm ground. The crabs settle down at once, looking remarkably like deposits again. Behind you, a mask asks one for directions."
+      },
+      "onTimeout": {
         "goto": "ending_robbed",
         "narration": "The crabs shove you into a ditch. Half your packs burst open, and the masks scoop up what rolls out."
       }
@@ -3003,14 +3042,25 @@
     },
     "encounter_echo": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "Two echo hunters unfold from the rock wall, copying your footsteps one beat late. Be louder than one sound, and stronger than an echo.",
+      "map": "boundary_retreat",
+      "narration": "Two echo hunters unfold from the wall. One marks the ground for a booming echo. The other follows your footsteps. Grandmother slides her soup pot onto a flat stone. Hold that spot for two round ends, banging the pot, to drown them out. A friend can draw the hunter away while you keep the beat.",
       "enemies": [
         {
           "id": "echo",
           "name": "Echo Hunter",
           "creature": "echo_hunter",
-          "count": 2,
+          "hp": 8,
+          "windupAttack": {
+            "label": "Echo pulse",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          }
+        },
+        {
+          "id": "follower",
+          "name": "Footstep Hunter",
+          "creature": "echo_hunter",
           "hp": 8
         }
       ],
@@ -3022,9 +3072,59 @@
             "itemId": "brave_whistle",
             "to": "party"
           }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "rang_grandmothers_pot"
+            },
+            "replace": true,
+            "text": "The pot rings over the copied footsteps. The hunters flatten into the wall, and the last echo is a very small clang."
+          }
         ]
       },
       "onDefeat": {
+        "goto": "scene_echo_lost",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/echo-cutting",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The echoes fill the cutting",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "soup-pot",
+            "label": "Ring the pot",
+            "art": "prop_soup_pot",
+            "kind": "hold",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "rang_grandmothers_pot",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_echo_lost",
         "effects": [
           {

@@ -4,8 +4,8 @@
     "campaigns/gemfall.json": "dbc7a399e3bc7ce056cf122e537aad988b6bf05d987ee576e6e7659e9268a010",
     "chapters/gemfall-01.json": "576e80e279c951e2831bcc2674ac97cf1241c6e0f6c75ee2a7085e1ffe7d76db",
     "chapters/gemfall-02.json": "3a96a466840ee8c3a947215bbac65104f162b6046ea1f55604570bf7ff08b2c3",
-    "chapters/gemfall-03a.json": "45cdc84c141a31efcceaaaac97a25efdba5954446ddfc5f37a3957c171765603",
-    "chapters/gemfall-03b.json": "8f642fb8b3f7a319fba0126c29f8aa0734e35b865502b17e15287824e1092755",
+    "chapters/gemfall-03a.json": "91d3f8fcd82680b7ca6d846596c11de4c2eb7886ec3db71ca09ce30f5707dd0d",
+    "chapters/gemfall-03b.json": "2ceb6ccdb55f013874f5b6f6fb3f7a2c5c9e44d385aa455e57a011ab99a0a0ed",
     "chapters/gemfall-03c.json": "0dd5b757ffe2fbf354314227b4f363e68f7f73aade3ef4f94dcd0a9337710083",
     "chapters/gemfall-04a.json": "c5ecd648d71df149298163e6323e4130b597170202bd09134e269c2706dcf190",
     "chapters/gemfall-04b.json": "f32154ca9f79fabd3d5e894ff07f662ae083dfb183b52561fce93de93db5112f",
@@ -14,9 +14,9 @@
     "chapters/gemfall-05b.json": "1e89a4e7c5c49f661622b63e8f86c8b92d2930d49056fb8da5867fa614438c33",
     "chapters/gemfall-05c.json": "8ef4fb01838dc5b642c03642f9a5b9916dd3be7751e7023bf39f6b5b5278e051",
     "chapters/gemfall-06.json": "de7f82e4d423c25945441633580758bff011a1090d9e705ab27948cde3653b2d",
-    "chapters/gemfall-07h.json": "1ea53cd8d8656f6a8db5f88ae12a4b0b39aa3bad5797826cb45150da2f5d9002",
-    "chapters/gemfall-07l.json": "4a5ad579b914230069886d0b265372329f96907651e86258eaf1f44fc3f779b5",
-    "chapters/gemfall-07r.json": "a018d6db67271e641a1b8752ee007c776358a91c0421f9b94aeb1bbbf9439a37",
+    "chapters/gemfall-07h.json": "c9c9d29ad5b38c7fbabd1ef0518631420d1a15a6b2e994eba9877adbbdc9f338",
+    "chapters/gemfall-07l.json": "abfbacfe47905605720a9ef2888f24a8089a03a5b857fcf18346127812979927",
+    "chapters/gemfall-07r.json": "be480b4b7b0c89bca88a9dd88920b0aefa10f3fee6f599c022eb298ce054e2df",
     "chapters/gemfall-08.json": "dd9d474ffbc32a18a0f23294cbd379527e6d3b189978d0c97bf810e06626664f"
   }
 }
