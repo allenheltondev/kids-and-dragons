@@ -291,6 +291,48 @@ describe("prefetch: the clips for lines not yet spoken", () => {
     expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
   });
 
+  it("retires what is queued when told to, without touching the line being spoken or the clip on its way", async () => {
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    const routes = aheadRoutes();
+    routes[clipPath(F)] = {
+      ok: true,
+      json: () => Promise.reject(new Error("not json")),
+      arrayBuffer: () => held.then(() => new TextEncoder().encode(F).buffer as ArrayBuffer),
+    };
+    const t = setup(routes);
+    // A line is playing from its own clips, and the whole chapter is queued behind it.
+    t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
+    t.speaker.prefetch?.(["ch/"], { background: true });
+    await settle();
+    // The goal's clip (first in the chapter) is on its way; the rest are queued behind it.
+    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual([clipPath(A), clipPath(F)]);
+    t.speaker.stopPrefetch?.();
+    release();
+    await settle();
+    await vi.advanceTimersByTimeAsync(1000);
+    await settle();
+    // Nothing more was fetched, and the playing line neither stopped nor fell back to the device voice.
+    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual([clipPath(A), clipPath(F)]);
+    expect(t.plays[0]!.stopped).toBe(false);
+    expect(t.device.said).toEqual([]);
+    expect(t.device.cancels()).toBe(0);
+  });
+
+  it("drops a request that was still working out what to fetch when it was retired", async () => {
+    const t = setup(aheadRoutes());
+    t.speaker.prefetch?.(["ch/s1/"]);
+    t.speaker.stopPrefetch?.();
+    await settle();
+    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual([]);
+    // And the speaker still prefetches for whoever asks next.
+    t.speaker.prefetch?.(["ch/s1/"]);
+    await settle();
+    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual([clipPath(A)]);
+  });
+
   it("does nothing for a chapter with no manifest", async () => {
     const t = setup({});
     expect(() => t.speaker.prefetch?.(["ch/s1/"])).not.toThrow();
@@ -644,6 +686,21 @@ describe("narration only while the page is seen (whileSeen)", () => {
     show("visible");
     seen.prefetch?.(["ch/s3/"]);
     expect(asked).toEqual([["ch/s1/"], ["ch/s3/"]]);
+  });
+
+  it("retires the guessing ahead when the page is hidden or left, and says nothing of it while it is seen", () => {
+    const { doc, win, show } = page();
+    const speaker = (() => undefined) as unknown as Speaker;
+    let stops = 0;
+    speaker.stopPrefetch = () => void (stops += 1);
+    whileSeen(speaker, doc, win);
+    show("visible");
+    expect(stops).toBe(0);
+    show("hidden");
+    expect(stops).toBe(1);
+    show("visible");
+    win.dispatchEvent(new Event("pagehide"));
+    expect(stops).toBe(2);
   });
 
   it("passes cancel through", () => {

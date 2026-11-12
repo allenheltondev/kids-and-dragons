@@ -127,6 +127,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   let urgent = 0;
   const prefetchQueue: { near: string[]; background: string[] } = { near: [], background: [] };
   let draining = false;
+  /** Bumped when the guessing ahead is retired, so work that was already under way drops its result. */
+  let prefetchEpoch = 0;
 
   const after = (ms: number, fn: () => void): (() => void) => {
     const timer = setTimeout(() => {
@@ -240,6 +242,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
    */
   function prefetch(prefixes: readonly string[], opts?: PrefetchOptions): void {
     if (env.saveData?.() === true) return;
+    const epoch = prefetchEpoch;
     void (async () => {
       const wanted = new Set<string>();
       const names = new Set(prefixes.map(manifestOf).filter((name): name is string => name !== null));
@@ -253,10 +256,19 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
           }
         }
       }
+      // Retired while the manifest was on its way: the request is over, whatever it would have asked for.
+      if (epoch !== prefetchEpoch) return;
       const queue = opts?.background ? prefetchQueue.background : prefetchQueue.near;
       for (const key of wanted) if (!queue.includes(key)) queue.push(key);
       void drain();
     })().catch(() => undefined);
+  }
+
+  /** Retires every prefetch not yet started. A clip already on its way finishes; a spoken line is untouched. */
+  function stopPrefetch(): void {
+    prefetchEpoch += 1;
+    prefetchQueue.near.length = 0;
+    prefetchQueue.background.length = 0;
   }
 
   async function drain(): Promise<void> {
@@ -268,7 +280,10 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
         if (key === undefined) return;
         if (kept.has(key)) continue;
         // The table's own line goes first, whatever it is waiting on.
+        const epoch = prefetchEpoch;
         while (urgent > 0) await new Promise<void>((wake) => setTimeout(wake, YIELD_MS));
+        // Retired while it waited: this clip was one of the guesses.
+        if (epoch !== prefetchEpoch) continue;
         await bytesOf(key, true).catch(() => undefined);
       }
     } finally {
@@ -383,6 +398,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   };
   speaker.cancel = cancel;
   speaker.prefetch = prefetch;
+  speaker.stopPrefetch = stopPrefetch;
   return speaker;
 }
 
@@ -411,12 +427,18 @@ export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Spe
 export function whileSeen(speaker: Speaker, doc: Document = document, win: Window = window): Speaker {
   let gone = false;
   const away = (): boolean => gone || doc.visibilityState === "hidden";
+  // Hidden or left: nothing is said, and nothing more is fetched for a page nobody is looking at.
+  // The world asks again when it is seen (speech/voice-prefetch.ts).
   doc.addEventListener("visibilitychange", () => {
-    if (away()) speaker.cancel?.();
+    if (away()) {
+      speaker.cancel?.();
+      speaker.stopPrefetch?.();
+    }
   });
   win.addEventListener("pagehide", () => {
     gone = true;
     speaker.cancel?.();
+    speaker.stopPrefetch?.();
   });
   win.addEventListener("pageshow", () => {
     gone = false;
@@ -425,6 +447,7 @@ export function whileSeen(speaker: Speaker, doc: Document = document, win: Windo
     if (!away()) speaker(text, opts);
   };
   seen.cancel = () => speaker.cancel?.();
+  seen.stopPrefetch = () => speaker.stopPrefetch?.();
   // Nothing is fetched for a page nobody is looking at.
   seen.prefetch = (prefixes, opts) => {
     if (!away()) speaker.prefetch?.(prefixes, opts);

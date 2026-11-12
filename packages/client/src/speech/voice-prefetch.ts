@@ -9,13 +9,18 @@
  * story, also fetches the rest of the chapter, after the nearer scenes, so a long sitting does
  * not depend on the connection after the first minutes.
  *
+ * Guessing ahead is retired when it stops being useful: a chapter that is over (its queued
+ * clips would compete with the next chapter's), a world that leaves the screen, a page that is
+ * hidden (the speaker drops its queue, `whileSeen`) and asks again when it is seen. A line being
+ * spoken is never touched.
+ *
  * Only the recorded voice does anything with it: with read-aloud off, or no clips for a scene,
  * a request is a no-op, and the clip speaker leaves Data Saver devices alone. The same rule as
  * the art: only a world that is on screen asks.
  */
 
 import { useEffect } from "react";
-import { edgesOf, prefetchNarration } from "@kad/shared";
+import { edgesOf, prefetchNarration, stopPrefetchNarration } from "@kad/shared";
 import type { Chapter, SceneId } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 
@@ -59,14 +64,36 @@ export function useVoicePrefetch(enabled: boolean, wholeChapter: boolean): void 
   const chapterId = state?.chapterId ?? null;
   const sceneId = state?.sceneId ?? null;
 
+  // Leaving the world or the chapter retires what was queued for it, ahead of the effects below
+  // asking for the new one (cleanups run before the next effects).
+  useEffect(() => () => stopPrefetchNarration(), [enabled, chapterId]);
+
   useEffect(() => {
     if (!enabled || chapter === null || chapter.id !== chapterId) return;
-    prefetchNarration(upcomingNarration(chapter, sceneId));
+    return whenSeen(() => prefetchNarration(upcomingNarration(chapter, sceneId)));
   }, [enabled, chapter, chapterId, sceneId]);
 
   useEffect(() => {
     if (!enabled || !wholeChapter || chapter === null || chapter.id !== chapterId) return;
-    prefetchNarration([`${chapter.id}/`], { background: true });
-    // The chapter, not the scene: the rest of it is asked for once.
+    // The chapter, not the scene: the rest of it is asked for once, and again when the page is seen.
+    return whenSeen(() => prefetchNarration([`${chapter.id}/`], { background: true }));
   }, [enabled, wholeChapter, chapter, chapterId]);
+}
+
+/**
+ * Runs `ask` now and every time the page becomes visible again, since a hidden page has its
+ * queued guesses dropped. Returns what undoes the listener.
+ */
+function whenSeen(ask: () => void): () => void {
+  ask();
+  if (typeof document === "undefined") return () => undefined;
+  const seen = (): void => {
+    if (document.visibilityState === "visible") ask();
+  };
+  document.addEventListener("visibilitychange", seen);
+  window.addEventListener("pageshow", seen);
+  return () => {
+    document.removeEventListener("visibilitychange", seen);
+    window.removeEventListener("pageshow", seen);
+  };
 }

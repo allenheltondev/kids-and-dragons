@@ -56,6 +56,11 @@ export type Speaker = ((text: string, opts?: SpeakOptions) => void) & {
    * fetch (speech/clip-speaker.ts).
    */
   prefetch?: (prefixes: readonly string[], opts?: PrefetchOptions) => void;
+  /**
+   * Drop every prefetch not yet started, and any still working out what to fetch. A clip already
+   * on its way finishes, and nothing being spoken is touched: this retires guesses, not speech.
+   */
+  stopPrefetch?: () => void;
 };
 
 let current: Speaker | null = null;
@@ -109,6 +114,20 @@ export function prefetchNarration(prefixes: readonly string[], opts?: PrefetchOp
   asked.push([prefixes, opts]);
   if (asked.length > ASKED_KEPT) asked.shift();
   if (current?.prefetch) callPrefetch(current, prefixes, opts);
+}
+
+/**
+ * Retires the guessing ahead: what is queued is dropped, and what was asked for before a speaker
+ * existed is forgotten. For a world that leaves the screen, a page that is hidden, a chapter that
+ * is over; the lines being spoken are not touched.
+ */
+export function stopPrefetchNarration(): void {
+  asked.length = 0;
+  try {
+    current?.stopPrefetch?.();
+  } catch {
+    // As prefetchNarration: a favour, never a failure.
+  }
 }
 
 /** Tests: forget what was asked for. */

@@ -14,6 +14,8 @@ import { useGameStore } from "../store";
 import { useVoicePrefetch } from "./voice-prefetch";
 
 let asked: [readonly string[], PrefetchOptions | undefined][] = [];
+/** Every prefetch call and every retirement, in order. */
+let log: string[] = [];
 
 function World({ enabled, display }: { enabled: boolean; display: boolean }) {
   useVoicePrefetch(enabled, display);
@@ -22,8 +24,13 @@ function World({ enabled, display }: { enabled: boolean; display: boolean }) {
 
 beforeEach(() => {
   asked = [];
+  log = [];
   const speaker = (() => undefined) as unknown as Speaker;
-  speaker.prefetch = (prefixes, opts) => void asked.push([prefixes, opts]);
+  speaker.prefetch = (prefixes, opts) => {
+    asked.push([prefixes, opts]);
+    log.push(opts?.background ? "background" : "near");
+  };
+  speaker.stopPrefetch = () => void log.push("stop");
   setSpeaker(speaker);
   const chapter = makeChapter();
   useGameStore.setState({
@@ -67,5 +74,53 @@ describe("prefetching the narration ahead", () => {
     asked = [];
     render(<World enabled display={false} />);
     expect(asked.filter(([, opts]) => opts?.background)).toEqual([]);
+  });
+
+  it("retires the old chapter's queue before asking for the new chapter's, and for no scene change", () => {
+    const first = useGameStore.getState().chapter!;
+    render(<World enabled display />);
+    log.length = 0;
+    // A scene change within the chapter leaves what is queued alone.
+    const next = Object.keys(first.scenes).find((id) => id !== first.entry)!;
+    act(() => useGameStore.setState({ state: makeState({ phase: "scene", chapterId: first.id, sceneId: next, party: [makeMember()] }) }));
+    expect(log).toEqual(["near"]);
+
+    // A new chapter: everything queued for the last one goes, then the new one is asked for.
+    const second = { ...makeChapter(), id: "chapter-two" };
+    log.length = 0;
+    act(() =>
+      useGameStore.setState({
+        chapter: second,
+        state: makeState({ phase: "scene", chapterId: second.id, sceneId: second.entry, party: [makeMember()] }),
+      }),
+    );
+    expect(log).toEqual(["stop", "near", "background"]);
+    expect(asked.at(-1)).toEqual([["chapter-two/"], { background: true }]);
+  });
+
+  it("retires its queue when the world leaves the screen, and when it unmounts", () => {
+    const { rerender, unmount } = render(<World enabled display />);
+    log.length = 0;
+    rerender(<World enabled={false} display />);
+    expect(log).toEqual(["stop"]);
+    rerender(<World enabled display />);
+    log.length = 0;
+    unmount();
+    expect(log).toEqual(["stop"]);
+  });
+
+  it("asks again when a hidden page is seen again, since hiding dropped what was queued", () => {
+    const chapter = useGameStore.getState().chapter!;
+    let state: "hidden" | "visible" = "visible";
+    Object.defineProperty(document, "visibilityState", { configurable: true, get: () => state });
+    render(<World enabled display />);
+    log.length = 0;
+    state = "hidden";
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(log).toEqual([]);
+    state = "visible";
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(log).toEqual(["near", "background"]);
+    expect(asked.at(-1)).toEqual([[`${chapter.id}/`], { background: true }]);
   });
 });
