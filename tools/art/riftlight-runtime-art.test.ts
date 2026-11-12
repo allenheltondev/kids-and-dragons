@@ -22,6 +22,11 @@ function play(fight:typeof RIFTLIGHT_ART.fights[number],won:boolean) {
  }
  expect(state.encounter).toBeTruthy();
  const finished={...state.encounter!,combatants:state.encounter!.combatants.map(c=>(won?c.side==="enemy":c.side==="party")?{...c,hp:0,down:true}:c)};
+ // A rescue mission's victory receipt requires the captive saved, even after
+ // every enemy is down. This fixture tests persisted art, not enemy-clear rules.
+ if(won && scene.environment?.victory==="rescue") {
+  finished.environment={...finished.environment!,rescue:"freed",rescueProgress:[2]};
+ }
  const result=applyIntent({...state,encounter:finished},{playerId:"p1",intent:{type:"ADVANCE"}},ctx);
  expect(result.error).toBeUndefined();
  return {chapter,ctx,state:result.state};

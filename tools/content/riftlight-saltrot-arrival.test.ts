@@ -211,7 +211,7 @@ it("Attune is taught on a first strand visit and acknowledged on a later one, on
 it("losing to the glassback crabs on the board costs the warm bank and the quick way up, and the story goes on", () => {
   const root = path.resolve(import.meta.dirname, "../..");
   const bestiary = JSON.parse(fs.readFileSync(path.join(root, "content/bestiary.json"), "utf8")) as Bestiary;
-  const map = JSON.parse(fs.readFileSync(path.join(root, "content/maps/reedbank.json"), "utf8")) as EncounterMap;
+  const map = JSON.parse(fs.readFileSync(path.join(root, "content/maps/sausage_lane.json"), "utf8")) as EncounterMap;
   const local = structuredClone(chapter);
   const fight = local.scenes.crab_fight!;
   if (fight.type !== "encounter") throw new Error("Expected the crab fight");

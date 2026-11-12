@@ -70,11 +70,18 @@ describe("exits, hazards and the rescue", () => {
     );
     expect(rescueLine({ ...pip, status: "freed" })).toBe("Pip is free!");
     expect(rescueLine({ ...pip, status: "lost" })).toBe("Pip is lost to the rift.");
+    expect(rescueLine({ name: "the signal basket", at: { x: 4, y: 2 }, art: "fight-sideways-flame", status: "lost" })).toBe("the signal basket is gone.");
   });
 
   it("names a square's mark in words", () => {
     expect(tileWords({ kind: "exit", label: "The tear", active: false })).toBe("The tear, closed");
     expect(tileWords({ kind: "hazard", label: "Rift fire", active: true })).toBe("Rift fire, don't stop here");
+  });
+
+  it("keeps a painted rescue's work and danger readable beside its separate clock", () => {
+    const basket = { name: "the signal basket", at: { x: 4, y: 2 }, art: "fight-sideways-flame", status: "waiting" as const, target: 2, progress: 1, hp: 3, roundsLeft: 4 };
+    expect(rescueLine(basket)).toBe("Free the signal basket (1/2). End turns beside them to help. Keep monsters away. Tugs left: 3.");
+    expect(rescueLine({ ...basket, hp: 1 })).toContain("Tugs left: 1.");
   });
 });
 
@@ -117,6 +124,7 @@ describe("the place's beats, in words", () => {
     });
     expect(environmentBeatLine(expired, words)?.text).toBe("The rift is closing!");
     expect(environmentBeatLine(expired, { ...words, clock: "The rift closes" })?.text).toBe("The rift is closing!");
+    expect(environmentBeatLine({ type: "captiveLost" }, { ...words, captive: () => "the signal basket", clock: "The basket blows loose" })?.text).toBe("the signal basket is gone.");
     expect(environmentBeatLine({ ...expired, onExpire: "surge" }, { ...words, clock: "The rift boils" })?.text).toBe("The rift is surging!");
   });
 
@@ -167,6 +175,7 @@ describe("objectives (#220)", () => {
       "Close the tear: end your turn on it or next to it. 1 of 3. Do it and the fight is won.",
     );
     expect(objectiveLine({ ...hold, progress: 3, done: true })).toBe("Hold the stones: done!");
+    expect(objectiveLine({ ...hold, art: "fight-warm-mud-hollow", endsFight: true })).toBe("Hold the stones (1/3). End rounds with a hero on it and no monsters to win.");
     expect(objectiveIcon("hold")).not.toBe(objectiveIcon("close"));
     expect(tileWords({ kind: "objective", label: "Hold the stones", active: true })).toBe("Hold the stones, stop here");
   });

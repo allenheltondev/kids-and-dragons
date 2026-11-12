@@ -65,6 +65,9 @@ export function objectiveLine(objective: EnvironmentObjectiveView): string {
   if (objective.kind === "hold" && objective.endsFight && objective.target === 1) {
     return `${objective.label} at round end to win.`;
   }
+  if (objective.art && objective.kind === "hold" && objective.endsFight) {
+    return `${objective.label} (${objective.progress}/${objective.target}). End rounds with a hero on it and no monsters to win.`;
+  }
   const how =
     objective.kind === "hold"
       ? "end a round with one of you on it and no monster there"
@@ -138,10 +141,10 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "freed":
       return `${rescue.name} is free!`;
     case "lost":
-      return `${rescue.name} is lost to the rift.`;
+      return `${rescue.name} is ${rescue.art ? "gone" : "lost to the rift"}.`;
     default: {
-      if (rescue.art && rescue.target && rescue.hp === undefined) {
-        return `Free ${rescue.name} (${rescue.progress ?? 0}/${rescue.target}). End turns beside them to help.`;
+      if (rescue.art && rescue.target) {
+        return `Free ${rescue.name} (${rescue.progress ?? 0}/${rescue.target}). End turns beside them to help.${rescue.hp === undefined ? "" : ` Keep monsters away. Tugs left: ${rescue.hp}.`}`;
       }
       const free = rescue.target ? `Free ${rescue.name}: ${rescue.progress ?? 0}/${rescue.target} helping turns. End a turn beside them to help.` : `Free ${rescue.name}: end your turn next to them.`;
       // A captive the monsters can get at (#220) says how many tugs are left.
@@ -240,7 +243,7 @@ export function environmentBeatLine(
     case "rescueProgress":
       return { text: `${words.name(event.byId)} helped ${words.captive(event.captive)}! ${event.progress} of ${event.target} helping turns.`, tone: "good" };
     case "captiveLost":
-      return { text: `${words.captive(event.captive)} is lost to the rift.`, tone: "bad" };
+      return { text: `${words.captive(event.captive)} is ${words.clock && !/\brift\b/i.test(words.clock) ? "gone" : "lost to the rift"}.`, tone: "bad" };
     case "captiveDragged":
       return {
         text: `${words.name(event.byId)} drags at ${words.captive(event.captive)}! ${event.hp === 0 ? "Gone!" : `${event.hp} more and they are gone.`}`,

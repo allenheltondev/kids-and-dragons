@@ -150,7 +150,7 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => ["wagon-lane", "bread-wagon", "tally-books", "cellar-door", "road-bell", "gallery-hollow", "witness-stone", "camp-embers", "soup-cart", "barge-rope", "trail-bell", "burrow-stone", "soup-pot", "bargaining-rock", "crawler-box", "cart-wheel"].includes(o.id)) && !view.captives.some(c => c.art) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
+      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => o.id === "wagon-lane" || (o.art && o.id !== "ferry-rope")) && !view.captives.some(c => c.art) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
       {caption && !view.objectives.some(o => o.id === "wagon-lane") && !progress ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (

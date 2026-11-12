@@ -1971,8 +1971,8 @@
     },
     "crab_fight": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The crabs scuttle sideways at you, claws up. They are not wicked, only cold and cross. Hold the shell-bank until they settle.",
+      "map": "sausage_lane",
+      "narration": "The crabs want your warm shell-bank. Keep a hero on its marked hollow for two round ends. Draw the crabs aside if they crowd it. The cold silt starts slumping in round two. Cross it if you must, but stopping there costs steps next turn. The tide will not wait forever.",
       "enemies": [
         {
           "id": "crab",
@@ -1992,6 +1992,14 @@
             "type": "setFlag",
             "flag": "saltrot_crabs_won",
             "value": true
+          }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "saltrot_bank_held"
+            },
+            "text": "You keep the hollow clear while Puddle braces its edge with shells. The crabs give up trying to squeeze you off it."
           }
         ]
       },
@@ -2015,7 +2023,76 @@
           }
         ]
       },
-      "art": "scenes/riftlight/fight-saltrot-silt"
+      "art": "scenes/riftlight/fight-saltrot-silt",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The crabs take the bank",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "shell-bank",
+            "kind": "hold",
+            "label": "Hold the warm bank",
+            "art": "fight-warm-mud-hollow",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "saltrot_bank_held",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "hazards": [
+          {
+            "id": "cold-silt",
+            "kind": "rift",
+            "label": "Cold silt",
+            "art": "fight-wet-gravel",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 3
+              }
+            ],
+            "fromRound": 2,
+            "slow": {
+              "steps": 2,
+              "turns": 1
+            }
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "crab_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_crabs_kept",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_no_run",
+            "value": true
+          }
+        ]
+      }
     },
     "crab_done": {
       "type": "story",

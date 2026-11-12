@@ -2397,13 +2397,32 @@
     },
     "wisp_fight": {
       "type": "encounter",
-      "map": "glade",
-      "narration": "The wisps zip around the pole and dive at the flame. Drive them off before they tug the fire apart.",
+      "map": "boundary_retreat",
+      "narration": "One wisp snags the signal basket's ropes. The other gathers sparks over marked ground. Step clear, or daze it before the sparks land. End two hero turns beside the basket to free its ropes and steady the flame. Keep the tugger busy: left alone, it pulls the basket loose.",
       "enemies": [
         {
           "id": "wisp",
+          "name": "Basket Tugger",
           "creature": "will_o_wisp",
-          "count": 2
+          "count": 1,
+          "rift": {
+            "post": "captive"
+          }
+        },
+        {
+          "id": "gust",
+          "name": "Gale Wisp",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "quick": 4,
+          "rift": {
+            "post": "none"
+          },
+          "windupAttack": {
+            "label": "Gale sparks",
+            "radius": 1,
+            "damage": 2
+          }
         }
       ],
       "onVictory": {
@@ -2413,6 +2432,14 @@
             "type": "grantItem",
             "itemId": "mosslight_jar",
             "to": "party"
+          }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "signal_basket_freed"
+            },
+            "text": "The ropes come free. You brace the basket upright, and its flame streams out over the edge. The ferry can see it again."
           }
         ]
       },
@@ -2426,7 +2453,42 @@
           }
         ]
       },
-      "art": "scenes/riftlight/signal-gale"
+      "art": "scenes/riftlight/signal-gale",
+      "environment": {
+        "victory": "rescue",
+        "clock": {
+          "rounds": 6,
+          "label": "The basket blows loose",
+          "onExpire": "collapse"
+        },
+        "rescue": {
+          "name": "the signal basket",
+          "art": "fight-sideways-flame",
+          "at": {
+            "x": 4,
+            "y": 2
+          },
+          "turns": 2,
+          "hp": 3,
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "signal_basket_freed",
+              "value": true
+            }
+          ]
+        }
+      },
+      "onTimeout": {
+        "goto": "wisps_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
     },
     "wisps_shooed": {
       "type": "story",
@@ -2462,7 +2524,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wisps swirl until the world is all dizzy sparkles. Sorrel rings the shrine bell with both paws. Wisps hate an honest bell, and they scatter with a rude little pop. The basket still burns, a little singed and very proud.",
+      "narration": "The ropes slip, and the basket tilts. Sorrel rings the shrine bell with both paws. The wisps scatter with a rude pop. She catches the pole and cups the last ember until it flares. The basket burns again, singed and very proud.",
       "choices": [
         {
           "id": "continue",
