@@ -699,22 +699,38 @@
     },
     "bar_crab": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The crab clacks and sidles closer. Its shell is thick, so be patient. It only wants a house.",
+      "map": "surge_wagon",
+      "narration": "The crab's mate squeezes out behind it. Both raise their claws before sweeping the marked ground. Their old burrow is blocked with pebbles. End two hero turns beside its mouth to clear it, and give the crabs a home off the goats' path. A friend can work while you draw the claws away.",
       "enemies": [
         {
           "id": "crab",
-          "creature": "glassback_crab"
+          "creature": "glassback_crab",
+          "windupAttack": {
+            "label": "Gravel-bar claw sweep",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          },
+          "quick": 4
         }
       ],
       "onVictory": {
         "goto": "bar_carry",
-        "narration": "The crab clinks off into a new burrow under the rocks. It leaves a smooth, lucky-looking stone behind. You pocket it.",
+        "narration": "The crabs clink off under the rocks. One leaves a smooth, lucky-looking stone behind. You pocket it.",
         "effects": [
           {
             "type": "grantItem",
             "itemId": "luckstone",
             "to": "party"
+          }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "bar_burrow_open"
+            },
+            "replace": true,
+            "text": "The last pebble rolls free. Both crabs back into their burrow, making room for the goats. One pushes a smooth luckstone out after you, like a tip."
           }
         ]
       },
@@ -733,7 +749,50 @@
           }
         ]
       },
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The crabs keep the gravel bar",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "gravel-burrow",
+            "kind": "close",
+            "label": "Clear the burrow",
+            "art": "fight-burrow-mouth",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bar_burrow_open",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "bar_carry",
+        "narration": "That shell is too tough. You stumble back until Tamsin's whistle sends the crab off to sulk. It cost you some of the afternoon.",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "crab_won_the_bar"
+          }
+        ]
+      }
     },
     "bar_carry": {
       "type": "interaction",

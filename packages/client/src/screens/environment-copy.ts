@@ -138,7 +138,7 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "freed":
       return `${rescue.name} is free!`;
     case "lost":
-      return `${rescue.name} is lost to the rift.`;
+      return `${rescue.name} is ${rescue.art ? "gone" : "lost to the rift"}.`;
     default: {
       if (rescue.art && rescue.target && rescue.hp === undefined) {
         return `Free ${rescue.name} (${rescue.progress ?? 0}/${rescue.target}). End turns beside them to help.`;
@@ -240,7 +240,7 @@ export function environmentBeatLine(
     case "rescueProgress":
       return { text: `${words.name(event.byId)} helped ${words.captive(event.captive)}! ${event.progress} of ${event.target} helping turns.`, tone: "good" };
     case "captiveLost":
-      return { text: `${words.captive(event.captive)} is lost to the rift.`, tone: "bad" };
+      return { text: `${words.captive(event.captive)} is ${words.clock && !/\brift\b/i.test(words.clock) ? "gone" : "lost to the rift"}.`, tone: "bad" };
     case "captiveDragged":
       return {
         text: `${words.name(event.byId)} drags at ${words.captive(event.captive)}! ${event.hp === 0 ? "Gone!" : `${event.hp} more and they are gone.`}`,

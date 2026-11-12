@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
-import { applyIntent, enterScene, resolveEnemy } from "@kad/shared";
+import { applyIntent, encounterOutcome, enterScene, resolveEnemy } from "@kad/shared";
 import type { Bestiary, Chapter, EncounterMap } from "@kad/shared";
 import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
 import { allPaths, chapters, context, items, rules, start } from "./riftlight-test-support.ts";
@@ -9,7 +9,7 @@ import { allPaths, chapters, context, items, rules, start } from "./riftlight-te
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8")) as T;
 const bestiary = read<Bestiary>("content/bestiary.json");
-const glade = read<EncounterMap>("content/maps/glade.json");
+const glade = read<EncounterMap>("content/maps/boundary_retreat.json");
 const chapter = chapters.get("riftlight-sky-islands-arrival")!;
 
 /** The chapter with its wisps resolved from canon, the way the content loader serves it. */
@@ -28,7 +28,7 @@ function resolved(): Chapter {
 it("the wisp fight is the chapter's one fight and every path to the way out runs through it", () => {
   const fight = chapter.scenes.wisp_fight;
   if (fight?.type !== "encounter") throw new Error("Expected an encounter");
-  expect(fight).toMatchObject({ map: "glade", enemies: [{ creature: "will_o_wisp", count: 2 }] });
+  expect(fight).toMatchObject({ map: "boundary_retreat", enemies: [{ creature: "will_o_wisp", count: 1 }, { creature: "will_o_wisp", count: 1 }] });
   expect(Object.values(chapter.scenes).filter((scene) => scene.type === "encounter")).toHaveLength(1);
   // Only the fight's two outcomes lead on to the ferry, and only the intro leads into the fight.
   const into = (target: string) => Object.entries(chapter.scenes).filter(([, scene]) => JSON.stringify(scene).includes(`"goto":"${target}"`)).map(([id]) => id).sort();
@@ -72,7 +72,9 @@ it("winning hands over the mosslight jar and the automatic coin line; losing doe
   if (entered.state.prompt?.kind === "ready") entered = applyIntent(entered.state, { playerId: "p1", intent: { type: "READY", ready: true } }, ctx);
   expect(entered.error).toBeUndefined();
   expect(entered.state.encounter).toBeTruthy();
-  const beaten = { ...entered.state.encounter!, combatants: entered.state.encounter!.combatants.map((m) => (m.side === "enemy" ? { ...m, hp: 0, down: true } : m)) };
+  const cleared = { ...entered.state.encounter!, combatants: entered.state.encounter!.combatants.map((m) => (m.side === "enemy" ? { ...m, hp: 0, down: true } : m)) };
+  expect(encounterOutcome(cleared)).toBe("ongoing");
+  const beaten = { ...cleared, environment: { ...cleared.environment!, rescue: "freed" as const, rescueProgress: [2] } };
   const won = applyIntent({ ...entered.state, encounter: beaten }, { playerId: "p1", intent: { type: "ADVANCE" } }, ctx);
   expect(won.error).toBeUndefined();
   expect(won.state.sceneId).toBe("wisps_shooed");

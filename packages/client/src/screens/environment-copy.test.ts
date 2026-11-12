@@ -70,6 +70,7 @@ describe("exits, hazards and the rescue", () => {
     );
     expect(rescueLine({ ...pip, status: "freed" })).toBe("Pip is free!");
     expect(rescueLine({ ...pip, status: "lost" })).toBe("Pip is lost to the rift.");
+    expect(rescueLine({ name: "the signal basket", at: { x: 4, y: 2 }, art: "fight-sideways-flame", status: "lost" })).toBe("the signal basket is gone.");
   });
 
   it("names a square's mark in words", () => {
@@ -117,6 +118,7 @@ describe("the place's beats, in words", () => {
     });
     expect(environmentBeatLine(expired, words)?.text).toBe("The rift is closing!");
     expect(environmentBeatLine(expired, { ...words, clock: "The rift closes" })?.text).toBe("The rift is closing!");
+    expect(environmentBeatLine({ type: "captiveLost" }, { ...words, captive: () => "the signal basket", clock: "The basket blows loose" })?.text).toBe("the signal basket is gone.");
     expect(environmentBeatLine({ ...expired, onExpire: "surge" }, { ...words, clock: "The rift boils" })?.text).toBe("The rift is surging!");
   });
 

@@ -202,6 +202,9 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_c
 }
 
 const roadFights = [
+  { sceneId: "crab_fight", chapterId: "riftlight-saltrot-arrival", cue: "Hold the warm bank", target: { x: 3, y: 2 }, outcome: "victory", destination: "crab_done", text: "Very good manners" },
+  { sceneId: "bar_crab", chapterId: "riftlight-frostfang-shore", cue: "Clear the burrow", target: { x: 4, y: 2 }, outcome: "victory", destination: "bar_carry", text: "The last pebble rolls free" },
+  { sceneId: "wisp_fight", chapterId: "riftlight-sky-islands-arrival", cue: "Free the signal basket", target: { x: 4, y: 2 }, outcome: "victory", destination: "wisps_shooed", text: "For emergencies" },
   { sceneId: "encounter_drake", chapterId: "gemfall-03a", cue: "Hold the bargaining rock", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_drake_deal", text: "The new gem is warm" },
   { sceneId: "encounter_crabs", chapterId: "gemfall-03b", cue: "Unblock the drain", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_crabs_shooed", text: "The crabs scuttle" },
   { sceneId: "encounter_crabs", chapterId: "gemfall-07h", cue: "Cool edge", target: { x: 6, y: 3 }, outcome: "escaped", destination: "scene_bend_approach", text: "you are not first" },
@@ -237,6 +240,9 @@ const roadFights = [
 for (const fight of roadFights) {
   test(`road fights: ${fight.chapterId} ${fight.sceneId} plays through on phone and TV`, async ({ browser }, info) => {
     test.setTimeout(240_000);
+    const frostBar = fight.chapterId === "riftlight-frostfang-shore";
+    const shellBank = fight.chapterId === "riftlight-saltrot-arrival";
+    const arrivalWindup = fight.chapterId === "riftlight-frostfang-shore" || fight.chapterId === "riftlight-sky-islands-arrival";
     const boxes = fight.sceneId === "encounter_boxes";
     const brook = fight.sceneId === "encounter_logs";
     const coolEdge = fight.chapterId === "gemfall-07h" && fight.sceneId === "encounter_crabs";
@@ -332,6 +338,7 @@ for (const fight of roadFights) {
       let sawUpper = false;
       let sawLedgeProgress = false;
       let sawCoolProgress = false;
+      let sawClawInterrupted = false;
       for (let turn = 0; state.encounter && turn < 24; turn++) {
         const page = active();
         const encounter = state.encounter;
@@ -384,6 +391,7 @@ for (const fight of roadFights) {
           ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh || bridge ? Math.min(steps(p, goal), steps(p, { x: 6, y: 2 })) : steps(p, goal))
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = legalMoves(encounter).filter(p =>
+          (!shellBank || p.x !== 2 || p.y !== 3) &&
           (!drain || turn === 0 || p.x !== 3 || p.y !== 3) &&
           (!spring || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
           (!brook || turn === 0 || p.x !== 2 || p.y !== 3) && (!spill || p.x !== 2 || p.y !== 3) && (!marsh || p.x !== 3 || p.y !== 3));
@@ -406,6 +414,20 @@ for (const fight of roadFights) {
             await action(page, table.code, { type: "MOVE", to: { x: tile.x, y: tile.y } });
           }
         }
+        if (frostBar && !sawClawInterrupted && encounter.combatants.find(c => c.id === actorId)?.actions.includes("fox_fire")) {
+          const before = await roomState<RunState>(page, table.code);
+          await expect.poll(() => page.evaluate(async () => {
+            const modulePath = "/src/store/index.ts";
+            return (await import(modulePath)).useGameStore.getState().state?.seq ?? -1;
+          })).toBeGreaterThanOrEqual(before.seq);
+          await page.getByRole("button", { name: /^Fox Fire/ }).click();
+          await page.locator(".combat__targets button").filter({ hasText: "Glassback Crab 1" }).click();
+          await expect.poll(async () => (await roomState<RunState>(page, table.code)).encounter?.combatants.find(c => c.id === "crab#1")?.windup ?? null).toBeNull();
+          sawClawInterrupted = true;
+          state = await roomState<RunState>(page, table.code);
+          await display.page.screenshot({ path: info.outputPath("claw-interrupted.png") });
+          if (!state.encounter || currentActorId(state.encounter) !== actorId) continue;
+        }
         if (support && encounter.combatants.find(c => c.id === actorId)?.actions.includes("rally")) {
           const injured = encounter.combatants.filter(c => c.side === "party" && !c.escaped && c.hp <= c.maxHp - 2)
             .sort((a, b) => a.hp - b.hp)[0];
@@ -417,6 +439,13 @@ for (const fight of roadFights) {
         }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
+        if ((shellBank || arrivalWindup) && turn === 1 && state.encounter) {
+          await page.reload();
+          await onAir(page);
+          expect((await roomState<RunState>(page, table.code)).encounter?.environment).toEqual(state.encounter.environment);
+          await display.page.emulateMedia({ reducedMotion: "reduce" });
+          await page.emulateMedia({ reducedMotion: "reduce" });
+        }
         if (drain && turn === 0) {
           expect(positionOf(state.encounter!, actorId)!.x).toBeLessThan(3);
           await page.reload();
@@ -437,10 +466,11 @@ for (const fight of roadFights) {
         }
       }
       expect(movedThroughUi).toBe(true);
+      if (frostBar) expect(sawClawInterrupted).toBe(true);
       if (coolEdge) expect(sawCoolProgress).toBe(true);
       if (boxes) expect(sawInk).toBe(true);
       if (brook) expect(sawCurrent).toBe(true);
-      if (wisps || echo || dragon || crab) expect(sawWarning).toBe(true);
+      if (wisps || echo || dragon || crab || arrivalWindup) expect(sawWarning).toBe(true);
       if (spring) expect(sawSpring).toBe(true);
       if (spill) expect(sawSpill).toBe(true);
       if (ford) expect(sawBankOpen).toBe(true);
