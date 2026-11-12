@@ -700,7 +700,7 @@
     "bar_crab": {
       "type": "encounter",
       "map": "surge_wagon",
-      "narration": "The crab's mate squeezes out behind it. Both raise their claws before sweeping the marked ground. Their old burrow is blocked with pebbles. End two hero turns beside its mouth to clear it, and give the crabs a home off the goats' path. A friend can work while you draw the claws away.",
+      "narration": "The crab's mate squeezes out behind it. Both raise their claws before sweeping the marked ground. The flood blocked their old burrow with pebbles. End two hero turns beside its mouth to clear it, and give the crabs a home off the goats' path. A friend can work while you draw the claws away.",
       "enemies": [
         {
           "id": "crab",
@@ -736,7 +736,7 @@
       },
       "onDefeat": {
         "goto": "bar_carry",
-        "narration": "That shell is too tough. You stumble back until Tamsin's whistle sends the crab off to sulk. It cost you some of the afternoon.",
+        "narration": "Those shells are too tough. You stumble back until Tamsin's whistle sends the crabs off to sulk. It cost you some of the afternoon.",
         "effects": [
           {
             "type": "heal",
@@ -780,7 +780,7 @@
       },
       "onTimeout": {
         "goto": "bar_carry",
-        "narration": "That shell is too tough. You stumble back until Tamsin's whistle sends the crab off to sulk. It cost you some of the afternoon.",
+        "narration": "Those shells are too tough. You stumble back until Tamsin's whistle sends the crabs off to sulk. It cost you some of the afternoon.",
         "effects": [
           {
             "type": "heal",

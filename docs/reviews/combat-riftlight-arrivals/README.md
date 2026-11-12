@@ -39,3 +39,9 @@ A later Linux run passed all 12,121 unit tests (13 skipped), but also exposed Sa
 The local UI sweep passed 1,251 tests across 84 files, with two Windows worker-start errors. Both affected files and the caption suite pass on rerun: 95 tests. Final CI status is on the PR.
 
 Remaining ordinary Riftlight fights: Ashspan Bridge mimic, Cairnstep Pass cache and Headwaters Washout drake. Hollow Crown's Bramblewood fight also remains in the broader catalog.
+
+## Narration integration
+
+Merged main's recording-readiness changes (#755), preserving its speaker attributions, voice choices and reviewed sidecars. The three arrival chapters have 148 reviewed script entries with no stale or broken sources; the changed combat instructions and outcomes are narrator-only and need no dialogue sidecar. Frostfang now explicitly connects the pebbles blocking the burrow to the flood described by Tamsin, and its loss/timeout narration acknowledges both crabs. Rewards, recovery routes and battle rules are unchanged by this integration.
+
+The integration preserves all 65 incoming narrative changes across 21 chapters. The affected campaign, encounter, voice-script, voice-attribution and Gemfall compatibility suites pass: 2,011 tests across 46 files. Content validation, continuity, voice verification, cast checks, typecheck and the production build/bundle gate also pass.
