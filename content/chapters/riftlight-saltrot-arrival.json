@@ -1972,7 +1972,7 @@
     "crab_fight": {
       "type": "encounter",
       "map": "sausage_lane",
-      "narration": "The crabs want your warm shell-bank. Keep a hero on its marked hollow for two round ends while the others draw them aside. The cold silt starts slumping in round two. Cross it if you must, but stopping there costs steps next turn. The tide will not wait forever.",
+      "narration": "The crabs want your warm shell-bank. Keep a hero on its marked hollow for two round ends. Draw the crabs aside if they crowd it. The cold silt starts slumping in round two. Cross it if you must, but stopping there costs steps next turn. The tide will not wait forever.",
       "enemies": [
         {
           "id": "crab",
