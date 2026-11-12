@@ -243,7 +243,8 @@
         "bell_code_expert",
         "bryony",
         "nettle",
-        "boundary_runner"
+        "boundary_runner",
+        "dragonling_runner"
       ]
     },
     {
@@ -333,7 +334,6 @@
       "speakers": [
         "archivist",
         "runner",
-        "mosshome_runner",
         "flood_warden",
         "eldest",
         "hollis"
@@ -434,7 +434,6 @@
       "search": "dry older woman witch",
       "speakers": [
         "mother_thrum",
-        "ford_witch",
         "stall_witch"
       ]
     },

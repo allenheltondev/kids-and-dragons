@@ -2419,10 +2419,25 @@
         {
           "chapter": "gemfall-03c",
           "key": "mother_thrum"
+        },
+        {
+          "chapter": "gemfall-07h",
+          "key": "mother_thrum"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "mother_thrum"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "mother_thrum"
         }
       ],
       "chapters": [
-        "gemfall-03c"
+        "gemfall-03c",
+        "gemfall-07h",
+        "gemfall-07l",
+        "gemfall-07r"
       ],
       "aliases": [],
       "accent": "Southern American",
@@ -2441,15 +2456,15 @@
           "address": "gemfall-03c/check_answer/onSuccess/narration"
         },
         {
-          "text": "Not yet. Ask yourself again at the mountain.",
-          "address": "gemfall-03c/check_answer/onFailure/narration"
+          "text": "That's the first true thing anyone's said on this hill. I'll ask again. I always do.",
+          "address": "gemfall-07h/scene_ford_witch_dont_know/narration"
         },
         {
-          "text": "There. It knows. Keep it warm.",
-          "address": "gemfall-03c/scene_tuned_charm_take_it_home/narration"
+          "text": "I always ask twice. Once at the ford, once at the mountain. What do you actually want?",
+          "address": "gemfall-07h/scene_ford_witch/narration"
         }
       ],
-      "lineCount": 7,
+      "lineCount": 16,
       "speaks": true,
       "status": "provisional"
     },
@@ -3082,6 +3097,10 @@
           "key": "runner"
         },
         {
+          "chapter": "gemfall-06",
+          "key": "runner"
+        },
+        {
           "chapter": "gemfall-07h",
           "key": "runner"
         },
@@ -3097,12 +3116,12 @@
       "chapters": [
         "gemfall-04b",
         "gemfall-05b",
+        "gemfall-06",
         "gemfall-07h",
         "gemfall-07l",
         "gemfall-07r"
       ],
       "aliases": [
-        "Dragonling Runner",
         "MossHome Runner",
         "Runner"
       ],
@@ -4826,72 +4845,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "ford_witch": {
-      "name": "Mother Thrum",
-      "kind": "character",
-      "who": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/mother_thrum",
-      "voiceNotes": [
-        {
-          "chapter": "gemfall-07h",
-          "key": "ford_witch"
-        },
-        {
-          "chapter": "gemfall-07l",
-          "key": "ford_witch"
-        },
-        {
-          "chapter": "gemfall-07r",
-          "key": "ford_witch"
-        }
-      ],
-      "chapters": [
-        "gemfall-07h",
-        "gemfall-07l",
-        "gemfall-07r"
-      ],
-      "aliases": [],
-      "accent": "Southern American",
-      "direction": "dry, careful, kind underneath",
-      "gemini": {
-        "voice": "Aoede"
-      },
-      "elevenlabs": {
-        "voiceId": "EXAVITQu4vr4xnSDxMaL",
-        "name": "Sarah - Mature, Reassuring, Confident",
-        "approved": true
-      },
-      "lines": [
-        {
-          "text": "That's the first true thing anyone's said on this hill. I'll ask again. I always do.",
-          "address": "gemfall-07h/scene_ford_witch_dont_know/narration"
-        },
-        {
-          "text": "I always ask twice. Once at the ford, once at the mountain. What do you actually want?",
-          "address": "gemfall-07h/scene_ford_witch/narration"
-        },
-        {
-          "text": "I always ask twice. Answer true, and I'll lend you my question. What do you actually want?",
-          "address": "gemfall-07l/scene_ford_witch/narration"
-        }
-      ],
-      "lineCount": 9,
-      "speaks": true,
-      "status": "provisional",
-      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Aoede is a provisional alternative.",
-      "history": [
-        {
-          "decision": "approved",
-          "voice": "Leda",
-          "model": "gemini-3.8-flash-tts",
-          "at": "2026-10-30T18:32:08.143Z"
-        }
-      ]
-    },
     "caravan_master": {
       "name": "Caravan Master",
       "kind": "character",
@@ -5152,6 +5105,37 @@
         }
       ],
       "lineCount": 1,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "dragonling_runner": {
+      "name": "Dragonling Runner",
+      "kind": "character",
+      "who": "a young dragonling runner carrying bell news between the gathering towns; quick and earnest",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "characters/dragonling",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "dragonling_runner"
+        }
+      ],
+      "chapters": [
+        "gemfall-07h"
+      ],
+      "aliases": [],
+      "accent": "Appalachian American",
+      "gemini": {
+        "voice": "Iapetus"
+      },
+      "elevenlabs": {
+        "voiceId": "BlgEcC0TfWpBak7FmvHW",
+        "name": "kad-dragonling-brisk",
+        "approved": true
+      },
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -7835,41 +7819,6 @@
       "lineCount": 0,
       "speaks": true,
       "status": "provisional"
-    },
-    "mosshome_runner": {
-      "name": "MossHome Runner",
-      "kind": "character",
-      "who": "breathless, cheerful, counts knots out loud, then counts packs",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/mosshome_runner",
-      "chapters": [
-        "gemfall-06"
-      ],
-      "aliases": [],
-      "accent": "New England American",
-      "gemini": {
-        "voice": "Fenrir"
-      },
-      "elevenlabs": {
-        "voiceId": "plP9aw1rizYgjFfuvLQ7",
-        "name": "kad-bigfoot-woman",
-        "approved": true
-      },
-      "lines": [],
-      "lineCount": 0,
-      "speaks": true,
-      "status": "approved",
-      "history": [
-        {
-          "decision": "approved",
-          "voice": "Fenrir",
-          "model": "gemini-3.8-flash-tts",
-          "at": "2026-10-30T18:17:23.200Z"
-        }
-      ]
     },
     "centaur_drover": {
       "name": "Centaur drover",

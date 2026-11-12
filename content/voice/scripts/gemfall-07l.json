@@ -334,7 +334,7 @@
         "text": "Mother Thrum, the witch from the ford, has come up the road with a ringing wool sock."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"I always ask twice,\""
       },
       {
@@ -342,7 +342,7 @@
         "text": "she says."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"Answer true, and I'll lend you my question. What do you actually want?\""
       }
     ]
@@ -356,7 +356,7 @@
         "text": "You say whatever might get you the question."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"No,\""
       },
       {
@@ -364,7 +364,7 @@
         "text": "says Mother Thrum pleasantly."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"That's not a want. That's a wish for a want.\""
       },
       {
@@ -382,7 +382,7 @@
         "text": "Mother Thrum does not look away."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"Honest. I'll give you honest.\""
       },
       {
@@ -390,7 +390,7 @@
         "text": "She lends you the question, but holds it a heartbeat longer than she needs to."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"Ask it of yourselves first.\""
       }
     ]
@@ -404,7 +404,7 @@
         "text": "Mother Thrum nods once."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"That one I'll lend.\""
       },
       {
@@ -412,7 +412,7 @@
         "text": "She presses the question into your hands like a small warm coin."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"Ask it of anything. Even me.\""
       },
       {

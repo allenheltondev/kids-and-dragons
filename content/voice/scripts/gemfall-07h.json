@@ -400,7 +400,7 @@
         "text": "It is Mother Thrum, the witch from the ford, with a ringing wool sock under one arm."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"I always ask twice,\""
       },
       {
@@ -408,7 +408,7 @@
         "text": "she says."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"Once at the ford, once at the mountain. What do you actually want?\""
       }
     ]
@@ -422,7 +422,7 @@
         "text": "Mother Thrum's face goes soft. She ties a songbird ribbon around your wrist."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"That's the first true thing anyone's said on this hill,\""
       },
       {
@@ -430,7 +430,7 @@
         "text": "she says."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"I'll ask again. I always do.\""
       }
     ]
@@ -444,7 +444,7 @@
         "text": "Mother Thrum does not sigh, which is worse. She puts a ringing stone from the ford in your hands."
       },
       {
-        "by": "ford_witch",
+        "by": "mother_thrum",
         "text": "\"Then here is one more. Mind it doesn't ring you to sleep.\""
       }
     ]
