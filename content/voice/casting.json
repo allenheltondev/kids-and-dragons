@@ -75,7 +75,6 @@
       "search": "precise cheerful young woman",
       "speakers": [
         "tally",
-        "dragonling_stone_keeper",
         "egg_faun",
         "brask"
       ]
@@ -244,8 +243,6 @@
         "bell_code_expert",
         "bryony",
         "nettle",
-        "small_dragonling",
-        "dragonling_runner",
         "boundary_runner"
       ]
     },
@@ -285,9 +282,7 @@
         "centaur_drover",
         "road_warden",
         "fennick",
-        "centaur_relay",
-        "tour_guide",
-        "waystation_centaur"
+        "tour_guide"
       ]
     },
     {
@@ -341,8 +336,7 @@
         "mosshome_runner",
         "flood_warden",
         "eldest",
-        "hollis",
-        "door_archivist"
+        "hollis"
       ]
     },
     {
@@ -531,8 +525,7 @@
       "search": "stern fair woman commander",
       "speakers": [
         "voss",
-        "apprentice",
-        "captain"
+        "apprentice"
       ]
     },
     {
@@ -547,7 +540,6 @@
         "dunnick",
         "warden_clerk",
         "engineers",
-        "warden_sergeant",
         "fishmonger",
         "brassbuckle_recordkeeper",
         "brask_pass_keeper"
@@ -570,7 +562,8 @@
         "rumor_ring",
         "wagon_driver",
         "hob",
-        "muddy_prospector"
+        "muddy_prospector",
+        "warden_sergeant"
       ]
     },
     {
@@ -582,7 +575,8 @@
         "troupe_leader",
         "cook",
         "dilly",
-        "drover"
+        "drover",
+        "coralie_fenn"
       ]
     },
     {
@@ -601,8 +595,6 @@
       "prompt": "",
       "search": "grand theatrical older woman",
       "speakers": [
-        "coralie_fenn",
-        "exchange_merchant",
         "lighthouse_keeper",
         "crying_gem_buyer"
       ]
@@ -677,6 +669,7 @@
     "spotted_kid",
     "frost_wyrm",
     "young_river_drake",
-    "cloud_whale"
+    "cloud_whale",
+    "marsh_wisps"
   ]
 }

@@ -9,7 +9,7 @@
         "text": "On a hilltop in the foothills, under a reddish sky, stands a ring of old stones. A dragonling taps each one with her tail."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Ten, eleven. Eleven?\""
       },
       {
@@ -17,7 +17,7 @@
         "text": "She starts again from one. She sees you."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'm Tally. I keep the boundary stones by the river, and these counting stones. If we've met, hello again. If not, hello.\""
       },
       {
@@ -25,7 +25,7 @@
         "text": "She points at an empty dent in the grass."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Twelve stones have stood here since my grandmother's grandmother. Today, eleven. A counter's stones never move. So how can a stone that never moves have moved?\""
       }
     ]
@@ -43,7 +43,7 @@
         "text": "\"Lady Olivia says a moved stone is the best sample in the world!\""
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Stone thief!\""
       },
       {
@@ -79,7 +79,7 @@
         "text": "Tally's tail lashes. She is counting under her breath, very fast."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"One two three four. One. One two three.\""
       },
       {
@@ -97,7 +97,7 @@
         "text": "You count with her, slow and steady, until her tail slows too."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Fine,\""
       },
       {
@@ -105,7 +105,7 @@
         "text": "she says."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Fine. Let him talk.\""
       }
     ]
@@ -119,7 +119,7 @@
         "text": "Tally grabs Pip by the tail and lifts him off the stone."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Caught in the act,\""
       },
       {
@@ -149,7 +149,7 @@
         "text": "Tally narrows her eyes."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Stones don't move by themselves. Somebody pushed it.\""
       },
       {
@@ -265,7 +265,7 @@
         "text": "Tally stamps her foot."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"If somebody pushed the Eldest up here, they dragged it. A stone that big leaves a scrape.\""
       },
       {
@@ -283,7 +283,7 @@
         "text": "You part the grass, slow and careful. A beetle glares at you for opening its front door."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Gently,\"",
         "delivery": "whisper"
       },
@@ -340,7 +340,7 @@
         "text": "You and Pip sniff along the grass, noses down, tails up. It smells of grass, beetle and nothing else at all. No stone has been dragged through here. Pip sneezes on Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Bless you,\""
       },
       {
@@ -358,7 +358,7 @@
         "text": "No scrape. No track. Nothing between the dent and the road but grass and one cross beetle. Tally sits down hard."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"So it didn't slide. Did it fly?\""
       },
       {
@@ -384,7 +384,7 @@
         "text": "Back at the ring, Tally lays her counting cord around the empty dent. It fits the Eldest's shape exactly, edge for edge. The grass inside is pressed flat and pale, and three worms are very confused about the sunshine. Then the hill gurgles. A trickle of meltwater starts toward the dent."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"No!\""
       },
       {
@@ -392,7 +392,7 @@
         "text": "cries Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"It'll wash the edge away!\""
       }
     ]
@@ -406,7 +406,7 @@
         "text": "Tally hands you a flat stone."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Shovel. Go.\""
       },
       {
@@ -424,7 +424,7 @@
         "text": "So the dent is where the Eldest stood. But why is it up on the road now?"
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Look underneath it,\""
       },
       {
@@ -432,7 +432,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Stones keep secrets underneath. Usually woodlice.\""
       },
       {
@@ -468,7 +468,7 @@
         "text": "The road is packed hard under loose gravel."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Dig in the wrong spot,\""
       },
       {
@@ -476,7 +476,7 @@
         "text": "says Tally,"
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"and the hole falls in.\""
       }
     ]
@@ -490,7 +490,7 @@
         "text": "Under the Eldest is a socket, worn deep into the rock of the road. It is the Eldest's exact shape, smooth as an old bowl and packed with ancient dark grit. It is far older than the counting ring."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"It didn't wander off,\"",
         "delivery": "whisper"
       },
@@ -499,7 +499,7 @@
         "text": "Tally whispers."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"It went back. Back to where it stood long, long ago, before there was a ring at all.\"",
         "delivery": "whisper"
       },
@@ -518,7 +518,7 @@
         "text": "By the fold, a little counting pebble twitches. Then it is gone, and back again a step away. Hop. Hop."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"If it moves again, I want to SEE it,\""
       },
       {
@@ -551,7 +551,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"But things got trampled, and I missed things,\""
       },
       {
@@ -559,7 +559,7 @@
         "text": "she says slowly."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'm not sure.\""
       }
     ]
@@ -573,7 +573,7 @@
         "text": "Tally's tail stops lashing."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"All right,\""
       },
       {
@@ -581,7 +581,7 @@
         "text": "she says."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I believe you both.\""
       }
     ]
@@ -591,7 +591,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Maybe,\""
       },
       {
@@ -599,7 +599,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Maybe not. I'll keep this spoon while I decide.\""
       },
       {
@@ -613,7 +613,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"A stone that never moves has moved,\""
       },
       {
@@ -621,7 +621,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"By itself. Back to an older place.\""
       },
       {
@@ -635,7 +635,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Pip,\""
       },
       {
@@ -643,7 +643,7 @@
         "text": "says Tally,"
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'm sorry I called you a thief.\""
       }
     ]
@@ -691,7 +691,7 @@
         "text": "Everyone gets a shoulder on the Eldest. Pip gets his tail on it."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"One, two, THREE,\""
       },
       {
@@ -709,7 +709,7 @@
         "text": "Your bigfoot hugs the Eldest and stands up with it, grunting. Tally counts every step down the hill."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Forty-one, forty-two, put it DOWN.\""
       },
       {
@@ -727,7 +727,7 @@
         "text": "Tally counts the ring."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Ten, eleven, twelve!\""
       },
       {
@@ -803,7 +803,7 @@
         "text": "Tally walks once around the Eldest. Then she sits down beside it and pats it."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"All right,\""
       },
       {
@@ -811,7 +811,7 @@
         "text": "she says, very small."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"You stood here first. I'll count you here.\""
       },
       {
@@ -819,7 +819,7 @@
         "text": "She ties a new knot in her counting cord."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Twelve. Twelve, in a new shape.\""
       },
       {
@@ -837,7 +837,7 @@
         "text": "Seren holds the cord. Tally counts paces. Pip counts them differently."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"There are no halves in paces, Pip,\""
       },
       {
@@ -855,7 +855,7 @@
         "text": "Tally sits down in the road."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Well. Now it's stuck in a new wrong place.\""
       },
       {
@@ -1083,7 +1083,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Minus a few,\""
       },
       {
@@ -1323,7 +1323,7 @@
         "text": "Pip lays the page over the Eldest's carving and rubs it with charcoal: a mountain, throwing sparks."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"An eruption,\""
       },
       {
@@ -1331,7 +1331,7 @@
         "text": "says Tally."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Our oldest counts can't agree when it was. Nobody's count matches.\""
       },
       {
@@ -1349,7 +1349,7 @@
         "text": "Tally walks you to the edge of the hill, counting your steps."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"A counter's stones must never move,\""
       },
       {
@@ -1357,7 +1357,7 @@
         "text": "she says."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Mine did. So now I'll count the moving too.\""
       },
       {
@@ -1365,7 +1365,7 @@
         "text": "She looks north."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"My cousin up the valley says the river has gone the wrong way as well. Strange days for counting.\""
       }
     ]
@@ -1379,7 +1379,7 @@
         "text": "Behind her, the Eldest creaks in its dent, leaning toward the road."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"I'll push it back every morning,\""
       },
       {
@@ -1387,7 +1387,7 @@
         "text": "she sighs."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Every single morning.\""
       }
     ]
@@ -1401,7 +1401,7 @@
         "text": "Behind her, the Eldest lies stuck sideways across the road."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"My cousins and I will roll it somewhere sensible,\""
       },
       {
@@ -1409,7 +1409,7 @@
         "text": "she sighs."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Tomorrow. With a lot of cousins.\""
       }
     ]
@@ -1423,7 +1423,7 @@
         "text": "Behind her, the Eldest stands in its old socket, with the new bend curving around it."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Twelve, in a new shape,\""
       },
       {
@@ -1441,7 +1441,7 @@
         "text": "Then she hands Pip his spoon at last."
       },
       {
-        "by": "dragonling_stone_keeper",
+        "by": "tally",
         "text": "\"Don't pry anything else.\""
       },
       {

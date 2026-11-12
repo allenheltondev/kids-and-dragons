@@ -573,7 +573,7 @@
         "text": "At a long table of watch-logs and one humming stone waits Captain Orla Voss, who commands the Skywardens."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Show us what the road taught you,\""
       },
       {
@@ -581,7 +581,7 @@
         "text": "she says."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Then we'll show you what the logs say.\""
       }
     ]
@@ -603,7 +603,7 @@
         "text": "you say. Captain Voss pushes the oldest log across the table."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"So did we,\""
       },
       {
@@ -611,7 +611,7 @@
         "text": "she says."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Four hundred years ago.\""
       }
     ]
@@ -665,7 +665,7 @@
         "text": "You describe the wounded glades, the MossHome path archive and the knot-cord. Pellam sets them beside the old watch-log."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"The forest keeps records too,\""
       },
       {
@@ -679,7 +679,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Custody,\""
       },
       {
@@ -697,7 +697,7 @@
         "text": "Voss circles three towns on her map."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Acceptable losses,\""
       },
       {
@@ -719,7 +719,7 @@
         "text": "you say. Voss looks at the map a long time."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"No. It's three numbers. Houses, people, bells.\""
       },
       {
@@ -727,7 +727,7 @@
         "text": "Then, very quietly:"
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"I know.\""
       },
       {
@@ -893,7 +893,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Who should stand with you now?\""
       },
       {
@@ -901,7 +901,7 @@
         "text": "asks Voss."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"The wardens, the grandmothers' towns, or nobody else yet?\""
       },
       {
@@ -915,7 +915,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Nobody else,\""
       },
       {
@@ -923,7 +923,7 @@
         "text": "says Captain Voss."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Then you had better be right, and you had better be quick.\""
       },
       {
@@ -937,7 +937,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Grandmothers,\""
       },
       {
@@ -945,7 +945,7 @@
         "text": "sighs Captain Voss, like somebody who has argued with grandmothers before."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Very well. They are at least thorough.\""
       },
       {
@@ -963,7 +963,7 @@
         "text": "Captain Voss nods once, which is as much as she ever nods."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Then you'll want the plan properly.\""
       },
       {
@@ -977,7 +977,7 @@
     "reviewed": true,
     "lines": [
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"And you? What is it all for?\""
       },
       {
@@ -999,7 +999,7 @@
         "text": "Voss and Pellam look at each other."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Our plan, in fewer words,\""
       },
       {
@@ -1043,7 +1043,7 @@
         "text": "Pellam reads."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"That is not the same as holding a leash,\""
       },
       {
@@ -1065,7 +1065,7 @@
         "text": "Pellam reads."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"That is not the same as holding a leash,\""
       },
       {
@@ -1087,7 +1087,7 @@
         "text": "Pellam reads."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"You have been asking about the leash all the way up,\""
       },
       {
@@ -1109,7 +1109,7 @@
         "text": "Voss considers it."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Then I will write you down as weather.\""
       },
       {
@@ -1131,7 +1131,7 @@
         "text": "Pellam says, and writes COLLECT in his neatest hand, with a small question mark. Captain Voss watches the ink dry."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"You will have to live up to that word,\""
       },
       {
@@ -1207,7 +1207,7 @@
         "text": "The table answers with one clear note. Voss unfolds her arms."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"Then we need the stones coming north tomorrow. Rest first.\""
       }
     ]
@@ -1257,7 +1257,7 @@
         "text": "Pellam reads."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"And now you say put it back. People do turn around,\""
       },
       {
@@ -1279,7 +1279,7 @@
         "text": "Pellam reads."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"And now you say put it back. People do turn around,\""
       },
       {
@@ -1297,7 +1297,7 @@
         "text": "Pellam writes RETURN, with a question mark."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"A starting road, then,\""
       },
       {
@@ -1305,7 +1305,7 @@
         "text": "says Voss."
       },
       {
-        "by": "captain",
+        "by": "voss",
         "text": "\"You can carry a question as well as a plan.\""
       },
       {

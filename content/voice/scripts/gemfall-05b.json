@@ -27,7 +27,7 @@
         "text": "You wipe your feet on the welcome moss by the archive door. Then you wipe them again. The door flies open."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Twice!\""
       },
       {
@@ -35,7 +35,7 @@
         "text": "breathes an archivist."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Nobody from outside wipes twice.\""
       },
       {
@@ -53,7 +53,7 @@
         "text": "You mention the glade. The archivist at the door runs her thumb along a cord to a knot."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"That glade's record changed this morning. It got better.\""
       },
       {
@@ -61,7 +61,7 @@
         "text": "She beams."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"In. Feet.\""
       }
     ]
@@ -75,7 +75,7 @@
         "text": "Your bigfoot knocks on the archive door three slow times, the MossHome way. The door opens by itself. An archivist drops an armful of cords."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Nobody's done that in years. Come in. Wipe your feet.\""
       }
     ]
@@ -89,7 +89,7 @@
         "text": "The archivist folds her arms on the doorstep."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Don't tell me your road,\""
       },
       {
@@ -97,7 +97,7 @@
         "text": "she says."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Show me. Every path that moved under your boots.\""
       }
     ]
@@ -111,7 +111,7 @@
         "text": "You stomp the last bend of your road into the moss. The archivist's eyebrows go up, and up again."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Come in. Wipe your feet. Twice.\""
       }
     ]
@@ -125,7 +125,7 @@
         "text": "You stomp the wrong way and sit down hard in the moss."
       },
       {
-        "by": "door_archivist",
+        "by": "archivist",
         "text": "\"Wait on the bench,\""
       },
       {

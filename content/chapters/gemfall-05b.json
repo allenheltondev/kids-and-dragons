@@ -2468,7 +2468,7 @@
       "explaining what the Hollow Gate is"
     ],
     "npcVoices": {
-      "door_archivist": "brisk bigfoot archivist; fussy about feet, warm once she decides you matter",
+      "archivist": "brisk bigfoot archivist; fussy about feet, warm once she decides you matter",
       "oldest_archivist": "very old, very slow, a bird lives in his beard; talks to the knot-cords as much as to you",
       "eldest": "MossHome elder; mild, sips tea between every sentence, asks to be told second and means it",
       "runner": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking",

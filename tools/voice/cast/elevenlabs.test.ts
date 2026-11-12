@@ -193,8 +193,8 @@ describe("voice:cast --check, on ElevenLabs", () => {
   });
 
   it("counts one character under two ids as one speaker, only in the chapter that says so", () => {
-    const [one] = ONE_CHARACTER;
-    const [first, second] = one!.ids;
+    const one = { chapter: "c", ids: ["wick_by_name", "wick_by_role"], reason: "a fixture: one person the narration names two ways" };
+    const [first, second] = one.ids;
     const sheet = talking();
     const pair = (chapter: string): CastSheet => ({
       ...sheet,
@@ -204,13 +204,13 @@ describe("voice:cast --check, on ElevenLabs", () => {
         [second!]: { ...sheet.speakers.bun!, chapters: [chapter] },
       },
     });
-    expect(voiceClashes(pair(one!.chapter), "elevenlabs")).toHaveLength(1);
-    expect(checkedClashes(pair(one!.chapter), "elevenlabs")).toEqual([]);
-    expect(checkedClashes(pair("elsewhere"), "elevenlabs")).toHaveLength(1);
+    expect(voiceClashes(pair(one.chapter), "elevenlabs")).toHaveLength(1);
+    expect(checkedClashes(pair(one.chapter), "elevenlabs", [one])).toEqual([]);
+    expect(checkedClashes(pair("elsewhere"), "elevenlabs", [one])).toHaveLength(1);
     // A third talking speaker on the sound is still a clash.
-    const crowded = pair(one!.chapter);
-    crowded.speakers.wick = { ...sheet.speakers.wick!, chapters: [one!.chapter] };
-    expect(checkedClashes(crowded, "elevenlabs")).toHaveLength(1);
+    const crowded = pair(one.chapter);
+    crowded.speakers.wick = { ...sheet.speakers.wick!, chapters: [one.chapter] };
+    expect(checkedClashes(crowded, "elevenlabs", [one])).toHaveLength(1);
   });
 
   it("allows only ids the sheet has, in the chapter named, each with a reason", () => {
