@@ -1177,7 +1177,7 @@
       "speaks": true,
       "status": "provisional",
       "accent": "Texan",
-      "direction": "Youthful, slightly faster than normal",
+      "direction": "grumpy and in a hurry, softens when dinner comes up",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
         "name": "Bella - Professional, Bright, Warm",
@@ -2278,8 +2278,8 @@
         "voice": "Pulcherrima"
       },
       "elevenlabs": {
-        "voiceId": "XrExE9yKIg1WjnnlVkGX",
-        "name": "Matilda - Knowledgable, Professional",
+        "voiceId": "WtA85syCrJwasGeHGH2p",
+        "name": "kad-skerry",
         "approved": true
       },
       "lines": [
@@ -2300,7 +2300,8 @@
       "guessedLines": 3,
       "speaks": true,
       "status": "provisional",
-      "accent": "Pacific Northwest American"
+      "accent": "Pacific Northwest American",
+      "direction": "brisk and bossy but kind, calling out from a ledge"
     },
     "wend": {
       "name": "Wend",
@@ -3101,7 +3102,8 @@
       "lineCount": 0,
       "speaks": true,
       "status": "provisional",
-      "accent": "Appalachian American"
+      "accent": "Appalachian American",
+      "direction": "out of breath, says everything twice"
     },
     "hedge_prospectors": {
       "name": "Hedge Prospectors",
@@ -3631,7 +3633,8 @@
         "voiceId": "vGQNBgLaiM3EdZtxIiuY",
         "name": "kad-tally",
         "approved": true
-      }
+      },
+      "direction": "blunt and practical, does sums out loud, never unkind"
     },
     "brask_pass_keeper": {
       "name": "Brask",
@@ -3656,8 +3659,8 @@
         "voice": "Rasalgethi"
       },
       "elevenlabs": {
-        "voiceId": "OYWwCdDHouzDwiZJWOOu",
-        "name": "kad-brask",
+        "voiceId": "AOLUVLMs1jzrUpQeAea8",
+        "name": "kad-folk-man-dry",
         "approved": true
       },
       "lines": [
@@ -3686,7 +3689,8 @@
           "at": "2026-10-30T18:47:54.032Z"
         }
       ],
-      "accent": "Pacific Northwest American"
+      "accent": "Pacific Northwest American",
+      "direction": "slow and precise, dry, secretly soft"
     },
     "carter": {
       "name": "Tired carter",
