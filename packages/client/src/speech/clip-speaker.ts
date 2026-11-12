@@ -24,7 +24,8 @@
  * Manifests are fetched the first time a chapter's line is spoken, one file per chapter, never
  * at first paint. Clips are fetched when their line is queued, so a line queued behind the
  * "Last time…" is ready by the time its turn comes. The URL is the hash, so the browser's HTTP
- * cache keeps a clip too (the service worker's own `voice` cache is #547's).
+ * cache keeps a clip too, and so does the service worker's `kad-voice-v1` cache (sw.ts `voiceClip`),
+ * which also keeps a whole chapter's clips for no signal (voice-pack.ts).
  *
  * **Prefetch** (`speaker.prefetch`): over a slow connection, a television might not have a
  * line's clips within RESOLVE_MS, and the line would be read by the device voice instead. So the

@@ -1,0 +1,6 @@
+/* The grown-up's "Keep this chapter's voices" under Help (#547). Same scale as the Diagnostics rows. */
+.kad-voicepack { margin-block-start: var(--kad-space-2); font-size: 0.85em; }
+.kad-voicepack__keep { font: inherit; padding: 0.3em 0.9em; }
+.kad-voicepack__bar { inline-size: 100%; }
+.kad-voicepack__note { margin: 0.4em 0 0; color: var(--kad-ink-dim); }
+.kad-voicepack__note:empty { display: none; }

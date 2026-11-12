@@ -19,6 +19,9 @@ import "./HelpControl.css";
 /** A grown-up's list of how the installed app is doing (#459). Fetched only when opened. */
 const DiagnosticsPanel = lazyChunk(() => import("./DiagnosticsPanel"), (module) => module.default);
 
+/** Saves the chapter's recorded narration for no signal (#547). Draws nothing when there is none to save. */
+const VoicePackPanel = lazyChunk(() => import("./VoicePackPanel"), (module) => module.default);
+
 /**
  * The words a help line is said with: authored text, so a recording of it can be played
  * (speech/clip-speaker.ts), filed where the voice inventory put it (tools/voice/inventory.ts,
@@ -169,6 +172,11 @@ function HelpSheet(): React.JSX.Element {
         )}
         {thing === null && !reference ? (
           <div className="kad-help__grownups">
+            <ChunkBoundary quiet>
+              <Suspense fallback={null}>
+                <VoicePackPanel />
+              </Suspense>
+            </ChunkBoundary>
             <button
               type="button"
               className="kad-help__diagnostics-toggle kad-focusable"

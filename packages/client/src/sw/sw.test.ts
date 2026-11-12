@@ -14,8 +14,12 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { buildId, buildServiceWorker, campaignFiles, coatMaskPaintings, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
 import {
+  SW_CACHES,
   SW_FILES_BUDGET_BYTES,
   SW_FILES_BUDGET_FLOOR_BYTES,
+  SW_VOICE_BUDGET_BYTES,
+  SW_VOICE_BUDGET_FLOOR_BYTES,
+  swVoiceBudgetFor,
   SW_PUSH_BODY,
   SW_PUSH_TAG,
   SW_PUSH_TITLE,
@@ -63,6 +67,27 @@ describe("what the worker does with a request", () => {
     expect(at("/assets/character-rigs/starweaver/sworn/unicorn/assembled.png")).toBe("asset");
     expect(at("/assets/audio/cues/dice.webm")).toBe("asset");
     expect(at("/brand/dragon-mark.png")).toBe("image");
+  });
+
+  it("routes a recorded narration clip, and only a clip, to the voice cache (#547)", () => {
+    const key = "ab".repeat(32);
+    expect(at(`/voice/ab/${key}.webm`)).toBe("voice");
+    // The manifest that says which clips a chapter plays is content, kept by fingerprint.
+    expect(at("/content/voice/manifest/bramblewood-01.json")).toBe("content");
+    expect(at("/voice/ab/readme.txt")).toBe("passthrough");
+    expect(at(`/voice/ab/${key}.webm`, { hasRange: true })).toBe("passthrough");
+    expect(at(`/voice/ab/${key}.webm`, { method: "HEAD" })).toBe("passthrough");
+  });
+
+  it("gives narration its own budget: a share of the quota, between a floor and the cap (#547)", () => {
+    expect(swVoiceBudgetFor(undefined)).toBe(SW_VOICE_BUDGET_BYTES);
+    expect(swVoiceBudgetFor(Number.NaN)).toBe(SW_VOICE_BUDGET_BYTES);
+    expect(swVoiceBudgetFor(100 * 1024 ** 3)).toBe(SW_VOICE_BUDGET_BYTES);
+    expect(swVoiceBudgetFor(500 * 1024 * 1024)).toBe(Math.round(500 * 1024 * 1024 * 0.15));
+    expect(swVoiceBudgetFor(10 * 1024 * 1024)).toBe(SW_VOICE_BUDGET_FLOOR_BYTES);
+    // Room for a few chapters (about 7 MB each) on any phone, and the art keeps its own cache.
+    expect(SW_VOICE_BUDGET_FLOOR_BYTES).toBeGreaterThanOrEqual(3 * 7 * 1024 * 1024);
+    expect(SW_CACHES.voice).not.toBe(SW_CACHES.files);
   });
 
   it("leaves alone what it should not keep: other origins, non-GETs, partial audio, everything else", () => {
