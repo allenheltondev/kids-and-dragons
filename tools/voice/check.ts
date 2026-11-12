@@ -22,7 +22,7 @@
 
 import { isClipKey } from "../../packages/shared/src/voice-clips";
 import type { Desired } from "./desired";
-import { mergeManifest, type Lock, type Manifest } from "./manifest";
+import { mergeManifest, SHORT_KEY, SHORT_KEY_LENGTH, type Lock, type Manifest } from "./manifest";
 import type { Finding } from "./sources.ts";
 
 export { checkSources, type Finding } from "./sources.ts";
@@ -118,9 +118,11 @@ export function checkManifests(input: ManifestInput): VoiceVerdict {
     }
   }
 
+  const shortKeys = new Set([...clips.keys()].map((key) => key.slice(0, SHORT_KEY_LENGTH)));
   for (const key of Object.keys(input.lock.approved)) {
-    if (!isClipKey(key)) failures.push({ at: "content/voice/voice.lock.json", message: `approves "${key}", which is not a clip key` });
-    else if (!clips.has(key)) notes.push({ at: "content/voice/voice.lock.json", message: `approves ${key.slice(0, 12)}, which no manifest plays` });
+    const whole = isClipKey(key);
+    if (!whole && !SHORT_KEY.test(key)) failures.push({ at: "content/voice/voice.lock.json", message: `approves "${key}", which is not a clip key` });
+    else if (!(whole ? clips.has(key) : shortKeys.has(key))) notes.push({ at: "content/voice/voice.lock.json", message: `approves ${key.slice(0, 12)}, which no manifest plays` });
   }
 
   return { failures, notes, clips };

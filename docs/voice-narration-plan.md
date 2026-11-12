@@ -321,7 +321,9 @@ ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stag
   one is approved. `voice:status` shows "approved", "rendered, awaiting review" and "never
   rendered" separately.
   The first lock (2026-11-12) pins every take that shipped for the first playtest, without a
-  listening review, so a re-render can never replace one silently. A take that does not hold up is
+  listening review (filed by the first 16 hex digits of each clip key, which keeps thousands of
+  approvals to about 320 KB; `voice:status` and `voice:verify` accept either form), so a re-render
+  can never replace one silently. A take that does not hold up is
   changed by editing its line, which makes a new clip key, in a new change.
 
 ### Rendering steps per clip

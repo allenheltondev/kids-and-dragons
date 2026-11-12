@@ -87,6 +87,21 @@ describe("voice:verify fails on broken, never on missing (#545)", () => {
   });
 });
 
+describe("a lock that approves by a clip's short key", () => {
+  const short = (n: number): string => key(n).slice(0, 16);
+
+  it("accepts the first 16 hex digits of a clip the manifests play, and notes one nothing plays", () => {
+    const verdict = check(played(), wants(), { [short(1)]: {}, ffffffffffffffff: {} });
+    expect(verdict.failures).toEqual([]);
+    expect(verdict.notes).toEqual([expect.objectContaining({ message: expect.stringContaining("no manifest plays") })]);
+  });
+
+  it("fails an entry that is neither a whole key nor a short one", () => {
+    const verdict = check(played(), wants(), { "abc123": {}, [`${short(1)}0`]: {} });
+    expect(verdict.failures).toHaveLength(2);
+  });
+});
+
 describe("a speaker on the sheet with no ElevenLabs voice yet", () => {
   // The narrator exists but nobody has picked her a voice: every unscripted line is the device's, and that is the
   // state the game starts in, so the gate must not be red on it.

@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import { clipKey, spokenForm } from "./clip-key";
 import { desiredClips, ELEVENLABS, voiceOf, type CastSheet } from "./desired";
 import { classify } from "./lines";
-import { clipStatus, countByState, toRender, type Lock, type Manifest } from "./manifest";
+import { clipStatus, countByState, isApproved, toRender, type Lock, type Manifest } from "./manifest";
 import { sourceHash, type ScriptFile } from "./script";
 import type { VoiceLine } from "./inventory";
 
@@ -257,5 +257,16 @@ describe("the manifest after a run", () => {
     const reversed = { ...desired, lines: [...desired.lines].reverse() };
     const merged = mergeManifest({}, reversed, lengths([...keysOfLine(A.address), ...keysOfLine(B.address)]));
     expect(Object.keys(merged)).toEqual([...Object.keys(merged)].sort());
+  });
+});
+
+describe("approval by a short key", () => {
+  const whole = "ab12cd34ef56ab78" + "0".repeat(48);
+  it("approves a clip under its whole key or its first 16 hex digits, and no other", () => {
+    expect(isApproved({ approved: { [whole]: {} } }, whole)).toBe(true);
+    expect(isApproved({ approved: { [whole.slice(0, 16)]: {} } }, whole)).toBe(true);
+    expect(isApproved({ approved: { [whole.slice(0, 15)]: {} } }, whole)).toBe(false);
+    expect(isApproved({ approved: { "ab12cd34ef56ab79": {} } }, whole)).toBe(false);
+    expect(isApproved({ approved: {} }, whole)).toBe(false);
   });
 });
