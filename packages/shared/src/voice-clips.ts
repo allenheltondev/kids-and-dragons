@@ -57,6 +57,39 @@ export function manifestName(chapter: string, campaign: string): string {
   return chapter.startsWith("@") ? `_${campaign}` : chapter;
 }
 
+/** The campaign-level kinds of line, filed `<campaign>/@<kind>/…` (tools/voice/inventory.ts). */
+const CAMPAIGN_KINDS: ReadonlySet<string> = new Set(["@prologue", "@epilogue", "@lastTime"]);
+
+/**
+ * Which manifest an address is filed in, the inverse of `manifestName` over the addresses the
+ * inventory writes: a chapter's lines are `<chapter>/…` (its goal and plate included), a
+ * campaign's prologue, epilogue and "Last time…" are `<campaign>/@…/…` and live in
+ * `_<campaign>`, and the help sheet's are `help/…`, in `_help`. Null for an address that is none
+ * of these, which the device voice reads.
+ */
+export function manifestOfAddress(address: string | undefined): string | null {
+  const [first = "", second = ""] = address?.split("/") ?? [];
+  if (first === "" || first.startsWith("@")) return null;
+  if (first === "help") return manifestName("@help", "help");
+  return CAMPAIGN_KINDS.has(second) ? manifestName("@campaign", first) : first;
+}
+
+/**
+ * Where the help sheet's words are filed (tools/voice/inventory.ts walks help.json: `help/` then
+ * the path to each `text`). A screen's own words, or a kind of thing's. A thing with words of its
+ * own (an item's description) is run-time text, which has no recording: null, and the device
+ * voice reads it.
+ */
+export function helpAddress(surface: string, thing: { kind: string; text?: string | undefined } | null): string | null {
+  if (thing === null) return `help/surfaces/${surface}`;
+  return thing.text === undefined ? `help/things/${thing.kind}` : null;
+}
+
+/** A "How to play" card's words, by its place in the list. */
+export function howToPlayAddress(index: number): string {
+  return `help/howToPlay/${String(index)}`;
+}
+
 /** Where a manifest is served from: with `content/`, so it deploys with the chapter it describes. */
 export function manifestPath(name: string): string {
   return `/content/voice/manifest/${name}.json`;

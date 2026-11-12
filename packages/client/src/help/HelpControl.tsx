@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState, Suspense } from "react";
 import { createPortal } from "react-dom";
+import { helpAddress, howToPlayAddress } from "@kad/shared";
+import type { NarrationPart, SpeakOptions } from "@kad/shared";
 import { Button } from "../ui/Button";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import { Icon } from "../screens/icons";
@@ -16,6 +18,17 @@ import "./HelpControl.css";
 
 /** A grown-up's list of how the installed app is doing (#459). Fetched only when opened. */
 const DiagnosticsPanel = lazyChunk(() => import("./DiagnosticsPanel"), (module) => module.default);
+
+/**
+ * The words a help line is said with: authored text, so a recording of it can be played
+ * (speech/clip-speaker.ts), filed where the voice inventory put it (tools/voice/inventory.ts,
+ * `help/…`). A thing's own words (an item's description) are run-time text with no recording and
+ * come with no address, and are read by the device voice.
+ */
+export function helpSpeech(address: string | null, text: string): SpeakOptions {
+  const parts: NarrationPart[] = address === null ? [] : [{ address, line: text }];
+  return parts.length > 0 ? { source: "ui", parts } : { source: "ui" };
+}
 
 export function HelpControl(): React.JSX.Element | null {
   const route = useRoute();
@@ -62,12 +75,15 @@ function HelpSheet(): React.JSX.Element {
   const icon = thing?.icon ?? entry?.icon ?? "scroll";
   // A thing's own words say what it does; its kind's words are the fallback.
   const text = thing?.text ?? entry?.text ?? "";
+  const address = helpAddress(surface, thing);
   const title = thing === null ? "Help" : thing.name;
 
   // Reading aloud is the point of the button for a child who cannot read yet: say it as soon as it shows.
   useEffect(() => {
     if (reference) stopSpeaking();
-    else if (text !== "") hear(text, { source: "ui" });
+    else if (text !== "") hear(text, helpSpeech(address, text));
+    // The address is the text's own: it changes only when the text does.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, reference]);
 
   // Swapping the sheet to the How to play cards (and back) unmounts the button that was focused, so the new
@@ -129,9 +145,9 @@ function HelpSheet(): React.JSX.Element {
             <h2 id={titleId} ref={heading} tabIndex={-1} className="kad-help__title">How to play</h2>
             <p className="kad-help__hint">Tap a card to hear it.</p>
             <ul className="kad-help__tiles">
-              {(help?.howToPlay ?? []).map((tile) => (
+              {(help?.howToPlay ?? []).map((tile, at) => (
                 <li key={tile.id}>
-                  <button type="button" className="kad-help__tile kad-focusable" onClick={() => { hear(tile.text, { source: "ui" }); }}>
+                  <button type="button" className="kad-help__tile kad-focusable" onClick={() => { hear(tile.text, helpSpeech(howToPlayAddress(at), tile.text)); }}>
                     <span className="kad-help__tile-picture" aria-hidden="true"><Icon name={tile.icon} size="1.8em" /></span>
                     <span className="kad-help__tile-words">
                       <span className="kad-help__tile-title">{tile.title}</span>
@@ -178,7 +194,7 @@ function HelpSheet(): React.JSX.Element {
           ) : (
             <>
               <Button variant="secondary" size="lg" icon={<Icon name="sound" />} disabled={text === ""}
-                onClick={() => hear(text, { source: "ui" })}>
+                onClick={() => hear(text, helpSpeech(address, text))}>
                 Hear it again
               </Button>
               {thing === null ? (

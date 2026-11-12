@@ -226,7 +226,8 @@ describe("the epilogue", () => {
     expect(reel.dataset.kind).toBe("epilogue");
     expect(reel.textContent).toContain("The Heroes");
     expect(reel.textContent).toContain("After heroes, plate 1.");
-    expect(spoken.at(-1)).toBe("The Heroes. After heroes, plate 1.");
+    // The title is said on its own (the plate is the recorded line), then the plate.
+    expect(spoken.slice(-2)).toEqual(["The Heroes.", "After heroes, plate 1."]);
 
     // Escape skips the rest: remembered, gone, and back on the ending's page until a phone turns it.
     fireEvent.keyDown(window, { key: "Escape" });
@@ -420,7 +421,7 @@ describe("skipping the epilogue", () => {
       vi.advanceTimersByTime(endingHoldMs(ENDING.split(" ").length));
     });
     await flush();
-    expect(speaker.queue).toEqual(["The Heroes. After heroes, plate 1."]);
+    expect(speaker.queue).toEqual(["The Heroes.", "After heroes, plate 1."]);
 
     fireEvent.keyDown(window, { key: "Escape" });
     await flush();

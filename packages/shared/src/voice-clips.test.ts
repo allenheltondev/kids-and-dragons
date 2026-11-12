@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clipObjectKey, clipPath, isClipKey, manifestName, manifestPath, playlistFor, variantKey, type VoiceManifest } from "./voice-clips.js";
+import { clipObjectKey, helpAddress, howToPlayAddress, manifestOfAddress, clipPath, isClipKey, manifestName, manifestPath, playlistFor, variantKey, type VoiceManifest } from "./voice-clips.js";
 
 const KEY = "ab".repeat(32);
 const OTHER = "cd".repeat(32);
@@ -56,5 +56,26 @@ describe("the playlist for a scene", () => {
     expect(playlistFor([recorded, { address: "ch/gone/narration", line: "B." }], manifest)).toBeNull();
     expect(playlistFor([], manifest)).toBeNull();
     expect(playlistFor([recorded], {})).toBeNull();
+  });
+});
+
+describe("where an address is filed", () => {
+  it("names the manifest each kind of line lives in", () => {
+    expect(manifestOfAddress("bramblewood-01/scene_pib/narration")).toBe("bramblewood-01");
+    expect(manifestOfAddress("bramblewood-01/@plate")).toBe("bramblewood-01");
+    expect(manifestOfAddress("gemfall/@prologue/2")).toBe("_gemfall");
+    expect(manifestOfAddress("gemfall/@epilogue/cure/0")).toBe("_gemfall");
+    expect(manifestOfAddress("gemfall/@lastTime/opener")).toBe("_gemfall");
+    expect(manifestOfAddress("help/join")).toBe("_help");
+    expect(manifestOfAddress("")).toBeNull();
+    expect(manifestOfAddress(undefined)).toBeNull();
+    expect(manifestOfAddress("@help/x")).toBeNull();
+  });
+
+  it("files help by screen, by kind of thing, and by card, and leaves a thing's own words to the device voice", () => {
+    expect(helpAddress("story", null)).toBe("help/surfaces/story");
+    expect(helpAddress("story", { kind: "item" })).toBe("help/things/item");
+    expect(helpAddress("story", { kind: "item", text: "Still warm." })).toBeNull();
+    expect(howToPlayAddress(3)).toBe("help/howToPlay/3");
   });
 });

@@ -136,7 +136,7 @@ describe("the prologue", () => {
     expect(reel.textContent).toContain("The Walk");
     expect(reel.textContent).toContain("Plate 1 is a painting.");
     expect(reel.querySelectorAll("img")).toHaveLength(3);
-    expect(spoken).toEqual(["The Walk. Plate 1 is a painting."]);
+    expect(spoken).toEqual(["The Walk.", "Plate 1 is a painting."]);
   });
 
   it("turns the pages by itself, then lets the story begin, in order", async () => {
@@ -151,7 +151,7 @@ describe("the prologue", () => {
     );
     await flush();
     // The story is held behind the paintings.
-    expect(spoken).toEqual(["The Walk. Plate 1 is a painting."]);
+    expect(spoken).toEqual(["The Walk.", "Plate 1 is a painting."]);
     expect(screen.queryByTestId("chapter-preface")).toBeNull();
 
     await act(async () => void vi.advanceTimersByTime(plateHoldMs(6)));
@@ -163,7 +163,8 @@ describe("the prologue", () => {
 
     expect(screen.queryByTestId("story-plates")).toBeNull();
     expect(spoken).toEqual([
-      "The Walk. Plate 1 is a painting.",
+      "The Walk.",
+      "Plate 1 is a painting.",
       "Plate 2 is a painting.",
       "Plate 3 is a painting.",
       "The story of ch_1 begins.",
@@ -187,13 +188,14 @@ describe("the prologue", () => {
     expect(spoken).toEqual([]);
     act(() => useGameStore.setState({ chapter: OPENING }));
     await flush();
-    expect(spoken).toEqual(["The Walk. Plate 1 is a painting."]);
+    expect(spoken).toEqual(["The Walk.", "Plate 1 is a painting."]);
 
     await act(async () => void vi.advanceTimersByTime(plateHoldMs(6)));
     await act(async () => void vi.advanceTimersByTime(plateHoldMs(5)));
     await act(async () => void vi.advanceTimersByTime(plateHoldMs(5)));
     expect(spoken).toEqual([
-      "The Walk. Plate 1 is a painting.",
+      "The Walk.",
+      "Plate 1 is a painting.",
       "Plate 2 is a painting.",
       "Plate 3 is a painting.",
       "The story of ch_1 begins.",
@@ -284,6 +286,17 @@ describe("turning the pages", () => {
 });
 
 describe("watching the prologue again", () => {
+  it("plays the same recordings as the first showing, from the same addresses", async () => {
+    const heard: { text: string; parts: unknown }[] = [];
+    setSpeaker((text, opts) => heard.push({ text, parts: opts?.parts }));
+    render(<PrologueReplay campaign={CAMPAIGN} onClose={vi.fn()} />);
+    await flush();
+    expect(heard).toEqual([
+      { text: "The Walk.", parts: undefined },
+      { text: "Plate 1 is a painting.", parts: [{ address: "c/@prologue/0", line: "Plate 1 is a painting." }] },
+    ]);
+  });
+
   it("plays the intro over any screen, asks nothing of the run, and is not remembered", async () => {
     const onClose = vi.fn();
     render(<PrologueReplay campaign={CAMPAIGN} onClose={onClose} />);
@@ -358,6 +371,40 @@ describe("paintings that have not landed", () => {
   });
 });
 
+describe("recorded plates", () => {
+  it("says the title on the device voice, then plays the plate's recording from its own address", async () => {
+    const heard: { text: string; parts: unknown; interrupt: boolean | undefined }[] = [];
+    setSpeaker((text, opts) => heard.push({ text, parts: opts?.parts, interrupt: opts?.interrupt }));
+    seed(run("ch_1"), OPENING);
+    render(<StoryPlates />);
+    await flush();
+    expect(heard).toEqual([
+      { text: "The Walk.", parts: undefined, interrupt: true },
+      { text: "Plate 1 is a painting.", parts: [{ address: "c/@prologue/0", line: "Plate 1 is a painting." }], interrupt: undefined },
+    ]);
+  });
+
+  it("files a plate under its own place in the reel, whichever paintings landed", async () => {
+    const heard: { text: string; parts: unknown }[] = [];
+    setSpeaker((text, opts) => heard.push({ text, parts: opts?.parts }));
+    // The first painting never arrives, so the reel opens on the second plate.
+    missing.add("/assets/plates/c/prologue-1.webp");
+    seed(run("ch_1"), OPENING);
+    render(<StoryPlates />);
+    await flush();
+    expect(heard.at(-1)).toEqual({ text: "Plate 2 is a painting.", parts: [{ address: "c/@prologue/1", line: "Plate 2 is a painting." }] });
+  });
+
+  it("files a chapter's plate under the chapter", async () => {
+    const heard: { text: string; parts: unknown }[] = [];
+    setSpeaker((text, opts) => heard.push({ text, parts: opts?.parts }));
+    seed(run("ch_2", { flags: { road_lake: true } }), LAKE);
+    render(<StoryPlates />);
+    await flush();
+    expect(heard.at(-1)).toEqual({ text: "A lake lies very still.", parts: [{ address: "ch_2/@plate", line: "A lake lies very still." }] });
+  });
+});
+
 describe("a chapter's plate", () => {
   it("paints one plate wearing the chapter's title, for a chapter that is not the opening", async () => {
     seed(run("ch_2", { flags: { road_lake: true } }), LAKE);
@@ -368,7 +415,7 @@ describe("a chapter's plate", () => {
     expect(reel.textContent).toContain("Chapter 2");
     expect(reel.textContent).toContain("A lake lies very still.");
     expect(reel.querySelectorAll(".plates__dot")).toHaveLength(0);
-    expect(spoken).toEqual(["Chapter 2. A lake lies very still."]);
+    expect(spoken).toEqual(["Chapter 2.", "A lake lies very still."]);
   });
 
   it("is remembered per chapter, not per campaign", async () => {
