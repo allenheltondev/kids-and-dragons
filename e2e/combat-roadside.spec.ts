@@ -422,9 +422,11 @@ for (const fight of roadFights) {
           })).toBeGreaterThanOrEqual(before.seq);
           await page.getByRole("button", { name: /^Fox Fire/ }).click();
           await page.locator(".combat__targets button").filter({ hasText: "Glassback Crab 1" }).click();
+          await expect.poll(async () => (await roomState<RunState>(page, table.code)).seq).toBeGreaterThan(before.seq);
           await expect.poll(async () => (await roomState<RunState>(page, table.code)).encounter?.combatants.find(c => c.id === "crab#1")?.windup ?? null).toBeNull();
           sawClawInterrupted = true;
           state = await roomState<RunState>(page, table.code);
+          await expect(panel).toContainText("lowers its claws");
           await display.page.screenshot({ path: info.outputPath("claw-interrupted.png") });
           if (!state.encounter || currentActorId(state.encounter) !== actorId) continue;
         }
@@ -442,9 +444,12 @@ for (const fight of roadFights) {
         if ((shellBank || arrivalWindup) && turn === 1 && state.encounter) {
           await page.reload();
           await onAir(page);
-          expect((await roomState<RunState>(page, table.code)).encounter?.environment).toEqual(state.encounter.environment);
-          await display.page.emulateMedia({ reducedMotion: "reduce" });
-          await page.emulateMedia({ reducedMotion: "reduce" });
+          await expect.poll(() => page.evaluate(async () => {
+            const modulePath = "/src/store/index.ts";
+            return (await import(modulePath)).useGameStore.getState().state?.encounter;
+          })).toEqual(state.encounter);
+          await Promise.all([display.page, ...phones.map(phone => phone.page)]
+            .map(surface => surface.emulateMedia({ reducedMotion: "reduce" })));
         }
         if (drain && turn === 0) {
           expect(positionOf(state.encounter!, actorId)!.x).toBeLessThan(3);

@@ -706,7 +706,7 @@
           "id": "crab",
           "creature": "glassback_crab",
           "windupAttack": {
-            "label": "Gravel-bar claw sweep",
+            "label": "Glassback claw sweep",
             "radius": 1,
             "damage": 2,
             "presentation": "slam"

@@ -140,8 +140,8 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "lost":
       return `${rescue.name} is ${rescue.art ? "gone" : "lost to the rift"}.`;
     default: {
-      if (rescue.art && rescue.target && rescue.hp === undefined) {
-        return `Free ${rescue.name} (${rescue.progress ?? 0}/${rescue.target}). End turns beside them to help.`;
+      if (rescue.art && rescue.target) {
+        return `Free ${rescue.name} (${rescue.progress ?? 0}/${rescue.target}). End turns beside them to help.${rescue.hp === undefined ? "" : ` Keep monsters away. Tugs left: ${rescue.hp}.`}`;
       }
       const free = rescue.target ? `Free ${rescue.name}: ${rescue.progress ?? 0}/${rescue.target} helping turns. End a turn beside them to help.` : `Free ${rescue.name}: end your turn next to them.`;
       // A captive the monsters can get at (#220) says how many tugs are left.

@@ -77,6 +77,12 @@ describe("exits, hazards and the rescue", () => {
     expect(tileWords({ kind: "exit", label: "The tear", active: false })).toBe("The tear, closed");
     expect(tileWords({ kind: "hazard", label: "Rift fire", active: true })).toBe("Rift fire, don't stop here");
   });
+
+  it("keeps a painted rescue's work and danger readable beside its separate clock", () => {
+    const basket = { name: "the signal basket", at: { x: 4, y: 2 }, art: "fight-sideways-flame", status: "waiting" as const, target: 2, progress: 1, hp: 3, roundsLeft: 4 };
+    expect(rescueLine(basket)).toBe("Free the signal basket (1/2). End turns beside them to help. Keep monsters away. Tugs left: 3.");
+    expect(rescueLine({ ...basket, hp: 1 })).toContain("Tugs left: 1.");
+  });
 });
 
 describe("the clock on the shared screen", () => {
