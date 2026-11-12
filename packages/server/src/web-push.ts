@@ -21,7 +21,7 @@
  * inside is only ever the fixed sentence and the room's path (#320).
  */
 
-import webpush from "web-push";
+import * as webpush from "web-push";
 import { PUSH_TAG, type TurnPushPayload } from "@kad/shared";
 import { deliverTurnPush, type PushConfig, type PushDispatch, type PushSender, type PushSenderDeps, type PushSendResult } from "./handlers/push.ts";
 import type { PushSubscriptionRecord } from "./store/repository.ts";
