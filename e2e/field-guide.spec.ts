@@ -73,7 +73,7 @@ async function createCharacter(page: Page, species: string, name: string): Promi
 async function endTurn(page: Page): Promise<void> {
   await openPlayerTask(page);
   const ready = page.locator(".combat .combat__answers:not([inert]) .choice").filter({ hasText: /get ready/i });
-  if ((await ready.count()) > 0) {
+  if (await revealPagedChoice(page.locator(".combat__answers:not([inert])"), ready)) {
     await ready.first().click({ timeout: 5_000 }).catch(() => {});
     return;
   }
