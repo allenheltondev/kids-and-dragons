@@ -16,6 +16,31 @@ Rive rigs, split body parts, underpainting, and animation contracts are retired.
 - Run `npm run art:verify` for format, transparency, ground placement, and shared asset checks.
 - Run `npm run art:inventory` to see missing finished illustrations.
 
+## Declaring art: the manifest's lists are kept in order
+
+Every piece of art is declared in `assets/manifest.json`, so every art branch edits that one
+file. Its growing lists used to grow at the end, and two branches that each added a painting
+to the same list conflicted on the same last line. They are now kept in order instead: the
+plain string order of each entry's key (the string itself, an object's `id`, or a member's
+name), which is what `[...keys].sort()` gives. Two branches' new entries then land on different
+lines unless they sort next to each other, and git merges them, on GitHub too.
+
+- The lists are named in [`tools/art/manifest-order.ts`](../tools/art/manifest-order.ts):
+  `castFigures`, `coatMasks.paintings`, `entities`, `paintedIcons.ids`, `sceneIllustrations`,
+  `stageFigures`, `storyPlates.ids`, `storyProps.ids` and `storyProps.motions`. Nothing reads
+  them in order. A list whose order means something does not belong there.
+- Put a new entry in its place, or add it anywhere and run `npm run art:sort`. It moves each
+  entry's own text and nothing else, so the file's hand formatting survives.
+- `npm run art:verify` runs the check first (`npm run art:sort -- --check`) and fails on a list
+  out of order or an entry declared twice.
+- For two new entries that do sort next to each other, and for a branch cut before the lists
+  were sorted, a merge driver ([`tools/art/merge-manifest.ts`](../tools/art/merge-manifest.ts))
+  merges these lists entry by entry and the rest of the file by line. `npm run setup` registers
+  it. GitHub's merge button does not run merge drivers: if it reports a conflict in the
+  manifest, merge `main` into the branch locally. An entry both sides changed differently keeps
+  ours and is named in the merge's output for you to decide.
+- The file is checked out with Unix line endings on every OS (`.gitattributes`).
+
 Story and combat share a six-second breath of at most 0.8% vertical stretch around
 fixed feet, with different phases per actor. Creation uses the same amplitude and
 period in CSS. Reduced motion returns figures to their resting scale. Combat owns

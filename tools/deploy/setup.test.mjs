@@ -135,9 +135,27 @@ describe("setup: the asset store", () => {
     expect(lines(m).some((l) => l.startsWith("git config merge.kad-assets-lock.name "))).toBe(true);
   });
 
+  it("registers the art manifest's merge driver beside it, under the name .gitattributes gives the file", () => {
+    const m = machine();
+    expect(setup(root, { io: m.io, env: {} }).manifestDriver).toBe(true);
+    expect(lines(m)).toContain("git config merge.kad-art-manifest.driver node tools/art/merge-manifest.ts %O %A %B");
+    expect(lines(m).some((l) => l.startsWith("git config merge.kad-art-manifest.name "))).toBe(true);
+    const attributes = fs.readFileSync(path.join(REPO, ".gitattributes"), "utf8");
+    expect(attributes).toMatch(/^assets\/manifest\.json merge=kad-art-manifest text eol=lf\r?$/m);
+    expect(fs.existsSync(path.join(REPO, "tools/art/merge-manifest.ts"))).toBe(true);
+
+    const refused = machine((line) => (line.startsWith("git config merge.kad-art-manifest.driver") ? 1 : 0));
+    const result = setup(root, { io: refused.io, env: {} });
+    expect(result.manifestDriver).toBe(false);
+    expect(result.driver).toBe(true);
+    expect(refused.warned.join("\n")).toMatch(/art manifest's merge driver/);
+  });
+
   it("leaves git alone outside a repository", () => {
     const m = machine((line) => (line === "git rev-parse --git-dir" ? 128 : 0));
-    expect(setup(root, { io: m.io, env: {} }).driver).toBe(false);
+    const result = setup(root, { io: m.io, env: {} });
+    expect(result.driver).toBe(false);
+    expect(result.manifestDriver).toBe(false);
     expect(lines(m).some((l) => l.startsWith("git config"))).toBe(false);
   });
 
@@ -200,6 +218,8 @@ describe("setup, run as a command", () => {
     expect(direct.stdout).toMatch(/npm run assets:push/);
     const driver = execFileSync("git", ["config", "--local", "merge.kad-assets-lock.driver"], { cwd: root, encoding: "utf8" }).trim();
     expect(driver).toBe("node tools/assets/merge-lock.ts %O %A %B");
+    const manifestDriver = execFileSync("git", ["config", "--local", "merge.kad-art-manifest.driver"], { cwd: root, encoding: "utf8" }).trim();
+    expect(manifestDriver).toBe("node tools/art/merge-manifest.ts %O %A %B");
   }, 120_000);
 
   it("is what npm run setup and scripts/setup.sh both call", () => {
