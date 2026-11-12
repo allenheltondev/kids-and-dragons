@@ -66,4 +66,12 @@ describe("deploy.sh and the voice manifests (#545)", () => {
     expect(verify).toBeGreaterThan(script.indexOf("KAD_SKIP_CHECKS"));
     expect(script.slice(script.indexOf("KAD_SKIP_CHECKS"), verify)).toMatch(/\nfi\n/);
   });
+
+  it("lets only staging go on without the clips; every other stage still stops", () => {
+    const start = script.indexOf("voice_clips_on_site() {");
+    const body = script.slice(start, script.indexOf("\n}\n", start));
+    // A failed check reaches the staging branch, which warns and returns; anything else exits non-zero.
+    expect(body).toMatch(/if \[ "\$STAGE" = "staging" \]; then[\s\S]*return 0[\s\S]*fi\s+exit 1/);
+    expect(body).not.toMatch(/"\$STAGE" = "prod"/);
+  });
 });

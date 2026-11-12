@@ -47,7 +47,8 @@ the Lambdas and builds the client, checks that every recorded voice clip the
 manifests in `content/voice/manifest/` play is on the site
 (`tools/voice/verify-site.ts`, even when the checks are skipped, since only the
 deploy knows which site it is; a clip the site will not answer for stops the
-deploy too), deploys the stack, uploads the client and the art, invalidates
+deploy too, except on staging, which warns and goes on so a pull request can
+deploy before its clips are in staging's bucket), deploys the stack, uploads the client and the art, invalidates
 CloudFront, and prunes old bundle files — in that order. Everything that can
 fail without touching AWS has failed before the stack changes, and the upload
 comes after it, so a deploy that fails partway leaves the previous version
@@ -736,7 +737,8 @@ of their sound, so they are immutable and cached for a year.
 - `/voice/*` is its own CloudFront behavior (`infra/template.yaml`), without the SPA router.
 - The chapter manifests are in git under `content/voice/manifest/` and deploy with `content/`.
 - Staging and production each have their own bucket. `voice:generate --stage staging,prod` renders
-  once and uploads to both, so the same manifest works on either.
+  once and uploads to both, so the same manifest works on either. Staging's deploy tolerates a clip
+  missing from its bucket (it warns); prod's does not.
 - Clips are never deleted by the tooling. Old ones cost almost nothing and an old manifest may still
   name them; remove a clip by hand only once no deployed manifest does.
 

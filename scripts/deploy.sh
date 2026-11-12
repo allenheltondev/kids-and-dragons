@@ -205,9 +205,23 @@ outputs() {
 # permission, and run with plain node because a ship-mode deploy has no
 # node_modules. Not skipped with the checks: CI cannot know what this bucket
 # holds. No manifests is the ordinary state and passes at once.
+#
+# Staging is the one stage that goes on without them. It is where every pull
+# request deploys, so a branch that adds manifests would otherwise be blocked
+# until its clips were also put in staging's bucket, which is a choice (the
+# first full render went to prod only). It says so loudly and deploys, so a
+# staging tester may hit a clip that is not there, while prod and dev keep the
+# hard stop: prod is the stage whose families would hear it.
 voice_clips_on_site() {
   say "Voice clips on $SITE_URL"
-  node tools/voice/verify-site.ts "$SITE_URL"
+  if node tools/voice/verify-site.ts "$SITE_URL"; then
+    return 0
+  fi
+  if [ "$STAGE" = "staging" ]; then
+    say "WARNING: $SITE_URL lacks clips its manifests play. Deploying anyway: staging does not need them. Prod will not deploy until they are there."
+    return 0
+  fi
+  exit 1
 }
 
 # Asked before the stack changes whenever there is a site to ask: the clips
