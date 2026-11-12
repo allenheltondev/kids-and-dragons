@@ -30,7 +30,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
-import { plateWordCount, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
+import { plateWordCount, prologueAddresses, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
 import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
 import { useRunState, useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
@@ -351,7 +351,7 @@ export function PrologueReplay({ campaign, onClose }: { campaign: Campaign; onCl
   const picked = useMemo<StartPlates | null>(
     () =>
       campaign.prologue && campaign.prologue.plates.length > 0
-        ? { kind: "prologue", key: `replay:${campaign.id}`, ribbon: campaign.title, plates: campaign.prologue.plates }
+        ? { kind: "prologue", key: `replay:${campaign.id}`, ribbon: campaign.title, plates: campaign.prologue.plates, addresses: prologueAddresses(campaign) }
         : null,
     [campaign],
   );

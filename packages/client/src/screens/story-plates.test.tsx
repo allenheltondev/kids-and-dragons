@@ -286,6 +286,17 @@ describe("turning the pages", () => {
 });
 
 describe("watching the prologue again", () => {
+  it("plays the same recordings as the first showing, from the same addresses", async () => {
+    const heard: { text: string; parts: unknown }[] = [];
+    setSpeaker((text, opts) => heard.push({ text, parts: opts?.parts }));
+    render(<PrologueReplay campaign={CAMPAIGN} onClose={vi.fn()} />);
+    await flush();
+    expect(heard).toEqual([
+      { text: "The Walk.", parts: undefined },
+      { text: "Plate 1 is a painting.", parts: [{ address: "c/@prologue/0", line: "Plate 1 is a painting." }] },
+    ]);
+  });
+
   it("plays the intro over any screen, asks nothing of the run, and is not remembered", async () => {
     const onClose = vi.fn();
     render(<PrologueReplay campaign={CAMPAIGN} onClose={onClose} />);

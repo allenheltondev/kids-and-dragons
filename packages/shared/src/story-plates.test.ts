@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Campaign, Chapter } from "./types/chapter.js";
 import {
+  prologueAddresses,
   PLATE_MAX_WORDS,
   campaignPlates,
   endPlates,
@@ -57,6 +58,12 @@ describe("isOpeningChapter", () => {
 });
 
 describe("startPlates", () => {
+  it("files every prologue plate under the address a replay uses too", () => {
+    const picked = startPlates(ordered, chapter("c-1", "c", 1));
+    expect(picked?.addresses).toEqual(prologueAddresses(ordered));
+    expect(prologueAddresses(ordered)[0]).toBe("c/@prologue/0");
+  });
+
   it("gives the opening chapter the prologue, wearing the campaign's title", () => {
     const picked = startPlates(ordered, chapter("c-1", "c", 1));
     expect(picked).toMatchObject({ kind: "prologue", key: "prologue:c", ribbon: "The Walk" });

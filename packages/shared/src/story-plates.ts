@@ -59,6 +59,11 @@ export function isOpeningChapter(campaign: Campaign, chapter: Pick<Chapter, "id"
   return chapter.index === 1;
 }
 
+/** Where each plate of a campaign's prologue is filed in the voice manifests (a replay shares them with the first showing). */
+export function prologueAddresses(campaign: Pick<Campaign, "id" | "prologue">): string[] {
+  return (campaign.prologue?.plates ?? []).map((_, i) => `${campaign.id}/@prologue/${String(i)}`);
+}
+
 /**
  * The plates for the start of `chapter`: the campaign's prologue on its opening chapter, else
  * the chapter's own plate, else null. A campaign's opening chapter never shows a chapter plate
@@ -71,7 +76,7 @@ export function startPlates(campaign: Campaign, chapter: Chapter): StartPlates |
       key: `prologue:${campaign.id}`,
       ribbon: campaign.title,
       plates: campaign.prologue.plates,
-      addresses: campaign.prologue.plates.map((_, i) => `${campaign.id}/@prologue/${String(i)}`),
+      addresses: prologueAddresses(campaign),
     };
   }
   if (chapter.plate) {
