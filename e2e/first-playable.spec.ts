@@ -1,4 +1,5 @@
 import { guidePicture } from "./guide-pictures";
+import { revealPagedChoice } from "./choice-pages";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 import { phoneStorage, seedTable, toTheLobby, type SeededPhone } from "./seed";
@@ -630,9 +631,9 @@ test.describe("first playable", () => {
         continue;
       }
       const page = phones[heroes.indexOf(hero)]!;
+      await openPlayerTask(page);
       const ready = await page
-        .getByText(/your turn/i)
-        .first()
+        .locator(".sheet--turn")
         .waitFor({ state: "visible", timeout: 12_000 })
         .then(() => true)
         .catch(() => false);
@@ -645,7 +646,7 @@ test.describe("first playable", () => {
        */
       const pass = async () => {
         const ready = page.locator(".combat .combat__answers:not([inert]) .choice").filter({ hasText: /get ready/i });
-        if ((await ready.count()) > 0) {
+        if (await revealPagedChoice(page.locator(".combat__answers:not([inert])"), ready)) {
           await ready.first().click({ timeout: 4_000 }).catch(() => {});
         } else {
           await page.locator(".combat__answers:not([inert]) .combat__end").first().click({ timeout: 4_000 }).catch(() => {});
