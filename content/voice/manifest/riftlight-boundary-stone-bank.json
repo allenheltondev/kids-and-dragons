@@ -1,0 +1,1322 @@
+{
+  "riftlight-boundary-stone-bank/@goal": {
+    "": [
+      {
+        "clip": "8e39ea737d9f4c61279b8bcde27a8bf2a466fe638df35f10b506ea7a5cd4a0be",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/@plate": {
+    "": [
+      {
+        "clip": "9852d0f2e7671ff536c7510c5dc6373c6b75a39c062a54f7d80006629a863d59",
+        "ms": 10207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/narration": {
+    "": [
+      {
+        "clip": "ca26f492a248ebc3be9c6f9d6ef1ccd964e873bf59f18261cc3bbe689f8e8023",
+        "ms": 2502
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "40ef4546cbed28321f37871b8af30fbeb7200891ac9e0f5e7533d94d50bea377",
+        "ms": 1291
+      },
+      {
+        "clip": "d36339aaf09cb0a109cdc0ba385e1d83ed04cee1d5336f21657f673f176753d6",
+        "ms": 25507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/variants/0": {
+    "": [
+      {
+        "clip": "23ff567ac180b9b8f5b745596dcf0f34c844b174a988a4c27bb9c6e75b6e49fc",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/variants/1": {
+    "": [
+      {
+        "clip": "4a75d19f21ede8a19e50247e86478ee296bc93b6c0a1ba74e7ae29f8d6207513",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/variants/2": {
+    "": [
+      {
+        "clip": "a163388d8bafb5c4195497e67383c478891e7371a7502483bdf5c9a9695df45d",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/variants/3": {
+    "": [
+      {
+        "clip": "abac5514447bb1dfcf5a3a5f1d950a8aee35fe3183618e36dd43f38407436c98",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/bank_rest/variants/4": {
+    "": [
+      {
+        "clip": "4ce26224fb5f8d84e8b97b21c5e5eb08e3b825f0bf0d3473d045b005d1930f0e",
+        "ms": 2962
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/beat_check/prompt": {
+    "": [
+      {
+        "clip": "10fe4a6a7da27bd8436bb9fadc1194ad4ec3f6cf161a62c63accafefb4426c7c",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/brace_check/prompt": {
+    "": [
+      {
+        "clip": "510e596dd89805b99cfbb2be5cb6764e274656a7806b8a922039417a5cb53875",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/carving/narration": {
+    "": [
+      {
+        "clip": "ab190a4e4fd36dd484b42f176ceaf4a3576cdf4ec958fc4f5d64eb3b6e1b1195",
+        "ms": 8307
+      },
+      {
+        "clip": "30e59c0183bbd25b78bb3ba60d57709b57f74f70771b0225ff6e88a0c9c8679c",
+        "ms": 1924
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "6089f43816024e863b5d3c00ac19a4825c8e3ff756b82b0e4ee1a1bc9f631d2f",
+        "ms": 1564
+      },
+      {
+        "clip": "c1d79c9838f911df80c9241cbef7478713367d4273f615f8bedc21bfb4c27597",
+        "ms": 1878
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/chalk_check/prompt": {
+    "": [
+      {
+        "clip": "1a25431fedb92877a94f0be319bc4f9934c23702f94d4a76a13827b32365b8fe",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/chisel_check/narration": {
+    "": [
+      {
+        "clip": "5c31b2de6ed45ac8b0d9ad1291fcfd1bf8a59af4c88108871d650a7fe55bc5da",
+        "ms": 1939
+      },
+      {
+        "clip": "c30b9ac7077fed5e181f985e3328c5bad7b37a902498fde9181a44b6c435654d",
+        "ms": 1645
+      },
+      {
+        "clip": "1a30116998b4647ccf5a0cd24d2db96948db05450a51bd1c75a0818925a0e412",
+        "ms": 2438
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/chisel_check/prompt": {
+    "": [
+      {
+        "clip": "a5494bd1adb1576212c96265f1c2067c583b00a079f80807bd124bc0d02fe066",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/climb_check/prompt": {
+    "": [
+      {
+        "clip": "f6b7d4eb2d8475d8bf94e58d932e6f3a7ee15ef50064aebd9683211f67d99e09",
+        "ms": 3408
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/clue/narration": {
+    "": [
+      {
+        "clip": "2dfefbd80be4300c14f7a7c517781165fe0a0d387790c9f44c4fb9605b203f2c",
+        "ms": 17307
+      },
+      {
+        "clip": "8b513e1c9963aa2c803c3ac838551eefcc05fb56d12c6a553da46cd7ebec995c",
+        "ms": 2571
+      },
+      {
+        "clip": "03d978d4582591a87b5cd3ebc683099a0d5f527403dc3a85ba52835f94fd284d",
+        "ms": 2535
+      },
+      {
+        "clip": "e4ebdd3c20d21ffb7075e69cfe8287a616ade3e22e690d488a07c9472209ac88",
+        "ms": 1616
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/clue/variants/0": {
+    "": [
+      {
+        "clip": "5435e7a165930e5f5103a1355477eb9fa37a6107704d5cda6d8a81f03816f782",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/compare/narration": {
+    "": [
+      {
+        "clip": "55a74e9dd42556c534cab486cd8485983790e84e81573ea39fa40f7c915da0f3",
+        "ms": 13307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/compare/variants/0": {
+    "": [
+      {
+        "clip": "27ed56c0d1bf4176beb11e607b3360ce5f546c1dd7f51037639c560dd5bac5ff",
+        "ms": 2062
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "1f6e431f5e32261bf809d5278c544c71199287d4c5b551d0607a2f7b2880e15c",
+        "ms": 1051
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/cord_plan/narration": {
+    "": [
+      {
+        "clip": "a3cc2d984cc3977ce0a83a7a6fdf7b1fb5ea2db5403af08564cee7f4ed16f705",
+        "ms": 15907
+      },
+      {
+        "clip": "2de328fc3da832862d71c3cdee3490fca91108059947ce2cf1d7748c99a32564",
+        "ms": 3407
+      },
+      {
+        "clip": "9a7fadca266ade25fb575c244efa6dc191215d8213069a638b6b2001118449c6",
+        "ms": 1213
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/cord_run/narration": {
+    "": [
+      {
+        "clip": "3fd4b2254a54c715eadc1c5340cda33aa6fd0b7ce642edd8b17786ec12e417d5",
+        "ms": 7407
+      },
+      {
+        "clip": "477205655d28323f8ab0399f27a24f80a9ea70ca8c0a6608c952a8c2d65de12f",
+        "ms": 1360
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "fc556bf1b0b55befc9c6764cc9e0dda5f95b07892a548cd3eb431ab3e9b6a338",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/cord_tangle/narration": {
+    "": [
+      {
+        "clip": "59f660ef549cf631ed57e4df1d450217d58b6b051ac9fe32d112b9982ddfd11b",
+        "ms": 13407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/drew_both/narration": {
+    "": [
+      {
+        "clip": "2400c803bf5244721f9c94464851a13863409c3883f462089243cffaede893aa",
+        "ms": 8407
+      },
+      {
+        "clip": "4359e5128d66ecb3a1b0f486c6daa91421ad33f790554457066d7cf49737c151",
+        "ms": 2237
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/dug_found/narration": {
+    "": [
+      {
+        "clip": "60177be646ddf71ff6cda55040c91a982952597eef0cd61012e1e69b71e226b1",
+        "ms": 4527
+      },
+      {
+        "clip": "3057393582f10d1cd21fef21520ce809b0ad0cffc8a4ba5c52bea93ba04b49a4",
+        "ms": 1500
+      },
+      {
+        "clip": "e0e5e310f097d39e0d60dfca35179f8dd3340ba017755ddfe726578338fcb95f",
+        "ms": 1063
+      },
+      {
+        "clip": "6133436e55c7b7a399fbfa5298ea9dfdcbd92b6cac375c46b11619d95787facd",
+        "ms": 3607
+      },
+      {
+        "clip": "32c94e34d8eb979509056f4125662be6e6798aab95d68032e4a64c421a9d5852",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/fourth_ok/narration": {
+    "": [
+      {
+        "clip": "fe7607b180138308008af7579be2d1e87684ba43d8e3881f74172c094709b993",
+        "ms": 9407
+      },
+      {
+        "clip": "30e63336f9d0b8afb1a616c714c10d3e2f4357355a3572db0aa85afd9ca24d9a",
+        "ms": 809
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "c44435b5eec2737aed98029a0a24ae2e2adc10c4c1bd5b8f1eb8c5354047253c",
+        "ms": 2288
+      },
+      {
+        "clip": "c978f17e65ef33bea90299cdf586e2b6a77c4b384baf4d99c59e7fe89a3d0885",
+        "ms": 1770
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/fourth_shift/narration": {
+    "": [
+      {
+        "clip": "feba290830be3c07c4a1534ffee4ccb2e53eb10f3fc6426c8fee5c74073f4c74",
+        "ms": 3407
+      },
+      {
+        "clip": "cd2c4f6f66d95c1bb64901705e18a6d0f31f101b6de26d86236eabecfa8af06f",
+        "ms": 1298
+      },
+      {
+        "clip": "dd118f26e8c0a6184bc3fdb3a6b265144d385cde07663dd5d6a9c17b84cf6c44",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/honey_buy/narration": {
+    "": [
+      {
+        "clip": "c8b32c348d49230122402ac73e11c405e41b4017092b1e8f8b518caecabedfef",
+        "ms": 6807
+      },
+      {
+        "clip": "534d86789aa361d09377245f67b06a71c7cd6b097f855c2f646692ab464f0196",
+        "ms": 2098
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "ff9c4aa3b11cc6b6a5873eee29ee61303eadbc4ea1174bf64e98fb77621ac85b",
+        "ms": 1537
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lean/narration": {
+    "": [
+      {
+        "clip": "4a7b05f1a3fc7061df86430c641a5f8eb83f23b1e629fc6c89f03f776baee4d5",
+        "ms": 14707
+      },
+      {
+        "clip": "bb72fab1fd1428e38653a5c8ff04940e397a684730afe880e7d6b3a06f3c7683",
+        "ms": 1583
+      },
+      {
+        "clip": "b68d4c46f9eab2cb1dd98e7b5861c9bc2286d9107dd4b5828eb5e6d69a30d844",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lever_check/narration": {
+    "": [
+      {
+        "clip": "ad18cab0cee17d2cce48db1ab09f81dc7b47b6d7c12ea236c1cf6cd5d3767311",
+        "ms": 2111
+      },
+      {
+        "clip": "e12ba702258272a129c018dc59b297dfd16eb2e082459dc17a5114afb91be950",
+        "ms": 838
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "560cac43038420f064a4acd56a13a3dc63991cf2c7f55781e637edae0f5b0f27",
+        "ms": 1752
+      },
+      {
+        "clip": "d1a1052598cfb6bd7b67217803db8ec3f438c834b3bf8e56344253fd28a802b5",
+        "ms": 1219
+      },
+      {
+        "clip": "17e7cd66feffe93a327dbac967da331cca2d34a4693e65d7944d3166ebc9b7e5",
+        "ms": 1199
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lever_check/onFailure/narration": {
+    "": [
+      {
+        "clip": "94ffdf63c83f8a7098687d8f0cdb014b471b4e72b75191081484e7375b74a7ee",
+        "ms": 2667
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lever_check/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1a32c131c74dc95dcfbad6c1f8901675290154dc57cac47f91a6b707e30c2704",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/lever_check/prompt": {
+    "": [
+      {
+        "clip": "d874f3b5c434a2c83cedc2a6dfadcba5a722377c9b3609ad39e2a4fc0f0fe22c",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/marker/narration": {
+    "": [
+      {
+        "clip": "fce833c4757352e18bbf7779e477e5e65b9500cc111bc3f102ed5e4553472f84",
+        "ms": 6807
+      },
+      {
+        "clip": "58ab6962881ae85548a22e4d50994139956071cbd826fe58bb9e5e69322aeb62",
+        "ms": 1774
+      },
+      {
+        "clip": "710eb0f8901339c571875ba79b5c4aa173837315977eda8ce474b9d672855eae",
+        "ms": 810
+      },
+      {
+        "clip": "de5dc4f9915434f18afa45dddf47777e17fc37f068a0cde0ff22f68d0385a4e1",
+        "ms": 2388
+      },
+      {
+        "clip": "965d044b9ee5616bd422016875dedc625e633830b970845c5e72505758c23275",
+        "ms": 2410
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/marker_haul/prompt": {
+    "": [
+      {
+        "clip": "84bf8d5ee617b4dcf13ba4847ac62e369444128f1dd30c3633b2fd2d79313d23",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/marker_set/narration": {
+    "": [
+      {
+        "clip": "1e46b80ee72552de84bfab3a71c5615763f605b1b8c36b19db9aea8d1c4c4b1f",
+        "ms": 7107
+      },
+      {
+        "clip": "3bada4e51352e90dfb6617210b23b22bc03ac8f91ae3d719c01329eb1da3fad6",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/marker_slid/narration": {
+    "": [
+      {
+        "clip": "d6836cf417c945a40273e77d270618748ba9282529d257df24e1fa7d3ee6bea2",
+        "ms": 15207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/markings/narration": {
+    "": [
+      {
+        "clip": "9fd45e49fedbb3df20365a4f80b2a344e3efef3d50a4557aee26de9b89bbbede",
+        "ms": 3707
+      },
+      {
+        "clip": "e220ff00d74d235809a4bdbf7478e3a0c265f2ba56d89eba127fe5b68c6ab63d",
+        "ms": 8807
+      },
+      {
+        "clip": "5ff082e6b9c6ed0b25cc812318161445196152285620371a4e11ac9c266de87e",
+        "ms": 2657
+      },
+      {
+        "clip": "ea7e05b622dfe2b72b6a3551c061e91bef9532b5158cb66860c87558056e64f5",
+        "ms": 2999
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/moss_check/prompt": {
+    "": [
+      {
+        "clip": "fcf34f0ac8a1e8d30133fed23a5124e92cc5ada0e93ce0d198d7652631f1e74a",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/muddle/narration": {
+    "": [
+      {
+        "clip": "0a138ae25aeff935ffc60493434c04dcf8de9f056e5fa01c13b33ca212fef5c0",
+        "ms": 3507
+      },
+      {
+        "clip": "c28ad56d1d1af5afdf58ed803ec962b54351a9ccdcddc431e7e233f3188d7f3c",
+        "ms": 1900
+      },
+      {
+        "clip": "80792f992a1e179f83fcffc4ab174f093ed5ab341aca22270b2d4b83cbe6e3af",
+        "ms": 8007
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_count_check/narration": {
+    "": [
+      {
+        "clip": "078a8c09c19cbde8cc9fe2aeea6130c42796148f7b3877e03a06b5771c8dbc10",
+        "ms": 1374
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "35f2ad0749d2d7bd54bc11f4d03fb4cc86a12c75aa3e6dda5516fd31e975d566",
+        "ms": 1642
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_count_check/prompt": {
+    "": [
+      {
+        "clip": "dc37252d5eef0a2c75981c288f76bbc90ed72da7d93217e3089acb122df81e50",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_crooked/narration": {
+    "": [
+      {
+        "clip": "31f569c0fcf8eb23d39e86d8bcd52094e8e5cd5b612c1a8585537940f70b00bf",
+        "ms": 2122
+      },
+      {
+        "clip": "91998f8389300bb6abb7242cbd42d7fe9022bbdade14b52327021e0b47071a08",
+        "ms": 743
+      },
+      {
+        "clip": "62587d2994eaf745a8598ea3460ab315ff1d075a0754f34bce51ef28dd008b77",
+        "ms": 1594
+      },
+      {
+        "clip": "82ec624d5aef9318bb7fade9be18dd316b3645933be080da98f18970267c93d2",
+        "ms": 1399
+      },
+      {
+        "clip": "344ed835d698a904e2def38f60849ee07573af861bb6f00896c1ad6da7237421",
+        "ms": 4707
+      },
+      {
+        "clip": "d1c753c780a70806c1a2ccb795046a7896ef130da71b94e21f8cac36f8443897",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_cut/narration": {
+    "": [
+      {
+        "clip": "d77d51097f3dd0233fd79b86f386a3bcff3a24299e7f3513e1d8fe4a2fc01b7b",
+        "ms": 3907
+      },
+      {
+        "clip": "4d93a74e4a404fc238c4885f500af0397ec478c3f76e4e1e9411df22b64400a8",
+        "ms": 1290
+      },
+      {
+        "clip": "d794101e4171a9170beacf8c702841ae6f4a6d20038b45f0cb4fe8301ea41bc6",
+        "ms": 4107
+      },
+      {
+        "clip": "d1c753c780a70806c1a2ccb795046a7896ef130da71b94e21f8cac36f8443897",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/notch_plan/narration": {
+    "": [
+      {
+        "clip": "0abc15ff7e495eee8e4c44519f809301c7c20aaca1de237633892cebbecb94b8",
+        "ms": 10607
+      },
+      {
+        "clip": "44cc983f6633328a590bbb4dce68aece8a2a40de9db011b5b36e9dafec74b5d7",
+        "ms": 1332
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "8d9a4efbb5df7f0ad2cf26ac42d3325b9337985c4529b2ead86be09999de99b5",
+        "ms": 3307
+      },
+      {
+        "clip": "beed6f7623339655f3d72ade75bfffddd1e8880d37c614b70f148fd706c070f0",
+        "ms": 2644
+      },
+      {
+        "clip": "6e9737ef533d0c6da78a50283f7a4d38c3a190931ec91ea738318aa92ded4469",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/nudge_plan/narration": {
+    "": [
+      {
+        "clip": "27be31a30deb2eae612b85a0d0291e2dd4f05e3c14fb4a75e2050e15fa555d78",
+        "ms": 11107
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/peak_check/prompt": {
+    "": [
+      {
+        "clip": "8939d4c815e7213be33cbd038495513a5f28a8ae19fb3053f68bfb91db71a3cd",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/plan/narration": {
+    "": [
+      {
+        "clip": "0f0a2e3e5a1475a65f06380032e05787997a44376bab8326c165d4276df14365",
+        "ms": 7307
+      },
+      {
+        "clip": "72cc8bbb8c87a65ef93f35d81a5f2df622d40afee3fbfe8ed8f58342c1db2f58",
+        "ms": 2701
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "a3b93c82a0984c84f0c76aa520d7bbb320da5c65705f10e0a6509c6aed95289d",
+        "ms": 4107
+      },
+      {
+        "clip": "aec47c51fbdc0b76b271c1586a07c399d05b0aa0356e327d589092dacdf8d61b",
+        "ms": 1958
+      },
+      {
+        "clip": "d07beab60289e34f38d4d001c3ed3148b4bc96278375d4d74073c0012023a699",
+        "ms": 1702
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/push_check/narration": {
+    "": [
+      {
+        "clip": "cad9e34feedd2ca808d4851e4095ba4cbc886eeb350554507e288ca1e5987a31",
+        "ms": 629
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "57f7cebb9b7eba237d5c0b80cfda4c356378517ab7189708b274d25c56691d46",
+        "ms": 1919
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/push_check/prompt": {
+    "": [
+      {
+        "clip": "0d34c4144c0452abdecb26c4ca571baa1efe6483c48867fe3329abf642244000",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/record_plan/narration": {
+    "": [
+      {
+        "clip": "99266177366f984a0a62257db40abcb0a3a1eca8810bed84eef360dbf8085870",
+        "ms": 5407
+      },
+      {
+        "clip": "5f1530df47d5609905fea2a174b0839739ffb11d3fb6f002a63bc75ecf45ed4c",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rest_row/narration": {
+    "": [
+      {
+        "clip": "0436444733e8bdcca97fcfb6ff25df9789e39e7db464b52476b5345c79d00f66",
+        "ms": 2166
+      },
+      {
+        "clip": "a21a361b28bcab7afc7579d777b35cb798f02ccd0201cc8daa7ca6c612d05766",
+        "ms": 2224
+      },
+      {
+        "clip": "6069e4a7cc0e4a4e3f4f13da5d1f0a8d03d12c4acd8c2ea921b0b6f9f125dfe7",
+        "ms": 9607
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rest_row/variants/0": {
+    "": [
+      {
+        "clip": "0436444733e8bdcca97fcfb6ff25df9789e39e7db464b52476b5345c79d00f66",
+        "ms": 2166
+      },
+      {
+        "clip": "a21a361b28bcab7afc7579d777b35cb798f02ccd0201cc8daa7ca6c612d05766",
+        "ms": 2224
+      },
+      {
+        "clip": "e173ecdd1c2188ae16883b7d5e304c86a833d0487dd2831ca4fbaf78e9d02863",
+        "ms": 10327
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/row/narration": {
+    "": [
+      {
+        "clip": "062a619f67e7c02dd0969d2bd0a771e4f33766de2cab8185d30923fab4034dd0",
+        "ms": 14607
+      },
+      {
+        "clip": "a58e3e36a4367ca53d391869a3dfb2ed4557b26dc74adf950f26e38208a500bd",
+        "ms": 1069
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "1ea5c131f549e79f3a34de0773bae1ba15a71bb4214005c3c9e97a23de2d2b3f",
+        "ms": 1904
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/row/variants/0": {
+    "": [
+      {
+        "clip": "8cb1034b2773e4e44e41a4b910a63a72b734743ba99b50834dc69de025c90e6c",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/row/variants/1": {
+    "": [
+      {
+        "clip": "6e30cb00494b7a205e1839023070165d1b076c541e474c3b41c311d482eea8ec",
+        "ms": 2837
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/row/variants/2": {
+    "": [
+      {
+        "clip": "6f56cff7c11250d1f865504e0e975c2cd5f75c79de2a278216bd7b8cb9156402",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rub_check/prompt": {
+    "": [
+      {
+        "clip": "6ba2c6f914a29d73543cfd5acfcb466ad129bfbd2e4b71e8be29198bced3d984",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rub_torn/narration": {
+    "": [
+      {
+        "clip": "8dd15a968824e6f5a540e4b1c2c488ad3ee1a35b22cb9eec54bf6a2be81a3852",
+        "ms": 9307
+      },
+      {
+        "clip": "5f26fc7fff59626a358d8b2c3b34cec5b7c28689cc74dcf00f15269daf18a4b9",
+        "ms": 2195
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/rubbed/narration": {
+    "": [
+      {
+        "clip": "bdb1469e8388a3366b5e7f187b16465cc9c572b2a483668b606869bf227edce1",
+        "ms": 6407
+      },
+      {
+        "clip": "e5b2f9b2c2af8d57cf1930f2590641102fabacfab784ac3774766487f760eb1c",
+        "ms": 1537
+      },
+      {
+        "clip": "5ad360dd212176881263b9a3495f9b5f4022744a494e56746d459a4bf5e0e109",
+        "ms": 6807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/runner/narration": {
+    "": [
+      {
+        "clip": "0b330892e99b2e908f39b1569cd1f136ecd26f2b82a19650426a08d8cf26737b",
+        "ms": 6307
+      },
+      {
+        "clip": "aa2ad7980adda7d0013a6c0830c4df44b76e3e6f24c6f8183606b385a6fe03a6",
+        "ms": 8507
+      },
+      {
+        "clip": "3fc2ca1f0179946e0e24a7521f10b4d0f179ab0505170b34fbb70c3e944b23fe",
+        "ms": 5107
+      },
+      {
+        "clip": "d2c5572f02473400d7116e3c78c15e656636798677f0515206cdf0fc3424b645",
+        "ms": 926
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "a8514fa8d2d04214bda56d549b530c67945ebb222a3ced3889feb508a2d09a55",
+        "ms": 1164
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/share_supper/narration": {
+    "": [
+      {
+        "clip": "d6c3599e769bdaa4636a2f4e081c882364e6091ef68e45df6575103f8427422a",
+        "ms": 5907
+      },
+      {
+        "clip": "f0b15c3663059ab5a850d2eac2604d3701c46fbf12e659d7bca558826e0116af",
+        "ms": 1193
+      },
+      {
+        "clip": "4a0910a24df27b1dfb7ee8abeb1ede7739f86034f39e1725f5ddecc64300e6ab",
+        "ms": 6208
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/smash_check/narration": {
+    "": [
+      {
+        "clip": "92a9a08260992164fb3f60797a9e20c2f23a1e63c05a634b471110d4c16db643",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/smash_check/onFailure/narration": {
+    "": [
+      {
+        "clip": "f33f9fe98354b506e2256d3295c6a3dee34ba64da56c833288e44449b5d844df",
+        "ms": 1904
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/smash_check/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f3951b33299b0044e75e0ad31c799cc812a98afa91c320bcbf3e0056a7045d06",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/smash_check/prompt": {
+    "": [
+      {
+        "clip": "ed3f05c78d40cf77c5ef60900fe5fbdae4366a3bbbf76db42b160c697f2116b8",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_slip/narration": {
+    "": [
+      {
+        "clip": "129f3a39055037f8a65411195518d0440719fdda915c759ce1a7fc46e7bc8c77",
+        "ms": 11807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_up/narration": {
+    "": [
+      {
+        "clip": "5e73d7abfbbd8ad0ce5b835956e180160480d8408461a865669fee8a914f9545",
+        "ms": 15807
+      },
+      {
+        "clip": "06a5e002727f2a7955d63a3140d95cdeb158ce6a7973035e8e19fd494576ce9b",
+        "ms": 1048
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "e8207c5834ffa90a40e08bff4e9f6773950c98cd39de71f58738624ab70c576e",
+        "ms": 2144
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_up/variants/0": {
+    "": [
+      {
+        "clip": "56c708eab3804b416072d040caa0dd20db0b2032803efbb48ade9347158e2e69",
+        "ms": 5507
+      },
+      {
+        "clip": "83b9f2e597cde27d42f74ead0598b4df3d5c27a28b6969abc8001a145721e16c",
+        "ms": 2045
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/splash_up/variants/1": {
+    "": [
+      {
+        "clip": "9dbfd295253b4465cda10c1f2100c9371b9cbe238bc2022b9a1339df2c662c1e",
+        "ms": 14208
+      },
+      {
+        "clip": "f883fd3a882f315a316bfb0649f7239a1347111ea297ddda454f581a98c8df52",
+        "ms": 885
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "e8207c5834ffa90a40e08bff4e9f6773950c98cd39de71f58738624ab70c576e",
+        "ms": 2144
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/stones/narration": {
+    "": [
+      {
+        "clip": "ec67067492dacde10ef2cfda6b7a93cd2d89dc7b8b913c79fd19b4cbb784624f",
+        "ms": 10507
+      },
+      {
+        "clip": "198dc74d9f59045e142f7f6cd0060ef370e0be631e870f051339e2d7e7236d20",
+        "ms": 4807
+      },
+      {
+        "clip": "f1ff9fc2ed36df0b4a8e363f5d2771114f995d4bccbb0a484321a59e01fdb2ef",
+        "ms": 1271
+      },
+      {
+        "clip": "9281a71b9b43ddcd6ea745964c6438bd981bd7defe80cf9f9f447c6ba99661f8",
+        "ms": 5407
+      },
+      {
+        "clip": "71ef9e4c1874d55c35270a38d91436516ac926f0059d5d055e82988f8682ebfe",
+        "ms": 3107
+      },
+      {
+        "clip": "8d3f692087f4c6aa1f646f296696720f2da06b3f4bee9e67f2a60580b495b1f1",
+        "ms": 8807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/stones/variants/0": {
+    "": [
+      {
+        "clip": "fc0aa0498c13c02d7ee42046eec4104e3fc0b4b680afde1c1b303c1c973599bf",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/supper/narration": {
+    "": [
+      {
+        "clip": "4d68fb86b1d8c6726cb8eb477fcb2b5a8d20ddd3ae0d824e59405054dc375676",
+        "ms": 12007
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_check/interaction/cue": {
+    "": [
+      {
+        "clip": "f6c3beb8ec634fd8c206e33792454944d89992da68d54fbf24a09d872ca7f07d",
+        "ms": 2934
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_check/narration": {
+    "": [
+      {
+        "clip": "fbe5a32e8898d705ba55803e83057e8ef2ab19d3297835d24924b487f624e29d",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_check/onAssisted/narration": {
+    "": [
+      {
+        "clip": "842a65afee598f1d5de043947a22462e4d268e426995c65b686c851f553144de",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_check/onFailure/narration": {
+    "": [
+      {
+        "clip": "952bf0c5156f272e306422f892b0960907ef2e4b67d719f36e62a4cdd7342def",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_check/onSuccess/narration": {
+    "": [
+      {
+        "clip": "243014f8c9268a5e556d0d84a7d016733ffb6e6b822522c37759fbbd64f87529",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_safe/narration": {
+    "": [
+      {
+        "clip": "0d3b01f88afe19da8ce72ec54bf20f8d4dce889839107b7404d235b5c57b3810",
+        "ms": 8707
+      },
+      {
+        "clip": "e875c3efc08b5b9abe19fd62073f4e98aaec4d2a87a03ea68de3ed5348ddc9e4",
+        "ms": 1086
+      },
+      {
+        "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
+        "ms": 812
+      },
+      {
+        "clip": "6d916c2a55c3a8a5bb41fc6de86f465fd35c6d85952d01169c5246999ab0487d",
+        "ms": 2829
+      },
+      {
+        "clip": "bbf2b6ef269d6739fb4d4072b8753a4cebbc07027850aa8e64fa0d56a6afbb01",
+        "ms": 2494
+      },
+      {
+        "clip": "bc8654a0c6a0d9e452447581bd05a5f7637ef968760d3828944e850c4e2c0709",
+        "ms": 2266
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/surge_safe/variants/0": {
+    "": [
+      {
+        "clip": "cc460c22c58cb80a2d9e9ac5fbb84aefb39a12636b7a3738c63ada56f3c13e9e",
+        "ms": 8207
+      },
+      {
+        "clip": "6e98ab3a82d1d66dae01dff468594c01a1babe59a9e16d42227ae6cb87e2e5d0",
+        "ms": 2821
+      },
+      {
+        "clip": "5f75f17dab9f2a96a1ea531ec40840a2ff86278ed169e675c3e5eefff66c4995",
+        "ms": 4707
+      },
+      {
+        "clip": "bc8654a0c6a0d9e452447581bd05a5f7637ef968760d3828944e850c4e2c0709",
+        "ms": 2266
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/throw_check/prompt": {
+    "": [
+      {
+        "clip": "bd929a2d3a3ad514a60e367c0fe94eb0310ed9739ed2f08abc0c05119c802d35",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tight/narration": {
+    "": [
+      {
+        "clip": "0b18d7b4b41e28a8dbb552657629a7e9a9fb0ae8bf550ebd79a1fddbefdf01db",
+        "ms": 8707
+      },
+      {
+        "clip": "33d3f75579c2b73f9a874dd3ee3f7c75ffab4f621edee6869a9dbb447b7c616b",
+        "ms": 2312
+      },
+      {
+        "clip": "a319b61ad6a5cd3f2dea04e099b8472780887cf90b1c3255c110878c8ca21f29",
+        "ms": 5008
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tight/variants/0": {
+    "": [
+      {
+        "clip": "ac906d8d8c1b8ccdb5c2d12c0c24f7d1d36e366a5b6e89e8b501caad38f76245",
+        "ms": 6307
+      },
+      {
+        "clip": "14c9ed3e5d416430356fb73082f5f91d471309798c410b31f2aff4b848c9fc83",
+        "ms": 3407
+      },
+      {
+        "clip": "551a0d439c84bea08463e653ead77e8012ff5f4530ad62e0a95913c31bbc1393",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tighten/interaction/cue": {
+    "": [
+      {
+        "clip": "d5b9d691ed4ff4d8f83a11ae929f5c40a0f448e6217c37f22f291d0ae009338b",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tighten/narration": {
+    "": [
+      {
+        "clip": "ccb1b531527a1b614265a149a6a630fb841ac2a0bc19cf99c953fa00463fc459",
+        "ms": 3807
+      },
+      {
+        "clip": "187e5e81438997b8127c67bcd48afa41f84f0cae5c1cc34522f14a179fda1076",
+        "ms": 4407
+      },
+      {
+        "clip": "ffb4efc9e91de06d4a06b57692cdfc68942880b2e52b67d969da907a4bfc813e",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tighten/onAssisted/narration": {
+    "": [
+      {
+        "clip": "41f16796fa8462834a0ae3d7e49f8c32b341399b4526c10c107f2c655950a498",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tighten/onFailure/narration": {
+    "": [
+      {
+        "clip": "2cf3fc820e115e12ca6e0aca4a1246af071ca6bb2ce8677de92d350cff4bc85d",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/tighten/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4112771e138f07fd87b83d2812fd6d88493627014de7491464d68b5776e4fc0f",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/top_stone/narration": {
+    "": [
+      {
+        "clip": "7d6fb737e7707628aa3068238ba5758e3a73461c75a241428202c20d9555a50f",
+        "ms": 12307
+      },
+      {
+        "clip": "6b1c52d28de3021cb5574893c362f9ddc91874cd4ddebbad2b296279fa2067a1",
+        "ms": 2502
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "2fc33372a3c23d58f07bae140ef07090c6964bea094874d090521aa5083d791e",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/top_stone/variants/0": {
+    "": [
+      {
+        "clip": "783e108b11c7d9660f0e59f2bccc54a230c19f870891f1d42e0b72585798edee",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/top_stone/variants/1": {
+    "": [
+      {
+        "clip": "c89783f05300e1bd5287a870495d9f29ed23f92d9b945370f950608c771b525d",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_check/narration": {
+    "": [
+      {
+        "clip": "8b5bab2d6ccd7e44b3df7389985d21c729d929b0bffb9a8d2387698ebb1f5086",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_check/onFailure/narration": {
+    "": [
+      {
+        "clip": "5e39d72dacccd4a384444980f8f9d61d8fee044d1f9670f14909f74db643c928",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_check/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ba1b76aef348e587b8670fb2294e8c9bfd2e8b173a39533ca49f8bc5897f298f",
+        "ms": 2390
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_check/prompt": {
+    "": [
+      {
+        "clip": "32e5908d38f49031c41bd3d20f4e9edf5affa07ffaea0ee73613c62581f4ca57",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_out/narration": {
+    "": [
+      {
+        "clip": "1c815bac4960065925ddfebd9af319911418be09607674906dc5c9cddae05a77",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_out/onFailure/narration": {
+    "": [
+      {
+        "clip": "c0a10421e4c6fc747be3c3b63ea5fb42d29b9a07c7ac76d4b13f3eee02e946aa",
+        "ms": 10307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_out/onSuccess/narration": {
+    "": [
+      {
+        "clip": "db4204a7ffaa98d86246752ee23311cbdad963c7e96eb391e6c78dc742a26646",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/trench_out/prompt": {
+    "": [
+      {
+        "clip": "6fe89234e5e1462024b5b0892956557c57fbbee1e64df3e4aae275a50631328f",
+        "ms": 2921
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/watch/narration": {
+    "": [
+      {
+        "clip": "fad2d71dac3ebb782364b828d06ca1e32633444c64a7368ead9bbc630216227f",
+        "ms": 10007
+      },
+      {
+        "clip": "f72491d0d9fc385fe717f4dfb5321e39218627bd9d5c65d3ac0948a54863be9e",
+        "ms": 1205
+      },
+      {
+        "clip": "ce610074785992df931e63e6724442d85d34375045f254a31f90bd959e184aa7",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/wedge_check/prompt": {
+    "": [
+      {
+        "clip": "eed5a0235121c0ab8d6794228c82ff251011f464db3bb653ef8616434459c3fe",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/wing_check/prompt": {
+    "": [
+      {
+        "clip": "16463429b6d4c7d0909e2f99435084a4a79d28769c65c593948e18d7ea383a91",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-boundary-stone-bank/wrote_plain/narration": {
+    "": [
+      {
+        "clip": "ae699f38236a4295b377120c35d49b0011512368ba4af483ec4eff3f91dd2a4a",
+        "ms": 9507
+      },
+      {
+        "clip": "f66ff1cc93d79ca1170db29583c71fe8f1999ccbeb6c012065a7c02eda1350c2",
+        "ms": 784
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "7e3b0427539560b1774041a6983176222495c43ecf2979e88ede91656486f157",
+        "ms": 1990
+      }
+    ]
+  }
+}

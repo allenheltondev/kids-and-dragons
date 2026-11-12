@@ -1,0 +1,1538 @@
+{
+  "riftlight-the-wrong-valley/@goal": {
+    "": [
+      {
+        "clip": "4877a7961251a7055d7a6d0f8bf58d476be8283312eea9e32f22b46cf0e627a6",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/@plate": {
+    "": [
+      {
+        "clip": "4a32b35099da4521dc05568a19f652f83f27bd80fa89130a65d9985a78542746",
+        "ms": 11107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/narration": {
+    "": [
+      {
+        "clip": "2bcd49c29d8ca7380e5a110bf15f64daf271be6f5c1ddc2269bbd3340def05b2",
+        "ms": 2385
+      },
+      {
+        "clip": "0a59f7c225b47d43c23814acee09a5c734143d7e0ce0b780652147f082655947",
+        "ms": 2378
+      },
+      {
+        "clip": "c03cba9a675e3bd735957ca8fb8751170a6886d1fb494c69381298d65a1d61ec",
+        "ms": 2251
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      },
+      {
+        "clip": "04c3195003eaacd376fc48f0343a0700ea35beb4ec582d0cf10563e56937c595",
+        "ms": 11707
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/variants/0": {
+    "": [
+      {
+        "clip": "134a4d6c7347dfe2eefa220951ccb2058e1aabfd8bef7ad6da45d35dfcf75859",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/variants/1": {
+    "": [
+      {
+        "clip": "b7faac336f41f705987f0ca13bf0ce0af022c4950f8436f89ed87917bba2c89e",
+        "ms": 2708
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/variants/2": {
+    "": [
+      {
+        "clip": "879bce66dcee48dfde708465c86cc32ceed2b2722c575501d8adb9044884bcf0",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/variants/3": {
+    "": [
+      {
+        "clip": "1666955df1deee6354246986bf5644005859a6c61132409f73d3194f9284f00c",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/variants/4": {
+    "": [
+      {
+        "clip": "ade65fe901cfbf027652a08db73f73ac7d2d52a4e9fb9c0a7edb0182122ba200",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/account/variants/5": {
+    "": [
+      {
+        "clip": "e55f9acf66cbfab9e416d41b1a4a762cc5e1cdd69c1bb3608d41bac767262a44",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/across_high/narration": {
+    "": [
+      {
+        "clip": "4cc4aee12d19093d759413fd0c301e3ff876bb8d892240db5e92406fd2eb7e40",
+        "ms": 5607
+      },
+      {
+        "clip": "5fa5821a347130fe35dc59fb14c0a576778593df9aa5497e596983327e5e0fa0",
+        "ms": 3407
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/across_low/narration": {
+    "": [
+      {
+        "clip": "4981aedf55e01642a8bf92dbb70b124fd056380df9d3ecb4fd2c1f19df6fb8e0",
+        "ms": 5807
+      },
+      {
+        "clip": "6d170e84155123472582893dff06e3e36a33ca96bff742e63e22b2ee12765604",
+        "ms": 902
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/across_low/variants/0": {
+    "": [
+      {
+        "clip": "22cc3682af1b411425acdfd3ad26fce182d0a8598150ab538242261dc90c190d",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/arrival/narration": {
+    "": [
+      {
+        "clip": "5e96fd520dd26c642dd2ac19be583bc4a319100f2f5bd46255f663033746ab8e",
+        "ms": 7707
+      },
+      {
+        "clip": "825abd8645a09d8fe60f32069812599571206ea9587935fb67beb5c4b50c6e63",
+        "ms": 1496
+      },
+      {
+        "clip": "95546619aaff744b98c0acc26b807e8ac206ae2edbe02fed1d11bfac2ad73f77",
+        "ms": 10207
+      },
+      {
+        "clip": "5fb36c3b7fc77221b8b8d92b4fac7526a7231088ac9dd81ef41fe88c7999a638",
+        "ms": 13307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/bank_path/narration": {
+    "": [
+      {
+        "clip": "bb7e121cf4f350ac0196ba9c9881f0b61c2b1d0aacfccf35daf767f30889c62e",
+        "ms": 7807
+      },
+      {
+        "clip": "79b88b0c5d32e61959f31ed851a1828d82741a33e94992b24acc34e0a4f64d38",
+        "ms": 1368
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/bank_path/onFailure/narration": {
+    "": [
+      {
+        "clip": "9860c1431cda4f605ba908449c88b03f46056c4bce3c44befab3f41826b8dee0",
+        "ms": 7707
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/bank_path/onSuccess/narration": {
+    "": [
+      {
+        "clip": "3c0af2d0a2361118817e3b2b22213845fae6b471d33012b42c98b9b34872efd6",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/bank_path/prompt": {
+    "": [
+      {
+        "clip": "72e9a016cba8afbdc5f489c4ba5eca052af673216af000ecd93e924610a922e2",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_board/narration": {
+    "": [
+      {
+        "clip": "be085aaac8d986d899ef364ed420fea712955a214f422a0323ddf8101fae5a6e",
+        "ms": 3407
+      },
+      {
+        "clip": "7b43ec3355f8f5347b0b6183496f3e285be87ffdee9ac73d369f0cd8700aa338",
+        "ms": 1454
+      },
+      {
+        "clip": "6adc9ce13c047b3ce4c1f56600725e2f8588bca9657f74a4f1f0ca87030b6805",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_board/onFailure/narration": {
+    "": [
+      {
+        "clip": "5f8c23bafa0ecc4a56b0efbde9d3acd7a6698a739a1a5237f0e471d063748556",
+        "ms": 9507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_board/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9070f588a224de04a913d5b4426f751da7826f150da888a26e94338007fa0f44",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_board/prompt": {
+    "": [
+      {
+        "clip": "4dc6b3f9b044f93139d287618050a724586b919e87d344ed1731a164ff14492c",
+        "ms": 3127
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_climb/narration": {
+    "": [
+      {
+        "clip": "e1c02ed0c9918b8d3bb846ca374a4ae62dfe1a8ab085981ba7afabfbf916b54e",
+        "ms": 3407
+      },
+      {
+        "clip": "e11b8d38d675aaab6b572892b00669fd5864e046871aae8073aec0ed90b9e451",
+        "ms": 1857
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_climb/onFailure/narration": {
+    "": [
+      {
+        "clip": "b80cb1b90b85fefc6dd935c966d79943d49b9a466e24aa506b9d0935ae422606",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_climb/onSuccess/narration": {
+    "": [
+      {
+        "clip": "81ef8db37bf0d231c5bd170a53fc04213f83170510a3afaaf7fa462aed773e48",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_climb/prompt": {
+    "": [
+      {
+        "clip": "7be9617dad1e03f67de037e91789d4585a557013d5e8eebc655e85d31f51f590",
+        "ms": 2312
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_guide/narration": {
+    "": [
+      {
+        "clip": "20315941e97b4395e84245d7c39f2ecbc06a3cd7a9952f6db589db2e2e868d44",
+        "ms": 4407
+      },
+      {
+        "clip": "96e046b0037a9681720837aa1fd696d3e6353acecf393daf61cb89fa4359772a",
+        "ms": 2223
+      },
+      {
+        "clip": "8233b5631d05e661be4a511ecdaa4bb1230e12a535625861cf2438eeee25aec7",
+        "ms": 1106
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_guide/onFailure/narration": {
+    "": [
+      {
+        "clip": "cfbb60b0a24239ae756fc373d6333670e3f3a6aead92c120b4120a377de5c5ed",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_guide/onSuccess/narration": {
+    "": [
+      {
+        "clip": "91d2dc78b777505fadda89356c1516479463267524a5f9135174a327a014a1a9",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_guide/prompt": {
+    "": [
+      {
+        "clip": "9ed96313ff1eb62663acf9d2e32fe2749cef66f8feabdf54c1d50fca33f80b1f",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_haul/narration": {
+    "": [
+      {
+        "clip": "1e948d97769c98043920de90e7f1491bb19280f5561f4d07da6395696e03e815",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_haul/onFailure/narration": {
+    "": [
+      {
+        "clip": "d55b13e36c36d82e374a6dd30a0ab12074a18928adcdc4382b305b0344119683",
+        "ms": 6908
+      },
+      {
+        "clip": "7049f887d094860c1425d05d89061fe7abcc13f155a26506d58057cc1cbac50d",
+        "ms": 1871
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_haul/onSuccess/narration": {
+    "": [
+      {
+        "clip": "29dfb0cbce0ada383f9043cbf1c52f5f3a16da69ae9862a0687b69eaab6bf4e4",
+        "ms": 2664
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_haul/prompt": {
+    "": [
+      {
+        "clip": "b914bf944a150efc7f0b782d7e6a3d89935f9913eabd259e0e787b015cf1a222",
+        "ms": 2960
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_high/narration": {
+    "": [
+      {
+        "clip": "9e37b3a4dd06bd327ecf483b02c4a92992d36ac91290d5dc65279e859051153e",
+        "ms": 4407
+      },
+      {
+        "clip": "d6fcacde1718cf781ec358f6d8dcbfbe86a84926aba54dcf3ae052220137afc1",
+        "ms": 3707
+      },
+      {
+        "clip": "07608802eddf2fd79a1e964597025bdc27942a3743155a8957b40da593fdf05b",
+        "ms": 1021
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_high/onFailure/narration": {
+    "": [
+      {
+        "clip": "fd6cc0c9f823193c13a6972900ec193340ead15f895d0344f8999410c5a7b2fa",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_high/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cbacd262baa42bb7ae57d4c7c81e652b3a2f0ab2c335fee610007b2e527aeff3",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_high/prompt": {
+    "": [
+      {
+        "clip": "169657dc2b605febf5231a900569a72fd36f1bcd0af361731a4edfc04cba40e3",
+        "ms": 2980
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_ice/narration": {
+    "": [
+      {
+        "clip": "988f69ccafc286b19b1eefe0d677ad4a5ee3091be5d8a14ac8651ecf561bda2d",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_ice/onFailure/narration": {
+    "": [
+      {
+        "clip": "08ed51a40573a6781286af4f4e961401a0b9348a9d9339a36652cd184e31e257",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_ice/onSuccess/narration": {
+    "": [
+      {
+        "clip": "97520fb8da061060bb80e4283b88376b4e0941f52082fff677bcc212c05e0cd7",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_ice/prompt": {
+    "": [
+      {
+        "clip": "1cd74a824b6ea75c24eaaf8ce1272d8e83978cc9480af5729b346ee6df706974",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_map/narration": {
+    "": [
+      {
+        "clip": "dc67c4287a794db4767889118f4b9403e00b063c975cd292a96f316228844751",
+        "ms": 5007
+      },
+      {
+        "clip": "235e8c27fe094e2aa71f1365598dfa4f1d03e86635b64b1eb7abee011d5be9b9",
+        "ms": 2018
+      },
+      {
+        "clip": "a880976354f73c2a25d520ea728197d23ef0dbb799506b70e8fec4ad5a13588d",
+        "ms": 1221
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_map/onFailure/narration": {
+    "": [
+      {
+        "clip": "794528db39bec7d1add8cda7e77f0bfcabecc09f35ae7968304b81c18770b996",
+        "ms": 8107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_map/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e2349d6f3c9dc230df093c9867dec15742c7a172ab021d2d5425fc00acd5f20a",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_map/prompt": {
+    "": [
+      {
+        "clip": "5d6c8272bb9924dfcd99efbac9107756dd5ec8d814641709827fd40b91c811e6",
+        "ms": 2875
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_moon/narration": {
+    "": [
+      {
+        "clip": "5e2d9512cf1a4462dc636440d7f13c9365c0d4483686143b82d0138a3f480359",
+        "ms": 5407
+      },
+      {
+        "clip": "2686ceebfbfecc30a6ad447733c710d7b804f0b34eafeb99b6fc7d46c617e706",
+        "ms": 2159
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_moon/onFailure/narration": {
+    "": [
+      {
+        "clip": "0fff04f8e6a94d70224628645307c7b12c3986939c53f4458b3cd87b52892893",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_moon/onSuccess/narration": {
+    "": [
+      {
+        "clip": "6a9667376bb02f077f0fad65b68a1e4ebea7385411daad24b03503bbcc395e82",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_moon/prompt": {
+    "": [
+      {
+        "clip": "eeca31b2d5c58579a415b67bc9d1e0fef797062b4adbfe80a94fec11c33169cb",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_plan/narration": {
+    "": [
+      {
+        "clip": "9ddfc28a449a93c64b06a41a24e17e9d5273f3e9706ef46029dbf727ce502f76",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_plan/onFailure/narration": {
+    "": [
+      {
+        "clip": "0d3634471896fca8157b4005306d0fb6590a6f19ebccbdb191a4a7f0d60784af",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_plan/onSuccess/narration": {
+    "": [
+      {
+        "clip": "d94359df7d0a617824059e36f1d2ec1a8e83a09ea693b12b8ad4b2e95ef6c577",
+        "ms": 4807
+      },
+      {
+        "clip": "7ad7b44b49b1a58d830fa88bdd2446934484264cd29005cc16e886d477a8c17f",
+        "ms": 1238
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_plan/prompt": {
+    "": [
+      {
+        "clip": "d0bf13c56c722077977f557ece6771b0ea2d78359015c2c691c84d9c50e210bf",
+        "ms": 2665
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_sledge/narration": {
+    "": [
+      {
+        "clip": "0586ef205564dca650034832a7e2857c1ef6b2a47a754497d1629730333fca94",
+        "ms": 5107
+      },
+      {
+        "clip": "ef36db9e61265e4333a97d65a04133931fa9a68a8766a8d4e2d7bb57bd4d3bae",
+        "ms": 893
+      },
+      {
+        "clip": "277a3fb2d991e38e9a955c4bef58f7ca271102d836698817b86be24c75309b03",
+        "ms": 916
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_sledge/onFailure/narration": {
+    "": [
+      {
+        "clip": "6ec9354d0309bdf932fd53f519a7019eb737af7046ddf553a8ce2ccbd96cce02",
+        "ms": 9007
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_sledge/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0c1641429d357727245b189e154b17bc5a583c9a29bd58ff78360f780c43e761",
+        "ms": 6327
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_sledge/prompt": {
+    "": [
+      {
+        "clip": "14a956022a7051ffe0ad7b60c74ecd03186255041348114ea3b19a874c78bff4",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_trail/narration": {
+    "": [
+      {
+        "clip": "0ff576648b992658c5b5af72d1b02ae9f4789b339e6a6e7b6733f1f051be0081",
+        "ms": 3707
+      },
+      {
+        "clip": "a01a704ca26759f95ce2c2592c436de1339a4532101794ccac00a00d834ff8e7",
+        "ms": 1590
+      },
+      {
+        "clip": "49ca3987572b65e51dffaa49f2bf233361f041238dcb83d04399ae257ce909a9",
+        "ms": 2053
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_trail/onFailure/narration": {
+    "": [
+      {
+        "clip": "92bb26e4836e6b1a5325b764e759307319a7b03ab9f57f151003f81e50381a63",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_trail/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ddd7cc32be33340661c80e2f8913eb36f514f3f2cb1067fb6e6d89749c60b586",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_trail/prompt": {
+    "": [
+      {
+        "clip": "4a43e5bde075dcfe3c0f923cfbf8d0d742d8145fd8d2c5c7158904afcc327652",
+        "ms": 2963
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wade/narration": {
+    "": [
+      {
+        "clip": "94a8b6b4fb1bb75d219378cbab635d9ae205ea372b31e5852af0db2fc0509d92",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wade/onFailure/narration": {
+    "": [
+      {
+        "clip": "05ed177e9ee59583debd132f04331e7c414b6b9cd4e0e14cd58c2655f1319ba3",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wade/onSuccess/narration": {
+    "": [
+      {
+        "clip": "655c079027875d23f7cd6bc0e1a4991440ffe7a84c4e7d90002822544da2939d",
+        "ms": 6427
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wade/prompt": {
+    "": [
+      {
+        "clip": "231ec8d5cf938ec960a1292137ac4bbfe94e58a6b107196033f7fa9118d66ec4",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wall/narration": {
+    "": [
+      {
+        "clip": "fd7aae76af03864ae6bc244204593d7b318d163602d6f8f8b2256db1a75dda9b",
+        "ms": 7907
+      },
+      {
+        "clip": "7623aa818ff17cd92f349b8016a46375a9c0e9c5e933ed4e7ee41cac45fba934",
+        "ms": 953
+      },
+      {
+        "clip": "078176e1bb604d04c96e8c95bdda42d45c7164bd0a36a30636e2fd67938efca5",
+        "ms": 959
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wall/onFailure/narration": {
+    "": [
+      {
+        "clip": "8b92c330a9ab948cb549ee4888ecd8b42db6461ec774f0976aeabba1f2885f5f",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wall/onSuccess/narration": {
+    "": [
+      {
+        "clip": "98efc7bdf8dd402dea4d8e909de310fee1640056e68386fc35b442c5afc7da71",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/check_wall/prompt": {
+    "": [
+      {
+        "clip": "d2ca936d22609abd3e91b0a36c479c4d1234490fe1483270a377b33e716533e2",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/crossing/narration": {
+    "": [
+      {
+        "clip": "855c14a5a1cdfe3d58404d9e17c9b15281181ee19365d9c26a138a7b5f3be74f",
+        "ms": 16107
+      },
+      {
+        "clip": "0376bac4180bbaef321e41379edfb6e91ca071bc19c30576be7855a1a571db09",
+        "ms": 860
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      },
+      {
+        "clip": "456b2829cd4780e1f02d2134a3299b58b42e839702d5640b94e9751fe3ea22e3",
+        "ms": 2561
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/crossing_flooded/narration": {
+    "": [
+      {
+        "clip": "fae0d010be37ed444c3e98336f111243a4432d09a53ff47307ebd3632394dc05",
+        "ms": 15307
+      },
+      {
+        "clip": "0376bac4180bbaef321e41379edfb6e91ca071bc19c30576be7855a1a571db09",
+        "ms": 860
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      },
+      {
+        "clip": "456b2829cd4780e1f02d2134a3299b58b42e839702d5640b94e9751fe3ea22e3",
+        "ms": 2561
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/down_valley/narration": {
+    "": [
+      {
+        "clip": "501f3eff655bce03bb0f9a822a9a6ceb05f98d7b8571cb904286cd76091461bc",
+        "ms": 5307
+      },
+      {
+        "clip": "b65ce0cfdc5b0ab51361f5438a0233eec441709711ba1b80875d549035ca0ee3",
+        "ms": 1120
+      },
+      {
+        "clip": "4324903bc81afbd9c5c81c2696efa8467a80d7c60364ebaad72a9c9f71bb57f1",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/driver/narration": {
+    "": [
+      {
+        "clip": "0c7e66af45f8f195ea8374139cac27d372bd97f99b1170f5bf00a1606815d1bb",
+        "ms": 2770
+      },
+      {
+        "clip": "8233b5631d05e661be4a511ecdaa4bb1230e12a535625861cf2438eeee25aec7",
+        "ms": 1106
+      },
+      {
+        "clip": "42711556a24c6a3d45a925a9c06296b53c26a21a5656963c18ec3a0a9fe72a5b",
+        "ms": 1566
+      },
+      {
+        "clip": "7f15ca2dd5ca08579c5fb502b638f789df860234d6da4f088cb28a6dd0ae1ba6",
+        "ms": 12707
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/dusk/narration": {
+    "": [
+      {
+        "clip": "95b95100638081c2ee0f20214f63cb649f9e9790cca82daac1d2918375c28e1b",
+        "ms": 15007
+      },
+      {
+        "clip": "4b3e4d39b2bb6371a20199161d7419ac680aaedf66c9ba1bba75fac35f46ac48",
+        "ms": 1092
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/dusk/onFailure/narration": {
+    "": [
+      {
+        "clip": "7cb2d9ef1bab562ea840a0f0e33802926bfe437a7cd0c50b9d479c9044be6e12",
+        "ms": 6607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/dusk/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a97db83f4084c83fc9ca35f7c98e08412016aa8474183d930d4227875618c4de",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/dusk/prompt": {
+    "": [
+      {
+        "clip": "d233ff7e003b2cb7bca1f46ba112ea54fc22c5e0584683f5c79d8ed4d38bb97d",
+        "ms": 2777
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/ending/narration": {
+    "": [
+      {
+        "clip": "d7232d47cff943503add2f1b5f8f53351e9754b7c328aa7c4a83152259deb595",
+        "ms": 18207
+      },
+      {
+        "clip": "7e96020e7035f7365e780af316c33649373fd45ae6122309c1ab4d7ff4ffa6f0",
+        "ms": 1333
+      },
+      {
+        "clip": "d4a4c06eb968da5fc8b830e9147f70badb695298c9a38b3efbf59a5896e3ced8",
+        "ms": 9707
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/ending/variants/0": {
+    "": [
+      {
+        "clip": "5aa4acbe87f70673227d3f936b0d6b30e9fab0044000a62b3500c3d47b07e479",
+        "ms": 6607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/far_bank/narration": {
+    "": [
+      {
+        "clip": "a92186759d9261c7338aa07557fbb2775cb4101204a7c6d198ed6f7361d65e6a",
+        "ms": 5707
+      },
+      {
+        "clip": "0569fbf6b5a45df38a21acbe77dffdc8dc8583bdc2385135f6f6b63f78e7b784",
+        "ms": 4107
+      },
+      {
+        "clip": "f447113f66cd5dfdd29cb3273ae88df2b89d448a35d39cce1d607597f1acd030",
+        "ms": 787
+      },
+      {
+        "clip": "d5c4fa2d11485ebbfb7a5acdd853a401a4d54d0f1b5976848afd7d5ffd94f21b",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/interaction/cue": {
+    "": [
+      {
+        "clip": "e8f1a331a3a18f0ef3c4f5b3021dad84872062951eff497679418051e542e876",
+        "ms": 2945
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/narration": {
+    "": [
+      {
+        "clip": "16c4aad1f377f01d6b89b2f495904d0fceade55989a490568100040cc05d4e99",
+        "ms": 8207
+      },
+      {
+        "clip": "f4a7fe5f37bde2d745ab6a0e4cfd99de689819538a01745e76eebb3c94807428",
+        "ms": 3107
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      },
+      {
+        "clip": "5661bee5330a68108698a1a38e9512ac229b1fd6565284b41bedba76fd7f1bcf",
+        "ms": 1991
+      },
+      {
+        "clip": "28050a72e9b76b2535ee90c0b50140ada5e1453b11f126ba6e3dd46f69454903",
+        "ms": 2097
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/onAssisted/narration": {
+    "": [
+      {
+        "clip": "35b49e48dfe5b69d12f0a36b8c40c4d17e6b4514eb08e5d3fe32521ba5a570ab",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/onFailure/narration": {
+    "": [
+      {
+        "clip": "a3e73aaf447010727da5a444e34653d94c2f6f06579c0cec5d53a20739eef703",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/follow_water/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7f6c70ee0d0425db5b89e9c016ee8ee62e0a460edcb0500f884f72e3a24aca69",
+        "ms": 3507
+      },
+      {
+        "clip": "e523b6c597221a33667fdc13aa2c4f1ea51dc51f602e5d6ee33ed2a87513834f",
+        "ms": 2540
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/fork/narration": {
+    "": [
+      {
+        "clip": "a306f4d36ab77480d38c0a304357b7232d7db844a8bcf4f03567997e4dcbb47b",
+        "ms": 18007
+      },
+      {
+        "clip": "cd7797fb1dc407d89a57d1e78d509c8bb53e945031e810a8c5946b566c356681",
+        "ms": 1975
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hold_ice/narration": {
+    "": [
+      {
+        "clip": "085eccd864199c9cd4423438e1fe9192ed5759ef7b9aae9a92c070a73c70f36b",
+        "ms": 7007
+      },
+      {
+        "clip": "2ff945eba4ca9c642dab860e3eb93c364365bcf2c125bc366cef5d907b62f84e",
+        "ms": 1363
+      },
+      {
+        "clip": "fdf1b3eba2798fb0c7cd3c3870800ec1f5521a4465cc683c986f868f76e74ac3",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hummock_jump/interaction/cue": {
+    "": [
+      {
+        "clip": "73c0d687c703014970374240cb97e3447e020b6144e30996397a2b342dac2eda",
+        "ms": 1541
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hummock_jump/narration": {
+    "": [
+      {
+        "clip": "4de7c072d6917e4f8f7910794ee71f6fe73e4e039bc6c22a2fe12d0468710bfd",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hummock_jump/onAssisted/narration": {
+    "": [
+      {
+        "clip": "f9ccf493dd8e0ab9b8b1facf460c2bdc8618c5518b7abfbc3bd064ba725d760a",
+        "ms": 7127
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hummock_jump/onFailure/narration": {
+    "": [
+      {
+        "clip": "b9d70f5db533c88fb0439e22f8f83effe4b42f1f69c75340afe6b6126bccfc78",
+        "ms": 10007
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/hummock_jump/onSuccess/narration": {
+    "": [
+      {
+        "clip": "285766abf743fce50174969d527a850e81f40b0d4a72112175a57356c268cb11",
+        "ms": 552
+      },
+      {
+        "clip": "db28183a79384f82e31b1355807c2405511644c95ba4d9eb7b3062800b7fb4d7",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/lantern_post/narration": {
+    "": [
+      {
+        "clip": "03012623337e0c5e33f0dc63e6e686e19da3c7d7e9da9202cf6a5abd7b1ff3aa",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/lantern_post/variants/0": {
+    "": [
+      {
+        "clip": "1950852299248e983fe6c7f926f3a1c8bf94815dcfddfca6da6b701532cc2f37",
+        "ms": 2900
+      },
+      {
+        "clip": "a67aebb3abad81bc2273a445026a606a972eb9f9c56303a54820328914b66890",
+        "ms": 1579
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/lantern_post/variants/1": {
+    "": [
+      {
+        "clip": "ec16f28172248ac771da90e3281158bf5028a5fef43d725f1b5a7be94a395bf7",
+        "ms": 2397
+      },
+      {
+        "clip": "97809bce796a0a432b7c182caa93506cdda3c8fc119fd0fb62da839f2ac1038c",
+        "ms": 1353
+      },
+      {
+        "clip": "c6692c6db3b59512cadc9a578f1d32a26899a5fdb0172ea71922fa6ad899b37d",
+        "ms": 1055
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/interaction/cue": {
+    "": [
+      {
+        "clip": "c4c304c0bf1b64253843d9edf8cef8bb85407dd08d36f42923ec5c62443ac0ac",
+        "ms": 2231
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/narration": {
+    "": [
+      {
+        "clip": "8aeac9079bdbf2ef7b40e6c76dc6d4ceab5ae9231b6271cb07427e691aa72f52",
+        "ms": 2159
+      },
+      {
+        "clip": "884f3934b78fbccdd2bd6d580be77a782fadf69ffc8c3818e3ccd6c6c00ee311",
+        "ms": 1908
+      },
+      {
+        "clip": "ff1955fdd5339668832d649e33bf9c0fea4846fa0c3826319bbc5385c6e555e9",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/onAssisted/narration": {
+    "": [
+      {
+        "clip": "13f51256c1a2137b6ca3a9156d0f2ae5adbbd10ba2b3f624786fc1d20fb4aada",
+        "ms": 5727
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/onFailure/narration": {
+    "": [
+      {
+        "clip": "791ead700bd754b156b099bbbd05f9ca7b49b9da114a109f7be96072f23dc22f",
+        "ms": 4907
+      },
+      {
+        "clip": "88165f00e9f79f321a83969f1ed6b81ea7717b5108adef7f0096398a77a071b7",
+        "ms": 856
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/light_lantern/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4d323621e8e4fb32ca6cba642861fdff00cada4209282d9c4335ed82084d0ec5",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/look/narration": {
+    "": [
+      {
+        "clip": "42c1551883da162da834fca7ed34fc4654399a45ff8e6df3f91241595c63bf1a",
+        "ms": 1212
+      },
+      {
+        "clip": "7f27883538f4f18c95e9e61de2af0803c7df7c474e25b8652e0ebc42baf52a69",
+        "ms": 5007
+      },
+      {
+        "clip": "a215d97bc5db39996386ab9ab24f2c818cd606681dbae1d4ff18ffe5be06b1ce",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/look/variants/0": {
+    "": [
+      {
+        "clip": "cc434e97517fe8ecfae8835e14a9716a41c6bf8cf3b38f96e30005227f9060ef",
+        "ms": 1415
+      },
+      {
+        "clip": "1c4a817ca8f154ff10274792d17c6341d2feb4ae14c76bb22bf25ead348a5220",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/look/variants/1": {
+    "": [
+      {
+        "clip": "37c2faa3dd277cd1ab219c36bbfa9a68a99a29a29cb9c008e424c6034a1cc21e",
+        "ms": 2998
+      },
+      {
+        "clip": "5a77ef3a1f3ad27fd1b71ce547b242e2f34dbdcd8c9a1befcc2643fcdcb893cf",
+        "ms": 1182
+      },
+      {
+        "clip": "a963ca948c305f51ed5b18f04b24840238ef32f92c2bc08def89d1aae9738052",
+        "ms": 1023
+      },
+      {
+        "clip": "b8d3cb0a516a18b5d9d9412030c453787951593f9804fc740304952130318625",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/meet_hummock/narration": {
+    "": [
+      {
+        "clip": "bdd5508fc8bbe58f3cadafea6ea6deb491f7b6ecbf9fc8dceed5f5982c5672cc",
+        "ms": 6407
+      },
+      {
+        "clip": "6fdb045a34a02a62ee28a44c26014584d8fa6ee27acf7edaddb1c56180096819",
+        "ms": 3427
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "62c92c23f643fbaf559b1a649962c119b05f2604e88fdf7caa7a91d7710237ac",
+        "ms": 8207
+      },
+      {
+        "clip": "36fb3066af166aa5c7cad4443d10f7fd0dbeb9be7e31c9d1b95ed476d052a5b2",
+        "ms": 1106
+      },
+      {
+        "clip": "2e7f0f2b85645f4e69d437ac3c16ffc6dd7b7cbc73e7125a87b62d3df985c714",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/old_falls/narration": {
+    "": [
+      {
+        "clip": "73d18ba247fd73b308ec9b5a00dadcdd4a67feca581373f8ad5a2995ef4559ea",
+        "ms": 16007
+      },
+      {
+        "clip": "518fd32f6152244667dc8fe461286a0746f3092c3622b3f1f269b92f0483befb",
+        "ms": 1311
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      },
+      {
+        "clip": "dcf9388cebc32f58ca78a37641d78f5083f08870a89e7a4223bd45f021fe08fe",
+        "ms": 1309
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/old_road/narration": {
+    "": [
+      {
+        "clip": "aefd4610983c3c5599dac3bfbbc55214f8fd483a4963178be98349bfc3c49094",
+        "ms": 13107
+      },
+      {
+        "clip": "ff8e05b2855d03e68e2e53f19236b8f6b01d712a6f7e61ba2715613990ce6355",
+        "ms": 1766
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      },
+      {
+        "clip": "787dffc5aa0224f4cc0c436b53935f98816986c0b3abe72869030ff8552d3591",
+        "ms": 1927
+      },
+      {
+        "clip": "56942f2f26a889987b7d666ab3c6bcd9cae8645e1865b3ff53d106962c239445",
+        "ms": 15307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/pip_dam/narration": {
+    "": [
+      {
+        "clip": "3a8911d96fdfdfa99a74d6986c3500e06210aa69cff7c5bc90d9c3f30ab6a0c1",
+        "ms": 1585
+      },
+      {
+        "clip": "3a76490a37e5bae4eac441fd9338a4891b85cc0408fb4d651fde3effee7715ba",
+        "ms": 8407
+      },
+      {
+        "clip": "251c4c39e508ae98a5be9b480f8ed0b3a7e7c8b135fbd75a8b2e0712cf8bd1ca",
+        "ms": 1558
+      },
+      {
+        "clip": "6675a2ece56c82d57ee8ed8c2f56ca885e94258fe40ea64da3eebc152974117d",
+        "ms": 12807
+      },
+      {
+        "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
+        "ms": 884
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/read_valley/narration": {
+    "": [
+      {
+        "clip": "44e9fb0488e40aabd8fc9be100333fe6ad321daa7bfd260f3c18337c3075f5c0",
+        "ms": 9407
+      },
+      {
+        "clip": "80d2e63c80ed5d75f451fd528fdc64ba94cd237592e8805e32d100f17a596b38",
+        "ms": 1567
+      },
+      {
+        "clip": "4bb6c3e90ed1ca33b72bef87bd879333053d2eb488b4392d03446bc06d5b3bdf",
+        "ms": 1556
+      },
+      {
+        "clip": "19647f763721928dad0c887c3d7290b04806b0f7d9c529053c38b7c58dbf2938",
+        "ms": 2451
+      },
+      {
+        "clip": "cac0394751c540d4499e9a3854cc1d5abc0e22fec2794c5efa1ee96b7760488a",
+        "ms": 2142
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/rest/narration": {
+    "": [
+      {
+        "clip": "9adef079326f134276e4c41d7932fa55e687670f41b418bf79f22f7cf5cfee39",
+        "ms": 12307
+      },
+      {
+        "clip": "7a7aa59dc822e070243f907c831075ce854f89f04a0151374d6321ca16cd1abf",
+        "ms": 2250
+      },
+      {
+        "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
+        "ms": 706
+      },
+      {
+        "clip": "5a5d1fca6178ff915e6e9b1edb52a9b9cc8ef013de259a2ffd959660a9988612",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/rest/variants/0": {
+    "": [
+      {
+        "clip": "d2e07c156d36cb6a5314c4abc6da39e3d981907c02a61f6411065c8d4aab808d",
+        "ms": 8307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/river_back/narration": {
+    "": [
+      {
+        "clip": "72b579fef960a889b6126128cd62fac7a313aab7ca5ce0254a2dff5af19d405b",
+        "ms": 13307
+      },
+      {
+        "clip": "3bf692a439ea31ec435bcfb9d700e3cd95e51ff37b8ba95ed8f6a2d8a7a50dc0",
+        "ms": 1547
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "82e78e3f86618ad31b409aeaf1c6ccdd842f2482712fda4d1f1e5b2cccec3c43",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/river_back/variants/0": {
+    "": [
+      {
+        "clip": "5be592dfd1d2739430beb49df77c94185c898d62bcbe20951103a669e0c6408d",
+        "ms": 1464
+      },
+      {
+        "clip": "25150ee9fb7139b3ff1c8744bdaa3ba0d87f4dab83097b3ae46b8d5ada93fbf3",
+        "ms": 1400
+      },
+      {
+        "clip": "0e7d6225914166d0e599ad6115f20f8359828b15e05891dc14bd2c75c1467c98",
+        "ms": 1666
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/river_back/variants/1": {
+    "": [
+      {
+        "clip": "5bdb58908aa42a3f3cd715fdb89c5a09a0ce437c7acf51e211c6326872f66cd2",
+        "ms": 3307
+      },
+      {
+        "clip": "bd47984ce6587aea125afa41c7e149397b2a35374e8d45fcdfe94c05b88793b6",
+        "ms": 1962
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/sledge_stops/narration": {
+    "": [
+      {
+        "clip": "551fe1a0bf46b63af481201f00d5efe88d4af3fce767076592323648f0ebda34",
+        "ms": 4807
+      },
+      {
+        "clip": "00c21babe5b4e21216813c0b3b88d5be8a818eda19fb691102ab04274e6466cf",
+        "ms": 1168
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "dc512947f7f4267b0b7acebd37791b7f037a8f444ab8b87b85d94d56ae5da57d",
+        "ms": 4207
+      },
+      {
+        "clip": "80351985ae6832c8ae3b56e546e0ba23fd7725bf8d83b5cf20806213ef8a8849",
+        "ms": 2931
+      },
+      {
+        "clip": "bac09973b9584fddcb934d3beca12473df25f424a2e878b74b292abeabed2986",
+        "ms": 3607
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "b7aaeee050764c2fe29dfc45e3d8214ac16d359b660cd0f7035018347717ff46",
+        "ms": 1783
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/snowbank/narration": {
+    "": [
+      {
+        "clip": "00940fc5daf913ca3545823851fcc77897c6fbf6b3cf566690122dd29835d4fe",
+        "ms": 6707
+      },
+      {
+        "clip": "eccf60288fd53dfeb1e20ba818154b78b072f68f35739998f04a470af4aead2a",
+        "ms": 2754
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/snowbank/onFailure/narration": {
+    "": [
+      {
+        "clip": "311f86871f25d99c4263e608719b3a7f9b02f931730f3936facb9004c1c74955",
+        "ms": 8307
+      },
+      {
+        "clip": "44fa4883988b38f1f4f2b79676b6ce4461beb10d025cf9dee13c7bf0af6490df",
+        "ms": 1663
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/snowbank/onSuccess/narration": {
+    "": [
+      {
+        "clip": "619d6f757aaa352a55c3e3ed89b6777a2da7f1141ad6bbf0d79c8fde130495b0",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/snowbank/prompt": {
+    "": [
+      {
+        "clip": "a906fcbc151b9b20ee2a44e6ce53a43306b8411dcefb71fbfc04dc3cfdb02299",
+        "ms": 2867
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/interaction/cue": {
+    "": [
+      {
+        "clip": "a01413a5aa3df2304404b82adeb0bd877a8b3b1cc79846aaca89cdf39fdf2de2",
+        "ms": 2827
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/narration": {
+    "": [
+      {
+        "clip": "eeaea495109b6896ff2e077a33c8a13f7ff15dc57b1fec9dc279883ef3cc4771",
+        "ms": 4107
+      },
+      {
+        "clip": "78e04d73eb7cbd7ab7eaef61f5a7101f48b59670a2cb43689e2b69373250c2ad",
+        "ms": 1960
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      },
+      {
+        "clip": "e2fafa10793a4ebfc96116a422c034afdfb9012350272c78e0788f62d199a0f8",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/onAssisted/narration": {
+    "": [
+      {
+        "clip": "bb79e4fbe88cd8c3c08ad84e9307a8854ecb8aee4f03d385d01ecc16d3ed4770",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/onFailure/narration": {
+    "": [
+      {
+        "clip": "0bc6b01af27033c68a199b2d6f643ed3ab4120ab00c2ef183179f11907c6a053",
+        "ms": 6007
+      },
+      {
+        "clip": "88165f00e9f79f321a83969f1ed6b81ea7717b5108adef7f0096398a77a071b7",
+        "ms": 856
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/stone_arrow/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2d0fed764af82f1a78d42b32f12db1c4e7064184bc3a648ca646bbad395d9dd8",
+        "ms": 2959
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/understood/narration": {
+    "": [
+      {
+        "clip": "f1a5937b36871eb5478ebb985911a6786775cc19681aa394b1c1dd09c99ef329",
+        "ms": 8407
+      },
+      {
+        "clip": "b9f1c66d50e4f54067eee9e21e7f54cba45d35d64fc836587a4ba3e90695299c",
+        "ms": 1461
+      },
+      {
+        "clip": "ac4783e875551528b6a78499a0fb0b42706afd4f77a309dec0ec3891f11996d8",
+        "ms": 1455
+      },
+      {
+        "clip": "c66ac7a84483813f864e653afa573cc53f1e561aeb6690c4d2a64a0b6916079a",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/wall_burst/narration": {
+    "": [
+      {
+        "clip": "78027e808728c4f02e9b74eb9a98a4b09f18571933bd4caba4f112366d1222d7",
+        "ms": 5407
+      },
+      {
+        "clip": "2125ddad02f7e272c9baff897cd1f37c5ada1b75886981ae8208b00c00c8e7af",
+        "ms": 2469
+      },
+      {
+        "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
+        "ms": 706
+      },
+      {
+        "clip": "5237da850c539bda0f60af03fb94c8998ca1505ab00209cbbc158d9e1c38e13d",
+        "ms": 2445
+      },
+      {
+        "clip": "1ef6db25ce9f98583142a573d12ea1f744161b5a15ae85fdf40ad3b7d943d632",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/walled/narration": {
+    "": [
+      {
+        "clip": "f4f2722237b010b93822fa34d542b71422889f46e2b9a8f51c51faa11459d740",
+        "ms": 14807
+      },
+      {
+        "clip": "40295cb5748dc422f9825b4d4836ed4ba979e5cbbfc408ea2ba8e24f59456262",
+        "ms": 2436
+      },
+      {
+        "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
+        "ms": 832
+      },
+      {
+        "clip": "07267e24a853cb28b0b8454e015bf4ba6cff26959e1b1e48d6a740a066e72525",
+        "ms": 2257
+      }
+    ]
+  },
+  "riftlight-the-wrong-valley/warning_lit/narration": {
+    "": [
+      {
+        "clip": "14d1fbf1485b3275e61e9a1eba47f53ec6b6edd839e0bf2306a4a41d0368afe9",
+        "ms": 5707
+      },
+      {
+        "clip": "10c1b08808e706cfdb2f029c353605d28393f4ad299dd40345605d3df0eada38",
+        "ms": 1799
+      },
+      {
+        "clip": "4c8f470a0c952b6bf0bc1f15b54451e01649927bd3b8a3d347a6f691a82ce8bb",
+        "ms": 926
+      }
+    ]
+  }
+}

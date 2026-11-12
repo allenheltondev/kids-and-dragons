@@ -1,0 +1,1618 @@
+{
+  "riftlight-wyrm-nest/@goal": {
+    "": [
+      {
+        "clip": "9a8fbfb16ec2a41e3c581dc8f70ae624b0f5ac31845f151e9523d92e4bcb4423",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/@plate": {
+    "": [
+      {
+        "clip": "31116530a797c03708b0ac120c86878f23f736ad28737a193dfbc94b34086598",
+        "ms": 13107
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/arrival/narration": {
+    "": [
+      {
+        "clip": "96ed3b6e5343628662d8fbb7ad25df2a35f18025f29fe60d93c4f2554265d0e9",
+        "ms": 7207
+      },
+      {
+        "clip": "fa370bf28713d69ab901e685fa09a85fe8a0ce8f24df143bbfe3237402b888f7",
+        "ms": 2206
+      },
+      {
+        "clip": "eb12db2776c4c051f750a0dd1ab97a2c2e78fdf414685b46f2b32d7c4a7ae5cc",
+        "ms": 915
+      },
+      {
+        "clip": "3ec839757d4f57ca003e52e9e82c60e307437698a4d4a57cd1c859666f650832",
+        "ms": 5307
+      },
+      {
+        "clip": "b964548a907533749d0a09ae9601caa6539aa6f49c3119c3c8bff7f19915a4e9",
+        "ms": 1598
+      },
+      {
+        "clip": "12b54c91a9f4114d63b148a6424b8810401adab70fbc7a1117ec7827c37c5dfd",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/builders/narration": {
+    "": [
+      {
+        "clip": "0e07f5a9f4235e2bb1c2e72df4d6d704f7c53e54315a09bbb6d3c2c066340087",
+        "ms": 12907
+      },
+      {
+        "clip": "0a682f8de42f168581fcf5129ba09c5cb6e2973566307942a9a1e2b048ff7f15",
+        "ms": 4307
+      },
+      {
+        "clip": "b60d6999a435c831e5a707097711bbe2ea829ee0b833e19d976275b5fee90018",
+        "ms": 2573
+      },
+      {
+        "clip": "7c661ead0cd49d6b466a3ec9b43cc320aef32be4db0d9299dc09d5ec82635708",
+        "ms": 8307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_blocks/narration": {
+    "": [
+      {
+        "clip": "ba980add675ff035e155bb83b060c6b8b96ccc180836394411baec9dc73b42d4",
+        "ms": 5207
+      },
+      {
+        "clip": "fc62daa802f184400d336d8385aece704f0dbb32450f85d1d2636b71c8c03875",
+        "ms": 996
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      },
+      {
+        "clip": "55a7c401ee36424667cd87d1592f5f97a28ec468f708d540f884d51631479313",
+        "ms": 1503
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_blocks/onFailure/narration": {
+    "": [
+      {
+        "clip": "e6f0d1a301fb71fed5b0a0202bf7f4c6156e526efb97992ca14c4cb160f5abc4",
+        "ms": 12407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_blocks/onSuccess/narration": {
+    "": [
+      {
+        "clip": "44933f2c9ea86a176c24faeeb362daedaf603f5ff4472d64e2bcfb1d15aa10b5",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_blocks/prompt": {
+    "": [
+      {
+        "clip": "a040101ccf3c512d2c13d96e6f0b9e06ba1dfb7ee630a6c846e0a4cec8ca3e20",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_carry/narration": {
+    "": [
+      {
+        "clip": "78e820a22a36ad195ec3873606b51ef33020f639b96881a75296fb58465678eb",
+        "ms": 6907
+      },
+      {
+        "clip": "ef1658ef78a2931478e422afff62858e97446b72138eebeb8c30504a73ff0c12",
+        "ms": 1536
+      },
+      {
+        "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
+        "ms": 1259
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_carry/onFailure/narration": {
+    "": [
+      {
+        "clip": "8f89085ca16a34e7fe4938c9d3b6373664ba3948c28f0b95160b1f19a080efac",
+        "ms": 10207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_carry/onSuccess/narration": {
+    "": [
+      {
+        "clip": "22058e0b40147382d35ef3de4ef5862d7e10e2e7321bbc3c75e1e481094f9306",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_carry/prompt": {
+    "": [
+      {
+        "clip": "c94444c4fe02d6ad565805d79c2ace916a692a102b0385b905b5898227e16dea",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_chip/narration": {
+    "": [
+      {
+        "clip": "cf1441457ac73af13c0984bae7f760a310b52cc819bb3d17ffc55ed67b92f21b",
+        "ms": 6907
+      },
+      {
+        "clip": "2a773ef1566b5e2c555d1ae188b5011b8676bdaf3d96bb9ddb4fdfc6e53be368",
+        "ms": 654
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      },
+      {
+        "clip": "74cb667a7571fc9b98051a43706f215ad2f975be3dbd0c974e19fc26339bc03c",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_chip/onFailure/narration": {
+    "": [
+      {
+        "clip": "58ee0c3cd66e09b522329816942cb4f99cacd2548076372a60c1df1d5732e9fa",
+        "ms": 13607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_chip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "877e2e0f5c8c6ec92f0e3f0b2eb7dd71e99f1338aeccdf086be7e83a3c700da2",
+        "ms": 7607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_chip/prompt": {
+    "": [
+      {
+        "clip": "c5fddd00804f6d0f31ade80fcf4f24cc9ce5ba2e3ad447a3ddb490ff241ab8fe",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_grab/narration": {
+    "": [
+      {
+        "clip": "7e8606ed5323ca05047704d49b319c17151f91caa0ad99c75f0e6f8eb305c5e0",
+        "ms": 3607
+      },
+      {
+        "clip": "8f3bc8194747913e7aecc13029186891c187e9705e64dd1d1c1115fbcee89dda",
+        "ms": 560
+      },
+      {
+        "clip": "57916d02e43913254d632ee0bbbd270b15e1a803d8b6f896379cca94e5f40a97",
+        "ms": 1355
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_grab/onFailure/narration": {
+    "": [
+      {
+        "clip": "dfa37c9aa0bffebb2bb88f72456a318925627a988dfbd3d9dcc214add9ea415a",
+        "ms": 2033
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_grab/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b24b5d738f0a64c210d2b8d44501436e517a81fd3e27ce1fdbae46641058a2dc",
+        "ms": 4607
+      },
+      {
+        "clip": "0d3472eba39f81fc1ce33f5bd81579be4114c341f94f24c7f8f098a1aa74bbc3",
+        "ms": 843
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      },
+      {
+        "clip": "1fa7f4b0d07a680eddea638060a459e29767320e4f10003bb25707cca0aac961",
+        "ms": 1508
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_grab/prompt": {
+    "": [
+      {
+        "clip": "97496335551602ea9f84f99c38e87279dbda3887dd248420073f6b8f1b136291",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/narration": {
+    "": [
+      {
+        "clip": "066be65af52bdae307c3473962b1c48e5d2380d89054c0fa35541a0cba1a85bf",
+        "ms": 2179
+      },
+      {
+        "clip": "dd5164a3a3e02d0e92e11b77268757e2103fc2e01e336423113cf41303e61a01",
+        "ms": 2325
+      },
+      {
+        "clip": "d7125d4fe980e2d04f3b238631507d084c40690d4f901c61e031180e89f2bc7c",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/onFailure/narration": {
+    "": [
+      {
+        "clip": "271d8bb8c58d4e75dbd676ddcf87298b9a9d835c76e84b9825bdc688d6389e7b",
+        "ms": 1339
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a00a3e67a1b552eb6cd4808391fff0f9ee0d07996240bd6d245363da1ca4e718",
+        "ms": 1385
+      },
+      {
+        "clip": "b334d4f3097942c6e9cb1301e56e0b58ce82853c28245ed3180bc5f4a339900b",
+        "ms": 5307
+      },
+      {
+        "clip": "2284a12219992f94c2d8cc3f9f17c72d78452ccbe4ce361fc72346382c5ffa18",
+        "ms": 2424
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pip/prompt": {
+    "": [
+      {
+        "clip": "ea0d54e68157661f8feac80e0b33799ca8b8b8e7059cca45bd8c7c0c8b367140",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pots/narration": {
+    "": [
+      {
+        "clip": "62a38ed7f6601ecdae562d07489e51247302e78391730ef3b0009d74fae7c1ef",
+        "ms": 4307
+      },
+      {
+        "clip": "f536856757893656eadb9906066d90b87b904b7834107bb1c44d7d22a3f14156",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pots/onFailure/narration": {
+    "": [
+      {
+        "clip": "f8162b09d1ceca10a7e43c1d0ea6f566e58c503097d8f025a10313ec1a403fae",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pots/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f5806277aa1ca8cd3cae668cb067e2e11a8d066cf14a443161bbe14a784209d6",
+        "ms": 7807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_pots/prompt": {
+    "": [
+      {
+        "clip": "0fbaf3261d1ae7257b60097782b065de65919bb164494dda4aff39fbf367ffdb",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_roar/narration": {
+    "": [
+      {
+        "clip": "d88268d1ac56eb3cbe57655243f1ce18535ed3a50dbfd22c0579257a6ffd90f2",
+        "ms": 5407
+      },
+      {
+        "clip": "d4d95cc955313070a0ab79b6b05c7ef96a01dd473411936be1445dbe71652f80",
+        "ms": 2077
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_roar/onFailure/narration": {
+    "": [
+      {
+        "clip": "dd02020b20196553605cc31553cabd1c805175b174d39b8c9efae04f7adf4215",
+        "ms": 7607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_roar/onSuccess/narration": {
+    "": [
+      {
+        "clip": "dd3bfa047d6d3ffb25b72b93f0a65b408a746277b55fcc023154f2e8a12815f9",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_roar/prompt": {
+    "": [
+      {
+        "clip": "523f32cd9f89ddeb25fea96a09b5a87fe67299f42a716590e32120acedb73310",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_rope/narration": {
+    "": [
+      {
+        "clip": "a70aa50b10c7ce9848fd7b94716e0233985f1caa9889a5f63938d7490d6a33ec",
+        "ms": 4007
+      },
+      {
+        "clip": "72f9c826f756883e8a131f092f3c59830dd1e27d561254a98a041f37e7b27109",
+        "ms": 1259
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "02559b7c93194a47e3de2e85553c6c87b2bc84b5cd2de43e5a022bb35c8bc8a0",
+        "ms": 3907
+      },
+      {
+        "clip": "7dbf43e5458b716693487c65ceb0bdba83fb731d60d6cfff38f2208263f90684",
+        "ms": 1404
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_rope/onFailure/narration": {
+    "": [
+      {
+        "clip": "666258a1cca6fabf56f838d97979df9245329abd768e60f773e18dd5e1748fad",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_rope/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4c0e1831202c76146f8fa6600de71b453fa59a78b976f7237e2455a28a943372",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_rope/prompt": {
+    "": [
+      {
+        "clip": "e8056e739e7a8352a923838efdcf15a9e7ed64cc3e98dfa2bea7d310c37b27d9",
+        "ms": 2936
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_snowman/narration": {
+    "": [
+      {
+        "clip": "0729f031c573d975fbf08ec11c9630196e5a4b918a2853f8046aeb98c9f3424d",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_snowman/onFailure/narration": {
+    "": [
+      {
+        "clip": "4ae78840c138728a9b725bd2251d6f342960e69e92577c009fe1d8a13aa265fc",
+        "ms": 11007
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_snowman/onSuccess/narration": {
+    "": [
+      {
+        "clip": "dee537eed54632b9113aa8b12beeecce3d8bce5ad73a14fa0282c64a655eeb4b",
+        "ms": 8807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_snowman/prompt": {
+    "": [
+      {
+        "clip": "14080fbd89ca6669c3308d8821e0a55057d0573c92cb011acc481af17a68a5fc",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_squeeze/narration": {
+    "": [
+      {
+        "clip": "c47b26e6d9037b7b8333c72e3987165f7bc3f432103c392e90081aab49091662",
+        "ms": 6107
+      },
+      {
+        "clip": "cb2fc4fbceaf55b6428d745163c29354a2c61d6d604c58876b5d760820c381f5",
+        "ms": 1231
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_squeeze/onFailure/narration": {
+    "": [
+      {
+        "clip": "923cf5647ba23ef96d2f23b3347a1864c1240ee3c6afd5e8b3e813b8f4447326",
+        "ms": 11407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_squeeze/onSuccess/narration": {
+    "": [
+      {
+        "clip": "335bc03b831fc16840fe4b05cf7a8ca28f69f329ac44058b9928e89e2367d9ec",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_squeeze/prompt": {
+    "": [
+      {
+        "clip": "a7bee195413551399370a0fab65cd25ba0978d3026a622667661af895aae669d",
+        "ms": 2790
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tail/narration": {
+    "": [
+      {
+        "clip": "a1c37457f47aa416cac233d990b7dbedd5d3c23ffe996cb0e8bbc04abc381169",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tail/onFailure/narration": {
+    "": [
+      {
+        "clip": "ca9e009c0f45e73e2d21febd82a99ba13d947ac7be9bd4032d3ae414e03ab89b",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tail/onSuccess/narration": {
+    "": [
+      {
+        "clip": "069a87769587e56860f089a0ec517ab4aa77f33483774b632323224f2ccb1d2b",
+        "ms": 8207
+      },
+      {
+        "clip": "044a07aeb725e19d32b8ea68858165287402e662efcf7c93545755a906603a6d",
+        "ms": 693
+      },
+      {
+        "clip": "9dac36881c2f9c77fe54fa457e2fc2be04b78f22fe1684fde441be8b5764320b",
+        "ms": 1164
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tail/prompt": {
+    "": [
+      {
+        "clip": "1cbf8e65a43fa5322fbe043560818fdabc75170ee938891f85296e7158478de5",
+        "ms": 2680
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_through/narration": {
+    "": [
+      {
+        "clip": "847eae52d5637490353d28944bf673a1c0034207ff2ba41ccd775ac5f85c1bf5",
+        "ms": 7507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_through/onFailure/narration": {
+    "": [
+      {
+        "clip": "dd7c8e8d257737f8ed58ec0ae974677d9414894755f39b4cf3da4720f2edaf26",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_through/onSuccess/narration": {
+    "": [
+      {
+        "clip": "6f839db99ceb42d3376c4103a41cb84c85bacb5caeb789741eda59256aeaf3c6",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_through/prompt": {
+    "": [
+      {
+        "clip": "5ac7acb04ffac0bcd90eb7ebf2ee780fe6ce5585db2d6cc911fcd8fde95c92ba",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tray/narration": {
+    "": [
+      {
+        "clip": "97e7310951e3e023656b267bd5b1ce5d7b358c55899e641fe3758942e72d51ef",
+        "ms": 5207
+      },
+      {
+        "clip": "f9ce391aa92a137e28f9587ccab2d67e06e776c43100a1a43fcb8e94d3c6f0aa",
+        "ms": 3707
+      },
+      {
+        "clip": "e751c6940b7381d68de88b8ac9f97c5c9bfef88d6bea74d4c2b9cd308d8dce72",
+        "ms": 1159
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tray/onFailure/narration": {
+    "": [
+      {
+        "clip": "eeb34c920afc64093cf4dfca45aa7716d49fbac4331c104ccf9763f69d65d868",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tray/onSuccess/narration": {
+    "": [
+      {
+        "clip": "167c2666eb9f10aa3091cc0c9fac94a6e0bdc9b460dede0aa6011e025ab1d009",
+        "ms": 6907
+      },
+      {
+        "clip": "b8942ac83c1ae36355e1e67847c0d2571e0e63c37652a7d5d78220049143120e",
+        "ms": 1005
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/check_tray/prompt": {
+    "": [
+      {
+        "clip": "fba6f089dc15b0eb91614aface1e9a1908a81b1ab4e06ce4869e052bdb26b235",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/deep_groan/narration": {
+    "": [
+      {
+        "clip": "9430f0e62ac6524d09edf6f40f1740a1eb81596f83ac1ab333e92d2ad283fd4e",
+        "ms": 18107
+      },
+      {
+        "clip": "45de7dabf7344807f6bd4a347c969a3cca1137905aa625b44f85650958252a2c",
+        "ms": 2144
+      },
+      {
+        "clip": "ab14f5f2b0ca57bb3420849193cef46e5141b56ea2011cc8964004050e3897a8",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/drive_prep/narration": {
+    "": [
+      {
+        "clip": "0d2f9ac41b10f9476a69634ef2328dbeb6e40d794efd7fdcb7d02be7d3e25bec",
+        "ms": 6507
+      },
+      {
+        "clip": "45a7599c0e62f8f40d77c269c455334e364701e32840459845cbaafbfe4e208f",
+        "ms": 1737
+      },
+      {
+        "clip": "ee72fdc92821f38619824c57f3116ea53c2408c754dd886a0887de638314f512",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/empty_room/narration": {
+    "": [
+      {
+        "clip": "24055f6b7c70cd29e311b2de2c71fbab0b4978dafceb693d42cf99ce40b81224",
+        "ms": 9307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/empty_room/onFailure/narration": {
+    "": [
+      {
+        "clip": "36449cd800450e80555f9c199a3d0420be679f82ea67a0cb85458d8802a1a080",
+        "ms": 10707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/empty_room/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e52cdbcf323fe397d052f8572baf72933bcbe5ea77e82983e79e3a42238b19a2",
+        "ms": 7207
+      },
+      {
+        "clip": "c02746e3c7ee54a008b0ab862776ebde39c173763d8eee582d3b22ba03601625",
+        "ms": 1081
+      },
+      {
+        "clip": "53e8b3619b712345d1cfabff491fcd6f0c8b90d6bfc8654555736be20d16d2c2",
+        "ms": 665
+      },
+      {
+        "clip": "83bab8f6dd98f43ab4937bdf21d1f65fc9fa10d1c3adb2f58536e6a4401911a5",
+        "ms": 2251
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/empty_room/prompt": {
+    "": [
+      {
+        "clip": "3cd813b5ce373dd48aeb5be04ec63dc3ca5c2e0a6af4f13729ab9bb570159696",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/empty_room/variants/0": {
+    "": [
+      {
+        "clip": "8744f486f94fc35c10ead0bd42f62754744635ef2a4c8cf9c6ab4cae4ce76b8f",
+        "ms": 4127
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/narration": {
+    "": [
+      {
+        "clip": "c26f6c82f0a3ba28beaf208646f6b597d14bc78ae65a97a506b272bac8a9f702",
+        "ms": 11007
+      },
+      {
+        "clip": "86469529f625e411d1c4cd695f30cae9759de8b89e3717209236e8d736d97490",
+        "ms": 3107
+      },
+      {
+        "clip": "3c4535692bb66d96c83310cdc10fecbaea5b471008ee677f52512497a4e825da",
+        "ms": 19407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/0": {
+    "": [
+      {
+        "clip": "e2ac6427d5ef3d431f954034965ab97465f358f2890957a7207933ff51f15bc5",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/1": {
+    "": [
+      {
+        "clip": "a0d52eaa5512ef44f7a65dd0d7d616040ecca422e96c76f74c6b04cf49d4b26e",
+        "ms": 2055
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/2": {
+    "": [
+      {
+        "clip": "ef2556b74f62977b9268c44d8f220b4f1fb42697b0cfd1e5a19f29bda5cfd295",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/3": {
+    "": [
+      {
+        "clip": "2901ea785c77db0150f00d91f21dc209b8b93f3a27ab4562da5b74094a943275",
+        "ms": 6827
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/4": {
+    "": [
+      {
+        "clip": "922a5d5d88e25aac097e52736b8f9bec8a3f0125a98b7874a530b5aa7c3c3868",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/5": {
+    "": [
+      {
+        "clip": "3995f0d07bc0f4e4cd97be9a2981a2706e769070879c07eceddae42249dfb181",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/ending/variants/6": {
+    "": [
+      {
+        "clip": "3995f0d07bc0f4e4cd97be9a2981a2706e769070879c07eceddae42249dfb181",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/fight_drive/narration": {
+    "": [
+      {
+        "clip": "cd0dc9f62e05c285114ee21091829ba1b39c391b479b129839c548ac9287487c",
+        "ms": 10407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/fight_drive_clang/narration": {
+    "": [
+      {
+        "clip": "42ba2ffcfdcb518f3f0f8a76ecba308dab2c0b788b95914a52331ccbf9176f7c",
+        "ms": 13007
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/fight_move/narration": {
+    "": [
+      {
+        "clip": "d7455fb3a880ee228c7e8d0173aa776d8c9fb7fd5504539a7c004c2342c8eb03",
+        "ms": 15007
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/fight_move_long/narration": {
+    "": [
+      {
+        "clip": "6bf86ebb334bb90472bcf23379805658b1175fcaeb23669d1e7dfe800bbb769a",
+        "ms": 17507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/flicker/narration": {
+    "": [
+      {
+        "clip": "97ff2ae56599f8eb9a191f00f6931ad0f63960a88e8493966967c7b762312f6d",
+        "ms": 6307
+      },
+      {
+        "clip": "46241164341be8fa430b70554a8d0156b82b1fcaa800b5ae48cfd72de4185d4a",
+        "ms": 2161
+      },
+      {
+        "clip": "a466431db651b8bfb34a6535e59a5175eee0d07809ced300599b5d73200015db",
+        "ms": 978
+      },
+      {
+        "clip": "1ce55edb3929d45fd9fa2b13b28cfd91affc65f1ddfb88fdd29f482b83633691",
+        "ms": 4807
+      },
+      {
+        "clip": "f956a7bdafb0d25464e352c504fd9921eba2ad3198dc9d2333a9a6f3abe98969",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/frozen_tunnel/narration": {
+    "": [
+      {
+        "clip": "1e2ff111e4a53cd9963bfb2c0f63841e304cdd9445463eb103e592248c877ed0",
+        "ms": 11407
+      },
+      {
+        "clip": "7b7855fa11aae481b469a704c10f65889ad1f0a9153f20e235cdc1c5a8afd8e9",
+        "ms": 2553
+      },
+      {
+        "clip": "bd0ba851a3301acacfb054c50e59d3a275a20ff25e31a05e72c277508018d8cf",
+        "ms": 2999
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/hide/narration": {
+    "": [
+      {
+        "clip": "782d2b2c6656d3ee482923279b9e3e1b9bc4379eacfb4066e00b88597351cd18",
+        "ms": 12407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/hollow/narration": {
+    "": [
+      {
+        "clip": "998a915f8ba31284e1b03109eaa80d2656f2392022c42e9ddbb382c0e574386c",
+        "ms": 11407
+      },
+      {
+        "clip": "79a265832449caee24b331f8029b16207a189ad816ff1d70a019d61b035c4505",
+        "ms": 1043
+      },
+      {
+        "clip": "7fad997d76984cc4baafae7b8aa4b8554607bb184c125fe99ef843284df80960",
+        "ms": 1341
+      },
+      {
+        "clip": "0cb803883a25dd072262170968eba08fea3c6555fb39b264d6063f9bc613a41e",
+        "ms": 1615
+      },
+      {
+        "clip": "afd03044605e64d21d876fc298ebef129da842baa77cb5396662819e7596d5f8",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/hollow/variants/0": {
+    "": [
+      {
+        "clip": "92cc0e7089922dfc5d53ed5618dbd5f2b7c3d8dddfdbdbf92c16cd0c610e546e",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/move_prep/narration": {
+    "": [
+      {
+        "clip": "a51c34f1ed09b8a557c541964e6e60fa438e69b398df7ddf22c3cfae84fe9f9b",
+        "ms": 7207
+      },
+      {
+        "clip": "b37e067d12832f636c90089e470702c74f50d6a05ed3f3d750a18caaf19aad6a",
+        "ms": 1360
+      },
+      {
+        "clip": "bea53bca908d023311dda5e3b483cd87a722248630d526bc8bddb46667968822",
+        "ms": 2323
+      },
+      {
+        "clip": "64982ac17ff9d73aad2adff849bfa4f6c304d969d50b7d8c8341824f700f027c",
+        "ms": 1859
+      },
+      {
+        "clip": "3377874cff439d04ee10000f5b6416d636b2bbf66ea98c8c69d8a9ccadfc0f28",
+        "ms": 2477
+      },
+      {
+        "clip": "cdbea78d7185b58339b4ccd0c92d5c496d9d5ff50ee01f7842b2edef179c27f6",
+        "ms": 5207
+      },
+      {
+        "clip": "e60b1156319bf2b026e7862616641b5ca5863d818c58e54f71c46c38dbaf1a5e",
+        "ms": 1619
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/murmur_last/narration": {
+    "": [
+      {
+        "clip": "4fe0d2b6ba5803706435f7a00ac272ea17fcba0ab48fca015f6ad3a50029b505",
+        "ms": 2899
+      },
+      {
+        "clip": "7ce865fa897b9353e21a53f6ea8e73301479c5730e1144214f32b077d999e7cb",
+        "ms": 2902
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "124824fc36d4a50cdf88a9fde93685010ac642892e5bc2e6504314aba8a768bf",
+        "ms": 6208
+      },
+      {
+        "clip": "c38f4811a014b3ff4d6e5af5cc1d7a433ecd5c26af3e109e8dfe35b2c9bb4d96",
+        "ms": 3207
+      },
+      {
+        "clip": "835b05c384cd7d96f1261869ddeb92a3af526dd6f7e3acc8c67e8dfcf0fdbb90",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/murmur_last/variants/0": {
+    "": [
+      {
+        "clip": "06128af0cf4707869bee07022f3d070eb3ff0c2b3d4bcdca9ed27195e488d310",
+        "ms": 6608
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/neighbor/narration": {
+    "": [
+      {
+        "clip": "fc3db43dfad3b0d59bfb771435f8582596b0b158db920aa29162d83e8156e17e",
+        "ms": 9607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/neighbor/onFailure/narration": {
+    "": [
+      {
+        "clip": "2c66fae308a9fbb74244367b33b21489eb43a65f8ba41faaa397ff7d5094f7ce",
+        "ms": 10007
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/neighbor/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1f21f5973ed072598abf40bd3468a18b848859782b4cd4eda400ed36c998939b",
+        "ms": 9707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/neighbor/prompt": {
+    "": [
+      {
+        "clip": "ef4acf4937a25e866620bf3ae8002a91ab3a189e3eaa047540478081d01530dd",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/nest_kept/narration": {
+    "": [
+      {
+        "clip": "d822ee3343649a5bb74da76f0af4e1c1830473e85736c2d5f2f350bc2903ffff",
+        "ms": 19007
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/nest_made/narration": {
+    "": [
+      {
+        "clip": "bea46af9463beff3aeb05a46a7d6c787caf4771ee8ea70ace1d2d1f81db782ca",
+        "ms": 13207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/nest_made/variants/0": {
+    "": [
+      {
+        "clip": "0660d2a11d0a1ad3889638a38beced99b7ef008ecdd17a04f7058751261a09ed",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/new_wall/narration": {
+    "": [
+      {
+        "clip": "4cf0320e8d9fe8bb5df506880aa536032455cccb0ee8c93fc1133688f4076048",
+        "ms": 19507
+      },
+      {
+        "clip": "6278a2e179e19b382e8f486a8da31fde3bf9171bce60267b590cdaca93de8aa8",
+        "ms": 1701
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "d36136a7f39975ef73b5219355c24f2eebd87b1d10a76879b8188927c36c7cd8",
+        "ms": 1404
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/new_wall/variants/0": {
+    "": [
+      {
+        "clip": "61143cbf1b89ef4aa6090f32f77aa3cfb9e118641014c16581747b4f7b6d35ce",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/opening/narration": {
+    "": [
+      {
+        "clip": "95d316cacd1e4816da483c1a00deabfb8f2bedaf56bf7e79e1cca46b83723033",
+        "ms": 2166
+      },
+      {
+        "clip": "5b2cadf589e789ba8f6a69aa8a909097897835ef05f99f621342ffd3b0cd8df4",
+        "ms": 1119
+      },
+      {
+        "clip": "6be77eacdafbe3565bcf5429d5432bb2ea87a768b97d63402d30f7764b63411a",
+        "ms": 1788
+      },
+      {
+        "clip": "64db3c964fd2608ee6ab6b1701827df153b1407a3af1d9a7ec9c91995a03e628",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/pip_poke/narration": {
+    "": [
+      {
+        "clip": "872bc2bd268f20764f1fdf41af62f967ac83f5466008d24384f05c481dc9252a",
+        "ms": 3508
+      },
+      {
+        "clip": "374422d1e107088ada32130961d6aef848de30e21db78351d2844665209ab153",
+        "ms": 4307
+      },
+      {
+        "clip": "81df5503f568000f88eb9b1f3f4bd0b62db5c8a14e75253d2889e733651fbab8",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/pip_pokes/narration": {
+    "": [
+      {
+        "clip": "d5cbab08f09f6d0e28594e7c66e51edcd99522aded6547f2d14edbd7e6c4e2de",
+        "ms": 15807
+      },
+      {
+        "clip": "4719f7f18074017d9f92f1ad91d08d9b16d49c3ab2b938e72d9efe819d401018",
+        "ms": 1504
+      },
+      {
+        "clip": "96435c406e1646f98cf80d17c48577ae46ef93b2eada2cf4c3df9a4b85efc53f",
+        "ms": 1266
+      },
+      {
+        "clip": "52472bd9d6a4d75b7c47a774b846220d3c56b97c750b35e0a5120783b81c5aa8",
+        "ms": 2324
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/plan/narration": {
+    "": [
+      {
+        "clip": "eee1ca1050558daf2db39af1fc12c8932494152504524713f09f5dcdcb2e7e1c",
+        "ms": 4807
+      },
+      {
+        "clip": "ff5c5b80f44323e921860b0d16b765b80b78873daa45a9be4911467ad937e32c",
+        "ms": 5207
+      },
+      {
+        "clip": "856f3314cc8675a08dc35e443f4ca6f16c5eedea955b105b54f9e322f3fc1994",
+        "ms": 1258
+      },
+      {
+        "clip": "2417c655c0f0c402bd39f0f09bd910667874594bab471d4133eb7cc2c492a630",
+        "ms": 5307
+      },
+      {
+        "clip": "217bc06d998f76c3faaa50f5c0fbcd4ed36952321f35333054a2f6683a6cbcf1",
+        "ms": 1765
+      },
+      {
+        "clip": "410a63245a955c65034afee700e6ad6bbb1a5290acd64181e89d8f15fbe8a56d",
+        "ms": 5207
+      },
+      {
+        "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
+        "ms": 884
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/plan/variants/0": {
+    "": [
+      {
+        "clip": "ed09614611230e669ac492baadc00d3af8d8fbcaf07453c478c5cebf0e93abbd",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/plan/variants/1": {
+    "": [
+      {
+        "clip": "fe00540d1fe04bd5e9adaf4da5d6f9b08e3e3ddf294e91fa17655bb40d5f9c46",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/readers_come/narration": {
+    "": [
+      {
+        "clip": "b26a4ee516487000f263dfb0dafe3357295edda4c70f29d1334a93cfb20582c1",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/readers_come/variants/0": {
+    "": [
+      {
+        "clip": "3f87e0087d8ba738029fa30200a57740a30eabf4069c00eb5a4e851967d81bc2",
+        "ms": 3607
+      },
+      {
+        "clip": "1c7e4b87a87ebdf7ff7762a3af16a82cf6c0193fa31f0339ed6d242886438a54",
+        "ms": 1786
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "2ad0eba18a52a548a5e83ed5ab89bc80a7e9ef53241bbd8b8cd00e27a0ec7fd6",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/readers_come/variants/1": {
+    "": [
+      {
+        "clip": "0ddf0c348fa5f5ce936f6b07ca3e8b6c8c868372fd42177dd29e0ea19580b3c9",
+        "ms": 4907
+      },
+      {
+        "clip": "a743172a47b43db4f4dc3e1f0adf7a5be15851ff55b56dd013fc304b4cde289e",
+        "ms": 1161
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "912ce2fbd8d9db02f3073164090462568d66261896f2c00eeed00f10bc810de1",
+        "ms": 1095
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/readers_come/variants/2": {
+    "": [
+      {
+        "clip": "4829c04763f75ee3332ce34f652211baa3ab0be701705da504af014476e7f3b4",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/rest/narration": {
+    "": [
+      {
+        "clip": "bf407e7f453799cb280e2b2930cc9ad54bfbb018b59eb489316d532a6b6d1c03",
+        "ms": 8107
+      },
+      {
+        "clip": "0fdbb6e81939a9f834aed50e6baf6a4352553f8f473507705db3ac6641382ba2",
+        "ms": 1463
+      },
+      {
+        "clip": "902193b371e3850dfca8541e0e206b14e5d3bf68a40dc9f438ddc3cd161be7e4",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/rest/variants/0": {
+    "": [
+      {
+        "clip": "a37623a66d87b0948682ff2aec1b3722cfb2540169c4d8356ce1f1fe93fa9422",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/rest/variants/1": {
+    "": [
+      {
+        "clip": "8bd43837fcb898107253a2213518fb813d08235742a21eaf96e0b6add9e96f9e",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/room_won/narration": {
+    "": [
+      {
+        "clip": "22372ea396bfa8f36859f4c628593ed4f56e4854188f830344ffe998cf957548",
+        "ms": 3907
+      },
+      {
+        "clip": "77ab0da63a43da087fcef1b69a826a1f1e248cc8aa3387f2ac9dabf04ece43b1",
+        "ms": 902
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/room_won/variants/0": {
+    "": [
+      {
+        "clip": "6f65fefb16b29f9c605db891406615d67eca177f2aea1c10bb6906a89ce89f76",
+        "ms": 16307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/room_won/variants/1": {
+    "": [
+      {
+        "clip": "cd1487b96bc3ea99dad237b3e12965aebc4b9520cc0326697b64b7ed24f49739",
+        "ms": 13207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/room_won/variants/2": {
+    "": [
+      {
+        "clip": "949829097c11aedf48cdd33cdda8c0a239a417f624631b30c2542dea294d22f8",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sacks/narration": {
+    "": [
+      {
+        "clip": "ad70bcc269731a196a404c0cd4a8679548b3ca2815fff84dcfc9ce4d528a48a2",
+        "ms": 14107
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sleepwalk/narration": {
+    "": [
+      {
+        "clip": "097bfa28d920c528a594dc65b72282ad3e05a580e3135eb2dbb0b1ceeb5a13d8",
+        "ms": 12107
+      },
+      {
+        "clip": "22b7ef550fe9fcb1182ce47c0a8652cbe8cffabf8ed6010b4a25f01655f450f9",
+        "ms": 640
+      },
+      {
+        "clip": "94e5960d1a3eccff29ba1c15d8f1231d75f5d73472ff1f5956d33d9969ce654f",
+        "ms": 1625
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/slipped/narration": {
+    "": [
+      {
+        "clip": "18547db1c7c5b5d7ba55d4c1edf56734227ff227aa6cd801f24978000ab7dea2",
+        "ms": 15507
+      },
+      {
+        "clip": "c057f26fe5c6e18f17e2b1c7348d2a0666f463fa941ed39a241ac340a20f642d",
+        "ms": 2382
+      },
+      {
+        "clip": "53e8b3619b712345d1cfabff491fcd6f0c8b90d6bfc8654555736be20d16d2c2",
+        "ms": 665
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sneak_nest/interaction/cue": {
+    "": [
+      {
+        "clip": "c6bdb18890966dfa766563a90de2246a02c6120023459cdef9d3af5e5dfe971f",
+        "ms": 2238
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sneak_nest/narration": {
+    "": [
+      {
+        "clip": "1de8046c348efb68a473e7dce82578fac46e556f30334b8def50e47ae9b9d4b9",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sneak_nest/onAssisted/narration": {
+    "": [
+      {
+        "clip": "ae14bbb610df86f3085995ad930dd2404fcfae1d151d10385713e2b6869d85e3",
+        "ms": 1133
+      },
+      {
+        "clip": "e13cbd32411fa03f054c2cee1a8a04ef142159026984eef6eda8e001ece1f8bf",
+        "ms": 634
+      },
+      {
+        "clip": "2e8d1d020c82818928c5fc8802c19c27e983d5867eba6d09f2ad8c84e09f221b",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sneak_nest/onFailure/narration": {
+    "": [
+      {
+        "clip": "ba3cac4e1dac803d4152e23cbd770317a812e56562a3fc5cc1762147e3d4e42a",
+        "ms": 11507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/sneak_nest/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b4f8a270b73f517894bbe9f73ad506cae95497a5dc621b6fb0ebdd82765edbf9",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/star_read/narration": {
+    "": [
+      {
+        "clip": "19fd09aaf81392c1131964cf2c64a334278cee66f88598935dca3475e9dae1dd",
+        "ms": 12707
+      },
+      {
+        "clip": "0a55349d377ea2ff795d4f3262fa14d7caf048f473536d5d8130e98314159721",
+        "ms": 1547
+      },
+      {
+        "clip": "1a04af8a54e910dc341bc4acdc978292175026d67aa4a6cc780398f363822c13",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/storeroom/narration": {
+    "": [
+      {
+        "clip": "70273144852cf309a90e5c31181ec31a32210eeb346d66f4830f26707d25c6ad",
+        "ms": 1730
+      },
+      {
+        "clip": "38960831985f7c7dc605b007b483bffbd123bbdfcec0f91802df358799747182",
+        "ms": 1914
+      },
+      {
+        "clip": "2f06c3c16555e1fab65be8974bc4c9b7945beb04da406b96456da3ecf17a78b2",
+        "ms": 8307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/storeroom/onFailure/narration": {
+    "": [
+      {
+        "clip": "8a6c2c759ca9505962df086e9921e0bdcf328c894142e09d8db76b2ef92af293",
+        "ms": 10607
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/storeroom/onSuccess/narration": {
+    "": [
+      {
+        "clip": "94a744f4c0929a965bec148a0823dd10929170305f3bd5fdffac447654dc5285",
+        "ms": 8927
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/storeroom/prompt": {
+    "": [
+      {
+        "clip": "2883d6f1031bae5ebdaab9bf807d97b9836f299c40493504badc6e35f534ed9c",
+        "ms": 2506
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/the_nest/narration": {
+    "": [
+      {
+        "clip": "aeff35c674cf6fa74244033c5a2d8b6e1cc4eabbc1b6a37631ff6b1e74ddf21f",
+        "ms": 23707
+      },
+      {
+        "clip": "6115ead55ca45dbe4b7e3f631f399457a2ef41ee697a1859940ff5fdba1ce378",
+        "ms": 1224
+      },
+      {
+        "clip": "5b2cadf589e789ba8f6a69aa8a909097897835ef05f99f621342ffd3b0cd8df4",
+        "ms": 1119
+      },
+      {
+        "clip": "619fe5f564dc7b0d67855eb7ba1273d8bbd0d9e8892a313f689b118b4666933c",
+        "ms": 2155
+      },
+      {
+        "clip": "10e4f14405c38f7611177e60cb0eb0492837ebae195842933e7fa5f2a9e5862e",
+        "ms": 1124
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/narration": {
+    "": [
+      {
+        "clip": "133d3c7476468980db4c5f4798414c13415b0b5f9c3e6e86f2a3249e3fafe1e1",
+        "ms": 7708
+      },
+      {
+        "clip": "de471fc43b8bcb23d776ef271205c264def2923d206f373ac5e98b69b6611ba1",
+        "ms": 743
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "e11ff7329c8b67e78f856883d1eded34ee200460b05111d671f719c05c06c1c0",
+        "ms": 1447
+      },
+      {
+        "clip": "0afed17480f1100f20223156d1b6e7ba3a40eef86466f129b520d00d784a168b",
+        "ms": 2307
+      },
+      {
+        "clip": "962342a8da5913ce0f101b3b613b5c5302060aaba169e06cc842667b369736aa",
+        "ms": 3307
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "bc114b4cc1f7e0c9ed3623972dcbca807a0ae5fc422a1eeea3cb655dba8736fe",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/variants/0": {
+    "": [
+      {
+        "clip": "00c892a308c1d02a60361636b803de081a3903ae73f64cca1315ffea032bbbd6",
+        "ms": 4007
+      },
+      {
+        "clip": "4526a20c0a3d6037c7cd806a9f30aef276e3a30356bdae54e993a293a5118e4d",
+        "ms": 898
+      },
+      {
+        "clip": "7a2284b3c1818030bfc768b8b41726bc671f7e3f7f06f75b3d89d83d27be81ea",
+        "ms": 2547
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/variants/1": {
+    "": [
+      {
+        "clip": "6062af2b47a79828a69f87e0e299a9f14d6b7e58d109069fe71d92b8d49b0a2c",
+        "ms": 1665
+      },
+      {
+        "clip": "ac8fd66e0eb47d4d53b442f566eb97ce56278775d39d8f0c59c8397e5a67bf8a",
+        "ms": 761
+      },
+      {
+        "clip": "0b732925f7d5c4655f93b5b285c6a7bd9859d49e901f2eb5b4c730085745bae5",
+        "ms": 771
+      },
+      {
+        "clip": "b3a2f81f617d08cc2ebf37b01364b224ef5f607ea4f41cc412628fa7b24a1b97",
+        "ms": 926
+      },
+      {
+        "clip": "a75fcb29c29413a0c813f132d6b08b0124669a206c871cc1d339c610957669e5",
+        "ms": 1449
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_room/variants/2": {
+    "": [
+      {
+        "clip": "9e54611b8d174d95074a46c258014687d85829995ac1aad9885bd7b22de3faed",
+        "ms": 4127
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/tuft_talk/narration": {
+    "": [
+      {
+        "clip": "4d28a94ba87c4c885bcfa05bb41b8bb551eb31c1e708b773ee11519c053f3578",
+        "ms": 1329
+      },
+      {
+        "clip": "93ff52894bef4250bd750711e771a9cc764bd20463018917a4008f18f96546f8",
+        "ms": 1450
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "c66902ebd8324a233235e9f88d3825eef79b0b5a8bafe7fe3ffb92638c6387ae",
+        "ms": 2175
+      },
+      {
+        "clip": "6a21233d5cb704bd808d09bd883cfdcbad70fab2aac11f97e11222f6b34a5013",
+        "ms": 1369
+      },
+      {
+        "clip": "3781548e646dfd0b1558c56e719bf36c717eed3dcce16a17c7e80e2afa10fad7",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/walls_rest/narration": {
+    "": [
+      {
+        "clip": "1600dd78ae77969b23d46fcd4ae5f0cd60214e013070e8a494acfa327f603aaf",
+        "ms": 1574
+      },
+      {
+        "clip": "e114b9fdb83ec99c00986ec1618b935fdc43d75861157ada8929d3737de15e1e",
+        "ms": 4007
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "17d8f358df67ea643e3c15a2d1bcc669b3c274dc749c5c6f85f5d5258c6495ec",
+        "ms": 2814
+      },
+      {
+        "clip": "9c9bf1e942ba763a34cc90408d60d93778cde5cdbc56553d6e95f516f7d26344",
+        "ms": 9207
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/wyrm_lore/narration": {
+    "": [
+      {
+        "clip": "d2dd145f7077dddb2be5478792c5a227b5e3bf9a5171d3a5829c7a42ff7f41f7",
+        "ms": 3107
+      },
+      {
+        "clip": "aa98f00c76fc514f880337795fb96180d1dcd7bb31303975036dec17053959bf",
+        "ms": 3507
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "5b1dd1ca161e220e129aecfce5eab6e4cd9554cae61c25d59ccf4f1a2fe3faf7",
+        "ms": 7907
+      },
+      {
+        "clip": "d200c833ca306d68c8a3e675cd616ea756ecaf4c646aef3ee7f42b5c14357afd",
+        "ms": 1558
+      },
+      {
+        "clip": "6620bb7e4ccf873d3194f5bd46dd646119c3bff76e253504fe70d87ce8e9003b",
+        "ms": 1234
+      }
+    ]
+  },
+  "riftlight-wyrm-nest/wyrm_why/narration": {
+    "": [
+      {
+        "clip": "6d7e10af77d04582fe7a7e2cdfde8dfff1e53bcc0ae85b606e14ae51e1d9af29",
+        "ms": 7807
+      },
+      {
+        "clip": "21583c4ff2624280b085b067152cf82c97e725803982757646ff29c56acf6b4e",
+        "ms": 1811
+      },
+      {
+        "clip": "3b8a9d41df0e0026f410b2f28a832e81ef2b120be63f7df6671f27ce61d80870",
+        "ms": 1322
+      },
+      {
+        "clip": "1da43244e09181dc4c29f922dde133a918d413a7a6b3e54d7f96c340b0b0c115",
+        "ms": 4607
+      },
+      {
+        "clip": "27f084b31c576ac635598df93288d96aeabe2ba27a747abcfd39ec854fb1d575",
+        "ms": 17507
+      }
+    ]
+  }
+}

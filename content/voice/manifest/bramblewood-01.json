@@ -1,0 +1,326 @@
+{
+  "bramblewood-01/@goal": {
+    "": [
+      {
+        "clip": "50bb4a931d4a53c38857d98ffc736718c17fdc5e6d208169a47f12a45fd47a48",
+        "ms": 4607
+      }
+    ]
+  },
+  "bramblewood-01/check_door/onFailure/narration": {
+    "": [
+      {
+        "clip": "fc561ce4a7dcbfb43c91e50e8d2d893cacac55eb46fa0cfd13166c8657c07fda",
+        "ms": 13807
+      }
+    ]
+  },
+  "bramblewood-01/check_door/onSuccess/narration": {
+    "": [
+      {
+        "clip": "fe7da43e721aa1de151e22d9272dea002c9ff9490d887e5b4dc8f68fa9f8bbfa",
+        "ms": 10907
+      }
+    ]
+  },
+  "bramblewood-01/check_door/prompt": {
+    "": [
+      {
+        "clip": "c32f79c8ba75f0ee4df2e05e4c7d538acfa9de29623c2226773ef72e7a76d0d6",
+        "ms": 3407
+      }
+    ]
+  },
+  "bramblewood-01/check_gate/onFailure/narration": {
+    "": [
+      {
+        "clip": "ccfeda46fbcda83a75fb1c8983ae9865ee17d5bee41fb6a187956a7561c8116e",
+        "ms": 6007
+      }
+    ]
+  },
+  "bramblewood-01/check_gate/onSuccess/narration": {
+    "": [
+      {
+        "clip": "70b262ddfa9c96ae24d19e8c3967ef28d71d39d8d13b27cc7053f7016d163a76",
+        "ms": 6807
+      }
+    ]
+  },
+  "bramblewood-01/check_gate/prompt": {
+    "": [
+      {
+        "clip": "fc4af45babd5a3e01b38d78a846369fa6eaf8e1627a463082d43491d661dcdb7",
+        "ms": 2241
+      }
+    ]
+  },
+  "bramblewood-01/check_hum/onFailure/narration": {
+    "": [
+      {
+        "clip": "ff086db64d353da80a2000535d627593125c47946eb5751205ab15876f700c18",
+        "ms": 9907
+      }
+    ]
+  },
+  "bramblewood-01/check_hum/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ae3e854dcb91cea61d9a4c5fae0bfa0175a5e52b30790f48292ad3e1562b3c55",
+        "ms": 9007
+      }
+    ]
+  },
+  "bramblewood-01/check_hum/prompt": {
+    "": [
+      {
+        "clip": "1863035b0274e84a4aee2b7862c36b9bf0f897432ac09f6c8af758d9ffd97f71",
+        "ms": 2230
+      }
+    ]
+  },
+  "bramblewood-01/check_squeeze/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ce825754dfd0644e235ab93cab2e745ad0a77c0b07916a68829dd121332b990f",
+        "ms": 8407
+      }
+    ]
+  },
+  "bramblewood-01/check_squeeze/prompt": {
+    "": [
+      {
+        "clip": "d65bb34103ce9f05f4db7e1f6516e3c40ec2db63cc9de28694834fe06f5a16cf",
+        "ms": 1554
+      }
+    ]
+  },
+  "bramblewood-01/check_wisps/onFailure/narration": {
+    "": [
+      {
+        "clip": "ea39c0f9f901a1b418011720e382885937cb95235ffc9820f5bbfb2d94341961",
+        "ms": 5227
+      }
+    ]
+  },
+  "bramblewood-01/check_wisps/onSuccess/narration": {
+    "": [
+      {
+        "clip": "875fdf8c9432470a56e307237d5489d66a91770717bc16b2a6b68888a3f45909",
+        "ms": 9707
+      }
+    ]
+  },
+  "bramblewood-01/check_wisps/prompt": {
+    "": [
+      {
+        "clip": "cc550665b80b86c405d34702002fb017891f10b93f5768a7fbf4fc4cc8ce46bd",
+        "ms": 3207
+      }
+    ]
+  },
+  "bramblewood-01/choice_point_path/narration": {
+    "": [
+      {
+        "clip": "1cb745e78506d90c9dcff2de0838a60b444720ef154156690bed4621a9d13b98",
+        "ms": 11507
+      }
+    ]
+  },
+  "bramblewood-01/encounter_bramblewisps/narration": {
+    "": [
+      {
+        "clip": "e11ab21132b005ce2221ed50b37131ae43b47f58ae6f0bc597920639076850fe",
+        "ms": 5407
+      }
+    ]
+  },
+  "bramblewood-01/encounter_bramblewisps/onDefeat/narration": {
+    "": [
+      {
+        "clip": "8ab9cc793511657e36931506a8673a0a3dcdd03b53515682644285ea480956ba",
+        "ms": 6307
+      }
+    ]
+  },
+  "bramblewood-01/encounter_bramblewisps/onVictory/narration": {
+    "": [
+      {
+        "clip": "20e2f60e19e9b2d4514f3b0b3e73a6b0e273655ffb63ac2c26a45a840b67c70b",
+        "ms": 8407
+      }
+    ]
+  },
+  "bramblewood-01/rest_lanternfall/narration": {
+    "": [
+      {
+        "clip": "be5126002c9631ec20afffab586f62be49e11f0f55d51cb690a221380e6a0b08",
+        "ms": 19907
+      }
+    ]
+  },
+  "bramblewood-01/rest_mossbank/narration": {
+    "": [
+      {
+        "clip": "d737af22602d075a1c7219b10a7059c93d8397676db109e87bb0a8787aa47ade",
+        "ms": 15807
+      }
+    ]
+  },
+  "bramblewood-01/scene_bundled/narration": {
+    "": [
+      {
+        "clip": "792ef1f6a1ef2ecd8c0e4b03a33a477f6e1b35aaa05d3071578f0e304b3420a0",
+        "ms": 14507
+      }
+    ]
+  },
+  "bramblewood-01/scene_crown_door/narration": {
+    "": [
+      {
+        "clip": "a4a5eab6d6a208c5e327a3926ffccfa53a709115931cba24259d617e0e949dfd",
+        "ms": 11407
+      }
+    ]
+  },
+  "bramblewood-01/scene_door_listen/narration": {
+    "": [
+      {
+        "clip": "fb3a7e41956683e4090b0d516fb8f651e8b0c0de2b6d6a62783780239523e1bb",
+        "ms": 3207
+      },
+      {
+        "clip": "a04255e740edf7735f19b62896bd4afa4aec251c6c9173d538bdc7ee27ea4782",
+        "ms": 3107
+      },
+      {
+        "clip": "2b97bcd85eed664196748fd8660389b725efe9f3480e634b37099a28059e8c5b",
+        "ms": 1413
+      },
+      {
+        "clip": "4c07a067a9394d93b1a54391015506ebadfaf910a428a7d7a0a578d73c1bd3b8",
+        "ms": 1708
+      }
+    ]
+  },
+  "bramblewood-01/scene_first_clearing/narration": {
+    "": [
+      {
+        "clip": "5446f5e0866b553d564a7836c7fd93841e22edbfdf20968b041575aa75b883a4",
+        "ms": 12707
+      },
+      {
+        "clip": "e02bce149f773571d734ed309e33956ec1991b5eede2a4b5dc9ac4f9f499ef02",
+        "ms": 2312
+      },
+      {
+        "clip": "b9cdf16115e147c49b8555a4d8d7cd059403d5abb36ac66419f41ab3be6edec9",
+        "ms": 1086
+      },
+      {
+        "clip": "84cd69fff89d5bcc16179c2d23c2feb4e641eaef7023aa8c8338d703a0008a1e",
+        "ms": 4307
+      }
+    ]
+  },
+  "bramblewood-01/scene_hedge_wall/narration": {
+    "": [
+      {
+        "clip": "5a2568d04f8eb11acea19aa8b114dd930c0158de8fb42689c1bcd373791b87ee",
+        "ms": 10007
+      }
+    ]
+  },
+  "bramblewood-01/scene_humming/narration": {
+    "": [
+      {
+        "clip": "43faac1d986856b2857f6c313d35ea9f4ff5fef3ae946be3fc2bd5cb3774875d",
+        "ms": 8207
+      }
+    ]
+  },
+  "bramblewood-01/scene_long_way/narration": {
+    "": [
+      {
+        "clip": "3a30fa6d4886b36b998f1d54831c36c61a84ddd1ee5830f7630fb0e2e3288e0e",
+        "ms": 10607
+      }
+    ]
+  },
+  "bramblewood-01/scene_mossy_stair/narration": {
+    "": [
+      {
+        "clip": "78555f0cc20959601cd984242a584dc38bcdb69efac6d9310bc68c28a453878e",
+        "ms": 11207
+      }
+    ]
+  },
+  "bramblewood-01/scene_pib/narration": {
+    "": [
+      {
+        "clip": "9594af1a7dc058f88b88db4c898e54c033401eae37f3c2187e9ed7e57bcf3719",
+        "ms": 935
+      },
+      {
+        "clip": "d80774d1149df8eb2a6412650b2d4d8bbb9c6973113a2302cf612c57b9447a5c",
+        "ms": 950
+      },
+      {
+        "clip": "2a41343959659ff9086f7d6ed158b68bc5bd481b65f92a4628850b09f0194204",
+        "ms": 6707
+      },
+      {
+        "clip": "7c544a6819fabae753cf135c356611f6ad072533f6f10845c3affc240b203dfc",
+        "ms": 6307
+      }
+    ]
+  },
+  "bramblewood-01/scene_scouted/narration": {
+    "": [
+      {
+        "clip": "7352687501c8cc30b708f8b63ab10352ca2b76240b79001a6e00bac878922cfd",
+        "ms": 16207
+      }
+    ]
+  },
+  "bramblewood-01/scene_scratched/narration": {
+    "": [
+      {
+        "clip": "f79a0f5b9dbd274589df5e37ac04cd5749116d4af5d0368b036fb55ed3e15403",
+        "ms": 10907
+      }
+    ]
+  },
+  "bramblewood-01/scene_shrine_hollow/narration": {
+    "": [
+      {
+        "clip": "19c9d002df83b53ff298b6a3c05c5ffda3fd88f2513d14c425834a97922ca647",
+        "ms": 17307
+      }
+    ]
+  },
+  "bramblewood-01/scene_singing_stream/narration": {
+    "": [
+      {
+        "clip": "bb6cc584b0a51480db77f33f2695a69b15904ce227b4d942ea3167826b65d909",
+        "ms": 11707
+      }
+    ]
+  },
+  "bramblewood-01/scene_stone_words/narration": {
+    "": [
+      {
+        "clip": "868a8a24962d422a9e39fbd3840a72374998bb4f60530b5dee27f3d1934d6ea9",
+        "ms": 13507
+      }
+    ]
+  },
+  "bramblewood-01/scene_wisp_friends/narration": {
+    "": [
+      {
+        "clip": "2b13210aef9536df4666bea5c0933a0b9e578919fa53238dffb3bf70d0da3032",
+        "ms": 10707
+      }
+    ]
+  }
+}

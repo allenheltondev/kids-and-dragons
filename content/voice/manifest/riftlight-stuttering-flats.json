@@ -1,0 +1,1490 @@
+{
+  "riftlight-stuttering-flats/@goal": {
+    "": [
+      {
+        "clip": "a9ba3baa28253184cea6655f8f74177446a53e3e8b1e03be683577c789f23734",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/@plate": {
+    "": [
+      {
+        "clip": "a9443a78eb789a9bc8a3ed73ae9f9c2ce618b5a51329c638dc2b53fcbb9ead3b",
+        "ms": 10707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/arrival/narration": {
+    "": [
+      {
+        "clip": "d88dcdc3648be1057c7b5bf38f1bb5e835613dd80f41a8960210676583910547",
+        "ms": 19007
+      },
+      {
+        "clip": "289b519c282748c52b3f845b55ed107ff3284627f60276ee68fa3005ef01e11c",
+        "ms": 1781
+      },
+      {
+        "clip": "4429c9dbf9aea51ae3f067052b11ce27f5369af4e66de272349e3cdcd5f0f02c",
+        "ms": 3707
+      },
+      {
+        "clip": "865bf7d76a6b0780a883406a3546f84ccd15233c7a69a548020915365e77a168",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/at_goat/narration": {
+    "": [
+      {
+        "clip": "342d9e2d1b8514e9e249526cdd9b1fa84a04a9faf05ab658b807d4aff05c5afb",
+        "ms": 12307
+      },
+      {
+        "clip": "54a784815a21f1abb1f32aebc5f54145a0f659cda9cd2bb3f9910c2fb2f544d5",
+        "ms": 3107
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "459e9e2d1eb8108338048b7a8988e514be7d1e20310da42d795fbe976986f0eb",
+        "ms": 1098
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/bigfoot_lift/narration": {
+    "": [
+      {
+        "clip": "a27020f6760ac1b2acf7265162b7e4f41099168697dc03b853167c959eeabe18",
+        "ms": 10407
+      },
+      {
+        "clip": "274dca65057323565cb867bcaa4f7a6f3043b6449405b14440a55b925e3ba56a",
+        "ms": 1114
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "80a866a460a2633daa759e285fdcc8df496fa39f66eba316364d200ca81dc9f9",
+        "ms": 1356
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/boot_lost/narration": {
+    "": [
+      {
+        "clip": "f48d866f12760ac9cb917f640aa2e4f9aaba849b8089616847c14b3c9baec840",
+        "ms": 10907
+      },
+      {
+        "clip": "159f1b3a6797dd6f9093969f0c79b390d2282f48762ad55f71ee97acd3cf6e3e",
+        "ms": 1013
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "2085f44257f908dcaf46ae1884de5e612d409579427d93b459304957027eebf8",
+        "ms": 1841
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/calm/narration": {
+    "": [
+      {
+        "clip": "31a53f7218fcf37dc228a17ba0fb5b29b18aed3d745b131f761f712adef622ee",
+        "ms": 5407
+      },
+      {
+        "clip": "0d614accf5606c94ca803877b0139ef31da9fc714abb616346524125c5fd5779",
+        "ms": 831
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "f46bd87f0041afebcfb754cfb685e16bd74f0b1158ddc959e703880609c8a6a8",
+        "ms": 2531
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/calm_song/narration": {
+    "": [
+      {
+        "clip": "eb5bafeb111fa125df371afee26b3d3f594213f6fff39c068407f0281380f63b",
+        "ms": 8307
+      },
+      {
+        "clip": "27c395a69c1829142a5ad2090677fb3a3892aeddb9c0cacfea9544ad53098e86",
+        "ms": 1413
+      },
+      {
+        "clip": "362e7f1adb0de644c4606636d5f7eec5d2d268ce0179cfc4c734b3d75e33500e",
+        "ms": 1070
+      },
+      {
+        "clip": "c1be437c309581af079808dd0c8a4ecd1736db921d35feba86c4fd5acccfdc44",
+        "ms": 1949
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/calmed/narration": {
+    "": [
+      {
+        "clip": "dd2be8f2e0aff9120df3944406c4211a82b25c6d7093392e63b5c1eb9c8e4f26",
+        "ms": 6707
+      },
+      {
+        "clip": "34fdf9811e2a0c7bc8d52d754c6ab49da3f78e49e226c92a8f52462c014c0a89",
+        "ms": 702
+      },
+      {
+        "clip": "00f5b70bb8cb8a5a485a0ac9b0b28d558eaf3c2a3bb0d5d5a09c0db3bb559158",
+        "ms": 1815
+      },
+      {
+        "clip": "672b9332dd057ba13e7f82437adf4f19a7114440ec2766778cdc837a578b5e10",
+        "ms": 1719
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/catch_goat/narration": {
+    "": [
+      {
+        "clip": "6c4ccf14f0653939b23e21e99443270c56ea1057c26e016345ba606fba5ef9c2",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/catch_goat/prompt": {
+    "": [
+      {
+        "clip": "39d753ef7db1d41b70d5586c41d875eef40f82c6e2dbdf8ce7987345c4dc3996",
+        "ms": 2758
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/caught/narration": {
+    "": [
+      {
+        "clip": "694e93b03134b5e90ba57b7122e9a8064d7ae99ae5f343b89eb28d948de1cc70",
+        "ms": 6907
+      },
+      {
+        "clip": "ac49a0f9a89fd998b06e9655357f56f4657c5b25d820f6dcdab0cae26f6971c1",
+        "ms": 1974
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "936f010139afce82409b0575cfa813fdcc173e8405d18d4f1c160b60e55b7aa5",
+        "ms": 2195
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_call_blink/narration": {
+    "": [
+      {
+        "clip": "11494d7df5f5785d4490786f1bc4ce5f6c39b12e57edca07a9ace50dd2b89cbc",
+        "ms": 2170
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "eb2653e6a1a528c82a0b0af18a7fe069a62d67d541c157230a7e2eb4b06c2877",
+        "ms": 1338
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_call_blink/prompt": {
+    "": [
+      {
+        "clip": "61dda2a7388d0718edf0febf5cac32782f3bff717c8c7d27f596c528e6a89906",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_dash/narration": {
+    "": [
+      {
+        "clip": "afa924b8e3f7679bc302f155ddcdcce38c445af09f28cbb215df68bf50b9e5d4",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_dash/prompt": {
+    "": [
+      {
+        "clip": "6ba5db94e2060b248fa0c1f5f5ee3013d61794b37188f2531559e7c35f2ed491",
+        "ms": 2988
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_haul/narration": {
+    "": [
+      {
+        "clip": "ad819d57547e18c993e00a7b1f2c334d227b94f681ddce8fd8439d3cdfc0d546",
+        "ms": 3207
+      },
+      {
+        "clip": "551b6f576684c9f10286a08630efc605827c3f7eeb1c6580d29038a616a64cbf",
+        "ms": 1207
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "c3ccf75b5608dc226e6b15578ca0b09a3ad6469e9e39ebe7c4eb63a70d4c5c04",
+        "ms": 2875
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_haul/prompt": {
+    "": [
+      {
+        "clip": "d0f2592aee6e2329c053dbf6878ae512ed5b912164d633f21430abaaaadde704",
+        "ms": 2148
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_hop/narration": {
+    "": [
+      {
+        "clip": "b31ec29871abe99ec338e5d3501c6a9f780602b2c0b7712642f41aa4ac150379",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_hop/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9ea4c746909dfbcae5b695f6ede870014e4fe4b4e9caac4705717b2dddfc6288",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_hop/prompt": {
+    "": [
+      {
+        "clip": "6af60a3a807a2d57650c75fe20de6248c4230c92142b944915b9b246ef751f38",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_horns/narration": {
+    "": [
+      {
+        "clip": "443c5345cb89ca0b5c5d535eb76c25f2755ef38d59e10bafd6e453d6762a471f",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_horns/prompt": {
+    "": [
+      {
+        "clip": "64db9da61eaea464bc3b955b04038876df034b090323d394e5d4b542b764e392",
+        "ms": 2761
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_jump/narration": {
+    "": [
+      {
+        "clip": "8575179d5c4c20fdb55c4eb3d261aa326a48ef146a51484ec47e4681a0212984",
+        "ms": 4307
+      },
+      {
+        "clip": "c4a3486043292d81b272b8898e1e76977dd53e953a024c50b31ce884703d7984",
+        "ms": 1001
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "5057f4e158230ad9888c39bfd7f8df17b6407ee778e6221f5b6555d95203931b",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_jump/prompt": {
+    "": [
+      {
+        "clip": "f35381bcd5f6ed785f84e379e9c2827a4533c1b8d4025efbba7642eb0454a34c",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_push/narration": {
+    "": [
+      {
+        "clip": "9fe858f709da20ba50335b347dd4ef89c57370cc00d570c6d246d2bf57dca0e9",
+        "ms": 2047
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "6e02ad97a2048fcf05d072ec032d36dd42cebec2c2b9e3b3477da80d862ebf18",
+        "ms": 1589
+      },
+      {
+        "clip": "d00d8a2e21448863fab4bc5d22c89ff42579dbcc37f242daaca4706d14ec2e79",
+        "ms": 1722
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_push/prompt": {
+    "": [
+      {
+        "clip": "b397146d33a3b1a48f9eb948d1b99880268bb3646f6c575c0ad748a96b46b285",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_run/narration": {
+    "": [
+      {
+        "clip": "5a52e139054d189f9b336ce095b299bef36515abbac390deb8df36f27a668489",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_run/prompt": {
+    "": [
+      {
+        "clip": "ab69c70968fe0a175482210c9948fcfaa3e2c27a80854e3d1afc1ce41c5e265d",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_scoop/narration": {
+    "": [
+      {
+        "clip": "8cea373b90a0ec80b43c1c8e99b609a0cd7a520333c6c66b5062e31893683177",
+        "ms": 2707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_scoop/onSuccess/narration": {
+    "": [
+      {
+        "clip": "db6fb4142dba1607b803b389b6654b19a74c2996b9321cb21d1b7250976d716c",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_scoop/prompt": {
+    "": [
+      {
+        "clip": "6b44e6039e6c320693bbb2bd430e79a5c4475a94905f79c824f2998b2e882991",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_shout/narration": {
+    "": [
+      {
+        "clip": "419ad859959570e2d51c837971627a5c32962f73358e1a6e82554872fd2cf531",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_shout/prompt": {
+    "": [
+      {
+        "clip": "79182ea2623b4b5ba5280ee0fc117ac69e0694aff60701b991634fc2383da58c",
+        "ms": 2542
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_talk/narration": {
+    "": [
+      {
+        "clip": "f28d9174ff055805692ddd644ea9974187480da08837db31888d85c0a4bde524",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_talk/prompt": {
+    "": [
+      {
+        "clip": "71d2f559040c98701f47520b5db3f91622217ecf68cc4dea877e9ced17896514",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_toss/narration": {
+    "": [
+      {
+        "clip": "208436cd49cf846708cd4f8d3bbfd6250a87bb6ede6f7feedade791ff5ab4008",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_toss/onFailure/narration": {
+    "": [
+      {
+        "clip": "4d19e6bc57d9b54a703c1bf131262d77f8832a125ad0a81c670b9bfe549e3abe",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_toss/onSuccess/narration": {
+    "": [
+      {
+        "clip": "68bd5b9d7488f09e5ecdd632bcbd14eb95ee4b3ff2674764c8dba7c71d732839",
+        "ms": 9807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_toss/prompt": {
+    "": [
+      {
+        "clip": "50c30f44618472b84fdb54358534fb6d11036252336dc89ac19c53d16bacc623",
+        "ms": 2997
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_trail/narration": {
+    "": [
+      {
+        "clip": "fbdeb59c6090b8c0e0498b272aac35028a782a1a8f256c1cf0d9fad2759c7770",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_trail/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cd5387421357db81c03495a849f9aede939aaef6ec44f0115bec036b6884e784",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_trail/prompt": {
+    "": [
+      {
+        "clip": "7ed941c1858a3a720a5f44156fc3e77b328de77e8c46023753fe024c14df728a",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_wade/narration": {
+    "": [
+      {
+        "clip": "f3404d0e07d6bc37f58b895d087fe95120d6a50368b9227a3be302462ef8db54",
+        "ms": 3107
+      },
+      {
+        "clip": "6e0d44ea399dac7678c51aae05d0942b00fcf06a9ed47505c35c5c0cb4cde9d8",
+        "ms": 754
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "c58fb8740232787f80dde8e392c5a9ef67e832705835be1c1ab927f7d32c19b7",
+        "ms": 704
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_wade/onSuccess/narration": {
+    "": [
+      {
+        "clip": "c7ba589c2bcd405dbcc8160b7823efacf2c23da4166a5c2b39ce72951b90435f",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/check_wade/prompt": {
+    "": [
+      {
+        "clip": "a77f2e21c1ea00b14b9760cbfef3c83631063e68a6662401ddc2a17a53f8681f",
+        "ms": 2281
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/chime/narration": {
+    "": [
+      {
+        "clip": "01755d67922a0d2275d8d53fef52f52079cca1978e7209b2cbd49bfe4e405aad",
+        "ms": 5607
+      },
+      {
+        "clip": "98414dc8a038ac593b3d831423472dd726f38f0f8cae1f56d6aa0c581b35bd6a",
+        "ms": 599
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "a7f43287f7772bf73d95c8f0311ff146f7b928bd5d1e0c5335cd3bf04be023cf",
+        "ms": 1748
+      },
+      {
+        "clip": "ae7a70fc11eec433cc0c8f75c13f86ace2b4734561f40db30dd0ba94758018fa",
+        "ms": 3607
+      },
+      {
+        "clip": "eff197bf472940654e143f93be0551f3e3ea9ace668e0a6ed24514d55daeb33b",
+        "ms": 1986
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/chime_quiet/narration": {
+    "": [
+      {
+        "clip": "bd4d6eb5516904d7c0f50ffc5efe65d1fb135ac1f4e187c8a697fa9c61d57d72",
+        "ms": 14007
+      },
+      {
+        "clip": "8db4bacbef10a90485d0f4af2a34b0703be93db7a6c6f56e27fa7bb195059c92",
+        "ms": 695
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "8b4b967111b96a6bb5c9128a37fe60910de5fd2e622e10dd0616a5300d41bebc",
+        "ms": 1121
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/chime_rung/narration": {
+    "": [
+      {
+        "clip": "ba0a691b4c6a21bed694e933525a3f14f9daca064bad5111a7accc200124e693",
+        "ms": 14107
+      },
+      {
+        "clip": "94ca6c3b8758fc0b240086f2488e1945c4657c69be3699993712648d97f0f73a",
+        "ms": 2074
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "3625931e962baf11aabccf5de2bbf0cf4f88d063dd50fc0a54dc50f8279e466d",
+        "ms": 2903
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_chime/narration": {
+    "": [
+      {
+        "clip": "980648f8ee77acc333c12c6a474f4eb7752cacc08e2fb486b49e88cca3ea535a",
+        "ms": 13807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_crest/interaction/cue": {
+    "": [
+      {
+        "clip": "8b3ef479587030cbb99932272607c8828ebb506643e1a1e0765be53d40143722",
+        "ms": 2587
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_crest/narration": {
+    "": [
+      {
+        "clip": "4ece0c3cd550ef2aff5f7a207c45ce80be9d9864d88f0ea7d03d6302d5f6f3f6",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_float/interaction/cue": {
+    "": [
+      {
+        "clip": "3ac1638a930f1fbac872da8e72df3bcdec1f1fdf5261afc94dcb5d1de3fd0667",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_float/narration": {
+    "": [
+      {
+        "clip": "1a3d2eea4ab655e8b624201187e59f64dd8ca2f1740244ab2217d7f3f5f97039",
+        "ms": 4907
+      },
+      {
+        "clip": "9c5958c3312b5924596780955d37b7544ef956511d1d20536b189d9ce95c8cdd",
+        "ms": 649
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "9ea41b03a05982795d050924330970c9a56400301116fb09112820936c659c93",
+        "ms": 2311
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_mend/narration": {
+    "": [
+      {
+        "clip": "8f3464411931d2ee06344b84079a5216f3cdc5afcc2b3625e262e59c3ab9c891",
+        "ms": 13307
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_rhythm/interaction/cue": {
+    "": [
+      {
+        "clip": "1b270abd1ebf291122869195dbf8d3bbcaf83a88d6b8e05c156cea0c3db6468d",
+        "ms": 2153
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/cross_rhythm/narration": {
+    "": [
+      {
+        "clip": "5902ce8384c611839e1c3144f5a60cb5c64d4e11de14241cfd0e0edd31486fb1",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/crossing/narration": {
+    "": [
+      {
+        "clip": "681e34871b9b9e9f399cf6ede92756030617a7b7908818eedc84fa611a46ed04",
+        "ms": 4807
+      },
+      {
+        "clip": "3a82120b28a28cb38b61b756e80244305e239dbb09af082c489a906285d88361",
+        "ms": 3307
+      },
+      {
+        "clip": "50eb9c214c05cfca11689a2779bdb351601224aa4bf14b103903c9f18ceda996",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/crossing/variants/0": {
+    "": [
+      {
+        "clip": "7bee472fa85d8b0f745e5da80685a8fd8f145c59a567a75fa1fd60c263077744",
+        "ms": 2232
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/crossing/variants/1": {
+    "": [
+      {
+        "clip": "fcf3650a4c18a367838f5f5391bccc52c052397323783012541b3ca6cccdff0e",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/narration": {
+    "": [
+      {
+        "clip": "b26db0738002197278ee5dcd817ffeb037838e59dca111faaba3d90651253297",
+        "ms": 3407
+      },
+      {
+        "clip": "738347ce8d3dd780ab83988e0d234f47ab35ae57082c1d439d9e4b139c5b1860",
+        "ms": 1873
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "3e9ebf2ca93b05d29d110257eaa044899d9159061b606309999f52923e5f8025",
+        "ms": 656
+      },
+      {
+        "clip": "6105d8f6405b282a9685f630404befc9afd75463c84e616c913d98b403eaebe0",
+        "ms": 12807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/0": {
+    "": [
+      {
+        "clip": "65979e31155bb85602a0619f5fe15de1cf657c362985a0b39b5ac3b26cd10e67",
+        "ms": 4207
+      },
+      {
+        "clip": "9df36b224e11614555882e1ec958dd198d24c1bad141c1efbbbd3069769054d4",
+        "ms": 1647
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/1": {
+    "": [
+      {
+        "clip": "a46f5f910ba54ae26cdd02ab2b54b93f68ca9f958e9d626aa4a7b6d5e8c9e9c5",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/2": {
+    "": [
+      {
+        "clip": "7ef198420cca6a0c0a02d4d8dfb129b2e60ebf122c913026b0872571ff880f5f",
+        "ms": 2710
+      },
+      {
+        "clip": "6d11bb35e411f64a2bc54243c49422372c7021726cd6c7e3c65d5e0ea26a02e6",
+        "ms": 1196
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/3": {
+    "": [
+      {
+        "clip": "e9bd8a8afd99781197571ff82195fc5a0e2e5c9d346bda06f15642fa3d1684c3",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/ending/variants/4": {
+    "": [
+      {
+        "clip": "06fc45720d91fd24517326aad5945be5296f5289db17abc5d92a401e94774dd5",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/fen_back/narration": {
+    "": [
+      {
+        "clip": "29620c68f33ce9e12e6502264b2fa063fb45400cbda6db01aca848611e562617",
+        "ms": 2468
+      },
+      {
+        "clip": "326f6b1101e1ab82e33db60ca15b043d439e0e389c60b1426e717a1347dd7e60",
+        "ms": 1904
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "6926e2891ad9319322dd6045a8e421979e1b0dd0d7963707d5b3d320c0875e33",
+        "ms": 672
+      },
+      {
+        "clip": "abf40fc2b420de1e76ab00c272bbe2d2758d400f3e679b73a82d11a83066434a",
+        "ms": 2232
+      },
+      {
+        "clip": "0a21674e19a0df03cf6494eac19bca5c45ac7a185aaec7ee4fefd87620fbf3c0",
+        "ms": 2836
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "053672b0b67eae0da84b244d26c2efc5004600c7dfa52690b365596e5458bb40",
+        "ms": 2902
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/fen_net/narration": {
+    "": [
+      {
+        "clip": "974585305b0bfbd70a180140082ef1b345f48d6071ff550c8911404e3fe429de",
+        "ms": 12107
+      },
+      {
+        "clip": "920324cbf5d556416485f085036ee4ee6ab57d26b927481a4785acbb2462a6c2",
+        "ms": 1252
+      },
+      {
+        "clip": "b247aee03c4a63bb55c8ede89f390081a8d5c61842169eb1e48a70e804f7b8d9",
+        "ms": 3307
+      },
+      {
+        "clip": "12aa6519042553c7aad1452f3c0efbab48dcfb580b99aa084f7ff4721109a057",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/float_dig/interaction/cue": {
+    "": [
+      {
+        "clip": "af948a68c44b95f18c20c604c8abce0d6be650d3abf800a75208661f4381b39f",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/float_dig/narration": {
+    "": [
+      {
+        "clip": "c74beb687c6060c9fe3032ac35f0b32f27d897a812f91f1c504df62cbd7bd74c",
+        "ms": 1709
+      },
+      {
+        "clip": "de76ebf7bba91202810e603450670ea990e19ef4c4f7256ebb2f2bd2941ffdba",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/floated/narration": {
+    "": [
+      {
+        "clip": "1df942adb84dc412aa7aa221c270a817a04c3179af4f669227f015a44e62cf81",
+        "ms": 11807
+      },
+      {
+        "clip": "a939542bb768f0d36549945432072654aa208f0ffd157b47b2e5e6f5262c11e4",
+        "ms": 989
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "defec836e077b1a6daeece36704e9387f414171279aa8d5cd62a0f6b76af879a",
+        "ms": 1402
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/floated_late/narration": {
+    "": [
+      {
+        "clip": "a2bc08d5faa10149af2c10f5ba56c0ffdc632e9fd084dc7a5a065a2b3e074c9c",
+        "ms": 12107
+      },
+      {
+        "clip": "a939542bb768f0d36549945432072654aa208f0ffd157b47b2e5e6f5262c11e4",
+        "ms": 989
+      },
+      {
+        "clip": "cf72246af71547f412c07f1ffc4f777d62490f417af6483bb3b646143af7d499",
+        "ms": 2210
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/fly_goat/narration": {
+    "": [
+      {
+        "clip": "3a02b3cc2624f60f70383d6069cc6c15773652290e468584c3ba178fb36e31cd",
+        "ms": 8007
+      },
+      {
+        "clip": "6536a2e38c1d40989fe0ba67d1d22bde8d94e60c35fa2896d471603450a86b5a",
+        "ms": 1366
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "252c66fa784ee58fbabf1e3188b77f3219a3d6ea39fd4b97828838799446754b",
+        "ms": 1467
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/free_choice/narration": {
+    "": [
+      {
+        "clip": "61fd361819b1f367fa47e9a370f198b71d1fd2a63ef81f1ec0cc29304865000b",
+        "ms": 7707
+      },
+      {
+        "clip": "21f431902d0382f0b734a13e22daf4edf9a8488e55aadba997b6caf0386de764",
+        "ms": 506
+      },
+      {
+        "clip": "a6a02217999a0e7286884d93cfd57b734a801e0f6463d0355cf34135b308b51d",
+        "ms": 775
+      },
+      {
+        "clip": "39c54492700c0f070a52578612450e87026152a790329113117c117eda5209d3",
+        "ms": 9507
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/free_choice/variants/0": {
+    "": [
+      {
+        "clip": "7df62dad3716f3e96ca3a063f22411617133f3fa97d7aea3fcfaee53e4e638d4",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/goat_bolts/narration": {
+    "": [
+      {
+        "clip": "dbda36de9a5eb387e8a3d4f0835125239ea34bec1fafa042c0c30d011f0475b8",
+        "ms": 11407
+      },
+      {
+        "clip": "ebf4854c8b0c2fedc3f8af7e7a4eeaa9593d9cb43bfc00333392f91b29d90adb",
+        "ms": 1273
+      },
+      {
+        "clip": "9742b721e6744c8f9f7a99e09201b60450ecded79884c40562691d2f0bafe1d7",
+        "ms": 3908
+      },
+      {
+        "clip": "fe03a4d20105c384faf8e16343cdda18713a43ad93cc261fbb84b7ecf27b4961",
+        "ms": 2216
+      },
+      {
+        "clip": "0fed0a112c9417e8ab6a1ac7d0a02eb4d6e4aaf24dd612b2e3280f4528f9a75c",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/goat_home/narration": {
+    "": [
+      {
+        "clip": "f14e5f8c9bca5b11c967d233786075f5203bec4ce53333ade2ae5b7cfb5dd690",
+        "ms": 8407
+      },
+      {
+        "clip": "a847483235115502b1e2a7b6a6ccc6fb2ef9c4f75d11e777073425f00e88b3cb",
+        "ms": 2629
+      },
+      {
+        "clip": "9df4887a6034c088afb8fdf07ed5676cdeef59f1556b81363881273b1623a669",
+        "ms": 1186
+      },
+      {
+        "clip": "08bea7ffa1b431e789a87ce58fa9644e83cb43b5a8e05f73873fd997ecc539fb",
+        "ms": 2540
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/goat_ran/narration": {
+    "": [
+      {
+        "clip": "a40ed0ef9b23a9f24d29ce85e01faf3375c96dece7025f1d022e1cdb394bbc54",
+        "ms": 14007
+      },
+      {
+        "clip": "104f26ee10938710a8a4275a42f8642afc8fbec01dd34447f9d7089ec02ef884",
+        "ms": 1661
+      },
+      {
+        "clip": "ee29d88d7d86ec68cb73418eb56f9e622dd79e2cbc23ff560f47cdcde6703f86",
+        "ms": 1877
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hare/narration": {
+    "": [
+      {
+        "clip": "3535a1068cb12a7bf41da228a719e81b0bebfb57a3d73a93d7d69cf6a2f4bd08",
+        "ms": 11907
+      },
+      {
+        "clip": "934a928b7f3cddae27351bf07d4284a406239bc7ab17c02862fec416c629fdfd",
+        "ms": 1087
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "5550039ec5ec4e9a8bf99a6f3cd4db59f3fbd7aedb96032bb019b52a78014022",
+        "ms": 1356
+      },
+      {
+        "clip": "c56fdc1d1a0ae65d00c597798c9886cbec4604f3383431af69ae9e6338c134ea",
+        "ms": 2982
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hare_home/narration": {
+    "": [
+      {
+        "clip": "15a6651c5f2b309a5e7bb10963270198b4072e6d394b6c3cf0057ed247d3edee",
+        "ms": 4207
+      },
+      {
+        "clip": "1b470eb8844c0e3112e7230c1f62fede900f604717baba6731e8a0e2d8d1bece",
+        "ms": 1384
+      },
+      {
+        "clip": "1bc1a0e81abd74d6090878d72bb644dfe683b6dd85dd8f3c541c812052ecb503",
+        "ms": 1780
+      },
+      {
+        "clip": "689edc72a24c0cf16fc8a0bc5c6a9484a0053311cf52b19010535f14b6a4a5ef",
+        "ms": 3307
+      },
+      {
+        "clip": "d2053454a46287ec6f3431ee0ddf4c4d47a4fa1aeb3d27401dbb95050f546fa9",
+        "ms": 2592
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hare_wild/narration": {
+    "": [
+      {
+        "clip": "ecab6bc0481311d7ac9e7fb127ca74b1a9bd99391f20478b1246ba7f3c6765ad",
+        "ms": 11307
+      },
+      {
+        "clip": "1b470eb8844c0e3112e7230c1f62fede900f604717baba6731e8a0e2d8d1bece",
+        "ms": 1384
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "0874834d4ec8d9dba443cec2b49e3071378915b56869ba25f750dd87bede1ea2",
+        "ms": 1339
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/haul_slip/narration": {
+    "": [
+      {
+        "clip": "1a3319cea2f93f5c1e86e431508e46b91f076f1d8e53d766360a925f9c6a5622",
+        "ms": 9207
+      },
+      {
+        "clip": "00b962274d6cf4604b5832d1014106722bbfd6bc0e8f9933f260f63b5d226fd8",
+        "ms": 833
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "347b70078f2023cbef9d32bf089eca95f793308542976404d47937af9c839601",
+        "ms": 1870
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/hauled/narration": {
+    "": [
+      {
+        "clip": "bc1496b2de47b1916ae240e5d0cb1bf3cfafc0e1363e47daa0f0990e20bdf1a2",
+        "ms": 7807
+      },
+      {
+        "clip": "a0a084e486e10f9797e7e6ec4b8ef310ba129b9bcbb296bb008d70eb5ab03b44",
+        "ms": 831
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "fd46c5b18bedb8dfb2d89ac34fa02281cfeadcbbaa6220e6da0707bda9abf6a7",
+        "ms": 1654
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/herder_blink/narration": {
+    "": [
+      {
+        "clip": "c8d33b1270d8c26d4146e35fcb04f2fb6d8fd5525d56636b56e5ec83c0754748",
+        "ms": 7407
+      },
+      {
+        "clip": "c4e5f50972325ed7dad896e0e586852b563d147db82466a873b74c5b1b09f58c",
+        "ms": 2485
+      },
+      {
+        "clip": "d70814b9067d443bfabb410533ca795a02a71e53bba428af5163c67932283ed3",
+        "ms": 1350
+      },
+      {
+        "clip": "5612a8b59a625b67370b1e91a8a505aba3995fc33d0b4f17705edb4b13eafeb2",
+        "ms": 8607
+      },
+      {
+        "clip": "b2bd046ac1437589d0a93483123b62883fef607ce251e3cbe2e9a9d4151e2118",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/herder_boot/narration": {
+    "": [
+      {
+        "clip": "26a5ee1a7873ffec158628ae48f4013063079597e054e4c13db081efc4c9c490",
+        "ms": 12107
+      },
+      {
+        "clip": "db9fa292bcf6a45d78ad7e06ad358830bf3abc17c908c8e6d29c41e3ae78d511",
+        "ms": 2216
+      },
+      {
+        "clip": "684ec2220539bca1f8f34586ca6eda115dd5044489264a9c18f9ac3cdc2889f9",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/herder_home/narration": {
+    "": [
+      {
+        "clip": "285766abf743fce50174969d527a850e81f40b0d4a72112175a57356c268cb11",
+        "ms": 552
+      },
+      {
+        "clip": "7ed9c6ba7f08694b261cd507f763b9fcd6fa373749e3bd727eab3e582dedb7c1",
+        "ms": 8407
+      },
+      {
+        "clip": "4e2c066030beb3f984f0f78593ddf8c0dd547139bf18adfa30d32f8e66a838a4",
+        "ms": 1163
+      },
+      {
+        "clip": "f18f7420c1e925e0e7fb061352b69db0ff03a8213643cbc9e6a8208eb4b5f386",
+        "ms": 2277
+      },
+      {
+        "clip": "fab72b24b28af831da721dd7d5eba3cedeefe013b70c2888cd0fd3e352938514",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/kicked/narration": {
+    "": [
+      {
+        "clip": "7f499631bfefeeb858084e13062d70b36f33926693f32480a0248367f876d78f",
+        "ms": 7307
+      },
+      {
+        "clip": "2675e38169892f5b31f270fb31a5c6a38b36bfcbbbe16c1d3bdbf2b5d6c8485f",
+        "ms": 1448
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "290491246c07a5376dc0aa6ca8e9dff69984eb22d89619d85cc496aed718443e",
+        "ms": 803
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/last_blink/narration": {
+    "": [
+      {
+        "clip": "d19464b2a3437e3f2c6650e4785c6610b671b881c7133df0783ef5d8572304cd",
+        "ms": 3307
+      },
+      {
+        "clip": "08d9a4ab4a3ec989701b615af0225b87d59a21576d5c5076a9a44aa4117fb3e7",
+        "ms": 1669
+      },
+      {
+        "clip": "522cc13bafe05680a8337410674312ce493929fb7d6fcd6f7cbd7ea492088baf",
+        "ms": 6507
+      },
+      {
+        "clip": "8d5849da997f8f57cd4df2c2abc0747d22c9dca9cb1a1c087ee1efbec9cc1385",
+        "ms": 14907
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/lead_edge/narration": {
+    "": [
+      {
+        "clip": "47ab0c05ee8a1407411270c35524a82aea32bcb47e590d9a6dce4b8ec7f9adaa",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/lead_edge/onFailure/narration": {
+    "": [
+      {
+        "clip": "f7941afc2a8d2e8a029562d4e029c4641aa1783e077426cc4d0b4c48831775ea",
+        "ms": 8007
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/lead_edge/onSuccess/narration": {
+    "": [
+      {
+        "clip": "54d23336a3c2bb1b78404bd45f79164ae723afc4ba995c40bace3bab43275bce",
+        "ms": 6607
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/lead_edge/prompt": {
+    "": [
+      {
+        "clip": "e55fa221003d584eddf2356d8af102b5944f523271fc406b266f84fc5704d93e",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/reach/narration": {
+    "": [
+      {
+        "clip": "8824adcf23a603a72bccc14ac9ff82800d766d519b4837635a9bff3afebdfe29",
+        "ms": 10707
+      },
+      {
+        "clip": "6d86698fe4f4cb8869925e7118551e6ea45462ab8a6da022c2f590a07c07aeb8",
+        "ms": 1679
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "d7c23a7990bd634645953cab6b5e9988854d7e595207a35b9eb8876135bb6792",
+        "ms": 1095
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read/narration": {
+    "": [
+      {
+        "clip": "5b66b7ea0400bbec1201028110e3e14bb20fe79a3127d1ded987130418755635",
+        "ms": 6307
+      },
+      {
+        "clip": "28a22ef7320f0be5499d28c7c3350514b88c995e9f11cda0c3430263aca6fdeb",
+        "ms": 2088
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "0ad30e3c27da31f4bae670f4a8ab0c462fc0900971d710bd75ddd9d998bad9bd",
+        "ms": 5307
+      },
+      {
+        "clip": "73db536bf345cd87da06ea78513ff1dbc7fa4a87f4cd44db9eb88fef8ef5adfe",
+        "ms": 1770
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read_done/narration": {
+    "": [
+      {
+        "clip": "b3ccd29ef6134989490961ed303d562faeff0e38f4a3a4e84a9c6f83d818d2f1",
+        "ms": 3707
+      },
+      {
+        "clip": "d799970d92875c0d9f10cd2eee82084bf822476309a1d9076c65a7c77ae97f7c",
+        "ms": 1394
+      },
+      {
+        "clip": "1bf19857810fd141abd3e0778c1586fc0a3e4b18a0bbeeeda7065fe9aa6f906b",
+        "ms": 2325
+      },
+      {
+        "clip": "4192e006858606b7392f1a74bdcc60aa61ff8f6c06ad1e4e1e2c169b17874d6b",
+        "ms": 1849
+      },
+      {
+        "clip": "d35c1d19fddd2934accc249d848b50765e80563dbdb29b9c015b156425296c53",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read_rough/narration": {
+    "": [
+      {
+        "clip": "cc242431daad1666cde3993aafa392b94ce4b61e5f182529af566455c2977833",
+        "ms": 1660
+      },
+      {
+        "clip": "319d72e03f3e3c1e937f4cbf05a4c7fa89205c5f1ef41e651edb116d13cb52d1",
+        "ms": 1633
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "002195e443dada7bef871bbdb4b2c227a6e3ebd8a392c8de80f9fb220d4ad5ea",
+        "ms": 2566
+      },
+      {
+        "clip": "1d16863c20bcaeb661a0f871f9f539555455d84c54d6780afdcee6dc233e021d",
+        "ms": 5707
+      },
+      {
+        "clip": "955f615664786e884b445c5f5fbbe2493f2649e1c7b5da2b1862997898c7719b",
+        "ms": 1393
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "00c6d058f189fb1420d9d26fac8f7691588d35a8837dc2bb62dd7dbb734c4cfe",
+        "ms": 1110
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/read_star/narration": {
+    "": [
+      {
+        "clip": "1db8e2850f822025e77f6e2fc046c033088de807bc60d96b622cee6e114df83e",
+        "ms": 8907
+      },
+      {
+        "clip": "2ece09fea169a8a43e17f263b1e90ae4b1a614fba2f9b10af00144e867f1f442",
+        "ms": 1528
+      },
+      {
+        "clip": "b3ed07da1b9a7e5668f3b2cf202f4c9fd7d2a882cfbfc4490a6fbaf79cffbf9d",
+        "ms": 799
+      },
+      {
+        "clip": "eb338b45d4aa9dc895a62f6b4faf85b255d79982843eedd522750c851871042f",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/rest/narration": {
+    "": [
+      {
+        "clip": "596b1343e1c2c23160093051c281b7fc8f107bc0ac52519709b7950aab9c2603",
+        "ms": 13407
+      },
+      {
+        "clip": "0e40f1c18ae341843e386dc7457b1e657517f88aa4bd5687d9154e1fa6ee3564",
+        "ms": 833
+      },
+      {
+        "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
+        "ms": 778
+      },
+      {
+        "clip": "a9afcb1632a7132b035e34320f62d2529ef4a29db3e1d180b43031063c483561",
+        "ms": 1667
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/rest/variants/0": {
+    "": [
+      {
+        "clip": "aa0171edfda8dbf6dc3d98bb3057081404e65e1222c4186ecab1dc14769e76bb",
+        "ms": 14407
+      },
+      {
+        "clip": "0e40f1c18ae341843e386dc7457b1e657517f88aa4bd5687d9154e1fa6ee3564",
+        "ms": 833
+      },
+      {
+        "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
+        "ms": 778
+      },
+      {
+        "clip": "a9afcb1632a7132b035e34320f62d2529ef4a29db3e1d180b43031063c483561",
+        "ms": 1667
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/rest/variants/1": {
+    "": [
+      {
+        "clip": "74904f9571c6dc176c8d55a12c45ab0f6d1580534d1e248ca42c7c4074660c59",
+        "ms": 2237
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/warning/narration": {
+    "": [
+      {
+        "clip": "99448e1ee43601643859b5b08284e0e59991fa38444d0e5c0928ac0b16df5cc3",
+        "ms": 1979
+      },
+      {
+        "clip": "27e3e70d2bbc40fd95bc49fd614a479b10f46113ed2a7c7f5cbd7dc7076376c4",
+        "ms": 7507
+      },
+      {
+        "clip": "f43a2c5968f267632e89b5a1aed92999cce3280e90765cc48bd2896830e240f1",
+        "ms": 2479
+      },
+      {
+        "clip": "c14961950e511aa05919bf9853c6841f7414e6b3e2ebfd2be70652f4f8d02c11",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/warning_bank/narration": {
+    "": [
+      {
+        "clip": "1897567f09fc1f3d6ea478178917cfe297825f92f6b01bcaf2cd86328c2412fb",
+        "ms": 6827
+      },
+      {
+        "clip": "f805ad09111b76243350612d149c61e60de479bc503edcb5c3c3fe80cafe84b6",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/warning_picture/narration": {
+    "": [
+      {
+        "clip": "ad4f6d08a9313f6e599498db5ff25df6b54ad9f41dd7e04d69541d42a9511f60",
+        "ms": 7507
+      },
+      {
+        "clip": "944cf82003878c2cc96bbe2b930fc61fe2be0f415ec9c7d7536dadc5b61ce854",
+        "ms": 1561
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/watch_blink/interaction/cue": {
+    "": [
+      {
+        "clip": "65f1a0521481ff5e9566c33b9d62653d44b2b4817cc13bbbd0ddbffe2b1838df",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/watch_blink/narration": {
+    "": [
+      {
+        "clip": "b29b27c60b5ecaeb597c2d061592f79dc7ba85dd49fae43f5982ec970f709304",
+        "ms": 3407
+      },
+      {
+        "clip": "604182dde3fb85d66fdbac446c7a5724696273358764e371eeef5eda83435d5d",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/watch_blink/onAssisted/narration": {
+    "": [
+      {
+        "clip": "067bd5309b7e2e3172d7fd28cfcf66be25780631080e637dd98165634aab5026",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-stuttering-flats/watch_blink/onSuccess/narration": {
+    "": [
+      {
+        "clip": "afb7a3386be851c2ee32de9231d1d9c5b619e02780d00ce253510035ac6b1567",
+        "ms": 4307
+      }
+    ]
+  }
+}

@@ -1,0 +1,1766 @@
+{
+  "riftlight-the-island-due-back/@goal": {
+    "": [
+      {
+        "clip": "190e5e0790ebf17897568d1e5f706b433453a17919cfdf2bc40337bd9d693d32",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/@plate": {
+    "": [
+      {
+        "clip": "fb1611b29199d03e24427dc94434c0aab92b996608823abd2d34c3f9aa35b7a1",
+        "ms": 10707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/arrival/narration": {
+    "": [
+      {
+        "clip": "df17ad5c453cbbf6b7f10d4202ccb05752f7a598ec92559ac59d3f66931b04bc",
+        "ms": 14307
+      },
+      {
+        "clip": "1032b45656f69274526a41fc4fa9fb24a3a56646cadb74bcf097f1674c137680",
+        "ms": 3207
+      },
+      {
+        "clip": "ee85423e36c23a7d81c8ebd6f82d9574db9b39ace2b05d455d7e545b36827ad7",
+        "ms": 1048
+      },
+      {
+        "clip": "17d3d381526729c35c40ddc0c8b051bf240a5889db6ba6b089ca83aa1e8d1e66",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/arrival/variants/0": {
+    "": [
+      {
+        "clip": "d7d01c396959b498d73a24ae5094857941f0e969b302654002152bbe24f37360",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/arrival/variants/1": {
+    "": [
+      {
+        "clip": "737aad757a2da5a426b84eedfe6d4ba4abb4577e7afdcd1906b49981e2e4f796",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/back/narration": {
+    "": [
+      {
+        "clip": "9ee258a60de5a1d6f6a8142f92a8388b99700e1a725a573042ca70ac71910434",
+        "ms": 12607
+      },
+      {
+        "clip": "daf4b874c934b9748da7b960193857ffba5dfa2ce4a83f8f5a808be8640cba3c",
+        "ms": 1637
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "7a1eeff81fdc400d692f95a6afdda3b90dd755c86b4294a4412d560560f7b92a",
+        "ms": 2289
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/back/variants/0": {
+    "": [
+      {
+        "clip": "592368d33386f9fb2bb0cd322f72a27e5b0b5a6a1cf153802e3f21ecc890b746",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/back/variants/1": {
+    "": [
+      {
+        "clip": "8a126da9a10be32dbd5d001b4d6c65ae0f00f673be933dcd49cbfc27456c2178",
+        "ms": 10007
+      },
+      {
+        "clip": "0e45f976800643624de675c0aa975c54ee67f8b14557bf41532977abaf6d0d31",
+        "ms": 1969
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "fdfcd36bc084a9b7ca57820cde6872da36b438426f0f812cd39464dd6609ed8f",
+        "ms": 1336
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/by_frame/narration": {
+    "": [
+      {
+        "clip": "f1fbf8c3502ccae8db68e538d2d07e495e4a42ffb8a1042f7fc3df9e136b2315",
+        "ms": 9707
+      },
+      {
+        "clip": "ecf89984399c21441425cfaf50bc696096217bf9ffe26f8b9bb9604e50e4450c",
+        "ms": 2020
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "89f381716263dacba76b401d0f83bb2bd7470eb3f0f448546e42303445066648",
+        "ms": 1198
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/by_hand/narration": {
+    "": [
+      {
+        "clip": "4a43baa35ee90e2e7559a605966a2ca2beb4d69b25aa10ebdbe8416346947cc0",
+        "ms": 10707
+      },
+      {
+        "clip": "dad319d5296ac5310556412a97882967a54dc89f45d385e35f4464ca27e2026d",
+        "ms": 971
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "73255e08f1cb3cdab7766961c70b7b2f42387d4aa2a97d206b47a2fd9b8a6d85",
+        "ms": 1814
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/by_tumble/narration": {
+    "": [
+      {
+        "clip": "66d11f9c6ea0edbd773b8db672a2ee49b8e5faa92d901a49f4ca110c0716b2a4",
+        "ms": 2766
+      },
+      {
+        "clip": "e573d7d51464943001887c206b23bebb1b8121313a6f806a7df8e746e10fb432",
+        "ms": 3207
+      },
+      {
+        "clip": "1d653882bcca6ffaaa5ce485d4d586398d4c00cf45db0a6eaac392667b9d715d",
+        "ms": 7407
+      },
+      {
+        "clip": "9c563bc2d56cabd379d3336b22acd6331b1dd05a5e351a19d8002a08ad1b08a7",
+        "ms": 947
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "090e00ccc275ed028ad890cc90bd470caa1e1a7d1fd1963d92a910eacdda3754",
+        "ms": 885
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_chase/narration": {
+    "": [
+      {
+        "clip": "3d3b0cc5aeafc128d37010aad4b3661e9796759b624e6c707c1e419e9b959169",
+        "ms": 7807
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_chase/onFailure/narration": {
+    "": [
+      {
+        "clip": "f7cf1eca8d780d07fe58bbf90c70e7253b565e0fa6a58968aea5ffcc043cb746",
+        "ms": 7807
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_chase/onSuccess/narration": {
+    "": [
+      {
+        "clip": "d5f8bef3486bd251ff2962012c37f204e86b1ba2a096ec610dbd7c3e9616b586",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_chase/prompt": {
+    "": [
+      {
+        "clip": "534a11d20e24221f2901b167745afb220c1f794e5a6995d0a892c37bb3dedfca",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_crawl/narration": {
+    "": [
+      {
+        "clip": "012dc6213e4b6808b29d56b467d8548fd8f8d4a837b7fcf4e5762128fdc80c4c",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_crawl/onFailure/narration": {
+    "": [
+      {
+        "clip": "5a3c3b092482a47d3aca10721e399990f84ee0fd181365b95d633925c86ad7ce",
+        "ms": 11007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_crawl/onSuccess/narration": {
+    "": [
+      {
+        "clip": "86a52ab28f7b85d3347e3ada0dc866e4c44808e721888d01efed9a668347bfc6",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_crawl/prompt": {
+    "": [
+      {
+        "clip": "b7f4efe7662941e5bf6b3029fbc01dc937cc7e45b8ca96f726e20ea1e3a87b4e",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_frame/narration": {
+    "": [
+      {
+        "clip": "482bff72a678641b6a4b8289d861013cddef7d457d50e1d22b73b52c9af6ca0a",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_frame/onFailure/narration": {
+    "": [
+      {
+        "clip": "ab9ebdd1c375524e98604831c91e1d85f6fbdfb3aeca1d7cd3ad381f33cf1bf3",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_frame/onSuccess/narration": {
+    "": [
+      {
+        "clip": "25bd58b0571465279e4d7f765d3819e1ddba50e46e76b65e3f07bcb3bb9afdb9",
+        "ms": 9307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_frame/prompt": {
+    "": [
+      {
+        "clip": "e9e02332d09f0625b6f40f8ca7c949e35f2519a4ba71c15390145aa1f16aa34a",
+        "ms": 2712
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_letters/narration": {
+    "": [
+      {
+        "clip": "4e523df77790da916decb4a0fe67296208bbb7c3d82d756eeb4a03baff29d662",
+        "ms": 9507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_letters/onFailure/narration": {
+    "": [
+      {
+        "clip": "33acad3e7d3c863b5a6e2ca5bbc014f2d9240912984b213ecf57017ab0228691",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_letters/onSuccess/narration": {
+    "": [
+      {
+        "clip": "98854edf35a567cff857db6b4332a025fe88ea34fea3ca762a5adedbd42afd8e",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_letters/prompt": {
+    "": [
+      {
+        "clip": "c12804beaeeec7bfc84d0dc9f122c6e3d283e972f5a946da7ce598785056b19b",
+        "ms": 2496
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_orchard/narration": {
+    "": [
+      {
+        "clip": "ba6aa8814c54a3d7831afb5583506fcb250e75fc3e9016e34448d7ac149ad63c",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_orchard/onFailure/narration": {
+    "": [
+      {
+        "clip": "62834e63919898c29302f7c83a991d6fc2ddb9dfc18ade301fb603f3d7ed9a2e",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_orchard/onSuccess/narration": {
+    "": [
+      {
+        "clip": "d1bffa83ce1b43dfdbd6a6b98324511bdfa30bacc5ae9e920556e6d01b909c34",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_orchard/prompt": {
+    "": [
+      {
+        "clip": "1c08a4e81edaa2caf472808ceee90f0ebb3decb249ee377dbee30a589ea1e6f8",
+        "ms": 2604
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_return/narration": {
+    "": [
+      {
+        "clip": "5aaa5031c05d8fed51ffebf199f1be4a8386188dd5c82dfc04cf38a1696ce961",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_return/onFailure/narration": {
+    "": [
+      {
+        "clip": "9490d60c00ff0d809dd326aad95eb791993c90b665275f61fc5c961fc35fef85",
+        "ms": 7307
+      },
+      {
+        "clip": "f1ee613a59448abde99536c82785c76a234d5ec038f6a07470c134d34cc8200b",
+        "ms": 1119
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "090e00ccc275ed028ad890cc90bd470caa1e1a7d1fd1963d92a910eacdda3754",
+        "ms": 885
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_return/onSuccess/narration": {
+    "": [
+      {
+        "clip": "11d3b8e2648a30bd4dacdc75b1bc02e6e2d847610ea62d8aeb2a502ee288ed83",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_return/prompt": {
+    "": [
+      {
+        "clip": "53ba07cab95393a7fa088d9fa44fd0229e2f43f588bd8abc466d59e7551e6460",
+        "ms": 2511
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_ridge/narration": {
+    "": [
+      {
+        "clip": "68a65d15b485307514c07a5b1ce21e7b671c8f26e8ed3fb97fcb48e4ae7dd2c1",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_ridge/onFailure/narration": {
+    "": [
+      {
+        "clip": "0206af5d7f1183ea33d1b240ca9fe322fdd78d5f3a3411005cdedaaaac8c7dea",
+        "ms": 7007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_ridge/onSuccess/narration": {
+    "": [
+      {
+        "clip": "05ab7f21fa5175d0be42392c26ba935fc0baea3b0595c9d5f97d29dbf9c172e2",
+        "ms": 2678
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_ridge/prompt": {
+    "": [
+      {
+        "clip": "197cf30eb44397571c8669f2003b0a09c2b1ecfd9420ad04a79bc90ff1275d85",
+        "ms": 2741
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_snap/narration": {
+    "": [
+      {
+        "clip": "885376ea0340bee97efcde0e085347a3b4fa7d6a2e28352a5b1250e5be03b833",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_snap/onFailure/narration": {
+    "": [
+      {
+        "clip": "d4897ed390f43fe7e5ddd9bc66106e2603fc6cf11ed35a78b11a39f71c0a0529",
+        "ms": 10707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_snap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0fb9e96b008c34fdafa4927edc31d6b8934ef5200c079ce92e1796d680202fe2",
+        "ms": 9107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_snap/prompt": {
+    "": [
+      {
+        "clip": "01c3d6bf6962e7172fb6e1a349b9b932c2e17d89bb40800b98cb227b4c9e33c5",
+        "ms": 2705
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_sticks/narration": {
+    "": [
+      {
+        "clip": "e747a985a3c64024ae4f7d2b5b588a1e22774981424f9b33d2ea4b02cda267af",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_sticks/onFailure/narration": {
+    "": [
+      {
+        "clip": "01e233502a89d4a0145026484994c3acfcb09b322ee0863f1467b57b99d02900",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_sticks/onSuccess/narration": {
+    "": [
+      {
+        "clip": "700e5a9c96bae41c7ca2c34c3ebddc62d846d1758fd6745adc60beea39094e62",
+        "ms": 1167
+      },
+      {
+        "clip": "5334efee45a5cf03591feba3afa98fffaa19f2a224fcc350d5af1c6518f5029a",
+        "ms": 2000
+      },
+      {
+        "clip": "d1ba1c4b00d813be8373ce3441eec1e1339f310b8e6f602422ea4e87ad1af8bb",
+        "ms": 2816
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_sticks/prompt": {
+    "": [
+      {
+        "clip": "aed332ea37c45a324d0c07ef7ad9bedbb1ab25bd4357419249fa9b4c10df8ab6",
+        "ms": 2491
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_swing/narration": {
+    "": [
+      {
+        "clip": "3d8681a0b025944ced27346bb547a1a4179b265c7da6d9c3db9e9d91ed6502f1",
+        "ms": 9307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_swing/onFailure/narration": {
+    "": [
+      {
+        "clip": "a68abaf00e479ac80b5a1d8aa11d5c6baee557b521e5f9d68d6d9040858fdcb6",
+        "ms": 9207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_swing/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8aa5fc10f7bfe394d40ed655e7c5cdd44bfd6570c310b514ad71d4cbaeefcaf9",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_swing/prompt": {
+    "": [
+      {
+        "clip": "0780421d45e273c5c43d0961c3703454398ac1671b111745dc9084533b375cca",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tie/narration": {
+    "": [
+      {
+        "clip": "cb564cda666f94a9b878f201803ea1ef2d0c8cea7e6df8c985184393dc5a0bdf",
+        "ms": 12607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tie/onFailure/narration": {
+    "": [
+      {
+        "clip": "0cc0653939d988631a1253a388f538dd3a698766a1322b23323af62a5ae8a05e",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tie/onSuccess/narration": {
+    "": [
+      {
+        "clip": "c6a1808a99c6a59df98a6c4e8e7a757875d78b9d9d4c2ada81fc4513e169004c",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tie/prompt": {
+    "": [
+      {
+        "clip": "1aded7562e4aae284bbeb1409a02dca8a551645440496f7433b37387a4bf7fc3",
+        "ms": 2817
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tower/narration": {
+    "": [
+      {
+        "clip": "72229de3fc589b3fbe3d9bd246e056f0eb5c90143591c512cae2fbc8ceb3f821",
+        "ms": 7207
+      },
+      {
+        "clip": "7025eb61300d60b5424b375ec612f813f98ec55e33d0188054b62aedfc0a6612",
+        "ms": 811
+      },
+      {
+        "clip": "77fb4ab888b40ed4d5e4374eda5cf03b826008dd813380f51e623e7ac8e25027",
+        "ms": 1234
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tower/onFailure/narration": {
+    "": [
+      {
+        "clip": "e9432746c546191e4e49d21878cfe7c7399e6163b42069f60dca1e32df188fb5",
+        "ms": 8107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tower/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8fe405e2290a65114d48ee4961ab330d4bdec1e5e0ca7b8b63d15320dca94b98",
+        "ms": 7707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_tower/prompt": {
+    "": [
+      {
+        "clip": "aba7aa0fcf0c1459b2b869655fa1fd891ad9eb29d95f14008c6dc8d2d1c75fc5",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_walk/narration": {
+    "": [
+      {
+        "clip": "c9e77e9de5ebf24534cf91745a9cbecf5522fc11f757ac72fc24fef0eaf10b2a",
+        "ms": 5308
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_walk/onFailure/narration": {
+    "": [
+      {
+        "clip": "a33e1f79ee3dd45bd3c571fe62ebd3a69416c5f1def582aa4d059e2dfc3a4e22",
+        "ms": 11507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_walk/onSuccess/narration": {
+    "": [
+      {
+        "clip": "04cb127d46faffb2a014444b33bd108210ffe14fe573ea76f10806f2faf77dc5",
+        "ms": 5407
+      },
+      {
+        "clip": "bfe181c50a850ab9402907df1b9ac1ed083e554b1696a910fc8a6b96d889f0c9",
+        "ms": 768
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/check_walk/prompt": {
+    "": [
+      {
+        "clip": "7dc4aecac0b5cb9eb8c75d4f2366d9f316597f8dc8c6577d21733058622f252f",
+        "ms": 3208
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/copy/interaction/cue": {
+    "": [
+      {
+        "clip": "84174976832d780624de11a99c94279e12195bd42106ecd3f38ec531258d4cc2",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/copy/narration": {
+    "": [
+      {
+        "clip": "37d4b126a5cef5ccac958d13fbef4864de2cd7822e4552729a43de80b42d8a8b",
+        "ms": 10507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/copy/onAssisted/narration": {
+    "": [
+      {
+        "clip": "d9343525d82bef4ce547fcb21d1cf4d7a760d4d4318c2907d5dc66a801252ecf",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/copy/onFailure/narration": {
+    "": [
+      {
+        "clip": "8cad6a48548add1e952b3129afce7483741ed314e2444dc436b6689258740862",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/copy/onSuccess/narration": {
+    "": [
+      {
+        "clip": "827567a7ea9b240aa1c3657013f5b3485060b80cfdd1013064492eda632286e9",
+        "ms": 4907
+      },
+      {
+        "clip": "7190a49362e21730a75ad97842dbcbb5194d031bdb7200982400f039ca8ba322",
+        "ms": 1049
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/crossing/narration": {
+    "": [
+      {
+        "clip": "37e10920a06bed3f0d1d0a84d44e55e69f2cc83d8fbe3120865289955222a009",
+        "ms": 13907
+      },
+      {
+        "clip": "f566361d8220c9867f899fb1209c26a9691dfdd34f2445138e17311afabe776a",
+        "ms": 1289
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "7627046388d94af72a19a38587d53830eec597104621db09212f89cd7dbdd2cd",
+        "ms": 2998
+      },
+      {
+        "clip": "963a2855c5880a9f5da7857cf0920863cb3906a1c95cbed5b6554365743f65bc",
+        "ms": 2290
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/dispatch/narration": {
+    "": [
+      {
+        "clip": "69a7320fd06f6dd03355c45c6354e5eec6baef085e7e100602c2d6e04bb9ec8e",
+        "ms": 962
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "f39b41a655615b5f59b48b9aa6cb040fb40e30e5c7d4bc7c3cc3a2e1b859ffbe",
+        "ms": 2894
+      },
+      {
+        "clip": "fff4d000beb3ed4b3276dae10ed354349fec4039a1f8f78c76af44a2f0464f0b",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/dispatch/variants/0": {
+    "": [
+      {
+        "clip": "6b94f79c19e5ab760b2f4897b41f95b7246942a947afa4726bf6987f5cb652aa",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/dispatch/variants/1": {
+    "": [
+      {
+        "clip": "5c2244f4364093f6aa8d570346c2e4762942bfe9fcccd56e547407f832d3ce65",
+        "ms": 2962
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/dispatch/variants/2": {
+    "": [
+      {
+        "clip": "16bb31f61b514c4db070ca47af87dd4b87be41551efd78796ca1b44286b52c81",
+        "ms": 2599
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/drift_on/narration": {
+    "": [
+      {
+        "clip": "e4fe0bbd6c5f014e2be858c7793eabeb30c17dd7d1f8f26ab1fa27bb25960373",
+        "ms": 12407
+      },
+      {
+        "clip": "12e53c3b0fe2699cb44e8dd7dfb80b9489f51e0d020e3bfb4bd19f555eb33c75",
+        "ms": 2048
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "2a8b75f9629423b48983676fdd1c2e479888ce251b0cf7f4460cb47c20c80135",
+        "ms": 5207
+      },
+      {
+        "clip": "897b558e2910690ca6f79ff14de7ef43f7ed498371a739568cecc5f61e20bb35",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/due_song/narration": {
+    "": [
+      {
+        "clip": "39bb364f2975f9acc37629f821dfabb4f4edc6dee3b24ba1dfdc9851453d0613",
+        "ms": 5407
+      },
+      {
+        "clip": "884ec3a720080e60e10f8d37cd74822178cce93042e43346c527d309d456e0f3",
+        "ms": 2712
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "f8bb2920cda877a3a14b594258712a57dc229113191ed21e1c7ea9680a920b05",
+        "ms": 5807
+      },
+      {
+        "clip": "444ebbb39ce3654e767d6514499a825cac8887b9586cab8c91b896e3103da66c",
+        "ms": 1017
+      },
+      {
+        "clip": "12ce88a8a668b417f5108ed614b61a3cb80f753068c1de8b1d95116f3242e9b0",
+        "ms": 2258
+      },
+      {
+        "clip": "37de4b11a0502ea17591b403f0926511a78286ad4dbc5dc7129eaa603bdfb9ca",
+        "ms": 3307
+      },
+      {
+        "clip": "fd1b28e988235fa3e9d1b5539dc618cc5776556415eaa1170382856b17f1bee2",
+        "ms": 3307
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "a1f65645c30c18fb825039334786a813873f22d53a2344af8a5d789d13f2d1bd",
+        "ms": 1345
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/narration": {
+    "": [
+      {
+        "clip": "e5a58cf855b5a1dcda1bbb4e087534ddd82ec9de9ae11d8bb405ad09a02bad2e",
+        "ms": 5207
+      },
+      {
+        "clip": "6f7ebb7669794e1ebc5996e870f30361da4cdc5321c5c0f670d5239db64dc750",
+        "ms": 2507
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "1292a7d90e8149d4a8692b9e9e14fadafac2b38af641b4366b10cdb5a9f577ff",
+        "ms": 4807
+      },
+      {
+        "clip": "49c3b93c4a3e9897d201d77d91520b3cf085f28295cf0228f3d95835471321d3",
+        "ms": 14007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/variants/0": {
+    "": [
+      {
+        "clip": "46af96350b8f96900793464bff9217437185b30d0f072798106226d4c2e8f47d",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/variants/1": {
+    "": [
+      {
+        "clip": "3807820f63f863ed432dfeae19ecedf0b7ff5855886fdb335e7dde23945a144d",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/variants/2": {
+    "": [
+      {
+        "clip": "5df3b4fbea4116b87e7fe05fa5b102c49964d0e5b835d49dfb94cbd9f9452ff2",
+        "ms": 3927
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/variants/3": {
+    "": [
+      {
+        "clip": "6cd5a54d7c128e6177f2009ff73f9f071cd155bd8b0e337922586de5aa8e233d",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/variants/4": {
+    "": [
+      {
+        "clip": "3995f0d07bc0f4e4cd97be9a2981a2706e769070879c07eceddae42249dfb181",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/ending/variants/5": {
+    "": [
+      {
+        "clip": "3995f0d07bc0f4e4cd97be9a2981a2706e769070879c07eceddae42249dfb181",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/explore/narration": {
+    "": [
+      {
+        "clip": "c852131840d8d0954b951a72dea008fcc8be3a8820ba335907837a0f54402e36",
+        "ms": 3207
+      },
+      {
+        "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
+        "ms": 913
+      },
+      {
+        "clip": "7bf878d14886a069bd00d5f2cc8f6f01ae85db414820df1a7ae78b77d235c4aa",
+        "ms": 5007
+      },
+      {
+        "clip": "2d68d78c387efa5029c2941abfdc079a005c1f8bfc5471b279b0848219db9627",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/farewell/narration": {
+    "": [
+      {
+        "clip": "1b99a72b6ccbe575d3d5ab7b8cc543ea83435ae2260c8ef0bba5c470113f20db",
+        "ms": 3107
+      },
+      {
+        "clip": "06e2b78e6368792449c34d72e84d7fea197d3cca5e04116e312d75b2f207dc0b",
+        "ms": 4007
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "5e7e892d2b464c2d05b7e46dd8968b5a49451cee6413a72b8cda4ff6d61735ae",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/farewell/variants/0": {
+    "": [
+      {
+        "clip": "a24d9e839f3585d1b2c422b5a79c3a9dd4fc6322b523ae2160ed55e756682fe8",
+        "ms": 3207
+      },
+      {
+        "clip": "e1eac9f281c19a75a1986d3abbb49c91cade9511cbf0e112c3f88ff3c2b01648",
+        "ms": 1926
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/fly_look/narration": {
+    "": [
+      {
+        "clip": "c5e467fe11ed46188b5da64d3d959b1dd89fccb77dab4b4eb136537021fb9cc7",
+        "ms": 13107
+      },
+      {
+        "clip": "d2e9c2c09de1537ff2481f292e98eafe5ad7d6e2bf865f10a8853641484c4ffe",
+        "ms": 1048
+      },
+      {
+        "clip": "854ad4bb31ed520b0aa0df9a8aa12c1ec16bc506f21452484bac53f445fe1613",
+        "ms": 2545
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust/narration": {
+    "": [
+      {
+        "clip": "fb9c39c23c46d04d8300148a5ed9d069e4811f6abd89e214748bcf4389bf9812",
+        "ms": 14607
+      },
+      {
+        "clip": "1d5d4a313a99856013e0ed512c64b39c2e4f419819a90ab66737a56fae86faf0",
+        "ms": 941
+      },
+      {
+        "clip": "2bf1fb0e279d381796238b71b42c3d1484d6f32b02d297d3d021e8f55f270fe8",
+        "ms": 947
+      },
+      {
+        "clip": "0408b98b3ca4ee55fa3d5c9f1aad1aecdf7d76a544f4292ed7ce56d6761b2fb3",
+        "ms": 2211
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/narration": {
+    "": [
+      {
+        "clip": "7d42f1375b18b74277593b640ae0fcc7840ce997cdf8722bcc4d5dfca95fb917",
+        "ms": 1559
+      },
+      {
+        "clip": "ce72617494af257ebdf7f79078e26ee2510fdc35707c4ac809d1e3e9cdde323f",
+        "ms": 4307
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "aa7ea0849ff9d7ea9dd39df41ffbd719420603b48b51a29be9eb7331ec36ac90",
+        "ms": 1452
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/0": {
+    "": [
+      {
+        "clip": "17ceffc0127cf51d98ca0fb59030c4dce3a1a312bfffa40dc8a7186f8e1aca3f",
+        "ms": 2239
+      },
+      {
+        "clip": "79ece6820670b313991e4a1b0b209377bb9158de507193f0fcd22035332b08ab",
+        "ms": 923
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "4a3b53f9bd9ee23436df267492d4ef1a278878410bccbc3abc5996d6948bfec4",
+        "ms": 2060
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/1": {
+    "": [
+      {
+        "clip": "762b7a6b9b0cc75dd60248b6f614198320c0b32ec64f1e76012d4d0ad2781deb",
+        "ms": 3607
+      },
+      {
+        "clip": "f142681a0b1af039c2fe6bded51eb735e8095445a00d8cdce0f8cc889bdcfb9f",
+        "ms": 1597
+      },
+      {
+        "clip": "fdecda78e437da271666fbab183e9c83aabe131acd379da4c02ef788e2ad9b25",
+        "ms": 1040
+      },
+      {
+        "clip": "73d83bbba9518f5bf6599f4966a3fa2c154e3febfa2edc8ec50d8d6c1ee8ec02",
+        "ms": 2014
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/2": {
+    "": [
+      {
+        "clip": "2989babed372dd905d179f864e2cb68f5afeeb31cca7ff7fdecd1f983df06c7d",
+        "ms": 1494
+      },
+      {
+        "clip": "6c631954d7a807a8a52f1f9596797fa4c4a71e8ecee48e3ee17a4ce107c7b691",
+        "ms": 4227
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/gust_after/variants/3": {
+    "": [
+      {
+        "clip": "7f7836ff14bd6e7d524808e6e3fd584c0a1eeda615e4d86bd62143c986b19474",
+        "ms": 1941
+      },
+      {
+        "clip": "127be21cd5f86041ad090c5dd1cbe93323047bec0748ea1bb17dcd36f279eb10",
+        "ms": 2491
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/hen_kept/narration": {
+    "": [
+      {
+        "clip": "895f8e3fab284f90b0e696370be689584612cdcb415cdefe91438f135b93ede7",
+        "ms": 10007
+      },
+      {
+        "clip": "c15edb817154de912fab9b0fecdf601ce3b068ecab1420e58146f4898dc7ee2e",
+        "ms": 1407
+      },
+      {
+        "clip": "446552d2ceb126014b29bcd57d9f8723790ad9756408759bd90e0a5a72739e1b",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/hen_left/narration": {
+    "": [
+      {
+        "clip": "4d51ae3813ad579e8be2a8d9a54929635678491347601029e8e0036ca158a4a0",
+        "ms": 8807
+      },
+      {
+        "clip": "7e381472a936ddd5a042a44b87abfe226e7fb22a24e91e8f592750140d7be2e5",
+        "ms": 3407
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      },
+      {
+        "clip": "1d394cc6ccc2ca2a82bc517061386cdf8ea9395d6b7384f22bceb07916e916ff",
+        "ms": 1878
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/hold/narration": {
+    "": [
+      {
+        "clip": "56e9b8eab213a23a17e43f0c39172134b39d308870ad2b8617abf1249d1a8e88",
+        "ms": 9607
+      },
+      {
+        "clip": "669d9278ab6a3f977d5e3c7c4b0a81a35d4f1fa76d802ecbabb522f56a02cc17",
+        "ms": 6907
+      },
+      {
+        "clip": "256fc66a84e11dc20b9987c843e02268d3a15b8c3b2cc71a1cca191f9a65420c",
+        "ms": 1305
+      },
+      {
+        "clip": "adaf7918b569d96366d0fdb9431d23316f89cb6dae00c08ffed0e4ac9ef3901f",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/leap/narration": {
+    "": [
+      {
+        "clip": "2980ef3983f68fc168c326a3e99ad6a337f5bbda1038e14092be4f9db1c7de16",
+        "ms": 10807
+      },
+      {
+        "clip": "f43fa7da9e4e698bc5ff08d2e6f9c88b56e7fb9b5a457682ec10b1e058d131a6",
+        "ms": 1191
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/lost_orchard/narration": {
+    "": [
+      {
+        "clip": "72ba4773a09ec650746adb2fc98d4b29bceec4ad4f18827d9aee7d1fc66d2d76",
+        "ms": 12507
+      },
+      {
+        "clip": "e03cf754db4c6efcac778a2f2e470609178d0e4a84b80b28c1577fecad8a5636",
+        "ms": 1835
+      },
+      {
+        "clip": "cf4427b5c2cf9833b1ea1735627b054ab7239da7d216355a9a2fc6ea0c1d65ec",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/mooring_stone/narration": {
+    "": [
+      {
+        "clip": "152cc745df2565d56f9b7dd001367095820a0d353bd27db228e3666fbde342de",
+        "ms": 26407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/on_island/narration": {
+    "": [
+      {
+        "clip": "f6060afc2afc8695417b266da646200d4102127cfa5445409548c03438e389af",
+        "ms": 19607
+      },
+      {
+        "clip": "d2f25b81d4a1407e107662c3ffdff3d9948060c63ea285b94517b9e9ed952d81",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/on_island/variants/0": {
+    "": [
+      {
+        "clip": "f1e2157c128b73ae4ce0e075b79e4ebcc50003d98c90a324871b67f124ab7710",
+        "ms": 2132
+      },
+      {
+        "clip": "1535805cdde3995817783ae810fdf5691bb2b536c08fd11e9703dcebf2f36759",
+        "ms": 2313
+      },
+      {
+        "clip": "efd170789d923a613746839428b42648b43301e2f4d8844c7db75aed0bf0c698",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pip_doubt/narration": {
+    "": [
+      {
+        "clip": "090d74d453ae1f34f62643c81e98e3bc0eb1fb5f853a9b41bc4ec09bafbf8ee8",
+        "ms": 11107
+      },
+      {
+        "clip": "35d1b4df33e28301072d06ba2abbc76229157e61b008755b5a340bb775627169",
+        "ms": 2070
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pip_hen/narration": {
+    "": [
+      {
+        "clip": "311cf3ae2b6d97b1128e1ecb9c33a7b60d50688eeea2de2a1334136690567cbd",
+        "ms": 2941
+      },
+      {
+        "clip": "b1193d7f3c2c8652f367469455ac17b371c7c98827023f9a294b990a244f2998",
+        "ms": 1016
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "67cda5d4f7e086fc9a564cf0c59ead184db6f18818e497b914216b213f7c1c20",
+        "ms": 5407
+      },
+      {
+        "clip": "41ec044d5234d06bb9a7fe9b04d9364045ac207023871000085cb8f6b7ea79ca",
+        "ms": 8508
+      },
+      {
+        "clip": "eb349b7d04d16b17711bc61513f87bf4d5d5e25bb49a2099347f15b5e7b34d28",
+        "ms": 898
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pip_loyal/narration": {
+    "": [
+      {
+        "clip": "56a86e28fd4050e78f36a3f261ca2098e03443aad638b9787c614ce85d18d5c8",
+        "ms": 1291
+      },
+      {
+        "clip": "b21d0dfc900bdc6185fe520eb30c85a1678720e8354c155928cd64f0e1144b68",
+        "ms": 1131
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "aa9cb0e94316647ba45916df5df90991070f939f86ccac05e7ddfa92461f0dc6",
+        "ms": 1457
+      },
+      {
+        "clip": "d062745b7b6e868343a637ccf745578ad25a5f7dcd68a3cce00e9aab2e2ffec6",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/pull/narration": {
+    "": [
+      {
+        "clip": "2492fe3d625e76909d6f0b2e4d5f8a0dd7a5764696f18ebbed7b1c7bddf70e39",
+        "ms": 18307
+      },
+      {
+        "clip": "2d7dc9d362bf0a2305bbc4c956d767191f28f15e24ec1b2bcdd2c8ad0754caa0",
+        "ms": 1798
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "4a243408f3dc6d14b3ecb07318ce3372ace98a5168858b88d85d978471f101fb",
+        "ms": 2924
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/rest/narration": {
+    "": [
+      {
+        "clip": "d11a912dfd2eeb3fc9a298b3197e37613b69cf25127fc890bf73ef7735d0b146",
+        "ms": 8807
+      },
+      {
+        "clip": "1b5c24c70fef83dd382f3441eb764c2ebf4310d5c2ad920881322dc6e29f6b7b",
+        "ms": 3107
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "f26417ef31c67a34b169c645166608d9e703c4b017b8b2dc1c5c735d4376e161",
+        "ms": 11607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/run_back/narration": {
+    "": [
+      {
+        "clip": "27d3544dda58683304caf2de0a0ee8f4daed3927ed41e1f4ff392860e88247d1",
+        "ms": 9307
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/run_back/variants/0": {
+    "": [
+      {
+        "clip": "5e7dad418b71b7780bafc8f60ed69fda9717e365155ac7381205c9a6d9a4a9c3",
+        "ms": 1897
+      },
+      {
+        "clip": "73280637bc06f9e582d148f8601513562baf9f17fe2ace2f04ce4eb09a18a160",
+        "ms": 1246
+      },
+      {
+        "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
+        "ms": 1037
+      },
+      {
+        "clip": "8d0920b5627d851c39ee6a51536749acdf997d28ec15bf6aee281e54c74909e4",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spot/narration": {
+    "": [
+      {
+        "clip": "b06e7a09a3657597d5d6567dccad6cdd1cf4394bc99b44dd576e25d4350c81c8",
+        "ms": 5407
+      },
+      {
+        "clip": "f77178f60bbcde686cd6efc0ef93742b2135f2c286ccedfb94e88a7e71c5a953",
+        "ms": 1995
+      },
+      {
+        "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
+        "ms": 913
+      },
+      {
+        "clip": "fbb0d5a481683a720e1a1296cdab39d3c78dbb698bc3a128d6639022c8ae9776",
+        "ms": 2211
+      },
+      {
+        "clip": "ca580bde1203f329a5fe9723d58548c8fb3f3d1079a40b04a40721302598c284",
+        "ms": 5907
+      },
+      {
+        "clip": "20549b99e6e8158d1c90c78c7445cf3c46097584c10be4ec1e72db9a6ef07f43",
+        "ms": 2985
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spot/variants/0": {
+    "": [
+      {
+        "clip": "dacab137ef1b3000cf66e555e2be574b2ed145821e5343a72287fd763fe35fec",
+        "ms": 5107
+      },
+      {
+        "clip": "792ed04e63520c475b705c92098f2f49e73ebe31c4c61d781c1b292a942cccfc",
+        "ms": 1712
+      },
+      {
+        "clip": "89ab6ceb68ba9d1759465bb76494f0c6a75f7e70b7ee79ade9b6767db0994e0e",
+        "ms": 1143
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spot/variants/1": {
+    "": [
+      {
+        "clip": "12e641c37543a6ce54b9cc01e1b57581e4856fb3a39313dd368938247d187b00",
+        "ms": 1915
+      },
+      {
+        "clip": "bf3fb91e3e884be2a773ac4c3fcb955bdc8e729fdcc4a853eababa4f5b3899f5",
+        "ms": 2488
+      },
+      {
+        "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
+        "ms": 1313
+      },
+      {
+        "clip": "f766eda24968a2eb4d5a74f456e3b2e9c336d7416b9ddb974d9fa8313a6282e0",
+        "ms": 2090
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spotted/narration": {
+    "": [
+      {
+        "clip": "c54f6c5d6850427f993cd71a36e48054f764e316292924cc9314ca84c1aa4087",
+        "ms": 19607
+      },
+      {
+        "clip": "991fe31cc4c3a517fc6897736a1a380978d722f7bfc395b350bf79ac0c084c98",
+        "ms": 1383
+      },
+      {
+        "clip": "f5459399e7f54cee470a92ad6332f31eb64199b5439e8260c74c874cab7c5d55",
+        "ms": 2019
+      },
+      {
+        "clip": "a40fca5b5e6d22e733be0ff691301171509ef3e0daac3d15a416488506a713b4",
+        "ms": 1169
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/spotted/variants/0": {
+    "": [
+      {
+        "clip": "a1d18c038df56c963cdeadb9907f56c4995a2ba4b9b8a111d7bf7c0229c7e92d",
+        "ms": 6807
+      },
+      {
+        "clip": "3a1a5a3cf22c75b0376b0366f2c9e99f3b73fc1aa5bb797f4a4ab6dcc922b1a4",
+        "ms": 2310
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/stone/narration": {
+    "": [
+      {
+        "clip": "0aa138899ca11f6629863cd464d1e91a623dbefdfc932d1aa4cfd269de52363a",
+        "ms": 13707
+      },
+      {
+        "clip": "fc042a660a2e11c5c6d77d20e72efdacb39c98d6bb91c1a6e8c8aaffab65b9ea",
+        "ms": 586
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "3af19383d044d9c4fd21f0309038a29dcac9965b7a818f35177d88d84e2ce4a8",
+        "ms": 2948
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/stone/variants/0": {
+    "": [
+      {
+        "clip": "1a70391e9b35d216fc70ea110805d693963dde37470c9f153cb17b7c92c57062",
+        "ms": 2731
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/stone/variants/1": {
+    "": [
+      {
+        "clip": "5ffa98745c35d619105ff8336783a05ad2d3c88049379688c043480d077f93f4",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tied/narration": {
+    "": [
+      {
+        "clip": "0e837cf932ecc17d17a12827bd3dd57f61cbb2e4b6ff08127f61c44a9264f8dc",
+        "ms": 8807
+      },
+      {
+        "clip": "5db69c679fe015e274e2cbbcbde4b30b9ee8a39453ec8d2ed3dbf9dfd44037e7",
+        "ms": 1707
+      },
+      {
+        "clip": "d55e12f83180330816ad1643598f7bb3cdd673932f35f3aa4faa780a924581b0",
+        "ms": 888
+      },
+      {
+        "clip": "882df605ddd1406ae5158c2025df4a4f33822f55c83230d28e81ec6335de16b9",
+        "ms": 1080
+      },
+      {
+        "clip": "9d4aee9a0a25c2efb0e54f290cd6e8e61a2e99a0948d57e25561421f3dfe091a",
+        "ms": 1363
+      },
+      {
+        "clip": "6bb744d9b230e95793f03c3119999c2f9129bae59e2627f7bbed322c85785795",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tied/variants/0": {
+    "": [
+      {
+        "clip": "6ed596482d70ec3841e34fe8eaff0ad70bcec1d56277b170290c926adb148b64",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tied/variants/1": {
+    "": [
+      {
+        "clip": "64fed66dc17edc53b6f0275b773b29e7957df2284df21bc0032fed28c77294de",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tumble/narration": {
+    "": [
+      {
+        "clip": "cd66ce264c074d3d6bc6a4217bd759dbf2eb0de1fa7a4e2fbb005c6c8cfbcfc3",
+        "ms": 4607
+      },
+      {
+        "clip": "b1d1c95674f2fcca15414643e2acf554b1e67550fee94c73bcdfff53304c2906",
+        "ms": 969
+      },
+      {
+        "clip": "7fa4252999125b12d4b2ea17531e4d337eb62a385015f27f3a2610c18659b89f",
+        "ms": 1684
+      },
+      {
+        "clip": "c158a83274ee823cf5d9e3f5d8ef567e0c46e6efa5acad5ad9541af2d9954ba5",
+        "ms": 7807
+      },
+      {
+        "clip": "5552252cae20868870cddd7dbdfb9aec3740af3fdb565b158fd53abc319f6341",
+        "ms": 1581
+      },
+      {
+        "clip": "fa9a4750d6f90728e788ac027eb4e061294c6a16f4f722d9db27eecd3e5572f6",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/tumble_line/narration": {
+    "": [
+      {
+        "clip": "0dba64f95eb711a779ba319aee4bbd4522bb8aa00f00ccafba80a74356400283",
+        "ms": 8707
+      },
+      {
+        "clip": "e17fd200a801a6656660588481d93fa88e7705031a3464f6969afafd3607e13d",
+        "ms": 604
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "4921f5d915d3aa16be9bb44070aa7d5e2e12f60110aea4fcd237d097acf97ac8",
+        "ms": 1472
+      },
+      {
+        "clip": "3cd02ced85abe26c311f1e6a028a315a6629e204acb123806c51690ce846b67a",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/walk_back/narration": {
+    "": [
+      {
+        "clip": "b78566d53e6b9bd38f99c83b2e10b1427200e9610ce1e314a56237f6eba48f28",
+        "ms": 12507
+      },
+      {
+        "clip": "ab1421f189f8f35b2a518413af136199605fa76f59b12092b3a0e2cabf888cc2",
+        "ms": 1067
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "77fa32d9d3538b77670e47f304ceeeb1bd61a7956a91f8669597d235162d3fc6",
+        "ms": 2398
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/warn/narration": {
+    "": [
+      {
+        "clip": "7cb216e6c0cccbbe2b25fad82863cdf6712c7a590176a69756f43317380aaf28",
+        "ms": 8307
+      },
+      {
+        "clip": "55114270ef6aaf8fbf3dffec4f4dce7a2cf8999a2301d10f35b1f7f217bc3aac",
+        "ms": 695
+      },
+      {
+        "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
+        "ms": 913
+      },
+      {
+        "clip": "5ca244b8ed462d16322fb10dcd24745dfb5def14c0e2db4596d4f1f6ce47e41d",
+        "ms": 1423
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/welcome/narration": {
+    "": [
+      {
+        "clip": "87db0f4ae41a5ff5b0c4dcb333efcf03128e2575c009569eeb83d30342c50aa4",
+        "ms": 1240
+      },
+      {
+        "clip": "8c1180bfb96a16be40c28ea2685620a43902b4be7ec3e358e4ffa65cef910d72",
+        "ms": 3607
+      },
+      {
+        "clip": "0315c081a3a8722a6db1e33cc211211ea1f0eb755db6db331b200b5dbf6a5301",
+        "ms": 4007
+      },
+      {
+        "clip": "f375f74beab536b9a46ed64dd0bc689486ffd32be7ebb6b9170fc5f29c6e3209",
+        "ms": 2399
+      },
+      {
+        "clip": "96191bbced2d395078f91cb72046acde53393c272e24b1665d8fe0d805fe75ea",
+        "ms": 1244
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/welcome_rung/narration": {
+    "": [
+      {
+        "clip": "7b29b927c51773459a1d04de6f34e4a15d055f4d60e2472b6118197a68122bbd",
+        "ms": 11907
+      },
+      {
+        "clip": "8a0f550c4b871cc982a19d60a6288a95b48baa41bc097a554bc627ee62b3f246",
+        "ms": 2426
+      },
+      {
+        "clip": "d29cdc2909f70a0b349c9dd24be436bcae7f82b3d6fb47e62e8fd4923644a06f",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/interaction/cue": {
+    "": [
+      {
+        "clip": "c5928016d9619e1c024c7a352ad1a15372539f9fb5bff2f034ac8d4872e396f1",
+        "ms": 2963
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/narration": {
+    "": [
+      {
+        "clip": "c2addbe2b4a92e6f21b24106f92a0646fbee1998e551e9f3c72a28f7023e84e6",
+        "ms": 5707
+      },
+      {
+        "clip": "c11c64d9e525ad69246faa4b796e116d22a0207003364f7b4ccfb791f8a20fc2",
+        "ms": 1593
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "766c2b57b93657e2ffa537c8226f499cdf311e5fd90459dfff0caac762aa9d41",
+        "ms": 1096
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/onAssisted/narration": {
+    "": [
+      {
+        "clip": "644bd9be126409c52308f84390577b4962d50db963b0bd35aef80b8ebde6e426",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/onFailure/narration": {
+    "": [
+      {
+        "clip": "bf8798c7fcfe0b14d71857d2dcf61b8f3c2ce6f55a254776433f53269777c23a",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whale_note/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0370d1d3f2e640aa2e90a13f8331e6185b3f61b62d5a045a711195a8ec3862ff",
+        "ms": 5007
+      },
+      {
+        "clip": "4eea730bda00b84464401f38c020607205b9dcffba345bf608267172c004cf8b",
+        "ms": 812
+      },
+      {
+        "clip": "9ebd93f9d00569dde6a0b0f2155f3e6358759df6c863071193adf88101d338d0",
+        "ms": 1482
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/whales_lead/narration": {
+    "": [
+      {
+        "clip": "5a1d0b59b46a22c3d4aa467641496abd142ad14775399ae9c1ebabc734398d87",
+        "ms": 8907
+      },
+      {
+        "clip": "5334efee45a5cf03591feba3afa98fffaa19f2a224fcc350d5af1c6518f5029a",
+        "ms": 2000
+      },
+      {
+        "clip": "7259afb25ab83b160efe34fabe88c680062ac134ad8b65944f15d628dd61727b",
+        "ms": 1244
+      },
+      {
+        "clip": "1552faf1fde6ccfa9f8098f2fe9f0904081efc7a0c087d8b1e809f928c25696b",
+        "ms": 1756
+      },
+      {
+        "clip": "2373aea1dfe737f0fb6027c828d7466d1f8bb60f35aefc97340857205c83e613",
+        "ms": 7607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/wrong_side/narration": {
+    "": [
+      {
+        "clip": "9da4357820026c632230183341ebd4d58bc7c5ed57a39f773b21ea4f76754154",
+        "ms": 7707
+      },
+      {
+        "clip": "bcccb7ca64f42b7bf43598a8f32650e9dd8e452e8323fc72541595a7cf76aa68",
+        "ms": 466
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "9b228847545bf57e80879c4810a0f66f95f42aacd6b23575f792c62dcda1ac76",
+        "ms": 1809
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/wrong_side/onFailure/narration": {
+    "": [
+      {
+        "clip": "ea1412e48b98730e18b7b244d12bff6dd5e308fbc559fc63c0740c2a50014cac",
+        "ms": 7027
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/wrong_side/onSuccess/narration": {
+    "": [
+      {
+        "clip": "aaf78e802c0672be38e220d5a8f4cdd5fc7e5c104d282130b981c2034d7a7f6c",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-the-island-due-back/wrong_side/prompt": {
+    "": [
+      {
+        "clip": "b37bc259a120e02e6c5abb67647bb9b12209d1384b63444f6dbb735deb2c83e0",
+        "ms": 3507
+      }
+    ]
+  }
+}

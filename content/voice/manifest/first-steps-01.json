@@ -1,0 +1,1266 @@
+{
+  "first-steps-01/@goal": {
+    "": [
+      {
+        "clip": "9420a00a1d7439013c2ee1fe20af7dec9f2597d6a869bccd2b62719dc648c492",
+        "ms": 3707
+      }
+    ]
+  },
+  "first-steps-01/check_climb/hint": {
+    "": [
+      {
+        "clip": "6512bf93a345d0893c5e69c3fd88f4259d7dd5b2d377cd74559f39e8a68e66e4",
+        "ms": 7807
+      }
+    ]
+  },
+  "first-steps-01/check_climb/narration": {
+    "": [
+      {
+        "clip": "14f0509adce4745b16c3383b8e565dcaf630e18a0f3ad449ac967884d5298778",
+        "ms": 5707
+      }
+    ]
+  },
+  "first-steps-01/check_climb/onFailure/narration": {
+    "": [
+      {
+        "clip": "925ec4e20d1674b461744fd08ecfa443a492fc99064464cb1f2e5117eb61dc1a",
+        "ms": 7407
+      },
+      {
+        "clip": "b2accf3ec64bae599abd227f5dab630d2e3d1759e52993187e7eea7f3a76e39d",
+        "ms": 1563
+      },
+      {
+        "clip": "0c280eb9af4e51f5d493383975829232426b90a7f23dd7b9d97867fc498bf9c9",
+        "ms": 1325
+      }
+    ]
+  },
+  "first-steps-01/check_climb/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1ef2f5c94753bc0a33f73031fcb8fa353bcfa91ab54e48aec8320f3779883346",
+        "ms": 6307
+      }
+    ]
+  },
+  "first-steps-01/check_climb/prompt": {
+    "": [
+      {
+        "clip": "f71fbc428c0b0e2a93a229142d79bb1e26bbcbd849828e6224b4d20cdf05fcda",
+        "ms": 1847
+      }
+    ]
+  },
+  "first-steps-01/check_latch/hint": {
+    "": [
+      {
+        "clip": "6512bf93a345d0893c5e69c3fd88f4259d7dd5b2d377cd74559f39e8a68e66e4",
+        "ms": 7807
+      }
+    ]
+  },
+  "first-steps-01/check_latch/narration": {
+    "": [
+      {
+        "clip": "df0da0799669778056ee057e8e819fd14ba29ac15d3ac015b589e03302c6bf94",
+        "ms": 7207
+      }
+    ]
+  },
+  "first-steps-01/check_latch/onFailure/narration": {
+    "": [
+      {
+        "clip": "57a1d49bb4de20284d822708bdef5db43ebdc697477552c3272f3d275f529d35",
+        "ms": 8707
+      },
+      {
+        "clip": "b2accf3ec64bae599abd227f5dab630d2e3d1759e52993187e7eea7f3a76e39d",
+        "ms": 1563
+      },
+      {
+        "clip": "0c280eb9af4e51f5d493383975829232426b90a7f23dd7b9d97867fc498bf9c9",
+        "ms": 1325
+      }
+    ]
+  },
+  "first-steps-01/check_latch/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7f805d42de629c3ddd77c45468e1549b7f581f356b33859fa277c219ea67ff9c",
+        "ms": 8007
+      }
+    ]
+  },
+  "first-steps-01/check_latch/prompt": {
+    "": [
+      {
+        "clip": "37a65712f41d5ffee5d22792ced071c2b6609d253c4c252d58a05ff7fbdce86b",
+        "ms": 1531
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/hint": {
+    "": [
+      {
+        "clip": "d72f9153665a3a310d9e7bb5fae340370945653ca932f8096b4eb5d2a69313a1",
+        "ms": 10607
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/narration": {
+    "": [
+      {
+        "clip": "ee5d1cb003407364a5aa77db4f68cc51be52aa2a4d6de8b08d2794cc7c01f64a",
+        "ms": 6107
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onDefeat/narration": {
+    "": [
+      {
+        "clip": "fd3c3e5d93f102214d8a322c76db836073841524272f4c48d337ca9be52894da",
+        "ms": 8708
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onEscape/narration": {
+    "": [
+      {
+        "clip": "32426876353380f589231feee2c0629ef84983ee3bdd55c19a70fa7a4809cefe",
+        "ms": 3107
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onEscape/variants/0": {
+    "": [
+      {
+        "clip": "52f0a7caa661df5ccf9dec40c1542af64ac97b5667ecc8a2b78bcc3f0137c062",
+        "ms": 3407
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onEscape/variants/1": {
+    "": [
+      {
+        "clip": "9390e358d4976a491bc25f54cfc26c544aeeaa378cd64e50b5c16e0f5d686cc9",
+        "ms": 5107
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onVictory/narration": {
+    "": [
+      {
+        "clip": "29026df90ff8acc4a67e88275b45d2bf72bf71ee93e3f91183ac84bbc9d66dee",
+        "ms": 6908
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onVictory/variants/0": {
+    "": [
+      {
+        "clip": "0b01df92772e7b62827c447da44b142746eec69520288031bf65b49d7dbd26d4",
+        "ms": 3507
+      }
+    ]
+  },
+  "first-steps-01/encounter_bun/onVictory/variants/1": {
+    "": [
+      {
+        "clip": "25c515f12336f1ce19564f8df373e2dcfff947d1ec6dbacc8f2e7ce72e861c28",
+        "ms": 4707
+      }
+    ]
+  },
+  "first-steps-01/encounter_stones/hint": {
+    "": [
+      {
+        "clip": "2d312e78c226fecb0cf3eccbb47a8e1fb0e843c3d38e8ad87b63b04824bdf364",
+        "ms": 6607
+      }
+    ]
+  },
+  "first-steps-01/encounter_stones/narration": {
+    "": [
+      {
+        "clip": "804cbeeeb246b99c63214a564a6dd7056028e9f69883ad02e53d23b28efd0405",
+        "ms": 6207
+      }
+    ]
+  },
+  "first-steps-01/encounter_stones/onDefeat/narration": {
+    "": [
+      {
+        "clip": "3e3902c7622edb6727e79d1a5c81be5af4ba37c6fd31c2c2959f505a8eaea6de",
+        "ms": 9407
+      }
+    ]
+  },
+  "first-steps-01/encounter_stones/onEscape/narration": {
+    "": [
+      {
+        "clip": "0bd8ce7274a558ca543f24d055f69141ec95bb66a3aa08c345c6163149cf278c",
+        "ms": 7907
+      }
+    ]
+  },
+  "first-steps-01/encounter_stones/onVictory/narration": {
+    "": [
+      {
+        "clip": "3533cc433d5b0b7119157372bebd9d21538080e7c303be4e7d34dce4015a13d6",
+        "ms": 7807
+      }
+    ]
+  },
+  "first-steps-01/encounter_tag/hint": {
+    "": [
+      {
+        "clip": "0be55c175f6dfb6adc590a0185eacbcdc50528a8671b21c43629564dc15689f7",
+        "ms": 8107
+      }
+    ]
+  },
+  "first-steps-01/encounter_tag/narration": {
+    "": [
+      {
+        "clip": "d09565061ef8b2f26bfce838fcbbe5e1028f4b5f07cf0946b536b4b7c7ae54ae",
+        "ms": 4307
+      }
+    ]
+  },
+  "first-steps-01/encounter_tag/onDefeat/narration": {
+    "": [
+      {
+        "clip": "2a2b91d6c1457abbc90edb27bcc55e43b5b73f178107c6579142c3d1982ad8d2",
+        "ms": 9107
+      }
+    ]
+  },
+  "first-steps-01/encounter_tag/onVictory/narration": {
+    "": [
+      {
+        "clip": "23819c5bf0c22ad7547e207c7cc5a05ca5e16f32a33b8833d07703081ef74df8",
+        "ms": 7407
+      },
+      {
+        "clip": "fcbb7135f5d2f867dc7a1ca186d86544f2ea57b6adfa29b69acdfae831a72608",
+        "ms": 1145
+      },
+      {
+        "clip": "c20cd0407fbd4ee4005fb0a5da1562b1c78a07ef4d527a3aa91410273b758081",
+        "ms": 792
+      },
+      {
+        "clip": "7cf75f1c66cd5e9671b66ccff4eaee81a2cc325323b8e4fd1ecc7d2dbb4f7ab3",
+        "ms": 1518
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/interaction/cue": {
+    "": [
+      {
+        "clip": "fe925520d51e644127941f3d36175437bc4e88ba900435eebb8e090fba2be63f",
+        "ms": 3207
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/narration": {
+    "": [
+      {
+        "clip": "063b1708539b62abb8d1650a6658327403e066f9a9f50d030e453eba0050ce1a",
+        "ms": 3707
+      },
+      {
+        "clip": "4a9670e5dedf5788665d5732e674fc151074112438b7a3592f69739f21160303",
+        "ms": 2230
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "021b3d99e18aee7fb646df180adcb8ad480620334e8155ea489895503e016067",
+        "ms": 2801
+      },
+      {
+        "clip": "e1c92e9b28e1c33ca945b25e737351ef28a46e0a0503202cf3c2f2d31a0c6b18",
+        "ms": 1620
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/onFailure/narration": {
+    "": [
+      {
+        "clip": "f9e3c5de14759a30d51582ceb956a2159da3eadb80df55cdeb7fd55a842d8534",
+        "ms": 2123
+      },
+      {
+        "clip": "c0ebf787e1da1a4323ecb105ae18bb2bd47c3680915dc2a71fb297fdcd1a6825",
+        "ms": 1450
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/onSuccess/narration": {
+    "": [
+      {
+        "clip": "da88574051b9ed4e355a3c43564a63353260f756c3991e04a3ba1ffb9516799e",
+        "ms": 4107
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/interaction/cue": {
+    "": [
+      {
+        "clip": "6684eaaebd05018efdcd4542f04cbdb92359cbf7729b9f22b423460812850da0",
+        "ms": 2085
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/narration": {
+    "": [
+      {
+        "clip": "b64aa87fd0b650d8c6a49e3fdec27b61c874654f7d35b9569a5ce96c1fbef779",
+        "ms": 2294
+      },
+      {
+        "clip": "ce8f1476159dcf8e3d83dfbc574759be24a146cd437064b1f6023892f3862264",
+        "ms": 2064
+      },
+      {
+        "clip": "233ac9168c00bdab0dc87cc1073733a026a60a70e6906b6a05a776b43d562a46",
+        "ms": 2643
+      },
+      {
+        "clip": "a2ba3c2c2e29ccec64789630fe3aca05817ef2cf10703a8db6c3908a38b891d8",
+        "ms": 3507
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/onAssisted/narration": {
+    "": [
+      {
+        "clip": "16c9c9b26f936c9076caf55b8e56abac6ce18c37fd578945eabbfc360da1360b",
+        "ms": 6107
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/onFailure/narration": {
+    "": [
+      {
+        "clip": "5226d95f3c2e4779a9a0502009b815483b6fcab0a33f094d7a5bedd0e3ae9076",
+        "ms": 2142
+      },
+      {
+        "clip": "20c41a4190096941107de60186d12c7631a9bcd70fe56d73d8343a5d5e530e7f",
+        "ms": 1638
+      },
+      {
+        "clip": "81f93d7a357eb6d5e393a84ff3be10e5e06f61e29a72bf1fffb2ddecac1e8a40",
+        "ms": 2327
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e12bbff484411b862c34855f188c53add9dbfbcaabd624fe37f6b5110db4d574",
+        "ms": 3807
+      }
+    ]
+  },
+  "first-steps-01/interaction_camp/interaction/cue": {
+    "": [
+      {
+        "clip": "6d90af6cdab610586f31eefc7be4796c1db0ee6e2963ca5182b5f05590485fc0",
+        "ms": 1669
+      }
+    ]
+  },
+  "first-steps-01/interaction_camp/narration": {
+    "": [
+      {
+        "clip": "306e0bdbf02a3be38150924fb49ba76cd70bdf833d2de93f9896a5f8d092d411",
+        "ms": 2392
+      },
+      {
+        "clip": "5b4acf384256e1402eab13ff45a913c3b513ac524b2f0e21649128e07391faac",
+        "ms": 1793
+      },
+      {
+        "clip": "6ae84319ab9eff08297bb2198aec719224029edba3b34de43a066f1f6a7eec0b",
+        "ms": 2833
+      }
+    ]
+  },
+  "first-steps-01/interaction_camp/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_camp/onFailure/narration": {
+    "": [
+      {
+        "clip": "cca29e70e5acc9d7bb57cdb9bf56826b2611b1a460e0fda7e82425a1ceb58b96",
+        "ms": 2609
+      }
+    ]
+  },
+  "first-steps-01/interaction_camp/onSuccess/narration": {
+    "": [
+      {
+        "clip": "360cb6edc2f9c5fbe64e6fd3002ddb0cb328152561a751105a846ce9ac2adbfe",
+        "ms": 3207
+      }
+    ]
+  },
+  "first-steps-01/interaction_cheer/interaction/cue": {
+    "": [
+      {
+        "clip": "81c0db0115f6e654c5c14ccd648d139d5c4e461bfd386b426d220d484b947701",
+        "ms": 2725
+      }
+    ]
+  },
+  "first-steps-01/interaction_cheer/narration": {
+    "": [
+      {
+        "clip": "485c3be2c5ee71a516a331d4a058c6de4cc49f95b11dd67805a872277a000ed4",
+        "ms": 3207
+      },
+      {
+        "clip": "b68437f5e75a6a668d53f33b760a1fe41c0956b016a14af2265ada17cb1ffb7f",
+        "ms": 3207
+      }
+    ]
+  },
+  "first-steps-01/interaction_cheer/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_cheer/onFailure/narration": {
+    "": [
+      {
+        "clip": "7d09b6aa7d78737642373ed8a12acc6f918405365532f30b65e8ba8df31e3a52",
+        "ms": 1616
+      }
+    ]
+  },
+  "first-steps-01/interaction_cheer/onSuccess/narration": {
+    "": [
+      {
+        "clip": "c85661805e18d72b92aae10f12cd583409a0cb2f031abb21eec897fad4b19cdf",
+        "ms": 4407
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/interaction/cue": {
+    "": [
+      {
+        "clip": "065b1b855903d5c940acc8b35c39062165da724c591c9e2a6365d7dcb978662e",
+        "ms": 2591
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/narration": {
+    "": [
+      {
+        "clip": "589a5a95264ffc26a18c9365881da57e63390f3f4ab44e7345ebd2deaf22f6a4",
+        "ms": 5307
+      },
+      {
+        "clip": "851d508123b837a27f84931e134b3051e41b9a944bd29b7bd6030042e1fbd7f8",
+        "ms": 1066
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "8336c28a4cab7571c4830828161e9b6f757fb58fda2f2e7fbf2bb51a1e40a280",
+        "ms": 2211
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/onFailure/narration": {
+    "": [
+      {
+        "clip": "f6045c6c2780a13c7bd1cf3af8f918e26798f2286a7be0d5f6dbb898488bf900",
+        "ms": 5707
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2d6c7d43d3760a575c717a7effd7f6d0686be3f545bcaa1efcb5e27a6f7578ca",
+        "ms": 1027
+      },
+      {
+        "clip": "81f5502528fbbc26156f5b818bff6c7a7350cf042d5c9f6bdf23a02e8cd57e21",
+        "ms": 2339
+      },
+      {
+        "clip": "6943c198f316918e78fda7e68afdb8e6f0ea1b3103d7bbba1cfa2644bad42090",
+        "ms": 2899
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/interaction/cue": {
+    "": [
+      {
+        "clip": "97cef139361338e6af685815144ddfb7186c57a7dd5e152d920fa05ae049eed1",
+        "ms": 2962
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/narration": {
+    "": [
+      {
+        "clip": "ef1c4a4ee8e8f9237246e74e7b906e08431981bae3c427cfe32cb2d80d236c18",
+        "ms": 2843
+      },
+      {
+        "clip": "008e386aee28a920339750f0b8315eaf52dfeb3e95c6f2669e893a5bf2a2bdd3",
+        "ms": 4007
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "31b29c70146ae2925f83dca210153c2f834fff417c56550c5bcdeae23663c1d1",
+        "ms": 2751
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/onFailure/narration": {
+    "": [
+      {
+        "clip": "39168b658a4772f025518098289359ccb770f52d0d2e94fb01f9744c9bd38193",
+        "ms": 1893
+      },
+      {
+        "clip": "a3dfd7453731f1e1de6578108a37da39debf0e7fcc58d15af6b25197d55dd062",
+        "ms": 1913
+      },
+      {
+        "clip": "c2dedeb8f595bfd1a7eee02185ea3ef067458ff68cd700fd2e5bdf17cf07c05b",
+        "ms": 870
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/onSuccess/narration": {
+    "": [
+      {
+        "clip": "73fe229e0c53bb57c1c2a50eb88301847728323c692e8b66e9bd44bb71bb8504",
+        "ms": 3907
+      },
+      {
+        "clip": "971c7eb277620ded1e5f1e1c2f217a9a599940891b080de8e1e6f319dc8731ad",
+        "ms": 1822
+      }
+    ]
+  },
+  "first-steps-01/interaction_feed/interaction/cue": {
+    "": [
+      {
+        "clip": "9c244e63558e72e38e3c8f0c774cc44459c6f6cb30d4f1f520a33f1a153b9ffe",
+        "ms": 1579
+      }
+    ]
+  },
+  "first-steps-01/interaction_feed/narration": {
+    "": [
+      {
+        "clip": "4437c5131919fafd763f509b982c453a26b25fa90ef4cce9fc20d9056025a54e",
+        "ms": 4607
+      },
+      {
+        "clip": "6c7e2d814b552c92163601fe1216a05c4cca6a3d7bc77d89dfec8c156ac3c956",
+        "ms": 1787
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "first-steps-01/interaction_feed/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_feed/onFailure/narration": {
+    "": [
+      {
+        "clip": "5b425fcb5c523ede840a07cb1d3ba1c6745c9ad300d002f511d98d0b343a80da",
+        "ms": 1980
+      }
+    ]
+  },
+  "first-steps-01/interaction_feed/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ed91bdabb5f8562083438df58cd356b77758de7ba4d9c43ad53b33d3cdf89d70",
+        "ms": 3807
+      }
+    ]
+  },
+  "first-steps-01/interaction_roots/interaction/cue": {
+    "": [
+      {
+        "clip": "69d4b2dcc243cc49f4e8b737332e0d156a9fd889cc6ed4b68b8228724ea6968a",
+        "ms": 2635
+      }
+    ]
+  },
+  "first-steps-01/interaction_roots/narration": {
+    "": [
+      {
+        "clip": "0d120ff6be5568f0c5e7e79505b3bc623ce57420dca0d5969da9402d75ddc8d6",
+        "ms": 2973
+      },
+      {
+        "clip": "e54427412cd81d540e262d464f6081bd86dc42e264f6634af36d2207e62d8726",
+        "ms": 2637
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "9b8657c98cee4ae8428d9012eb422e046dd93e93e568290e0bd87d77e14cb3b2",
+        "ms": 1581
+      },
+      {
+        "clip": "05de0fb034804b9ba1d73f865c587b3e01d73e51bc8ac062585be900a87a32b1",
+        "ms": 3607
+      }
+    ]
+  },
+  "first-steps-01/interaction_roots/onAssisted/narration": {
+    "": [
+      {
+        "clip": "1c205f1e8535afa7842475bb8d0a418a8099667b122fd9a85010c907a3c55fdc",
+        "ms": 4507
+      }
+    ]
+  },
+  "first-steps-01/interaction_roots/onFailure/narration": {
+    "": [
+      {
+        "clip": "99af361c72315cb45b9f4c29be3a5adf60fbba8e15e9b763d212de3271ad3543",
+        "ms": 4507
+      }
+    ]
+  },
+  "first-steps-01/interaction_roots/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4a7af10fb8c60d83a565e5b698db2b091272fe44bfa8ca17d11b3a3f45f00c6c",
+        "ms": 5307
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/interaction/cue": {
+    "": [
+      {
+        "clip": "e663881e1e295489b0523e54cde309bc701beec412fea1c4e137874fdd37d406",
+        "ms": 2075
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/narration": {
+    "": [
+      {
+        "clip": "94b001291cc095b586190be2a0a8e4ff883eaccf1c0b5b16f36937fd9518cc55",
+        "ms": 4907
+      },
+      {
+        "clip": "3c6d427c3129b22cfda91ba681feef0f9dad30715744055b4d3884915a7c9380",
+        "ms": 2791
+      },
+      {
+        "clip": "8bc7e78baa69412ee2e85a354e2d8b7510411506533927f850faa75c315dde91",
+        "ms": 2811
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/onFailure/narration": {
+    "": [
+      {
+        "clip": "8caab7ed6b8740a09233968c9b9e7092c47b52fa0a3cb90dd02c1b40fbfa4dff",
+        "ms": 1612
+      },
+      {
+        "clip": "ffd5aa47b1b78d236389a77941ce1fb35dee80678ae948c234877ea142b81de7",
+        "ms": 3107
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cf23a85f83191f7de0dc30c02fbeb05b77c60dc9433cf22c7c43752bb2d10a76",
+        "ms": 4707
+      }
+    ]
+  },
+  "first-steps-01/interaction_spark/interaction/cue": {
+    "": [
+      {
+        "clip": "4173680e95973bf86045da449de6365d9d20e9922aad51b67086e8fec3fdfc83",
+        "ms": 2705
+      }
+    ]
+  },
+  "first-steps-01/interaction_spark/narration": {
+    "": [
+      {
+        "clip": "646e0bfb1448245b0634acaf092dcee147ace1c72b61c00416e257f99039e4e5",
+        "ms": 4107
+      },
+      {
+        "clip": "d606643a8e8f0326b2ad055900517646243a100ca5d5cbeb17ad51193318d6c6",
+        "ms": 1991
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "642865c9f29842a0b60deaa8a98b71ce0b1a1de593f846a88b8238a69078b82b",
+        "ms": 3107
+      }
+    ]
+  },
+  "first-steps-01/interaction_spark/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_spark/onFailure/narration": {
+    "": [
+      {
+        "clip": "689bdbe2437d7173d1e53d7c7180c99a2c6b3d2e861c2b6ab50595f91db3e170",
+        "ms": 4227
+      }
+    ]
+  },
+  "first-steps-01/interaction_spark/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7f68b90af50f4742ebd759f5d3562ff8f9d5634d9ca5e28634864c1febe72c27",
+        "ms": 5007
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/interaction/cue": {
+    "": [
+      {
+        "clip": "71ef5e9812b609e677d0e1776a09837ecc7c4cfec8fdd8af213e30d7ea652777",
+        "ms": 3107
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/narration": {
+    "": [
+      {
+        "clip": "e73c217ae61d7f0395d91c5c8eaba9b10c03b2605993a4f8e28468a79ca81056",
+        "ms": 5607
+      },
+      {
+        "clip": "43bb500055de92ba4f2759aa6237c5aab91ee8b455b384733036163227ef46fd",
+        "ms": 2735
+      },
+      {
+        "clip": "536424e306762a84819d4a4073863a72b0dbbdd3af3bd1b1e31414270e8b6bd4",
+        "ms": 2151
+      },
+      {
+        "clip": "4c20ac98a648c22c335673d5a4b41897b883dfba94c054661d23e7deb591dd3c",
+        "ms": 4607
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/onAssisted/narration": {
+    "": [
+      {
+        "clip": "505a5c88df371735a73b713c25b37bc91ab7afac21097975b7a0df966c828542",
+        "ms": 6907
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/onFailure/narration": {
+    "": [
+      {
+        "clip": "149a9e84da0b14438a687ebc3be8ae22460e0a7c00a7ed25652fbc7985fd0b6e",
+        "ms": 3807
+      },
+      {
+        "clip": "480ce5b31af10f4a835833b69a27ee96ae70719d8ce49a85554d6663ad4b4b34",
+        "ms": 1818
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7d7268913d4417f9e2c3754b05c0755462271e18775b60b3de8c583a283a371c",
+        "ms": 6707
+      }
+    ]
+  },
+  "first-steps-01/interaction_wake/interaction/cue": {
+    "": [
+      {
+        "clip": "e72b855cd621dcf61aea1c11b6346d093eed0e25343622d3c473410d15b28e3f",
+        "ms": 2704
+      }
+    ]
+  },
+  "first-steps-01/interaction_wake/narration": {
+    "": [
+      {
+        "clip": "2f93df5c324c2856c107d4f58e348483e592969a081f4a77e61c7411af2dba6d",
+        "ms": 5107
+      },
+      {
+        "clip": "6706e1896de5a72535633b47a56f73fb980ce470248e20180ec2c86b78139cba",
+        "ms": 2045
+      },
+      {
+        "clip": "70015a32e3d1da66ad6af99da0575b7ab0a08cbb5e463942fc55c84038a68d0d",
+        "ms": 1330
+      }
+    ]
+  },
+  "first-steps-01/interaction_wake/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c7ba31629bf3a78199cb0538f258222051c4b53209354e686a5e000332309798",
+        "ms": 5508
+      }
+    ]
+  },
+  "first-steps-01/interaction_wake/onFailure/narration": {
+    "": [
+      {
+        "clip": "fe64ec9cfa3451848858a66c33e2705b830b4fe07a1dbc93e5f04cea2778106b",
+        "ms": 3127
+      }
+    ]
+  },
+  "first-steps-01/interaction_wake/onSuccess/narration": {
+    "": [
+      {
+        "clip": "17b5bcb410aa53e0b767dea361d65fb52a5681b5094b787563ca5967c390a642",
+        "ms": 3607
+      }
+    ]
+  },
+  "first-steps-01/rest_picnic/hint": {
+    "": [
+      {
+        "clip": "ce969cbcde75baf33c37a7bdd42d9c56f670c1a74bb3768581206133ea69da34",
+        "ms": 7307
+      }
+    ]
+  },
+  "first-steps-01/rest_picnic/narration": {
+    "": [
+      {
+        "clip": "d8feed0cbf12fb32b2ffd4220391de4ee7072eb5045b102207164a6c88dec5e0",
+        "ms": 12507
+      },
+      {
+        "clip": "69e20eae788b01127641d0feeda8925b9280b7771b56bee9771827300a99a5bf",
+        "ms": 1118
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "0adad3e1c3053d2b9e1695416951f80112760aa9d96ea1063898d68c500dab11",
+        "ms": 1402
+      }
+    ]
+  },
+  "first-steps-01/rest_ready/narration": {
+    "": [
+      {
+        "clip": "97c2571e864b122e4674f331d2dfdd26c749aefe2aabcc6e2cfcbadaa26ccf74",
+        "ms": 15007
+      },
+      {
+        "clip": "7799b37fc1fd8d249e8ab6e3c99d1a91f1a753cfb8f22c45a64bc8ab1dbb3b39",
+        "ms": 1490
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "6ab92eed55caaa96930157382a567b1c2009522bb286db687324efbe10809759",
+        "ms": 1675
+      },
+      {
+        "clip": "601910753691e57948cca10cae6bc695d4915386fc2964ad4dc61d0364d2c5f3",
+        "ms": 2312
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_along/narration": {
+    "": [
+      {
+        "clip": "9fe83f2ba6ee320a23c60139f311ee8896e2b835ab574e458ce1c7f8aafcfa42",
+        "ms": 12507
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_gate/narration": {
+    "": [
+      {
+        "clip": "03db39124546646758fb3dee69d4c15b3a40a8af7513e4c2ab5cb102670b9189",
+        "ms": 14307
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_goodbye/narration": {
+    "": [
+      {
+        "clip": "77c1f74c336d74249b1d2bd6af95e5c203114915201a1a1941a4a182e8d21fb4",
+        "ms": 7407
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_mud/narration": {
+    "": [
+      {
+        "clip": "d45e8d2497cf3a8a644f8916e2a16657b2c67cde9d00a7ac2c56aa7f5ba5360e",
+        "ms": 14407
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_mud/variants/0": {
+    "": [
+      {
+        "clip": "4f1a0ac88f33616e1d3b0d4a56922ccccde7c84a43c3f70d77711036abeab7c3",
+        "ms": 7507
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_safe/narration": {
+    "": [
+      {
+        "clip": "978bec2fc3cee94bc3907ad9259946e712895c2005ace0355ba59de2e2d8634f",
+        "ms": 6107
+      },
+      {
+        "clip": "6884f6467a198a21a17b7b673e7fe54ff187572a4ea32b6afde1a610b5905053",
+        "ms": 1085
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "e169e0307eb8e6c2bc17adc369fb7e5d26f64c5c68c82ecb3df11b745585cd74",
+        "ms": 1751
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_waits/narration": {
+    "": [
+      {
+        "clip": "f4e034129439e1e84557ef3468cd2b8f4e24cb3ffe9c443e3c9dba0b6ae9fb3f",
+        "ms": 1054
+      },
+      {
+        "clip": "92bbd2aaf5e67a51125a9f54b4e13debd58101f52f728334a3381b6939e521f0",
+        "ms": 6407
+      }
+    ]
+  },
+  "first-steps-01/scene_favorite_part/narration": {
+    "": [
+      {
+        "clip": "6bcfa8c25d7b8fad066ddd9b452318e1f6e99b3ab783d13866f1201c62e298b7",
+        "ms": 5707
+      },
+      {
+        "clip": "9509bdc9de0022c80ee564c49434f790c3f9d8c9dd9c6a510ce6f64087057743",
+        "ms": 4507
+      },
+      {
+        "clip": "94e31344a6af468aa7bfb54c980acb30194842f62a68ab84637330a6e3c209fc",
+        "ms": 2628
+      }
+    ]
+  },
+  "first-steps-01/scene_flick_wakes/narration": {
+    "": [
+      {
+        "clip": "de0e1cde84da979c9b56e85d14083b9b18c65e3f57d0343d8210a2657595c80c",
+        "ms": 7007
+      },
+      {
+        "clip": "77aa5d7c9c0b40ff1666a5c1b33a33d3faf812b8936dcba5d502c332755207f1",
+        "ms": 1521
+      },
+      {
+        "clip": "a96e8458fa786a8177f9f810fbaecdaa15ac69b793fe68cc5e5eddf0018b9029",
+        "ms": 988
+      }
+    ]
+  },
+  "first-steps-01/scene_last_tip/narration": {
+    "": [
+      {
+        "clip": "276c33d6cfc00e72f2c761c02902eaf71f258372c8e4969c87c3bf7785d4dcf0",
+        "ms": 2136
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "acbf7c292f967732349fc852094fe36c373a23f53bca22860b0c636573fd517e",
+        "ms": 5507
+      },
+      {
+        "clip": "a0c2baf14b77f6bab5d3c4f4fb261868660422a05fbc793e5ca4ffc14dc62741",
+        "ms": 2403
+      }
+    ]
+  },
+  "first-steps-01/scene_meadow_gate/hint": {
+    "": [
+      {
+        "clip": "aa3e79765c5f5d524bb0b4f5738bcb3a49fc7a638dd549b4f8cfdb929bded7cf",
+        "ms": 6407
+      }
+    ]
+  },
+  "first-steps-01/scene_meadow_gate/narration": {
+    "": [
+      {
+        "clip": "a5ab9b3392bbf452bc7d671847a8f8c35b1f3d093e3eaaa7bc9c762f07b7e7b3",
+        "ms": 11907
+      }
+    ]
+  },
+  "first-steps-01/scene_more_meadow_games/narration": {
+    "": [
+      {
+        "clip": "a40ddab974471ef8b5f66b3749629af9aca29b90ed26326f7fee1afc12c4a910",
+        "ms": 5007
+      },
+      {
+        "clip": "1754f1b980ec07f3188899a6a09db8299148cbbe4c702c60bb491f67ecc3ea35",
+        "ms": 4007
+      },
+      {
+        "clip": "9f868967a5548450c65bc43b34a78dfb515e65948cbe301ce7e7c8a98ca1da52",
+        "ms": 2953
+      }
+    ]
+  },
+  "first-steps-01/scene_playful_meadow/narration": {
+    "": [
+      {
+        "clip": "a90d415952b5941ba87f49178cf7926b3e50ab76ec2f1396f7c808c01def6ed1",
+        "ms": 2051
+      },
+      {
+        "clip": "d5cccea562fe98f7f848abbb4f3fc4cdcb2b5643545f5a87e348e6a8df97bb6b",
+        "ms": 5307
+      }
+    ]
+  },
+  "first-steps-01/scene_practice_field/narration": {
+    "": [
+      {
+        "clip": "ca19d92fc9162f8532241cb95c62141e81fc2b36fd18db35e44858d670a1d575",
+        "ms": 13707
+      }
+    ]
+  },
+  "first-steps-01/scene_tag_field/narration": {
+    "": [
+      {
+        "clip": "5ece068ada4310f3ab4707f9f1e3aee261109c19d6f07362363a4ea271e95ac9",
+        "ms": 2835
+      },
+      {
+        "clip": "d3d40a9380ea384f4d46ee1a90d1779f62d4faca0e8a98c7e932ff92d239d135",
+        "ms": 2630
+      },
+      {
+        "clip": "47fa8d0a731a5bf9a9654a9fe70c7520e74540e89a24279a3e3da072069e0c72",
+        "ms": 1853
+      },
+      {
+        "clip": "11ce43b1e3daf47d4c09193f414899ea8c491cc7dc429be3642339edb29c4b88",
+        "ms": 1411
+      },
+      {
+        "clip": "44a94dffb81edafa43466e949b2c8525aa2567822cec9d083509e68ae5e03856",
+        "ms": 4407
+      }
+    ]
+  },
+  "first-steps-01/scene_tag_rules/narration": {
+    "": [
+      {
+        "clip": "930bb92b64b42666d263b1eb5aa33c1c52782ca4f6c43fe8902fafec21e2e09f",
+        "ms": 2635
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "e6a56ebe1025edeebbaca3001c93b9b4bec69d3a0f5743dfd85e98dc5db8987c",
+        "ms": 6907
+      },
+      {
+        "clip": "cfe56c2077345c33af2344a0f6884de918504d93bc8fe6bad8c82919419fef73",
+        "ms": 2211
+      }
+    ]
+  },
+  "first-steps-01/scene_tansy/hint": {
+    "": [
+      {
+        "clip": "7c79ad6094b46ba6d429d79a6207c2be9cfff3659c10c62d2abd80b6f26b5a85",
+        "ms": 8407
+      }
+    ]
+  },
+  "first-steps-01/scene_tansy/narration": {
+    "": [
+      {
+        "clip": "929e33f64e0dafacc31ac7debf4407d29eb89134292ad0f9454e739802aecd10",
+        "ms": 5807
+      },
+      {
+        "clip": "8cd4596358dee2954f79c373e26cbe2e28544344046cea40aee45205b7794505",
+        "ms": 1666
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "2a2d362e1898d91d59ecfad42305912804462863132745aefc5a995c64a7efa4",
+        "ms": 3207
+      }
+    ]
+  },
+  "first-steps-01/scene_tansy_clipboard/narration": {
+    "": [
+      {
+        "clip": "401c888a3ef5e6d0228bec3ee9c90e77b8f09545dd526bed69ce69b5c1c05b4f",
+        "ms": 7707
+      },
+      {
+        "clip": "24a7b342a6081cbef99fdb116c3a7a6308dcf251daa38b667d230cacfb3bade5",
+        "ms": 1613
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "first-steps-01/scene_tansy_meadow/narration": {
+    "": [
+      {
+        "clip": "1ee8ed48fb9dd62c63d8bca4f198477a119ab2f5dc5d6c77a1ba801e5803a626",
+        "ms": 1212
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "2839744c1ed3f1fba1df747091c07f76967cca1c8e76bc2f34e4ad6663655b98",
+        "ms": 7307
+      }
+    ]
+  },
+  "first-steps-01/scene_team_tricks_done/narration": {
+    "": [
+      {
+        "clip": "274771e08e88f7b7b22d064d3c5a5c528b9fc9c7b527d4d0c35589e992a9478b",
+        "ms": 3207
+      },
+      {
+        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
+        "ms": 876
+      },
+      {
+        "clip": "8385373f7ee2851ff6bb99dfe06192a24d68e265cb162d09205cc76ecf228f0b",
+        "ms": 2189
+      },
+      {
+        "clip": "36abd0c2577bae30612ab122340ad4d2dbac607e2fd8bc1097351f9aede06928",
+        "ms": 3307
+      }
+    ]
+  }
+}

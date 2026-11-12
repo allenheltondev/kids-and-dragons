@@ -1,0 +1,1998 @@
+{
+  "riftlight-finale/@goal": {
+    "": [
+      {
+        "clip": "0403759f991b45262f38454345081c7b571f05b423a4bc0926387e0a04259085",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-finale/@plate": {
+    "": [
+      {
+        "clip": "e5fd9b54e6986915753122ce86eb4f0251b94ce700d296c101ce949be5853ea8",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-finale/anchor_one/narration": {
+    "": [
+      {
+        "clip": "3cb18ff2d985cad05687cbd7b07153cfd54a35748e08c418924cd5a508a46eee",
+        "ms": 13807
+      }
+    ]
+  },
+  "riftlight-finale/anchor_one/onFailure/narration": {
+    "": [
+      {
+        "clip": "1bc25fad1d68e8b2a073d0c60346305789596ee9e9c3b9d3e14488c9d14e124c",
+        "ms": 11507
+      }
+    ]
+  },
+  "riftlight-finale/anchor_one/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9590ca8d86d015f13c3adb130d50806826dd6b0ef5d423f0f34ee2008e4b863a",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-finale/anchor_one/prompt": {
+    "": [
+      {
+        "clip": "69020ebe54cda459991fc30b00fca0b445529053367e937f2215866cc49674ed",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-finale/anchor_one/variants/0": {
+    "": [
+      {
+        "clip": "4cb47df8e74b5c4bb1fb76701d5564dc5475e4182d2cbbe9e3758c8a80e362a2",
+        "ms": 12707
+      }
+    ]
+  },
+  "riftlight-finale/anchor_three/narration": {
+    "": [
+      {
+        "clip": "ad57a4ec52d017bddeff47c87b8f2a44587620afb204917900a8d2094b32d3e5",
+        "ms": 13407
+      }
+    ]
+  },
+  "riftlight-finale/anchor_three/onFailure/narration": {
+    "": [
+      {
+        "clip": "6e39704686bef06a5f9c4324148aaf703096e97b632c9f8d6f35dba5dc0caeb0",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-finale/anchor_three/onSuccess/narration": {
+    "": [
+      {
+        "clip": "62bc3f780bcd2a868d8ffd2e7ffb24c81b3238c71beacbad5b25e028145e1749",
+        "ms": 8107
+      }
+    ]
+  },
+  "riftlight-finale/anchor_three/prompt": {
+    "": [
+      {
+        "clip": "6b05317718784caa0f5de5c7e3f305fc5db5b84bd8608c239c7fbb8bcd683d40",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-finale/anchor_three/variants/0": {
+    "": [
+      {
+        "clip": "ec0fa4141ef40a3b0a6624c6fa2b82937067a6157909f6c8dad4f9347f060ce5",
+        "ms": 6508
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/narration": {
+    "": [
+      {
+        "clip": "5967fc56136be8d9be48b9b81e8f3aba1434476decd1c3f7b4d8d08e3e64ff25",
+        "ms": 14807
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/onFailure/narration": {
+    "": [
+      {
+        "clip": "bfe3c5270621bc2e8a5e4f87a456f4e45423a183bed11d9c6cccad27a4762f32",
+        "ms": 12707
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/onSuccess/narration": {
+    "": [
+      {
+        "clip": "286039162a6d0b76d603b2d4725718545dc64a5b73ab3ccffe3d0ab7eb6694eb",
+        "ms": 10807
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/prompt": {
+    "": [
+      {
+        "clip": "ca18ae416ced1ac6d24b375e6aa69fda584a25f2c409133ab472eb789a4d7032",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/variants/0": {
+    "": [
+      {
+        "clip": "25d7105a9da6ecee0714f1af8d55eb8bac81c93f297e5133cf7d51684d671dec",
+        "ms": 13007
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/variants/1": {
+    "": [
+      {
+        "clip": "25d7105a9da6ecee0714f1af8d55eb8bac81c93f297e5133cf7d51684d671dec",
+        "ms": 13007
+      }
+    ]
+  },
+  "riftlight-finale/anchor_two/variants/2": {
+    "": [
+      {
+        "clip": "ec0fa4141ef40a3b0a6624c6fa2b82937067a6157909f6c8dad4f9347f060ce5",
+        "ms": 6508
+      }
+    ]
+  },
+  "riftlight-finale/arrival/narration": {
+    "": [
+      {
+        "clip": "2005cb3e55d002f7b0ff872425de144cbdf4fe9be42be59125d06bca0f5d2285",
+        "ms": 17407
+      },
+      {
+        "clip": "e17363a852c37785e1889033f3681febae7afb5fb5f4523a82d8a9733e287fda",
+        "ms": 2468
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "94f8b32ece5ab07a85e1613775d8b489db04f60a966ea29b2c349c7110c62698",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-finale/arrival/variants/0": {
+    "": [
+      {
+        "clip": "a5ad31c9815d02ab48dfd13b2125bf6c8d1ed85b9e6b8561fe82a5d1895e7ad1",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-finale/arrival/variants/1": {
+    "": [
+      {
+        "clip": "13a1f2fe5032973d9313a6df6833abc2b5bbd4944e4a0e7ef6db8f52e53a1243",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-finale/arrival/variants/2": {
+    "": [
+      {
+        "clip": "c5f4a8af088e98b7dbdca32a2b0602faf85e929e170b700bba8c30698247d3ea",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/arrival/variants/3": {
+    "": [
+      {
+        "clip": "2ce2792f00baa1136241cc41793874216b109eb90267ad956c9c86f029ff9ee5",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-finale/arrival/variants/4": {
+    "": [
+      {
+        "clip": "30e1aa831d84e258ec59986ddd19e87d7d7e4f24a7bc1d6bd576e3650ef17e9d",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/arrival/variants/5": {
+    "": [
+      {
+        "clip": "0b5e8a9e0aaac7f647e64f979da05d0af803f3beb2f7b99359c99c811ea86abb",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-finale/asked_home/narration": {
+    "": [
+      {
+        "clip": "3740685cdc89a9a74b5de0590277d1b04e39ab06ae878ba4a3440ba2c7e26591",
+        "ms": 1519
+      },
+      {
+        "clip": "7cc6074f598b9e8257cefa14ec5451ae276ce609627afed7b9b083e9a22db202",
+        "ms": 2749
+      },
+      {
+        "clip": "106d93899f546b0b02714f1e50c61dd50fed4b816a8fafb27d249412c73de1a7",
+        "ms": 1110
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "b8d9b036ff8584210548ea9f2b6b248ec71465aa4641ce0185d694ba60ca9543",
+        "ms": 2787
+      },
+      {
+        "clip": "1f571d6531be820ae68cf66391b8308998773f5adcc345f8078b1b20bfaf3f42",
+        "ms": 5507
+      },
+      {
+        "clip": "45c9c9fcfd40d7ff7ad85fef778ce3c43addff75039fe617bddc66c6dd92530a",
+        "ms": 1966
+      },
+      {
+        "clip": "169221fa1e9084fb6cc81fdff6d0e0121c43f7cd918d4f056936ee683fbf6f48",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-finale/blanket/narration": {
+    "": [
+      {
+        "clip": "acfdc209f2e53b5f24acf0a52a55c255265dc58a3652abb72bcbb06bd03c036c",
+        "ms": 16907
+      }
+    ]
+  },
+  "riftlight-finale/broth/narration": {
+    "": [
+      {
+        "clip": "8a30b84bbe3aa057a25d09e810daea53d5fe724819e54e9f8e3a8725b7bc5f62",
+        "ms": 7507
+      },
+      {
+        "clip": "840380758e2ab52f4f60428252dd0ca833a323369ddd7db3af9b4c0ddabc3004",
+        "ms": 2711
+      },
+      {
+        "clip": "b2f110c01be2533d860411b450baa42039250a2a64f7233385571cd6413354d2",
+        "ms": 2091
+      }
+    ]
+  },
+  "riftlight-finale/check_force/narration": {
+    "": [
+      {
+        "clip": "208614bc89f9e9dbf4e6521bd47de9c4af7d38b03798e135b9ffc4fb8dd64120",
+        "ms": 7707
+      },
+      {
+        "clip": "1ed2d5353b78378c51634d935d1abf3de82c0ffbc7223d453a2a4945356ca616",
+        "ms": 2863
+      }
+    ]
+  },
+  "riftlight-finale/check_force/onFailure/narration": {
+    "": [
+      {
+        "clip": "da93b48ef5f8e1224d9977c1ab87316ffd7cb17552439f6a0316d8b646891ae0",
+        "ms": 8008
+      }
+    ]
+  },
+  "riftlight-finale/check_force/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e90666be0f84e2930cb2f328bcd96d5933f5bd255bacaa9ad3a4a4821efd7028",
+        "ms": 9707
+      }
+    ]
+  },
+  "riftlight-finale/check_force/prompt": {
+    "": [
+      {
+        "clip": "103d29290754a67702d1cfe0f6f665a731b0f750cdf4a507ab8987e5c965a820",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-finale/check_force_bram/narration": {
+    "": [
+      {
+        "clip": "b216108ef7c52c604e723480f11b30ac3857439dbb5d56d85cbf017e9f14b756",
+        "ms": 1643
+      },
+      {
+        "clip": "bfaa5f924a3c953867d08ddfbd8baf0f3da6eab01e3d323280a14abe91068e76",
+        "ms": 2366
+      },
+      {
+        "clip": "87c4c6821a972f2e16968b1f167a59cabeec6386cb8f5e855350a94dad46caa0",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-finale/check_force_bram/onFailure/narration": {
+    "": [
+      {
+        "clip": "b616185e85b60a5c810a5a840f0069ef34d4125300a71374af2fdbbad9443b57",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-finale/check_force_bram/onSuccess/narration": {
+    "": [
+      {
+        "clip": "543535acc8e97dff0c19807569ecfcdb0086a94c38f448946135adff97c1b19b",
+        "ms": 5707
+      },
+      {
+        "clip": "9edabbefb1aaf26e7a57a1d3c3341579b7f5230f03fff6681ef46f1955e1bdf9",
+        "ms": 674
+      },
+      {
+        "clip": "963bb55d472f73a696c8efa332b5f5fbd083e3aa85f1f0496cabb790a51191ff",
+        "ms": 1289
+      }
+    ]
+  },
+  "riftlight-finale/check_force_bram/prompt": {
+    "": [
+      {
+        "clip": "5c3b20b6ec37948ecb79bdb63e502dd055441175fb1c54dc48829a280ddcf7a9",
+        "ms": 2710
+      }
+    ]
+  },
+  "riftlight-finale/check_kid/narration": {
+    "": [
+      {
+        "clip": "71f6485992cde7f16836459e3c3d523bc466ee535cadfec26fefa2c3a4eaa1ab",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-finale/check_kid/onFailure/narration": {
+    "": [
+      {
+        "clip": "c74ed33fc78d0af1634f09f3e930fabd7f93333d39ef30605bd8814ed1fc265c",
+        "ms": 13507
+      }
+    ]
+  },
+  "riftlight-finale/check_kid/onSuccess/narration": {
+    "": [
+      {
+        "clip": "caae0aa12acc2b496a85ef5899429f56999106c3d1bdd915a170d6b42ab38589",
+        "ms": 8307
+      },
+      {
+        "clip": "2fa2fbae81e565692bf112945596106e3487f20cf6d9b7daa08183c4eb84d8bb",
+        "ms": 1231
+      },
+      {
+        "clip": "9de03d7cb474c805b937dc955e096deb215905cd8678fa80010f6d47aa6996b5",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-finale/check_kid/prompt": {
+    "": [
+      {
+        "clip": "e52c9541dc6da9a527c1bdcafb4268e2c47f30a633f90ed13ede95ff2ccfa48b",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-finale/check_quiet/narration": {
+    "": [
+      {
+        "clip": "2d32ed7c253deb8bdc9c4e69f94bc5c6b96cfc40197618c430c55592781f3281",
+        "ms": 12107
+      }
+    ]
+  },
+  "riftlight-finale/check_quiet/onFailure/narration": {
+    "": [
+      {
+        "clip": "50cd65049ec6a889d2b1ed55e81236b09a71c515cd56bae3fd5f017bd7be3234",
+        "ms": 9807
+      }
+    ]
+  },
+  "riftlight-finale/check_quiet/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1ce44a10fc2135c413405acedf5ebb0e0727b8787e757eb576d843acc690b554",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-finale/check_quiet/prompt": {
+    "": [
+      {
+        "clip": "d3de78ba5aaa64d4a0ccd66631cd04944efa11afd532a2d7f19a35162fc4ef0a",
+        "ms": 2880
+      }
+    ]
+  },
+  "riftlight-finale/check_rope/narration": {
+    "": [
+      {
+        "clip": "6115715a1eab706ca5e6392582d62d1167390b1527f8a0311eb0840a0bb565e0",
+        "ms": 4007
+      },
+      {
+        "clip": "5ef23dd65d92e9dc0ae7e2115666d8e4e9f3e2eee92da72cfe9cd0d6cb0eebeb",
+        "ms": 2246
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "e945133ae0bcc78196efed3d602b04425802634c40fa7585df29e8c98b72c9bd",
+        "ms": 2766
+      },
+      {
+        "clip": "539253d61836da6389a6af34459990f665c5230e7245d2070e9cbb0681470e90",
+        "ms": 1855
+      }
+    ]
+  },
+  "riftlight-finale/check_rope/onFailure/narration": {
+    "": [
+      {
+        "clip": "5b4d2010ad9d482c6e5cb7e52f0bc8951913ea028563e27fad4b72fcf06b71e0",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-finale/check_rope/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7635b98347b48eae2e25750a47cad3cb4289be126728daf1266e2f23ccee3d87",
+        "ms": 8807
+      }
+    ]
+  },
+  "riftlight-finale/check_rope/prompt": {
+    "": [
+      {
+        "clip": "a1eac9050b545100e4d8de0d1e0160c9df376f7e63e22a9b6cc271abd1d327d7",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-finale/check_show/narration": {
+    "": [
+      {
+        "clip": "579301c106716898fd778d02e5f4cdc199bf1a729d731d61dbd9e324f437f4b4",
+        "ms": 5507
+      },
+      {
+        "clip": "efd1ceec761d0a086973ab1186f29984c00873c8bd765f9525115417ba34a068",
+        "ms": 513
+      },
+      {
+        "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
+        "ms": 630
+      },
+      {
+        "clip": "9378f868afb2be54d3572a7b3d7c0efe1c1f51090470ce76141e8c9ad25254b3",
+        "ms": 1174
+      },
+      {
+        "clip": "469a11a1d2b9ea8ed7b95c96cda618c01e0109529914c6f861cc1b07736c2e7a",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-finale/check_show/onFailure/narration": {
+    "": [
+      {
+        "clip": "6db66175476293de47cb887f9e6d74cbd45f5dbe7e19528af1b5dfe4458a3368",
+        "ms": 2869
+      },
+      {
+        "clip": "61c34a2b8b09140484c22ee21cb0f7d9a7d1e706ad85b9b22c9f474709a8e59d",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-finale/check_show/onSuccess/narration": {
+    "": [
+      {
+        "clip": "55c332870d7969a35d314542b16da979461e5d0f08aca2db88f75a2d59e3f652",
+        "ms": 5207
+      },
+      {
+        "clip": "4fb73b32d0a02dc3cf39f6c42bb75155fef759ec3446680d7f16b98ebce4410c",
+        "ms": 2059
+      },
+      {
+        "clip": "e8517a218bb6ce78b68fd1d642bc5131ecf1fd67c7d2a0776018b2cf80fc8aee",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-finale/check_show/prompt": {
+    "": [
+      {
+        "clip": "ac1c4080d20704fb3953e7037110f88f442a0db4c508c78707636570b96a26e9",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-finale/check_stair/narration": {
+    "": [
+      {
+        "clip": "19424715c20045097ad073e9ecea686ddbdc5ca15a4e3dc90f8ca69aecfd6805",
+        "ms": 10407
+      }
+    ]
+  },
+  "riftlight-finale/check_stair/onFailure/narration": {
+    "": [
+      {
+        "clip": "e53290eef5ca7e8e9f5bf9a17d940a0aa121cd7741cc04ca8bae4aba54796315",
+        "ms": 10807
+      }
+    ]
+  },
+  "riftlight-finale/check_stair/onSuccess/narration": {
+    "": [
+      {
+        "clip": "18e5003c56b8a306535e3d723fe4c635103dcf2e489fa75cbf38052301b15952",
+        "ms": 12707
+      }
+    ]
+  },
+  "riftlight-finale/check_stair/prompt": {
+    "": [
+      {
+        "clip": "30d125c5c296f79a2ca07fc07f0ba4a83b7b851ce930361a6dbf30f5c17d7b93",
+        "ms": 2945
+      }
+    ]
+  },
+  "riftlight-finale/chime_straight/narration": {
+    "": [
+      {
+        "clip": "3e8459ddb122876915b87c070547ce5f0c7185715f28c87d7d1d6013f0a4c8f2",
+        "ms": 17307
+      },
+      {
+        "clip": "fb3dca50320fd42a129929135fcf5f03db1e7de8c0e30949d7140cac3a57a905",
+        "ms": 1608
+      },
+      {
+        "clip": "a3b01bad3d921076fd3b2f4594148cca28d491b4abc8d7025627392d2a996ab2",
+        "ms": 1453
+      },
+      {
+        "clip": "5b48c1e9926331d83622209f5ce8e1bdb776d79e74facab14bbdb4b0117f5ea6",
+        "ms": 2871
+      }
+    ]
+  },
+  "riftlight-finale/corvane_one/narration": {
+    "": [
+      {
+        "clip": "8c334ffd87b27d44abb2210710d0061a0a28a1c8c1cb5dc6e3892c7c9a4099fd",
+        "ms": 3207
+      },
+      {
+        "clip": "aac696ded573cd6f317ddbce7ceced4a6b6aba68be48b169e52a9916d4ae13b6",
+        "ms": 1862
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "6b90c4c3a59a269cf3f3a5aa4b3077a5ad430819396c97a78f63ef146bf4eaf4",
+        "ms": 1403
+      },
+      {
+        "clip": "94e8728f10e7dc2eb1483f8a5cf2de25d74f3a573383eda8f1f7bb7ae7b28ff6",
+        "ms": 10107
+      }
+    ]
+  },
+  "riftlight-finale/corvane_two/narration": {
+    "": [
+      {
+        "clip": "3d448170881bbd1ca5935bc72839df7ca65b105e566bb3fc1aca4ef9bf77ce61",
+        "ms": 4807
+      },
+      {
+        "clip": "f61d003dbb22ab4a131fa7436d53a237983e2e8bf3bca479821f047f3246ced3",
+        "ms": 1300
+      },
+      {
+        "clip": "c1c1db25e28fda1826163f6a4d6e10b2a96d7fac96fba7868e7aa409692d5576",
+        "ms": 8707
+      },
+      {
+        "clip": "9e956352c1e942969ef03532d48c14d818118b2086eb078f01771aff44d98595",
+        "ms": 1336
+      },
+      {
+        "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
+        "ms": 873
+      },
+      {
+        "clip": "debe2bc029cf0e1f215fe0747fac8f33d9e04e0452eb0334cc870506e2936278",
+        "ms": 7807
+      }
+    ]
+  },
+  "riftlight-finale/corvane_two/variants/0": {
+    "": [
+      {
+        "clip": "8952e9787ce8b5560d980f89ee90bdb503e145f56cc7088778b0860e3974d2b7",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-finale/corvane_two/variants/1": {
+    "": [
+      {
+        "clip": "13fb3f9b1f8948b5858e73b3e250dee67e26d747693887e9987dfd82b0f82178",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-finale/corvane_two/variants/2": {
+    "": [
+      {
+        "clip": "67b71f1d1e85a18b4236ff61597345e5a2f853245fe1067909753e9007a2ce87",
+        "ms": 1676
+      },
+      {
+        "clip": "b685fcd5a0cdc9fc306c6302bcd357ab3e1bfd9259166dc1301cb484f2a49262",
+        "ms": 1253
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "e616ff8434e581ac9f53e4409963c121aab0969ede65a2a563824b3bdccce48f",
+        "ms": 2854
+      }
+    ]
+  },
+  "riftlight-finale/fate/narration": {
+    "": [
+      {
+        "clip": "da38682a784cda74c67cab54660e8d1c7597ab3598a46400e114594a5c579822",
+        "ms": 1767
+      },
+      {
+        "clip": "9d72a41d8eca36caf7556cde6d4a41602fa2a8aa36d25640ba95ff57668827b2",
+        "ms": 2065
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "5eb50fe0dc6a5f9159c77fe0baa325c5c315718aabd0f455ca5d0653595b8ccb",
+        "ms": 8607
+      },
+      {
+        "clip": "80a8a91c01977133720a1821fabfc6869e2d1cd1a17a63594cd6747b41d2a2da",
+        "ms": 6407
+      },
+      {
+        "clip": "a6ba60e9a51132733444122ce2bf89c36732a3e1451f083a747632105f592a1a",
+        "ms": 1778
+      },
+      {
+        "clip": "613bbe374c934cc936f61a9aa9df5fa424f67f8b6b5a91c9f368faba4bfed7fc",
+        "ms": 978
+      },
+      {
+        "clip": "0a4516a00f5dd1d70a5f3f27e779dce64238729e71f0af1f1759c48235c6b749",
+        "ms": 1279
+      }
+    ]
+  },
+  "riftlight-finale/fight_standard/narration": {
+    "": [
+      {
+        "clip": "e79a37bc33f0672e78d6cc668991f277def64634c56e24d2e3825d7aaede31ba",
+        "ms": 2348
+      },
+      {
+        "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
+        "ms": 1927
+      },
+      {
+        "clip": "718ab35316e4b7020f3bb8e2c09da68bc398d0047ab8ba728f14001fe2953098",
+        "ms": 11307
+      }
+    ]
+  },
+  "riftlight-finale/fight_standard_braced/narration": {
+    "": [
+      {
+        "clip": "e79a37bc33f0672e78d6cc668991f277def64634c56e24d2e3825d7aaede31ba",
+        "ms": 2348
+      },
+      {
+        "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
+        "ms": 1927
+      },
+      {
+        "clip": "cc05e6e69b3f6742b37b13876f79f10c45f3594156b256c1ed7d4d7569ae0bdc",
+        "ms": 11307
+      }
+    ]
+  },
+  "riftlight-finale/fight_weakened/narration": {
+    "": [
+      {
+        "clip": "e79a37bc33f0672e78d6cc668991f277def64634c56e24d2e3825d7aaede31ba",
+        "ms": 2348
+      },
+      {
+        "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
+        "ms": 1927
+      },
+      {
+        "clip": "3ebe8aebf32a5eadf3df6a6f377543ba48eec20fbe7563ed69e1edcd3e85e737",
+        "ms": 11607
+      }
+    ]
+  },
+  "riftlight-finale/fight_weakened_braced/narration": {
+    "": [
+      {
+        "clip": "e79a37bc33f0672e78d6cc668991f277def64634c56e24d2e3825d7aaede31ba",
+        "ms": 2348
+      },
+      {
+        "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
+        "ms": 1927
+      },
+      {
+        "clip": "696ae192dd5c30bcd3dc7d41a179049222bc0ab54df4e0b48aecea7d64ca45af",
+        "ms": 11707
+      }
+    ]
+  },
+  "riftlight-finale/figure/narration": {
+    "": [
+      {
+        "clip": "01f0598c07e50f7eff03e9e2f0a87305e60cdba34e65f13c2fbfc0d4babcee8c",
+        "ms": 18807
+      },
+      {
+        "clip": "64fb9bf4c9deca8f0d585c093cf4a3201cd299ffd987ac78aa0bb2835f031df8",
+        "ms": 3107
+      },
+      {
+        "clip": "60f31da24edf539b14761c718b29097b81bf4e397bd3f228e35d559c276c9243",
+        "ms": 1334
+      },
+      {
+        "clip": "9fa5032357c0fe5d4a46fc2e9cb97b1908d5a5feab06273d8980495b041074b7",
+        "ms": 1930
+      },
+      {
+        "clip": "3f6789ca37a9c4fc1a97c044d95630f40f0120ddd2ebd197d826cfc3e36007de",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-finale/figure/variants/0": {
+    "": [
+      {
+        "clip": "e29e1ba93e09eec8c87bc4ed3074b576d709145cf76803402022aa4446f3e3c2",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-finale/figure/variants/1": {
+    "": [
+      {
+        "clip": "7969ab0b6bbfc2d6691ebeca80e65e0b573e4229c72356558b365d09cca822de",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-finale/frozen/narration": {
+    "": [
+      {
+        "clip": "898f11a3bbc9bc5ab30ea3cb602e5a91c3711f0cc341559fb616bda2577d6d43",
+        "ms": 20007
+      },
+      {
+        "clip": "b04f095a79b710ef3697dd5c491c7a82b1631ad0ffe79b968f85d12a0d9c0d49",
+        "ms": 1578
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "aff9b9b231a0384c4650eeac7b6c554639d219e5e6f1fc0191dc70404e0e9723",
+        "ms": 849
+      }
+    ]
+  },
+  "riftlight-finale/glide/narration": {
+    "": [
+      {
+        "clip": "ebe4852a968ed4c68988a073140de95988203aa3a8c250d21fe2120e2d6877bf",
+        "ms": 15907
+      }
+    ]
+  },
+  "riftlight-finale/help_him/narration": {
+    "": [
+      {
+        "clip": "15da31dd8bb5af9b9cb8498d03cc1260f3dd2f1297e4d7559f39f318e9d62cc7",
+        "ms": 8507
+      },
+      {
+        "clip": "087c795e275e5115a5d09bbd442ded07cf1a5d3d4cea28f102f0d0998844f731",
+        "ms": 2322
+      },
+      {
+        "clip": "066a754ff57c964e3a7e00f89548e04f450940eca0bfe2416a170a0a6ca6fd1e",
+        "ms": 2815
+      }
+    ]
+  },
+  "riftlight-finale/herder/narration": {
+    "": [
+      {
+        "clip": "d36e8f3d8a80713ba3c79cfd992d9328481d8b55527f3e177a3708203ab59c43",
+        "ms": 11107
+      },
+      {
+        "clip": "700283d1166258d3d1caa2329a6b95d3da9c314ece62f7354242d808e5334176",
+        "ms": 4007
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "f91817dfc78177c1dc2b9cb546319d78789459bd5d0f2224f305d9c26aa48c8e",
+        "ms": 7007
+      }
+    ]
+  },
+  "riftlight-finale/herder_goes/narration": {
+    "": [
+      {
+        "clip": "e28f8b5fb0dc7c4f3b2a6f5b5b61355f5ba93a79e23db0b4589e41fb42dc13d2",
+        "ms": 6607
+      },
+      {
+        "clip": "96035d36b10645c89724fc6375b17f96e50a118defd39354c86b514eaaeabfa0",
+        "ms": 2104
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "909e482f34f64302962f78cc30b3712386213401867e8e52cdf8d93b5e4771fa",
+        "ms": 5107
+      },
+      {
+        "clip": "1745e3ed3b30d03a8b93853d1c39ba4a57250c5c41a6afad487788eb80800e42",
+        "ms": 2876
+      }
+    ]
+  },
+  "riftlight-finale/his_map/narration": {
+    "": [
+      {
+        "clip": "69f4c8bda4a7909e5dff577ef9730e12e23f5fb6e91540f84236b43b997aa570",
+        "ms": 9207
+      },
+      {
+        "clip": "cd8fa77b4d2236f495f44616cc58a1dacc694f472ac3882e6e1892d7b7242210",
+        "ms": 1558
+      },
+      {
+        "clip": "6d202c367acd7d11680eda9ceda1fa679b789fa1329150a107e9af175045d686",
+        "ms": 1124
+      },
+      {
+        "clip": "86e36c15b209f03aa9953545df694e89fd99f4e5a727ec296a8566e990a16b93",
+        "ms": 1516
+      },
+      {
+        "clip": "11fa75da0e146e040470b553e24f366be77010a0a34f0adbfe3e2174f25a0c4b",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-finale/his_story/narration": {
+    "": [
+      {
+        "clip": "894d22f19b2cc3831996fb3b18c6fc385d569e88dfbf4a8e5761f14973b63d26",
+        "ms": 11507
+      },
+      {
+        "clip": "47e3bc64be334051360b02f69971189317fc5b49d7ee8b689a94b19edfeab273",
+        "ms": 2100
+      },
+      {
+        "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
+        "ms": 1003
+      },
+      {
+        "clip": "45ae94db57107bc9d49ae1f01cc53c1da0b1629c6350cd469dfa6f0aac9a5665",
+        "ms": 12507
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/narration": {
+    "": [
+      {
+        "clip": "c4c6479a2d1e7d4f7a518aa097f331679e42e0349890842805a594fe03b47716",
+        "ms": 8907
+      },
+      {
+        "clip": "61f7b34da803bf33bf4fbee987d946c0a5ad663bcf41606d573c11b29ed59da5",
+        "ms": 2812
+      },
+      {
+        "clip": "2de3fe1a694221db50b3861bfd7c836992c52b9c8041d3c1388bc894724839d1",
+        "ms": 16707
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/0": {
+    "": [
+      {
+        "clip": "31673aebafd223055862c9d24b6894817ad7f7350288a0bcafef4178dca7161b",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/1": {
+    "": [
+      {
+        "clip": "fb4e594931d10a8a120d2369f84b3af28ecfef76cd3eac91bfef0d18fec143c2",
+        "ms": 1080
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/10": {
+    "": [
+      {
+        "clip": "3935b8b0e9318d24a8a6b75cbf4d7c9474bef065fe7f0bdaea13a80f39f1e6e5",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/11": {
+    "": [
+      {
+        "clip": "4b0cb6c9e7ff488a7e63e6c047c6af4d5d0ec2d15a9c6664836b2dfa94895cbd",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/2": {
+    "": [
+      {
+        "clip": "94f6f7d8a93355dd6368f35ed208bcceab84ab974ba762eee060cdfd4b15ce70",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/3": {
+    "": [
+      {
+        "clip": "b4c9fd4db4336b02e91594837f7a85ff31c819a19b91a0a710c14aa531a7920c",
+        "ms": 7507
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/4": {
+    "": [
+      {
+        "clip": "899f4e3d7976bc8b23ec290f7372adfe01b600d51dfa1d2a211738a3d6cb6f12",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/5": {
+    "": [
+      {
+        "clip": "33c95e4360106d0c1d61b015f3093e01ae8428a312ccdb532cea86aea01cfc99",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/6": {
+    "": [
+      {
+        "clip": "377b0e1f404c9d602df48d1e604bae77da9d395758bd5bd7749050c71922f0fa",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/7": {
+    "": [
+      {
+        "clip": "39424422a1c2ad40d2e725ed07be922272402f8e48cf587528f5b183fc6dbb9f",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/8": {
+    "": [
+      {
+        "clip": "f5b91f20b7e57a59c0fb24a6c4e3027e18d9e2b32bea0846f015972536d2c8c1",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/keepers_epilogue/variants/9": {
+    "": [
+      {
+        "clip": "e9bcc78554995dcb57644c12f6e99450318d6e8117c36805e300a7cd86b5d733",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-finale/kid_bridge/narration": {
+    "": [
+      {
+        "clip": "24ffb76d8f4cf414be4f15feafdccca002a5b1e1477bd16ae40b287e51912475",
+        "ms": 14207
+      },
+      {
+        "clip": "eb779e25dec839066552398ff6fa0079b78ac16e0d5875cd41209e127fc0f5e0",
+        "ms": 1980
+      },
+      {
+        "clip": "70f2be47b6771915f5af7189325169db6bfd8e21857776729830272d07903d6f",
+        "ms": 1662
+      },
+      {
+        "clip": "e552340bd63ece8a5d4627623c716c4bd56bec2998f4faa7d214a261f0e6ecbf",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/narration": {
+    "": [
+      {
+        "clip": "bc3fbfb8ed3c9109f684d8ec53d708f1a10c655104873f8346f50cb612f2a19b",
+        "ms": 11107
+      },
+      {
+        "clip": "d035953937523342061b05e33a9db655695bb828b6d9284895e17a21d82544c0",
+        "ms": 2856
+      },
+      {
+        "clip": "1952b3cf9c95e156f0463c9ed5a8ec8b83bb40bf55599516583d4c35ca010755",
+        "ms": 13207
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/0": {
+    "": [
+      {
+        "clip": "ace6d119c695f2ba003075a661bce130d58b5913d028b99467b120ecc1090877",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/1": {
+    "": [
+      {
+        "clip": "3930428f0067679417348a0144332b37f84a4ad5ac02633c041a0b680b5019de",
+        "ms": 2092
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/10": {
+    "": [
+      {
+        "clip": "3935b8b0e9318d24a8a6b75cbf4d7c9474bef065fe7f0bdaea13a80f39f1e6e5",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/11": {
+    "": [
+      {
+        "clip": "4b0cb6c9e7ff488a7e63e6c047c6af4d5d0ec2d15a9c6664836b2dfa94895cbd",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/2": {
+    "": [
+      {
+        "clip": "94f6f7d8a93355dd6368f35ed208bcceab84ab974ba762eee060cdfd4b15ce70",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/3": {
+    "": [
+      {
+        "clip": "b4c9fd4db4336b02e91594837f7a85ff31c819a19b91a0a710c14aa531a7920c",
+        "ms": 7507
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/4": {
+    "": [
+      {
+        "clip": "899f4e3d7976bc8b23ec290f7372adfe01b600d51dfa1d2a211738a3d6cb6f12",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/5": {
+    "": [
+      {
+        "clip": "33c95e4360106d0c1d61b015f3093e01ae8428a312ccdb532cea86aea01cfc99",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/6": {
+    "": [
+      {
+        "clip": "377b0e1f404c9d602df48d1e604bae77da9d395758bd5bd7749050c71922f0fa",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/7": {
+    "": [
+      {
+        "clip": "39424422a1c2ad40d2e725ed07be922272402f8e48cf587528f5b183fc6dbb9f",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/8": {
+    "": [
+      {
+        "clip": "f5b91f20b7e57a59c0fb24a6c4e3027e18d9e2b32bea0846f015972536d2c8c1",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/listened_epilogue/variants/9": {
+    "": [
+      {
+        "clip": "e9bcc78554995dcb57644c12f6e99450318d6e8117c36805e300a7cd86b5d733",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/narration": {
+    "": [
+      {
+        "clip": "4121ac2e520c49b6061782254e178cc744c3e7b8ff22be5f98dbb55160989a3c",
+        "ms": 22107
+      },
+      {
+        "clip": "f35264c6e94350d7346e9b8eee2a687b05c55d2abb4c528c782b81e58af2b8b7",
+        "ms": 1735
+      },
+      {
+        "clip": "5e120424ba4fd9938547275e713ffc94bccb535ec3db86943af54455fc7fe533",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/variants/0": {
+    "": [
+      {
+        "clip": "362800c94992042e4936646a222f1b54642ff268d3d3e30bf8dafe8cad359016",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/variants/1": {
+    "": [
+      {
+        "clip": "89020bda43b23bf2b870e4898cf7b13344a8b74c028e467614e9f3fe6b1a4bea",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/variants/2": {
+    "": [
+      {
+        "clip": "377b0e1f404c9d602df48d1e604bae77da9d395758bd5bd7749050c71922f0fa",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/variants/3": {
+    "": [
+      {
+        "clip": "96d7d8813d4c8ab090655bfa23b3b436cb155a78c5af068c10d913b90777e9d1",
+        "ms": 2679
+      }
+    ]
+  },
+  "riftlight-finale/loss_epilogue/variants/4": {
+    "": [
+      {
+        "clip": "3be1bcc718f9214465bcc12ff1a44db87401e5d4c8cf24eb1c67381fbf1cde3c",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-finale/loss_plan/narration": {
+    "": [
+      {
+        "clip": "87ff36aa1afed3f35a1803f223f064c8d9f15354fd73a6b526bc0417e3546d0f",
+        "ms": 6107
+      },
+      {
+        "clip": "06835719dd2bbde3c5ee9b92c9a04fa70917d2de6d2228ecd79e5b7a3f2f0f2c",
+        "ms": 1069
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "12606b49448ed851031c3dcd74d5c726a9c4fc37b9cf2c46f26847063a3854ca",
+        "ms": 1475
+      },
+      {
+        "clip": "36b17921388a4ab747d1e535dd7eec09a40e96a49242f518c772abd0f99a67dd",
+        "ms": 1723
+      }
+    ]
+  },
+  "riftlight-finale/loss_recover/narration": {
+    "": [
+      {
+        "clip": "a3d5bdda1eeecaa6b02362ffd8fa320c24e0875887a2b5c7abc45f8bdc178060",
+        "ms": 20707
+      }
+    ]
+  },
+  "riftlight-finale/loss_second_failed/narration": {
+    "": [
+      {
+        "clip": "93590d745251343cd1340c712412b616bc7480c5aa25610163c4feec1462b08f",
+        "ms": 19907
+      },
+      {
+        "clip": "10a8344a1b9f326a9ce2ea1e2d7c3668c89e9400d4b28136e0ebea26ce2eabc7",
+        "ms": 2035
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      }
+    ]
+  },
+  "riftlight-finale/maps_side/narration": {
+    "": [
+      {
+        "clip": "93ec82408b579a7805c6bbea2cc6665afcbf830c96b077e5311211d79d93da3b",
+        "ms": 14307
+      },
+      {
+        "clip": "7367fa1ab69e10524799a0c853c8ef67731575d2ec52319d6c1a3e99f76badca",
+        "ms": 1911
+      },
+      {
+        "clip": "caa1186fda8d334763fe0841a5e422d7578b6312531eadf6ee4d76dc1528370c",
+        "ms": 1456
+      },
+      {
+        "clip": "dfb0d63e047739778af491128a8d72c0f7d44ad59f321fa65fb0eff1ab8597c3",
+        "ms": 1874
+      }
+    ]
+  },
+  "riftlight-finale/old_ice/narration": {
+    "": [
+      {
+        "clip": "c5623e233f358adaeb98a520c07d318c340beeed1a6a00d71ad70532746ff0be",
+        "ms": 17607
+      },
+      {
+        "clip": "3024c582282ea1f3c964bedaec2f38789994b4f853729d0ce926b304b17a7252",
+        "ms": 2135
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "fbeeb54fc71bc7efb890e4ee2896dd47a0414d00088350ab51e3d9d80abd6497",
+        "ms": 1007
+      }
+    ]
+  },
+  "riftlight-finale/old_ice/variants/0": {
+    "": [
+      {
+        "clip": "033e3bf9c1089036e77bd84bf0ca91cb1269431b4d3bf88d9fb45dfb32847fdf",
+        "ms": 8007
+      }
+    ]
+  },
+  "riftlight-finale/olivia_anchor/narration": {
+    "": [
+      {
+        "clip": "8bfa409acac04f3438c0689d5836dd232ad3fc651831f60db625bc3567e139ae",
+        "ms": 2789
+      },
+      {
+        "clip": "364d21d0a9106eedb84a1237e994378aca16dbeed9f416e28d928a7814365941",
+        "ms": 1599
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "8275b69cb6f94d5f08bfa73ff945a621f537974e1ab65dc2feaf04e317fbfc7f",
+        "ms": 2400
+      }
+    ]
+  },
+  "riftlight-finale/olivia_anchor/onFailure/narration": {
+    "": [
+      {
+        "clip": "a0339d11286bb7e389ec88598385b989ef47bc9e798e7eb0ed2f15a14e00ca17",
+        "ms": 11107
+      }
+    ]
+  },
+  "riftlight-finale/olivia_anchor/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ff0a72570849a48291532f75e054aa451ae63f9d7e182d5f0edc1ba33389a38f",
+        "ms": 9307
+      },
+      {
+        "clip": "4871313ce6da2df07f4e37893e821f8fc200ec31e2225bc3f3d6b6dd7db29cff",
+        "ms": 1058
+      }
+    ]
+  },
+  "riftlight-finale/olivia_anchor/prompt": {
+    "": [
+      {
+        "clip": "5ea111829d582e2ce916bb23409be8c52ff9409f93f80cb181a3c1209297aa27",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-finale/olivia_tells/narration": {
+    "": [
+      {
+        "clip": "9c290ccbaa48dc08572b78ebc6d0e614eb48d3e74db0f9dd1d275eb77e9f63da",
+        "ms": 2523
+      },
+      {
+        "clip": "88a7709230eb70c17f89beb3e64d22da263e0a7d70b2461c49277c7b07b6c8ca",
+        "ms": 2086
+      },
+      {
+        "clip": "c98411358da038f802e5cec6e6980b8c28bc8e0a7154a5588dc012e25270e4c5",
+        "ms": 884
+      },
+      {
+        "clip": "29b25ebf2f54c1ec7eda9ac264e3d9ba9a51007ab6cd222ff3ecf96665daede0",
+        "ms": 6907
+      },
+      {
+        "clip": "d07abfe9aebf81cd7bc9c078864e28466071f5a368cc104102e219431f5d4873",
+        "ms": 1463
+      },
+      {
+        "clip": "02a58a0ea8b92ebd2f5438801e074fa9c9e91ccc25fdc69ea7438213b4e59202",
+        "ms": 2346
+      },
+      {
+        "clip": "9e7bf320dbfaad6d103df55239c4df3c966edecf47837cc6f9c6d067879fcae3",
+        "ms": 1677
+      },
+      {
+        "clip": "8731fc2946e364288569c3ce623d6ed1eb660ba90936dac085cec3ebc87ca547",
+        "ms": 1441
+      },
+      {
+        "clip": "33447137b39f4ed7d02f6598ded684bf6a1fb5c798a68debf6027ad7af317305",
+        "ms": 2441
+      }
+    ]
+  },
+  "riftlight-finale/recover_ask/narration": {
+    "": [
+      {
+        "clip": "e86fdd33d72eba60348b2131594e0b692cd86a8fdf6f522212e273afaabbafd6",
+        "ms": 8007
+      }
+    ]
+  },
+  "riftlight-finale/recover_ask/onFailure/narration": {
+    "": [
+      {
+        "clip": "09c79e6aac44efebc858b5472e52818a2a8b309f67a6b9e249ec799ce205c617",
+        "ms": 8407
+      }
+    ]
+  },
+  "riftlight-finale/recover_ask/onSuccess/narration": {
+    "": [
+      {
+        "clip": "66b20c024d9118c62745db549df9be1fd0642749609081c7aed0b4ae4879bc55",
+        "ms": 996
+      },
+      {
+        "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
+        "ms": 630
+      },
+      {
+        "clip": "cc0353bd14e04bb2628885ef70b66d74b1a41507708c1eda4c19461b331de5cc",
+        "ms": 676
+      },
+      {
+        "clip": "51453625d96903995f6f4c8c8c885e0d9aece2ad7ad05bead10789b418cfaafc",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-finale/recover_ask/prompt": {
+    "": [
+      {
+        "clip": "6255ef8546518175b97e537c252f1dff066e5197b1dd5b572a9e4962b86951ea",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/recover_check/narration": {
+    "": [
+      {
+        "clip": "1e5e15e287454f3792081aadf43b9756101e659517a061c7f6a6a8c06e5f23ea",
+        "ms": 7008
+      }
+    ]
+  },
+  "riftlight-finale/recover_check/onFailure/narration": {
+    "": [
+      {
+        "clip": "ae5f79d3d0f6097b8506c9a1a206792eab420e82b2f4cf9c30503f2e345f2bf7",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-finale/recover_check/onSuccess/narration": {
+    "": [
+      {
+        "clip": "aaf9d3d22b6b80127ceb7f8b2fd2ffc739a52a0b81e4e1ff5dad204c7c5e3fd3",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-finale/recover_check/prompt": {
+    "": [
+      {
+        "clip": "6ee769656c04d8deaedda36d89387dc39697c8f80af870f1c8e6e6eb8dfd81f1",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-finale/recover_island/narration": {
+    "": [
+      {
+        "clip": "08d6c7e34d646d7a32fdcb4e6580f0533a056388d661ecd03514664fa4940d19",
+        "ms": 11307
+      }
+    ]
+  },
+  "riftlight-finale/recover_island/onFailure/narration": {
+    "": [
+      {
+        "clip": "ae5f79d3d0f6097b8506c9a1a206792eab420e82b2f4cf9c30503f2e345f2bf7",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-finale/recover_island/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b58ad1f708d596662003b19ab7bad758745b77865cf15021532eaf8c6919e5c0",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-finale/recover_island/prompt": {
+    "": [
+      {
+        "clip": "fac72384f437b535b62b08cc870afb002a0814a4582be35a2318599ed4e8ae56",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/recover_pip/narration": {
+    "": [
+      {
+        "clip": "b1c01a72a757d86f9ae267c12b296bc6cd21f779066021a3dcd6006fa374d3d5",
+        "ms": 7007
+      },
+      {
+        "clip": "35ef2ff44e7e07dd8d583c56f43abbdde7079c2768d4ef142af3ae6ff041d723",
+        "ms": 1940
+      },
+      {
+        "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
+        "ms": 706
+      },
+      {
+        "clip": "a868e2ca6af7afc58690f9112fa12ab8410132838c0e278a84b332e8a4b6b165",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-finale/recover_pip/onFailure/narration": {
+    "": [
+      {
+        "clip": "ae5f79d3d0f6097b8506c9a1a206792eab420e82b2f4cf9c30503f2e345f2bf7",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-finale/recover_pip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7c64f40d065f7246be69532cf23b39fc5c60134f9f17e360c8c970a0dca6aaa9",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-finale/recover_pip/prompt": {
+    "": [
+      {
+        "clip": "70722e35b39cbf16d30b2b896bbf09b9c10634e49ffd6778e503d124f635ddf2",
+        "ms": 2594
+      }
+    ]
+  },
+  "riftlight-finale/recover_reserve/narration": {
+    "": [
+      {
+        "clip": "c82648ca73ae758cc66e4a1311829b0a886959773a4b8b31f1659bf190189dc0",
+        "ms": 4007
+      },
+      {
+        "clip": "c719e28592072a951ae8ee219f1ceba6b14289da2d4c75a08a69e6fe3c70d8bf",
+        "ms": 801
+      },
+      {
+        "clip": "3d0d51cf5bb5e477ce0812befa60a3342c3a44ed879a9a837d92632c8e6edbc7",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-finale/recover_reserve/onFailure/narration": {
+    "": [
+      {
+        "clip": "ae5f79d3d0f6097b8506c9a1a206792eab420e82b2f4cf9c30503f2e345f2bf7",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-finale/recover_reserve/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2d3238f3c1aebb7a0e2098edebcea54e4e2268b9ae31ff1d8658cdb52341e2b2",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-finale/recover_reserve/prompt": {
+    "": [
+      {
+        "clip": "117e32d019fe2caf469c3676479a5230f636a24eb41086e4472fced9e78170da",
+        "ms": 2720
+      }
+    ]
+  },
+  "riftlight-finale/rest/narration": {
+    "": [
+      {
+        "clip": "fb450a222dc1fa6ed9d6a6dfb6a1b852afa54467367aab8ec37c53bda8c32a6c",
+        "ms": 19807
+      }
+    ]
+  },
+  "riftlight-finale/rest/variants/0": {
+    "": [
+      {
+        "clip": "e8d5734f35957df4f4a50669ad86323dc188fbfaf7b6b3ec6579bb1b29746bd9",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-finale/reveal/narration": {
+    "": [
+      {
+        "clip": "b318ceb5b7098ea7fdbe528a6d2e9df2b33565d1995d99557234b38da5f5b594",
+        "ms": 10107
+      },
+      {
+        "clip": "4d70a4aba405f038bf14e61d9c61f73622a39e1129fd023b5629270be27b0fcc",
+        "ms": 15107
+      },
+      {
+        "clip": "38909b75eb0b2aade88986ccf50f64e2b2bb96fdfc39e6ab56e27e10924a58bf",
+        "ms": 13207
+      }
+    ]
+  },
+  "riftlight-finale/ridge_look/narration": {
+    "": [
+      {
+        "clip": "39308dfba8c3f7095755dd8f9e23dec02a3e45aa4b15303f4130167adfc6d08e",
+        "ms": 8107
+      },
+      {
+        "clip": "7578e716d6ddb68cd71a25437fca8de3e1486a1e68e602d104366581fa192869",
+        "ms": 1165
+      },
+      {
+        "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
+        "ms": 1193
+      },
+      {
+        "clip": "a875a924e52f3122697b2142fe1d0f356798f1978a9213b8ad9bc68ca76e4425",
+        "ms": 4007
+      },
+      {
+        "clip": "2196bb68ee300583efd9cdef4e60f15c69c6f574ed3932c98d3bbc9ffbcd57da",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-finale/seam/narration": {
+    "": [
+      {
+        "clip": "36b80438a9f20edd07cc6c0f988d9a2b31e8e9ab25c88a6c8696fc451b26f795",
+        "ms": 13807
+      },
+      {
+        "clip": "bb08d9ecc0a66c81fb7ea56ae3474363420efcd087f9713618b7090eae1ce75b",
+        "ms": 6207
+      },
+      {
+        "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
+        "ms": 1003
+      },
+      {
+        "clip": "377357c3bea3afbe5208d938034c14fb52aebaca8d16e613e47a649a592698b0",
+        "ms": 1829
+      }
+    ]
+  },
+  "riftlight-finale/seam/variants/0": {
+    "": [
+      {
+        "clip": "9c0076be3acfbb135afc29fc77f5977c1202c38a0f6ecd3589276e97e88ac749",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-finale/seam/variants/1": {
+    "": [
+      {
+        "clip": "d24cc165dc6c6574dde8e709723624323b95fbc651147ec769399dffdffde09a",
+        "ms": 2205
+      }
+    ]
+  },
+  "riftlight-finale/seam_weak/narration": {
+    "": [
+      {
+        "clip": "30f3e3f3bff8789d342eb922e91560a19fe3f7039155a1db0ed3d668942bc2bf",
+        "ms": 17307
+      },
+      {
+        "clip": "bb08d9ecc0a66c81fb7ea56ae3474363420efcd087f9713618b7090eae1ce75b",
+        "ms": 6207
+      },
+      {
+        "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
+        "ms": 1003
+      },
+      {
+        "clip": "377357c3bea3afbe5208d938034c14fb52aebaca8d16e613e47a649a592698b0",
+        "ms": 1829
+      }
+    ]
+  },
+  "riftlight-finale/seam_weak/variants/0": {
+    "": [
+      {
+        "clip": "5dfa5c8415cf8578ad7612dd176326c21d64c9d0806a5982f5f6533819b4d9c9",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-finale/seam_weak/variants/1": {
+    "": [
+      {
+        "clip": "e71372f6c7683ab43988951b5ccf76121c534f9ff66206e292b69ae1faf1b0cc",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-finale/seam_weak/variants/2": {
+    "": [
+      {
+        "clip": "d24cc165dc6c6574dde8e709723624323b95fbc651147ec769399dffdffde09a",
+        "ms": 2205
+      }
+    ]
+  },
+  "riftlight-finale/sing_kid/narration": {
+    "": [
+      {
+        "clip": "63e83e66d93e26355d1556b18c733cf15880c287c195a3bb2e7c00bd01ec18c6",
+        "ms": 14307
+      }
+    ]
+  },
+  "riftlight-finale/spent/narration": {
+    "": [
+      {
+        "clip": "a358ee119577582806bbae38151adc5242f54b818e78f12d61c6b89c387270fd",
+        "ms": 20107
+      },
+      {
+        "clip": "10a8344a1b9f326a9ce2ea1e2d7c3668c89e9400d4b28136e0ebea26ce2eabc7",
+        "ms": 2035
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      }
+    ]
+  },
+  "riftlight-finale/spent/variants/0": {
+    "": [
+      {
+        "clip": "be9a5209ee4ed38ca1c9f6c755df808b6f0464a9ad250b14fb03b155ae82bd68",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-finale/spent/variants/1": {
+    "": [
+      {
+        "clip": "4c2b51af2bef7608d0b851e7fbbc0a92d0396f81ff545269f6e81e24fb1fd615",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-finale/told_no/narration": {
+    "": [
+      {
+        "clip": "c54d3593b431752b3c9abac8bf6415abc1ed9b72ab143b6685006dfa8d55a234",
+        "ms": 3707
+      },
+      {
+        "clip": "2976ad5a0e0d0015e565753c32f94f385971daec07fa9e20526b5c29884044c7",
+        "ms": 4607
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "2088b1c43c5cf06ab75a699f2d1d334a8f88d40a0fd9a8a5ff2385e9e56f6740",
+        "ms": 2085
+      },
+      {
+        "clip": "b4592729de0a7066b280eb469a15b9c4c70f0eaefc9960cbf3901d7c853c9d04",
+        "ms": 4407
+      },
+      {
+        "clip": "1b8c0aefd092b5366bf65d6347f971e4715760adc2f2063e85f94c24e0f68bde",
+        "ms": 987
+      },
+      {
+        "clip": "e3a10a4b3933e834f1a6de0d42b6d1404fc78483e32db9db008a96f52a6d4a08",
+        "ms": 1334
+      },
+      {
+        "clip": "9841ee8f6f86dd38d10ebccbe5f95e92b54ea44c0373367af826071be1e75f92",
+        "ms": 1142
+      },
+      {
+        "clip": "b39bc6a836039e2e945fe52ea9a130ecd85144b7f60ff4a318bc479f849880fb",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-finale/warm_up/narration": {
+    "": [
+      {
+        "clip": "5e0c8eeed3eff51bbeebec2a6a10ce3314231aceb8037a345b539ce235e9b192",
+        "ms": 12307
+      }
+    ]
+  },
+  "riftlight-finale/why_home/narration": {
+    "": [
+      {
+        "clip": "5bf2496dff4104df6cddf5663102c38b50cedd37176299f0af71a043ea10192f",
+        "ms": 2716
+      },
+      {
+        "clip": "68b200c724e7ed4a7756d8b4d03e8db066d1f12f502e55a00842f6f386f7cccd",
+        "ms": 3807
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "302428c01df13c6ac0c46f8014e066ed3274d4619399881ad772d94cf13926e0",
+        "ms": 10607
+      },
+      {
+        "clip": "cbd2c65041c9c1ac81fde493252c55082a6223df14e8d6f1c5842f1d96971380",
+        "ms": 1885
+      },
+      {
+        "clip": "f401988fd3c4ba93230b923db219a6051ede38b953ddcbde2f75b9830bcb8953",
+        "ms": 2529
+      }
+    ]
+  },
+  "riftlight-finale/wrap/narration": {
+    "": [
+      {
+        "clip": "7ae03dcfa0b74afd0cfeeec690de6a3af529578ddb419c3b986fb24bbf498e9a",
+        "ms": 9307
+      },
+      {
+        "clip": "a63567153525e6ab5418b34fef5dfbc9ec515ef677104bde22797dce7d228bb5",
+        "ms": 2389
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "7b103da882441119437e7358ce6370096c7c328b0693e61a41bc6ecca71c8e47",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/narration": {
+    "": [
+      {
+        "clip": "db780fa5fac2e91c4dcf4df421d772d61626318bbc02ff4c903ed4df6a82401a",
+        "ms": 12007
+      },
+      {
+        "clip": "a2e68fbab9f9eec3eeb99a2a24f085af72312bd53540c288b645af666ab61ea1",
+        "ms": 2778
+      },
+      {
+        "clip": "b96f0617caad7cb9ddd9e5b915191b2eb04b9d557b526a4788ab046071eef480",
+        "ms": 3707
+      },
+      {
+        "clip": "bcb32a1d78ad5c95a6c2d1431bad1043f9c0627b9230a7b50d8df5276015facc",
+        "ms": 3307
+      },
+      {
+        "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
+        "ms": 1193
+      },
+      {
+        "clip": "db32ed3cb18e4525c8807d5e8f93bbde8794d79cd5a8a105f62ce7f08ab01a8b",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/variants/0": {
+    "": [
+      {
+        "clip": "22fd3684ca1a2fd31bf284b4816f31a91561895fa1f7298d046b7df6efd12706",
+        "ms": 2365
+      },
+      {
+        "clip": "71a252f1bdb85b367144c2794665baa1454d6d293dcf7401b9acbfd3a2ea63df",
+        "ms": 1249
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/variants/1": {
+    "": [
+      {
+        "clip": "22fd3684ca1a2fd31bf284b4816f31a91561895fa1f7298d046b7df6efd12706",
+        "ms": 2365
+      },
+      {
+        "clip": "71a252f1bdb85b367144c2794665baa1454d6d293dcf7401b9acbfd3a2ea63df",
+        "ms": 1249
+      }
+    ]
+  },
+  "riftlight-finale/wrong_colors/variants/2": {
+    "": [
+      {
+        "clip": "7541225f327b7306567b1536c255fe191a57e70817100957312eb98e6695cde4",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-finale/wyrm_anchor/narration": {
+    "": [
+      {
+        "clip": "e36980c89d3f7b1262a754e2c570b150f916e3ed0df26836774b04752fd6b4fe",
+        "ms": 8807
+      }
+    ]
+  },
+  "riftlight-finale/wyrm_anchor/onFailure/narration": {
+    "": [
+      {
+        "clip": "1578d19de33710f04f3115edb5a89c6024270acf0d0931a5494688970933169f",
+        "ms": 11807
+      }
+    ]
+  },
+  "riftlight-finale/wyrm_anchor/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9c952f9fe9b9d0451a626a7043226efbe153ea94e85ee8b0dd57abb17e03243b",
+        "ms": 9807
+      }
+    ]
+  },
+  "riftlight-finale/wyrm_anchor/prompt": {
+    "": [
+      {
+        "clip": "a0808eea3828c8160c9f903afd51e76acb7544736156ef53daa91ea988efbf47",
+        "ms": 3308
+      }
+    ]
+  }
+}

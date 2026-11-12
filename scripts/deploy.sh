@@ -205,9 +205,22 @@ outputs() {
 # permission, and run with plain node because a ship-mode deploy has no
 # node_modules. Not skipped with the checks: CI cannot know what this bucket
 # holds. No manifests is the ordinary state and passes at once.
+#
+# Staging asks prod. Clips are rendered and uploaded to the prod bucket as part
+# of writing narration (`voice:generate --stage prod`), and staging is where
+# every pull request deploys, so a branch's manifests are checked against the
+# bucket its clips are meant to be in: a manifest that names a clip prod does
+# not have still stops the deploy, which is the mistake this guards. Staging's
+# own bucket is not asked, so a staging page may fetch a /voice/ clip that only
+# prod holds. prod and dev ask their own site, as before.
+PROD_SITE_URL="${KAD_PROD_SITE_URL:-https://kd.readysetcloud.io}"
 voice_clips_on_site() {
-  say "Voice clips on $SITE_URL"
-  node tools/voice/verify-site.ts "$SITE_URL"
+  local site="$SITE_URL"
+  if [ "$STAGE" = "staging" ]; then
+    site="$PROD_SITE_URL"
+  fi
+  say "Voice clips on $site"
+  node tools/voice/verify-site.ts "$site"
 }
 
 # Asked before the stack changes whenever there is a site to ask: the clips

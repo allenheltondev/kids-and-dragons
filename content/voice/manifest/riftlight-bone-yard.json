@@ -1,0 +1,1910 @@
+{
+  "riftlight-bone-yard/@goal": {
+    "": [
+      {
+        "clip": "4ed0b0cf7973e4fff62b40c2060029dc856a2644c114850a18cf2768bd6e597e",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-bone-yard/@plate": {
+    "": [
+      {
+        "clip": "018f942583cd582cd70b420f5849d35fe3df12e2d9a1be6df677328edf430b7d",
+        "ms": 11507
+      }
+    ]
+  },
+  "riftlight-bone-yard/arrival/narration": {
+    "": [
+      {
+        "clip": "ce83f9fa93d334f40d43628349f79e88a090fe54d85573050b4f8a6d206a92cd",
+        "ms": 17007
+      },
+      {
+        "clip": "9c8031a12668be89ba6124fc65c87e10f42784ec5e646ece53a5d5668184c61e",
+        "ms": 528
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "12af9235f6af971e96d9aa60b6e2f639ab0220497afad8f06f4add956f140497",
+        "ms": 4107
+      },
+      {
+        "clip": "10b3d34bc00c60e273ff043c98ac39902d98d2cadea77b382b2e99b1d6aae1f4",
+        "ms": 1180
+      },
+      {
+        "clip": "2e4c61d7a7148ca3063017a4c933fb594188091038ddc13c08eeaa7faf9c0582",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-bone-yard/bigfoot_lift/narration": {
+    "": [
+      {
+        "clip": "e4a9e6bfccc056cbbf5e13f86303876e7cdc39016826eca2edf7c1b85538fd8d",
+        "ms": 6207
+      },
+      {
+        "clip": "f14e4b6b076d7552fd365fb193c2e1a640f71985282f97f1e0aa38695fe80db2",
+        "ms": 612
+      },
+      {
+        "clip": "7b7997e6dd7e88eeb48b795395be0c3516100185854b1c4df99a067de422eb6e",
+        "ms": 10507
+      }
+    ]
+  },
+  "riftlight-bone-yard/bigfoot_lift/variants/0": {
+    "": [
+      {
+        "clip": "03a6d19c3d16efdf523837b95c7e46df0fd9a9017a85a2fb94503c98e43a0830",
+        "ms": 2693
+      }
+    ]
+  },
+  "riftlight-bone-yard/bigfoot_lift/variants/1": {
+    "": [
+      {
+        "clip": "2c0b3a473b390fc9e4d4497e82d79bc0570bbcf3e970810494251b887c44e832",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/interaction/cue": {
+    "": [
+      {
+        "clip": "84174976832d780624de11a99c94279e12195bd42106ecd3f38ec531258d4cc2",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/narration": {
+    "": [
+      {
+        "clip": "868f6116362549309e4bf7789667e49ea58ca23833b163fc8d8fd82221557cf0",
+        "ms": 1750
+      },
+      {
+        "clip": "1d6f437cd5e958eb0a16e615afecb7d623ea67c192e01b30bc76aa40fd6f20a4",
+        "ms": 4707
+      },
+      {
+        "clip": "db8fa07f1881d26b4070c35d48dfbe54546e16ea4dbdcc96471abb3a3a26c322",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/onAssisted/narration": {
+    "": [
+      {
+        "clip": "5fee0e899a6daeffa0c771f220e69b07811d1c2d9e10124820a26e2b50e8f269",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/onFailure/narration": {
+    "": [
+      {
+        "clip": "363e178d40386e9f84873037740921b746b8e458c6aa93a3c4d5381cf92ea377",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-bone-yard/carvings/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cbede087a199d18e15b1d4cb06d3023c5ce9e1261e976ea11570fd63e205d6f4",
+        "ms": 2323
+      },
+      {
+        "clip": "fcff6ecff7e3dfa31367648319127ebc108fa558223dbd54248a79b22dc13fbc",
+        "ms": 481
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "ca2dde84f08f34cba17b0668c588685987152008baa1deae6491dec989c17aa9",
+        "ms": 1547
+      }
+    ]
+  },
+  "riftlight-bone-yard/catch_pip/narration": {
+    "": [
+      {
+        "clip": "ffc5bb784b3deb880df9a0a29c78e76512bda6f10e4933b6c745129299f9761f",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-bone-yard/catch_pip/onFailure/narration": {
+    "": [
+      {
+        "clip": "ddcefcf47c3443863a7462f62fc68bf4b40db581c1947d969c2d5bf23776a885",
+        "ms": 7207
+      },
+      {
+        "clip": "14930bb711ae5151142883367f73f90d275e37c96ea480fca7fe26f8b050aeea",
+        "ms": 2325
+      },
+      {
+        "clip": "f1d546e328ffdd5be4a5c419f3170d1642c487d4f8bfe54a02ce0258418425c9",
+        "ms": 2000
+      }
+    ]
+  },
+  "riftlight-bone-yard/catch_pip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "82fe330a48799bbbe6347c47f45daf83342fb34454a7b7026ddfc8e9a8cf140e",
+        "ms": 4707
+      },
+      {
+        "clip": "cac05076ad8a045ee74775dab8bd6f8cf37d5cc7b6724c15c1b28e59ba750adc",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-bone-yard/catch_pip/prompt": {
+    "": [
+      {
+        "clip": "6ed0a115451289c9c8a231764e348b71ecc877ebe7ddc7b8ba0157f15214860a",
+        "ms": 2729
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_doors/narration": {
+    "": [
+      {
+        "clip": "472543a7908d27e9094da6bc21d4aeab71d332aa70d2adbbb95a34d8605ee665",
+        "ms": 9007
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_doors/onFailure/narration": {
+    "": [
+      {
+        "clip": "384dff37cb5f6943661d5e2456f3f53cfb7e1c647ea35ff3a676dcbb8c759dc4",
+        "ms": 3327
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_doors/onSuccess/narration": {
+    "": [
+      {
+        "clip": "15bf8a667fc374cb37f9af1cea8086752a5d47b96dc76d19761d9497ea5aff17",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_doors/prompt": {
+    "": [
+      {
+        "clip": "d82e261a99c4a97103b44cd43b1d7bee736ef961cb6d095f2ea336f981e267fb",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_hum/narration": {
+    "": [
+      {
+        "clip": "75c2a7003af411f3a77ea2da705a1f4c7f585dd5707393a2d020059471ce5ac8",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_hum/onFailure/narration": {
+    "": [
+      {
+        "clip": "f44f66d927c40d8a112d63e5d47f3c59da911e2cc09cb8c80a3e2e367e6ad8a3",
+        "ms": 6727
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_hum/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0736a3bf5ab4f6b6e08162ef4026f1b2c97c251d89f3b56b0057531270585f7b",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_hum/prompt": {
+    "": [
+      {
+        "clip": "a1bd2cf92b1b81134d41bd1f94b25bccc67b2cf5eec0ec74b3b465295d95c508",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_pip/narration": {
+    "": [
+      {
+        "clip": "3f2cdc34fbdee33687ff1d0e8e33660c782e91734b0954f51eedb94c8945746c",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_pip/onFailure/narration": {
+    "": [
+      {
+        "clip": "bac839f9c4fd29ad3033b3d0edb8c51315ee3a7a2da9f0df4953a0c5930b6910",
+        "ms": 1626
+      },
+      {
+        "clip": "1440965230dbb9c072d14c09dacfab07ab904ada0df3ca05aa9bfc41d760a0b9",
+        "ms": 2237
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_pip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0ec8445940d2f0ee9a667db8b4ba140ad19e7d216b51d7c69be54b8c17b32a4e",
+        "ms": 8007
+      },
+      {
+        "clip": "c354613298742f30f3a08dfdc3f853f3ee80a13f8e692c594707df8b41446a22",
+        "ms": 1435
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_pip/prompt": {
+    "": [
+      {
+        "clip": "3a844854253720973d964b3e3351e4ef3efd48feb6652c81aa559e057547895d",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rib/narration": {
+    "": [
+      {
+        "clip": "cf932e5f9e6af40e7442ee52b95f8cf7647d76c8055691f7834c860ace75a7d3",
+        "ms": 8007
+      },
+      {
+        "clip": "68d271c83bc2153a36c9ea09a91316ee6f5dd7677a898af533a128e71aee7aa6",
+        "ms": 690
+      },
+      {
+        "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
+        "ms": 778
+      },
+      {
+        "clip": "4177669fd33010caecf4b05b8d466b12e4995baae37da3191c61611f8e2b563d",
+        "ms": 948
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rib/onFailure/narration": {
+    "": [
+      {
+        "clip": "48c6796a15ca201d2ca75c8ac96e8393642a61577e0d4a95fe8584f71d6dfdc9",
+        "ms": 12107
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rib/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e37616b4560d54a4400b95d1a1bfa0aa679a89fbfb01f412a96a86bf2b94eb42",
+        "ms": 9107
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rib/prompt": {
+    "": [
+      {
+        "clip": "f4db1a775591e21366580ff19318c298385a7f62df9f77965366d75abf4c64e3",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rim/narration": {
+    "": [
+      {
+        "clip": "281f212a86547d4b2357fe3f42465edfde86d79061993cce64012214c5933058",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rim/onFailure/narration": {
+    "": [
+      {
+        "clip": "1694eb9c4d9d3b21f9adc94eaa8787e235bd870a2122d658c08601eef4724fbc",
+        "ms": 11827
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rim/onSuccess/narration": {
+    "": [
+      {
+        "clip": "eaff872ac2f786a6c4a47eb5d297929394e1b4cd120ecb332df5abac3e2a01c4",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_rim/prompt": {
+    "": [
+      {
+        "clip": "228a01f622ed9ab77784ead84e57bd430eec8a7f3e0270ab2de1b34292baa498",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_shove/narration": {
+    "": [
+      {
+        "clip": "f98a8d6ed4e4702d40a618c3d53f6f23c79563a40cf878773dc14514120dd93a",
+        "ms": 4207
+      },
+      {
+        "clip": "3dde3b60388519dd6e1781d4b3cf42e61e65821acba40ea88b2f2ac1ba8af3b5",
+        "ms": 1056
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "5d20c2ae20cb86aa8d36f40db45f42a7ea045bc5c921e2cd5bba1d0839ca75b0",
+        "ms": 778
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_shove/onFailure/narration": {
+    "": [
+      {
+        "clip": "4e6407758e01ab13259438bceb25d7f80194d383f1a726c412c7dfdb8344e468",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_shove/onSuccess/narration": {
+    "": [
+      {
+        "clip": "19265de66d9dbae7ad78c23816be49ef82e580e96ea7fcb260da4e4cbd83a9f7",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_shove/prompt": {
+    "": [
+      {
+        "clip": "b957e69e58cef746428dd7346adc8ff16d31fe0ef33c0ded6a057b990ddb5ac6",
+        "ms": 2787
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_stair/narration": {
+    "": [
+      {
+        "clip": "aaac89b540de65a55ee7361612a143fd3813f2d2fea53a5615ba8e1afb391c85",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_stair/onFailure/narration": {
+    "": [
+      {
+        "clip": "dc49e4aeba25c464c2976a5fcbf8f6385c9ed8da5cb72eb2a82fe2a673643b3d",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_stair/onSuccess/narration": {
+    "": [
+      {
+        "clip": "689b1f8208fab4c8be0451051fd752b56bb220157d7e912e303dd485bfe04be4",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_stair/prompt": {
+    "": [
+      {
+        "clip": "d74d5fd7dd160ce85477e5582f7edece0a76efda4ef071ed06aebe249fa703ab",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_tide/narration": {
+    "": [
+      {
+        "clip": "3958f8701c26dde585f7554b24286583a6f899aacbf3539f2c20da2a711e9ab6",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_tide/onFailure/narration": {
+    "": [
+      {
+        "clip": "efc6d7bb3226ad05a507f88f47d23b93f1e81c8858fec0c8d482f8b96eaa99f7",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_tide/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a023ddd9eff53a322245edc8ea49dc3ff69b79210f37787848f06b755025a818",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_tide/prompt": {
+    "": [
+      {
+        "clip": "cfd9cb48a06ad078467ea81b4490f1bcf17a4037cd08025369be7d4f01d8f178",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/narration": {
+    "": [
+      {
+        "clip": "4d7a47306f5c57489878ff86c55ba44821ab9b4b0714280c7c6aa72df084ee1a",
+        "ms": 5107
+      },
+      {
+        "clip": "ef219f2acca661a92c577ed5093612eb3fd34661d2d8c13a00f721634ceb2846",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/onFailure/narration": {
+    "": [
+      {
+        "clip": "47305544e13b9b97336a4a740fe622578710004df2ab5e7da4edbdedb4b6eda6",
+        "ms": 8307
+      },
+      {
+        "clip": "454c44bced3422f832929a5a1f49384e39b67c32f6b098c77689de96ce43f372",
+        "ms": 2197
+      },
+      {
+        "clip": "3c491e1571d062c0a54bba7332e4ff8b97a55344dc2dc6b16f79011e2d78f521",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7df7d537e0612c50e7b061f4c3b46740e065718e83e04a026e00f520d509899c",
+        "ms": 9207
+      },
+      {
+        "clip": "8b1d3a39fb33e0ab270077e2cfa17dec988a444a521bec3d595de55614e0e614",
+        "ms": 1498
+      },
+      {
+        "clip": "03eef72327917173a19946de5aeb657be78561a3f7db1373fcd0af88fb3c8011",
+        "ms": 1327
+      }
+    ]
+  },
+  "riftlight-bone-yard/check_wade/prompt": {
+    "": [
+      {
+        "clip": "ff2160f123c30878b0747fd7c9661644e94eeefdd3280e94fb8cf61ae62a505f",
+        "ms": 2328
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/narration": {
+    "": [
+      {
+        "clip": "82aa7ce4da44c48e78f5fc809cec6146f61bc093f26bd76cfb5cc6e93a540db7",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/0": {
+    "": [
+      {
+        "clip": "7abdf344763259e212abf27f4b944e46ef6be6895f5a6e2c23a4f0c35658d95f",
+        "ms": 10807
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/1": {
+    "": [
+      {
+        "clip": "402ede69913831d2028cd5d9b107b0f37fad0a42ffd6059c685a61d98a72d296",
+        "ms": 5507
+      },
+      {
+        "clip": "7b50da01867a5f5796aa356e3d1aced97db3ad781cff13897481ee0eb9c025a7",
+        "ms": 928
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "12da6233aa6a59fde6b505d826d00849fe08cdb6e737f9fa7c8af08407831c36",
+        "ms": 1896
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/2": {
+    "": [
+      {
+        "clip": "b5ef22a697f4219cb4c9d87b6bd4a9a5bb2a4368b2ed277014eb331e8443a999",
+        "ms": 2741
+      },
+      {
+        "clip": "ecbe2a4e19b4cc55c40d5f3926c2a51b9b7be57c44f6e4633f3535201e31c923",
+        "ms": 729
+      },
+      {
+        "clip": "a466431db651b8bfb34a6535e59a5175eee0d07809ced300599b5d73200015db",
+        "ms": 978
+      },
+      {
+        "clip": "6bc66affe5c19adb3036dc9d0b9bd2c7d61d2dc282d01b24915b2724bd35a9da",
+        "ms": 2984
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_after/variants/3": {
+    "": [
+      {
+        "clip": "c3e49d815d6aedf6cfdab777ddb49718251a654a732960f7800000c2dc106349",
+        "ms": 5507
+      },
+      {
+        "clip": "55edd95e811df680ca6d3355df998fcc8207a51737f64b1202aefcf88ec0d4cc",
+        "ms": 2050
+      },
+      {
+        "clip": "d1c341b5aef734d616cececf0dbc743516d4bb283a977c1d88f45f51dea8ba20",
+        "ms": 1451
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/narration": {
+    "": [
+      {
+        "clip": "60cee483af6609acf92ab5ea463b2b4b3c855f10189255570d8ef511d6e01402",
+        "ms": 14307
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/variants/0": {
+    "": [
+      {
+        "clip": "b4d2b95b61d22ac966b95254c741dadf3ae4156fc800cbee92473a00e9835d87",
+        "ms": 4507
+      },
+      {
+        "clip": "99bb6d9b60464711329c1f1ad1ccb75e5e5c87609936eefabfacc2e12080e4e1",
+        "ms": 2056
+      },
+      {
+        "clip": "c5dd891d39f92c6d458ddcaf266830ef9ed2f69791a509311e4f9e67cbb677d6",
+        "ms": 1290
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/variants/1": {
+    "": [
+      {
+        "clip": "057b51ae4a962fc20400d7d49da579865c9829e7b8d20d96878a20318c52c524",
+        "ms": 2669
+      },
+      {
+        "clip": "8665022be5ee17509fcfead5f1f29207da9538e1981f25f127086dfb6ddf66d5",
+        "ms": 2408
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_grown/variants/2": {
+    "": [
+      {
+        "clip": "61b69b53d33f29d8ae5e10fa696ff9126c7525eb7c0f3b043f28ce60038b8eb3",
+        "ms": 2089
+      },
+      {
+        "clip": "e4b0a394f8a285207faae421f935dc75197379c376cf72d6c9c5ee876e059483",
+        "ms": 2939
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/narration": {
+    "": [
+      {
+        "clip": "96cc5e72c2a2254f7032f08a82b7bc3ec83903edc83503f531bab10241add998",
+        "ms": 13507
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/variants/0": {
+    "": [
+      {
+        "clip": "b4d2b95b61d22ac966b95254c741dadf3ae4156fc800cbee92473a00e9835d87",
+        "ms": 4507
+      },
+      {
+        "clip": "99bb6d9b60464711329c1f1ad1ccb75e5e5c87609936eefabfacc2e12080e4e1",
+        "ms": 2056
+      },
+      {
+        "clip": "c5dd891d39f92c6d458ddcaf266830ef9ed2f69791a509311e4f9e67cbb677d6",
+        "ms": 1290
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/variants/1": {
+    "": [
+      {
+        "clip": "057b51ae4a962fc20400d7d49da579865c9829e7b8d20d96878a20318c52c524",
+        "ms": 2669
+      },
+      {
+        "clip": "8665022be5ee17509fcfead5f1f29207da9538e1981f25f127086dfb6ddf66d5",
+        "ms": 2408
+      }
+    ]
+  },
+  "riftlight-bone-yard/court_quick/variants/2": {
+    "": [
+      {
+        "clip": "61b69b53d33f29d8ae5e10fa696ff9126c7525eb7c0f3b043f28ce60038b8eb3",
+        "ms": 2089
+      },
+      {
+        "clip": "e4b0a394f8a285207faae421f935dc75197379c376cf72d6c9c5ee876e059483",
+        "ms": 2939
+      }
+    ]
+  },
+  "riftlight-bone-yard/cracked/narration": {
+    "": [
+      {
+        "clip": "958aec83f317676366f909457eb05d6e412763768d1f20ba7f553eefd70324af",
+        "ms": 4707
+      },
+      {
+        "clip": "966992e34969b6787d1c32038690dea6c3d7ef49688ca81687d53662a76097f8",
+        "ms": 1802
+      },
+      {
+        "clip": "f61aecada076b95f5dbd56e796a6b99e66d67d5f19da24a03f29ab70d2d15d2b",
+        "ms": 4407
+      },
+      {
+        "clip": "c678e29382b56ceac47aed898f858cb79b97546ec18897ba1d665f6d55f6e79e",
+        "ms": 915
+      },
+      {
+        "clip": "8b6182047858281acf7b58f89b0150dabb107309f8571a86391383aa8b2a3ed5",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-bone-yard/cracked/variants/0": {
+    "": [
+      {
+        "clip": "03a6d19c3d16efdf523837b95c7e46df0fd9a9017a85a2fb94503c98e43a0830",
+        "ms": 2693
+      }
+    ]
+  },
+  "riftlight-bone-yard/cracked/variants/1": {
+    "": [
+      {
+        "clip": "2c0b3a473b390fc9e4d4497e82d79bc0570bbcf3e970810494251b887c44e832",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-bone-yard/crawler_tail/narration": {
+    "": [
+      {
+        "clip": "85a138c36388a99a57846ac27dbe31ebdc9c828e9f97a80bc660625f506af28a",
+        "ms": 12807
+      },
+      {
+        "clip": "0a21674e19a0df03cf6494eac19bca5c45ac7a185aaec7ee4fefd87620fbf3c0",
+        "ms": 2836
+      },
+      {
+        "clip": "a6a02217999a0e7286884d93cfd57b734a801e0f6463d0355cf34135b308b51d",
+        "ms": 775
+      },
+      {
+        "clip": "51617db0e322a5125aa3631afc125860ada3591d4d4dd26a7934d36ce4082fe0",
+        "ms": 976
+      }
+    ]
+  },
+  "riftlight-bone-yard/cut_off/narration": {
+    "": [
+      {
+        "clip": "8bcc19453e6f3fe6c0d0c81470d21f4060bb82b802de09cc9f3005d223e20f71",
+        "ms": 878
+      },
+      {
+        "clip": "8d66ebaa387bfe9475d4656f6ba85b8dd70b322e236038a09e001d9b9adb4787",
+        "ms": 10707
+      },
+      {
+        "clip": "d8785a02ea6047002f007cba75c6a09a0657a8c6cdd2aee4858ff2552a2e4b5f",
+        "ms": 3307
+      },
+      {
+        "clip": "1dfecab0f7ae0f8438ac0efe9a907dbe8217f5bc4893f89588942574146cae71",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-bone-yard/dam/narration": {
+    "": [
+      {
+        "clip": "0172cf7755d0c6d5ef0be0e953a1fd11c1ae5fff70afa4f33cc65f5053eee2e9",
+        "ms": 15507
+      },
+      {
+        "clip": "1df6c40c5205e513af9d4c9ebd7f7ddaf7101f398e038183f2665db654a152a1",
+        "ms": 1256
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "1e985b7e247f81bd3b831da3e28a3821819e7ecd51b8708a044e4a45e4b07a0a",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-bone-yard/dam/variants/0": {
+    "": [
+      {
+        "clip": "3bfd94d3ab4373e03d2562eb7af04a26396d9d460841296a07cad5f4a362002c",
+        "ms": 2369
+      },
+      {
+        "clip": "3694c6e092bee159b36ce50d59a2fd820eb6630cd96c64b03f748af2344fad02",
+        "ms": 2311
+      }
+    ]
+  },
+  "riftlight-bone-yard/dam/variants/1": {
+    "": [
+      {
+        "clip": "4f77e83cb6d955fb97b18bfc64ad3a0150f8203c6fcf36586940fccb06ba11f2",
+        "ms": 1348
+      },
+      {
+        "clip": "887f130329193d5eca98385cb6b337c7feffc3c7cd14757110cc22415c232b50",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-bone-yard/doorway_nest/narration": {
+    "": [
+      {
+        "clip": "4cf2f76c5580d5b6d3a15f3e0bb3adeaca33fc3566e6b237e47313d65d7cbcd6",
+        "ms": 13807
+      },
+      {
+        "clip": "97aa5d8d805ac24371356068ec15cb61850b21ad67fc7fcfb71c410317839f71",
+        "ms": 970
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      }
+    ]
+  },
+  "riftlight-bone-yard/doorway_step/narration": {
+    "": [
+      {
+        "clip": "0185634d155944c090811b8728bbe8c366af141184fcb4768ff35202f229d2ed",
+        "ms": 12107
+      },
+      {
+        "clip": "e0dbabb1beb8ed1072fa3b14101594e3959e011eaefa29872f2586ba2d11e1ea",
+        "ms": 1843
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      }
+    ]
+  },
+  "riftlight-bone-yard/drawing/narration": {
+    "": [
+      {
+        "clip": "c93119f46b2e9fa885ee1864c19771dd1474bf53db0a05234823a3fbcbf27a5a",
+        "ms": 2855
+      },
+      {
+        "clip": "f38975e2b2997ef47a62fa0c963ca55cd632b4bbf35dd524769cea3972dea209",
+        "ms": 3307
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "78ebec62ad1de9e68450a045e91927ada653701684bdd9b31baf5d66aaf51c79",
+        "ms": 1113
+      },
+      {
+        "clip": "c666847f409d0ca5641db72f69a73f29536f3d5606b02a16ed43af99c7d69b8d",
+        "ms": 3507
+      },
+      {
+        "clip": "ba42c17c907cae0ac4cea2b864711debcba9171545e51dfa0aa35b3c230d7525",
+        "ms": 1985
+      }
+    ]
+  },
+  "riftlight-bone-yard/drawing/variants/0": {
+    "": [
+      {
+        "clip": "e982618073749de2e3e72db323d4bc640176a14a47651c8ec06c1e5be7b3962e",
+        "ms": 7907
+      },
+      {
+        "clip": "f38975e2b2997ef47a62fa0c963ca55cd632b4bbf35dd524769cea3972dea209",
+        "ms": 3307
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "85e897ad91c1b5afb95c86ae7222c76c98cd8bf075b15e72f731d4261a96d6c0",
+        "ms": 1797
+      },
+      {
+        "clip": "dacd7046c090222f8bcf815f598ba258e4e6bc1e64299213e280c4690c701c07",
+        "ms": 3607
+      },
+      {
+        "clip": "e8158175c19f5a21e7edf09560a91fece999c0ce09ab963786f8c5c84c03436f",
+        "ms": 2396
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/narration": {
+    "": [
+      {
+        "clip": "de7ce60a575ab621ac8edf43e3f54498754c8e6d7db98e92ff98bebdeb6d2223",
+        "ms": 3307
+      },
+      {
+        "clip": "1a38aff3c99842173e15e6e18487ba5ba47e8fbdb7d55dcdd86a6fd97f048c92",
+        "ms": 4307
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "4ec1043f7db27d37630d8a3bcae0862a503081a8a8a137779059982e2c9d8105",
+        "ms": 1664
+      },
+      {
+        "clip": "6ff0904f0b523eefa62d3ed393f2358a87013e5b06d8be6cb0efe175f32400f1",
+        "ms": 13107
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/0": {
+    "": [
+      {
+        "clip": "d83d6c3d9fa8d909b050284291a05fdef457efc95fec6dd2a54b56a54d9dfce2",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/1": {
+    "": [
+      {
+        "clip": "463504b34b6cf7ab963f258414341c429f9d7cd969428d13847f3350464f61c4",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/2": {
+    "": [
+      {
+        "clip": "a34cf3647a16c445c9dba1b55e889d0abca1ab7d6baa0925c0796f2420c12506",
+        "ms": 4107
+      },
+      {
+        "clip": "632f2ee55efe4c6b718017fa401e18c9d2b00430e10e5267ea52fe63f9ea0158",
+        "ms": 1326
+      },
+      {
+        "clip": "fdecda78e437da271666fbab183e9c83aabe131acd379da4c02ef788e2ad9b25",
+        "ms": 1040
+      },
+      {
+        "clip": "4a67f0af28633f2a66bed34639660dc5ed6cbf5f10d0ea6b0f457100ca3cb80f",
+        "ms": 2468
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/3": {
+    "": [
+      {
+        "clip": "5402cdc8ce780250e20da855849cc16e9315bea302ab0e397931dc8d5f8ab9fc",
+        "ms": 7308
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/4": {
+    "": [
+      {
+        "clip": "2b9a7ab86447570d446fa0ee27e75272936c263d8e976f8d0a43df03cd4567e1",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/5": {
+    "": [
+      {
+        "clip": "8610dc015995fa92e16f64253a07e38b77d42113bfcc832c665b11136d9ddd71",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/6": {
+    "": [
+      {
+        "clip": "1641bc376e71c189e339a5bc843f392e685df16f06a0fd7f5d247c3e6c109928",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/7": {
+    "": [
+      {
+        "clip": "3995f0d07bc0f4e4cd97be9a2981a2706e769070879c07eceddae42249dfb181",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-bone-yard/ending/variants/8": {
+    "": [
+      {
+        "clip": "3995f0d07bc0f4e4cd97be9a2981a2706e769070879c07eceddae42249dfb181",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-bone-yard/explore/narration": {
+    "": [
+      {
+        "clip": "ddc54eaec89f51c4b30bf5c5c55014d3a53c1541bc31b5ab0aedfe1de7b06be3",
+        "ms": 3307
+      },
+      {
+        "clip": "08d3593afddee357d2abfcb666de339cb578f57bd21e468ac055879a953b87fb",
+        "ms": 1966
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "b536b1b9e0a0a3dbbe6969ceef4676f70fab0a88904402cf1c927c18f79b6682",
+        "ms": 2172
+      },
+      {
+        "clip": "823b64ed783f5cd3024e17628199173d8f52cfe9e44db6feee19d1ffef5da47d",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-bone-yard/fight_grown/narration": {
+    "": [
+      {
+        "clip": "e63da658af1c7649ae605d14740bfb520442fbb5da4ff1d18001c7e5130cfd12",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-bone-yard/fight_grown_pip/narration": {
+    "": [
+      {
+        "clip": "4ceb413ce481379692e71b7db80793b7dcc36f7bcd52cc7cee9d1349700fe945",
+        "ms": 13507
+      }
+    ]
+  },
+  "riftlight-bone-yard/fight_quick/narration": {
+    "": [
+      {
+        "clip": "7876a22ff209395cedb03199cf31f414c33470608f04ecd3358c3c3f97bd227c",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-bone-yard/fight_quick_pip/narration": {
+    "": [
+      {
+        "clip": "2d334cbe259cf3eed701a5d709c335f042eebb3b66e65c8dfa9f6a8bda57546b",
+        "ms": 13507
+      }
+    ]
+  },
+  "riftlight-bone-yard/float_out/narration": {
+    "": [
+      {
+        "clip": "cb34c9789456a09472f6f5c04d26e4c3be1aa3d847059742695dcaaa4985fe34",
+        "ms": 9507
+      },
+      {
+        "clip": "9c5958c3312b5924596780955d37b7544ef956511d1d20536b189d9ce95c8cdd",
+        "ms": 649
+      },
+      {
+        "clip": "23e5619ff588aff612254f5453e3109ad34996beaaac71a4e77856b2cd6779b4",
+        "ms": 2162
+      },
+      {
+        "clip": "d9086cceb99b0dd08b6437288caf6e1c010a6637af323766cfe1ae36237adc13",
+        "ms": 2494
+      }
+    ]
+  },
+  "riftlight-bone-yard/fly_over/narration": {
+    "": [
+      {
+        "clip": "f4d597a3b24b27f62e2ad550f1159c33298ff0e0b753bf24cb5f71d4dc66eb50",
+        "ms": 13107
+      },
+      {
+        "clip": "0ce50f30fe3bf1577c5a00755e6333bf4fa65a72c805e97045a952b38dd1294a",
+        "ms": 866
+      },
+      {
+        "clip": "891d35c0e07315187e8aa1ca36bf54c4b1cc27dc0b1de6f244eea297c95c7d91",
+        "ms": 1851
+      }
+    ]
+  },
+  "riftlight-bone-yard/hurry_out/narration": {
+    "": [
+      {
+        "clip": "937f00eaea1e8c8676fdc159a47f932e3af99ba533419051281fc3d12c3694bf",
+        "ms": 7507
+      }
+    ]
+  },
+  "riftlight-bone-yard/hurry_out/onFailure/narration": {
+    "": [
+      {
+        "clip": "43a0ac9d52ecc3e319478c084f33825ff9c0215f2052b10dc4f6b9617e7edc9e",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-bone-yard/hurry_out/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2d6efc82947871da68370fdfb22fb904b54a222d3b8f0f5a42903d64a9d338f9",
+        "ms": 5608
+      }
+    ]
+  },
+  "riftlight-bone-yard/hurry_out/prompt": {
+    "": [
+      {
+        "clip": "21102e3e7e7640cf586e63d93b16b0bf0a8bb9392baf1671a18c3162fde183ba",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-bone-yard/lean/narration": {
+    "": [
+      {
+        "clip": "82ab38baca83d5cc02320ef5cab6d3e248ccc68d03f27e7a4ae47553b9b276a6",
+        "ms": 17707
+      },
+      {
+        "clip": "4c4f38cfa829074cce33fd8578c72eb473f097237ec7b1583891b3efa3348a0a",
+        "ms": 1914
+      },
+      {
+        "clip": "b8a358379b84749bee58cfd40b373e5a3412041ac388a9c55e605e2d69f30111",
+        "ms": 1365
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "c7375aa18a5c8a36b5e7b899944f0a958e83a752a348ee05900fe05385262486",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-bone-yard/lullaby/narration": {
+    "": [
+      {
+        "clip": "e63d60d06ec42caf487e5673d73795bb8370e36b61d51cd90bba85387c5f493a",
+        "ms": 11707
+      },
+      {
+        "clip": "af59e5267bc0ea1f177046a5fc9e8d56b1a8e4ab39de478bc099a2fcdafbdc26",
+        "ms": 2064
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      }
+    ]
+  },
+  "riftlight-bone-yard/manticore_talk/narration": {
+    "": [
+      {
+        "clip": "6ef2ea6e094444f069aeed6c1bff5085afb95883901cd04ce834b3b68dc2dc8c",
+        "ms": 6207
+      },
+      {
+        "clip": "f07928168d3336214ed759383900cf804901379ec1eaab7b0d0f787e2f8cdbfc",
+        "ms": 1831
+      },
+      {
+        "clip": "18afd5d77f4ebc3fa1ead3025bea06ffe13b280c1b72f29d40c197e933247a21",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-bone-yard/nudged/narration": {
+    "": [
+      {
+        "clip": "e380e267e35789c5671624b5627a92130ac09f7acac2d438b780578cc666dd04",
+        "ms": 9707
+      },
+      {
+        "clip": "ae4f0ac3d64c5f2a47774ad007b4f39388a136dc6e6d1d99234b37812b23585b",
+        "ms": 1428
+      },
+      {
+        "clip": "1afa96bccfbed9960903f9b685a156677b2d473d499bf1d58b3308399a606a6e",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-bone-yard/nudged_slow/narration": {
+    "": [
+      {
+        "clip": "3835ae041dc2b54803523f7e6e87c58d1dd9bbe4b664bcaf25835e4f2ecdc278",
+        "ms": 4307
+      },
+      {
+        "clip": "8adfb22bdd4e6c6e6e1ce086fe2cecc685e382c7208a8b44ad3e8245c399ab57",
+        "ms": 1241
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "15b1c10d9d50644122124cabca86fc84d726a4e01b4b7d34f9eebd7594b05389",
+        "ms": 1729
+      },
+      {
+        "clip": "a76ac958565fa576dbbb1165240b5692e3e0a3f1eddf34e5b2eeddc644bb91a0",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_amazing/narration": {
+    "": [
+      {
+        "clip": "05b10aa9b222609548e39c1dfbb03eab95ffe5d1614f92bf8981d263cb4753e7",
+        "ms": 7107
+      },
+      {
+        "clip": "d002be80ce4c1aa84d0527f84efc899cb1ccf8af5961a07ca922d3aa35f163f3",
+        "ms": 1276
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "2914f2f7d5c041d9e39a37fd0b270cfda5e0869d50711ed6c0a9885184f5c118",
+        "ms": 800
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_chip/narration": {
+    "": [
+      {
+        "clip": "d399d6f63d82386e7c7c6e87dbb39407b63bb198e2bcf6f9fd85ded5165d9a34",
+        "ms": 9307
+      },
+      {
+        "clip": "1ce3edd9712af4d09f189173fe0d92794ef6c9ed0f3138b66534da699c563e23",
+        "ms": 2645
+      },
+      {
+        "clip": "aea880337f6e70c2505058b83935d561d5d43b41b9aa3f0d29485d170a630646",
+        "ms": 1880
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      },
+      {
+        "clip": "376acb47bbd4e63972fcd7e06ac55942841c8d830fbd1bb9a6e597c6b7ee1586",
+        "ms": 4407
+      },
+      {
+        "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
+        "ms": 884
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_draws/narration": {
+    "": [
+      {
+        "clip": "364eed1ca1ed20d9fbf186e28690acdba3877db46d51c2a72899cec2c7b4572c",
+        "ms": 4407
+      },
+      {
+        "clip": "940e77fd79eb5378baf097c8c6a21c1840addba9155883ef15fd1360c9bb4f89",
+        "ms": 1505
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "a59d794d899ff7a3df766c6397fb4022d856678d1ca7d13a02d3d6df6c19cd52",
+        "ms": 3207
+      },
+      {
+        "clip": "114600a651ae07782ded30b629163b8496ad77b4843eb1c3a8ea110825f80152",
+        "ms": 1816
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_home/narration": {
+    "": [
+      {
+        "clip": "049d37b519483796b15ddefe45cd0ec822c883da3867574a917729c590907f98",
+        "ms": 10107
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_idea/narration": {
+    "": [
+      {
+        "clip": "3a8911d96fdfdfa99a74d6986c3500e06210aa69cff7c5bc90d9c3f30ab6a0c1",
+        "ms": 1585
+      },
+      {
+        "clip": "6c71056e58f7d73b4b19d5b9a21aff32ce6acb63e49b56a93c988a88470cb47c",
+        "ms": 7607
+      },
+      {
+        "clip": "46d2073048c250c72a73c1a4988a39cbace3480f78e20c24c9566e90f7ca1825",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-bone-yard/pip_keeps/narration": {
+    "": [
+      {
+        "clip": "9e51824c46a92ca24fc9e4c5953cfa1a6f15aba8f1427de685173a577460eec8",
+        "ms": 12207
+      }
+    ]
+  },
+  "riftlight-bone-yard/puddle_court/narration": {
+    "": [
+      {
+        "clip": "13f8e75f8e152b1471e128f285419098a7edbef58a0190afe755963994fb9a40",
+        "ms": 7907
+      },
+      {
+        "clip": "61a8a2209916f361f5582d64155b069bd63ce3abdff67c0da889e0037bd1bdcc",
+        "ms": 1145
+      },
+      {
+        "clip": "2da5e0eaed6fdbbd32777d026090d49dd4becebef563a433c55c9b4657721a3c",
+        "ms": 1538
+      },
+      {
+        "clip": "8349de92d98371b594306ae95d731ad770537ee7a4986129edd711145f37294a",
+        "ms": 1595
+      }
+    ]
+  },
+  "riftlight-bone-yard/puddle_court/variants/0": {
+    "": [
+      {
+        "clip": "8d1078ee4df2f2c28809308eca9e06549331f56740919f3f83465a0724b01083",
+        "ms": 10607
+      },
+      {
+        "clip": "61a8a2209916f361f5582d64155b069bd63ce3abdff67c0da889e0037bd1bdcc",
+        "ms": 1145
+      },
+      {
+        "clip": "2da5e0eaed6fdbbd32777d026090d49dd4becebef563a433c55c9b4657721a3c",
+        "ms": 1538
+      },
+      {
+        "clip": "8349de92d98371b594306ae95d731ad770537ee7a4986129edd711145f37294a",
+        "ms": 1595
+      }
+    ]
+  },
+  "riftlight-bone-yard/puddle_court/variants/1": {
+    "": [
+      {
+        "clip": "c0ba0305489d3b6ee5157d3977a073f58d09982b86828bbbdebdbe8088d2174a",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-bone-yard/rest/narration": {
+    "": [
+      {
+        "clip": "30deac2f3b03f11ab5ff883aed341792635923643f42a141a1ae26f4130e5d88",
+        "ms": 4107
+      },
+      {
+        "clip": "7e116b5fc8ebc372083501dcf4323752007cb4bad8b291253c621024c694a7eb",
+        "ms": 1339
+      },
+      {
+        "clip": "5ab32411419e644e5de5299fbc31f93df637dad10b74cabb2aa383accddf6bc0",
+        "ms": 8807
+      },
+      {
+        "clip": "0fe8af3b49d2979d10f389feeb506a75c980f6de9952a92a30489031ccb1936b",
+        "ms": 2376
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "1f3c89f21f8c85716215fa5943b378043fb8098ed9e83688ee0eae24f02504ba",
+        "ms": 2240
+      }
+    ]
+  },
+  "riftlight-bone-yard/rest/variants/0": {
+    "": [
+      {
+        "clip": "8b05ca1ef3f6fd6b06859cfa76791a83f5004ab323d4bd157526e85cd9a103cb",
+        "ms": 12607
+      },
+      {
+        "clip": "0fe8af3b49d2979d10f389feeb506a75c980f6de9952a92a30489031ccb1936b",
+        "ms": 2376
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "1f3c89f21f8c85716215fa5943b378043fb8098ed9e83688ee0eae24f02504ba",
+        "ms": 2240
+      }
+    ]
+  },
+  "riftlight-bone-yard/ruins_edge/narration": {
+    "": [
+      {
+        "clip": "854ab827e23534a9250f546caae9a885eb1658c1cce2ca2aa6ed91d48d6c6357",
+        "ms": 16907
+      },
+      {
+        "clip": "937aab4fd47e4bac33fc746faa3ff0cb88d353837e4d470841563dba1500bd4c",
+        "ms": 808
+      },
+      {
+        "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
+        "ms": 765
+      },
+      {
+        "clip": "79f58c1bc39fd0989483c8c7791ffa7fc108f32bb4550926814e4eec6eeed662",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-bone-yard/ruins_gate/narration": {
+    "": [
+      {
+        "clip": "2a94d552b0d6bcd0637b36188480825cb2a3b686c1a36c71ef2fc4b161656d44",
+        "ms": 14007
+      },
+      {
+        "clip": "95bb46a46d8759b0e3e7dbea46ab11cc45509e61a8e845d895414c7ae52ffca4",
+        "ms": 1585
+      },
+      {
+        "clip": "669c49fd916a7ab3a6449aa96bffc7b42708a1ab52c5886281bf0748c2a57dee",
+        "ms": 8007
+      },
+      {
+        "clip": "fd8f77c651bf74d1ab3cf9cb4f8b0d17931cc22c1e7e0e0aade93fb28b0550e5",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-bone-yard/rule/narration": {
+    "": [
+      {
+        "clip": "1daf77f80b9ef442b84406eebef385aaa0df386bf55aa2bec52d45f937112c94",
+        "ms": 7007
+      },
+      {
+        "clip": "1d73d53dfc227ad20bd699d5b54599599a55fb9b7546164f9773e766a7bb89bc",
+        "ms": 1086
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "32525948cda18571331bd27949e756028ef9c217e602eaed0c583d0f72a03daf",
+        "ms": 7707
+      },
+      {
+        "clip": "b686b8c1d329eb5c7645de94f9f3af9890b84f1cde7e31a4e5ce9775f404b080",
+        "ms": 3707
+      },
+      {
+        "clip": "2a92133152704dd5f2149450471c97cc18858ab4f750925f6c2a295d5714045c",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-bone-yard/same_stone/narration": {
+    "": [
+      {
+        "clip": "cd4730d6f67e25767f6a9a2f6195e47fb866d2ce83cc5a07a49bafe6646b85df",
+        "ms": 22107
+      },
+      {
+        "clip": "e1c52c460737acfdec490218c306162b922fa49cf5e808d58b6c7f21a1c2c90c",
+        "ms": 1386
+      },
+      {
+        "clip": "97474b94cd9fca3dbfc535abea2c928aa9ed41d355a507d8e3bfb3c5eb2552d4",
+        "ms": 1175
+      }
+    ]
+  },
+  "riftlight-bone-yard/shoved/narration": {
+    "": [
+      {
+        "clip": "54c9f0310b5bbed2e0d993b664d1dc85b299921262dbb39f78aee785f5e08809",
+        "ms": 5007
+      },
+      {
+        "clip": "f14e4b6b076d7552fd365fb193c2e1a640f71985282f97f1e0aa38695fe80db2",
+        "ms": 612
+      },
+      {
+        "clip": "354fbeb1e6c7e733d21f19f5db29ae53918185c11190718dcdab34427b1d5061",
+        "ms": 13107
+      }
+    ]
+  },
+  "riftlight-bone-yard/shoved/variants/0": {
+    "": [
+      {
+        "clip": "03a6d19c3d16efdf523837b95c7e46df0fd9a9017a85a2fb94503c98e43a0830",
+        "ms": 2693
+      }
+    ]
+  },
+  "riftlight-bone-yard/shoved/variants/1": {
+    "": [
+      {
+        "clip": "2c0b3a473b390fc9e4d4497e82d79bc0570bbcf3e970810494251b887c44e832",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-bone-yard/skull/narration": {
+    "": [
+      {
+        "clip": "bd2c5833b1c828d59b6364c18ee7b1c0e62f4c90e9cdf5d4025c9a2822dc9753",
+        "ms": 15007
+      },
+      {
+        "clip": "dc1f1ee5530d0e0f435e1bc01e0637bdc94c21eb6bb8c4d7d7b4a0ca787a82c6",
+        "ms": 934
+      },
+      {
+        "clip": "9dabbe25da07682d24d384cda947a074608cad5ccc87a0e938508ef5474d15bd",
+        "ms": 1589
+      },
+      {
+        "clip": "7b710ff00ead5f16877a2a29d5b3720ed8624f36ecaaa3baaaed442f096e684e",
+        "ms": 2712
+      }
+    ]
+  },
+  "riftlight-bone-yard/sneak/interaction/cue": {
+    "": [
+      {
+        "clip": "f81293791dbfa0d7c5ca67ab16911a97cc786c56a1b6b254bf094a43ae976c3f",
+        "ms": 2192
+      }
+    ]
+  },
+  "riftlight-bone-yard/sneak/narration": {
+    "": [
+      {
+        "clip": "7b1abbde2b2fb5c91b477a15d4a91b3ea8f6ce70b5d34d8d07e09286c0c74e0a",
+        "ms": 11007
+      }
+    ]
+  },
+  "riftlight-bone-yard/sneak/onAssisted/narration": {
+    "": [
+      {
+        "clip": "d571bb80ca65e8ae657c7890c57de938b5760bb0bcfcc3f190c9b4b3d8f3352c",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-bone-yard/sneak/onFailure/narration": {
+    "": [
+      {
+        "clip": "e16f8d88eb8ae44c0042ddf6c2c73584e4b7ced4a752fd8b0f7030fa8a42aec4",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-bone-yard/sneak/onSuccess/narration": {
+    "": [
+      {
+        "clip": "269445adcd66794e0e08e0ec2edc06417eb2bc46317aed858479dd7211a004f3",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-bone-yard/stair_top/narration": {
+    "": [
+      {
+        "clip": "178395b18853b92607b3e527e58913b8cda4947d3666ab8fd31ade96a6938958",
+        "ms": 14207
+      },
+      {
+        "clip": "e4ab644d03c87ac76b5dd94d39113d222a276fba5e1f0456fbe3351fd775eee0",
+        "ms": 1107
+      },
+      {
+        "clip": "de3b57c51e112f64d73fdffd30e5b6d7f8a9d9224a9121a1534cbb03fa171b1b",
+        "ms": 810
+      },
+      {
+        "clip": "7d071b4e1df605c29335688ff4c4c8d89c7259359adcb60e316396ff2c26e337",
+        "ms": 1171
+      }
+    ]
+  },
+  "riftlight-bone-yard/swarmed/narration": {
+    "": [
+      {
+        "clip": "dd37cb7fd58114d1e6f54ab85d06443dd8b8b399ac65bbfedaac1c4c41ef09fa",
+        "ms": 4207
+      },
+      {
+        "clip": "934946e389f7fb521d4e3e069aa97643caa79a014e2cd8584b7a2fe6ac10ae43",
+        "ms": 1443
+      },
+      {
+        "clip": "4dda84151ebc3a6ff4606dcdc87c37aa4fe5758158fcf99e0bf67a80f577a27d",
+        "ms": 12507
+      }
+    ]
+  },
+  "riftlight-bone-yard/swarmed/variants/0": {
+    "": [
+      {
+        "clip": "f6e5dbdcc7befa34aeb70457d79724e33387261e8b60da04c16490276e348dc8",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-bone-yard/swarmed/variants/1": {
+    "": [
+      {
+        "clip": "0ab3ca7cbaf2fd6b0c2e570556798cb0b2394d70dbb9db1c507db17144ccd663",
+        "ms": 2685
+      }
+    ]
+  },
+  "riftlight-bone-yard/tide_turns/narration": {
+    "": [
+      {
+        "clip": "2cbad3a75ad2c95b9ef5aa7296506f6ec734bf072b8eb5a142ac77574867798b",
+        "ms": 12108
+      },
+      {
+        "clip": "ab854a16a99765f2fd3f090ec760c375e88e87f44bfa09f5676118c5d7ff16c2",
+        "ms": 1583
+      }
+    ]
+  },
+  "riftlight-bone-yard/tide_turns/variants/0": {
+    "": [
+      {
+        "clip": "3e605542c9cd42f29cc1e1951d5ca9df0bc5e1d1c87bbee620e6241abac5bcce",
+        "ms": 10807
+      },
+      {
+        "clip": "cf7072c9518e825285db333c525e98d6d131f92245caad4334ce50af0a441375",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-bone-yard/tide_turns/variants/1": {
+    "": [
+      {
+        "clip": "5909679a44d4eb0f7b033bcb87ee51849f65e38f2777f0e942cc88c6c3cb4a7d",
+        "ms": 3807
+      },
+      {
+        "clip": "249806796d3a66dfbf446637b034f26a78c1013e6e8d8b988d96882f290e4034",
+        "ms": 1801
+      },
+      {
+        "clip": "8caebc022c33c8616a7d4639155e7451712a5b3d55a1e8d79a377304800a66d9",
+        "ms": 1828
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_pip/narration": {
+    "": [
+      {
+        "clip": "ddbae2962adf483905c345e1c7c17e82374bffaa8a38881f5eba0ec3227f489f",
+        "ms": 3000
+      },
+      {
+        "clip": "bf917676f51b7e9a4deb2de6afd0cba7c1a7ba4de9841e118a4a828b3e6cba6f",
+        "ms": 2671
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "b3b25fdd10263fe0d628dab418fda4390e4b84af6601f90407714f47dc89b979",
+        "ms": 2183
+      },
+      {
+        "clip": "adab80eedb201a7cba7169ebca263ed5572f9521f457cdf3ef32c64dca13a7e6",
+        "ms": 1963
+      },
+      {
+        "clip": "8854c62d6897b052ab3c7ca41fccd441495da300ed3fc7bfe1534c3c137fef56",
+        "ms": 493
+      },
+      {
+        "clip": "76e9c66a2b75f999c9a651e317be5202d741baf59a0df647bababe7b4b4b6c13",
+        "ms": 1498
+      },
+      {
+        "clip": "6637ca971e05bf4410c41d881edb7a0c42f7e616ff9eeb04b8b2e95156e12b1d",
+        "ms": 1937
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_pip/variants/0": {
+    "": [
+      {
+        "clip": "c2ced516f69b53c0f979f09fba2f02150e988f3d2bf966131351ed206d456673",
+        "ms": 7727
+      },
+      {
+        "clip": "bf917676f51b7e9a4deb2de6afd0cba7c1a7ba4de9841e118a4a828b3e6cba6f",
+        "ms": 2671
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "b3b25fdd10263fe0d628dab418fda4390e4b84af6601f90407714f47dc89b979",
+        "ms": 2183
+      },
+      {
+        "clip": "adab80eedb201a7cba7169ebca263ed5572f9521f457cdf3ef32c64dca13a7e6",
+        "ms": 1963
+      },
+      {
+        "clip": "8854c62d6897b052ab3c7ca41fccd441495da300ed3fc7bfe1534c3c137fef56",
+        "ms": 493
+      },
+      {
+        "clip": "76e9c66a2b75f999c9a651e317be5202d741baf59a0df647bababe7b4b4b6c13",
+        "ms": 1498
+      },
+      {
+        "clip": "6637ca971e05bf4410c41d881edb7a0c42f7e616ff9eeb04b8b2e95156e12b1d",
+        "ms": 1937
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_pip/variants/1": {
+    "": [
+      {
+        "clip": "9f749caaba24f7233f242131dc4bf98615d5bd6b5425513d369c38d259f9fe12",
+        "ms": 902
+      },
+      {
+        "clip": "6f350e6219383e6e3eba03baf2555801ba72ceb54bc8d24578c93548161b8f5f",
+        "ms": 2165
+      },
+      {
+        "clip": "c2dedeb8f595bfd1a7eee02185ea3ef067458ff68cd700fd2e5bdf17cf07c05b",
+        "ms": 870
+      },
+      {
+        "clip": "df798297857f132a447fe63852914d8058751d669fc2d3ad57943584e12cf92d",
+        "ms": 2463
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_puddle/narration": {
+    "": [
+      {
+        "clip": "ab3936ca9a09ea8327495b6ad4c95f94be6274b7299713d3671ec1a00e3d7cae",
+        "ms": 3907
+      },
+      {
+        "clip": "493225d7fdb7b44ed76df3b084f91d69402125c41392fae98d89622261fabebd",
+        "ms": 3407
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "b9773a050e4490f24dd44b90ad92b033ff69953677d089068ed6d313aca2a1f8",
+        "ms": 3707
+      },
+      {
+        "clip": "bfcaeb837d59ce3f18c4b6d532fcac187cf38341acd314668063ac1705d087a7",
+        "ms": 2496
+      },
+      {
+        "clip": "8ccc8b1c44c0feb0ef0dff9f3b36da76e3504e4159394d454cd2a8add2943805",
+        "ms": 2506
+      }
+    ]
+  },
+  "riftlight-bone-yard/to_puddle/variants/0": {
+    "": [
+      {
+        "clip": "2e74d96972b4ffbb73c0db784f255c0affdc6cefe428f87827fd60a693555384",
+        "ms": 6407
+      },
+      {
+        "clip": "493225d7fdb7b44ed76df3b084f91d69402125c41392fae98d89622261fabebd",
+        "ms": 3407
+      },
+      {
+        "clip": "2991d9a5052a302fef4fe8f62a4faa5528dc171c87bc0d02d2aa333368c602ce",
+        "ms": 3707
+      },
+      {
+        "clip": "8ccc8b1c44c0feb0ef0dff9f3b36da76e3504e4159394d454cd2a8add2943805",
+        "ms": 2506
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_lean/interaction/cue": {
+    "": [
+      {
+        "clip": "925e1e9046882ced6f8474c33d29c30a7633ff5877fe3db07c6d8c4d22079089",
+        "ms": 2122
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_lean/narration": {
+    "": [
+      {
+        "clip": "e97942a335db77983bd3e5a6503c2b9b322ed641e5f03b96262d1bd9ef72a966",
+        "ms": 3407
+      },
+      {
+        "clip": "8af4a4d2e714e3bfd104e7e1672c909877ed9b3cfd96c704bfee64d603253410",
+        "ms": 2391
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "ecaf1f16264b6f4c45644ed87fa3213b4bb466df96f0355672b673294af0ecb8",
+        "ms": 5207
+      },
+      {
+        "clip": "d53114aad099a27642e6171364d2f7270603c77101a7e022529b665195143f1b",
+        "ms": 2851
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_lean/onAssisted/narration": {
+    "": [
+      {
+        "clip": "169c38f2dbda1446ee5c12bb1e2888d98fb2ad11f9360cf37fa793a347776ede",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_lean/onFailure/narration": {
+    "": [
+      {
+        "clip": "17d62e7743e9d04c9fe25310472f23e14632303566b15cec4a5326b2d30daf7f",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_lean/onSuccess/narration": {
+    "": [
+      {
+        "clip": "37db1092ebc3f41bf0de6c65dbc43734798da39985a61739063fc23c9909e889",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-bone-yard/watch_tide/narration": {
+    "": [
+      {
+        "clip": "15770692494a7c8ca15b0356a026b523e3ab94d84c76d5609ff65c7698899b59",
+        "ms": 12507
+      },
+      {
+        "clip": "e0c6faf850a07540ea852df88766efe18184b2c89c40102e92127dcd73abb65f",
+        "ms": 486
+      },
+      {
+        "clip": "3084977c9c89a2ef8918321a9b7b3aef183c4a61a1365f649189e2d341714666",
+        "ms": 4707
+      }
+    ]
+  }
+}

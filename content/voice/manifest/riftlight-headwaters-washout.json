@@ -1,0 +1,2666 @@
+{
+  "riftlight-headwaters-washout/@goal": {
+    "": [
+      {
+        "clip": "8230c59e6dd3ef077a04e91e9b62a85ba5c20d7fb357ae004931f8c26d1fdffa",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/@plate": {
+    "": [
+      {
+        "clip": "38dae41edfe806ad07fd2bddd07eff531b49ca344db214cfbabc59afce5819b5",
+        "ms": 11707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim/narration": {
+    "": [
+      {
+        "clip": "0152f1fd8fd0373ac4601d2a32fe019c642af109037f26db82f324f2bf673beb",
+        "ms": 8607
+      },
+      {
+        "clip": "9c64c4c24f060b5a9e6927b7e02142f566d08a2583c22823dd60f45f7da30f85",
+        "ms": 775
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "07d89dedba4ad8243aa8e39aca132de0fa00536fcdf128a2cc301041150d4bf5",
+        "ms": 2248
+      },
+      {
+        "clip": "4ffaad6205b068cd28b9282d59af182354dde44689539d6c982c889f768eacf2",
+        "ms": 1168
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_kick/narration": {
+    "": [
+      {
+        "clip": "9ffe9125a8f7e78f647144f27366c089f6c51069b6dc77a868da9c89e68770a2",
+        "ms": 6007
+      },
+      {
+        "clip": "3fd00fa68f918d2dcd42bfbe7c06dff4b7667587c5fa70da6b5a873080159df0",
+        "ms": 1024
+      },
+      {
+        "clip": "94308cb429c452f79874ee12dba6f2cc4f678cc6efb2a38c6938205f458d50f1",
+        "ms": 1005
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_kick/onFailure/narration": {
+    "": [
+      {
+        "clip": "523206909333a47f003653d2962d19c0c2d2ef5e9d064be0cddd839a3c41b89d",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_kick/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ea5a01bd18106d7d5844935aef6ffe05d04c3acf16bd0728c2471525f78807e0",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_kick/prompt": {
+    "": [
+      {
+        "clip": "588bb7200229cfa3609ed4d3ebdf2672b3c98a0a24bc47fa772669b424552262",
+        "ms": 2401
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_sky/narration": {
+    "": [
+      {
+        "clip": "f6e8f7a3b8b4d02377031baa1151021fe708214c3282b381b65dc5682a5dfa55",
+        "ms": 3307
+      },
+      {
+        "clip": "a68ab38b4b4af85d0b9edae718c61c3492a4048d64e6a69ec1456e63a28ad0ea",
+        "ms": 2377
+      },
+      {
+        "clip": "d64a273fd647b64a676058d143f3eb68d6405c6a0d492e55363b21d5756d3e5b",
+        "ms": 1506
+      },
+      {
+        "clip": "585bde7ae1547b420331db487a7aad9968660a42d47a3442df3d9e12659f96d2",
+        "ms": 960
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_sky/onFailure/narration": {
+    "": [
+      {
+        "clip": "db64eb8da7cef50c3829d5de5e79279f91e0d06da70f79879ad89185084af43c",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_sky/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5e336c4dc77f66f58468b42ffe111db0a44cd3528c5fcae36d909e506e34d8fe",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_sky/prompt": {
+    "": [
+      {
+        "clip": "2a2fe673ab86ca1f857dc557cacaa8c732835a13a745389b91bdfbe907fd8be9",
+        "ms": 2769
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_swing/narration": {
+    "": [
+      {
+        "clip": "e2d3af6e530edbd1310ad8e30c368eb8d022c935c4da9c630f2dc8e0c52d6ac8",
+        "ms": 4307
+      },
+      {
+        "clip": "bf3c13804e3549a3f871b1c88d7f0e29d68c7bae908e8d408bda975be1006462",
+        "ms": 1224
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_swing/onFailure/narration": {
+    "": [
+      {
+        "clip": "a67dc3f5411fcc699a1dc60281c016a376f63873819020653a4cbea4569248be",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_swing/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cbe70b22f8017438f72bd4c6506c177b6250966fec99a9ad2977919af32df28d",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/aim_swing/prompt": {
+    "": [
+      {
+        "clip": "8be217b156853257d8e62489b4695d0e579f76a1d39b4620bc5cbeb2a7629d69",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch/narration": {
+    "": [
+      {
+        "clip": "14254a29460c31363dc81f21f4bc9d39f0b1496388376f48235bcfbffc8c9cd4",
+        "ms": 5107
+      },
+      {
+        "clip": "2a4e74b6fb2df5645314f8a184b2e0440ababe068b973a1c20aaad32aa01ea2a",
+        "ms": 1705
+      },
+      {
+        "clip": "0e1fd45d6373fc9927b6c6905ff9337cbf3c5704ff186fdf73b271b08d3c4b99",
+        "ms": 7608
+      },
+      {
+        "clip": "57738c9e552919df65cd1707f9a61fe394ea55030de5b9f33b8e8a9659ad8476",
+        "ms": 679
+      },
+      {
+        "clip": "59f68050f12709824f0594e658e186de79f3ffe196567c01f25b3bc81f590cf6",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_flat/narration": {
+    "": [
+      {
+        "clip": "47027b1f5b6dfc4670126a228b607574dc6fc06fad67e42c2baa2b48af72b781",
+        "ms": 3107
+      },
+      {
+        "clip": "ce884b5ef7c592994a6dd7b6ff740c1234ccabf9972087224042d6dc605f30a4",
+        "ms": 881
+      },
+      {
+        "clip": "e5434a641989ae24b89a83f2fcef8ed794754d156207b5f415d3004180f298b8",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_flat/onFailure/narration": {
+    "": [
+      {
+        "clip": "af0daddafe30817d2c8f47cb9e0de7e44aed5e3c8585072f9a107586578f296a",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_flat/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cd971b6f701d27691f37b8f66c37e67c6a5a2b02677c473361f4c166772a9f80",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_flat/prompt": {
+    "": [
+      {
+        "clip": "4d88d851a7e4f48d5f7c1c832adec3a77bba5c09009972b7bb406e5c989a3bef",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_light/narration": {
+    "": [
+      {
+        "clip": "c1676e619405b91b765096ebfae00f91e47d7dac2df0367991f02fa04b340a60",
+        "ms": 4007
+      },
+      {
+        "clip": "4badb033287478da5ab151a778d14fb1080815955b97ed7109735ca6c1587681",
+        "ms": 478
+      },
+      {
+        "clip": "552be5deb4ca78f26692d8d634117eb0a5907785876b848ca667e28c72bb7051",
+        "ms": 4027
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_light/onFailure/narration": {
+    "": [
+      {
+        "clip": "c503fbaced1a49b05df0373209f9148d4ebc11a0ad3620f5a7384c6396b40e8c",
+        "ms": 5527
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_light/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ab7a0700ab52c635867f928e7c5e4af2277692ddbce80369d0f9e75acd02caaf",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_light/prompt": {
+    "": [
+      {
+        "clip": "2617183cc9ad18b2c2832aeb083bffb2495e28bb6a82705661aa831860797f64",
+        "ms": 2295
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_look/narration": {
+    "": [
+      {
+        "clip": "afbcc23d7613cf01f2cb1cbf87967213919de8ee69991b0d0c1390ae65e7c5b8",
+        "ms": 2545
+      },
+      {
+        "clip": "8ceb55e771f47bc4294bd477871e759ab98af5720f8def6557cfe9bbdfc9b179",
+        "ms": 640
+      },
+      {
+        "clip": "2a8d606163dc929217b10231984c971d72c7539fb6b268a8ff0db1fee18a4634",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_look/onFailure/narration": {
+    "": [
+      {
+        "clip": "0eabc5dae1afde67d0d380e50fa12af341c00d2489c87ad6d46ae1025e9790e3",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_look/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8c0dc6ef5cf204e7d0adc6f7bee0001943059256cedae179ab3cacb95a637d86",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/arch_look/prompt": {
+    "": [
+      {
+        "clip": "53396910c3864f2bc8585a7440ae17d6fcc31096a7e7d12e669e9f35894ad834",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/ashore/narration": {
+    "": [
+      {
+        "clip": "a08e865241454c91d398c482f598e68f8bd14e059be74db38f581050e0f93ed2",
+        "ms": 8907
+      },
+      {
+        "clip": "3a943e5d4c5c48a7c94bcf69aa8109737f956754ebdcf1e2dd8db25763bbd952",
+        "ms": 777
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "fee760efe87244dbdd7592b81b6e4c5b402f93e4b81e7eedcac5deb3eeab09fa",
+        "ms": 1909
+      },
+      {
+        "clip": "e6d080ae1251914cbf1fc982c813f3a4ee4aed0e2216c2f3f5001aed411570d4",
+        "ms": 4608
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/call/narration": {
+    "": [
+      {
+        "clip": "a306883c72269b8f227ceaa864f1ed1d99dcec10fce51515b3b6276813c78d88",
+        "ms": 3107
+      },
+      {
+        "clip": "953e2b5e1eba6b73962ec3d02a155054b9f4c4887d2298b67becb1121edd72e2",
+        "ms": 1896
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "9078312b42583eac66e26396f2e4bf703f4fe950a74a565de420e2ffe2b5b713",
+        "ms": 1358
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/call/onFailure/narration": {
+    "": [
+      {
+        "clip": "517f169f7fb6aaee06bff419c266c4e98b388f51b5dd54642cac438cf361a936",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/call/onSuccess/narration": {
+    "": [
+      {
+        "clip": "61c8aaa788872072cf98abc4e088b4545353fde7642617746aa4e75d32b7fe09",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/call/prompt": {
+    "": [
+      {
+        "clip": "716542fd58f3d1c8fe5194de3cde6b996f5756d660c7bc1f01cae2cb65d8c3ee",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute/narration": {
+    "": [
+      {
+        "clip": "64a36e08c71ab78cc26ae917905f3e6d1e2e8f783965e86ab8d526f29ae44f74",
+        "ms": 7607
+      },
+      {
+        "clip": "2a628f3b35f51b34c15d814bf462a43b021e9462927efe1d396c187e9ace32a0",
+        "ms": 1528
+      },
+      {
+        "clip": "9ed253752d5807a64a555fb642f540e1fe38abcf5843c133d954bfa39a83db6d",
+        "ms": 2145
+      },
+      {
+        "clip": "b3dc490380a706fa0fd2822002c476fed8833bb5bb468db25b003ef1fa946633",
+        "ms": 2068
+      },
+      {
+        "clip": "e7fd156a199ecc708dedcb12895fac05ee7d8f76e0bfbfe563462e698a21bbb8",
+        "ms": 1262
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_brace/narration": {
+    "": [
+      {
+        "clip": "c2cffa220cd4947ccefec1dcf59dfadfe2bb71ee40a6c73cc7d63764e664203a",
+        "ms": 4307
+      },
+      {
+        "clip": "eef3215b84fb99533bb43013df632d15ce4623ab2a2d40137e81b23f529fae3e",
+        "ms": 822
+      },
+      {
+        "clip": "466f63838b9e9a60dd92e31acd612f9c9e0883005080b325f909ba860cf69811",
+        "ms": 700
+      },
+      {
+        "clip": "3cc8382f2c92e851330b28a59a67b586ee4e383afa784aa83c828588a8f7818b",
+        "ms": 657
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_brace/onFailure/narration": {
+    "": [
+      {
+        "clip": "2abb700d08a60bacec9109d3cae1ac69d90165f87a1ea067290fea073c05749c",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_brace/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9c1e63dff95a0359a61f47f47da7396f3d269bdb6057848f8d8d9d1aaab7d6aa",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_brace/prompt": {
+    "": [
+      {
+        "clip": "63873cfd81c836d6e0add52f4529dd716e84934ca29df8bef022f5cbc36ec092",
+        "ms": 2927
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_ride/narration": {
+    "": [
+      {
+        "clip": "348a57fa7ea5ce337f4cdb1b8c0169d053a738fe4a44297fd45a1a1348a578f4",
+        "ms": 2720
+      },
+      {
+        "clip": "0a24a8814855eee01f416a2cdf8389050a1710c0ca4a539f07159fd8d985a22c",
+        "ms": 602
+      },
+      {
+        "clip": "797abc132b2259d35398cdda46170e0e2d60acc323f47d284deefb571a080d01",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_ride/onFailure/narration": {
+    "": [
+      {
+        "clip": "c216abae218fa99cac6b120018cbfb28d2652cd72933e64cb6faa4c9ecc4cb49",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_ride/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cc4d2efe01f0a7b5642c153626f5bc499f5e57ae89ded697e348d3f39afca59b",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_ride/prompt": {
+    "": [
+      {
+        "clip": "fc2b958e26ca330577fce3a37ef2c9b0fbf31ef9d22d9f9de58ac3b42d60c356",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_steer/narration": {
+    "": [
+      {
+        "clip": "b93491261ebed02da73cda794ed3487620104e9fece159413b692d6cec6f609a",
+        "ms": 1821
+      },
+      {
+        "clip": "d8f14338ce7e912f00f8b300c0f92af57e883ccad4c773ec58ba30abacf01e73",
+        "ms": 902
+      },
+      {
+        "clip": "a732b30e66919069631a58d3207649af6cb882ca5a6161e7350ed40cafdc7021",
+        "ms": 2083
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_steer/onFailure/narration": {
+    "": [
+      {
+        "clip": "263e9ae3c4314a449498350fde96adf92215696eda01958b109b10e06ba9221b",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_steer/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ae48403458113179afec99e651c2f5b50a9e01c74b757595541f6ca8c515c8c7",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/chute_steer/prompt": {
+    "": [
+      {
+        "clip": "a9f591344a550fc0d91acd68843a69de7dc0872dc3595d04e81d87aa9a44fb38",
+        "ms": 2419
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb/narration": {
+    "": [
+      {
+        "clip": "d0be8cf1fe0eaa0edc79384d0f06f5fa5e192d3ac18cead0cdf8832dfdc2d00c",
+        "ms": 3607
+      },
+      {
+        "clip": "67233aa1ce5859b635496fbba4319da0c8bf621a902b15cfc61b18fb298c5be7",
+        "ms": 896
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "a064b53e2756e5c9faafaf0c345442e2eb1edda651eb8a10e3958e9a68a577fd",
+        "ms": 1364
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb/onFailure/narration": {
+    "": [
+      {
+        "clip": "a3e7350385941e9122c6c840ec20916c28c41dccb61670d22102f3cad83ac599",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1a5e912fc37f210b65a98d9c4662789043731dc4baf4b9a71da50e0d50095dfd",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb/prompt": {
+    "": [
+      {
+        "clip": "70f087a4fbc3fcd5c282a2e70c9331c5bae971fc0b9706cb480c7784c18bc3ec",
+        "ms": 2520
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb_floe/narration": {
+    "": [
+      {
+        "clip": "c3198de5d242c92c38634de2984f01b3539c2e27569ed75b5257c8c3cc5d2f2c",
+        "ms": 4707
+      },
+      {
+        "clip": "30b0af3a8f93fc260d86e1759c9fd8a151183af5729b89a06e523e2dd5d19a5d",
+        "ms": 913
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "0a775757b97bd26b543f185d724e5df2984268f7797590426d919438a5fd5bf6",
+        "ms": 1977
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb_floe/onFailure/narration": {
+    "": [
+      {
+        "clip": "46d0a03c9576287a1406f71ea760e3d1ec22bcacfb19c11be7158634fb2c7d18",
+        "ms": 2737
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb_floe/onSuccess/narration": {
+    "": [
+      {
+        "clip": "3e082440c2070447ccfe54fa061b15055912345d268415f4ab6e004eef8479de",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/climb_floe/prompt": {
+    "": [
+      {
+        "clip": "23fcb733e986cf4379b851b52914032dfbe87f2e3d0fc8ccefbb984dc88c4ebe",
+        "ms": 2514
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/count/narration": {
+    "": [
+      {
+        "clip": "d56dc25bd56fa994ae2da27a43fae12979e318ee3b68f2d68f34fcd7019ee41a",
+        "ms": 7207
+      },
+      {
+        "clip": "a1518c10062427f29d2f5ae6a84c6cec2d4abac143f43ab365274be2af1bd0e1",
+        "ms": 1467
+      },
+      {
+        "clip": "1bf4b6eac8dc7b0976e294cb8428cf3f1d7fc95c2d20c34e97e7986346197257",
+        "ms": 1269
+      },
+      {
+        "clip": "56223f2881246fd9dc4ac2a691973da8eaf8acee75cec16a5ede2ffd8df611fb",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/current/narration": {
+    "": [
+      {
+        "clip": "3fbccf3a348f04c30e5097ab67cb810907bcff94a95391147c9ed575c303d6b2",
+        "ms": 17107
+      },
+      {
+        "clip": "d8ece9b9dabd38b86ed46c099f20678d20392b6ba9748b4b2f2896ae6f47be4c",
+        "ms": 1369
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "6b52dc22ef57b287df7820c86f29c1c070fabdc1c6c53114e7ae68677bd9d55c",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/drake_fight/narration": {
+    "": [
+      {
+        "clip": "d8636e583bab902022e568eecf19d7ebe870b9a5eeb7047ca78e707a6e81768d",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/drake_fight/onVictory/narration": {
+    "": [
+      {
+        "clip": "6854f5b13a085bb459fa8d446496e70e115eb977347c8f0620dcced6790b39f4",
+        "ms": 9007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/drake_rescued/narration": {
+    "": [
+      {
+        "clip": "c84d3a506a7acc9aa31b3c822aee398d9dcb89c8fd77c1598aa6faaaa06cc1b2",
+        "ms": 7907
+      },
+      {
+        "clip": "4863d55f64a527c986000138acb458d60c71bb630c45913ddb503cc8583abeac",
+        "ms": 2012
+      },
+      {
+        "clip": "6a5fa897944d7bfea4ac1e80c2f3307495605eee3d3832c5ab77dde09ab04e00",
+        "ms": 1430
+      },
+      {
+        "clip": "a1b182090bd976879be9f6493b3b0bbfeb6dba6fced98a98babc3f08b86937e2",
+        "ms": 1401
+      },
+      {
+        "clip": "5c12e3ec33f423be1d1e10eb59333b68caef8797ee8996e4c65288bbdb893cd7",
+        "ms": 2610
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/drake_shallows/narration": {
+    "": [
+      {
+        "clip": "68a8ae95c12acae0ba98ed4bd93f2587d226a2217297118efa54f3b1c8700caf",
+        "ms": 8207
+      },
+      {
+        "clip": "c9d8b095aac437de7a730fd9d4a68cb77836966fb22233c27f5d0a71b8497d71",
+        "ms": 1615
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "81c8f38538e8bdc321d568445aae2c67af38ede0388c88eb91122ab2304eea9f",
+        "ms": 4107
+      },
+      {
+        "clip": "be1bb5c8f0768d516a55a3968fb73285fb7e116bad74f6a1bc0984acf04e76dd",
+        "ms": 2134
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/early/narration": {
+    "": [
+      {
+        "clip": "cc3f372e60fd1c85240e33057bcca06f9ef9b477d072e8e9bef615257a651e8f",
+        "ms": 5707
+      },
+      {
+        "clip": "9653ed2fdb5d8231cf08edd894ab7dcf252c2eccd41229033077be11921d6c51",
+        "ms": 2197
+      },
+      {
+        "clip": "5acb62e3cdb4d5ae5736ab1d5ed6492f99ec8fba24bd578c8e63ddfdfb672976",
+        "ms": 2439
+      },
+      {
+        "clip": "76b5aa53459cfdd2e74470190e6795182a4fe20356dbd89a9f062ac3263938d3",
+        "ms": 8007
+      },
+      {
+        "clip": "a5672d3cdaa7609bad813b6702b27829ebf2d665d8e8a610dd62f7797959364c",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/feet_first/narration": {
+    "": [
+      {
+        "clip": "81128c7c47585884369d5395cc1462e411545eb432cc26012e97c56e2d5004cd",
+        "ms": 3907
+      },
+      {
+        "clip": "988064e614b275a4e84caeca48978ca2f0bcff0463ed190c1d52a89035b96b33",
+        "ms": 1384
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "f73c83931436bd7a97c185eb558836b6a74c98c0fde6840bb0e0e119554cc39a",
+        "ms": 2440
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/feet_first/onFailure/narration": {
+    "": [
+      {
+        "clip": "e2369a4352e68f73f541d024bbb05aa1f0185f25e01c1852903cfd7cd5311422",
+        "ms": 7907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/feet_first/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0b1e4a58179bff37a2c5e0a1e32125600b0a35f09e6a6c131f94e7247c479792",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/feet_first/prompt": {
+    "": [
+      {
+        "clip": "a1888f02b4a5fce4f577d3ef1dcb091dcc48df89111f139670d7c5d5cf7d6f85",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_hop/interaction/cue": {
+    "": [
+      {
+        "clip": "ee623657cd65a425d9214a856a53802aefc65771834a93d81bcb85f328acb386",
+        "ms": 3001
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_hop/narration": {
+    "": [
+      {
+        "clip": "9bb66b7a61f6a8ba5b383bd220c64917b08b6dde1ada62fac358bb6bccab0b47",
+        "ms": 4807
+      },
+      {
+        "clip": "79accc619a7a4fc72058f127319e9252329d64d852422af49fcb0df4e8bb02e1",
+        "ms": 1373
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "51f88c7fe69f87c68e4324291aaa690acff5f413440ca27f5d8292ca5a9d5f82",
+        "ms": 934
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_hop/onAssisted/narration": {
+    "": [
+      {
+        "clip": "290a411c31f6bddd38af2ab0dbbc5320c4c57ad217092447f766ca0c80a346d4",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_hop/onFailure/narration": {
+    "": [
+      {
+        "clip": "952b7eb6cf75a9f9813ece1fec120bfa2b913d8635672bbb5c7a9f83217bc297",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_hop/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0cf04e364c192248fb5cfd758c8ed71d1a30535985e5ff11851cc8080c340a18",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_look/narration": {
+    "": [
+      {
+        "clip": "8b57a7a9f717edef277b48889d32c675be7a199cb05d91cb482c14fea8f1cfa2",
+        "ms": 6307
+      },
+      {
+        "clip": "62727bec11c340b4df412537edf2002f28b2b6ff2206d460cd64422ccf583aa4",
+        "ms": 678
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "e3e9e6ff3746e2aa4d5c3c15b6f3255a8fa799033f551f7edd9b3813e2f57a0d",
+        "ms": 1656
+      },
+      {
+        "clip": "cc0d4e148c9343ab3f4b62229df7320822e884ff474a3a78978bd8558ce7cff4",
+        "ms": 1252
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_rest/narration": {
+    "": [
+      {
+        "clip": "7597ef58d1311894ec4b8bfc9f5a59ccac2d3605300c72c0ab0545f3124d4b83",
+        "ms": 14507
+      },
+      {
+        "clip": "19089afe68551df55516a63dd3e08d864e6e3802280a1769e710489557b35eae",
+        "ms": 1371
+      },
+      {
+        "clip": "ebea0ff3ca80362435619789a64d076081b6397c441a481b396fa8b9555c81cc",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floe_warm/narration": {
+    "": [
+      {
+        "clip": "ebc74491ea83fcb8f54b4f2a405874dd3c251b72f9923b44455ea594834cd88a",
+        "ms": 5707
+      },
+      {
+        "clip": "93488d55e15ba48a9d9187116f019e0f2755218a9ca781418a7912947b4711af",
+        "ms": 1326
+      },
+      {
+        "clip": "f926efadc00ce3db9d84ca94c786425c8fa616cc44918a0b5c7a66bcb884f272",
+        "ms": 1582
+      },
+      {
+        "clip": "35e1209deda7c008709123f8b04c20c9cf90897ceac7eebc39b22e8a6ebc27a4",
+        "ms": 1368
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/floes/narration": {
+    "": [
+      {
+        "clip": "ba410e40e8835056b9b84af5472718038e39bfab2e30a01fec327ef8983f7b29",
+        "ms": 7007
+      },
+      {
+        "clip": "ed742fb086d313ca2eed5ad79785f8e84dd03a89e4cb3154764548db3988f185",
+        "ms": 1932
+      },
+      {
+        "clip": "15ac11a8202899c4f9369db5cf8147defa9237971b7ab4085c4866946df0220c",
+        "ms": 1303
+      },
+      {
+        "clip": "c6b245227f2e7708c69277437e3aa0570f90146c13e7b35b8a4b7bd159da3b56",
+        "ms": 1392
+      },
+      {
+        "clip": "08e3c52d5f23bb70360228df04055fc9ac5501e23481609cf35fdeeff1be886e",
+        "ms": 3427
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats/narration": {
+    "": [
+      {
+        "clip": "52bce208e847985de884c7cf7c945e9a06dd837c6b22de35b55ea99b3fa59896",
+        "ms": 7107
+      },
+      {
+        "clip": "ff559b60cd97aafd7ab843e1bb807c4248b17e3fab5bf777508f10a5a5ac21cb",
+        "ms": 1126
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "3697d2857b8f7b571514b7a43cf76fcabf8454c3fa77892e2b63ef16abce8ef4",
+        "ms": 3207
+      },
+      {
+        "clip": "397c6d539b2ef269b4c0af34e4c69559e772ca3abdc01b03648a3f5ea5470f0d",
+        "ms": 1209
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_follow/narration": {
+    "": [
+      {
+        "clip": "c0fc907c559b6da21435d5f8323827dfe3fae98b6fbb7bd605bbc0482de2faeb",
+        "ms": 4107
+      },
+      {
+        "clip": "ae5782f99852c5fc2b8c4c14d9cbc97313ccae30158eb553977fd95247bbf8d0",
+        "ms": 1181
+      },
+      {
+        "clip": "70d34936a4bf70492b14cf31b4763f122ae915a5b18a51a275cec58724385d10",
+        "ms": 2051
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_follow/onFailure/narration": {
+    "": [
+      {
+        "clip": "11b970800fac626837350948fbee29a3be06efcd56ec75c68ef73ff086d677c4",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_follow/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9a8e6ff35e5de80e158142c4458b8c1b2b398d58589c30c65a9542f918c06905",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_follow/prompt": {
+    "": [
+      {
+        "clip": "500267b7912afa559b7a9bba7ca1d18e4989a4ae78826d425e724e32bd82222b",
+        "ms": 2167
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_watch/narration": {
+    "": [
+      {
+        "clip": "2675b82eba9ee9aa05f40647e28200923333896e1ed58cdf9801b4193f922f5b",
+        "ms": 2680
+      },
+      {
+        "clip": "7b89dfe8316e88562cbaaf4bd5965fabf61be27a3a1a1298fafc870cdb910809",
+        "ms": 1245
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "bb072dd36b08a7fcdb20092af8618c51a2ab778f66f78217c3b629bc7f579d0f",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_watch/onFailure/narration": {
+    "": [
+      {
+        "clip": "a3a6c8a9e3de944667bf43b0b2f7de91852dc84deaeb6b84c06147435eee0d6b",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_watch/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4c260bf66ecc8bf8e46263a48076a7fe1372c4b52d4b2cc51e4479420b127685",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/goats_watch/prompt": {
+    "": [
+      {
+        "clip": "2f161de7e688cd0d395b2f54b02afb32896303d741b381fd97d0a3056c671aa9",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab/narration": {
+    "": [
+      {
+        "clip": "d668a9f36427a78a1c93bcdd83b40ebed19607dcc2956ca2b97f12055ac9bfa0",
+        "ms": 3907
+      },
+      {
+        "clip": "e6c97ac75795e33e864419f3da6872d98ab5f2655db0c56a3880a22477ed0bae",
+        "ms": 731
+      },
+      {
+        "clip": "0fe77e93ecd8b605d59085dfbbfe5a7560204a204982c0e72665a384f87b727e",
+        "ms": 1234
+      },
+      {
+        "clip": "b6f1d84fd9257b7fbfd9eb213811c1bf4b7b0046e797c7771c150d6fe43f4e80",
+        "ms": 1063
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab/onFailure/narration": {
+    "": [
+      {
+        "clip": "ea93fff49fcbd50a9f4323dfb0d7fcce329d3786aab74a367a4ff2b4c95fb374",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab/onSuccess/narration": {
+    "": [
+      {
+        "clip": "adde1946dda601688bde14132886717b981b69f295338c7abe8c6da4490bf124",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab/prompt": {
+    "": [
+      {
+        "clip": "2c12e672747c37c51f44a7014bd8e44ba96e8c441a1247684664a581299044f5",
+        "ms": 2687
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab_near/narration": {
+    "": [
+      {
+        "clip": "03e3c5411561688bb2fb2b2c525be4f7ef6536ff79fa021637ba28fd953e3ef9",
+        "ms": 5207
+      },
+      {
+        "clip": "35897ce984f4543b0ced4afd25b517720e7d07eb2153fd1acd2d8fd2d99d897a",
+        "ms": 793
+      },
+      {
+        "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
+        "ms": 1224
+      },
+      {
+        "clip": "c997b42adcf979131f7b904a6494819d9fa0e56533e761c60b1bf58cc3921fb8",
+        "ms": 1346
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab_near/onFailure/narration": {
+    "": [
+      {
+        "clip": "b9abdfe7b4bc827bdb1dc6de4d7b03b5b3f43a8a0b28b3938a0a496a13d2179f",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab_near/onSuccess/narration": {
+    "": [
+      {
+        "clip": "19db89ad1cba633d9a870f1e0b79ad0691a33fb7324db3cd7ba6bc277a5e6ba5",
+        "ms": 4808
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/grab_near/prompt": {
+    "": [
+      {
+        "clip": "cd9fb74c0fb45e7ab6c6ce2d71cde9aaeb34053954b9261e3d952b3e7875efd8",
+        "ms": 2675
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/guide/narration": {
+    "": [
+      {
+        "clip": "2efcb874855672b5caf58600c36a4283b569a04850469c5b4d8cc222f1268ae8",
+        "ms": 3307
+      },
+      {
+        "clip": "62e478a08b90e2e6e60517b6aa12ccc11171e3338391cb9cfcd4aa15bac285ee",
+        "ms": 2410
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "fe5bdc01a15be071897cfc1b827bd250a6e5fb7f153810fbcf9d81a9da657fab",
+        "ms": 1177
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/guide/onFailure/narration": {
+    "": [
+      {
+        "clip": "bbe767bd8d1eefe24fe4b20faeb8d81918128eca4bc0f8103e2db292113f5b2c",
+        "ms": 4227
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/guide/onSuccess/narration": {
+    "": [
+      {
+        "clip": "316a04a2f4b173d517fa4bc757cb069818084b98aeb0662122695f037245e169",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/guide/prompt": {
+    "": [
+      {
+        "clip": "1ff40cba14e96a5a37ff8ea41a71cdd61a78b248cfe44f708f8e35cb858d00ee",
+        "ms": 2757
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/haul_loop/narration": {
+    "": [
+      {
+        "clip": "2f5df05d6f2179b1bf5d330b1aa8101c3db4d9e6c70233916d2931507f05f7f2",
+        "ms": 5007
+      },
+      {
+        "clip": "820907c0328d522ee6f4ed324b9cb2460daf08a652b88b6de881b41127ef0759",
+        "ms": 603
+      },
+      {
+        "clip": "0551b405522df1dc51630304b13c7a47a4af52a9c4b51702075e203a1266c45c",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/hook/narration": {
+    "": [
+      {
+        "clip": "02b091b0fcd5e4936bc4749c1a372ed6a675fa8e746abda5eab0db05e4d59d77",
+        "ms": 3107
+      },
+      {
+        "clip": "1e2d8dba5c49b398724e02be9d2ecd2ce59ebc0b97520d6c0728a9dc5bdc2688",
+        "ms": 817
+      },
+      {
+        "clip": "7aea63fb8d8897aa6fd396ecff11e3dd2ddcfb1885d20b19541a5052c5aa4f8f",
+        "ms": 976
+      },
+      {
+        "clip": "7d4380751882ffc2faa485b2b34b311420e639cf34646bdd68015eff3142b27d",
+        "ms": 1049
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/hook/onFailure/narration": {
+    "": [
+      {
+        "clip": "d6d548a41d864c37f31cf2aff86fb7c30b0d8c207c5d525e8de9d07807c1d746",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/hook/onSuccess/narration": {
+    "": [
+      {
+        "clip": "68e434e409ad5d607c050e6e7bf607421d7be64e190ad5300a83bdec5c9a63b5",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/hook/prompt": {
+    "": [
+      {
+        "clip": "863d38c15787c0e44ee9707965b5d41a8bc6eb7a7f853c335e3d48915a4ea461",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam/narration": {
+    "": [
+      {
+        "clip": "4b92ca9a740787865679d649a120156beb1c5d3dd76c4a60544d1506c0b91364",
+        "ms": 10007
+      },
+      {
+        "clip": "e9b994ea8b7f3b0a3e5629354f4296f5e0c6c52b2c540f9b862f7acb1a267fdb",
+        "ms": 2060
+      },
+      {
+        "clip": "867e7dc476b1a07bcead4956fe222a91f10d31862fcff36bad68c8e054a63869",
+        "ms": 2231
+      },
+      {
+        "clip": "e1437333df665770e0201c9a23d85a0d5bfc5dae5125690a05af07e41b39e993",
+        "ms": 1652
+      },
+      {
+        "clip": "9b04093f33749b35b243bc982a3d792b549d0aa71d861c9c61a17f06f80c0236",
+        "ms": 1363
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_gap/narration": {
+    "": [
+      {
+        "clip": "c20eb5da50761c26305d1b529eada3b5863c68c931a6d16ade7507b3045dd805",
+        "ms": 4607
+      },
+      {
+        "clip": "6d19d39e4eac343d4602973aae3014915ae01ee3571f7920e94079d881de37e4",
+        "ms": 1084
+      },
+      {
+        "clip": "114285c2bd6497cde8214ef15e61da25e6c6c6e12e10ede4de618c956005055a",
+        "ms": 2778
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_gap/onFailure/narration": {
+    "": [
+      {
+        "clip": "af33fcc4a20527c7440d9a7115f77d11b6df1f7ad71b989019a2dc7491198eeb",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_gap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2eca7a8c1ee377236df8895a01ccef968857a11a02d67454910134d7c3149860",
+        "ms": 2918
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_gap/prompt": {
+    "": [
+      {
+        "clip": "085c2dacb0c4744e088d2ed32c6329d05d8352d96dc6f06bf47bea15d1159054",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_hold/interaction/cue": {
+    "": [
+      {
+        "clip": "42d0e8287bc83d7b90f6cff4a16c3eecbcb7dadb5e402f28de45c5152de125b5",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_hold/narration": {
+    "": [
+      {
+        "clip": "5c37f4b18f67a81ae6ebececcc6f5fb41123b1b1c9c56c1565bc37e4c27c98e6",
+        "ms": 6007
+      },
+      {
+        "clip": "f9c4226aa6d5bb6cf1b589938f30fe9f818ddee8eed459f952dde50e33f07a87",
+        "ms": 1445
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "044115f0dcde91c9d6554b297e15b09cd05ebe055fb7804d911cbd4dd237ff75",
+        "ms": 1315
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_hold/onAssisted/narration": {
+    "": [
+      {
+        "clip": "01aa557c9181f87ea7398ff365beca32b214474d76dcda559a6253602f4345af",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_hold/onFailure/narration": {
+    "": [
+      {
+        "clip": "3ee5ec4165c3d55951a427acdba3bf3ffb5dc4d02376fbc9c3927aea36c3ba51",
+        "ms": 7607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_hold/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f345302e0257a6d900686f00767d55b185f2d79a40795ef4768bf26a27ea01dc",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_push/narration": {
+    "": [
+      {
+        "clip": "82af8c79d83bb09f22864e294f624533adf04cfd34986afa1bda5ddb06a80092",
+        "ms": 5907
+      },
+      {
+        "clip": "7a85ac4df42e10c7e99aa17d8f4d70cf008920f2b6d3dc2a8afb22c7f9a3c049",
+        "ms": 2117
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_push/onFailure/narration": {
+    "": [
+      {
+        "clip": "bcd80ec8477664442baf11ec2d9987d551f7905e488eb0f46a920602d62d44e1",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_push/onSuccess/narration": {
+    "": [
+      {
+        "clip": "c522832495dfd290c8ed0a92c95f0531e7d617ab5a32942d2796b8f114ba43d3",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/jam_push/prompt": {
+    "": [
+      {
+        "clip": "422a4768768bfc473713d37e83f40a1b32bba735f794b2aefb4d6ef28458ba83",
+        "ms": 2395
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/kick_bank/narration": {
+    "": [
+      {
+        "clip": "449d6760d4bc8890c8858c39284401bf997d768a9c56d055227bc1ef76a726ed",
+        "ms": 3307
+      },
+      {
+        "clip": "36c3db21a4b5703b2f93d9ddba79953d310e8f461d5f31f158c9e1cec0e5ac6a",
+        "ms": 1835
+      },
+      {
+        "clip": "40e0014b55f8916e73acd4b730e6561adc4731f74afec9a44cfaf9b4b31a9f13",
+        "ms": 1725
+      },
+      {
+        "clip": "dedb142250774d91620b0ff4eff97c8b7ba6f66ae1fb7a0f6907a59b585f8dbc",
+        "ms": 2015
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/kick_bank/onFailure/narration": {
+    "": [
+      {
+        "clip": "17bf4ceb6371f3a80d95849576682e13dcf593e1f0a2b32e386bfb8250f80231",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/kick_bank/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9b7f515a13b391457ecdb1232b5fb9238f41c6ba67767b12da6952a83614e366",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/kick_bank/prompt": {
+    "": [
+      {
+        "clip": "3221a6a3274906f65f86d6aada4819348058af7eaa76769abca7ebcb83cf16b0",
+        "ms": 2703
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/knob_toss/interaction/cue": {
+    "": [
+      {
+        "clip": "544f74463213f4d1989eb8884e204ddfcbfaeb3f93a30ee2a4e2de1462be25c8",
+        "ms": 2019
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/knob_toss/narration": {
+    "": [
+      {
+        "clip": "688051fc34499f18858e219bd1b5e04c026a9d941567085d69d34800039abee0",
+        "ms": 3307
+      },
+      {
+        "clip": "0dbf56897ead008dc9bd56e32099ff417619244c6c922d9db007b63f814fd6d7",
+        "ms": 1302
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "a5b00a1b7daee302bc2e9c1d742c7b09f3f74bfed399a1cf4bd05f5585a21bd5",
+        "ms": 2177
+      },
+      {
+        "clip": "6433728927305e5a986a0811d79c406e13aef3b95eb1945bbd8b74ea39a5d0ec",
+        "ms": 1478
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/knob_toss/onAssisted/narration": {
+    "": [
+      {
+        "clip": "1e39907ba163247f3072a629c1ffbd725400f98b1594c7b0bc6cb937b26ddd28",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/knob_toss/onFailure/narration": {
+    "": [
+      {
+        "clip": "bb0428ca37a832e29c3fea45ef4005ac0d86ff113195d1be10da32a1365735c7",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/knob_toss/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5546277a75aa9e367af7f642f871463ec10d86504cb3fbd85c166c178b98387a",
+        "ms": 4108
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lane/narration": {
+    "": [
+      {
+        "clip": "87bc993c568cfd67bc39fe4485f3e5b8b3f9fdb3be15dafd1ec21e970b38c13e",
+        "ms": 6807
+      },
+      {
+        "clip": "f787677f3694300d2e13fbc34ac2cb5fdd85de53ee2866a95278832dbabb9cff",
+        "ms": 1146
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "58730a04aef9e4ca2ca8b59211fb0beb3b34c3b2d173c6eeb083526d2788b440",
+        "ms": 1193
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lane/onFailure/narration": {
+    "": [
+      {
+        "clip": "6398c4a36beebb9416ae2a5dba025e6300265f1a1252ef6f5a42d0a705f2f9cc",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lane/onSuccess/narration": {
+    "": [
+      {
+        "clip": "d07f0f727a90761a247912c051ec3895dd03ca5b53af1db4373e5c6ef1ce139a",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lane/prompt": {
+    "": [
+      {
+        "clip": "902585d1f26b9dafb4da08442cf55039d1c3d477084b8999ae842ca6dabd3344",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lasso/narration": {
+    "": [
+      {
+        "clip": "c482daa02104bf247fba1dc5a727a37fd0fb21d9fa7a3227360f084e2097dc8d",
+        "ms": 4207
+      },
+      {
+        "clip": "0b90bc92e983197279e108a1d1f57d550698ca22729cf35e1774186ffa0f2103",
+        "ms": 1419
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lasso/onFailure/narration": {
+    "": [
+      {
+        "clip": "a404876afe5f8ff972cc0d72e26fbba0841f0ad1bdc9d1fd46e869c77d9fdf11",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lasso/onSuccess/narration": {
+    "": [
+      {
+        "clip": "374d2ec54d7cfea96e7076d8824095e55ea91e8314aad9d035b4fe7c97eb721d",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lasso/prompt": {
+    "": [
+      {
+        "clip": "9989b13946ef507a7c2be123e8a663a9f3b9b2a13715153652d1c0d9564220e6",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/late/narration": {
+    "": [
+      {
+        "clip": "81e64370868973d7bf5fb8c7b4f2372fc451949cdf23be97c557340784c452c6",
+        "ms": 9207
+      },
+      {
+        "clip": "c180e745102e78342bf097db2fdb1ae24f283d7daaf762b4392d772ec14127d6",
+        "ms": 1634
+      },
+      {
+        "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
+        "ms": 2339
+      },
+      {
+        "clip": "9bbf26c56a111750be980714d4846c35ab51995c0e176ceacec913273ec53582",
+        "ms": 4907
+      },
+      {
+        "clip": "aa59dea95f56ef4edef0f79e24ecf03bb9689a533d654ff99900d202434eee40",
+        "ms": 1539
+      },
+      {
+        "clip": "28002ee4d00936d227d04ab8c225cf9a35fbace8690d356037a64a656a81a54c",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/ledge/narration": {
+    "": [
+      {
+        "clip": "5d648aad67d008444ac0ecbc7a9085c10bee1dcac8e1b91d36b99a2ad12acee7",
+        "ms": 11207
+      },
+      {
+        "clip": "c4cc9f6b7f0328a68ceffa2de4977b9faae84ceb39a0bb2b418138a37293c099",
+        "ms": 1254
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "894f7dea32d759effbb40a237707ef758c3b049fd8962a65434b6564da0432fb",
+        "ms": 1218
+      },
+      {
+        "clip": "2be7abaec45dcb8425b37b63160e0ef265c9433f3ba0ae57351f41ccb22d01a8",
+        "ms": 2563
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/ledge/variants/0": {
+    "": [
+      {
+        "clip": "96388b9f7d2befba87b24b2e41e605b02986e9b6e7fb679c1fc08ba8996fa64a",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/ledge_ahead/narration": {
+    "": [
+      {
+        "clip": "5d6b76c33457f9255b1316cf0f628f280a28233bacb6363ae0bc1862a9891edb",
+        "ms": 8207
+      },
+      {
+        "clip": "3d94e42605d9664990e7642d4a880acc6f6d0c5b551dcd4374681ec93e59044f",
+        "ms": 1672
+      },
+      {
+        "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
+        "ms": 1224
+      },
+      {
+        "clip": "d89a2f6ae189f21d02e0be6133932ef4228b57d8849959ee834f9d31e795bca2",
+        "ms": 2292
+      },
+      {
+        "clip": "27d54e4f297496250be8a6a04e9e8119267d5b0b7802ae46f6a216ea51343fff",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lift/narration": {
+    "": [
+      {
+        "clip": "21e44d9946df9c2538e269043838fa0ddc9fbf6a9375cfcaa5fb28fca6d02772",
+        "ms": 3407
+      },
+      {
+        "clip": "a8441ba20c18c65e022132b98b8d9699589f910cf5c9c6797333f134cceffb2b",
+        "ms": 1637
+      },
+      {
+        "clip": "4e817692d07c3bad6289c21273cabc7231e35ac87d5bdc3b1e8854de5b49379f",
+        "ms": 2345
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lift/onFailure/narration": {
+    "": [
+      {
+        "clip": "bf46d75f82561743904e691c06c5a8a48903417af39c0a63882b4ac0ef318e8e",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lift/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f91bbf10c2a61ea951d97d2eb8e9e4d5a59710a569f905a0b17fca6ee7d5ab4e",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/lift/prompt": {
+    "": [
+      {
+        "clip": "53a4f4d7dc2b5d544303ccb586678bfcc477acf0ac14fc7fdef99a4f0cbc5892",
+        "ms": 3408
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/loop_tie/narration": {
+    "": [
+      {
+        "clip": "1ea39eb2f75b3277d8d50b0e01d275c5c8d890a8c2828439ab013cc20b29f886",
+        "ms": 4807
+      },
+      {
+        "clip": "bd9181ce55a2456265a0644464ab0b09465c310f4f167a3d5a42708beab0b494",
+        "ms": 1809
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "47c3b3682d39ebf118f111d296665e85dfcf4b7b7983b2c2b1259c3536372668",
+        "ms": 1443
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/loop_tie/onFailure/narration": {
+    "": [
+      {
+        "clip": "26e20e1682f878b21dcd4489357c5cfe0a3663e6d715ec6e65d04c8103a4e058",
+        "ms": 2602
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/loop_tie/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e9a5c756784fce8ba8f7f1849ca9798f87c0568689744ebe2e776a3a003cd4e6",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/loop_tie/prompt": {
+    "": [
+      {
+        "clip": "f71ccaf26fabdb8b723a572dbc37fd95d88d7a831295f0f5d7212d18324967ff",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/mend_signal/narration": {
+    "": [
+      {
+        "clip": "2c3c82c538e65bb95d8fcbabbd06e7d417ffe16f545de5c0a75964a916f54513",
+        "ms": 4207
+      },
+      {
+        "clip": "8b6637ee17412e4a86acb2eb25210e82d4b212e4a5d38dc09f8fa354ed24121a",
+        "ms": 811
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "0a567807fdc70eb67189e5bd25a6c421a9e09743a29789b17352ef52fde3087a",
+        "ms": 802
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/mend_signal/onFailure/narration": {
+    "": [
+      {
+        "clip": "3f75a78f1ba360461cfdcd1a8cb4b53e0a78cba7e4440b6145c491cd673c67ac",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/mend_signal/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ec16adc1072f40a0c4cc036ffc21a29dfdd39bf6c9e6fa8e80005548d8a89e05",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/mend_signal/prompt": {
+    "": [
+      {
+        "clip": "458465b548e95d4217a52124b57fd7b89fc4de4bd584768d4e26399008ac2fe6",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/middle/narration": {
+    "": [
+      {
+        "clip": "86ce99da23afa8e9c517a65ab85aab580d8b5af9a68e8fc026f072e15363c1f1",
+        "ms": 7907
+      },
+      {
+        "clip": "acf0ce5af1c7c9b124a44b519024a93bc9b9bf86360d4c5a95b0540d6ea92046",
+        "ms": 1926
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "b8d4c87ffecd7fa5ef42c8caedcd47bc994470e3a93ec0d720f7f2ea2fcaf06c",
+        "ms": 1809
+      },
+      {
+        "clip": "6cb94262e02ecea6da7ca71b9ded259acb1d54a9b33f31e63439129183e03944",
+        "ms": 1502
+      },
+      {
+        "clip": "618ee83c0d37379cdeacf4bf4d0d20b8c609bed2bceea093d257c7a06abdaa3c",
+        "ms": 5107
+      },
+      {
+        "clip": "da55fb1594e178a897894fc1c5fd04e4e2bc188279cc03f59838847561b59661",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/pack_grab/narration": {
+    "": [
+      {
+        "clip": "effda77c5c2a51064f7d4cbed855c77b77208ed2cf447e0e8130db25a7e2fd25",
+        "ms": 3507
+      },
+      {
+        "clip": "f8515ce7ffd3d91aa92d95902ca476ec9c654b01f62d727f11423e6527717544",
+        "ms": 961
+      },
+      {
+        "clip": "0fe77e93ecd8b605d59085dfbbfe5a7560204a204982c0e72665a384f87b727e",
+        "ms": 1234
+      },
+      {
+        "clip": "47607c7618edb253f4d9fd3485f13669f0672be814580c7c761b543708bdf9fa",
+        "ms": 1505
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/pack_grab/onFailure/narration": {
+    "": [
+      {
+        "clip": "9b9182b310451087da35f79bfc86455c130d1d12ab205b96a6d29669d14dcbdf",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/pack_grab/onSuccess/narration": {
+    "": [
+      {
+        "clip": "fdd313f7fa31cf0d08ad1aaabf4694c636ade0f5929a29461a3f274ac96bc2ec",
+        "ms": 7907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/pack_grab/prompt": {
+    "": [
+      {
+        "clip": "3e74e8560e5a349829d39dc19d185b268a168777768292220a487b5f7a876a19",
+        "ms": 2687
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/push_floes/narration": {
+    "": [
+      {
+        "clip": "75f71b732481f9d0c55dd6e0e6d831804ee0ff338c54d217a66842f5c662186d",
+        "ms": 3407
+      },
+      {
+        "clip": "3cf9eccf1723efb5a4116b74a3e97d16a7de2761e25745c10790ce6d892430fe",
+        "ms": 785
+      },
+      {
+        "clip": "19810d5f46aadbd694ac2e540b18a447225316b82882e286c7691e70ce5c301e",
+        "ms": 2603
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/push_floes/onFailure/narration": {
+    "": [
+      {
+        "clip": "da70eda8563d800ded759a09b17f13f6c5ea2bc0f4d3fa7ab3b3c7566d926d5f",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/push_floes/onSuccess/narration": {
+    "": [
+      {
+        "clip": "3edc91c875290097a54749103e35701ff08f5dc26be6850a0b88462f3e8a7d62",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/push_floes/prompt": {
+    "": [
+      {
+        "clip": "d377a666d644db03e3fa83392f65bfd23130b1d558b2a661c528ea88ba6a4213",
+        "ms": 2293
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rally_breath/narration": {
+    "": [
+      {
+        "clip": "219bc81ef6011941f561766fb0081c87ff3b700fa50e1559d1fef43b4c8f1ec2",
+        "ms": 9008
+      },
+      {
+        "clip": "94699170fedefffe02617f7bb5ee94dba40860e592a1195e50f30230766764a1",
+        "ms": 1544
+      },
+      {
+        "clip": "d0e0a1ab24840c1a16f9c2c8701c1250079cf90179501e1c928216568744ed9b",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rapids/narration": {
+    "": [
+      {
+        "clip": "395bf041155ef0f48b3acdc4a66647f897e81cbc2aa196e97b3190210b9a54a2",
+        "ms": 11907
+      },
+      {
+        "clip": "c027a14d225d439a72205ae8ff6ca2209433c2309ff524986146299fd4fa886c",
+        "ms": 796
+      },
+      {
+        "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
+        "ms": 1224
+      },
+      {
+        "clip": "093ef1289356054e019236e3011dd8b3b794e333497ec3cc2170994687aaf57d",
+        "ms": 1222
+      },
+      {
+        "clip": "3f16ab4dc0715af7832ad687bbeaf55ebf646d5428c73ccd4f6d824368ad7d3e",
+        "ms": 2710
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rescue/narration": {
+    "": [
+      {
+        "clip": "28f4c81a8fd59e03b51c56f515dc7ab90f272180eb527ffb226f4eaa0a0b8613",
+        "ms": 6807
+      },
+      {
+        "clip": "c180e745102e78342bf097db2fdb1ae24f283d7daaf762b4392d772ec14127d6",
+        "ms": 1634
+      },
+      {
+        "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
+        "ms": 2339
+      },
+      {
+        "clip": "a0db56f10fa59a8fb04352eef08420019ab5c904c0cba6482850b79c5b70583f",
+        "ms": 2384
+      },
+      {
+        "clip": "70763d2b783fb2a168feaec0f73561006182b9973024255ac23ff0f34e01ce22",
+        "ms": 2870
+      },
+      {
+        "clip": "4699fd3ad3531c182bb58679b4c1dfda7660941edb93ceadba051a9d70396849",
+        "ms": 894
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "fb3b6af2cc9b1cd870838bb5a376992456b4c6e7a22194fe4fa9f462861d29f8",
+        "ms": 820
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rescued/narration": {
+    "": [
+      {
+        "clip": "4ae577cff2cb86d69a9a0e7a7907e9a22f6a09f96b57113933818429a8cbb070",
+        "ms": 6227
+      },
+      {
+        "clip": "9129175892017c4ef4644ba574f13e063381320d802d1074b8387f9ddda615bb",
+        "ms": 1587
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "b446a366d67977c7abba6cc364c13465aaed343e4ba647368a0a39508f67e63a",
+        "ms": 1860
+      },
+      {
+        "clip": "23c0c120c756c0996a2f7aeb0403e21a552e2f9adcd6995f34f24156fab1530e",
+        "ms": 5327
+      },
+      {
+        "clip": "618ee83c0d37379cdeacf4bf4d0d20b8c609bed2bceea093d257c7a06abdaa3c",
+        "ms": 5107
+      },
+      {
+        "clip": "83b44a4e7b2da0d788faf8bd7fa06f25078df1bd00e17cd094e10f451bba6ff9",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/ride/narration": {
+    "": [
+      {
+        "clip": "4786100b0d6cdb982eb5d6aac0fc23a8da6c6f3095fa36420b1194e80b3ead3f",
+        "ms": 5507
+      },
+      {
+        "clip": "4413bf9c7ea20ec6c421efc9ddb09302a69b7ff292ba41a321a275906813953c",
+        "ms": 1801
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "39fae3bf2ee66f1319e319f1371e1d78cd28e27ef6e9aae2de436d80d8c11f94",
+        "ms": 4207
+      },
+      {
+        "clip": "ce0f275fad919fe762a33140366e70c64c20f0ffda87965a3e365ba6b088eee2",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rift/narration": {
+    "": [
+      {
+        "clip": "39a36f84bc1a05cf57cd11982fd1904d1b145d882d064ef031ccc08894ba5fbf",
+        "ms": 16107
+      },
+      {
+        "clip": "96053a2c5b62c0216f2cd32d4bfbfbd40fa437a44c98c7419f9f54c72ab44352",
+        "ms": 1229
+      },
+      {
+        "clip": "15ac11a8202899c4f9369db5cf8147defa9237971b7ab4085c4866946df0220c",
+        "ms": 1303
+      },
+      {
+        "clip": "d320ae94ead45433cce84adf8bc1419765e90bd44e9c670e528c5fc4d767bda4",
+        "ms": 2410
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rift_choice/narration": {
+    "": [
+      {
+        "clip": "0a481b3af32253e0da3064c89f84ad51ef80b81d3d1fb1fadd05a3e0306978f7",
+        "ms": 3207
+      },
+      {
+        "clip": "cac7e7e0ffba2432dcf10d2ed57887069746c258c23fc4d6d6ec01d7b77d5768",
+        "ms": 1626
+      },
+      {
+        "clip": "3ea4314cc687029010d77045db904ff2680953de8922606a3a56607a1730c69f",
+        "ms": 2140
+      },
+      {
+        "clip": "ec1112171c4fb315b922339dab47102d42242bec2475e41bfcf1a85b4c74b850",
+        "ms": 2465
+      },
+      {
+        "clip": "220b8c8478d0a85facca21852134adeceb49a2da0e60f913a602a3e0d4367faa",
+        "ms": 2754
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rift_decision/narration": {
+    "": [
+      {
+        "clip": "370ffba412e93fb07c325bff5a00c5a5111844b9c12f6ac4a310728ce35ac055",
+        "ms": 8307
+      },
+      {
+        "clip": "5ed62a799c468c7a88965f1a40682b357668ba13ac72a927f91c972e7e181ca2",
+        "ms": 2448
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "2df272aad0ff3a3d39e58d89837ab15910c407cd20da27bfe9e1ce89eb3eedeb",
+        "ms": 1572
+      },
+      {
+        "clip": "847969e697a8192fcd804b7770815c9d24253e423114a48d7287476880193757",
+        "ms": 1754
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/rift_end/narration": {
+    "": [
+      {
+        "clip": "e431d22e877fc7df0eaef8cf5d6ec04b7323eab4d49de9df14172cd14d8de709",
+        "ms": 6007
+      },
+      {
+        "clip": "aa1d0dffd2078d05b3a3aadbad40f46b8ad2e0f97fc27b451f8f0e03dd92322d",
+        "ms": 1198
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "74cd85759eccdb4099c8d43de3f8fb0b35ea7b172d9331953e968b94a5f17176",
+        "ms": 1983
+      },
+      {
+        "clip": "3fd30e7bc7c4d8ff28a0801896976d55ba095fc06dc72aa82b5a1d96407cccc9",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/river_chime/narration": {
+    "": [
+      {
+        "clip": "2de9a13bcbf865a01677597683107d88f969160b836599a3a4ff6008455152fa",
+        "ms": 6707
+      },
+      {
+        "clip": "61fe0da48c724e27a2ffc11c7f30ebad2315d62a6a927b9411f485c0473805bd",
+        "ms": 2457
+      },
+      {
+        "clip": "da1fd013408c519b55eb1bf78126a6bc6106c806f13e681f1bb40c305e6e6267",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/river_read/narration": {
+    "": [
+      {
+        "clip": "86d757d46642f2e5b44d631a1d7ef95da29a675552c75819636206ed554a9200",
+        "ms": 7407
+      },
+      {
+        "clip": "49c07195ff0d6844cd6339793b208139c4dbfed1d77de02ad50bc75fb65c58f2",
+        "ms": 1694
+      },
+      {
+        "clip": "c2816b87b0c665af2870ad489c3481a13122bb5170f9781f5808e7b645b631fd",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/shiver/narration": {
+    "": [
+      {
+        "clip": "84b17661a5cf1dec3f0642e0fadc5258a22a2afea81895e8d7f1bf2cf4fe1d24",
+        "ms": 7027
+      },
+      {
+        "clip": "bf57f7c92a70bdac6f2c385d559615cdf845dc8de3d5d6578aa308cfea00487e",
+        "ms": 662
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "3ba63d6463b98c2d2dbeb3d9cf9c14ed7fb88499a4c6b2616e662c3c1cbfc8ea",
+        "ms": 5807
+      },
+      {
+        "clip": "ef1c00908c1615aa3bb9fe0a207f22aa69b74cbaac2c08136c199a045bd1c3fd",
+        "ms": 1343
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/shiver_eat/narration": {
+    "": [
+      {
+        "clip": "55ab440eaa33d406905a5d0c7c2c9c4c9e1a4c2efc433597e730ad2a7b3075fb",
+        "ms": 5307
+      },
+      {
+        "clip": "10e1fae7ab4fcf03d0ef3fddd8708c69cf44b0ab91f00ad92747432dcbc9847b",
+        "ms": 1170
+      },
+      {
+        "clip": "fdb421068800e4dd7a19c4af0f1a2375376d2aa35b042669c3f5bbfae47d21ff",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/shiver_paddle/narration": {
+    "": [
+      {
+        "clip": "4b3203e035d4820e14416f9db66f56eb4ec21fdabb4ba268fd41f31c41f67fe2",
+        "ms": 6807
+      },
+      {
+        "clip": "115338270dd1451235a9cb5565b265479558008896448d00819b89dd6169d752",
+        "ms": 1572
+      },
+      {
+        "clip": "3207a2a2c66ec78b641629e22bd284f2f85ce7a66c6449e505228f97bf35e46f",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/shiver_sing/narration": {
+    "": [
+      {
+        "clip": "394f3c28e77e06a2964c71ab0198622fa8f1abdc3754fb3b265b1a6fd71511ae",
+        "ms": 6627
+      },
+      {
+        "clip": "32d7860bfe5d66ad9f71bcfa76bbc5aafa234c49f4ac2bbf608fdd7dd9789e2e",
+        "ms": 3607
+      },
+      {
+        "clip": "4be6f6262817fdacbf177a5a9e18faf34a39b7d7d8d5b164881a84c6978454f1",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/signal/narration": {
+    "": [
+      {
+        "clip": "4e1a9b3ba3c03ad67a8914186b34649afcce6cc9301474d6ff1a5bfe7341b85a",
+        "ms": 6207
+      },
+      {
+        "clip": "7675267295d008fabd590cdfa33dd7e5a1e4fa9a137a91f647ca5d241613447b",
+        "ms": 2821
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/signal/onFailure/narration": {
+    "": [
+      {
+        "clip": "3372b968946fc71305c3a61c419ad82d92b268a1a8b0741abf793a3111ae3368",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/signal/onSuccess/narration": {
+    "": [
+      {
+        "clip": "eab4c3054df075b4be10bf88b86f25312ff4ccd3145925057619014db881ccf1",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/signal/prompt": {
+    "": [
+      {
+        "clip": "44cfc6c118e3661453f38a8b80c391921a14a3906a6ad9911890fb308ac9a6a0",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip/narration": {
+    "": [
+      {
+        "clip": "8541376b66fc088342957e4fdd1955fc5cdbd986f6219097e48480eaed2c9341",
+        "ms": 7927
+      },
+      {
+        "clip": "bb51f3dd240e8e42778c82b939b51b598ec6eba9ed577b45f103311f1128d56d",
+        "ms": 859
+      },
+      {
+        "clip": "9bdfadb5003b197a291faaea47c840d644949c4dd03fea98131f466ad6c3707b",
+        "ms": 2548
+      },
+      {
+        "clip": "800affea931cd5162ccb054fdba6bd0cf1b6b9415c09d18c4511f8b28c62204e",
+        "ms": 1797
+      },
+      {
+        "clip": "356a66fa2bf88af9fb4750cfad71101db6e81ad7a193de3157820498df6d7b5b",
+        "ms": 1623
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_haul/narration": {
+    "": [
+      {
+        "clip": "d08fa5caa5b957d57aadcc9e2910f7bf378398ae09f0ce99dcc00ee73b7c6932",
+        "ms": 2065
+      },
+      {
+        "clip": "820907c0328d522ee6f4ed324b9cb2460daf08a652b88b6de881b41127ef0759",
+        "ms": 603
+      },
+      {
+        "clip": "98d579403c6cebdd8706394e559da515a2065b828d38139b2fc4934739a2f875",
+        "ms": 1135
+      },
+      {
+        "clip": "feec2b01ba9b8e0af16abd3f876a029664751c347ff53f69d771ae6ffe6b3365",
+        "ms": 1260
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_haul/onFailure/narration": {
+    "": [
+      {
+        "clip": "22511dcc5a719a838b83583590bbfc7ac68aa1ef786570fac7c9280c774f50b8",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_haul/onSuccess/narration": {
+    "": [
+      {
+        "clip": "38ac4f5cdcc548e3fde35bd966961c4e5d2c79d63a93537ea9f19407ea854e14",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_haul/prompt": {
+    "": [
+      {
+        "clip": "2b71447f2738256941db3b3e04e20f38a8db73e82debc8b0892d6773ed043ff8",
+        "ms": 2388
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_swing/narration": {
+    "": [
+      {
+        "clip": "6efb7e588370a7060d864432772da4d366763723ab8dbd9f273733708e7ffaa0",
+        "ms": 2514
+      },
+      {
+        "clip": "0b973696cea749f2318157989eb2dbbc3785dc0d22acd6519533e17bd91de309",
+        "ms": 828
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "922c55627797788d9aff074b488df682185f3ce7b6d29573c17dd5cfa3611ad0",
+        "ms": 728
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_swing/onFailure/narration": {
+    "": [
+      {
+        "clip": "a8af0edaa638e39cb0b4b3b188f8c95b385eb91ad8a8ada028ed6aaf4664db73",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_swing/onSuccess/narration": {
+    "": [
+      {
+        "clip": "550839a634f5a355b543e24c5566462ae3babbec3f25ff1d6d6473cf43d14b6b",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/slip_swing/prompt": {
+    "": [
+      {
+        "clip": "25c368150c5beb96479ea4ad49f47a1d63ffe3b23509781ff969f7e17df19a43",
+        "ms": 2386
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash/narration": {
+    "": [
+      {
+        "clip": "78ce3fcd9ce307a919c258fa752018dba6e9aa6604be570ec7011292cc98da43",
+        "ms": 3707
+      },
+      {
+        "clip": "0865df39fa9bb9a598bc98287d7dca0d45d8609c6977e4e0f4333ac67220ecab",
+        "ms": 1352
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash/onFailure/narration": {
+    "": [
+      {
+        "clip": "3278bb3f670c5bdf3c935ad81295d952ce24d3617f73a4ac14d4d6a802bd45c2",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1b0bb3d08851b756fb4342dc67cb5fae665a222ea3e3890d9788bd37e36ef90e",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash/prompt": {
+    "": [
+      {
+        "clip": "ce42debc96b033dc7a7b9220ba7c44bb5b45fc2063dd2c1daf9d2df46c50cf13",
+        "ms": 2464
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash_floe/narration": {
+    "": [
+      {
+        "clip": "aa7dbd3d1ea48071d99eaa40011b2e1218a780398072795045cf76a0e3d860a3",
+        "ms": 3307
+      },
+      {
+        "clip": "9fc54765c170268f78396234b3d29ba410cfd3a0c05bf5f22c27e0de806a6970",
+        "ms": 1615
+      },
+      {
+        "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
+        "ms": 1224
+      },
+      {
+        "clip": "0ab99d605a4c6584207e4853c76ac921da322ea4f1cf2ae96e09789884166513",
+        "ms": 877
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash_floe/onFailure/narration": {
+    "": [
+      {
+        "clip": "20af187147241b8795e5d43528b8da68f75d6f3bd36b7e423aa0fc7595608fb9",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash_floe/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ceda642e3b1ef26f522689d6ee70aa2c8721cfce5d337d967498b683f0d101e1",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/smash_floe/prompt": {
+    "": [
+      {
+        "clip": "12c9034d93a1390346faa425c65811f9b67f4b894c952a0599f813aeb44013c5",
+        "ms": 1715
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/snag/narration": {
+    "": [
+      {
+        "clip": "a51b6a581b8a05497e1b2a326ef84a1bb7212002c0f30c31a88b0e880d65a67a",
+        "ms": 7607
+      },
+      {
+        "clip": "5b10a595ed216f15ca0458b4d9f975496b87f3abc78ca9eef44921209dc22de3",
+        "ms": 1192
+      },
+      {
+        "clip": "944b40be1de3afdd05f536d65bf58d083f93dd276392adf1dc65c2377cef12f9",
+        "ms": 1455
+      },
+      {
+        "clip": "b2281fe4dab5ce3e43009f45bce6381dca5f5a236931a8f475fa178bdb90f7ec",
+        "ms": 2532
+      },
+      {
+        "clip": "3ba9ea41572a83ec410d6d57fec9d0f86077f0cc4c00f7837bd850ccb5f83a56",
+        "ms": 531
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/stock/narration": {
+    "": [
+      {
+        "clip": "98268e9cd2a2638308a570ee832dc3419ca6f98ce30af3328fc7611b100c0191",
+        "ms": 6307
+      },
+      {
+        "clip": "1499ed9965ce58786384a7c2d10ffaef5294f54166523f847d394c3d9ce6d2be",
+        "ms": 830
+      },
+      {
+        "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
+        "ms": 1224
+      },
+      {
+        "clip": "9c1303d03c7e6a16021870245ecc2654f66c0349101c4f99581feeb70cf946f7",
+        "ms": 3207
+      },
+      {
+        "clip": "c87fe2ea98da86dfffe8ff6fc349fb3a306891718f2659ac43356bfe28106185",
+        "ms": 1083
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/swim/narration": {
+    "": [
+      {
+        "clip": "6cc8e4a9ee9f5d80ef98134bdf858d3a979a3815e6b490fca761e152d42e71e9",
+        "ms": 2015
+      },
+      {
+        "clip": "857fd58442ecbe89bc4cab00b882b5188d9ba96443a6222711ffd426a793569b",
+        "ms": 765
+      },
+      {
+        "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
+        "ms": 1045
+      },
+      {
+        "clip": "a4b4a82f96811dae5c44f11c17193ec1c530d832c4634cb546f119860f247315",
+        "ms": 1761
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/swim/onFailure/narration": {
+    "": [
+      {
+        "clip": "6c9a371ee23f34dcd1e7302467dde08cc513e60be7070a1ddbce6d5a8c15ca05",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/swim/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4d2501189b665e084383b9221a1d9921056f229765fb3cb29d40dcc35e79fcad",
+        "ms": 2907
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/swim/prompt": {
+    "": [
+      {
+        "clip": "c84b91b8db720ebfd3a3546b6c92166d4d675b5ac8b1b0cf6d65e41d1fcdf773",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/throw_loop/narration": {
+    "": [
+      {
+        "clip": "c2f0cb25168b2b1187a64cd3af11687e9bf1ae935f1c322c4924cb61d07fa84b",
+        "ms": 4407
+      },
+      {
+        "clip": "6f136f9db47d04f434a760e89311a1611c2063f8ea50535f2d9c638769c58b25",
+        "ms": 1885
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/throw_loop/onFailure/narration": {
+    "": [
+      {
+        "clip": "879ec63f5beb260bc23518ffa22bfb3d410c2c1d7f5a02a8913f92fe40dd901b",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/throw_loop/onSuccess/narration": {
+    "": [
+      {
+        "clip": "d45920094395c6c943df0045765bd00dff2878525be4c41f0985379465f64b87",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/throw_loop/prompt": {
+    "": [
+      {
+        "clip": "556609e01ac5cbc044e242a3650cded05b0926fcabc408a6d0d415ed2ff62360",
+        "ms": 2706
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/tree/narration": {
+    "": [
+      {
+        "clip": "e99221967286f7db6966787b037df8c80754c7c2b762c62c5e326432840481aa",
+        "ms": 13607
+      },
+      {
+        "clip": "56cdfb1ce779ec59d0bca92f3896e0c651e247ae33165dcd3e7ed6575238881b",
+        "ms": 1444
+      },
+      {
+        "clip": "a7addf2c0ce94c21421086e988d9a75bdf54b32d26d29b809b16ff7508cc4338",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/tree_choice/narration": {
+    "": [
+      {
+        "clip": "14fc71fc34cc00c46aeaf19664aa531f48903c75e79f1bf89026cee5b10eb879",
+        "ms": 5707
+      },
+      {
+        "clip": "f5615380a6d0f83e281669b64f8dbd5f6bfeae5d3cf180c2e865ef33bff955cb",
+        "ms": 790
+      },
+      {
+        "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
+        "ms": 872
+      },
+      {
+        "clip": "e14ea389b20722df2ca46041346d62d6de7fdb31f1381422fa55aad5bc559fbb",
+        "ms": 1287
+      },
+      {
+        "clip": "12b3452948a3591cf7519228bba8e3502a8bc38d7fca4c01f02d586c58ff5a6d",
+        "ms": 2871
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/tree_choice/variants/0": {
+    "": [
+      {
+        "clip": "6910cd3e96c79e8406529f45e53c9c6716b33eca5461b5807dd2f1651d715dd4",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/unhook/narration": {
+    "": [
+      {
+        "clip": "b983134c36c6c609a01c20b125c0389ed1d2de24e62a41e57a6cbab894e4ba74",
+        "ms": 2543
+      },
+      {
+        "clip": "820907c0328d522ee6f4ed324b9cb2460daf08a652b88b6de881b41127ef0759",
+        "ms": 603
+      },
+      {
+        "clip": "c9cadaeea2f4c0e0ade4581473c35e94407759e953afc133d04b6b4743404109",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/unhook/onFailure/narration": {
+    "": [
+      {
+        "clip": "7479071fe29d919c43f38387788cb1bc4a1afdc14df6e25b66db799a6a8694c6",
+        "ms": 6607
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/unhook/onSuccess/narration": {
+    "": [
+      {
+        "clip": "242d477de23c5f59522eeeee77f10a9a4552c604e59acf1d58267a0d47884486",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-headwaters-washout/unhook/prompt": {
+    "": [
+      {
+        "clip": "a50d66d30ebcc6ac221535450cff0a3c466413ac31adde815d4aa54a799eb942",
+        "ms": 1983
+      }
+    ]
+  }
+}

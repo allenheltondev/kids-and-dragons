@@ -1,0 +1,514 @@
+{
+  "gemfall/@epilogue/broken-tether/0": {
+    "": [
+      {
+        "clip": "547725af46e1dd49010cf0c24bb687c6e7741809b7c4050c637c52de4a33a49c",
+        "ms": 12407
+      }
+    ]
+  },
+  "gemfall/@epilogue/broken-tether/1": {
+    "": [
+      {
+        "clip": "a95442bc099bb84c18ac8efaff0dedcedb2c63c08ff185953cfbff36263ba735",
+        "ms": 11507
+      }
+    ]
+  },
+  "gemfall/@epilogue/broken-tether/2": {
+    "": [
+      {
+        "clip": "a639ab431b3f8c43bef5fe42f717123b1e14cbbc37b6f4e3b2f8f59c8ef12f80",
+        "ms": 10207
+      }
+    ]
+  },
+  "gemfall/@epilogue/collectors/0": {
+    "": [
+      {
+        "clip": "689adcd3424793fc7d3c7ae890cc98223d245b1692435fc56f3afbb507170f04",
+        "ms": 12107
+      }
+    ]
+  },
+  "gemfall/@epilogue/collectors/1": {
+    "": [
+      {
+        "clip": "46245e17bc34c0326579bb52d870edad03f04ff3944ee4e437a088d7d4bf2c6b",
+        "ms": 11907
+      }
+    ]
+  },
+  "gemfall/@epilogue/collectors/2": {
+    "": [
+      {
+        "clip": "1f540e691a4baa020eba3a2f9e461ae85f75342bf17a5d61d62d757286c4b3b5",
+        "ms": 12207
+      }
+    ]
+  },
+  "gemfall/@epilogue/cure/0": {
+    "": [
+      {
+        "clip": "9e3e057c6008a84561527e8d68b6a75303a65da01903e945a379ebb3a77dbb64",
+        "ms": 11707
+      }
+    ]
+  },
+  "gemfall/@epilogue/cure/1": {
+    "": [
+      {
+        "clip": "03c56295257acdffb891e07b30e0ee9307f44350ea970226727deb8ba8f97ea8",
+        "ms": 10407
+      }
+    ]
+  },
+  "gemfall/@epilogue/cure/2": {
+    "": [
+      {
+        "clip": "ef83b1a58a67507ed0d7fd44d0093704073e01d0380a67c74cf5af987a2281d8",
+        "ms": 12107
+      }
+    ]
+  },
+  "gemfall/@epilogue/heroes-destroy/0": {
+    "": [
+      {
+        "clip": "799ccbd0ddd70d863b69b05184b9ed1e41080c88305ce6aaa13479461eef3a46",
+        "ms": 12207
+      }
+    ]
+  },
+  "gemfall/@epilogue/heroes-destroy/1": {
+    "": [
+      {
+        "clip": "11b7fafdd8b833c4ffeb3115f34cf75da64240e49af1a907861fb2c0bc2919d5",
+        "ms": 14107
+      }
+    ]
+  },
+  "gemfall/@epilogue/heroes-destroy/2": {
+    "": [
+      {
+        "clip": "400d2e1a98dc9b25a82cd588ac5693096796f59ec7bc582ab97a38eead51faa3",
+        "ms": 12607
+      }
+    ]
+  },
+  "gemfall/@epilogue/heroes/0": {
+    "": [
+      {
+        "clip": "f48c67f7242925ee7bb4371d909475ed73df54a0ba04af08c81c045cb5f62e33",
+        "ms": 10307
+      }
+    ]
+  },
+  "gemfall/@epilogue/heroes/1": {
+    "": [
+      {
+        "clip": "2e56b5b8458dda25318df42f0a3c23fe297b1c9c04194b9286b0fd8b7a54166c",
+        "ms": 10407
+      }
+    ]
+  },
+  "gemfall/@epilogue/heroes/2": {
+    "": [
+      {
+        "clip": "4181741604b582f9b080b5e30501f60c97e6cd92302a58d1d39b2c2e19b93b49",
+        "ms": 13407
+      }
+    ]
+  },
+  "gemfall/@epilogue/last-ring/0": {
+    "": [
+      {
+        "clip": "426fd99df7b3975185fcde7b4dfbd601af6658864a10122021ba6dc397739a7c",
+        "ms": 12907
+      }
+    ]
+  },
+  "gemfall/@epilogue/last-ring/1": {
+    "": [
+      {
+        "clip": "f689c36ab377d925bd75e397c3fd39bccf8cdbb676677feabbe220264b016bcc",
+        "ms": 11607
+      }
+    ]
+  },
+  "gemfall/@epilogue/last-ring/2": {
+    "": [
+      {
+        "clip": "a7126e493ff08ab66e802eaf2c63bfed8f4395f961643297d15286677f15be53",
+        "ms": 10507
+      }
+    ]
+  },
+  "gemfall/@epilogue/new-weather/0": {
+    "": [
+      {
+        "clip": "716a87db04704a6522fe723ca6845c17c9698f6945b5b5b3534a57cbe7bb87c4",
+        "ms": 9907
+      }
+    ]
+  },
+  "gemfall/@epilogue/new-weather/1": {
+    "": [
+      {
+        "clip": "e799143fbe7f376b8f0d8626b022fde4d59dccb3fc9bafef327bac995f881c74",
+        "ms": 11507
+      }
+    ]
+  },
+  "gemfall/@epilogue/new-weather/2": {
+    "": [
+      {
+        "clip": "bece4e23180ae2273e43c7f77b291959908ff6e37c936eb3cbc0f25ed06cd9f4",
+        "ms": 11707
+      }
+    ]
+  },
+  "gemfall/@epilogue/quiet-fixers/0": {
+    "": [
+      {
+        "clip": "de68e2f4955d265ccefea7f90201aa8b9612ff77164a1945eacdda5a70d63e22",
+        "ms": 10607
+      }
+    ]
+  },
+  "gemfall/@epilogue/quiet-fixers/1": {
+    "": [
+      {
+        "clip": "dc0522a30571a74aa2d5803ccc1e088eee8b88893bc681287f5cc51dd000a0ea",
+        "ms": 10907
+      }
+    ]
+  },
+  "gemfall/@epilogue/quiet-fixers/2": {
+    "": [
+      {
+        "clip": "e3bc0969f6b77da606bb649740d707ad79847a0dfbd9718d695f15d9aa8cb652",
+        "ms": 11807
+      }
+    ]
+  },
+  "gemfall/@epilogue/turned-back/0": {
+    "": [
+      {
+        "clip": "592d752e484b5d0841ea01cda9aa4f546464c1916ccc1aa52f461543010d0035",
+        "ms": 11907
+      }
+    ]
+  },
+  "gemfall/@epilogue/turned-back/1": {
+    "": [
+      {
+        "clip": "d9eedc517ce594d0b98414108b727c746b9903994e47a531fc38e7a969574176",
+        "ms": 10907
+      }
+    ]
+  },
+  "gemfall/@epilogue/turned-back/2": {
+    "": [
+      {
+        "clip": "42e2b8499cf030c27051892a991a2fe903b90869ab4c59b2b4594b2da5de074d",
+        "ms": 11507
+      }
+    ]
+  },
+  "gemfall/@epilogue/wardens-regret/0": {
+    "": [
+      {
+        "clip": "630d4f7773696580549d88e6dfda54d4a25b4e709345a418dae3529c2efd06d9",
+        "ms": 12207
+      }
+    ]
+  },
+  "gemfall/@epilogue/wardens-regret/1": {
+    "": [
+      {
+        "clip": "4d58340d41864baf3702e4c9265c6be3e089dffadf56abda8748d2ed644291b3",
+        "ms": 10507
+      }
+    ]
+  },
+  "gemfall/@epilogue/wardens-regret/2": {
+    "": [
+      {
+        "clip": "20e127890a340fc5989647916bdce5b45424d950081049fda998be1b5cb84685",
+        "ms": 12207
+      }
+    ]
+  },
+  "gemfall/@lastTime/clock_late": {
+    "": [
+      {
+        "clip": "fd6881f076eef36c3724c2d0469fd74f277c3fc250fb5dc7b2aadcea4818cea3",
+        "ms": 5607
+      }
+    ]
+  },
+  "gemfall/@lastTime/clock_steady": {
+    "": [
+      {
+        "clip": "5b7cad403660a0026c45a0b50bce32130656219fba2311bd7e69eb1c28176f05",
+        "ms": 5307
+      }
+    ]
+  },
+  "gemfall/@lastTime/clock_stirring": {
+    "": [
+      {
+        "clip": "e205914b30ad0717160dcb529cb4ffc96c4c56afd0af1e3b157d7234daf054b8",
+        "ms": 4507
+      }
+    ]
+  },
+  "gemfall/@lastTime/crossed_dry": {
+    "": [
+      {
+        "clip": "4a92043d6800056f95ecc33d3cb9fdd60e5fa07c747cdf3c818ed301fff0abf0",
+        "ms": 2964
+      }
+    ]
+  },
+  "gemfall/@lastTime/ember_sold": {
+    "": [
+      {
+        "clip": "91fcb51bd10040b056bf0a1234c945ac105c15bb220a030eb9e366b97c2b7022",
+        "ms": 5107
+      }
+    ]
+  },
+  "gemfall/@lastTime/forded_clean": {
+    "": [
+      {
+        "clip": "105c1004291b54f5babeb6fdb9b9fd5647270bce1786928c58d4ff40b7653755",
+        "ms": 3307
+      }
+    ]
+  },
+  "gemfall/@lastTime/funded_the_break": {
+    "": [
+      {
+        "clip": "be6e86727de9f0c7a4eba1ec4569018fe18cc5a56bc6cf79e6518742fccabb5d",
+        "ms": 5307
+      }
+    ]
+  },
+  "gemfall/@lastTime/glade_mended": {
+    "": [
+      {
+        "clip": "db68b0072e4102589cd016621f60d51ddd81ecc6025522921c2f0474c3d601a0",
+        "ms": 5407
+      }
+    ]
+  },
+  "gemfall/@lastTime/kept_close": {
+    "": [
+      {
+        "clip": "8a755ef72e5084673de48908ff8d014d45672410a01f2979653c950976b25fda",
+        "ms": 3207
+      }
+    ]
+  },
+  "gemfall/@lastTime/marsh_kept_us": {
+    "": [
+      {
+        "clip": "983a788dab8a074b195828e245ec3965bd8e39a6490416226fbb07005e8a5219",
+        "ms": 5107
+      }
+    ]
+  },
+  "gemfall/@lastTime/motive_curiosity": {
+    "": [
+      {
+        "clip": "7f73c02dfc4ca1763c04b7d38ba1ee4e75c741f1db6545ad983bfc8a2056af18",
+        "ms": 3407
+      }
+    ]
+  },
+  "gemfall/@lastTime/motive_duty": {
+    "": [
+      {
+        "clip": "d82c34776ef4dada9d4841c769bf5beff56e1509f0122ea98c348abcd1b64ec0",
+        "ms": 3407
+      }
+    ]
+  },
+  "gemfall/@lastTime/motive_fresh_start": {
+    "": [
+      {
+        "clip": "04ca4c6c80b78e684a07b2f90e43a6d97b0d6cb1534391c226bd7ea11ed8bb2d",
+        "ms": 2995
+      }
+    ]
+  },
+  "gemfall/@lastTime/motive_prestige": {
+    "": [
+      {
+        "clip": "c6762df2c18105db1de6e61820f9f7f7a9c6c065ee4fb9d3bb3b38d7d96df3fd",
+        "ms": 3107
+      }
+    ]
+  },
+  "gemfall/@lastTime/motive_proving": {
+    "": [
+      {
+        "clip": "d4eb36faa36ffe4d06bfb6f7511f96ddbc23646927c9a65caff9021d713197bc",
+        "ms": 2235
+      }
+    ]
+  },
+  "gemfall/@lastTime/motive_wealth": {
+    "": [
+      {
+        "clip": "8fea6ff9c6e85af6ff95ccf8d731325184852381bf50a249310d6c14c583607c",
+        "ms": 3907
+      }
+    ]
+  },
+  "gemfall/@lastTime/opener": {
+    "": [
+      {
+        "clip": "81bf3c80ec59974be1683ef6fd80e710dff18e6b83ff67028b1a5a45128e2d0d",
+        "ms": 9107
+      }
+    ]
+  },
+  "gemfall/@lastTime/pursuit_hoard": {
+    "": [
+      {
+        "clip": "f8db9699c3c72fca5886864b84026bbf24bddad9c2d1acc8e370474da5517f55",
+        "ms": 4807
+      }
+    ]
+  },
+  "gemfall/@lastTime/pursuit_leash": {
+    "": [
+      {
+        "clip": "d9957936303e7b75a4e5501be5c2bd8405460d70fab2b431758fe538deefe864",
+        "ms": 6207
+      }
+    ]
+  },
+  "gemfall/@lastTime/pursuit_restore": {
+    "": [
+      {
+        "clip": "e790a475d8015a3e7af2280444d26d3605d5bb137b1d950df63ca88a6d5610e9",
+        "ms": 5207
+      }
+    ]
+  },
+  "gemfall/@lastTime/refused_the_cult": {
+    "": [
+      {
+        "clip": "7293507617c541a2600d9f10a5523b597505bf8eed8f606de6f83fb18ebc110d",
+        "ms": 3907
+      }
+    ]
+  },
+  "gemfall/@lastTime/river_took_us": {
+    "": [
+      {
+        "clip": "2db88a00e553d7991a206cfc532cac4439aab15d297c8757edb21964db8aedd6",
+        "ms": 5007
+      }
+    ]
+  },
+  "gemfall/@lastTime/route_river": {
+    "": [
+      {
+        "clip": "3ff2c4426d9839dd12717d459fd1fc37a928c49201e100eefd1828083b56e791",
+        "ms": 3107
+      }
+    ]
+  },
+  "gemfall/@lastTime/route_rush": {
+    "": [
+      {
+        "clip": "ef75e1892ed8d12279d96d075e084b7d474a6f3bf577b665a8c112be96d3056c",
+        "ms": 4907
+      }
+    ]
+  },
+  "gemfall/@lastTime/route_wild": {
+    "": [
+      {
+        "clip": "c2faa1e15ae3727b8a523255c9a69018448d6646a35c2709e94cf35293089826",
+        "ms": 4507
+      }
+    ]
+  },
+  "gemfall/@lastTime/sprites_friends": {
+    "": [
+      {
+        "clip": "3a2bf030ba04e1a07cb4eb4a18a25408aa2574429ec55ed629745e46875107ae",
+        "ms": 4007
+      }
+    ]
+  },
+  "gemfall/@lastTime/sprites_wronged": {
+    "": [
+      {
+        "clip": "36b176be1286c51f31458e1c45c5798f6bcf47adbc78572d8d97948175292636",
+        "ms": 5807
+      }
+    ]
+  },
+  "gemfall/@lastTime/told_gatherers": {
+    "": [
+      {
+        "clip": "5898532cf0b5c5d1c8530af709176a52fca0493b0fbdbbe519de15730d54f032",
+        "ms": 4107
+      }
+    ]
+  },
+  "gemfall/@lastTime/told_wardens": {
+    "": [
+      {
+        "clip": "e419c0dfbc665bfaa3530a20633d53bdf82c0626f78e0e0fd8e1e4aa5664ff83",
+        "ms": 3807
+      }
+    ]
+  },
+  "gemfall/@lastTime/walked_over": {
+    "": [
+      {
+        "clip": "b1cc004cc49024ad3a9d05925c83d359b2a5a5ed91208806b78e73546841f680",
+        "ms": 4707
+      }
+    ]
+  },
+  "gemfall/@prologue/0": {
+    "": [
+      {
+        "clip": "750ee5766d38c366b910d87d01f35f70f42eea2e265f323b59af42688978cf8a",
+        "ms": 12307
+      }
+    ]
+  },
+  "gemfall/@prologue/1": {
+    "": [
+      {
+        "clip": "764194abde0db104122b00c42063e27860dbe8e92f8620c7d1a869a08b3e8766",
+        "ms": 11307
+      }
+    ]
+  },
+  "gemfall/@prologue/2": {
+    "": [
+      {
+        "clip": "6f69ba379040f0ea0256b62b4bc7d1507b7054e41ffa74eea4d8cee246fd47dd",
+        "ms": 13907
+      }
+    ]
+  },
+  "gemfall/@prologue/3": {
+    "": [
+      {
+        "clip": "aee089ef8e066f3e416b8a907123a970130579b4ca58872f5be254942cb90b5d",
+        "ms": 11207
+      }
+    ]
+  }
+}
