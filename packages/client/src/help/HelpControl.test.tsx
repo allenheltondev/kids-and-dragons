@@ -47,7 +47,11 @@ describe("the ? button", () => {
     await user.click(screen.getByRole("button", { name: "Help" }));
     const dialog = await screen.findByRole("dialog", { name: "Help" });
     expect(dialog.textContent).toContain(help.surfaces.inventory.text);
-    expect(hear).toHaveBeenCalledWith(help.surfaces.inventory.text, { source: "ui" });
+    // Authored words, so a recording of them can play: filed where the voice inventory put them.
+    expect(hear).toHaveBeenCalledWith(help.surfaces.inventory.text, {
+      source: "ui",
+      parts: [{ address: "help/surfaces/inventory", line: help.surfaces.inventory.text }],
+    });
   });
 
   it("follows the pane the player is on", async () => {
@@ -87,6 +91,11 @@ describe("the ? button", () => {
 
     act(() => { showThingHelp({ kind: "buff", name: "Guard" }); });
     expect((await screen.findByRole("dialog", { name: "Guard" })).textContent).toContain(help.things.buff.text);
+    // A kind's own words are authored and recorded; a thing's own words are run-time text and are not.
+    expect(hear).toHaveBeenLastCalledWith(help.things.buff.text, {
+      source: "ui",
+      parts: [{ address: "help/things/buff", line: help.things.buff.text }],
+    });
   });
 
   it("opens a quick How to play reference whose cards read themselves aloud, and goes back", async () => {
@@ -99,7 +108,10 @@ describe("the ? button", () => {
     for (const tile of help.howToPlay) expect(dialog.textContent).toContain(tile.title);
     hear.mockClear();
     await user.click(screen.getByRole("button", { name: new RegExp(help.howToPlay[2]!.title) }));
-    expect(hear).toHaveBeenCalledWith(help.howToPlay[2]!.text, { source: "ui" });
+    expect(hear).toHaveBeenCalledWith(help.howToPlay[2]!.text, {
+      source: "ui",
+      parts: [{ address: "help/howToPlay/2", line: help.howToPlay[2]!.text }],
+    });
     await user.click(screen.getByRole("button", { name: "Back" }));
     expect((await screen.findByRole("dialog", { name: "Help" })).textContent).toContain(help.surfaces.inventory.text);
   });

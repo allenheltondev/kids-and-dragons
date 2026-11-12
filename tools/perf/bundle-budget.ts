@@ -335,7 +335,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // stop. 1800KB measured against main's 1797KB, so the 2KB of slack covered all but the last
 // 1KB. The card and its logic are in the account screen's lazy chunk; the two API calls and
 // `forgetPlayerDevice` are in the entry. First paint 331KB, unchanged. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1802;
+// 1802 -> 1805 on 2026-11-12 for playing the recorded plates and help sheet: the manifest
+// lookup for campaign and help addresses (`manifestOfAddress`, `helpAddress`), the per-plate
+// addresses on `StartPlates`, and the reel's title-then-recording split. 1803KB measured, 1KB
+// over, the code spread over the entry and the lazy read-aloud and help chunks. First paint
+// 331KB, unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1805;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

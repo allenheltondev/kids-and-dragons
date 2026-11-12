@@ -386,10 +386,18 @@ kept audio without asking the provider again.
   each so a browser that never says a line ended cannot hold up the scene.
   - What carries parts: the scene's narration (`RunState.narrationParts`, said as its own line;
     the decision and priority ribbon ahead of it stay with the device voice) and the goal
-    ("Your goal: …", `<chapter>/@goal`, also as the "Last time…" card's last line). Everything
-    else (turns, decision lines, roll prompts, the fight log, hand-offs, rank-ups, hints, the
-    "Last time…" lines, plates, help) is still the device voice. Recording roll prompts, hints
-    and the campaign's `_<campaign>` lines needs only parts at those call sites.
+    ("Your goal: …", `<chapter>/@goal`, also as the "Last time…" card's last line), the story
+    plates (a prologue's `<campaign>/@prologue/<i>`, a chapter's `<chapter>/@plate`, an
+    epilogue's `<campaign>/@epilogue/<epilogue>/<i>`, filed by the plate's own place in the reel,
+    so a painting that did not arrive leaves the others where they were) and the help sheet
+    (`help/surfaces/<screen>`, `help/things/<kind>`, `help/howToPlay/<i>`). A reel's title is
+    run-time words with no recording: it is said first by the device voice, then the plate's
+    recording plays. `manifestOfAddress` (`voice-clips.ts`) is the one place that says which
+    manifest an address is in: a chapter's, `_<campaign>` for a prologue, epilogue or
+    "Last time…", `_help` for `help/…`; `tools/voice/ui-addresses.test.ts` checks every address
+    the screens build against the committed manifests. Everything else (turns, decision lines,
+    roll prompts, the fight log, hand-offs, rank-ups, hints, an item's own description in help)
+    is still the device voice, and the "Last time…" lines are not read aloud at all.
   - Manifests are fetched the first time a chapter's line is spoken, one per chapter
     (`/content/voice/manifest/<chapter>.json`), never at first paint: the speaker is in the lazy
     read-aloud chunk. A 404 is remembered for the session, no signal is asked again. Clips are

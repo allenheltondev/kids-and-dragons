@@ -128,6 +128,41 @@ describe("manifestOf", () => {
     expect(manifestOf(undefined)).toBeNull();
     expect(manifestOf("@help/x")).toBeNull();
   });
+
+  it("files a campaign's prologue, epilogue and \"Last time\" under the campaign, and the help sheet under help", () => {
+    expect(manifestOf("gemfall/@prologue/0")).toBe("_gemfall");
+    expect(manifestOf("gemfall/@epilogue/cure/2")).toBe("_gemfall");
+    expect(manifestOf("gemfall/@lastTime/opener")).toBe("_gemfall");
+    expect(manifestOf("help/surfaces/story")).toBe("_help");
+    expect(manifestOf("help/howToPlay/3")).toBe("_help");
+    // A chapter's own plate and goal stay in the chapter's manifest.
+    expect(manifestOf("gemfall-01/@plate")).toBe("gemfall-01");
+  });
+});
+
+describe("lines outside a chapter", () => {
+  it("fetches the campaign's manifest for a prologue plate and plays its clips", async () => {
+    const t = setup({
+      [manifestPath("_ch")]: json({ "ch/@prologue/0": { "": [{ clip: A, ms: 900 }] } }),
+      [clipPath(A)]: bytes(A),
+    });
+    t.speaker("The road begins.", { source: "narration", parts: [{ address: "ch/@prologue/0", line: "The road begins." }] });
+    await settle();
+    expect(t.net.asked).toEqual([manifestPath("_ch"), clipPath(A)]);
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
+    expect(t.device.said).toEqual([]);
+  });
+
+  it("fetches the help manifest for a help line", async () => {
+    const t = setup({
+      [manifestPath("_help")]: json({ "help/surfaces/story": { "": [{ clip: B, ms: 700 }] } }),
+      [clipPath(B)]: bytes(B),
+    });
+    t.speaker("This is the story.", { source: "ui", parts: [{ address: "help/surfaces/story", line: "This is the story." }] });
+    await settle();
+    expect(t.net.asked).toEqual([manifestPath("_help"), clipPath(B)]);
+    expect(t.plays.map((p) => p.buffers)).toEqual([[B]]);
+  });
 });
 
 describe("a recorded line", () => {

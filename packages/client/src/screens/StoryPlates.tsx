@@ -30,7 +30,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
-import { plateWordCount, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
+import { plateWordCount, prologueAddresses, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
 import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
 import { useRunState, useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
@@ -51,13 +51,18 @@ export function plateHoldMs(words: number): number {
 
 interface Frame extends StoryPlate {
   url: string;
+  /**
+   * Where this plate's words are filed in the voice manifests. A plate left out for want of its
+   * painting leaves the others where they were, so it is the plate's own, never the frame's index.
+   */
+  address: string | undefined;
 }
 
 /** Fetch every painting; the ones that arrive in time, in story order. Never rejects. */
-function preload(plates: readonly StoryPlate[]): Promise<Frame[]> {
+function preload(picked: StartPlates): Promise<Frame[]> {
   return Promise.all(
-    plates.map(
-      (plate) =>
+    picked.plates.map(
+      (plate, at) =>
         new Promise<Frame | null>((resolve) => {
           const url = storyPlateUrl(plate.art);
           const image = new Image();
@@ -68,7 +73,7 @@ function preload(plates: readonly StoryPlate[]): Promise<Frame[]> {
             resolve(frame);
           };
           const timer = setTimeout(() => done(null), PLATE_LOAD_MS);
-          image.onload = () => done({ ...plate, url });
+          image.onload = () => done({ ...plate, url, address: picked.addresses?.[at] });
           image.onerror = () => done(null);
           image.src = url;
         }),
@@ -79,6 +84,26 @@ function preload(plates: readonly StoryPlate[]): Promise<Frame[]> {
 /** What a plate says: its title first, on the first plate, so the table hears where it is. */
 function spoken(picked: StartPlates, frame: Frame, index: number): string {
   return index === 0 ? `${picked.ribbon}. ${frame.narration}` : frame.narration;
+}
+
+/**
+ * Says the plate. Its words are authored, so a recording of them can be played
+ * (speech/clip-speaker.ts); the title ahead of the first plate is not recorded and is said by the
+ * device voice just before, the way a scene's ribbon is (NarrationPanel). A plate with no
+ * recording is read by the device voice whole, title and all, as it always was.
+ */
+function say(picked: StartPlates, frame: Frame, index: number): void {
+  if (frame.address === undefined) {
+    speak(spoken(picked, frame, index), { source: "narration", interrupt: true });
+    return;
+  }
+  const parts = [{ address: frame.address, line: frame.narration }];
+  if (index === 0) {
+    speak(`${picked.ribbon}.`, { source: "narration", interrupt: true });
+    speak(frame.narration, { source: "narration", parts });
+  } else {
+    speak(frame.narration, { source: "narration", interrupt: true, parts });
+  }
 }
 
 /**
@@ -112,7 +137,7 @@ function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () 
   useEffect(() => {
     if (preloaded) return;
     let live = true;
-    void preload(picked.plates).then((loaded) => {
+    void preload(picked).then((loaded) => {
       if (!live) return;
       if (loaded.length === 0) {
         if (onDone) onDone();
@@ -152,7 +177,7 @@ function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () 
   useEffect(() => {
     if (frames === null || frame === undefined) return;
     const text = spoken(picked, frame, index);
-    speak(text, { source: "narration", interrupt: true });
+    say(picked, frame, index);
     if (held) return;
     const timer = setTimeout(advance, plateHoldMs(plateWordCount(text)));
     return () => clearTimeout(timer);
@@ -276,7 +301,7 @@ export function EpiloguePlates(): ReactElement | null {
     setUp(false);
     setFrames(null);
     let live = true;
-    void preload(picked.plates).then((loaded) => {
+    void preload(picked).then((loaded) => {
       if (!live) return;
       if (loaded.length === 0) markStoryPlatesUnavailable(key);
       else setFrames(loaded);
@@ -326,7 +351,7 @@ export function PrologueReplay({ campaign, onClose }: { campaign: Campaign; onCl
   const picked = useMemo<StartPlates | null>(
     () =>
       campaign.prologue && campaign.prologue.plates.length > 0
-        ? { kind: "prologue", key: `replay:${campaign.id}`, ribbon: campaign.title, plates: campaign.prologue.plates }
+        ? { kind: "prologue", key: `replay:${campaign.id}`, ribbon: campaign.title, plates: campaign.prologue.plates, addresses: prologueAddresses(campaign) }
         : null,
     [campaign],
   );
