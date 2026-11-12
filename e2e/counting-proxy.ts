@@ -39,8 +39,8 @@ export interface Tally {
 export type Report = Record<Kind, Tally>;
 
 function emptyReport(): Report {
-  const kinds: Kind[] = ["page", "bundle", "content", "art", "audio", "api", "worker", "other"];
-  return Object.fromEntries(kinds.map((kind) => [kind, { requests: 0, bodies: 0, bytes: 0, downloaded: [] }])) as Report;
+  const tally = (): Tally => ({ requests: 0, bodies: 0, bytes: 0, downloaded: [] });
+  return { page: tally(), bundle: tally(), content: tally(), art: tally(), audio: tally(), api: tally(), worker: tally(), other: tally() };
 }
 
 export interface CountingProxy {
@@ -106,10 +106,11 @@ export async function startCountingProxy(target: string, initial: ProxyOptions =
 
   function handle(req: IncomingMessage, res: ServerResponse, path: string): void {
     const kind = kindOf(path);
-    // The event stream stays open for the whole game; it is not "loading".
+    // The event stream stays open for the whole game; neither its connection
+    // nor its heartbeat bytes count as loading or restart the quiet window.
     const tracked = !path.startsWith("/events/");
     if (tracked) inFlight += 1;
-    lastActivity = Date.now();
+    if (tracked) lastActivity = Date.now();
     tally[kind].requests += 1;
 
     if (options.gone?.(path) === true) {
@@ -154,7 +155,7 @@ export async function startCountingProxy(target: string, initial: ProxyOptions =
             tally[kind].bytes += body.length;
             res.end(body);
             if (tracked) inFlight -= 1;
-            lastActivity = Date.now();
+            if (tracked) lastActivity = Date.now();
           });
           return;
         }
@@ -172,13 +173,13 @@ export async function startCountingProxy(target: string, initial: ProxyOptions =
         }
         reply.on("data", (chunk: Buffer) => {
           tally[kind].bytes += chunk.length;
-          lastActivity = Date.now();
+          if (tracked) lastActivity = Date.now();
         });
         reply.pipe(res, { end: !tampered });
         reply.on("end", () => {
           if (tampered) res.end(Buffer.from([0]));
           if (tracked) inFlight -= 1;
-          lastActivity = Date.now();
+          if (tracked) lastActivity = Date.now();
         });
       },
     );

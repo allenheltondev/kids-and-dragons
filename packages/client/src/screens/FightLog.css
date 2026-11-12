@@ -369,5 +369,5 @@
 
 /* Large text on a TV remains a side column, with room for full sentences. */
 @container world (min-width: 641px) and (max-height: 26em) {
-  .fight-log { inline-size: 40%; font-size: .8em; }
+  .fight-log { inline-size: 44%; font-size: .8em; }
 }
