@@ -8,8 +8,8 @@ agent that is not Claude Code needs on top of it.
 ## Setting up
 
 - Run `npm run setup` once per fresh checkout. It installs the Node and Python dependencies,
-  registers the git merge driver for `assets.lock.json`, and, once the art lives in the asset
-  store, pulls `assets/` onto disk. It needs only Node, so it runs the same in PowerShell, cmd
+  registers the git merge drivers for `assets.lock.json` and `assets/manifest.json`, and, once
+  the art lives in the asset store, pulls `assets/` onto disk. It needs only Node, so it runs the same in PowerShell, cmd
   and bash; `scripts/setup.sh` is the same thing for a shell that has bash.
 - If your environment did not run it, nothing in `assets/` may be on disk. Before reading,
   checking or replacing any art, run `npm run assets:pull` (add `-- art` or `-- docs` when you need
@@ -25,7 +25,11 @@ from the issue to the asset store. In short:
    "Done when".
 2. Generate with the imagegen skill into `staging/`. Keep the untouched original under
    `art/source/originals/<issue>/`.
-3. Fit the image to its contract, then run `npm run art:verify` and the kind's tests.
+3. Fit the image to its contract, then run `npm run art:verify` and the kind's tests. Where you
+   declare it in `assets/manifest.json`, the growing lists are kept in order: put a new entry in
+   its place, or add it anywhere and run `npm run art:sort`. Never at the end by habit; that is
+   what made every two art branches conflict. If a merge of `main` stops on the manifest, run
+   `npm run art:resolve` ([docs/art-pipeline.md](docs/art-pipeline.md#declaring-art-the-manifests-lists-are-kept-in-order)).
 4. **Character art** (`assets/characters/`, `assets/character-rigs/`, `assets/gear-portraits/`)
    waits for the user's approval. Other art does not. After the cutover, CI fails the PR until
    the user labels it `art-approved`; never add that label yourself.

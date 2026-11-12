@@ -2,6 +2,11 @@
 # It is checked out with Unix line endings on every OS, which is how the tools write it.
 assets.lock.json merge=kad-assets-lock text eol=lf
 
+# The art manifest's growing lists are kept in order and merged entry by entry
+# (tools/art/manifest-order.ts, tools/art/merge-manifest.ts; npm run setup registers the driver).
+# Unix line endings on every OS: it was committed with both kinds, line by line.
+assets/manifest.json merge=kad-art-manifest text eol=lf
+
 # Shell scripts keep Unix line endings on every OS. With core.autocrlf a Windows checkout gave
 # them CRLF, which bash reads as part of each command.
 *.sh text eol=lf
