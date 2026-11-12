@@ -96,6 +96,20 @@ describe("a lock that approves by a clip's short key", () => {
     expect(verdict.notes).toEqual([expect.objectContaining({ message: expect.stringContaining("no manifest plays") })]);
   });
 
+  it("fails a short approval that two different clips begin with, and not when each is filed whole", () => {
+    // Two clips that differ only after the 16th digit: one short entry cannot say which was approved.
+    const twin = key(1).slice(0, 16) + "f".repeat(48);
+    const manifest: Manifest = { "ch/scene_a/narration": { "": [{ clip: key(1), ms: MS }] }, "ch/scene_b/narration": { "": [{ clip: twin, ms: MS }] } };
+    const desired = wants();
+    desired.lines.push({ address: "ch/scene_b/narration", chapter: "ch", campaign: "c", variant: "", segments: [{ key: twin, by: "narrator", text: "Another line." }] });
+    const shared = check(manifest, desired, { [short(1)]: {} });
+    expect(shared.failures).toEqual([expect.objectContaining({ message: expect.stringContaining("file each under its whole key") })]);
+    // Filed whole, each is approved on its own and nothing is wrong.
+    expect(check(manifest, desired, { [key(1)]: {}, [twin]: {} }).failures).toEqual([]);
+    // A short entry nobody filed under is not a problem: the twins simply share a prefix.
+    expect(check(manifest, desired, {}).failures).toEqual([]);
+  });
+
   it("fails an entry that is neither a whole key nor a short one", () => {
     const verdict = check(played(), wants(), { "abc123": {}, [`${short(1)}0`]: {} });
     expect(verdict.failures).toHaveLength(2);
