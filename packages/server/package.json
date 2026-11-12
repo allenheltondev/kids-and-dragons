@@ -10,12 +10,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1161.0",
-    "@aws-sdk/client-lambda": "^3.1161.0",
+    "@aws-sdk/client-dynamodb": "^3.1164.0",
+    "@aws-sdk/client-lambda": "^3.1164.0",
     "@aws-sdk/client-s3": "^3.1166.0",
-    "@aws-sdk/client-ssm": "^3.1161.0",
+    "@aws-sdk/client-ssm": "^3.1164.0",
     "@aws-sdk/credential-provider-node": "^3.972.74",
-    "@aws-sdk/lib-dynamodb": "^3.1161.0",
+    "@aws-sdk/lib-dynamodb": "^3.1164.0",
     "@aws-sdk/s3-request-presigner": "^3.1166.0",
     "@kad/shared": "*",
     "@modelcontextprotocol/server": "^2.4.0",
