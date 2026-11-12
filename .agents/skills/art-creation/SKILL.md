@@ -157,7 +157,11 @@ Only after the gates pass, and for character art only once the user has approved
    need pushing. Never commit the image instead.
 2. Everything the issue's **Done when** asks for is in place (manifest entry, chapter
    mapping, re-measured box), and `npm run art:inventory` no longer lists the
-   paths as owed.
+   paths as owed. The manifest's growing lists (`castFigures`, `sceneIllustrations`,
+   `storyProps`, `storyPlates`, `paintedIcons`, `entities` and the others named in
+   `tools/art/manifest-order.ts`) are kept in order, so that two art branches add on
+   different lines and merge: put a new entry in its place, or add it anywhere and run
+   `npm run art:sort`. `art:verify` fails on a list out of order.
 3. Commit together: `assets.lock.json`, the prompts record, and any manifest or content
    change the art belongs to. Never the image file itself; `assets:verify` fails CI on a
    committed PNG, WebP, JPEG, GIF or WebM under `assets/`, `art/` or `docs/`.

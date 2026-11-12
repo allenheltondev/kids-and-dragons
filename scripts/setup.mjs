@@ -5,9 +5,10 @@
  *   npm run setup            (PowerShell, cmd, bash: anywhere)
  *   ./scripts/setup.sh       (the same thing; Claude Code's SessionStart hook runs this)
  *
- * Installs everything the checks in .github/workflows/ci.yml need, registers the asset
- * lock's merge driver, and pulls the game's art from the asset store, so a fresh machine
- * or a fresh agent session can run the tests, the content validator and the art gate.
+ * Installs everything the checks in .github/workflows/ci.yml need, registers the merge
+ * drivers for the asset lock and the art manifest, and pulls the game's art from the asset
+ * store, so a fresh machine or a fresh agent session can run the tests, the content
+ * validator and the art gate.
  *
  * It is Node rather than bash because an agent on Windows has no bash to run a setup
  * script with: there the bash version could not run at all, and a session started with
@@ -73,14 +74,14 @@ export function pythonCandidates(platform = process.platform) {
 /**
  * @param {string} root
  * @param {{ env?: NodeJS.ProcessEnv, io?: SetupIo, platform?: NodeJS.Platform }} [options]
- * @returns {{ node: "installed" | "current", python: "installed" | "current" | "missing" | "failed", proofs: "current" | "failed" | "no tool", driver: boolean, art: "pulled" | "failed" | "skipped" | "no lock" }}
+ * @returns {{ node: "installed" | "current", python: "installed" | "current" | "missing" | "failed", proofs: "current" | "failed" | "no tool", driver: boolean, manifestDriver: boolean, art: "pulled" | "failed" | "skipped" | "no lock" }}
  */
 export function setup(root, options = {}) {
   const env = options.env ?? process.env;
   const io = options.io ?? realIo(root);
   const platform = options.platform ?? process.platform;
   /** @type {ReturnType<typeof setup>} */
-  const done = { node: "current", python: "missing", proofs: "no tool", driver: false, art: "no lock" };
+  const done = { node: "current", python: "missing", proofs: "no tool", driver: false, manifestDriver: false, art: "no lock" };
 
   // --- Node -------------------------------------------------------------------
   // The workspaces (packages/shared, server, client) install from the root.
@@ -139,6 +140,12 @@ export function setup(root, options = {}) {
     const driver = io.run("git", ["config", "merge.kad-assets-lock.driver", "node tools/assets/merge-lock.ts %O %A %B"]);
     done.driver = name === 0 && driver === 0;
     if (!done.driver) io.warn("could not register the asset lock's merge driver: a merge of assets.lock.json may conflict line by line");
+    // The art manifest's growing lists are kept in order and merged entry by entry
+    // (tools/art/manifest-order.ts): the same problem, solved by the same means.
+    const manifestName = io.run("git", ["config", "merge.kad-art-manifest.name", "art manifest, lists merged by entry (tools/art/merge-manifest.ts)"]);
+    const manifestDriver = io.run("git", ["config", "merge.kad-art-manifest.driver", "node tools/art/merge-manifest.ts %O %A %B"]);
+    done.manifestDriver = manifestName === 0 && manifestDriver === 0;
+    if (!done.manifestDriver) io.warn("could not register the art manifest's merge driver: a merge of assets/manifest.json may conflict line by line");
   }
   // Once the art lives in the store, a fresh checkout has none of it. Pull the game's art
   // (what the tests, the art gate and the dev server read); `npm run assets:pull` with no

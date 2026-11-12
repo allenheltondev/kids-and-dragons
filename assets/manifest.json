@@ -140,35 +140,32 @@
   ],
   "entities": [
     {
-      "id": "sheeple",
+      "id": "boggart",
       "classification": "supporting_people",
-      "primaryBiome": "plains",
+      "primaryBiome": "whispering_marsh",
       "canonicalLocations": [
-        "plains",
-        "sunward_fields",
-        "exchange"
+        "whispering_marsh"
       ],
-      "scale": "medium"
+      "scale": "small"
     },
     {
-      "id": "centaur",
-      "classification": "supporting_people",
-      "primaryBiome": "plains",
+      "id": "bone_crawler",
+      "classification": "dangerous_creature",
+      "primaryBiome": "bone_yard",
       "canonicalLocations": [
-        "the_plains",
-        "eastern_plains",
-        "stone_crossing"
+        "bone_yard"
       ],
-      "scale": "large"
+      "scale": "small_to_medium"
     },
     {
-      "id": "faun",
+      "id": "boughkin",
       "classification": "supporting_people",
-      "primaryBiome": "sunward_fields",
+      "primaryBiome": "enchanted_woods",
       "canonicalLocations": [
-        "sunward_fields"
+        "enchanted_woods",
+        "mosshome"
       ],
-      "scale": "medium"
+      "scale": "very_large"
     },
     {
       "id": "burrowfolk",
@@ -183,14 +180,66 @@
       "scale": "small_to_medium"
     },
     {
-      "id": "harvest_sprite",
+      "id": "centaur",
+      "classification": "supporting_people",
+      "primaryBiome": "plains",
+      "canonicalLocations": [
+        "the_plains",
+        "eastern_plains",
+        "stone_crossing"
+      ],
+      "scale": "large"
+    },
+    {
+      "id": "cinder_wolf",
+      "classification": "dangerous_creature",
+      "primaryBiome": "red_sky_foothills",
+      "canonicalLocations": [
+        "red_sky_foothills",
+        "the_plains"
+      ],
+      "scale": "medium",
+      "states": {
+        "shooed": "entities/cinder_wolf/shooed.png",
+        "cache_sniff": "entities/cinder_wolf/cache_sniff.png"
+      }
+    },
+    {
+      "id": "cloud_whale",
+      "classification": "ambient_creature",
+      "primaryBiome": "sky_islands",
+      "canonicalLocations": [
+        "sky_islands"
+      ],
+      "scale": "colossal"
+    },
+    {
+      "id": "echo_hunter",
+      "classification": "dangerous_creature",
+      "primaryBiome": "skullwater_cave",
+      "canonicalLocations": [
+        "skullwater_cave"
+      ],
+      "scale": "large"
+    },
+    {
+      "id": "embermoth",
+      "classification": "ambient_creature",
+      "primaryBiome": "red_sky_foothills",
+      "canonicalLocations": [
+        "red_sky_foothills",
+        "mount_redsky"
+      ],
+      "scale": "tiny_to_small"
+    },
+    {
+      "id": "faun",
       "classification": "supporting_people",
       "primaryBiome": "sunward_fields",
       "canonicalLocations": [
-        "sunward_fields",
-        "enchanted_woods"
+        "sunward_fields"
       ],
-      "scale": "tiny"
+      "scale": "medium"
     },
     {
       "id": "frogfolk",
@@ -203,63 +252,62 @@
       "scale": "small_to_medium"
     },
     {
-      "id": "boggart",
-      "classification": "supporting_people",
-      "primaryBiome": "whispering_marsh",
+      "id": "frost_wyrm",
+      "classification": "dangerous_creature",
+      "primaryBiome": "frostfang_peaks",
       "canonicalLocations": [
-        "whispering_marsh"
-      ],
-      "scale": "small"
-    },
-    {
-      "id": "yeti",
-      "classification": "supporting_people",
-      "primaryBiome": "glacier_of_origins",
-      "canonicalLocations": [
-        "glacier_of_origins",
-        "frostfang_peaks"
+        "frostfang_peaks",
+        "glacier_of_origins"
       ],
       "scale": "large"
     },
     {
-      "id": "merfolk",
-      "classification": "supporting_people",
-      "primaryBiome": "mermaid_cove",
+      "id": "glassback_crab",
+      "classification": "dangerous_creature",
+      "primaryBiome": "red_sky_foothills",
       "canonicalLocations": [
-        "mermaid_cove",
-        "great_river"
+        "red_sky_foothills",
+        "mount_redsky"
       ],
-      "scale": "medium"
+      "scale": "medium_to_large",
+      "states": {
+        "shooed": "entities/glassback_crab/shooed.png",
+        "warning": "entities/glassback_crab/warning.png"
+      }
     },
     {
-      "id": "selkie",
+      "id": "harvest_sprite",
       "classification": "supporting_people",
-      "primaryBiome": "mermaid_cove",
+      "primaryBiome": "sunward_fields",
       "canonicalLocations": [
-        "mermaid_cove",
-        "open_sea"
+        "sunward_fields",
+        "enchanted_woods"
       ],
-      "scale": "medium"
+      "scale": "tiny"
     },
     {
-      "id": "stone_troll",
-      "classification": "supporting_people",
-      "primaryBiome": "stone_crossing",
+      "id": "jackalope",
+      "classification": "ambient_creature",
+      "primaryBiome": "plains",
       "canonicalLocations": [
-        "stone_crossing",
-        "skullwater_cave",
+        "the_plains",
+        "sunward_fields",
         "eastern_plains"
       ],
-      "scale": "very_large"
+      "scale": "small"
     },
     {
-      "id": "witch_order",
-      "classification": "cultural_order",
-      "primaryBiome": "whispering_marsh",
+      "id": "kavari",
+      "classification": "legendary_beast",
+      "primaryBiome": "skullwater_cave",
       "canonicalLocations": [
-        "whispering_marsh"
+        "skullwater_cave"
       ],
-      "scale": "variable"
+      "scale": "medium",
+      "states": {
+        "wings_up": "entities/kavari/assembled.png",
+        "wings_down": "entities/kavari/wings-down.png"
+      }
     },
     {
       "id": "legend_dragon",
@@ -284,102 +332,14 @@
       "footprint": 4
     },
     {
-      "id": "embermoth",
-      "classification": "ambient_creature",
-      "primaryBiome": "red_sky_foothills",
-      "canonicalLocations": [
-        "red_sky_foothills",
-        "mount_redsky"
-      ],
-      "scale": "tiny_to_small"
-    },
-    {
-      "id": "mosshorn",
-      "classification": "ambient_creature",
-      "primaryBiome": "enchanted_woods",
-      "canonicalLocations": [
-        "enchanted_woods",
-        "mosshome"
-      ],
-      "scale": "medium"
-    },
-    {
-      "id": "jackalope",
-      "classification": "ambient_creature",
-      "primaryBiome": "plains",
-      "canonicalLocations": [
-        "the_plains",
-        "sunward_fields",
-        "eastern_plains"
-      ],
-      "scale": "small"
-    },
-    {
-      "id": "cloud_whale",
-      "classification": "ambient_creature",
-      "primaryBiome": "sky_islands",
-      "canonicalLocations": [
-        "sky_islands"
-      ],
-      "scale": "colossal"
-    },
-    {
-      "id": "snowhorn_goat",
-      "classification": "ambient_creature",
-      "primaryBiome": "frostfang_peaks",
-      "canonicalLocations": [
-        "frostfang_peaks",
-        "glacier_of_origins"
-      ],
-      "scale": "medium"
-    },
-    {
-      "id": "silver_otter",
-      "classification": "ambient_creature",
-      "primaryBiome": "stone_crossing",
-      "canonicalLocations": [
-        "great_river",
-        "stone_crossing",
-        "mermaid_cove"
-      ],
-      "scale": "small"
-    },
-    {
-      "id": "reefglider",
-      "classification": "ambient_creature",
+      "id": "merfolk",
+      "classification": "supporting_people",
       "primaryBiome": "mermaid_cove",
       "canonicalLocations": [
-        "mermaid_cove"
+        "mermaid_cove",
+        "great_river"
       ],
       "scale": "medium"
-    },
-    {
-      "id": "glassback_crab",
-      "classification": "dangerous_creature",
-      "primaryBiome": "red_sky_foothills",
-      "canonicalLocations": [
-        "red_sky_foothills",
-        "mount_redsky"
-      ],
-      "scale": "medium_to_large",
-      "states": {
-        "shooed": "entities/glassback_crab/shooed.png",
-        "warning": "entities/glassback_crab/warning.png"
-      }
-    },
-    {
-      "id": "cinder_wolf",
-      "classification": "dangerous_creature",
-      "primaryBiome": "red_sky_foothills",
-      "canonicalLocations": [
-        "red_sky_foothills",
-        "the_plains"
-      ],
-      "scale": "medium",
-      "states": {
-        "shooed": "entities/cinder_wolf/shooed.png",
-        "cache_sniff": "entities/cinder_wolf/cache_sniff.png"
-      }
     },
     {
       "id": "mire_mimic",
@@ -398,14 +358,32 @@
       }
     },
     {
-      "id": "frost_wyrm",
-      "classification": "dangerous_creature",
-      "primaryBiome": "frostfang_peaks",
+      "id": "mosshorn",
+      "classification": "ambient_creature",
+      "primaryBiome": "enchanted_woods",
       "canonicalLocations": [
-        "frostfang_peaks",
-        "glacier_of_origins"
+        "enchanted_woods",
+        "mosshome"
       ],
-      "scale": "large"
+      "scale": "medium"
+    },
+    {
+      "id": "reefglider",
+      "classification": "ambient_creature",
+      "primaryBiome": "mermaid_cove",
+      "canonicalLocations": [
+        "mermaid_cove"
+      ],
+      "scale": "medium"
+    },
+    {
+      "id": "restless_remains",
+      "classification": "supernatural_manifestation",
+      "primaryBiome": "bone_yard",
+      "canonicalLocations": [
+        "bone_yard"
+      ],
+      "scale": "variable"
     },
     {
       "id": "river_drake",
@@ -423,35 +401,70 @@
       }
     },
     {
-      "id": "bone_crawler",
-      "classification": "dangerous_creature",
-      "primaryBiome": "bone_yard",
+      "id": "selkie",
+      "classification": "supporting_people",
+      "primaryBiome": "mermaid_cove",
       "canonicalLocations": [
-        "bone_yard"
+        "mermaid_cove",
+        "open_sea"
       ],
-      "scale": "small_to_medium"
+      "scale": "medium"
     },
     {
-      "id": "echo_hunter",
-      "classification": "dangerous_creature",
-      "primaryBiome": "skullwater_cave",
+      "id": "sheeple",
+      "classification": "supporting_people",
+      "primaryBiome": "plains",
       "canonicalLocations": [
-        "skullwater_cave"
+        "plains",
+        "sunward_fields",
+        "exchange"
       ],
-      "scale": "large"
+      "scale": "medium"
     },
     {
-      "id": "kavari",
-      "classification": "legendary_beast",
-      "primaryBiome": "skullwater_cave",
+      "id": "silver_otter",
+      "classification": "ambient_creature",
+      "primaryBiome": "stone_crossing",
       "canonicalLocations": [
-        "skullwater_cave"
+        "great_river",
+        "stone_crossing",
+        "mermaid_cove"
       ],
-      "scale": "medium",
+      "scale": "small"
+    },
+    {
+      "id": "skupper",
+      "classification": "supporting_people",
+      "primaryBiome": "sallow_wastelands",
+      "canonicalLocations": [
+        "sallow_wastelands"
+      ],
+      "scale": "small_to_medium",
       "states": {
-        "wings_up": "entities/kavari/assembled.png",
-        "wings_down": "entities/kavari/wings-down.png"
+        "ordinary": "entities/skupper/assembled.png",
+        "puffed": "entities/skupper/puffed.png"
       }
+    },
+    {
+      "id": "snowhorn_goat",
+      "classification": "ambient_creature",
+      "primaryBiome": "frostfang_peaks",
+      "canonicalLocations": [
+        "frostfang_peaks",
+        "glacier_of_origins"
+      ],
+      "scale": "medium"
+    },
+    {
+      "id": "stone_troll",
+      "classification": "supporting_people",
+      "primaryBiome": "stone_crossing",
+      "canonicalLocations": [
+        "stone_crossing",
+        "skullwater_cave",
+        "eastern_plains"
+      ],
+      "scale": "very_large"
     },
     {
       "id": "will_o_wisp",
@@ -467,36 +480,23 @@
       }
     },
     {
-      "id": "restless_remains",
-      "classification": "supernatural_manifestation",
-      "primaryBiome": "bone_yard",
+      "id": "witch_order",
+      "classification": "cultural_order",
+      "primaryBiome": "whispering_marsh",
       "canonicalLocations": [
-        "bone_yard"
+        "whispering_marsh"
       ],
       "scale": "variable"
     },
     {
-      "id": "boughkin",
+      "id": "yeti",
       "classification": "supporting_people",
-      "primaryBiome": "enchanted_woods",
+      "primaryBiome": "glacier_of_origins",
       "canonicalLocations": [
-        "enchanted_woods",
-        "mosshome"
+        "glacier_of_origins",
+        "frostfang_peaks"
       ],
-      "scale": "very_large"
-    },
-    {
-      "id": "skupper",
-      "classification": "supporting_people",
-      "primaryBiome": "sallow_wastelands",
-      "canonicalLocations": [
-        "sallow_wastelands"
-      ],
-      "scale": "small_to_medium",
-      "states": {
-        "ordinary": "entities/skupper/assembled.png",
-        "puffed": "entities/skupper/puffed.png"
-      }
+      "scale": "large"
     }
   ],
   "$gearPortraitsComment": "Complete opaque class illustrations for portrait surfaces. Transparent figure variants are declared separately in figureVariants.",
@@ -944,233 +944,233 @@
     "the_whirlpool"
   ],
   "sceneIllustrations": [
-    "scenes/entry/home-market-portrait",
-    "scenes/entry/creation-species-portrait",
-    "scenes/entry/creation-class-portrait",
-    "scenes/entry/creation-stats-portrait",
-    "scenes/entry/creation-appearance-portrait",
-    "scenes/entry/creation-name-portrait",
-    "scenes/entry/lobby-waiting-portrait",
-    "scenes/entry/lobby-ready-portrait",
-    "scenes/entry/home-market",
-    "scenes/entry/creation-species",
-    "scenes/entry/creation-class",
-    "scenes/entry/creation-stats",
-    "scenes/entry/creation-appearance",
-    "scenes/entry/creation-name",
-    "scenes/entry/lobby-waiting",
-    "scenes/entry/lobby-ready",
-    "scenes/gemfall/hollow-gate",
-    "scenes/gemfall/redspire-citadel",
-    "scenes/gemfall/facet-table",
-    "scenes/gemfall/gem-gallery",
-    "scenes/gemfall/seal-chamber",
-    "scenes/gemfall/sheeple-ridge",
-    "scenes/gemfall/exchange-lighthouse",
-    "scenes/gemfall/exchange-docks",
-    "scenes/gemfall/exchange-noodle-stall",
-    "scenes/gemfall/empty-chair-tavern",
-    "scenes/gemfall/exchange-quay",
-    "scenes/gemfall/exchange-quay-wisps",
-    "scenes/gemfall/ditch-plank-mimics",
-    "scenes/gemfall/egg-stall-baskets",
-    "scenes/gemfall/jackalope-meadow-hats",
-    "scenes/gemfall/moth-bell-wagons",
-    "scenes/gemfall/stuck-wagon-lane",
-    "scenes/gemfall/outfitters-steps",
-    "scenes/gemfall/caravan-yard",
-    "scenes/gemfall/exchange-long-bridge",
-    "scenes/gemfall/exchange-griffin-post",
-    "scenes/gemfall/exchange-north-gate",
-    "scenes/gemfall/east-road-markers",
-    "scenes/gemfall/stone-crossing-queue",
-    "scenes/gemfall/lintel-toll-stone",
-    "scenes/gemfall/drake-rock-shelf",
-    "scenes/gemfall/drowned-crossing-bank",
-    "scenes/gemfall/river-mouth-shore",
-    "scenes/gemfall/eastern-shore-camp",
-    "scenes/gemfall/eastern-bank-landing",
-    "scenes/gemfall/caravan-road-ruts",
-    "scenes/gemfall/ford-queue-market",
-    "scenes/gemfall/wend-soup-tent",
-    "scenes/gemfall/bracken-cart",
-    "scenes/gemfall/queue-dusk-camp",
-    "scenes/gemfall/ford-witch-stall",
-    "scenes/gemfall/west-branch-ford",
-    "scenes/gemfall/pride-marker-road",
-    "scenes/gemfall/sefa-ridge-camp",
-    "scenes/gemfall/centaur-sash-barn",
-    "scenes/gemfall/pride-stone-crater",
-    "scenes/gemfall/abandoned-caravan-rest",
-    "scenes/gemfall/pride-night-fire",
-    "scenes/gemfall/north-rush-road",
-    "scenes/gemfall/quiet-road-stretch",
-    "scenes/gemfall/downbound-wagon-auction",
-    "scenes/gemfall/downbound-soup-tents",
-    "scenes/gemfall/warden-supply-stop",
-    "scenes/gemfall/rush-depot",
-    "scenes/gemfall/relay-route-fire",
-    "scenes/gemfall/road-bend-grass",
-    "scenes/gemfall/north-signpost-fork",
-    "scenes/gemfall/north-noon-stop",
-    "scenes/gemfall/north-road-detour",
-    "scenes/gemfall/cracked-bridge-span",
-    "scenes/gemfall/bridge-pillar-shallows",
-    "scenes/gemfall/bridge-engineers-tent",
-    "scenes/gemfall/hollis-soup-queue",
-    "scenes/gemfall/northern-bridge-foot",
-    "scenes/gemfall/redspire-rim-lookout",
-    "scenes/riftlight/ice-shelf-headwaters",
-    "scenes/riftlight/reading-room",
-    "scenes/riftlight/cairnstep",
-    "scenes/riftlight/buried-bridge",
-    "scenes/riftlight/temple-island-squall",
-    "scenes/riftlight/stuttering-flats",
-    "scenes/riftlight/stuttering-flats-goat-crossing",
-    "scenes/riftlight/glacier-deep-ice",
-    "scenes/riftlight/stone-counters",
-    "scenes/riftlight/whale-road",
-    "scenes/riftlight/buried-bridge-dry-channel",
-    "scenes/riftlight/stone-counters-evidence",
-    "scenes/riftlight/buried-bridge-evidence",
-    "scenes/riftlight/whale-road-cleared",
-    "scenes/riftlight/island-due-back",
-    "scenes/classes/conservatory",
-    "scenes/riftlight/wrong-valley",
-    "scenes/riftlight/convergence-ledge",
-    "scenes/riftlight/wyrm-nest",
-    "scenes/riftlight/bone-yard-ruins",
-    "scenes/riftlight/bone-yard-returning-pebble",
-    "scenes/riftlight/singing-hall",
-    "scenes/riftlight/singing-hall-camp",
-    "scenes/classes/dojo",
-    "scenes/classes/academy",
-    "scenes/classes/rookery",
-    "scenes/bramblewood/hedge_wall",
+    "scenes/bramblewood/canopy",
     "scenes/bramblewood/clearing",
     "scenes/bramblewood/fork",
-    "scenes/bramblewood/canopy",
+    "scenes/bramblewood/hedge_wall",
+    "scenes/bramblewood/hill_door",
+    "scenes/bramblewood/lanternfall",
+    "scenes/bramblewood/shrine",
     "scenes/bramblewood/stair",
     "scenes/bramblewood/stream",
     "scenes/bramblewood/thicket",
-    "scenes/bramblewood/shrine",
-    "scenes/bramblewood/hill_door",
-    "scenes/bramblewood/lanternfall",
-    "scenes/riftlight/sky-landing",
-    "scenes/riftlight/signal-pole",
-    "scenes/riftlight/signal-gale",
-    "scenes/riftlight/sky-ferry",
-    "scenes/riftlight/windbreak-camp",
-    "scenes/riftlight/shelf-icicles",
-    "scenes/riftlight/headwaters-floes",
-    "scenes/riftlight/ashspan-broken-deck",
-    "scenes/riftlight/ashspan-mended-deck",
-    "scenes/riftlight/hidden-ticking-ridge",
-    "scenes/riftlight/hidden-ice-tunnel",
-    "scenes/riftlight/hidden-sealed-seam",
-    "scenes/riftlight/hidden-ticking-fold",
-    "scenes/riftlight/tidepocket-buried-hatch",
-    "scenes/riftlight/saltrot-ossley-aground",
-    "scenes/riftlight/saltrot-high-shells",
-    "scenes/riftlight/frostfang-ladder",
-    "scenes/riftlight/frostfang-gravel-bar",
-    "scenes/riftlight/cairnstep-survey-slab",
-    "scenes/riftlight/cairnstep-capstone",
-    "scenes/riftlight/boundary-river-row",
-    "scenes/riftlight/boundary-mountain-carving",
-    "scenes/riftlight/tidepocket-open-hatch",
-    "scenes/riftlight/boundary-river-row-aligned",
-    "scenes/riftlight/exchange-noodle-awning",
-    "scenes/riftlight/exchange-barge-sacks",
-    "scenes/riftlight/exchange-leaning-crates",
-    "scenes/riftlight/glacier-snow-lip",
-    "scenes/riftlight/glacier-meltwater-step",
-    "scenes/riftlight/glacier-herd-rest",
-    "scenes/riftlight/departure-loaded-sledge",
-    "scenes/riftlight/departure-chime-rest",
-    "scenes/riftlight/ice-shelf-roped-gap",
-    "scenes/riftlight/headwaters-log-chute",
-    "scenes/riftlight/fight-headwaters-ford",
-    "scenes/riftlight/fight-saltrot-silt",
-    "scenes/riftlight/exchange-six-boats",
-    "scenes/riftlight/exchange-squall-ridge",
-    "scenes/riftlight/shelf-iron-ring",
-    "scenes/riftlight/sky-night-windbreak",
-    "scenes/riftlight/headwaters-bank-tree",
-    "scenes/riftlight/exchange-ridge-lee",
-    "scenes/riftlight/shelf-steep-slope",
-    "scenes/riftlight/hidden-steaming-crack",
-    "scenes/riftlight/sky-mist-song",
-    "scenes/riftlight/ashspan-ferry-landing",
-    "scenes/gemfall/queue-camp-crabs",
-    "scenes/gemfall/marsh-steps-crabs",
-    "scenes/gemfall/ford-reed-crabs",
-    "scenes/gemfall/mud-wallow-mimic-posts",
-    "scenes/gemfall/brook-log-mimics",
-    "scenes/gemfall/depot-barn-strongboxes",
-    "scenes/gemfall/bridge-lantern-wisps",
-    "scenes/gemfall/high-stream-drake",
-    "scenes/gemfall/tally-porch-crawlers",
-    "scenes/gemfall/citadel-cellar-hall",
-    "scenes/gemfall/echo-cutting",
-    "scenes/gemfall/pinch-box-crawlers",
-    "scenes/gemfall/spring-drake-ledge",
-    "scenes/gemfall/crab-field-guards",
-    "scenes/gemfall/toll-reeds-tunnel",
-    "scenes/gemfall/wisp-raft-crowd",
-    "scenes/gemfall/fog-raft-lantern",
-    "scenes/gemfall/stump-river-fog",
-    "scenes/gemfall/sapling-ring",
-    "scenes/gemfall/hedge-knit-gate",
-    "scenes/gemfall/gray-moss-patch",
-    "scenes/gemfall/fern-spring-glade",
-    "scenes/gemfall/fern-calf-hide",
-    "scenes/gemfall/beech-squirrel-boughs",
-    "scenes/gemfall/mosshome-archive-doorstep",
-    "scenes/gemfall/archive-yarn-table",
+    "scenes/classes/academy",
+    "scenes/classes/conservatory",
+    "scenes/classes/dojo",
+    "scenes/classes/rookery",
+    "scenes/entry/creation-appearance",
+    "scenes/entry/creation-appearance-portrait",
+    "scenes/entry/creation-class",
+    "scenes/entry/creation-class-portrait",
+    "scenes/entry/creation-name",
+    "scenes/entry/creation-name-portrait",
+    "scenes/entry/creation-species",
+    "scenes/entry/creation-species-portrait",
+    "scenes/entry/creation-stats",
+    "scenes/entry/creation-stats-portrait",
+    "scenes/entry/home-market",
+    "scenes/entry/home-market-portrait",
+    "scenes/entry/lobby-ready",
+    "scenes/entry/lobby-ready-portrait",
+    "scenes/entry/lobby-waiting",
+    "scenes/entry/lobby-waiting-portrait",
+    "scenes/first-steps/practice-meadow-picnic",
+    "scenes/gemfall/abandoned-caravan-rest",
     "scenes/gemfall/archive-leaning-chair",
-    "scenes/gemfall/rope-bridge-spare-planks",
-    "scenes/gemfall/runners-post-stump",
-    "scenes/gemfall/runner-cord-knots",
-    "scenes/gemfall/halfway-hut-tin",
-    "scenes/gemfall/stream-stepping-stones",
-    "scenes/gemfall/foothills-rim-camp",
-    "scenes/gemfall/tally-house-floor-map",
-    "scenes/gemfall/pry-bar-wall",
+    "scenes/gemfall/archive-yarn-table",
+    "scenes/gemfall/beech-squirrel-boughs",
     "scenes/gemfall/bell-cart-stones",
+    "scenes/gemfall/bell-code-hut",
     "scenes/gemfall/bell-house-supper",
     "scenes/gemfall/bell-house-tuck-in",
-    "scenes/gemfall/moth-slope-rocks",
-    "scenes/gemfall/wagon-road-rut",
-    "scenes/gemfall/hessa-soup-camp",
-    "scenes/gemfall/morning-bells-baker",
-    "scenes/gemfall/pellam-tea-table",
-    "scenes/gemfall/fleecewick-cabinet-road",
-    "scenes/gemfall/checkpoint-box-shelf",
-    "scenes/gemfall/hairpin-wagons",
-    "scenes/gemfall/tidewell-knock-rock",
-    "scenes/gemfall/pinch-door-table",
-    "scenes/gemfall/choir-warmup-masks",
-    "scenes/gemfall/warden-fire-tea",
     "scenes/gemfall/box-stack-slide",
-    "scenes/gemfall/stone-chain-road",
-    "scenes/gemfall/way-shelter-stack",
-    "scenes/gemfall/trickling-slide-road",
-    "scenes/gemfall/caravan-bells-hairpin",
-    "scenes/gemfall/bell-code-hut",
-    "scenes/gemfall/washed-out-step-cart",
-    "scenes/gemfall/warden-post-tin",
-    "scenes/gemfall/warm-rock-chimney",
-    "scenes/riftlight/stone-counters-routes",
-    "scenes/riftlight/reading-room-memory",
-    "scenes/riftlight/island-mooring-stone",
+    "scenes/gemfall/bracken-cart",
+    "scenes/gemfall/bridge-engineers-tent",
+    "scenes/gemfall/bridge-lantern-wisps",
+    "scenes/gemfall/bridge-pillar-shallows",
+    "scenes/gemfall/brook-log-mimics",
     "scenes/gemfall/canal-bridge-cracked",
     "scenes/gemfall/canal-bridge-mended",
-    "scenes/gemfall/wolf-sneak-lane",
+    "scenes/gemfall/caravan-bells-hairpin",
+    "scenes/gemfall/caravan-road-ruts",
+    "scenes/gemfall/caravan-yard",
+    "scenes/gemfall/centaur-sash-barn",
+    "scenes/gemfall/checkpoint-box-shelf",
+    "scenes/gemfall/choir-warmup-masks",
+    "scenes/gemfall/citadel-cellar-hall",
+    "scenes/gemfall/crab-field-guards",
+    "scenes/gemfall/cracked-bridge-span",
+    "scenes/gemfall/depot-barn-strongboxes",
+    "scenes/gemfall/ditch-plank-mimics",
+    "scenes/gemfall/downbound-soup-tents",
+    "scenes/gemfall/downbound-wagon-auction",
+    "scenes/gemfall/drake-rock-shelf",
+    "scenes/gemfall/drowned-crossing-bank",
+    "scenes/gemfall/east-road-markers",
+    "scenes/gemfall/eastern-bank-landing",
+    "scenes/gemfall/eastern-shore-camp",
+    "scenes/gemfall/echo-cutting",
+    "scenes/gemfall/egg-stall-baskets",
+    "scenes/gemfall/empty-chair-tavern",
+    "scenes/gemfall/exchange-docks",
+    "scenes/gemfall/exchange-griffin-post",
+    "scenes/gemfall/exchange-lighthouse",
+    "scenes/gemfall/exchange-long-bridge",
+    "scenes/gemfall/exchange-noodle-stall",
+    "scenes/gemfall/exchange-north-gate",
+    "scenes/gemfall/exchange-quay",
+    "scenes/gemfall/exchange-quay-wisps",
+    "scenes/gemfall/facet-table",
+    "scenes/gemfall/fern-calf-hide",
+    "scenes/gemfall/fern-spring-glade",
+    "scenes/gemfall/fleecewick-cabinet-road",
+    "scenes/gemfall/fog-raft-lantern",
+    "scenes/gemfall/foothills-rim-camp",
+    "scenes/gemfall/ford-queue-market",
+    "scenes/gemfall/ford-reed-crabs",
+    "scenes/gemfall/ford-witch-stall",
+    "scenes/gemfall/gem-gallery",
     "scenes/gemfall/grandmother-doorstep",
+    "scenes/gemfall/gray-moss-patch",
+    "scenes/gemfall/hairpin-wagons",
+    "scenes/gemfall/halfway-hut-tin",
+    "scenes/gemfall/hedge-knit-gate",
+    "scenes/gemfall/hessa-soup-camp",
+    "scenes/gemfall/high-stream-drake",
+    "scenes/gemfall/hollis-soup-queue",
+    "scenes/gemfall/hollow-gate",
+    "scenes/gemfall/jackalope-meadow-hats",
+    "scenes/gemfall/lintel-toll-stone",
+    "scenes/gemfall/marsh-steps-crabs",
+    "scenes/gemfall/morning-bells-baker",
+    "scenes/gemfall/mosshome-archive-doorstep",
+    "scenes/gemfall/moth-bell-wagons",
+    "scenes/gemfall/moth-slope-rocks",
+    "scenes/gemfall/mud-wallow-mimic-posts",
+    "scenes/gemfall/north-noon-stop",
+    "scenes/gemfall/north-road-detour",
+    "scenes/gemfall/north-rush-road",
+    "scenes/gemfall/north-signpost-fork",
+    "scenes/gemfall/northern-bridge-foot",
+    "scenes/gemfall/outfitters-steps",
+    "scenes/gemfall/pellam-tea-table",
+    "scenes/gemfall/pinch-box-crawlers",
+    "scenes/gemfall/pinch-door-table",
     "scenes/gemfall/pinch-price-board",
+    "scenes/gemfall/pride-marker-road",
+    "scenes/gemfall/pride-night-fire",
+    "scenes/gemfall/pride-stone-crater",
+    "scenes/gemfall/pry-bar-wall",
+    "scenes/gemfall/queue-camp-crabs",
+    "scenes/gemfall/queue-dusk-camp",
+    "scenes/gemfall/quiet-road-stretch",
+    "scenes/gemfall/redspire-citadel",
+    "scenes/gemfall/redspire-rim-lookout",
+    "scenes/gemfall/relay-route-fire",
     "scenes/gemfall/returning-stone-cart",
-    "scenes/first-steps/practice-meadow-picnic"
+    "scenes/gemfall/river-mouth-shore",
+    "scenes/gemfall/road-bend-grass",
+    "scenes/gemfall/rope-bridge-spare-planks",
+    "scenes/gemfall/runner-cord-knots",
+    "scenes/gemfall/runners-post-stump",
+    "scenes/gemfall/rush-depot",
+    "scenes/gemfall/sapling-ring",
+    "scenes/gemfall/seal-chamber",
+    "scenes/gemfall/sefa-ridge-camp",
+    "scenes/gemfall/sheeple-ridge",
+    "scenes/gemfall/spring-drake-ledge",
+    "scenes/gemfall/stone-chain-road",
+    "scenes/gemfall/stone-crossing-queue",
+    "scenes/gemfall/stream-stepping-stones",
+    "scenes/gemfall/stuck-wagon-lane",
+    "scenes/gemfall/stump-river-fog",
+    "scenes/gemfall/tally-house-floor-map",
+    "scenes/gemfall/tally-porch-crawlers",
+    "scenes/gemfall/tidewell-knock-rock",
+    "scenes/gemfall/toll-reeds-tunnel",
+    "scenes/gemfall/trickling-slide-road",
+    "scenes/gemfall/wagon-road-rut",
+    "scenes/gemfall/warden-fire-tea",
+    "scenes/gemfall/warden-post-tin",
+    "scenes/gemfall/warden-supply-stop",
+    "scenes/gemfall/warm-rock-chimney",
+    "scenes/gemfall/washed-out-step-cart",
+    "scenes/gemfall/way-shelter-stack",
+    "scenes/gemfall/wend-soup-tent",
+    "scenes/gemfall/west-branch-ford",
+    "scenes/gemfall/wisp-raft-crowd",
+    "scenes/gemfall/wolf-sneak-lane",
+    "scenes/riftlight/ashspan-broken-deck",
+    "scenes/riftlight/ashspan-ferry-landing",
+    "scenes/riftlight/ashspan-mended-deck",
+    "scenes/riftlight/bone-yard-returning-pebble",
+    "scenes/riftlight/bone-yard-ruins",
+    "scenes/riftlight/boundary-mountain-carving",
+    "scenes/riftlight/boundary-river-row",
+    "scenes/riftlight/boundary-river-row-aligned",
+    "scenes/riftlight/buried-bridge",
+    "scenes/riftlight/buried-bridge-dry-channel",
+    "scenes/riftlight/buried-bridge-evidence",
+    "scenes/riftlight/cairnstep",
+    "scenes/riftlight/cairnstep-capstone",
+    "scenes/riftlight/cairnstep-survey-slab",
+    "scenes/riftlight/convergence-ledge",
+    "scenes/riftlight/departure-chime-rest",
+    "scenes/riftlight/departure-loaded-sledge",
+    "scenes/riftlight/exchange-barge-sacks",
+    "scenes/riftlight/exchange-leaning-crates",
+    "scenes/riftlight/exchange-noodle-awning",
+    "scenes/riftlight/exchange-ridge-lee",
+    "scenes/riftlight/exchange-six-boats",
+    "scenes/riftlight/exchange-squall-ridge",
+    "scenes/riftlight/fight-headwaters-ford",
+    "scenes/riftlight/fight-saltrot-silt",
+    "scenes/riftlight/frostfang-gravel-bar",
+    "scenes/riftlight/frostfang-ladder",
+    "scenes/riftlight/glacier-deep-ice",
+    "scenes/riftlight/glacier-herd-rest",
+    "scenes/riftlight/glacier-meltwater-step",
+    "scenes/riftlight/glacier-snow-lip",
+    "scenes/riftlight/headwaters-bank-tree",
+    "scenes/riftlight/headwaters-floes",
+    "scenes/riftlight/headwaters-log-chute",
+    "scenes/riftlight/hidden-ice-tunnel",
+    "scenes/riftlight/hidden-sealed-seam",
+    "scenes/riftlight/hidden-steaming-crack",
+    "scenes/riftlight/hidden-ticking-fold",
+    "scenes/riftlight/hidden-ticking-ridge",
+    "scenes/riftlight/ice-shelf-headwaters",
+    "scenes/riftlight/ice-shelf-roped-gap",
+    "scenes/riftlight/island-due-back",
+    "scenes/riftlight/island-mooring-stone",
+    "scenes/riftlight/reading-room",
+    "scenes/riftlight/reading-room-memory",
+    "scenes/riftlight/saltrot-high-shells",
+    "scenes/riftlight/saltrot-ossley-aground",
+    "scenes/riftlight/shelf-icicles",
+    "scenes/riftlight/shelf-iron-ring",
+    "scenes/riftlight/shelf-steep-slope",
+    "scenes/riftlight/signal-gale",
+    "scenes/riftlight/signal-pole",
+    "scenes/riftlight/singing-hall",
+    "scenes/riftlight/singing-hall-camp",
+    "scenes/riftlight/sky-ferry",
+    "scenes/riftlight/sky-landing",
+    "scenes/riftlight/sky-mist-song",
+    "scenes/riftlight/sky-night-windbreak",
+    "scenes/riftlight/stone-counters",
+    "scenes/riftlight/stone-counters-evidence",
+    "scenes/riftlight/stone-counters-routes",
+    "scenes/riftlight/stuttering-flats",
+    "scenes/riftlight/stuttering-flats-goat-crossing",
+    "scenes/riftlight/temple-island-squall",
+    "scenes/riftlight/tidepocket-buried-hatch",
+    "scenes/riftlight/tidepocket-open-hatch",
+    "scenes/riftlight/whale-road",
+    "scenes/riftlight/whale-road-cleared",
+    "scenes/riftlight/windbreak-camp",
+    "scenes/riftlight/wrong-valley",
+    "scenes/riftlight/wyrm-nest"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
@@ -1192,37 +1192,6 @@
       "height": 900
     },
     "ids": [
-      "plates/gemfall/prologue-1",
-      "plates/gemfall/prologue-2",
-      "plates/gemfall/prologue-3",
-      "plates/gemfall/prologue-4",
-      "plates/riftlight/prologue-1",
-      "plates/riftlight/prologue-2",
-      "plates/riftlight/prologue-3",
-      "plates/riftlight/prologue-4",
-      "plates/riftlight/sky-islands-arrival",
-      "plates/riftlight/saltrot-arrival",
-      "plates/riftlight/cairnstep-pass",
-      "plates/riftlight/reading-room",
-      "plates/riftlight/finale",
-      "plates/riftlight/glacier-survival",
-      "plates/riftlight/riftseekers-departure",
-      "plates/riftlight/ice-shelf-traverse",
-      "plates/riftlight/hidden-glacier-rift",
-      "plates/riftlight/headwaters-washout",
-      "plates/riftlight/frostfang-shore",
-      "plates/riftlight/boundary-stone-bank",
-      "plates/riftlight/ashspan-bridge",
-      "plates/riftlight/stone-counters",
-      "plates/riftlight/whale-road",
-      "plates/riftlight/buried-bridge",
-      "plates/riftlight/the-wrong-valley",
-      "plates/riftlight/the-island-due-back",
-      "plates/riftlight/stuttering-flats",
-      "plates/riftlight/bone-yard",
-      "plates/riftlight/wyrm-nest",
-      "plates/riftlight/squall-temple",
-      "plates/riftlight/convergence",
       "plates/gemfall/02",
       "plates/gemfall/03a",
       "plates/gemfall/03b",
@@ -1234,40 +1203,50 @@
       "plates/gemfall/05b",
       "plates/gemfall/05c",
       "plates/gemfall/06",
-      "plates/gemfall/07r",
       "plates/gemfall/07h",
       "plates/gemfall/07l",
+      "plates/gemfall/07r",
       "plates/gemfall/08",
+      "plates/gemfall/epilogue-broken-tether-1",
+      "plates/gemfall/epilogue-broken-tether-2",
+      "plates/gemfall/epilogue-broken-tether-3",
+      "plates/gemfall/epilogue-collectors-1",
+      "plates/gemfall/epilogue-collectors-2",
+      "plates/gemfall/epilogue-collectors-3",
+      "plates/gemfall/epilogue-cure-1",
+      "plates/gemfall/epilogue-cure-2",
+      "plates/gemfall/epilogue-cure-3",
       "plates/gemfall/epilogue-heroes-1",
       "plates/gemfall/epilogue-heroes-2",
       "plates/gemfall/epilogue-heroes-3",
       "plates/gemfall/epilogue-heroes-destroy-1",
       "plates/gemfall/epilogue-heroes-destroy-2",
       "plates/gemfall/epilogue-heroes-destroy-3",
-      "plates/gemfall/epilogue-quiet-fixers-1",
-      "plates/gemfall/epilogue-quiet-fixers-2",
-      "plates/gemfall/epilogue-quiet-fixers-3",
-      "plates/gemfall/epilogue-collectors-1",
-      "plates/gemfall/epilogue-collectors-2",
-      "plates/gemfall/epilogue-collectors-3",
-      "plates/gemfall/epilogue-wardens-regret-1",
-      "plates/gemfall/epilogue-wardens-regret-2",
-      "plates/gemfall/epilogue-wardens-regret-3",
-      "plates/gemfall/epilogue-cure-1",
-      "plates/gemfall/epilogue-cure-2",
-      "plates/gemfall/epilogue-cure-3",
-      "plates/gemfall/epilogue-new-weather-1",
-      "plates/gemfall/epilogue-new-weather-2",
-      "plates/gemfall/epilogue-new-weather-3",
-      "plates/gemfall/epilogue-turned-back-1",
-      "plates/gemfall/epilogue-turned-back-2",
-      "plates/gemfall/epilogue-turned-back-3",
       "plates/gemfall/epilogue-last-ring-1",
       "plates/gemfall/epilogue-last-ring-2",
       "plates/gemfall/epilogue-last-ring-3",
-      "plates/gemfall/epilogue-broken-tether-1",
-      "plates/gemfall/epilogue-broken-tether-2",
-      "plates/gemfall/epilogue-broken-tether-3",
+      "plates/gemfall/epilogue-new-weather-1",
+      "plates/gemfall/epilogue-new-weather-2",
+      "plates/gemfall/epilogue-new-weather-3",
+      "plates/gemfall/epilogue-quiet-fixers-1",
+      "plates/gemfall/epilogue-quiet-fixers-2",
+      "plates/gemfall/epilogue-quiet-fixers-3",
+      "plates/gemfall/epilogue-turned-back-1",
+      "plates/gemfall/epilogue-turned-back-2",
+      "plates/gemfall/epilogue-turned-back-3",
+      "plates/gemfall/epilogue-wardens-regret-1",
+      "plates/gemfall/epilogue-wardens-regret-2",
+      "plates/gemfall/epilogue-wardens-regret-3",
+      "plates/gemfall/prologue-1",
+      "plates/gemfall/prologue-2",
+      "plates/gemfall/prologue-3",
+      "plates/gemfall/prologue-4",
+      "plates/riftlight/ashspan-bridge",
+      "plates/riftlight/bone-yard",
+      "plates/riftlight/boundary-stone-bank",
+      "plates/riftlight/buried-bridge",
+      "plates/riftlight/cairnstep-pass",
+      "plates/riftlight/convergence",
       "plates/riftlight/epilogue-keepers-1",
       "plates/riftlight/epilogue-keepers-2",
       "plates/riftlight/epilogue-keepers-3",
@@ -1276,7 +1255,28 @@
       "plates/riftlight/epilogue-listened-3",
       "plates/riftlight/epilogue-rivers-wander-1",
       "plates/riftlight/epilogue-rivers-wander-2",
-      "plates/riftlight/epilogue-rivers-wander-3"
+      "plates/riftlight/epilogue-rivers-wander-3",
+      "plates/riftlight/finale",
+      "plates/riftlight/frostfang-shore",
+      "plates/riftlight/glacier-survival",
+      "plates/riftlight/headwaters-washout",
+      "plates/riftlight/hidden-glacier-rift",
+      "plates/riftlight/ice-shelf-traverse",
+      "plates/riftlight/prologue-1",
+      "plates/riftlight/prologue-2",
+      "plates/riftlight/prologue-3",
+      "plates/riftlight/prologue-4",
+      "plates/riftlight/reading-room",
+      "plates/riftlight/riftseekers-departure",
+      "plates/riftlight/saltrot-arrival",
+      "plates/riftlight/sky-islands-arrival",
+      "plates/riftlight/squall-temple",
+      "plates/riftlight/stone-counters",
+      "plates/riftlight/stuttering-flats",
+      "plates/riftlight/the-island-due-back",
+      "plates/riftlight/the-wrong-valley",
+      "plates/riftlight/whale-road",
+      "plates/riftlight/wyrm-nest"
     ]
   },
   "$nameplateFramesComment": "Nameplate frames (docs/hero-looks.md §7.2; art #665): UI art drawn behind a hero's name on the TV and phones, nine-sliced to the name's width with room for the title line under it. One transparent WebP per frame at assets/nameplates/<id>.webp, its id and art path declared in content/looks.json -> nameplates. `ids` lists only the frames delivered: the client draws a frame only when it is listed here, and otherwise the plain plate (the name exactly as today), so it never asks for a file that is not there. `slice` is the nine-slice inset in canvas pixels (left, top, right, bottom) every frame keeps its corners in; `canvas` its size. art:inventory owes every frame the catalog paints and this does not list.",
@@ -1713,899 +1713,11 @@
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words; `heightCm` is their height in centimeters, in their own pose and inside that band (canon/creatures.yaml `scale`, packages/canon SCALE_CM), and `stance` how they occupy a scene (standing, hovering, flying or swimming). Both are data, never shown to a player (#362). verify.py checks each entry.",
   "castFigures": [
     {
-      "id": "bun",
-      "name": "Bun",
-      "basis": "snowhorn_goat",
-      "scale": "tiny_to_small",
-      "heightCm": 45,
-      "stance": "standing"
-    },
-    {
-      "id": "coralie_fenn",
-      "name": "Madame Coralie Fenn",
-      "basis": "merfolk",
-      "scale": "medium",
-      "heightCm": 150,
-      "stance": "standing"
-    },
-    {
-      "id": "great_gran_ashby",
-      "name": "Great-Gran Ashby",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 130,
-      "stance": "standing"
-    },
-    {
-      "id": "pellam",
-      "name": "Pellam",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "grandmother_tull",
-      "name": "Grandmother Tull",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 130,
-      "stance": "standing"
-    },
-    {
-      "id": "dragonling_grandmother",
-      "name": "Grandmother",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 130,
-      "stance": "standing"
-    },
-    {
-      "id": "mosshome_archivist",
-      "name": "Archivist",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 240,
-      "stance": "standing"
-    },
-    {
-      "id": "oldest_archivist",
-      "name": "Oldest Archivist",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "mosshome_eldest",
-      "name": "The Eldest",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 235,
-      "stance": "standing"
-    },
-    {
-      "id": "mosshome_runner",
-      "name": "MossHome Runner",
-      "basis": "bigfoot",
-      "scale": "medium_to_large",
-      "heightCm": 200,
-      "stance": "standing"
-    },
-    {
-      "id": "flood_warden",
-      "name": "Flood-Warden",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 250,
-      "stance": "standing"
-    },
-    {
-      "id": "elder_sefa",
-      "name": "Elder Sefa",
-      "basis": "manticore",
-      "scale": "large",
-      "heightCm": 190,
-      "stance": "standing"
-    },
-    {
-      "id": "elder_unicorn",
-      "name": "Elder Unicorn",
-      "basis": "unicorn",
-      "scale": "large",
-      "heightCm": 210,
-      "stance": "standing"
-    },
-    {
-      "id": "tamsin",
-      "name": "Tamsin Three-Cards",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "tidewell",
-      "name": "Professor Tidewell",
-      "basis": "selkie",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "mortar",
-      "name": "Mortar",
-      "basis": "stone_troll",
-      "scale": "very_large",
-      "heightCm": 330,
-      "stance": "standing"
-    },
-    {
-      "id": "gullet",
-      "name": "Gullet",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "old_ossley",
-      "name": "Old Ossley",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "old_lintel",
-      "name": "Old Lintel",
-      "basis": "stone_troll",
-      "scale": "very_large",
-      "heightCm": 310,
-      "stance": "standing"
-    },
-    {
-      "id": "hesper",
-      "name": "Hesper Longstride",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "marda_thorn",
-      "name": "Marda Thorn",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 225,
-      "stance": "standing"
-    },
-    {
-      "id": "tobble",
-      "name": "Tobble Reedpipe",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 160,
-      "stance": "standing"
-    },
-    {
-      "id": "hob",
-      "name": "Hob Thistledown",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 155,
-      "stance": "standing"
-    },
-    {
-      "id": "nan_rummage",
-      "name": "Nan Rummage",
-      "basis": "boggart",
-      "scale": "small",
-      "heightCm": 65,
-      "stance": "standing"
-    },
-    {
-      "id": "captain_voss",
-      "name": "Captain Voss",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 175,
-      "stance": "standing"
-    },
-    {
-      "id": "brask",
-      "name": "Engineer Brask",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "holloway",
-      "name": "Sergeant Holloway",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 170,
-      "stance": "standing"
-    },
-    {
-      "id": "mother_thrum",
-      "name": "Mother Thrum",
-      "basis": "witch_order",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "ma_ruddle",
-      "name": "Ma Ruddle",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 90,
-      "stance": "standing"
-    },
-    {
-      "id": "tib",
-      "name": "Tib",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 85,
-      "stance": "standing"
-    },
-    {
-      "id": "dunmore",
-      "name": "Dunmore",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "hessa_wren",
-      "name": "Hessa Wren",
-      "basis": "harvest_sprite",
-      "scale": "tiny",
-      "heightCm": 22,
-      "stance": "standing"
-    },
-    {
-      "id": "wend",
-      "name": "Wend",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "hollis",
-      "name": "Hollis",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 240,
-      "stance": "standing"
-    },
-    {
-      "id": "soup_woman",
-      "name": "Soup woman",
-      "basis": "selkie",
-      "scale": "medium",
-      "heightCm": 160,
-      "stance": "standing"
-    },
-    {
-      "id": "clerk_pennywhistle",
-      "name": "Clerk Pennywhistle",
-      "basis": "harvest_sprite",
-      "scale": "tiny",
-      "heightCm": 20,
-      "stance": "standing"
-    },
-    {
-      "id": "caravan_master",
-      "name": "Caravan Master",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 235,
-      "stance": "standing"
-    },
-    {
-      "id": "crying_gem_buyer",
-      "name": "Crying gem-buyer",
-      "basis": "merfolk",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "rope_shop_boy",
-      "name": "Rope-shop boy",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 130,
-      "stance": "standing"
-    },
-    {
-      "id": "cult_frogfolk",
-      "name": "Masked frogfolk singer",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 105,
-      "stance": "standing"
-    },
-    {
-      "id": "cult_bigfoot",
-      "name": "Masked bigfoot singer",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 240,
-      "stance": "standing"
-    },
-    {
-      "id": "mrs_tuft",
-      "name": "Mrs. Tuft",
-      "basis": "sheeple",
-      "scale": "medium",
-      "heightCm": 135,
-      "stance": "standing"
-    },
-    {
-      "id": "old_wick",
-      "name": "Old Wick",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "postmaster_quill",
-      "name": "Postmaster Quill",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 170,
-      "stance": "standing"
-    },
-    {
-      "id": "bracken_swiftmile",
-      "name": "Bracken",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "burdock",
-      "name": "Burdock",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "fennick",
-      "name": "Fennick",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "mother_bracken",
-      "name": "Mother Bracken",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 160,
-      "stance": "standing"
-    },
-    {
-      "id": "littlest_bracken",
-      "name": "Littlest Bracken",
-      "basis": "faun",
-      "scale": "small_to_medium",
-      "heightCm": 85,
-      "stance": "standing"
-    },
-    {
-      "id": "innkeeper_flint",
-      "name": "Innkeeper Flint",
-      "basis": "stone_troll",
-      "scale": "large",
-      "heightCm": 290,
-      "stance": "standing"
-    },
-    {
-      "id": "pib",
-      "name": "Pib",
-      "basis": "harvest_sprite",
-      "scale": "tiny",
-      "heightCm": 25,
-      "stance": "standing"
-    },
-    {
-      "id": "granny_ash",
-      "name": "Granny Ash",
-      "basis": "manticore",
-      "scale": "large",
-      "heightCm": 185,
-      "stance": "standing"
-    },
-    {
-      "id": "old_corran",
-      "name": "Old Corran",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 225,
-      "stance": "standing"
-    },
-    {
-      "id": "nim",
-      "name": "Nim",
-      "basis": "dragonling",
-      "scale": "small_to_medium",
-      "heightCm": 80,
-      "stance": "standing"
-    },
-    {
-      "id": "corporal_tibbet",
-      "name": "Corporal Tibbet",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 170,
-      "stance": "standing"
-    },
-    {
-      "id": "brisk",
-      "name": "Brisk",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "perrin_nine_verse",
-      "name": "Perrin Nine-Verse",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "bryony",
-      "name": "Bryony",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "lady_fleecewick",
-      "name": "Lady Fleecewick",
-      "basis": "sheeple",
-      "scale": "medium",
-      "heightCm": 145,
-      "stance": "standing"
-    },
-    {
-      "id": "cadet_linnet",
-      "name": "Cadet Linnet",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 160,
-      "stance": "standing"
-    },
-    {
-      "id": "tansy",
-      "name": "Tansy",
-      "basis": "faun",
-      "scale": "small_to_medium",
-      "heightCm": 90,
-      "stance": "standing"
-    },
-    {
-      "id": "odo",
-      "name": "Odo",
-      "basis": "burrowfolk",
-      "scale": "medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "corbin",
-      "name": "Corbin",
-      "basis": "burrowfolk",
-      "scale": "medium",
-      "heightCm": 105,
-      "stance": "standing"
-    },
-    {
-      "id": "posy",
-      "name": "Posy",
-      "basis": "burrowfolk",
-      "scale": "small",
-      "heightCm": 70,
-      "stance": "standing"
-    },
-    {
-      "id": "rook",
-      "name": "Rook",
-      "basis": "burrowfolk",
-      "scale": "medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "selkie_grandmother",
-      "name": "Selkie Grandmother",
-      "basis": "selkie",
-      "scale": "medium",
-      "heightCm": 155,
-      "stance": "standing"
-    },
-    {
-      "id": "path_keeper",
-      "name": "Path-Keeper",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 240,
-      "stance": "standing"
-    },
-    {
-      "id": "young_gatherer",
-      "name": "Young Gatherer",
-      "basis": "dragonling",
-      "scale": "small",
-      "heightCm": 70,
-      "stance": "standing"
-    },
-    {
-      "id": "courier_griffin",
-      "name": "Courier Griffin",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 170,
-      "stance": "standing"
-    },
-    {
-      "id": "corbin_carrying_posy",
-      "name": "Corbin and Posy",
-      "basis": "burrowfolk",
-      "scale": "medium",
-      "heightCm": 150,
-      "stance": "standing"
-    },
-    {
-      "id": "orin_vale",
-      "name": "Master Orin Vale",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 175,
-      "stance": "standing"
-    },
-    {
-      "id": "lady_olivia",
-      "name": "Lady Olivia",
-      "basis": "unicorn",
-      "scale": "medium",
-      "heightCm": 170,
-      "stance": "standing"
-    },
-    {
-      "id": "seren_wisp",
-      "name": "Seren Wisp",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "pip_thistledown",
-      "name": "Pip Thistledown",
-      "basis": "manticore",
-      "scale": "medium",
-      "heightCm": 140,
-      "stance": "standing"
-    },
-    {
-      "id": "bram_lock",
-      "name": "Bram Lock",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 240,
-      "stance": "standing"
-    },
-    {
-      "id": "yeti_elder",
-      "name": "Elder Murmur",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 245,
-      "stance": "standing"
-    },
-    {
-      "id": "kitsune_temple_keeper",
-      "name": "Keeper Sorrel",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 115,
-      "stance": "standing"
-    },
-    {
-      "id": "dragonling_stone_keeper",
-      "name": "Tally",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 130,
-      "stance": "standing"
-    },
-    {
-      "id": "saltrot_guide",
-      "name": "Puddle",
-      "basis": "skupper",
-      "scale": "small_to_medium",
-      "heightCm": 100,
-      "stance": "standing"
-    },
-    {
-      "id": "deep-ice-figure",
-      "name": "Corvane",
-      "basis": "faun",
-      "scale": "very_large",
-      "heightCm": 280,
-      "stance": "standing"
-    },
-    {
-      "id": "skywarden_griffin",
-      "name": "Skywarden griffin",
-      "basis": "griffin",
-      "scale": "medium_to_large",
-      "heightCm": 185,
-      "stance": "standing"
-    },
-    {
-      "id": "skywarden_faun",
-      "name": "Skywarden faun",
-      "basis": "faun",
-      "scale": "medium",
-      "heightCm": 170,
-      "stance": "standing"
-    },
-    {
-      "id": "skywarden_centaur",
-      "name": "Skywarden centaur",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 235,
-      "stance": "standing"
-    },
-    {
-      "id": "captain_thimble",
-      "name": "Captain Thimble",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 115,
-      "stance": "standing"
-    },
-    {
-      "id": "master_dunnick",
-      "name": "Master Dunnick",
-      "basis": "bigfoot",
-      "scale": "large",
-      "heightCm": 270,
-      "stance": "standing"
-    },
-    {
-      "id": "professor_nettle",
-      "name": "Professor Nettle",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "aunt_bellow",
-      "name": "Aunt Bellow",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 265,
-      "stance": "standing"
-    },
-    {
-      "id": "yeti_herder",
-      "name": "Yeti herder",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 250,
-      "stance": "standing"
-    },
-    {
-      "id": "seal_keeper",
-      "name": "Seal-Keeper",
-      "basis": "legend_dragon",
-      "scale": "colossal",
-      "heightCm": 1800,
-      "stance": "standing"
-    },
-    {
-      "id": "brassbuckle_scout",
-      "name": "Brassbuckle scout",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 95,
-      "stance": "standing"
-    },
-    {
-      "id": "brassbuckle_recordkeeper",
-      "name": "Brassbuckle recordkeeper",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 95,
-      "stance": "standing"
-    },
-    {
-      "id": "relay_runner",
-      "name": "Relay Runner",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "masked_choir_singer",
-      "name": "Masked choir singer",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 95,
-      "stance": "standing"
-    },
-    {
-      "id": "bell_code_expert",
-      "name": "Bell-Code Expert",
-      "basis": "dragonling",
-      "scale": "small",
-      "heightCm": 70,
-      "stance": "standing"
-    },
-    {
-      "id": "gullets_cousin",
-      "name": "Gullet's Cousins",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "road_warden",
-      "name": "Road-Warden",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 230,
-      "stance": "standing"
-    },
-    {
-      "id": "fishmonger",
-      "name": "Fishmonger",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 280,
-      "stance": "standing"
-    },
-    {
-      "id": "road_boss",
-      "name": "Road Boss",
-      "basis": "centaur",
-      "scale": "large",
-      "heightCm": 250,
-      "stance": "standing"
-    },
-    {
-      "id": "warden_clerk",
-      "name": "Warden Clerk",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "rush_prospector",
-      "name": "Rush prospector",
-      "basis": "burrowfolk",
-      "scale": "small_to_medium",
-      "heightCm": 95,
-      "stance": "standing"
-    },
-    {
-      "id": "bell_courier",
-      "name": "Bell Courier",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 160,
-      "stance": "standing"
-    },
-    {
-      "id": "stall_witch",
-      "name": "Stall Witch",
-      "basis": "witch_order",
-      "scale": "medium",
-      "heightCm": 140,
-      "stance": "standing"
-    },
-    {
-      "id": "goat_kid",
-      "name": "Goat kid",
-      "basis": "snowhorn_goat",
-      "scale": "tiny_to_small",
-      "heightCm": 45,
-      "stance": "standing"
-    },
-    {
       "id": "adult_dragonling",
       "name": "Farmer Gourd",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 150,
-      "stance": "standing"
-    },
-    {
-      "id": "island_keeper",
-      "name": "Keeper Juniper",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 145,
-      "stance": "standing"
-    },
-    {
-      "id": "new_island_keeper",
-      "name": "Keeper Clove",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 130,
-      "stance": "standing"
-    },
-    {
-      "id": "younger_keeper",
-      "name": "Flurry",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 220,
-      "stance": "standing"
-    },
-    {
-      "id": "newcomer_yeti",
-      "name": "Newcomer",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 235,
-      "stance": "standing"
-    },
-    {
-      "id": "route_worker_yeti",
-      "name": "Hummock",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 250,
-      "stance": "standing"
-    },
-    {
-      "id": "yeti_watcher",
-      "name": "Yeti watcher",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 255,
-      "stance": "standing"
-    },
-    {
-      "id": "pass_keeper",
-      "name": "Brask",
-      "basis": "griffin",
-      "scale": "medium_to_large",
-      "heightCm": 210,
-      "stance": "standing"
-    },
-    {
-      "id": "ridge_griffin",
-      "name": "Skerry",
-      "basis": "griffin",
-      "scale": "medium_to_large",
-      "heightCm": 205,
       "stance": "standing"
     },
     {
@@ -2617,43 +1729,27 @@
       "stance": "standing"
     },
     {
-      "id": "memory_reader",
-      "name": "Memory reader",
+      "id": "aunt_bellow",
+      "name": "Aunt Bellow",
       "basis": "yeti",
       "scale": "large",
-      "heightCm": 230,
+      "heightCm": 265,
       "stance": "standing"
     },
     {
-      "id": "frogfolk_student",
-      "name": "Frogfolk student",
-      "basis": "frogfolk",
+      "id": "bell_code_expert",
+      "name": "Bell-Code Expert",
+      "basis": "dragonling",
       "scale": "small",
-      "heightCm": 60,
+      "heightCm": 70,
       "stance": "standing"
     },
     {
-      "id": "young_yeti_singer",
-      "name": "Young yeti singer",
-      "basis": "yeti",
-      "scale": "large",
-      "heightCm": 155,
-      "stance": "standing"
-    },
-    {
-      "id": "dock_worker",
-      "name": "Dock worker",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 115,
-      "stance": "standing"
-    },
-    {
-      "id": "passing_fisher",
-      "name": "Fen",
-      "basis": "frogfolk",
-      "scale": "small_to_medium",
-      "heightCm": 110,
+      "id": "bell_courier",
+      "name": "Bell Courier",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 160,
       "stance": "standing"
     },
     {
@@ -2665,46 +1761,6 @@
       "stance": "standing"
     },
     {
-      "id": "pebble",
-      "name": "Pebble",
-      "basis": "griffin",
-      "scale": "small_to_medium",
-      "heightCm": 95,
-      "stance": "standing"
-    },
-    {
-      "id": "dob",
-      "name": "Dob",
-      "basis": "bigfoot",
-      "scale": "medium",
-      "heightCm": 185,
-      "stance": "standing"
-    },
-    {
-      "id": "bryn",
-      "name": "Bryn",
-      "basis": "dragonling",
-      "scale": "medium",
-      "heightCm": 125,
-      "stance": "standing"
-    },
-    {
-      "id": "tilly",
-      "name": "Tilly",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
-      "id": "tilly_eggs",
-      "name": "Tilly",
-      "basis": "griffin",
-      "scale": "medium",
-      "heightCm": 165,
-      "stance": "standing"
-    },
-    {
       "id": "boundary_runner",
       "name": "Runner",
       "basis": "dragonling",
@@ -2713,35 +1769,27 @@
       "stance": "standing"
     },
     {
-      "id": "snowhorn_kid",
-      "name": "Kid goat",
-      "basis": "snowhorn_goat",
-      "scale": "small",
-      "heightCm": 45,
+      "id": "bracken_swiftmile",
+      "name": "Bracken",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
       "stance": "standing"
     },
     {
-      "id": "tamsin_river_keeper",
-      "name": "Tamsin",
-      "basis": "griffin",
-      "scale": "medium_to_large",
-      "heightCm": 205,
+      "id": "bram_lock",
+      "name": "Bram Lock",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 240,
       "stance": "standing"
     },
     {
-      "id": "yeti_grit_seller",
-      "name": "Grit seller",
-      "basis": "yeti",
+      "id": "brask",
+      "name": "Engineer Brask",
+      "basis": "faun",
       "scale": "medium",
-      "heightCm": 145,
-      "stance": "standing"
-    },
-    {
-      "id": "tamsin_whistling",
-      "name": "Tamsin Whistling",
-      "basis": "griffin",
-      "scale": "medium_to_large",
-      "heightCm": 205,
+      "heightCm": 165,
       "stance": "standing"
     },
     {
@@ -2753,51 +1801,219 @@
       "stance": "standing"
     },
     {
-      "id": "ossley_pole_tip",
-      "name": "Ossley Pole Tip",
+      "id": "brassbuckle_recordkeeper",
+      "name": "Brassbuckle recordkeeper",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 95,
+      "stance": "standing"
+    },
+    {
+      "id": "brassbuckle_scout",
+      "name": "Brassbuckle scout",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 95,
+      "stance": "standing"
+    },
+    {
+      "id": "brisk",
+      "name": "Brisk",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "bryn",
+      "name": "Bryn",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 125,
+      "stance": "standing"
+    },
+    {
+      "id": "bryony",
+      "name": "Bryony",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "bun",
+      "name": "Bun",
+      "basis": "snowhorn_goat",
+      "scale": "tiny_to_small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "burdock",
+      "name": "Burdock",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "cadet_linnet",
+      "name": "Cadet Linnet",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
+    },
+    {
+      "id": "camp_hen",
+      "name": "Camp Hen",
+      "basis": "hen",
+      "scale": "small",
+      "heightCm": 25,
+      "stance": "standing"
+    },
+    {
+      "id": "captain_thimble",
+      "name": "Captain Thimble",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 115,
+      "stance": "standing"
+    },
+    {
+      "id": "captain_voss",
+      "name": "Captain Voss",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 175,
+      "stance": "standing"
+    },
+    {
+      "id": "caravan_master",
+      "name": "Caravan Master",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
+    },
+    {
+      "id": "clerk_pennywhistle",
+      "name": "Clerk Pennywhistle",
+      "basis": "harvest_sprite",
+      "scale": "tiny",
+      "heightCm": 20,
+      "stance": "standing"
+    },
+    {
+      "id": "coralie_fenn",
+      "name": "Madame Coralie Fenn",
+      "basis": "merfolk",
+      "scale": "medium",
+      "heightCm": 150,
+      "stance": "standing"
+    },
+    {
+      "id": "corbin",
+      "name": "Corbin",
+      "basis": "burrowfolk",
+      "scale": "medium",
+      "heightCm": 105,
+      "stance": "standing"
+    },
+    {
+      "id": "corbin_carrying_posy",
+      "name": "Corbin and Posy",
+      "basis": "burrowfolk",
+      "scale": "medium",
+      "heightCm": 150,
+      "stance": "standing"
+    },
+    {
+      "id": "corporal_tibbet",
+      "name": "Corporal Tibbet",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "courier_griffin",
+      "name": "Courier Griffin",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "crying_gem_buyer",
+      "name": "Crying gem-buyer",
+      "basis": "merfolk",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "cult_bigfoot",
+      "name": "Masked bigfoot singer",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
+    },
+    {
+      "id": "cult_frogfolk",
+      "name": "Masked frogfolk singer",
       "basis": "frogfolk",
       "scale": "small_to_medium",
-      "heightCm": 100,
+      "heightCm": 105,
       "stance": "standing"
     },
     {
-      "id": "pip_catching_glow",
-      "name": "Pip Catching Glow",
-      "basis": "manticore",
+      "id": "deep-ice-figure",
+      "name": "Corvane",
+      "basis": "faun",
+      "scale": "very_large",
+      "heightCm": 280,
+      "stance": "standing"
+    },
+    {
+      "id": "dob",
+      "name": "Dob",
+      "basis": "bigfoot",
       "scale": "medium",
-      "heightCm": 140,
+      "heightCm": 185,
       "stance": "standing"
     },
     {
-      "id": "tidepocket_pots",
-      "name": "Tidepocket Pots",
-      "basis": "skupper",
+      "id": "dock_worker",
+      "name": "Dock worker",
+      "basis": "frogfolk",
       "scale": "small_to_medium",
-      "heightCm": 100,
+      "heightCm": 115,
       "stance": "standing"
     },
     {
-      "id": "kid_shivering",
-      "name": "Kid Shivering",
-      "basis": "snowhorn_goat",
-      "scale": "small",
-      "heightCm": 45,
+      "id": "dragonling_grandmother",
+      "name": "Grandmother",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 130,
       "stance": "standing"
     },
     {
-      "id": "kid_peeking",
-      "name": "Kid Peeking",
-      "basis": "snowhorn_goat",
-      "scale": "small",
-      "heightCm": 45,
+      "id": "dragonling_stone_keeper",
+      "name": "Tally",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 130,
       "stance": "standing"
     },
     {
-      "id": "kid_burrowing",
-      "name": "Kid Burrowing",
-      "basis": "snowhorn_goat",
+      "id": "duckling_crumbs",
+      "name": "Duckling Crumbs",
+      "basis": "duckling",
       "scale": "small",
-      "heightCm": 45,
+      "heightCm": 20,
       "stance": "standing"
     },
     {
@@ -2806,54 +2022,6 @@
       "basis": "duckling",
       "scale": "small",
       "heightCm": 20,
-      "stance": "standing"
-    },
-    {
-      "id": "kid_kicking",
-      "name": "Kid Kicking",
-      "basis": "snowhorn_goat",
-      "scale": "small",
-      "heightCm": 45,
-      "stance": "standing"
-    },
-    {
-      "id": "lead_goat_bell",
-      "name": "Lead Goat Bell",
-      "basis": "snowhorn_goat",
-      "scale": "small_to_medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "kid_listening",
-      "name": "Kid Listening",
-      "basis": "snowhorn_goat",
-      "scale": "small",
-      "heightCm": 45,
-      "stance": "standing"
-    },
-    {
-      "id": "seren_listening",
-      "name": "Seren Listening",
-      "basis": "kitsune",
-      "scale": "medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "goat_chewing",
-      "name": "Goat Chewing",
-      "basis": "snowhorn_goat",
-      "scale": "small_to_medium",
-      "heightCm": 110,
-      "stance": "standing"
-    },
-    {
-      "id": "goat_leaning",
-      "name": "Goat Leaning",
-      "basis": "snowhorn_goat",
-      "scale": "small_to_medium",
-      "heightCm": 110,
       "stance": "standing"
     },
     {
@@ -2873,35 +2041,131 @@
       "stance": "standing"
     },
     {
-      "id": "olivia_blanket",
-      "name": "Olivia Blanket",
+      "id": "dunmore",
+      "name": "Dunmore",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "elder_sefa",
+      "name": "Elder Sefa",
+      "basis": "manticore",
+      "scale": "large",
+      "heightCm": 190,
+      "stance": "standing"
+    },
+    {
+      "id": "elder_unicorn",
+      "name": "Elder Unicorn",
       "basis": "unicorn",
-      "scale": "medium",
-      "heightCm": 170,
+      "scale": "large",
+      "heightCm": 210,
       "stance": "standing"
     },
     {
-      "id": "singer_low",
-      "name": "Singer Low",
+      "id": "fennick",
+      "name": "Fennick",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "fishmonger",
+      "name": "Fishmonger",
       "basis": "yeti",
       "scale": "large",
-      "heightCm": 155,
+      "heightCm": 280,
       "stance": "standing"
     },
     {
-      "id": "duckling_crumbs",
-      "name": "Duckling Crumbs",
-      "basis": "duckling",
+      "id": "flood_warden",
+      "name": "Flood-Warden",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
+    },
+    {
+      "id": "frogfolk_pilot",
+      "name": "Frogfolk Pilot",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "frogfolk_student",
+      "name": "Frogfolk student",
+      "basis": "frogfolk",
       "scale": "small",
-      "heightCm": 20,
+      "heightCm": 60,
       "stance": "standing"
     },
     {
-      "id": "singer_hold",
-      "name": "Singer Hold",
-      "basis": "yeti",
+      "id": "goat_chewing",
+      "name": "Goat Chewing",
+      "basis": "snowhorn_goat",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "goat_kid",
+      "name": "Goat kid",
+      "basis": "snowhorn_goat",
+      "scale": "tiny_to_small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "goat_leaning",
+      "name": "Goat Leaning",
+      "basis": "snowhorn_goat",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "grandmother_tull",
+      "name": "Grandmother Tull",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "granny_ash",
+      "name": "Granny Ash",
+      "basis": "manticore",
       "scale": "large",
-      "heightCm": 155,
+      "heightCm": 185,
+      "stance": "standing"
+    },
+    {
+      "id": "great_gran_ashby",
+      "name": "Great-Gran Ashby",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "gullet",
+      "name": "Gullet",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "gullets_cousin",
+      "name": "Gullet's Cousins",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 110,
       "stance": "standing"
     },
     {
@@ -2913,19 +2177,555 @@
       "stance": "standing"
     },
     {
-      "id": "skupper_weaver",
-      "name": "Skupper Weaver",
+      "id": "hesper",
+      "name": "Hesper Longstride",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "hessa_wren",
+      "name": "Hessa Wren",
+      "basis": "harvest_sprite",
+      "scale": "tiny",
+      "heightCm": 22,
+      "stance": "standing"
+    },
+    {
+      "id": "hob",
+      "name": "Hob Thistledown",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 155,
+      "stance": "standing"
+    },
+    {
+      "id": "hollis",
+      "name": "Hollis",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
+    },
+    {
+      "id": "holloway",
+      "name": "Sergeant Holloway",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "innkeeper_flint",
+      "name": "Innkeeper Flint",
+      "basis": "stone_troll",
+      "scale": "large",
+      "heightCm": 290,
+      "stance": "standing"
+    },
+    {
+      "id": "island_keeper",
+      "name": "Keeper Juniper",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 145,
+      "stance": "standing"
+    },
+    {
+      "id": "kid_burrowing",
+      "name": "Kid Burrowing",
+      "basis": "snowhorn_goat",
+      "scale": "small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "kid_kicking",
+      "name": "Kid Kicking",
+      "basis": "snowhorn_goat",
+      "scale": "small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "kid_listening",
+      "name": "Kid Listening",
+      "basis": "snowhorn_goat",
+      "scale": "small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "kid_peeking",
+      "name": "Kid Peeking",
+      "basis": "snowhorn_goat",
+      "scale": "small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "kid_shivering",
+      "name": "Kid Shivering",
+      "basis": "snowhorn_goat",
+      "scale": "small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "kitsune_temple_keeper",
+      "name": "Keeper Sorrel",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 115,
+      "stance": "standing"
+    },
+    {
+      "id": "lady_fleecewick",
+      "name": "Lady Fleecewick",
+      "basis": "sheeple",
+      "scale": "medium",
+      "heightCm": 145,
+      "stance": "standing"
+    },
+    {
+      "id": "lady_olivia",
+      "name": "Lady Olivia",
+      "basis": "unicorn",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "lead_goat_bell",
+      "name": "Lead Goat Bell",
+      "basis": "snowhorn_goat",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "littlest_bracken",
+      "name": "Littlest Bracken",
+      "basis": "faun",
+      "scale": "small_to_medium",
+      "heightCm": 85,
+      "stance": "standing"
+    },
+    {
+      "id": "ma_ruddle",
+      "name": "Ma Ruddle",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 90,
+      "stance": "standing"
+    },
+    {
+      "id": "marda_thorn",
+      "name": "Marda Thorn",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 225,
+      "stance": "standing"
+    },
+    {
+      "id": "masked_choir_singer",
+      "name": "Masked choir singer",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 95,
+      "stance": "standing"
+    },
+    {
+      "id": "master_dunnick",
+      "name": "Master Dunnick",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 270,
+      "stance": "standing"
+    },
+    {
+      "id": "memory_reader",
+      "name": "Memory reader",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "mortar",
+      "name": "Mortar",
+      "basis": "stone_troll",
+      "scale": "very_large",
+      "heightCm": 330,
+      "stance": "standing"
+    },
+    {
+      "id": "mosshome_archivist",
+      "name": "Archivist",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
+    },
+    {
+      "id": "mosshome_eldest",
+      "name": "The Eldest",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
+    },
+    {
+      "id": "mosshome_runner",
+      "name": "MossHome Runner",
+      "basis": "bigfoot",
+      "scale": "medium_to_large",
+      "heightCm": 200,
+      "stance": "standing"
+    },
+    {
+      "id": "mother_bracken",
+      "name": "Mother Bracken",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
+    },
+    {
+      "id": "mother_thrum",
+      "name": "Mother Thrum",
+      "basis": "witch_order",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "mrs_tuft",
+      "name": "Mrs. Tuft",
+      "basis": "sheeple",
+      "scale": "medium",
+      "heightCm": 135,
+      "stance": "standing"
+    },
+    {
+      "id": "nan_rummage",
+      "name": "Nan Rummage",
+      "basis": "boggart",
+      "scale": "small",
+      "heightCm": 65,
+      "stance": "standing"
+    },
+    {
+      "id": "new_island_keeper",
+      "name": "Keeper Clove",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "newcomer_yeti",
+      "name": "Newcomer",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
+    },
+    {
+      "id": "nim",
+      "name": "Nim",
+      "basis": "dragonling",
+      "scale": "small_to_medium",
+      "heightCm": 80,
+      "stance": "standing"
+    },
+    {
+      "id": "odo",
+      "name": "Odo",
+      "basis": "burrowfolk",
+      "scale": "medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "old_corran",
+      "name": "Old Corran",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 225,
+      "stance": "standing"
+    },
+    {
+      "id": "old_lintel",
+      "name": "Old Lintel",
+      "basis": "stone_troll",
+      "scale": "very_large",
+      "heightCm": 310,
+      "stance": "standing"
+    },
+    {
+      "id": "old_ossley",
+      "name": "Old Ossley",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "old_wick",
+      "name": "Old Wick",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "oldest_archivist",
+      "name": "Oldest Archivist",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "olivia_blanket",
+      "name": "Olivia Blanket",
+      "basis": "unicorn",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "orin_vale",
+      "name": "Master Orin Vale",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 175,
+      "stance": "standing"
+    },
+    {
+      "id": "ossley_pole_tip",
+      "name": "Ossley Pole Tip",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "pass_keeper",
+      "name": "Brask",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 210,
+      "stance": "standing"
+    },
+    {
+      "id": "passing_fisher",
+      "name": "Fen",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "path_keeper",
+      "name": "Path-Keeper",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
+    },
+    {
+      "id": "pebble",
+      "name": "Pebble",
+      "basis": "griffin",
+      "scale": "small_to_medium",
+      "heightCm": 95,
+      "stance": "standing"
+    },
+    {
+      "id": "pellam",
+      "name": "Pellam",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "perrin_nine_verse",
+      "name": "Perrin Nine-Verse",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "pib",
+      "name": "Pib",
+      "basis": "harvest_sprite",
+      "scale": "tiny",
+      "heightCm": 25,
+      "stance": "standing"
+    },
+    {
+      "id": "pip_catching_glow",
+      "name": "Pip Catching Glow",
+      "basis": "manticore",
+      "scale": "medium",
+      "heightCm": 140,
+      "stance": "standing"
+    },
+    {
+      "id": "pip_thistledown",
+      "name": "Pip Thistledown",
+      "basis": "manticore",
+      "scale": "medium",
+      "heightCm": 140,
+      "stance": "standing"
+    },
+    {
+      "id": "postmaster_quill",
+      "name": "Postmaster Quill",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "posy",
+      "name": "Posy",
+      "basis": "burrowfolk",
+      "scale": "small",
+      "heightCm": 70,
+      "stance": "standing"
+    },
+    {
+      "id": "professor_nettle",
+      "name": "Professor Nettle",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "relay_runner",
+      "name": "Relay Runner",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "ridge_griffin",
+      "name": "Skerry",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 205,
+      "stance": "standing"
+    },
+    {
+      "id": "road_boss",
+      "name": "Road Boss",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
+    },
+    {
+      "id": "road_warden",
+      "name": "Road-Warden",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "rook",
+      "name": "Rook",
+      "basis": "burrowfolk",
+      "scale": "medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "rope_shop_boy",
+      "name": "Rope-shop boy",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "route_worker_yeti",
+      "name": "Hummock",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
+    },
+    {
+      "id": "rush_prospector",
+      "name": "Rush prospector",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 95,
+      "stance": "standing"
+    },
+    {
+      "id": "saltrot_guide",
+      "name": "Puddle",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 100,
       "stance": "standing"
     },
     {
-      "id": "camp_hen",
-      "name": "Camp Hen",
-      "basis": "hen",
-      "scale": "small",
-      "heightCm": 25,
+      "id": "seal_keeper",
+      "name": "Seal-Keeper",
+      "basis": "legend_dragon",
+      "scale": "colossal",
+      "heightCm": 1800,
+      "stance": "standing"
+    },
+    {
+      "id": "selkie_grandmother",
+      "name": "Selkie Grandmother",
+      "basis": "selkie",
+      "scale": "medium",
+      "heightCm": 155,
+      "stance": "standing"
+    },
+    {
+      "id": "seren_listening",
+      "name": "Seren Listening",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "seren_wisp",
+      "name": "Seren Wisp",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "singer_hold",
+      "name": "Singer Hold",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 155,
+      "stance": "standing"
+    },
+    {
+      "id": "singer_low",
+      "name": "Singer Low",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 155,
       "stance": "standing"
     },
     {
@@ -2953,11 +2753,211 @@
       "stance": "standing"
     },
     {
-      "id": "frogfolk_pilot",
-      "name": "Frogfolk Pilot",
+      "id": "skupper_weaver",
+      "name": "Skupper Weaver",
+      "basis": "skupper",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "skywarden_centaur",
+      "name": "Skywarden centaur",
+      "basis": "centaur",
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
+    },
+    {
+      "id": "skywarden_faun",
+      "name": "Skywarden faun",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
+    },
+    {
+      "id": "skywarden_griffin",
+      "name": "Skywarden griffin",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 185,
+      "stance": "standing"
+    },
+    {
+      "id": "snowhorn_kid",
+      "name": "Kid goat",
+      "basis": "snowhorn_goat",
+      "scale": "small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "soup_woman",
+      "name": "Soup woman",
+      "basis": "selkie",
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
+    },
+    {
+      "id": "stall_witch",
+      "name": "Stall Witch",
+      "basis": "witch_order",
+      "scale": "medium",
+      "heightCm": 140,
+      "stance": "standing"
+    },
+    {
+      "id": "tamsin",
+      "name": "Tamsin Three-Cards",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "tamsin_river_keeper",
+      "name": "Tamsin",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 205,
+      "stance": "standing"
+    },
+    {
+      "id": "tamsin_whistling",
+      "name": "Tamsin Whistling",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 205,
+      "stance": "standing"
+    },
+    {
+      "id": "tansy",
+      "name": "Tansy",
+      "basis": "faun",
+      "scale": "small_to_medium",
+      "heightCm": 90,
+      "stance": "standing"
+    },
+    {
+      "id": "tib",
+      "name": "Tib",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 85,
+      "stance": "standing"
+    },
+    {
+      "id": "tidepocket_pots",
+      "name": "Tidepocket Pots",
+      "basis": "skupper",
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "tidewell",
+      "name": "Professor Tidewell",
+      "basis": "selkie",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "tilly",
+      "name": "Tilly",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "tilly_eggs",
+      "name": "Tilly",
+      "basis": "griffin",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "tobble",
+      "name": "Tobble Reedpipe",
+      "basis": "faun",
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
+    },
+    {
+      "id": "warden_clerk",
+      "name": "Warden Clerk",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "wend",
+      "name": "Wend",
       "basis": "frogfolk",
       "scale": "small_to_medium",
       "heightCm": 100,
+      "stance": "standing"
+    },
+    {
+      "id": "yeti_elder",
+      "name": "Elder Murmur",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 245,
+      "stance": "standing"
+    },
+    {
+      "id": "yeti_grit_seller",
+      "name": "Grit seller",
+      "basis": "yeti",
+      "scale": "medium",
+      "heightCm": 145,
+      "stance": "standing"
+    },
+    {
+      "id": "yeti_herder",
+      "name": "Yeti herder",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
+    },
+    {
+      "id": "yeti_watcher",
+      "name": "Yeti watcher",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 255,
+      "stance": "standing"
+    },
+    {
+      "id": "young_gatherer",
+      "name": "Young Gatherer",
+      "basis": "dragonling",
+      "scale": "small",
+      "heightCm": 70,
+      "stance": "standing"
+    },
+    {
+      "id": "young_yeti_singer",
+      "name": "Young yeti singer",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 155,
+      "stance": "standing"
+    },
+    {
+      "id": "younger_keeper",
+      "name": "Flurry",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 220,
       "stance": "standing"
     }
   ],
@@ -2968,6 +2968,20 @@
       "name": "Donkey",
       "scale": "medium",
       "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "duckling",
+      "name": "Duckling",
+      "scale": "small",
+      "heightCm": 20,
+      "stance": "standing"
+    },
+    {
+      "id": "hen",
+      "name": "Hen",
+      "scale": "tiny",
+      "heightCm": 25,
       "stance": "standing"
     },
     {
@@ -2985,13 +2999,6 @@
       "stance": "standing"
     },
     {
-      "id": "rookery_crows",
-      "name": "The crows",
-      "scale": "small_to_medium",
-      "heightCm": 80,
-      "stance": "standing"
-    },
-    {
       "id": "quay_gull",
       "name": "Quay gull",
       "scale": "small",
@@ -2999,17 +3006,10 @@
       "stance": "standing"
     },
     {
-      "id": "duckling",
-      "name": "Duckling",
-      "scale": "small",
-      "heightCm": 20,
-      "stance": "standing"
-    },
-    {
-      "id": "hen",
-      "name": "Hen",
-      "scale": "tiny",
-      "heightCm": 25,
+      "id": "rookery_crows",
+      "name": "The crows",
+      "scale": "small_to_medium",
+      "heightCm": 80,
       "stance": "standing"
     }
   ],
@@ -3425,174 +3425,174 @@
       "maxOverlap": 0.08
     },
     "paintings": [
-      "characters/unicorn/fledgling/assembled.png",
-      "characters/unicorn/sworn/assembled.png",
-      "characters/unicorn/radiant/assembled.png",
-      "characters/unicorn/mythic/assembled.png",
-      "characters/bigfoot/fledgling/assembled.png",
-      "characters/bigfoot/sworn/assembled.png",
-      "characters/bigfoot/radiant/assembled.png",
-      "characters/bigfoot/mythic/assembled.png",
-      "characters/kitsune/fledgling/assembled.png",
-      "characters/kitsune/sworn/assembled.png",
-      "characters/kitsune/radiant/assembled.png",
-      "characters/kitsune/mythic/assembled.png",
-      "characters/dragonling/fledgling/assembled.png",
-      "characters/dragonling/sworn/assembled.png",
-      "characters/dragonling/radiant/assembled.png",
-      "characters/dragonling/mythic/assembled.png",
-      "characters/griffin/fledgling/assembled.png",
-      "characters/griffin/sworn/assembled.png",
-      "characters/griffin/radiant/assembled.png",
-      "characters/griffin/mythic/assembled.png",
-      "characters/manticore/fledgling/assembled.png",
-      "characters/manticore/sworn/assembled.png",
-      "characters/manticore/radiant/assembled.png",
-      "characters/manticore/mythic/assembled.png",
-      "character-rigs/thornguard/sworn/unicorn/assembled.png",
-      "character-rigs/thornguard/radiant/unicorn/assembled.png",
-      "character-rigs/thornguard/mythic/unicorn/assembled.png",
-      "character-rigs/duskrunner/sworn/unicorn/assembled.png",
-      "character-rigs/duskrunner/radiant/unicorn/assembled.png",
-      "character-rigs/duskrunner/mythic/unicorn/assembled.png",
-      "character-rigs/starweaver/sworn/unicorn/assembled.png",
-      "character-rigs/starweaver/radiant/unicorn/assembled.png",
-      "character-rigs/starweaver/mythic/unicorn/assembled.png",
-      "character-rigs/songkeeper/sworn/unicorn/assembled.png",
-      "character-rigs/songkeeper/radiant/unicorn/assembled.png",
-      "character-rigs/songkeeper/mythic/unicorn/assembled.png",
-      "gear-portraits/thornguard/sworn/unicorn.png",
-      "gear-portraits/thornguard/radiant/unicorn.png",
-      "gear-portraits/thornguard/mythic/unicorn.png",
-      "gear-portraits/duskrunner/sworn/unicorn.png",
-      "gear-portraits/duskrunner/radiant/unicorn.png",
-      "gear-portraits/duskrunner/mythic/unicorn.png",
-      "gear-portraits/starweaver/sworn/unicorn.png",
-      "gear-portraits/starweaver/radiant/unicorn.png",
-      "gear-portraits/starweaver/mythic/unicorn.png",
-      "gear-portraits/songkeeper/sworn/unicorn.png",
-      "gear-portraits/songkeeper/radiant/unicorn.png",
-      "gear-portraits/songkeeper/mythic/unicorn.png",
-      "character-rigs/thornguard/sworn/kitsune/assembled.png",
-      "character-rigs/thornguard/radiant/kitsune/assembled.png",
-      "character-rigs/thornguard/mythic/kitsune/assembled.png",
-      "character-rigs/duskrunner/sworn/kitsune/assembled.png",
-      "character-rigs/duskrunner/radiant/kitsune/assembled.png",
-      "character-rigs/duskrunner/mythic/kitsune/assembled.png",
-      "character-rigs/starweaver/sworn/kitsune/assembled.png",
-      "character-rigs/starweaver/radiant/kitsune/assembled.png",
-      "character-rigs/starweaver/mythic/kitsune/assembled.png",
-      "character-rigs/songkeeper/sworn/kitsune/assembled.png",
-      "character-rigs/songkeeper/radiant/kitsune/assembled.png",
-      "character-rigs/songkeeper/mythic/kitsune/assembled.png",
-      "gear-portraits/thornguard/sworn/kitsune.png",
-      "gear-portraits/thornguard/radiant/kitsune.png",
-      "gear-portraits/thornguard/mythic/kitsune.png",
-      "gear-portraits/duskrunner/sworn/kitsune.png",
-      "gear-portraits/duskrunner/radiant/kitsune.png",
-      "gear-portraits/duskrunner/mythic/kitsune.png",
-      "gear-portraits/starweaver/sworn/kitsune.png",
-      "gear-portraits/starweaver/radiant/kitsune.png",
-      "gear-portraits/starweaver/mythic/kitsune.png",
-      "gear-portraits/songkeeper/sworn/kitsune.png",
-      "gear-portraits/songkeeper/radiant/kitsune.png",
-      "gear-portraits/songkeeper/mythic/kitsune.png",
-      "character-rigs/thornguard/sworn/griffin/assembled.png",
-      "character-rigs/thornguard/radiant/griffin/assembled.png",
-      "character-rigs/thornguard/mythic/griffin/assembled.png",
-      "character-rigs/duskrunner/sworn/griffin/assembled.png",
-      "character-rigs/duskrunner/radiant/griffin/assembled.png",
-      "character-rigs/duskrunner/mythic/griffin/assembled.png",
-      "character-rigs/starweaver/sworn/griffin/assembled.png",
-      "character-rigs/starweaver/radiant/griffin/assembled.png",
-      "character-rigs/starweaver/mythic/griffin/assembled.png",
-      "character-rigs/songkeeper/sworn/griffin/assembled.png",
-      "character-rigs/songkeeper/radiant/griffin/assembled.png",
-      "character-rigs/songkeeper/mythic/griffin/assembled.png",
-      "gear-portraits/thornguard/sworn/griffin.png",
-      "gear-portraits/thornguard/radiant/griffin.png",
-      "gear-portraits/thornguard/mythic/griffin.png",
-      "gear-portraits/duskrunner/sworn/griffin.png",
-      "gear-portraits/duskrunner/radiant/griffin.png",
-      "gear-portraits/duskrunner/mythic/griffin.png",
-      "gear-portraits/starweaver/sworn/griffin.png",
-      "gear-portraits/starweaver/radiant/griffin.png",
-      "gear-portraits/starweaver/mythic/griffin.png",
-      "gear-portraits/songkeeper/sworn/griffin.png",
-      "gear-portraits/songkeeper/radiant/griffin.png",
-      "gear-portraits/songkeeper/mythic/griffin.png",
-      "character-rigs/thornguard/sworn/dragonling/assembled.png",
-      "character-rigs/thornguard/radiant/dragonling/assembled.png",
-      "character-rigs/thornguard/mythic/dragonling/assembled.png",
-      "character-rigs/duskrunner/sworn/dragonling/assembled.png",
-      "character-rigs/duskrunner/radiant/dragonling/assembled.png",
-      "character-rigs/duskrunner/mythic/dragonling/assembled.png",
-      "character-rigs/starweaver/sworn/dragonling/assembled.png",
-      "character-rigs/starweaver/radiant/dragonling/assembled.png",
-      "character-rigs/starweaver/mythic/dragonling/assembled.png",
-      "character-rigs/songkeeper/sworn/dragonling/assembled.png",
-      "character-rigs/songkeeper/radiant/dragonling/assembled.png",
-      "character-rigs/songkeeper/mythic/dragonling/assembled.png",
-      "gear-portraits/thornguard/sworn/dragonling.png",
-      "gear-portraits/thornguard/radiant/dragonling.png",
-      "gear-portraits/thornguard/mythic/dragonling.png",
-      "gear-portraits/duskrunner/sworn/dragonling.png",
-      "gear-portraits/duskrunner/radiant/dragonling.png",
-      "gear-portraits/duskrunner/mythic/dragonling.png",
-      "gear-portraits/starweaver/sworn/dragonling.png",
-      "gear-portraits/starweaver/radiant/dragonling.png",
-      "gear-portraits/starweaver/mythic/dragonling.png",
-      "gear-portraits/songkeeper/sworn/dragonling.png",
-      "gear-portraits/songkeeper/radiant/dragonling.png",
-      "gear-portraits/songkeeper/mythic/dragonling.png",
-      "character-rigs/thornguard/sworn/manticore/assembled.png",
-      "character-rigs/thornguard/radiant/manticore/assembled.png",
-      "character-rigs/thornguard/mythic/manticore/assembled.png",
-      "character-rigs/duskrunner/sworn/manticore/assembled.png",
-      "character-rigs/duskrunner/radiant/manticore/assembled.png",
-      "character-rigs/duskrunner/mythic/manticore/assembled.png",
-      "character-rigs/starweaver/sworn/manticore/assembled.png",
-      "character-rigs/starweaver/radiant/manticore/assembled.png",
-      "character-rigs/starweaver/mythic/manticore/assembled.png",
-      "character-rigs/songkeeper/sworn/manticore/assembled.png",
-      "character-rigs/songkeeper/radiant/manticore/assembled.png",
-      "character-rigs/songkeeper/mythic/manticore/assembled.png",
-      "gear-portraits/thornguard/sworn/manticore.png",
-      "gear-portraits/thornguard/radiant/manticore.png",
-      "gear-portraits/thornguard/mythic/manticore.png",
-      "gear-portraits/duskrunner/sworn/manticore.png",
-      "gear-portraits/duskrunner/radiant/manticore.png",
-      "gear-portraits/duskrunner/mythic/manticore.png",
-      "gear-portraits/starweaver/sworn/manticore.png",
-      "gear-portraits/starweaver/radiant/manticore.png",
-      "gear-portraits/starweaver/mythic/manticore.png",
-      "gear-portraits/songkeeper/sworn/manticore.png",
-      "gear-portraits/songkeeper/radiant/manticore.png",
-      "gear-portraits/songkeeper/mythic/manticore.png",
-      "character-rigs/thornguard/sworn/bigfoot/assembled.png",
-      "character-rigs/thornguard/radiant/bigfoot/assembled.png",
-      "character-rigs/thornguard/mythic/bigfoot/assembled.png",
-      "character-rigs/duskrunner/sworn/bigfoot/assembled.png",
-      "character-rigs/duskrunner/radiant/bigfoot/assembled.png",
       "character-rigs/duskrunner/mythic/bigfoot/assembled.png",
-      "character-rigs/starweaver/sworn/bigfoot/assembled.png",
-      "character-rigs/starweaver/radiant/bigfoot/assembled.png",
-      "character-rigs/starweaver/mythic/bigfoot/assembled.png",
-      "character-rigs/songkeeper/sworn/bigfoot/assembled.png",
-      "character-rigs/songkeeper/radiant/bigfoot/assembled.png",
+      "character-rigs/duskrunner/mythic/dragonling/assembled.png",
+      "character-rigs/duskrunner/mythic/griffin/assembled.png",
+      "character-rigs/duskrunner/mythic/kitsune/assembled.png",
+      "character-rigs/duskrunner/mythic/manticore/assembled.png",
+      "character-rigs/duskrunner/mythic/unicorn/assembled.png",
+      "character-rigs/duskrunner/radiant/bigfoot/assembled.png",
+      "character-rigs/duskrunner/radiant/dragonling/assembled.png",
+      "character-rigs/duskrunner/radiant/griffin/assembled.png",
+      "character-rigs/duskrunner/radiant/kitsune/assembled.png",
+      "character-rigs/duskrunner/radiant/manticore/assembled.png",
+      "character-rigs/duskrunner/radiant/unicorn/assembled.png",
+      "character-rigs/duskrunner/sworn/bigfoot/assembled.png",
+      "character-rigs/duskrunner/sworn/dragonling/assembled.png",
+      "character-rigs/duskrunner/sworn/griffin/assembled.png",
+      "character-rigs/duskrunner/sworn/kitsune/assembled.png",
+      "character-rigs/duskrunner/sworn/manticore/assembled.png",
+      "character-rigs/duskrunner/sworn/unicorn/assembled.png",
       "character-rigs/songkeeper/mythic/bigfoot/assembled.png",
-      "gear-portraits/thornguard/sworn/bigfoot.png",
-      "gear-portraits/thornguard/radiant/bigfoot.png",
-      "gear-portraits/thornguard/mythic/bigfoot.png",
-      "gear-portraits/duskrunner/sworn/bigfoot.png",
-      "gear-portraits/duskrunner/radiant/bigfoot.png",
+      "character-rigs/songkeeper/mythic/dragonling/assembled.png",
+      "character-rigs/songkeeper/mythic/griffin/assembled.png",
+      "character-rigs/songkeeper/mythic/kitsune/assembled.png",
+      "character-rigs/songkeeper/mythic/manticore/assembled.png",
+      "character-rigs/songkeeper/mythic/unicorn/assembled.png",
+      "character-rigs/songkeeper/radiant/bigfoot/assembled.png",
+      "character-rigs/songkeeper/radiant/dragonling/assembled.png",
+      "character-rigs/songkeeper/radiant/griffin/assembled.png",
+      "character-rigs/songkeeper/radiant/kitsune/assembled.png",
+      "character-rigs/songkeeper/radiant/manticore/assembled.png",
+      "character-rigs/songkeeper/radiant/unicorn/assembled.png",
+      "character-rigs/songkeeper/sworn/bigfoot/assembled.png",
+      "character-rigs/songkeeper/sworn/dragonling/assembled.png",
+      "character-rigs/songkeeper/sworn/griffin/assembled.png",
+      "character-rigs/songkeeper/sworn/kitsune/assembled.png",
+      "character-rigs/songkeeper/sworn/manticore/assembled.png",
+      "character-rigs/songkeeper/sworn/unicorn/assembled.png",
+      "character-rigs/starweaver/mythic/bigfoot/assembled.png",
+      "character-rigs/starweaver/mythic/dragonling/assembled.png",
+      "character-rigs/starweaver/mythic/griffin/assembled.png",
+      "character-rigs/starweaver/mythic/kitsune/assembled.png",
+      "character-rigs/starweaver/mythic/manticore/assembled.png",
+      "character-rigs/starweaver/mythic/unicorn/assembled.png",
+      "character-rigs/starweaver/radiant/bigfoot/assembled.png",
+      "character-rigs/starweaver/radiant/dragonling/assembled.png",
+      "character-rigs/starweaver/radiant/griffin/assembled.png",
+      "character-rigs/starweaver/radiant/kitsune/assembled.png",
+      "character-rigs/starweaver/radiant/manticore/assembled.png",
+      "character-rigs/starweaver/radiant/unicorn/assembled.png",
+      "character-rigs/starweaver/sworn/bigfoot/assembled.png",
+      "character-rigs/starweaver/sworn/dragonling/assembled.png",
+      "character-rigs/starweaver/sworn/griffin/assembled.png",
+      "character-rigs/starweaver/sworn/kitsune/assembled.png",
+      "character-rigs/starweaver/sworn/manticore/assembled.png",
+      "character-rigs/starweaver/sworn/unicorn/assembled.png",
+      "character-rigs/thornguard/mythic/bigfoot/assembled.png",
+      "character-rigs/thornguard/mythic/dragonling/assembled.png",
+      "character-rigs/thornguard/mythic/griffin/assembled.png",
+      "character-rigs/thornguard/mythic/kitsune/assembled.png",
+      "character-rigs/thornguard/mythic/manticore/assembled.png",
+      "character-rigs/thornguard/mythic/unicorn/assembled.png",
+      "character-rigs/thornguard/radiant/bigfoot/assembled.png",
+      "character-rigs/thornguard/radiant/dragonling/assembled.png",
+      "character-rigs/thornguard/radiant/griffin/assembled.png",
+      "character-rigs/thornguard/radiant/kitsune/assembled.png",
+      "character-rigs/thornguard/radiant/manticore/assembled.png",
+      "character-rigs/thornguard/radiant/unicorn/assembled.png",
+      "character-rigs/thornguard/sworn/bigfoot/assembled.png",
+      "character-rigs/thornguard/sworn/dragonling/assembled.png",
+      "character-rigs/thornguard/sworn/griffin/assembled.png",
+      "character-rigs/thornguard/sworn/kitsune/assembled.png",
+      "character-rigs/thornguard/sworn/manticore/assembled.png",
+      "character-rigs/thornguard/sworn/unicorn/assembled.png",
+      "characters/bigfoot/fledgling/assembled.png",
+      "characters/bigfoot/mythic/assembled.png",
+      "characters/bigfoot/radiant/assembled.png",
+      "characters/bigfoot/sworn/assembled.png",
+      "characters/dragonling/fledgling/assembled.png",
+      "characters/dragonling/mythic/assembled.png",
+      "characters/dragonling/radiant/assembled.png",
+      "characters/dragonling/sworn/assembled.png",
+      "characters/griffin/fledgling/assembled.png",
+      "characters/griffin/mythic/assembled.png",
+      "characters/griffin/radiant/assembled.png",
+      "characters/griffin/sworn/assembled.png",
+      "characters/kitsune/fledgling/assembled.png",
+      "characters/kitsune/mythic/assembled.png",
+      "characters/kitsune/radiant/assembled.png",
+      "characters/kitsune/sworn/assembled.png",
+      "characters/manticore/fledgling/assembled.png",
+      "characters/manticore/mythic/assembled.png",
+      "characters/manticore/radiant/assembled.png",
+      "characters/manticore/sworn/assembled.png",
+      "characters/unicorn/fledgling/assembled.png",
+      "characters/unicorn/mythic/assembled.png",
+      "characters/unicorn/radiant/assembled.png",
+      "characters/unicorn/sworn/assembled.png",
       "gear-portraits/duskrunner/mythic/bigfoot.png",
-      "gear-portraits/starweaver/sworn/bigfoot.png",
-      "gear-portraits/starweaver/radiant/bigfoot.png",
-      "gear-portraits/starweaver/mythic/bigfoot.png",
-      "gear-portraits/songkeeper/sworn/bigfoot.png",
+      "gear-portraits/duskrunner/mythic/dragonling.png",
+      "gear-portraits/duskrunner/mythic/griffin.png",
+      "gear-portraits/duskrunner/mythic/kitsune.png",
+      "gear-portraits/duskrunner/mythic/manticore.png",
+      "gear-portraits/duskrunner/mythic/unicorn.png",
+      "gear-portraits/duskrunner/radiant/bigfoot.png",
+      "gear-portraits/duskrunner/radiant/dragonling.png",
+      "gear-portraits/duskrunner/radiant/griffin.png",
+      "gear-portraits/duskrunner/radiant/kitsune.png",
+      "gear-portraits/duskrunner/radiant/manticore.png",
+      "gear-portraits/duskrunner/radiant/unicorn.png",
+      "gear-portraits/duskrunner/sworn/bigfoot.png",
+      "gear-portraits/duskrunner/sworn/dragonling.png",
+      "gear-portraits/duskrunner/sworn/griffin.png",
+      "gear-portraits/duskrunner/sworn/kitsune.png",
+      "gear-portraits/duskrunner/sworn/manticore.png",
+      "gear-portraits/duskrunner/sworn/unicorn.png",
+      "gear-portraits/songkeeper/mythic/bigfoot.png",
+      "gear-portraits/songkeeper/mythic/dragonling.png",
+      "gear-portraits/songkeeper/mythic/griffin.png",
+      "gear-portraits/songkeeper/mythic/kitsune.png",
+      "gear-portraits/songkeeper/mythic/manticore.png",
+      "gear-portraits/songkeeper/mythic/unicorn.png",
       "gear-portraits/songkeeper/radiant/bigfoot.png",
-      "gear-portraits/songkeeper/mythic/bigfoot.png"
+      "gear-portraits/songkeeper/radiant/dragonling.png",
+      "gear-portraits/songkeeper/radiant/griffin.png",
+      "gear-portraits/songkeeper/radiant/kitsune.png",
+      "gear-portraits/songkeeper/radiant/manticore.png",
+      "gear-portraits/songkeeper/radiant/unicorn.png",
+      "gear-portraits/songkeeper/sworn/bigfoot.png",
+      "gear-portraits/songkeeper/sworn/dragonling.png",
+      "gear-portraits/songkeeper/sworn/griffin.png",
+      "gear-portraits/songkeeper/sworn/kitsune.png",
+      "gear-portraits/songkeeper/sworn/manticore.png",
+      "gear-portraits/songkeeper/sworn/unicorn.png",
+      "gear-portraits/starweaver/mythic/bigfoot.png",
+      "gear-portraits/starweaver/mythic/dragonling.png",
+      "gear-portraits/starweaver/mythic/griffin.png",
+      "gear-portraits/starweaver/mythic/kitsune.png",
+      "gear-portraits/starweaver/mythic/manticore.png",
+      "gear-portraits/starweaver/mythic/unicorn.png",
+      "gear-portraits/starweaver/radiant/bigfoot.png",
+      "gear-portraits/starweaver/radiant/dragonling.png",
+      "gear-portraits/starweaver/radiant/griffin.png",
+      "gear-portraits/starweaver/radiant/kitsune.png",
+      "gear-portraits/starweaver/radiant/manticore.png",
+      "gear-portraits/starweaver/radiant/unicorn.png",
+      "gear-portraits/starweaver/sworn/bigfoot.png",
+      "gear-portraits/starweaver/sworn/dragonling.png",
+      "gear-portraits/starweaver/sworn/griffin.png",
+      "gear-portraits/starweaver/sworn/kitsune.png",
+      "gear-portraits/starweaver/sworn/manticore.png",
+      "gear-portraits/starweaver/sworn/unicorn.png",
+      "gear-portraits/thornguard/mythic/bigfoot.png",
+      "gear-portraits/thornguard/mythic/dragonling.png",
+      "gear-portraits/thornguard/mythic/griffin.png",
+      "gear-portraits/thornguard/mythic/kitsune.png",
+      "gear-portraits/thornguard/mythic/manticore.png",
+      "gear-portraits/thornguard/mythic/unicorn.png",
+      "gear-portraits/thornguard/radiant/bigfoot.png",
+      "gear-portraits/thornguard/radiant/dragonling.png",
+      "gear-portraits/thornguard/radiant/griffin.png",
+      "gear-portraits/thornguard/radiant/kitsune.png",
+      "gear-portraits/thornguard/radiant/manticore.png",
+      "gear-portraits/thornguard/radiant/unicorn.png",
+      "gear-portraits/thornguard/sworn/bigfoot.png",
+      "gear-portraits/thornguard/sworn/dragonling.png",
+      "gear-portraits/thornguard/sworn/griffin.png",
+      "gear-portraits/thornguard/sworn/kitsune.png",
+      "gear-portraits/thornguard/sworn/manticore.png",
+      "gear-portraits/thornguard/sworn/unicorn.png"
     ]
   },
   "$togetherOverlaysComment": "Painted overlays for group-action checks (docs/briefs/group-actions.md §7; approved design merged in #361, closing #360). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate described by that design still need implementation. Overlay art checks run in tools/art/verify.py through the regular art gate and CI.",
@@ -3686,7 +3686,15 @@
       "height": 256
     },
     "ids": [
+      "bag",
+      "coin",
+      "crow",
+      "d20",
       "dash_cash",
+      "dice",
+      "down",
+      "ear",
+      "envelope",
       "eye",
       "facet_barge",
       "facet_caravan",
@@ -3704,108 +3712,100 @@
       "facet_unassigned",
       "fist",
       "flame",
-      "key",
-      "moon",
-      "potion",
-      "shield",
-      "spark",
-      "thorn",
-      "wing",
-      "stats",
-      "bag",
-      "token_thornguard",
-      "token_duskrunner",
-      "token_starweaver",
-      "token_songkeeper",
-      "ear",
-      "d20",
-      "dice",
-      "phone",
-      "tv",
-      "storybook",
-      "waiting",
-      "numbed",
-      "puffed",
-      "levelup",
-      "down",
-      "ready",
-      "vote",
-      "rest",
-      "leaf",
-      "coin",
-      "envelope",
-      "passkey",
-      "riftlight_indicator",
-      "crow",
-      "glyph_bell_little",
       "glyph_bell_big",
       "glyph_bell_brass",
-      "glyph_note_low",
-      "glyph_note_middle",
-      "glyph_note_high",
-      "glyph_rune_tall",
-      "glyph_rune_wavy",
-      "glyph_rune_round",
-      "glyph_slow",
-      "glyph_wait",
-      "glyph_sash_river",
-      "glyph_sash_pride",
-      "glyph_sash_bridge",
-      "glyph_fern",
+      "glyph_bell_little",
       "glyph_bluebell",
       "glyph_bridge",
-      "glyph_stone",
-      "glyph_pond",
-      "glyph_spiral",
-      "glyph_wave",
-      "glyph_step",
-      "glyph_path_river",
-      "glyph_path_marsh",
-      "glyph_path_trees",
-      "glyph_knot_loop",
-      "glyph_knot_twist",
-      "glyph_knot_pull",
+      "glyph_clue_jackalope",
       "glyph_clue_note",
       "glyph_clue_spiral",
-      "glyph_clue_jackalope",
       "glyph_clue_tally",
-      "glyph_knock_thump",
-      "glyph_knock_tap",
+      "glyph_fern",
       "glyph_knock_rumble",
+      "glyph_knock_tap",
+      "glyph_knock_thump",
+      "glyph_knot_loop",
+      "glyph_knot_pull",
+      "glyph_knot_twist",
+      "glyph_note_high",
+      "glyph_note_low",
+      "glyph_note_middle",
+      "glyph_path_marsh",
+      "glyph_path_river",
+      "glyph_path_trees",
+      "glyph_pond",
       "glyph_ring_long",
       "glyph_ring_short",
-      "glyph_sound_rumble",
+      "glyph_rune_round",
+      "glyph_rune_tall",
+      "glyph_rune_wavy",
+      "glyph_sash_bridge",
+      "glyph_sash_pride",
+      "glyph_sash_river",
+      "glyph_slow",
       "glyph_sound_chime",
+      "glyph_sound_rumble",
       "glyph_sound_sigh",
-      "play_lullaby",
-      "play_cattails",
-      "play_lantern_held",
-      "play_rumble",
-      "play_red_blanket",
-      "play_pinecones",
-      "play_warm_hand",
-      "play_soft_hum",
-      "play_cupped_hands",
-      "play_slow_tune",
-      "play_scratch",
-      "play_clover",
-      "play_mane_brush",
-      "play_water_bucket",
-      "play_hum_tune",
-      "play_stroke_nose",
+      "glyph_spiral",
+      "glyph_step",
+      "glyph_stone",
+      "glyph_wait",
+      "glyph_wave",
+      "key",
+      "leaf",
+      "levelup",
+      "moon",
+      "numbed",
+      "passkey",
+      "phone",
       "play_apple",
-      "play_stomp_marsh",
-      "play_splash_river",
-      "play_tiptoe_thorns",
-      "play_little_fire",
-      "play_blankets",
-      "play_moss_tea",
       "play_bell_cloth",
       "play_bell_lullaby",
       "play_bell_polish",
+      "play_blankets",
+      "play_cattails",
+      "play_clover",
+      "play_cupped_hands",
+      "play_hum_tune",
+      "play_lantern_held",
+      "play_little_fire",
+      "play_lullaby",
+      "play_mane_brush",
+      "play_moss_tea",
+      "play_pinecones",
       "play_pour_tea",
+      "play_red_blanket",
+      "play_rumble",
+      "play_scratch",
+      "play_shortbread",
+      "play_slow_tune",
+      "play_soft_hum",
+      "play_splash_river",
       "play_stir",
-      "play_shortbread"
+      "play_stomp_marsh",
+      "play_stroke_nose",
+      "play_tiptoe_thorns",
+      "play_warm_hand",
+      "play_water_bucket",
+      "potion",
+      "puffed",
+      "ready",
+      "rest",
+      "riftlight_indicator",
+      "shield",
+      "spark",
+      "stats",
+      "storybook",
+      "thorn",
+      "token_duskrunner",
+      "token_songkeeper",
+      "token_starweaver",
+      "token_thornguard",
+      "tv",
+      "vote",
+      "waiting",
+      "wing"
     ]
   },
   "badgeArt": {
@@ -3856,232 +3856,199 @@
     },
     "edgeMarginPx": 24,
     "ids": [
-      "rope-loop",
-      "relay-sack",
-      "relay-log",
-      "relay-plank",
-      "relay-hay",
-      "relay-oil-jar",
-      "relay-scarf",
-      "relay-trunk",
-      "snow-mound",
-      "water-surge",
-      "note-low",
-      "note-middle",
-      "note-high",
-      "pickup-river-charm",
-      "pickup-luckstone",
-      "pickup-hearthstone-bead",
-      "pickup-quickfoot-lace",
-      "pickup-mosslight-jar",
-      "fight-supply-cairn",
-      "fight-warm-mud-hollow",
-      "fight-disguised-planks",
-      "fight-wet-gravel",
-      "fight-grounded-floe",
+      "barley-tea",
+      "boundary-bundle",
+      "cairn-flat",
+      "cairn-leaning",
+      "cairn-ledger",
+      "cairn-twin",
+      "camp-firepit",
+      "capstone-target",
+      "carry-beam",
+      "carved-stone",
+      "chalk-cord",
+      "cloud-whale",
+      "clue-scrap",
+      "coat-kid",
+      "count-cord",
+      "ferry-boat",
       "fight-burrow-mouth",
-      "fight-washed-burrow",
+      "fight-disguised-planks",
+      "fight-grounded-floe",
       "fight-landing-ramp",
       "fight-mooring-post",
       "fight-plank-edge",
-      "fight-sideways-flame",
       "fight-shrine-bell",
-      "fight-wind-shrub",
+      "fight-sideways-flame",
       "fight-signal-pole",
-      "rope-taut",
+      "fight-supply-cairn",
+      "fight-warm-mud-hollow",
+      "fight-washed-burrow",
+      "fight-wet-gravel",
+      "fight-wind-shrub",
       "goat-brush",
-      "rope-sag",
-      "icicle-drips",
-      "ring-case",
-      "coat-kid",
-      "moving-floe",
-      "ticking-crystal",
-      "standing-rings",
-      "rope-wedge",
-      "kelp-cake",
+      "hanging-lamp",
+      "hatch-cover",
       "ice-knob",
-      "shell-cockle",
+      "icicle-drips",
       "iron-anchor-ring",
-      "rope-ladder",
-      "shell-whelk",
-      "cairn-leaning",
+      "kelp-cake",
+      "kite-shade",
+      "moving-floe",
+      "notched-stone",
+      "note-high",
+      "note-low",
+      "note-middle",
+      "oat-crumbs",
+      "pickup-hearthstone-bead",
+      "pickup-luckstone",
+      "pickup-mosslight-jar",
+      "pickup-quickfoot-lace",
+      "pickup-river-charm",
+      "prop_box_stack",
+      "prop_brass_cup",
+      "prop_cake_plate",
+      "prop_cracked_rock",
+      "prop_door_barrels",
+      "prop_egg_basket",
+      "prop_empty_bowl",
+      "prop_faun_bundle",
+      "prop_fern",
+      "prop_glass_cabinet",
+      "prop_goat_bucket",
+      "prop_hand_bell",
+      "prop_hay_wagon",
+      "prop_hedge_latch",
+      "prop_humming_stone",
+      "prop_jar_tray",
+      "prop_knotted_cords",
+      "prop_knotted_string",
+      "prop_lantern",
+      "prop_leaf_cup",
+      "prop_leaning_chair",
+      "prop_letters",
+      "prop_linked_arms",
+      "prop_mending_crumb",
+      "prop_mending_hum",
+      "prop_mule_cart",
+      "prop_numbered_box",
+      "prop_pear_crate",
+      "prop_pickle_wagon",
+      "prop_plank",
+      "prop_playing_card",
+      "prop_post_ropes",
+      "prop_prospector_pick",
+      "prop_pry_bar",
+      "prop_red_stones",
+      "prop_reed_gate",
+      "prop_rock",
+      "prop_rope_pole",
+      "prop_soup_bowl",
+      "prop_soup_pot",
+      "prop_stepping_stones",
+      "prop_stone_board",
+      "prop_straw_hat",
+      "prop_striped_gate",
+      "prop_sun_card",
+      "prop_tall_grass",
+      "prop_tea_mug",
+      "prop_wagon_wheel_rut",
+      "prop_wagon_wheels",
+      "prop_water_tray",
+      "prop_word_scroll",
+      "relay-barrel",
+      "relay-hay",
+      "relay-log",
+      "relay-oil-jar",
+      "relay-plank",
+      "relay-plank-cracked",
+      "relay-sack",
+      "relay-scarf",
+      "relay-trunk",
+      "ring-case",
       "roof-slab",
-      "cairn-twin",
+      "rope-basket",
+      "rope-ladder",
+      "rope-loop",
+      "rope-sag",
+      "rope-taut",
+      "rope-wedge",
+      "sausage-wagon",
+      "shell-cockle",
+      "shell-oyster",
+      "shell-whelk",
+      "snow-mound",
+      "standing-rings",
+      "ticking-crystal",
       "tidepocket-broom",
       "toss-pebble",
-      "cairn-flat",
-      "shell-oyster",
-      "count-cord",
-      "rope-basket",
-      "chalk-cord",
-      "cairn-ledger",
-      "carved-stone",
-      "oat-crumbs",
-      "carry-beam",
-      "kite-shade",
-      "notched-stone",
-      "cloud-whale",
-      "ferry-boat",
-      "barley-tea",
-      "relay-plank-cracked",
-      "camp-firepit",
-      "wind-blanket",
-      "boundary-bundle",
-      "wind-bells",
-      "relay-barrel",
-      "clue-scrap",
-      "hatch-cover",
-      "hanging-lamp",
-      "capstone-target",
+      "water-surge",
       "wind-banner",
-      "prop_rope_pole",
-      "prop_jar_tray",
-      "prop_pear_crate",
-      "prop_letters",
-      "prop_egg_basket",
-      "prop_straw_hat",
-      "prop_post_ropes",
-      "prop_wagon_wheel_rut",
-      "prop_linked_arms",
-      "prop_leaning_chair",
-      "prop_knotted_string",
-      "prop_hedge_latch",
-      "prop_plank",
-      "prop_water_tray",
-      "prop_leaf_cup",
-      "prop_glass_cabinet",
-      "prop_door_barrels",
-      "prop_stone_board",
-      "prop_lantern",
-      "prop_cake_plate",
-      "prop_word_scroll",
-      "prop_soup_bowl",
-      "prop_knotted_cords",
-      "prop_pry_bar",
-      "prop_soup_pot",
-      "prop_numbered_box",
-      "prop_tea_mug",
-      "prop_humming_stone",
-      "prop_hand_bell",
-      "prop_faun_bundle",
-      "prop_reed_gate",
-      "prop_goat_bucket",
-      "prop_tall_grass",
-      "prop_striped_gate",
-      "prop_stepping_stones",
-      "prop_wagon_wheels",
-      "prop_box_stack",
-      "prop_red_stones",
-      "prop_brass_cup",
-      "prop_playing_card",
-      "prop_sun_card",
-      "prop_fern",
-      "prop_pickle_wagon",
-      "prop_hay_wagon",
-      "sausage-wagon",
-      "prop_mule_cart",
-      "prop_rock",
-      "prop_cracked_rock",
-      "prop_empty_bowl",
-      "prop_prospector_pick",
-      "prop_mending_hum",
-      "prop_mending_crumb"
+      "wind-bells",
+      "wind-blanket"
     ],
     "motions": {
-      "prop_empty_bowl": {"preset": "still", "durationMs": 3200},
-      "prop_prospector_pick": {"preset": "swing", "durationMs": 3200},
-      "prop_mending_hum": {"preset": "pulse", "durationMs": 3200},
-      "prop_mending_crumb": {"preset": "pulse", "durationMs": 3200},
-      "sausage-wagon": { "preset": "still", "durationMs": 3200 },
-      "rope-loop": {
-        "preset": "swing",
-        "durationMs": 2600
-      },
-      "relay-sack": {
-        "preset": "relay",
-        "durationMs": 3200
-      },
-      "relay-log": {
-        "preset": "relay",
-        "durationMs": 3200
-      },
-      "relay-plank": {
-        "preset": "relay",
-        "durationMs": 3200
-      },
-      "relay-hay": {
-        "preset": "relay",
-        "durationMs": 3200
-      },
-      "relay-oil-jar": {
-        "preset": "relay",
-        "durationMs": 3200
-      },
-      "relay-scarf": {
-        "preset": "sway",
-        "durationMs": 2600
-      },
-      "relay-trunk": {
-        "preset": "relay",
-        "durationMs": 3200
-      },
-      "snow-mound": {
-        "preset": "still",
-        "durationMs": 2600
-      },
-      "water-surge": {
-        "preset": "surge",
-        "durationMs": 2600
-      },
-      "note-low": {
-        "preset": "pulse",
-        "durationMs": 2600
-      },
-      "note-middle": {
-        "preset": "pulse",
-        "durationMs": 2600
-      },
-      "note-high": {
-        "preset": "pulse",
-        "durationMs": 2600
-      },
-      "pickup-river-charm": {
-        "preset": "pulse",
-        "durationMs": 3200
-      },
-      "pickup-luckstone": {
-        "preset": "pulse",
-        "durationMs": 3200
-      },
-      "pickup-hearthstone-bead": {
-        "preset": "pulse",
-        "durationMs": 3200
-      },
-      "pickup-quickfoot-lace": {
-        "preset": "pulse",
-        "durationMs": 3200
-      },
-      "pickup-mosslight-jar": {
-        "preset": "pulse",
-        "durationMs": 3200
-      },
-      "fight-supply-cairn": {
+      "barley-tea": {
         "preset": "still",
         "durationMs": 3200
       },
-      "fight-warm-mud-hollow": {
+      "boundary-bundle": {
         "preset": "still",
         "durationMs": 3200
       },
-      "fight-disguised-planks": {
-        "preset": "sway",
-        "durationMs": 3200
-      },
-      "fight-wet-gravel": {
+      "cairn-flat": {
         "preset": "still",
         "durationMs": 3200
       },
-      "fight-grounded-floe": {
+      "cairn-leaning": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "cairn-ledger": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "cairn-twin": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "camp-firepit": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "capstone-target": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "carry-beam": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "carved-stone": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "chalk-cord": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "cloud-whale": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "clue-scrap": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "coat-kid": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "count-cord": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "ferry-boat": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4089,7 +4056,11 @@
         "preset": "still",
         "durationMs": 3200
       },
-      "fight-washed-burrow": {
+      "fight-disguised-planks": {
+        "preset": "sway",
+        "durationMs": 3200
+      },
+      "fight-grounded-floe": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4105,11 +4076,31 @@
         "preset": "still",
         "durationMs": 3200
       },
+      "fight-shrine-bell": {
+        "preset": "still",
+        "durationMs": 3200
+      },
       "fight-sideways-flame": {
         "preset": "pulse",
         "durationMs": 3200
       },
-      "fight-shrine-bell": {
+      "fight-signal-pole": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "fight-supply-cairn": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "fight-warm-mud-hollow": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "fight-washed-burrow": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "fight-wet-gravel": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4117,51 +4108,15 @@
         "preset": "sway",
         "durationMs": 3200
       },
-      "fight-signal-pole": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "rope-taut": {
-        "preset": "still",
-        "durationMs": 3200
-      },
       "goat-brush": {
         "preset": "still",
         "durationMs": 3200
       },
-      "rope-sag": {
+      "hanging-lamp": {
         "preset": "still",
         "durationMs": 3200
       },
-      "icicle-drips": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "ring-case": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "coat-kid": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "moving-floe": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "ticking-crystal": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "standing-rings": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "rope-wedge": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "kelp-cake": {
+      "hatch-cover": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4169,7 +4124,7 @@
         "preset": "still",
         "durationMs": 3200
       },
-      "shell-cockle": {
+      "icicle-drips": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4177,15 +4132,287 @@
         "preset": "still",
         "durationMs": 3200
       },
-      "rope-ladder": {
+      "kelp-cake": {
         "preset": "still",
         "durationMs": 3200
       },
-      "shell-whelk": {
+      "kite-shade": {
         "preset": "still",
         "durationMs": 3200
       },
-      "cairn-leaning": {
+      "moving-floe": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "notched-stone": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "note-high": {
+        "preset": "pulse",
+        "durationMs": 2600
+      },
+      "note-low": {
+        "preset": "pulse",
+        "durationMs": 2600
+      },
+      "note-middle": {
+        "preset": "pulse",
+        "durationMs": 2600
+      },
+      "oat-crumbs": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "pickup-hearthstone-bead": {
+        "preset": "pulse",
+        "durationMs": 3200
+      },
+      "pickup-luckstone": {
+        "preset": "pulse",
+        "durationMs": 3200
+      },
+      "pickup-mosslight-jar": {
+        "preset": "pulse",
+        "durationMs": 3200
+      },
+      "pickup-quickfoot-lace": {
+        "preset": "pulse",
+        "durationMs": 3200
+      },
+      "pickup-river-charm": {
+        "preset": "pulse",
+        "durationMs": 3200
+      },
+      "prop_box_stack": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_brass_cup": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_cake_plate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_cracked_rock": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_door_barrels": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_egg_basket": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_empty_bowl": {"preset": "still", "durationMs": 3200},
+      "prop_faun_bundle": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_fern": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_glass_cabinet": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_goat_bucket": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_hand_bell": {
+        "preset": "swing",
+        "durationMs": 2600
+      },
+      "prop_hay_wagon": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_hedge_latch": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_humming_stone": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_jar_tray": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_knotted_cords": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_knotted_string": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_lantern": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_leaf_cup": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_leaning_chair": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_letters": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_linked_arms": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_mending_crumb": {"preset": "pulse", "durationMs": 3200},
+      "prop_mending_hum": {"preset": "pulse", "durationMs": 3200},
+      "prop_mule_cart": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_numbered_box": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_pear_crate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_pickle_wagon": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_plank": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_playing_card": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_post_ropes": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_prospector_pick": {"preset": "swing", "durationMs": 3200},
+      "prop_pry_bar": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_red_stones": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_reed_gate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_rock": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_rope_pole": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_soup_bowl": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_soup_pot": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_stepping_stones": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_stone_board": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_straw_hat": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_striped_gate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_sun_card": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_tall_grass": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_tea_mug": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_wagon_wheel_rut": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_wagon_wheels": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_water_tray": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_word_scroll": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "relay-barrel": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "relay-hay": {
+        "preset": "relay",
+        "durationMs": 3200
+      },
+      "relay-log": {
+        "preset": "relay",
+        "durationMs": 3200
+      },
+      "relay-oil-jar": {
+        "preset": "relay",
+        "durationMs": 3200
+      },
+      "relay-plank": {
+        "preset": "relay",
+        "durationMs": 3200
+      },
+      "relay-plank-cracked": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "relay-sack": {
+        "preset": "relay",
+        "durationMs": 3200
+      },
+      "relay-scarf": {
+        "preset": "sway",
+        "durationMs": 2600
+      },
+      "relay-trunk": {
+        "preset": "relay",
+        "durationMs": 3200
+      },
+      "ring-case": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4193,7 +4420,52 @@
         "preset": "still",
         "durationMs": 3200
       },
-      "cairn-twin": {
+      "rope-basket": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "rope-ladder": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "rope-loop": {
+        "preset": "swing",
+        "durationMs": 2600
+      },
+      "rope-sag": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "rope-taut": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "rope-wedge": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "sausage-wagon": { "preset": "still", "durationMs": 3200 },
+      "shell-cockle": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "shell-oyster": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "shell-whelk": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "snow-mound": {
+        "preset": "still",
+        "durationMs": 2600
+      },
+      "standing-rings": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "ticking-crystal": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4205,75 +4477,11 @@
         "preset": "still",
         "durationMs": 3200
       },
-      "cairn-flat": {
-        "preset": "still",
-        "durationMs": 3200
+      "water-surge": {
+        "preset": "surge",
+        "durationMs": 2600
       },
-      "shell-oyster": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "count-cord": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "rope-basket": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "chalk-cord": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "cairn-ledger": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "carved-stone": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "oat-crumbs": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "carry-beam": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "kite-shade": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "notched-stone": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "cloud-whale": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "ferry-boat": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "barley-tea": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "relay-plank-cracked": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "camp-firepit": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "wind-blanket": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "boundary-bundle": {
+      "wind-banner": {
         "preset": "still",
         "durationMs": 3200
       },
@@ -4281,217 +4489,9 @@
         "preset": "still",
         "durationMs": 3200
       },
-      "relay-barrel": {
+      "wind-blanket": {
         "preset": "still",
         "durationMs": 3200
-      },
-      "clue-scrap": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "hatch-cover": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "hanging-lamp": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "capstone-target": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "wind-banner": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_rope_pole": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_jar_tray": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_pear_crate": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_letters": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_egg_basket": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_straw_hat": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_post_ropes": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_wagon_wheel_rut": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_linked_arms": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_leaning_chair": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_knotted_string": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_hedge_latch": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_plank": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_water_tray": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_leaf_cup": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_glass_cabinet": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_door_barrels": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_stone_board": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_lantern": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_cake_plate": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_word_scroll": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_soup_bowl": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_knotted_cords": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_pry_bar": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_soup_pot": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_numbered_box": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_tea_mug": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_humming_stone": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_faun_bundle": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_reed_gate": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_goat_bucket": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_tall_grass": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_striped_gate": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_stepping_stones": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_wagon_wheels": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_box_stack": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_red_stones": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_brass_cup": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_playing_card": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_sun_card": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_fern": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_pickle_wagon": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_hay_wagon": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_mule_cart": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_rock": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_cracked_rock": {
-        "preset": "still",
-        "durationMs": 3200
-      },
-      "prop_hand_bell": {
-        "preset": "swing",
-        "durationMs": 2600
       }
     }
   },
