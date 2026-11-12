@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const action = vi.hoisted(() => vi.fn());
 vi.mock("../world/PixiStage", () => { throw new Error("Failed to fetch dynamically imported module"); });
@@ -33,7 +33,14 @@ vi.mock("../screens", () => ({
 
 import { WorldView } from "./WorldView";
 
+// jsdom 31 has a real window.reportError, which raises an error event that vitest counts as an uncaught
+// exception. Every test here loses the renderer on purpose, so none of them may reach the real one.
+beforeEach(() => {
+  vi.stubGlobal("reportError", vi.fn());
+});
+
 afterEach(() => {
+  vi.unstubAllGlobals();
   cleanup();
   vi.restoreAllMocks();
   scene.chapter = null;
