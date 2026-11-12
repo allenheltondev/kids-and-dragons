@@ -12,7 +12,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import type { ReactElement } from "react";
-import { setSpeaker } from "@kad/shared";
+import { resetPrefetchRequests, setSpeaker } from "@kad/shared";
+import type { Speaker } from "@kad/shared";
 import type { Campaign, Chapter, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { markStoryPlatesSeen, resetStoryPlatesSeen, STORY_PLATES_SEEN_KEY } from "../store/story-plates-seen";
@@ -121,6 +122,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   setSpeaker(null);
+  resetPrefetchRequests();
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -382,6 +384,17 @@ describe("recorded plates", () => {
       { text: "The Walk.", parts: undefined, interrupt: true },
       { text: "Plate 1 is a painting.", parts: [{ address: "c/@prologue/0", line: "Plate 1 is a painting." }], interrupt: undefined },
     ]);
+  });
+
+  it("asks for every plate's recording as soon as the reel is up, before the plates are turned to", async () => {
+    const asked: (readonly string[])[] = [];
+    const speaker = (() => undefined) as unknown as Speaker;
+    speaker.prefetch = (prefixes) => void asked.push(prefixes);
+    setSpeaker(speaker);
+    seed(run("ch_1"), OPENING);
+    render(<StoryPlates />);
+    await flush();
+    expect(asked).toEqual([["c/@prologue/0", "c/@prologue/1", "c/@prologue/2"]]);
   });
 
   it("files a plate under its own place in the reel, whichever paintings landed", async () => {

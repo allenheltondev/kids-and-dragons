@@ -1,8 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getSpeaker, setSpeaker, speak, stopSpeaking } from "./speak.js";
+import { getSpeaker, prefetchNarration, resetPrefetchRequests, setSpeaker, speak, stopPrefetchNarration, stopSpeaking, type Speaker } from "./speak.js";
 
-afterEach(() => setSpeaker(null));
+afterEach(() => {
+  setSpeaker(null);
+  resetPrefetchRequests();
+});
 
 describe("speak (spec §11)", () => {
   it("is a no-op with no speaker installed — v1 behavior", () => {
@@ -59,5 +62,74 @@ describe("cancelling", () => {
   it("never lets a broken cancel throw", () => {
     setSpeaker(Object.assign(vi.fn(), { cancel: () => { throw new Error("boom"); } }));
     expect(() => stopSpeaking()).not.toThrow();
+  });
+});
+
+describe("prefetchNarration", () => {
+  const withPrefetch = (): { speaker: Speaker; asked: [readonly string[], unknown][] } => {
+    const asked: [readonly string[], unknown][] = [];
+    const speaker = (() => undefined) as unknown as Speaker;
+    speaker.prefetch = (prefixes, opts) => void asked.push([prefixes, opts]);
+    return { speaker, asked };
+  };
+
+  it("is a no-op with no speaker, and for a speaker that records nothing to fetch", () => {
+    expect(() => prefetchNarration(["ch/s1/"])).not.toThrow();
+    setSpeaker(() => undefined);
+    expect(() => prefetchNarration(["ch/s1/"])).not.toThrow();
+  });
+
+  it("hands the speaker the prefixes and options", () => {
+    const { speaker, asked } = withPrefetch();
+    setSpeaker(speaker);
+    prefetchNarration(["ch/s1/", "ch/s2/"], { background: true });
+    prefetchNarration([]);
+    expect(asked).toEqual([[["ch/s1/", "ch/s2/"], { background: true }]]);
+  });
+
+  it("makes a request that came before the speaker, once the speaker is installed", () => {
+    prefetchNarration(["ch/s1/"]);
+    prefetchNarration(["ch/"], { background: true });
+    const { speaker, asked } = withPrefetch();
+    setSpeaker(speaker);
+    expect(asked).toEqual([[["ch/s1/"], undefined], [["ch/"], { background: true }]]);
+  });
+
+  it("never lets a failing speaker reach the scene", () => {
+    const speaker = (() => undefined) as unknown as Speaker;
+    speaker.prefetch = () => {
+      throw new Error("no");
+    };
+    setSpeaker(speaker);
+    expect(() => prefetchNarration(["ch/s1/"])).not.toThrow();
+  });
+
+  it("retires the speaker's queue, and forgets what was waiting for a speaker, without touching what is spoken", () => {
+    const spoken = vi.fn();
+    const speaker = spoken as unknown as Speaker;
+    const stops = vi.fn();
+    const cancel = vi.fn();
+    speaker.stopPrefetch = stops;
+    speaker.cancel = cancel;
+    prefetchNarration(["ch/s1/"]);
+    stopPrefetchNarration();
+    // The old request is gone: a speaker that arrives now is asked for nothing.
+    const asked: unknown[] = [];
+    speaker.prefetch = (prefixes) => void asked.push(prefixes);
+    setSpeaker(speaker);
+    expect(asked).toEqual([]);
+    stopPrefetchNarration();
+    expect(stops).toHaveBeenCalledTimes(1);
+    expect(cancel).not.toHaveBeenCalled();
+    expect(spoken).not.toHaveBeenCalled();
+  });
+
+  it("does not let a failing speaker reach the scene when retiring", () => {
+    const speaker = (() => undefined) as unknown as Speaker;
+    speaker.stopPrefetch = () => {
+      throw new Error("no");
+    };
+    setSpeaker(speaker);
+    expect(() => stopPrefetchNarration()).not.toThrow();
   });
 });

@@ -30,7 +30,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
-import { plateWordCount, prologueAddresses, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
+import { plateWordCount, prefetchNarration, prologueAddresses, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
 import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
 import { useRunState, useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
@@ -133,6 +133,12 @@ function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () 
     stopSpeaking();
     finish();
   }, [finish]);
+
+  // The recordings for every plate, asked for now: the later plates are on screen for several
+  // seconds each, and the first is spoken the moment its painting lands.
+  useEffect(() => {
+    prefetchNarration(picked.addresses ?? []);
+  }, [picked]);
 
   useEffect(() => {
     if (preloaded) return;
@@ -300,6 +306,8 @@ export function EpiloguePlates(): ReactElement | null {
     if (key === null || picked === null) return;
     setUp(false);
     setFrames(null);
+    // The ending is being read: the epilogue's recordings come in meanwhile.
+    prefetchNarration(picked.addresses ?? []);
     let live = true;
     void preload(picked).then((loaded) => {
       if (!live) return;

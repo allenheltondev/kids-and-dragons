@@ -23,11 +23,19 @@
  *
  * Manifests are fetched the first time a chapter's line is spoken, one file per chapter, never
  * at first paint. Clips are fetched when their line is queued, so a line queued behind the
- * "Last time…" is ready by the time its turn comes. Caching them (the service worker, prefetch
- * one scene ahead) is #547's; the URL is the hash, so the browser's HTTP cache already keeps them.
+ * "Last time…" is ready by the time its turn comes. The URL is the hash, so the browser's HTTP
+ * cache keeps a clip too (the service worker's own `voice` cache is #547's).
+ *
+ * **Prefetch** (`speaker.prefetch`): over a slow connection, a television might not have a
+ * line's clips within RESOLVE_MS, and the line would be read by the device voice instead. So the
+ * client asks for the scenes ahead (and, on the television, the rest of the chapter) while the
+ * party reads. Their bytes are kept in memory, a few hundred clips at most (a chapter is about
+ * 7 MB), and spoken lines use them. Clips are fetched one at a time and low priority, and never
+ * while a line the table is waiting on is still resolving, so a prefetch can only make the line
+ * being spoken faster, never slower. Data Saver turns it off; the lines themselves still play.
  */
 
-import { clipPath, manifestOfAddress, manifestPath, playlistFor, type NarrationPart, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
+import { clipPath, manifestOfAddress, manifestPath, playlistFor, type NarrationPart, type PrefetchOptions, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
 import { getAudioSink, type VoiceBuffer, type VoiceChannel } from "../audio/cue";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
@@ -45,7 +53,9 @@ export interface ClipSpeakerEnv {
   device: DeviceVoice;
   /** The audio engine's voice bus, when there is a running engine on this device. */
   channel: () => VoiceChannel | null;
-  fetch: (url: string) => Promise<FetchedLike>;
+  fetch: (url: string, init?: { priority?: "low" }) => Promise<FetchedLike>;
+  /** True when this device has asked to save data: no guessing ahead (prefetch) then. */
+  saveData?: () => boolean;
   /** True while something is being said, recorded or not: the narration panel's "speaking" mark. */
   onSpeaking?: (speaking: boolean) => void;
   /** How long a recorded line may take to arrive before the device voice reads it instead. */
@@ -66,6 +76,23 @@ export const RESOLVE_MS = 2500;
  */
 const DEVICE_MS_PER_CHAR = 110;
 const GRACE_MS = 2000;
+/** The most clips whose bytes are kept in memory: one chapter is about 250, around 8 MB. */
+const KEPT_CLIPS = 600;
+/** How often a prefetch looks again while a line the table is waiting on is still being resolved. */
+const YIELD_MS = 200;
+
+/**
+ * The lines worth fetching ahead: a scene's narration (and its variants and branches), the goal
+ * and plate of a chapter, and a campaign's plates. Not choice labels, hints or cues, which no
+ * recording plays.
+ */
+export function isNarratedAddress(address: string): boolean {
+  return (
+    /(^|\/)(narration|@goal|@plate)$/.test(address) ||
+    /\/variants\/\d+$/.test(address) ||
+    /\/@(prologue|epilogue)\//.test(address)
+  );
+}
 
 /** Which manifest an address is filed in: its chapter's, its campaign's or the help sheet's (voice-clips.ts). */
 export function manifestOf(address: string | undefined): string | null {
@@ -94,6 +121,14 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   let stopClips: (() => void) | null = null;
   const timers = new Set<ReturnType<typeof setTimeout>>();
   let speaking = false;
+  /** Encoded clips already fetched or on their way, by clip key, oldest first. */
+  const kept = new Map<string, Promise<ArrayBuffer>>();
+  /** Lines being resolved right now: the table is waiting on their clips. */
+  let urgent = 0;
+  const prefetchQueue: { near: string[]; background: string[] } = { near: [], background: [] };
+  let draining = false;
+  /** Bumped when the guessing ahead is retired, so work that was already under way drops its result. */
+  let prefetchEpoch = 0;
 
   const after = (ms: number, fn: () => void): (() => void) => {
     const timer = setTimeout(() => {
@@ -136,6 +171,29 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     return loading;
   }
 
+  /** A clip's encoded bytes, fetched once however often it is wanted; a failure is forgotten so it is asked again. */
+  function bytesOf(key: string, low: boolean): Promise<ArrayBuffer> {
+    let held = kept.get(key);
+    if (held === undefined) {
+      held = env
+        .fetch(clipPath(key), low ? { priority: "low" } : undefined)
+        .then((response) => {
+          if (!response.ok) throw new Error(`clip ${key} is not there`);
+          return response.arrayBuffer();
+        })
+        .catch((error: unknown) => {
+          kept.delete(key);
+          throw error;
+        });
+      kept.set(key, held);
+      for (const oldest of kept.keys()) {
+        if (kept.size <= KEPT_CLIPS) break;
+        kept.delete(oldest);
+      }
+    }
+    return held;
+  }
+
   async function gather(parts: readonly NarrationPart[]): Promise<VoiceBuffer[] | null> {
     const names = parts.map((part) => manifestOf(part.address));
     if (names.includes(null)) return null;
@@ -149,10 +207,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     const clip = (key: string): Promise<VoiceBuffer> => {
       let buffer = decoded.get(key);
       if (buffer === undefined) {
-        buffer = env.fetch(clipPath(key)).then(async (response) => {
-          if (!response.ok) throw new Error(`clip ${key} is not there`);
-          return channel.decode(await response.arrayBuffer());
-        });
+        // Decoding hands the bytes over, so each decode gets its own copy of what is kept.
+        buffer = bytesOf(key, false).then((encoded) => channel.decode(encoded.slice(0)));
         decoded.set(key, buffer);
       }
       return buffer;
@@ -162,7 +218,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
 
   /** The clips for `parts`, or null, never later than `resolveMs` and never rejecting. */
   function resolve(parts: readonly NarrationPart[]): Promise<VoiceBuffer[] | null> {
-    return new Promise((settle) => {
+    urgent += 1;
+    return new Promise<VoiceBuffer[] | null>((settle) => {
       const cancelTimer = after(resolveMs, () => settle(null));
       gather(parts).then(
         (buffers) => {
@@ -174,7 +231,64 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
           settle(null);
         },
       );
+    }).finally(() => {
+      urgent -= 1;
     });
+  }
+
+  /**
+   * Fetches the clips for the lines under `prefixes` into memory, nearest first, one at a time and
+   * only while no line is waiting on its own clips. Never throws and never plays anything.
+   */
+  function prefetch(prefixes: readonly string[], opts?: PrefetchOptions): void {
+    if (env.saveData?.() === true) return;
+    const epoch = prefetchEpoch;
+    void (async () => {
+      const wanted = new Set<string>();
+      const names = new Set(prefixes.map(manifestOf).filter((name): name is string => name !== null));
+      for (const name of names) {
+        const loaded = await manifest(name);
+        if (loaded === null) continue;
+        for (const [address, variants] of Object.entries(loaded)) {
+          if (!isNarratedAddress(address) || !prefixes.some((prefix) => address.startsWith(prefix))) continue;
+          for (const clips of Object.values(variants)) {
+            for (const clip of clips) if (!kept.has(clip.clip)) wanted.add(clip.clip);
+          }
+        }
+      }
+      // Retired while the manifest was on its way: the request is over, whatever it would have asked for.
+      if (epoch !== prefetchEpoch) return;
+      const queue = opts?.background ? prefetchQueue.background : prefetchQueue.near;
+      for (const key of wanted) if (!queue.includes(key)) queue.push(key);
+      void drain();
+    })().catch(() => undefined);
+  }
+
+  /** Retires every prefetch not yet started. A clip already on its way finishes; a spoken line is untouched. */
+  function stopPrefetch(): void {
+    prefetchEpoch += 1;
+    prefetchQueue.near.length = 0;
+    prefetchQueue.background.length = 0;
+  }
+
+  async function drain(): Promise<void> {
+    if (draining) return;
+    draining = true;
+    try {
+      for (;;) {
+        const key = prefetchQueue.near.shift() ?? prefetchQueue.background.shift();
+        if (key === undefined) return;
+        if (kept.has(key)) continue;
+        // The table's own line goes first, whatever it is waiting on.
+        const epoch = prefetchEpoch;
+        while (urgent > 0) await new Promise<void>((wake) => setTimeout(wake, YIELD_MS));
+        // Retired while it waited: this clip was one of the guesses.
+        if (epoch !== prefetchEpoch) continue;
+        await bytesOf(key, true).catch(() => undefined);
+      }
+    } finally {
+      draining = false;
+    }
   }
 
   /** Hands a line to the device voice and counts it until it is over (or should have been). */
@@ -283,6 +397,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     pump();
   };
   speaker.cancel = cancel;
+  speaker.prefetch = prefetch;
+  speaker.stopPrefetch = stopPrefetch;
   return speaker;
 }
 
@@ -295,7 +411,8 @@ export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Spe
       gestureTarget: window,
     }),
     channel: () => getAudioSink()?.voice ?? null,
-    fetch: (url) => fetch(url),
+    fetch: (url, init) => fetch(url, init as RequestInit | undefined),
+    saveData: () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true,
     onSpeaking,
   }));
 }
@@ -310,12 +427,18 @@ export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Spe
 export function whileSeen(speaker: Speaker, doc: Document = document, win: Window = window): Speaker {
   let gone = false;
   const away = (): boolean => gone || doc.visibilityState === "hidden";
+  // Hidden or left: nothing is said, and nothing more is fetched for a page nobody is looking at.
+  // The world asks again when it is seen (speech/voice-prefetch.ts).
   doc.addEventListener("visibilitychange", () => {
-    if (away()) speaker.cancel?.();
+    if (away()) {
+      speaker.cancel?.();
+      speaker.stopPrefetch?.();
+    }
   });
   win.addEventListener("pagehide", () => {
     gone = true;
     speaker.cancel?.();
+    speaker.stopPrefetch?.();
   });
   win.addEventListener("pageshow", () => {
     gone = false;
@@ -324,5 +447,10 @@ export function whileSeen(speaker: Speaker, doc: Document = document, win: Windo
     if (!away()) speaker(text, opts);
   };
   seen.cancel = () => speaker.cancel?.();
+  seen.stopPrefetch = () => speaker.stopPrefetch?.();
+  // Nothing is fetched for a page nobody is looking at.
+  seen.prefetch = (prefixes, opts) => {
+    if (!away()) speaker.prefetch?.(prefixes, opts);
+  };
   return seen;
 }
