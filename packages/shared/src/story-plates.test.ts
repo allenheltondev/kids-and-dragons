@@ -66,7 +66,7 @@ describe("startPlates", () => {
   it("gives another chapter its own plate, wearing the chapter's title", () => {
     const own = { art: "plates/c/c-2a", narration: "A lake." };
     const picked = startPlates(ordered, chapter("c-2a", "c", 2, { plate: own }));
-    expect(picked).toEqual({ kind: "chapter", key: "plate:c:c-2a", ribbon: "Title of c-2a", plates: [own] });
+    expect(picked).toEqual({ kind: "chapter", key: "plate:c:c-2a", ribbon: "Title of c-2a", plates: [own], addresses: ["c-2a/@plate"] });
   });
 
   it("gives a chapter with neither nothing", () => {
@@ -157,6 +157,7 @@ describe("epilogues", () => {
       key: "epilogue:c:a",
       ribbon: "Title a",
       plates: campaign.epilogues![0]!.plates,
+      addresses: ["c/@epilogue/a/0", "c/@epilogue/a/1"],
     });
     expect(endPlates(campaign, "c-3", "door_a", undefined)).toBeNull();
     expect(endPlates(campaign, "c-3", "s", "complete")).toBeNull();

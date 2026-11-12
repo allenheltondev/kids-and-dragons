@@ -27,7 +27,7 @@
  * one scene ahead) is #547's; the URL is the hash, so the browser's HTTP cache already keeps them.
  */
 
-import { clipPath, manifestPath, playlistFor, type NarrationPart, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
+import { clipPath, manifestOfAddress, manifestPath, playlistFor, type NarrationPart, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
 import { getAudioSink, type VoiceBuffer, type VoiceChannel } from "../audio/cue";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
@@ -67,10 +67,9 @@ export const RESOLVE_MS = 2500;
 const DEVICE_MS_PER_CHAR = 110;
 const GRACE_MS = 2000;
 
-/** Which manifest an address is filed in: a chapter's lines are addressed `<chapter>/…` (voice-clips.ts). */
+/** Which manifest an address is filed in: its chapter's, its campaign's or the help sheet's (voice-clips.ts). */
 export function manifestOf(address: string | undefined): string | null {
-  const name = address?.split("/")[0] ?? "";
-  return name === "" || name.startsWith("@") ? null : name;
+  return manifestOfAddress(address);
 }
 
 interface Job {

@@ -36,6 +36,12 @@ export interface StartPlates {
    */
   ribbon: string;
   plates: StoryPlate[];
+  /**
+   * Where each plate's words are filed in the voice manifests (tools/voice/inventory.ts), one per
+   * plate, so a recording can be found for it: `<campaign>/@prologue/<i>`, `<chapter>/@plate`,
+   * `<campaign>/@epilogue/<epilogue>/<i>`.
+   */
+  addresses?: string[];
 }
 
 /**
@@ -60,10 +66,16 @@ export function isOpeningChapter(campaign: Campaign, chapter: Pick<Chapter, "id"
  */
 export function startPlates(campaign: Campaign, chapter: Chapter): StartPlates | null {
   if (campaign.prologue && campaign.prologue.plates.length > 0 && isOpeningChapter(campaign, chapter)) {
-    return { kind: "prologue", key: `prologue:${campaign.id}`, ribbon: campaign.title, plates: campaign.prologue.plates };
+    return {
+      kind: "prologue",
+      key: `prologue:${campaign.id}`,
+      ribbon: campaign.title,
+      plates: campaign.prologue.plates,
+      addresses: campaign.prologue.plates.map((_, i) => `${campaign.id}/@prologue/${String(i)}`),
+    };
   }
   if (chapter.plate) {
-    return { kind: "chapter", key: `plate:${campaign.id}:${chapter.id}`, ribbon: chapter.title, plates: [chapter.plate] };
+    return { kind: "chapter", key: `plate:${campaign.id}:${chapter.id}`, ribbon: chapter.title, plates: [chapter.plate], addresses: [`${chapter.id}/@plate`] };
   }
   return null;
 }
@@ -88,7 +100,13 @@ export function endPlates(
   if (ended === undefined) return null;
   const epilogue = epilogueFor(campaign, chapterId, sceneId);
   if (epilogue === null || epilogue.plates.length === 0) return null;
-  return { kind: "epilogue", key: `epilogue:${campaign.id}:${epilogue.id}`, ribbon: epilogue.title, plates: epilogue.plates };
+  return {
+    kind: "epilogue",
+    key: `epilogue:${campaign.id}:${epilogue.id}`,
+    ribbon: epilogue.title,
+    plates: epilogue.plates,
+    addresses: epilogue.plates.map((_, i) => `${campaign.id}/@epilogue/${epilogue.id}/${String(i)}`),
+  };
 }
 
 /** Every plate a campaign and its chapters declare, in the order they are met (prologue first, epilogues last). */
