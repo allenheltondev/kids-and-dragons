@@ -225,6 +225,42 @@ describe("the schema", () => {
           expect(scene.onTimeout).toEqual(scene.onDefeat);
           continue;
         }
+        if (chapter.id === "gemfall-03a" && sceneId === "encounter_drake") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("bargaining-rock");
+          expect(scene.environment?.clock?.onExpire).toBe("collapse");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-03b" && sceneId === "encounter_crabs") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("step-drain");
+          expect(scene.environment?.clock?.onExpire).toBe("collapse");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-07h" && sceneId === "encounter_crabs") {
+          expect(scene.environment?.exits?.[0]?.id).toBe("cool-edge");
+          expect(scene.environment?.clock?.onExpire).toBe("collapse");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-07h" && sceneId === "encounter_echo") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("soup-pot");
+          expect(scene.environment?.clock?.onExpire).toBe("collapse");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-07l" && sceneId === "encounter_crawlers") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("crawler-box");
+          expect(scene.environment?.clock?.onExpire).toBe("collapse");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-07r" && sceneId === "encounter_wolves") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("cart-wheel");
+          expect(scene.environment?.clock?.onExpire).toBe("collapse");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");
         expect(scene).not.toHaveProperty("onTimeout");

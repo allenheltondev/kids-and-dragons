@@ -2576,14 +2576,20 @@
     },
     "encounter_crawlers": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The crawlers clatter down the bend, noses up, straight for the humming wagon. Turn them around before they reach it.",
+      "map": "surge_wagon",
+      "narration": "The crawlers clatter toward the humming wagon. A warden drags their empty box across the path. End two hero turns beside its lid to herd them inside and latch it. The crawlers follow whoever is nearest. Draw them away from the box so a friend can work.",
       "enemies": [
         {
           "id": "crawler",
           "name": "Bone Crawler",
           "creature": "bone_crawler",
-          "count": 2
+          "count": 1
+        },
+        {
+          "id": "chaser",
+          "name": "Bone Crawler",
+          "creature": "bone_crawler",
+          "count": 1
         }
       ],
       "onVictory": {
@@ -2594,9 +2600,57 @@
             "itemId": "luckstone",
             "to": "party"
           }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "latched_crawler_box"
+            },
+            "replace": true,
+            "text": "The lid clacks shut. The warden carries the rattling box off the road, then opens it facing downhill. Out tumble the crawlers, elbows first."
+          }
         ]
       },
       "onDefeat": {
+        "goto": "scene_crawlers_boxed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pinch-box-crawlers",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The crawlers reach the wagon",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "crawler-box",
+            "label": "Latch the crawler box",
+            "art": "prop_numbered_box",
+            "kind": "close",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "latched_crawler_box",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_crawlers_boxed",
         "effects": [
           {

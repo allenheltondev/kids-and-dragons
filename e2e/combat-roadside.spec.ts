@@ -202,6 +202,12 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_c
 }
 
 const roadFights = [
+  { sceneId: "encounter_drake", chapterId: "gemfall-03a", cue: "Hold the bargaining rock", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_drake_deal", text: "The new gem is warm" },
+  { sceneId: "encounter_crabs", chapterId: "gemfall-03b", cue: "Unblock the drain", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_crabs_shooed", text: "The crabs scuttle" },
+  { sceneId: "encounter_crabs", chapterId: "gemfall-07h", cue: "Cool edge", target: { x: 6, y: 3 }, outcome: "escaped", destination: "scene_bend_approach", text: "you are not first" },
+  { sceneId: "encounter_echo", chapterId: "gemfall-07h", cue: "Ring the pot", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_echo_quiet", text: "echo hunters fold back" },
+  { sceneId: "encounter_crawlers", chapterId: "gemfall-07l", cue: "Latch the crawler box", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_crawlers_scattered", text: "My lucky stone" },
+  { sceneId: "encounter_wolves", chapterId: "gemfall-07r", cue: "Pull the cart aside", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_bend_lookout", text: "little time to get ready" },
   { sceneId: "encounter_wolves", chapterId: "gemfall-03c", cue: "Big campfire", target: { x: 6, y: 2 }, outcome: "escaped", destination: "scene_campfire_play", text: "You bring supper to the big fire" },
   { sceneId: "encounter_drakes", chapterId: "gemfall-03c", cue: "Right the wagon", target: { x: 4, y: 2 }, outcome: "victory", destination: "end_forded", text: "The wagon lurches upright" },
   { sceneId: "encounter_boxes", chapterId: "gemfall-04c", cue: "Inky mud", target: null, outcome: "timedOut", destination: "scene_boxes_sulking", text: "The last stamp disappears" },
@@ -233,6 +239,8 @@ for (const fight of roadFights) {
     test.setTimeout(240_000);
     const boxes = fight.sceneId === "encounter_boxes";
     const brook = fight.sceneId === "encounter_logs";
+    const coolEdge = fight.chapterId === "gemfall-07h" && fight.sceneId === "encounter_crabs";
+    const drain = fight.chapterId === "gemfall-03b" && fight.sceneId === "encounter_crabs";
     const wisps = fight.sceneId === "encounter_wisps";
     const bridge = fight.chapterId === "gemfall-05b" && fight.sceneId === "encounter_wolves";
     const ford = fight.chapterId === "gemfall-05a" && fight.sceneId === "encounter_wolves";
@@ -264,7 +272,7 @@ for (const fight of roadFights) {
       ] as const : []),
     ] });
     const phones = [];
-    const display = await openTv(browser, table, { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
+    const display = await openTv(browser, table, process.env.KAD_COMBAT_VIDEO === "off" ? {} : { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
     try {
       for (const seat of table.phones) {
         const phone = await openPhone(browser, seat);
@@ -289,14 +297,16 @@ for (const fight of roadFights) {
       const panel = display.page.locator(".fight-log");
       await expect(panel).toContainText(fight.cue);
       const ledgeProgress = display.page.getByLabel("Friends past the ledges");
+      const coolProgress = display.page.getByLabel("Friends past the warm ground");
+      if (coolEdge) await expect(coolProgress).toContainText("0/2 past the warm ground");
       if (ledges) await expect(ledgeProgress).toContainText("0/4 past the ledges");
       if (fight.chapterId === "gemfall-05c" && fight.sceneId === "encounter_crabs") {
         // Screen-reader progress must describe the same destination as the visible counter.
         await expect(display.page.getByLabel("Friends past the boundary")).toContainText("0/2 past the boundary");
       }
       await display.page.evaluate(() => { document.documentElement.dataset.text = "largest"; });
-      await expect.poll(() => panel.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
       await display.page.screenshot({ path: info.outputPath("tv-largest.png") });
+      await expect.poll(() => panel.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
       await display.page.evaluate(() => { delete document.documentElement.dataset.text; });
 
       let movedThroughUi = false;
@@ -308,6 +318,7 @@ for (const fight of roadFights) {
       let sawBankOpen = false;
       let sawUpper = false;
       let sawLedgeProgress = false;
+      let sawCoolProgress = false;
       for (let turn = 0; state.encounter && turn < 24; turn++) {
         const page = active();
         const encounter = state.encounter;
@@ -317,6 +328,11 @@ for (const fight of roadFights) {
           expect(positionOf(encounter, "drake#1")).toEqual({ x: 5, y: 1 });
           expect(positionOf(encounter, "small#1")).toEqual({ x: 5, y: 4 });
           sawSpring = true;
+        }
+        if (coolEdge && !sawCoolProgress && encounter.combatants.some(c => c.escaped)) {
+          await expect(coolProgress).toContainText("1/2 past the warm ground");
+          await display.page.screenshot({ path: info.outputPath("crossing-progress.png") });
+          sawCoolProgress = true;
         }
         if (ledges && !sawLedgeProgress && encounter.combatants.some(c => c.escaped)) {
           await expect(ledgeProgress).toContainText("1/4 past the ledges");
@@ -355,14 +371,21 @@ for (const fight of roadFights) {
           ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh || bridge ? Math.min(steps(p, goal), steps(p, { x: 6, y: 2 })) : steps(p, goal))
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = legalMoves(encounter).filter(p =>
+          (!drain || turn === 0 || p.x !== 3 || p.y !== 3) &&
           (!spring || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
           (!brook || turn === 0 || p.x !== 2 || p.y !== 3) && (!spill || p.x !== 2 || p.y !== 3) && (!marsh || p.x !== 3 || p.y !== 3));
         const runoff = (p: { x: number; y: number }) => p.x === 2 && p.y === 3;
         // Give the wisps an opening beat before committing anyone to the cart.
-        const tile = (spill && encounter.round === 1) || (turn === 0 && wisps) || ((echo || dragon || crab) && !sawWarning) ? undefined : turn === 0 && brook ? moves.find(runoff) : turn === 0 && boxes ? moves.find(ink)
+        const tile = (spill && encounter.round === 1) || (turn === 0 && wisps) || ((echo || dragon || crab) && !sawWarning) ? undefined : turn === 0 && drain ? moves.find(p => p.x === 3 && p.y === 3) : turn === 0 && brook ? moves.find(runoff) : turn === 0 && boxes ? moves.find(ink)
           : moves.sort((a, b) => score(a) - score(b))[0];
-        if (tile && (score(tile) < score(at) || (turn === 0 && ((boxes && ink(tile)) || (brook && runoff(tile)))))) {
+        if (tile && (score(tile) < score(at) || (turn === 0 && ((boxes && ink(tile)) || (brook && runoff(tile)) || drain)))) {
           if (!movedThroughUi) {
+            // The route driver reads the API; wait for that snapshot to reach
+            // the real phone before committing its first move.
+            await expect.poll(() => page.evaluate(async () => {
+              const modulePath = "/src/store/index.ts";
+              return (await import(modulePath)).useGameStore.getState().state?.seq ?? -1;
+            })).toBeGreaterThanOrEqual(state.seq);
             await page.getByRole("button", { name: new RegExp(`^Move to column ${tile.x + 1}, row ${tile.y + 1}(?=:| —|$)`) }).click();
             await expect.poll(async () => (await roomState<RunState>(page, table.code)).seq).toBeGreaterThan(state.seq);
             movedThroughUi = true;
@@ -381,6 +404,13 @@ for (const fight of roadFights) {
         }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
+        if (drain && turn === 0) {
+          expect(positionOf(state.encounter!, actorId)!.x).toBeLessThan(3);
+          await page.reload();
+          await onAir(page);
+          expect((await roomState<RunState>(page, table.code)).encounter?.environment).toEqual(state.encounter!.environment);
+          await display.page.screenshot({ path: info.outputPath("slippery-step.png") });
+        }
         if (turn === 0 && brook) {
           expect(positionOf(state.encounter!, actorId)!.x).toBeLessThan(2);
           await expect(display.page.locator(".rift-status__caption")).toContainText("Brook current");
@@ -394,6 +424,7 @@ for (const fight of roadFights) {
         }
       }
       expect(movedThroughUi).toBe(true);
+      if (coolEdge) expect(sawCoolProgress).toBe(true);
       if (boxes) expect(sawInk).toBe(true);
       if (brook) expect(sawCurrent).toBe(true);
       if (wisps || echo || dragon || crab) expect(sawWarning).toBe(true);
@@ -408,8 +439,9 @@ for (const fight of roadFights) {
       await expect(display.page.getByText(new RegExp(fight.text))).toBeVisible({ timeout: 60_000 });
       await display.page.screenshot({ path: info.outputPath("outcome.png") });
     } finally {
-      for (const phone of phones) await phone.context.close();
-      await display.context.close();
+      // Stop every live page before waiting for context/recording teardown.
+      await Promise.all([...phones.map(phone => phone.page.close()), display.page.close()]);
+      await Promise.all([...phones.map(phone => phone.context.close()), display.context.close()]);
     }
   });
 }

@@ -1730,8 +1730,8 @@
     },
     "encounter_wolves": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "The pack spreads across the zigzags, ears flat, too scared to think straight.",
+      "map": "sausage_lane",
+      "narration": "The frightened pack spreads across the zigzags. Your stone cart blocks the way down. End two hero turns beside its wheel to pull it into the pullout. The wolves follow whoever is nearest. Draw them away from the wheel so a friend can work, or shoo them off.",
       "enemies": [
         {
           "id": "wolves",
@@ -1741,9 +1741,51 @@
       ],
       "onVictory": {
         "goto": "scene_bend_lookout",
-        "narration": "The pack decides you are more trouble than you are worth, and pours past you."
+        "narration": "The pack decides you are more trouble than you are worth, and pours past you.",
+        "variants": [
+          {
+            "when": {
+              "flag": "cleared_wolf_lane"
+            },
+            "replace": true,
+            "text": "The cart rolls into the pullout. The wolves pour down the open road, tails tucked. One looks back as if to say it was never frightened at all."
+          }
+        ]
       },
       "onDefeat": {
+        "goto": "ending_scattered",
+        "narration": "The wolves bowl through you. Nobody is hurt, but the cart tips, and the stones roll every which way."
+      },
+      "art": "scenes/gemfall/returning-stone-cart",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The pack tips the cart",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "cart-wheel",
+            "label": "Pull the cart aside",
+            "art": "prop_wagon_wheel_rut",
+            "kind": "close",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "cleared_wolf_lane",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "ending_scattered",
         "narration": "The wolves bowl through you. Nobody is hurt, but the cart tips, and the stones roll every which way."
       }
@@ -2711,7 +2753,7 @@
     },
     "interaction_return_handover": {
       "type": "interaction",
-      "narration": "The master turns into the lay-by. She will send the Caravan Stone home if you hold the wagon steady while she unloads. The mules start their lunch.",
+      "narration": "The master turns into the pullout. She will send the Caravan Stone home if you hold the wagon steady while she unloads. The mules start their lunch.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Brace the wagon while the master unloads the stone.",
@@ -2740,7 +2782,7 @@
     },
     "scene_sign_agreement": {
       "type": "story",
-      "narration": "The caravan master reads your enormous sign and nods. She will stop in the lay-by so you can send the stone home. One mule tries to eat the sign.",
+      "narration": "The caravan master reads your enormous sign and nods. She will stop in the pullout so you can send the stone home. One mule tries to eat the sign.",
       "choices": [
         {
           "id": "on",
@@ -2752,7 +2794,7 @@
     },
     "scene_wagon_agreement": {
       "type": "story",
-      "narration": "You meet the marked wagon right where it stops. The master hears her bell call again and agrees to unload in the lay-by. No shouting over twelve wagons.",
+      "narration": "You meet the marked wagon right where it stops. The master hears her bell call again and agrees to unload in the pullout. No shouting over twelve wagons.",
       "choices": [
         {
           "id": "on",

@@ -642,21 +642,55 @@
     },
     "encounter_drake": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The drake does not blink after all. Its sister pops up. She handles complaints.",
+      "map": "boundary_retreat",
+      "narration": "The drake curls its tail around a flat bargaining rock. Its sister watches from the water. Stand on the rock for two round ends to win their rate. When the tail marks the ground, step clear or ask a friend to cover you. The drake keeps count on its slate.",
       "enemies": [
         {
           "id": "drake",
           "name": "River Drake",
           "creature": "river_drake",
-          "hp": 10
+          "hp": 10,
+          "windupAttack": {
+            "label": "Bargaining tail sweep",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          }
         }
       ],
       "onVictory": {
         "goto": "scene_drake_deal",
-        "narration": "Splashed and outplayed, the drakes huddle. \"Fair,\" huffs the big one. \"You won the rate.\""
+        "narration": "The drake slaps PAID onto its slate. \"Fair,\" it huffs. \"You won the rate.\" Its sister checks the spelling."
       },
       "onDefeat": {
+        "goto": "scene_swept",
+        "narration": "A tail as long as a canoe sweeps you, quite politely, into the current."
+      },
+      "art": "scenes/gemfall/drake-rock-shelf",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The drake washes the rock clear",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "bargaining-rock",
+            "label": "Hold the bargaining rock",
+            "art": "prop_rock",
+            "kind": "hold",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_swept",
         "narration": "A tail as long as a canoe sweeps you, quite politely, into the current."
       }

@@ -212,6 +212,12 @@ describe("ford road combat batch", () => {
 });
 
 const mountainFights = [
+  { chapter: "gemfall-03a", sceneId: "encounter_drake", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-03b", sceneId: "encounter_crabs", target: { x: 4, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-07h", sceneId: "encounter_crabs", target: { x: 6, y: 3 }, outcome: "escaped" },
+  { chapter: "gemfall-07h", sceneId: "encounter_echo", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-07l", sceneId: "encounter_crawlers", target: { x: 4, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-07r", sceneId: "encounter_wolves", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-04c", sceneId: "encounter_wolves", target: { x: 3, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-05a", sceneId: "encounter_wolves", target: { x: 7, y: 5 }, outcome: "escaped" },
   { chapter: "gemfall-06", sceneId: "encounter_crab", target: { x: 4, y: 2 }, outcome: "victory" },
@@ -251,7 +257,7 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
         const score = (p: { x: number; y: number }) =>
           Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 +
           (chapter === "gemfall-03a" && sceneId === "encounter_crawlers" ? Math.min(stepsBetween(p, goal), stepsBetween(p, { x: 6, y: 2 })) : stepsBetween(p, goal));
-        const moves = legalMoves(state).filter(p => (chapter !== "gemfall-07r" || sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
+        const moves = legalMoves(state).filter(p => (chapter !== "gemfall-03b" || p.x !== 3 || p.y !== 3) && (chapter !== "gemfall-07r" || sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
           (chapter !== "gemfall-03a" || sceneId !== "encounter_crawlers" || p.x !== 3 || p.y !== 3));
         const next = moves.sort((a, b) => score(a) - score(b))[0];
         // Let the crabs commit a sweep before anyone goes for the stone.
@@ -323,4 +329,51 @@ it("the high stream lets a hero stand on the low route before the round-two spil
   const next = endTurnWithEvents(state);
   expect(next.events).toContainEqual(expect.objectContaining({ type: "hazard", hazardId: "stream-spill", actorId: hero.id }));
   expect(positionOf(next.state, hero.id)!.x).toBeLessThan(low.x);
+});
+
+it('a slippery marsh step costs position, then a support hero can leave it', () => {
+  let { state } = setup('encounter_crabs', 1, content.chapter('gemfall-03b')!);
+  while (currentActor(state)!.side === 'enemy') state = endTurnWithEvents(enemyTurn(state)).state;
+  const hero = currentActor(state)!;
+  const moved = moveTo(state, { x: 3, y: 3 });
+  if (!moved.ok) throw new Error('The low step must be reachable');
+  const result = endTurnWithEvents(moved.state);
+  expect(result.events).toContainEqual(expect.objectContaining({ type: 'hazard', hazardId: 'slippery-step', actorId: hero.id }));
+  expect(positionOf(result.state, hero.id)).toEqual({ x: 1, y: 3 });
+  expect(combatantById(result.state, hero.id)?.hp).toBe(hero.hp);
+  state = JSON.parse(JSON.stringify(result.state));
+  while (currentActor(state)!.side === 'enemy') state = endTurnWithEvents(enemyTurn(state)).state;
+  expect(legalMoves(state).some(t => t.x >= 3 && (t.x !== 3 || t.y !== 3))).toBe(true);
+});
+
+it.each([
+  ['gemfall-03a', 'encounter_drake'],
+  ['gemfall-07h', 'encounter_echo'],
+])('%s %s keeps the first earned beat after retreat and reload', (chapterId, sceneId) => {
+  let { state } = setup(sceneId, 1, content.chapter(chapterId)!);
+  const goal = { x: 3, y: 2 };
+  for (let turn = 0; turn < 30 && state.environment?.objectives?.[0] !== 1; turn++) {
+    const actor = currentActor(state)!;
+    if (actor.side === 'enemy') state = enemyTurn(state);
+    else {
+      const at = positionOf(state, actor.id)!;
+      const next = [...legalMoves(state)].sort((a, b) => stepsBetween(a, goal) - stepsBetween(b, goal))[0];
+      if (next && stepsBetween(next, goal) < stepsBetween(at, goal)) {
+        const moved = moveTo(state, next);
+        if (moved.ok) state = moved.state;
+      }
+    }
+    state = endTurnWithEvents(state).state;
+  }
+  expect(state.environment!.objectives).toEqual([1]);
+  while (currentActor(state)!.side === 'enemy') state = endTurnWithEvents(enemyTurn(state)).state;
+  const away = legalMoves(state).filter(t => stepsBetween(t, goal) >= 2).sort((a, b) => a.x - b.x)[0];
+  if (!away) throw new Error('Retreat must remain possible');
+  const moved = moveTo(state, away);
+  if (!moved.ok) throw new Error('Retreat must be legal');
+  state = endTurnWithEvents(moved.state).state;
+  while (currentActor(state)!.side === 'enemy') state = endTurnWithEvents(enemyTurn(state)).state;
+  state = JSON.parse(JSON.stringify(state));
+  expect(state.environment!.objectives).toEqual([1]);
+  expect(encounterOutcome(state)).toBe('ongoing');
 });

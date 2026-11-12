@@ -2414,8 +2414,8 @@
     },
     "encounter_crabs": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The crabs rise up, clacking like castanets. Make them give up the steps.",
+      "map": "surge_wagon",
+      "narration": "The crabs clack over a heap of stolen spoons. Gullet points to the stone wedged across their drain. End two hero turns beside it to roll it away. The puddle will empty, and the crabs will follow it. The slippery middle step pushes you back, so approach along the side.",
       "enemies": [
         {
           "id": "crab",
@@ -2432,9 +2432,75 @@
             "itemId": "brave_whistle",
             "to": "party"
           }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "drained_crab_steps"
+            },
+            "replace": true,
+            "text": "The stone rolls free. Water gurgles down the drain, and the crabs hurry after their shrinking puddle. One takes a spoon for the journey."
+          }
         ]
       },
       "onDefeat": {
+        "goto": "scene_crabs_rescue",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/marsh-steps-crabs",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The crabs drive you off the steps",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "step-drain",
+            "label": "Unblock the drain",
+            "art": "prop_rock",
+            "kind": "close",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "drained_crab_steps",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "hazards": [
+          {
+            "id": "slippery-step",
+            "kind": "rift",
+            "label": "Slippery step",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 3
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 2
+            }
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_crabs_rescue",
         "effects": [
           {
