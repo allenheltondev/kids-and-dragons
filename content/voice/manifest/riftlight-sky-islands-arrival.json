@@ -1,0 +1,1562 @@
+{
+  "riftlight-sky-islands-arrival/@goal": {
+    "": [
+      {
+        "clip": "81220b6b4a6280a4e4f4f5b08b2f0e430a2e5a74978a8c6b37a2c05fb624050f",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/@plate": {
+    "": [
+      {
+        "clip": "fc7299b9d10d2314406941d00c83028e0dfbb0ea4a21168272dced5c046269ff",
+        "ms": 13507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/basket_lit/narration": {
+    "": [
+      {
+        "clip": "810a6de791e24a176335626f2ee58e936bd455356b12d1519d075e1edc618b66",
+        "ms": 7107
+      },
+      {
+        "clip": "3833007029842ef46fb78a6cc421f933ef2853a05f1f29680607c0b9b6be8f14",
+        "ms": 464
+      },
+      {
+        "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
+        "ms": 829
+      },
+      {
+        "clip": "f4a42e1368701732bd31e1cf5e84734d8c6de78aa9268a95801500fbf46b7bb1",
+        "ms": 1426
+      },
+      {
+        "clip": "ca5960f9e7750fa004e5b831bcc3c95772e1dd87b82e58eeba3c7b0df157e00c",
+        "ms": 4707
+      },
+      {
+        "clip": "962eaea77593216c92ec2c9658754ee0e6228031c6fdd170708f47ba5239ccc4",
+        "ms": 2901
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/basket_plan/narration": {
+    "": [
+      {
+        "clip": "6495954a890e091860ddd3e65b002fc3dae4546aedd37b10058a6bfaafebc1bb",
+        "ms": 4707
+      },
+      {
+        "clip": "4d4ca8f39f2d0990a18cce14d7fe2d817423f471f249d85a4e575686c10d5de3",
+        "ms": 1732
+      },
+      {
+        "clip": "bc42f798b43f2c0756efb5761c0dc880ef8abea4892cd530269aab18297f298f",
+        "ms": 1892
+      },
+      {
+        "clip": "1ac486f08fb9c6b14b8259c7c3f857c3ed9d19de5c1c8868cd83f3bdd79a8455",
+        "ms": 1974
+      },
+      {
+        "clip": "8390d31243b2f93ede5a1dac395f7cc1c4d56fcc149311b378058919dc54cf9a",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/basket_smoky/narration": {
+    "": [
+      {
+        "clip": "427aee01ec4e0076d85e17e4bdf86cb3360c7cd88559dff56c9decbdbdc83fda",
+        "ms": 14907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_air/narration": {
+    "": [
+      {
+        "clip": "e4cd813b69b76ba022ddc175745b512ade76f0104501dffc416fc0f4bdf161bf",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_chime/narration": {
+    "": [
+      {
+        "clip": "98f1c64cf13a5454ad485f1daad9ff4f4fa2ce4d7935e8a60e577954ba5764e7",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_found/narration": {
+    "": [
+      {
+        "clip": "4bed87446eec0e63706cb60d3821e13a5bcc715ae9e5ab1fd57f9c70f51e8d84",
+        "ms": 9807
+      },
+      {
+        "clip": "23082c89d9cad709e7b3ebc8dc78fa22853dd8a8a4cf6b32ceee3ed58291defd",
+        "ms": 8107
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_notes/narration": {
+    "": [
+      {
+        "clip": "bc3a89fdb77885b22ddfeae5c43b63b63c782f66892fcc84928cc75db025b46d",
+        "ms": 7907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_sing/narration": {
+    "": [
+      {
+        "clip": "2e942d213f3c916d87f360cfe1ce99592c54877b13d2e94d34344979d926cc4e",
+        "ms": 7207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/bearing_vote/narration": {
+    "": [
+      {
+        "clip": "147f8a5ee3cc8a0aefbb833c3c92b432f2679c005d04029f4ba281bb71a9018a",
+        "ms": 9607
+      },
+      {
+        "clip": "733706e6cabf615f866b4dd589968899295649450f767808c2caad815610b75a",
+        "ms": 1114
+      },
+      {
+        "clip": "fb3ff4dcd6d2961864aa1f098b5f4ecf909eed9824aeff3be3513fea9de77ce4",
+        "ms": 806
+      },
+      {
+        "clip": "9dbbb5ed4f51408e2347d2b7a224208c0360ed2726b0547a47f7492cc367a257",
+        "ms": 2318
+      },
+      {
+        "clip": "904785aedf5578854e4cac094d8807c392d95af5cc22bfb443f2362eb77320f3",
+        "ms": 1171
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/camp_play/interaction/cue": {
+    "": [
+      {
+        "clip": "6d90af6cdab610586f31eefc7be4796c1db0ee6e2963ca5182b5f05590485fc0",
+        "ms": 1669
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/camp_play/narration": {
+    "": [
+      {
+        "clip": "13742f54fa64bffde112da4b28bd9189b4e24584ea7c34c7b44154b53f2f96ab",
+        "ms": 1540
+      },
+      {
+        "clip": "df3cede1cdc9cd212f68f9c6d64e8f95583b8cd268ba98fb353c036999b3020d",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/camp_play/onAssisted/narration": {
+    "": [
+      {
+        "clip": "c039f80170b9563b3be57d17132ea4f1dbd307c636714b64c77804bef90d2ffd",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/camp_play/onFailure/narration": {
+    "": [
+      {
+        "clip": "a678eb7e5841be1dfb6a18870fceb4002c8ed32a6594996506182637fe0897d9",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/camp_play/onSuccess/narration": {
+    "": [
+      {
+        "clip": "809e1747c91a611797a4dbc7ac9cb93da227af47cd3478e424a966a0893d5105",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dojo/narration": {
+    "": [
+      {
+        "clip": "0d264242a940cf2f8a94542cba90552384b39bc419bece4c88ed2925baf021fb",
+        "ms": 10607
+      },
+      {
+        "clip": "d7af00bd4f59aab45911a70c98d8552e94dd399a271ca14ef66fd1be3a87902d",
+        "ms": 5907
+      },
+      {
+        "clip": "5795a685178f91cdb0ff78f3ad31a831a419e33d885ec03058bc4aefd2251e98",
+        "ms": 11907
+      },
+      {
+        "clip": "a3f0b385ba31ca33560fe3fbed293d505e75a892be5a11703a1de3016074de5f",
+        "ms": 1618
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dojo/variants/0": {
+    "": [
+      {
+        "clip": "30bfce800f3449d46d60a0e30bb8a335cebfd0cb12677755cf431329a5ea42e5",
+        "ms": 2769
+      },
+      {
+        "clip": "9072fcb4aa10483d2798f6e92e9274e2a8748a03f86d40cc2ab4fa156be7940b",
+        "ms": 1640
+      },
+      {
+        "clip": "61333aa9174798ed4affb2282fceef59efcf0a14cf943040d5959d624efcc23d",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dojo_pillows/narration": {
+    "": [
+      {
+        "clip": "9b439e510756e01c5acc0c4609278fe9ba4aee9b778edf291e6f42708f7f0bb9",
+        "ms": 9007
+      },
+      {
+        "clip": "23f621d6c9724f9c735f6e7812da11f388c83d0cc4a856040355aab937c30496",
+        "ms": 1635
+      },
+      {
+        "clip": "3d48fda9c70e4dba66629ea3008a5250b47638af64e4227bc124c5cc2752d509",
+        "ms": 1177
+      },
+      {
+        "clip": "d194fe5d8ad335ad53003905a7fe94aa425e26e2668d418d1da4e64bfaa9e2d5",
+        "ms": 2120
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dusk_ferry/narration": {
+    "": [
+      {
+        "clip": "747464e2ca3a3cca188b2743c974491f0ccb45d1ffa68ccaeeffd3efc83f68c0",
+        "ms": 4307
+      },
+      {
+        "clip": "a3650574d07bfbfc06cf2c455c662bc2603676bbe637ffc6e47c54d0444b9b2c",
+        "ms": 10107
+      },
+      {
+        "clip": "c0cabf2caf385e8713e80ab8b7fdc1c429a9ecb85c6eaa34add5d503a3ffc334",
+        "ms": 1318
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/dusk_ferry/variants/0": {
+    "": [
+      {
+        "clip": "0856b6c5ba8279030585baaf87fd7aebbc2d75d150e9e877e950199a84e76d42",
+        "ms": 2363
+      },
+      {
+        "clip": "d7542ef0aa585a4b312e5d4e8df41917ef3a8a80fdbdaec0ca5e99f877994a35",
+        "ms": 888
+      },
+      {
+        "clip": "72418b539b979201e7431c34bf1532d56fb7e835114835542fa80512fbdaca40",
+        "ms": 1423
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/edge_gusted/narration": {
+    "": [
+      {
+        "clip": "9e69633c0082ee23e289df920dbb5629e616df0e05cd9aee0e3bac175964b428",
+        "ms": 14207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/edge_merge/narration": {
+    "": [
+      {
+        "clip": "6384ba65f5661327a67b99d81421c4943445022e92e9eba54142f0dcfc57f791",
+        "ms": 3607
+      },
+      {
+        "clip": "44bcda96cc8ff63f782d82e4d1af8d28d69346bb67d266e53e8434931ccfb890",
+        "ms": 13207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/edge_scout/prompt": {
+    "": [
+      {
+        "clip": "5f08dea510e4e53b8150a6e3eb1a75f922b7c642c80c9f244d26d2f64507345a",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/edge_scouted/narration": {
+    "": [
+      {
+        "clip": "e878265811ed886b52f8eb0fdc8eccf8c6e2e7b16f2c09dd706c14d9aafae087",
+        "ms": 18607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_bumped/narration": {
+    "": [
+      {
+        "clip": "ee4b2c3c4a8936e8e1b8fe4ab916bbb35ab11c9055165be6f48cb0833fa54176",
+        "ms": 12807
+      },
+      {
+        "clip": "c8a8de8f5237a0f66daefa124a2b0597c770a2db071bb2d1f2975a634eee200c",
+        "ms": 4007
+      },
+      {
+        "clip": "2f5b04da733081667c362b0de2d564f6084c9c062c05cdecdd8940cfa60ec140",
+        "ms": 2017
+      },
+      {
+        "clip": "5977d4c54e3f3f6d7570a8e258bdd99d9863208fec4d0291dd3a47e7f76d3482",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_bumped/variants/0": {
+    "": [
+      {
+        "clip": "78f37cd150d74ca3c4d5ddf587e065ab31cf12ab2d5583c46505d33a42354c76",
+        "ms": 1658
+      },
+      {
+        "clip": "93c9e03bdee9350b3bbab3335cf7f5c2966aed938d92d66c445e6f3cfadc5f1d",
+        "ms": 5607
+      },
+      {
+        "clip": "4708a73086c844470090207abb157311794871931f7a001d9d70002654834b5c",
+        "ms": 1417
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_flags/prompt": {
+    "": [
+      {
+        "clip": "2605d231d0e8397e2bc5d28e6edb6aa8ec557854c81f8d2e08ba1fe64eee5cf6",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_in/narration": {
+    "": [
+      {
+        "clip": "423cda63744e31f8ef4486946b7b3229a9053d664695c5a72cdee94cb0e2f519",
+        "ms": 9807
+      },
+      {
+        "clip": "917575f9134e6477c0e55ca7c7954f6dabfc4ee7c1338f1fc5c266ddf8d85a7c",
+        "ms": 3108
+      },
+      {
+        "clip": "d4048c9eeac85884a2bf588cb037cc9bcde85a99f2e383ab849e3ea655730f6f",
+        "ms": 3607
+      },
+      {
+        "clip": "b79d3b98c541734c0caacdf0a3df51d08cd4b03a7a9d9ffc00edab5902f1bb4b",
+        "ms": 1819
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "2e9b23c6c20c2d5c6285dbf1bee64ffc35692a3f0b97ee0cd58e16b584183854",
+        "ms": 2077
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_in/variants/0": {
+    "": [
+      {
+        "clip": "78f37cd150d74ca3c4d5ddf587e065ab31cf12ab2d5583c46505d33a42354c76",
+        "ms": 1658
+      },
+      {
+        "clip": "93c9e03bdee9350b3bbab3335cf7f5c2966aed938d92d66c445e6f3cfadc5f1d",
+        "ms": 5607
+      },
+      {
+        "clip": "cd8f43a056c41b51dbc07b6ae2a4c390edbd00280a33383c9feb449557f06ce1",
+        "ms": 2732
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_lines/prompt": {
+    "": [
+      {
+        "clip": "bb7f51017e82b2e8b2f97ceebc8518fcedc977d68ade9f113b54d7959bd2bf5b",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_post/prompt": {
+    "": [
+      {
+        "clip": "f9c72d1a1634cd06f366676914a87c91a2d950973779254f7af78b67bf312380",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_tow/prompt": {
+    "": [
+      {
+        "clip": "bb534f6b197931767b7803796b7310dcdf5ea6463188a2b70c6d5e4dc9617195",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/ferry_whistle/prompt": {
+    "": [
+      {
+        "clip": "9013f125d006200fcb6e4459b1b7b9f49273b48a071e19567cb52c91b24bed57",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel/narration": {
+    "": [
+      {
+        "clip": "e99ca8670dcbe4a98b2e85461d64c7783a61471f8c45bcfbb2bafb0e107a0b16",
+        "ms": 1646
+      },
+      {
+        "clip": "930e99279775f33cedf8851feb76256ce8825d9cec136d02eac114c51c9efd17",
+        "ms": 14107
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/interaction/cue": {
+    "": [
+      {
+        "clip": "164641fabdea89527fba655942749b39405054fdcfb04baed8daa9039a649d57",
+        "ms": 2350
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/narration": {
+    "": [
+      {
+        "clip": "b3050094ab40b89c87af1f2917f70196c042f44c5cfbf80a4709996af25d3ea4",
+        "ms": 8207
+      },
+      {
+        "clip": "24f620fe9818662435b8d9f6c247c173b6c926f323ffb99116c4aeceed032cf1",
+        "ms": 1166
+      },
+      {
+        "clip": "f447113f66cd5dfdd29cb3273ae88df2b89d448a35d39cce1d607597f1acd030",
+        "ms": 787
+      },
+      {
+        "clip": "bc2413d2aef6e7f804697cfc9c44339e7b42527a85af7badf75c7efbb5c0457c",
+        "ms": 3307
+      },
+      {
+        "clip": "6fadc4241cfb7b760bd9a325903ef53fca06cc78bd8751d9283156ff57866438",
+        "ms": 1022
+      },
+      {
+        "clip": "62e574ebceff7c17bca7a52f261b2d22b4703a1c0f60ffffa088b4c8b6f00a9c",
+        "ms": 1744
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/onAssisted/narration": {
+    "": [
+      {
+        "clip": "ecd07f308b8bc48da6bfbfc09628e9688090849119536bbb00e24a0860b668ff",
+        "ms": 2564
+      },
+      {
+        "clip": "bfae70eaf12fa8953f64a4c572c94cc0104a2b397ed112393e01ec3f8421785d",
+        "ms": 1640
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/onFailure/narration": {
+    "": [
+      {
+        "clip": "125339595cfaa3f85f2112b2abd12776901ebbbd2e780d85f0af2ed2e507f2c1",
+        "ms": 9007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_chain/onSuccess/narration": {
+    "": [
+      {
+        "clip": "cc9b9a9f9bf91cba637fc8fdfbad8461331b9cde6c3338db827ae15948d4cab9",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_dash/prompt": {
+    "": [
+      {
+        "clip": "225d8d476e6ff5e08d60587b63f11e963bbe3855d3db48632590a5e6cb82a164",
+        "ms": 4408
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_dry/narration": {
+    "": [
+      {
+        "clip": "9794b07ed23fabcedfacc843d1898ae188db2d7cfa7ffdb2755b119adebc692d",
+        "ms": 10607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_lace/prompt": {
+    "": [
+      {
+        "clip": "b0e9b431525f04fb5e29fcc380058648d167d92bb5bd08af1c563fd04e0ccafd",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_logs/prompt": {
+    "": [
+      {
+        "clip": "aea612e2736dc4cacb31153e9f0fc9435c8812f3675734b87b3be9d3f62fc3a4",
+        "ms": 4608
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_soggy/narration": {
+    "": [
+      {
+        "clip": "5692ed54f5893cc406a01f7a87a6f46e70b3934bb0140c5628b2997f221e13ae",
+        "ms": 3507
+      },
+      {
+        "clip": "cc6e691fc6d2530797b313f4840717d130fb14da924a9151879b989aaf1e21a0",
+        "ms": 1202
+      },
+      {
+        "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
+        "ms": 829
+      },
+      {
+        "clip": "89e8b2c57aeb795107c89d479c58150b218f85db35059d3a0e2b56f6074f2769",
+        "ms": 1356
+      },
+      {
+        "clip": "9eed2a51a9437aa368ec1c186e484391310a5c04738f687f7b0a8855abdbd243",
+        "ms": 2695
+      },
+      {
+        "clip": "0f95cc4b694459f4657ba718c724d68b22a1181f2a1239f74171b097ff19d6eb",
+        "ms": 1645
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/fuel_twigs/prompt": {
+    "": [
+      {
+        "clip": "54e47178a4777a99ac90950b29fd528b15b80891f3224d9a8b9e9e6f577a8b06",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/interaction/cue": {
+    "": [
+      {
+        "clip": "cf2b9393b1e5f8f472b561c8e2933a1fbc412fac58750d15578a699aff265761",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/narration": {
+    "": [
+      {
+        "clip": "c3e590b6347a04b96b31ff4237022b158c897408c1fb398a6cde6608e6a4dc3e",
+        "ms": 7907
+      },
+      {
+        "clip": "657135d98e29f29bfb3b10bcf1df95a521c906c19a424874280939e58c9e155a",
+        "ms": 938
+      },
+      {
+        "clip": "76e4944e949e1adba2affd88f27c8d17b1c409019af5f354b2a718ce42e7b717",
+        "ms": 802
+      },
+      {
+        "clip": "50b96f2248055fc661282cb06ea2557db4d7cfa9235c528258d24ec0b86367b4",
+        "ms": 772
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/onAssisted/narration": {
+    "": [
+      {
+        "clip": "1f642cc6eba2dae22c126aed087233c8d112b480e2347f3ddf986e0ba3aa8934",
+        "ms": 1687
+      },
+      {
+        "clip": "7764e1a632d48d1732e825200fb568d0c9215d295f707cffda6e2c33f2f33ec5",
+        "ms": 653
+      },
+      {
+        "clip": "2df6eb2fb097e2e7ed9aa410aaf644bcb9c904559abc540e1482cb183b2898a7",
+        "ms": 2131
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/onFailure/narration": {
+    "": [
+      {
+        "clip": "051e18d671c9f6def89df9a52f12e5493ddcf9f8383dd4c747dac63f80935313",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/gust_lull/onSuccess/narration": {
+    "": [
+      {
+        "clip": "58655106a21279f5f66d32223a0faa83a1c4b456cfd082c0dd3e646b4ca90224",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/hum/prompt": {
+    "": [
+      {
+        "clip": "917c8c5ceca4caae9ce8590890d05a219e726b95519db1356fd25bbe04aae560",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/hum_attuned/prompt": {
+    "": [
+      {
+        "clip": "b534a4cb977d788554f03397c2e20998890efd87cc2a4ba640856878a2b84eba",
+        "ms": 4127
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/hum_fuzzy/narration": {
+    "": [
+      {
+        "clip": "507e5c88e4440b588c5d17c69efbd28ce5e89150865ab099642cde73a87eaf91",
+        "ms": 14807
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/hum_heard/narration": {
+    "": [
+      {
+        "clip": "bcb09fb1960e01f806cc9128f97d0fefd0ac5c0ca9ce5131054dbafc150fee52",
+        "ms": 6907
+      },
+      {
+        "clip": "09a0a038bda88fc76635da7748c1814577b31c81239d9f40fd767c462b4d6f09",
+        "ms": 8307
+      },
+      {
+        "clip": "7cfcbcd8da6ae8dc5fdccdd24c828c1b4f2965758c9dc794976d755c98593263",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island/narration": {
+    "": [
+      {
+        "clip": "cd90843bc9774073c37f55e37fb6d8d49e7aac7f9c50fa860c62de9bfdf777d9",
+        "ms": 9127
+      },
+      {
+        "clip": "8062975efa30b49868558a09d03e5b8686e4c3b5c43e2771539cc0ae0fc466fe",
+        "ms": 1453
+      },
+      {
+        "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
+        "ms": 1037
+      },
+      {
+        "clip": "7e4608427dfbb4df9e605292c1b96d0ea1c2ec6b6464d496ffaf6afd80c73dea",
+        "ms": 9007
+      },
+      {
+        "clip": "7d65c2115f021647364c7100f407b484de6fd72c00caf23b1d7f2c3c3c4b65d7",
+        "ms": 1200
+      },
+      {
+        "clip": "bbb07eb0a2b81668789c95a5adc090fd545d0cc605f917a784d14d42345a4859",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island/variants/0": {
+    "": [
+      {
+        "clip": "cd73a6c1a1f03bc8fd453733d247353147d0c38b4d9afcc84f75c5bbf6017590",
+        "ms": 10407
+      },
+      {
+        "clip": "8062975efa30b49868558a09d03e5b8686e4c3b5c43e2771539cc0ae0fc466fe",
+        "ms": 1453
+      },
+      {
+        "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
+        "ms": 1037
+      },
+      {
+        "clip": "896dd0bdf9eb9b7fca88454be141697453c8d194373bad8f5ab671b9217d4eca",
+        "ms": 9007
+      },
+      {
+        "clip": "7d65c2115f021647364c7100f407b484de6fd72c00caf23b1d7f2c3c3c4b65d7",
+        "ms": 1200
+      },
+      {
+        "clip": "bbb07eb0a2b81668789c95a5adc090fd545d0cc605f917a784d14d42345a4859",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island_done/narration": {
+    "": [
+      {
+        "clip": "06696219397ebf03e6ce5be2bab7e46f87b0e54a39959d8c5f875af92c609de5",
+        "ms": 29307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island_done/variants/0": {
+    "": [
+      {
+        "clip": "4b166561d1087269a781375aa36c74cfed25a365ab3b0f5f05c8cc9aaaf534a3",
+        "ms": 2078
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island_done/variants/1": {
+    "": [
+      {
+        "clip": "a9054e62317f1064c5f3de6a044033438e5ecfb981430991d3129eab01abb0c3",
+        "ms": 2910
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island_done/variants/2": {
+    "": [
+      {
+        "clip": "9ba09ca85a916dce77c388935707cc04f13e4bfded1ee9694fdb5c04e1e016c1",
+        "ms": 2583
+      },
+      {
+        "clip": "c45ee5ef9dcf47852c76995bfbf8fea5cd26966f5a25225cef85f5f156113260",
+        "ms": 2183
+      },
+      {
+        "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
+        "ms": 778
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/island_rest/narration": {
+    "": [
+      {
+        "clip": "1be383fef22d40c82351032ebf51aca76601a3d006a92a6a5cb21aa361992820",
+        "ms": 16007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/landing/prompt": {
+    "": [
+      {
+        "clip": "b8c4d11bea18c05361d9d10b72f6e8c1482973fc3c17c3d4b256895751bc5994",
+        "ms": 2785
+      },
+      {
+        "clip": "171af55c4219242a91a0b18ca360e96181313e8c6ede291aeb13344e9b74345b",
+        "ms": 1879
+      },
+      {
+        "clip": "033dec66fa2f190699f34d4f1eced93c7e2145c87a3176e3b1455aefed9e2e7a",
+        "ms": 1059
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/landing_held/narration": {
+    "": [
+      {
+        "clip": "3a86f16a0e6f74ec1112f43e8aac6f5268aafe13bd9eb9b4b4f96de01a896594",
+        "ms": 4107
+      },
+      {
+        "clip": "92ed0440fb142246fe7115a83d9ada43c093edbc89df91257a1d0c7654a15616",
+        "ms": 839
+      },
+      {
+        "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
+        "ms": 829
+      },
+      {
+        "clip": "e58395738f7db726cdee106da79704d5289807a05a30d88db19f38e4abb93130",
+        "ms": 1753
+      },
+      {
+        "clip": "a0c02a1c33ff9bfc174dc648a7535ce1fe2a4cef8bd7e578d781036512ca74ff",
+        "ms": 6807
+      },
+      {
+        "clip": "9546cec2aeed42117f90e41839f25c738873731c05186c5be6125932530b1d4e",
+        "ms": 1172
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/landing_slid/narration": {
+    "": [
+      {
+        "clip": "b29d5e667616b94c089b2d334cebaf7d0699d9a78022c4cee4f9109c2f676ee5",
+        "ms": 18407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/lesson/narration": {
+    "": [
+      {
+        "clip": "aee14b066e82e41cd32f54b56a9e50a3a0d2ab01f0ba816489ea0b18b20bba85",
+        "ms": 14807
+      },
+      {
+        "clip": "7cb2b8db403a7e44a0cd252b829ed3d287bae2753dc46610ea1479a206ec6fe4",
+        "ms": 4827
+      },
+      {
+        "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
+        "ms": 666
+      },
+      {
+        "clip": "6229b4efc92d1d283379428f110b95629ae1f439e670f945d071506fac169db9",
+        "ms": 3107
+      },
+      {
+        "clip": "cc1a5b6a8a33d2013cab9af6523682e64e4909f3426782285ff93cc8ecce1166",
+        "ms": 4807
+      },
+      {
+        "clip": "5fe1373a00d8008d180b27e6dc86ae9565d1bba267a74961ed97f9da5ac1fb20",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/lesson/variants/0": {
+    "": [
+      {
+        "clip": "ef1440b3ff47b6b31b4d7e4e44171c0c3f8171edcf8fe58dab7dfd235cb8472d",
+        "ms": 7807
+      },
+      {
+        "clip": "c289a610245aa35b9c777fa40ddd10fcb3a3eed64df7809195d79c716018d816",
+        "ms": 5807
+      },
+      {
+        "clip": "365a45ec2ce2c5756e37b73975eeb4b688e2f0bd199c3a6ad962815ef2cabf6f",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/light/narration": {
+    "": [
+      {
+        "clip": "f9d53ce31d6607a5dd9604fb7efbff61882ae8ed0f6ca80b12df68315fa37d48",
+        "ms": 12607
+      },
+      {
+        "clip": "f0353108bdaa8e8828c98b08315265361f42c9c1ae3ee21b5424b991d92a522e",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/light_coals/prompt": {
+    "": [
+      {
+        "clip": "482003f9c3c12269f98d5b61cefd805ac2b019f62e97d013c842c9385069dd96",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/light_flint/prompt": {
+    "": [
+      {
+        "clip": "123bbe38bc85c154b7015194fbae631541cf5ae48ae2786cfcd6d5dd906cea6e",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/light_fox/prompt": {
+    "": [
+      {
+        "clip": "f8ac63a892232b705cd11c93f89287fbb1977a7566d123252e4ecbfb9848662c",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/local/narration": {
+    "": [
+      {
+        "clip": "cf95d9eb68c2c4fdd995843e5ec899166b181137b141399931553b3790e45f61",
+        "ms": 8007
+      },
+      {
+        "clip": "87ba69d8227215e3611f2b47174625aca341ecf285fceae7f14caa01ce456665",
+        "ms": 1873
+      },
+      {
+        "clip": "caee89a52809a3a228d5149e24f16377d07f619d46027fdd225166912977a601",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/markers/narration": {
+    "": [
+      {
+        "clip": "d1198bd3ffabe0b7cd5dd4c0d9e19cf470d83675ee2baf17d055b8a8a631e2fa",
+        "ms": 13907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/markers_check/prompt": {
+    "": [
+      {
+        "clip": "b02b41fc72f3fce7470738cbc4bf4422dddebd301fa8bc633f7eaf147dc34fee",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/markers_dropped/narration": {
+    "": [
+      {
+        "clip": "43ac1ced08ac32d785d42c0367fcf829e9994f86aed66b678e1210f3d12ba466",
+        "ms": 6707
+      },
+      {
+        "clip": "5e2eff6f670a342d18d9cc1fbc830b1ffd16314eb676461e83bc12fa7508f77e",
+        "ms": 1236
+      },
+      {
+        "clip": "52f65cd7256c253a66a736fa15649f1ae964f69c6da45f1804ef73d8f2e2eef1",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/markers_set/narration": {
+    "": [
+      {
+        "clip": "df7dff0d52b8d00f07d6e864b276e27253671795543fe7cbf8a09445bcf28502",
+        "ms": 8307
+      },
+      {
+        "clip": "65e6dd7d99ea07393ee0aa1af0c966e612a25e42bbb94112ba74d0b3313a6faf",
+        "ms": 2365
+      },
+      {
+        "clip": "7c413d38c1150a5239c9d8999d01b439788dc8b916986b411bc7239f52c0cd83",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/mooring/narration": {
+    "": [
+      {
+        "clip": "4d74665c30d5403c85eaee7e47df39439d9ee5ad6789308e761852943863dd71",
+        "ms": 6227
+      },
+      {
+        "clip": "ceae79d670e613912dde12a29fff135921a9372788a243f419c2d43e5e5c681b",
+        "ms": 3207
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "bd9132971024cb6090e84d1e97f8208a0b74687c3e552b43a82261730873ec08",
+        "ms": 1779
+      },
+      {
+        "clip": "b6a715e578cc002172bb4d91166ed646f6fc19fab4eed5fd906c00491ed2abaf",
+        "ms": 17207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/night_song/narration": {
+    "": [
+      {
+        "clip": "936989d03f6930d3e7d281703b6ad34dd24baa6c0554f0f3ca3a443c650dbdf0",
+        "ms": 13607
+      },
+      {
+        "clip": "9101ea7394136c40ad501cbd635101da6be56ad943987749a01a99a14f930ccb",
+        "ms": 1725
+      },
+      {
+        "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
+        "ms": 829
+      },
+      {
+        "clip": "4429eddb9909f422a6a72fc2e115655ff934470c662ae949bb078a70636804fa",
+        "ms": 1822
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/passengers/narration": {
+    "": [
+      {
+        "clip": "1ec7afbc27b7ca4f9b13e1cc3585888d43819c5495b3447c2c20f68d5bad921f",
+        "ms": 8107
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/passengers_calm/narration": {
+    "": [
+      {
+        "clip": "d2f42ecabaed30be972b60754fac1148c9d46877bac5631619ea969102b87a2b",
+        "ms": 14907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/passengers_fed/narration": {
+    "": [
+      {
+        "clip": "184bf527d1ad75b2c3bb9c0f29b8fc50d94c3479b04e00fea9a42f3b79a5845d",
+        "ms": 12707
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/passengers_stuck/narration": {
+    "": [
+      {
+        "clip": "1a72f4a60bbec1bb0707d5b8dd1c627130af923697e9f466e9f6b959918f66ba",
+        "ms": 10308
+      },
+      {
+        "clip": "c1ef4009a332306536f37d3335eb1067f60a5dcefb952214bb92ed071cdf858a",
+        "ms": 1762
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "ab5248589781ec0c8b217b2d1717a931bdb7d1d49f9f62c890095c1dc7cb7e06",
+        "ms": 1297
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pip_night/narration": {
+    "": [
+      {
+        "clip": "7a868f27c3d9b4137cce3735fc709e1a77966b4d371b81131bc34f8e59771734",
+        "ms": 10707
+      },
+      {
+        "clip": "8bee663cceaac215aff36a7e55847349eacb3e04abada70a954830c340459a09",
+        "ms": 3707
+      },
+      {
+        "clip": "b1b9ba1b051fb13d4638f3861cb0597a77a7aa12f59b10abb903536a356cb13b",
+        "ms": 1519
+      },
+      {
+        "clip": "f26ef9cb126ba02f030294bcfda3a1cdad3c9c82b43c7760140a0806303fcb07",
+        "ms": 4807
+      },
+      {
+        "clip": "8af94cc95e05d7891c358bef591310ddc5fac1fe1c6aa7901284e620b8de8eac",
+        "ms": 2169
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pip_notes/narration": {
+    "": [
+      {
+        "clip": "7b0af63b9f4e786c8dd36915edde07b54350b8dc8f674ded76fdaafee28243be",
+        "ms": 4307
+      },
+      {
+        "clip": "bbf65c560db5d77f3ccde17ef582bf587f5e0632858460c9e2bf8562de4b2617",
+        "ms": 4507
+      },
+      {
+        "clip": "17a62d7955ad19a266d4e808e14a1530bc07f2ae1452c604341c5089eef19fb9",
+        "ms": 1267
+      },
+      {
+        "clip": "ab01bc2b6cc9943c53e3307a19e4578a89b0ef7528e3061765a565469cdda66b",
+        "ms": 9807
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_brace/prompt": {
+    "": [
+      {
+        "clip": "721c6413fc2f5b7b92dd3c3da190cdfee9eea906610666d620c8de557aeb67aa",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_leaning/narration": {
+    "": [
+      {
+        "clip": "8d32a9dd5e56dd97e09cdd636058cc777021b8430a5232ee25fbbe13a91138cc",
+        "ms": 9907
+      },
+      {
+        "clip": "d3c7ca52a7d6e3f8768754c107e77f2985155447931a5a370640083e56f2a0cf",
+        "ms": 2190
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_ropes/prompt": {
+    "": [
+      {
+        "clip": "83bbeb441341e7ad3a3093ad134801d84960d97e9ae730b304063a943a954cd0",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_smash/prompt": {
+    "": [
+      {
+        "clip": "6d2117043cfa1eed519a0bd43cba99df05d2f339170fc95ae22f54701c1e89aa",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_up/narration": {
+    "": [
+      {
+        "clip": "915f63781472c73696456b3b960879bf46032727895925fe9644ea56000ca65e",
+        "ms": 13507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/pole_wedge/prompt": {
+    "": [
+      {
+        "clip": "80aba955b7dc7df87410643de1817516e2f68e24bb63b1a51a2ce9fa80dd9316",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_ferry/narration": {
+    "": [
+      {
+        "clip": "f0078de0460dbfd774aa77282e8d5ad5d7d2abe16c7ec7ffcd34a4b5f0880bd4",
+        "ms": 1796
+      },
+      {
+        "clip": "0a5fce2c3d708d43c0a3ed921d58e8839aa110174184ff53f47944d8eacc93ab",
+        "ms": 2936
+      },
+      {
+        "clip": "9d6a2705734816686c940fdd8a11a8c789722dc1fa61e7b9aea575915d090ac3",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_flags/narration": {
+    "": [
+      {
+        "clip": "f047ebf3c0ac5fb6db83f260d03b22f084392599c18605ad8b3f1e161dfa8cd0",
+        "ms": 2853
+      },
+      {
+        "clip": "a97984636029680f7c4deb168f93840cb77613c77014ffb8857e9807c94e0225",
+        "ms": 4107
+      },
+      {
+        "clip": "b29f9c62e2a1c686aeaaa453716be6b4862dab92e087383001b1292444ad673d",
+        "ms": 7907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_vote/narration": {
+    "": [
+      {
+        "clip": "2d3e59dd8e8d78d739ee073d441fbe8c83ce0a553cd919966a1fa611a53e5a42",
+        "ms": 6207
+      },
+      {
+        "clip": "9564c40ceb66f1d20a6c5fe4812d44143b640326d29568a5c9cf84fea441eb8a",
+        "ms": 13527
+      },
+      {
+        "clip": "15fd8e00ba0a486b908793fa4a3e8ae43c072691b6bd582b6890fe82746c2c7e",
+        "ms": 1046
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/route_vote/variants/0": {
+    "": [
+      {
+        "clip": "04aac34cb7697414a5eaf5165e5650585859062b2cc43579d54f1a92a1e6bff9",
+        "ms": 1283
+      },
+      {
+        "clip": "cc64f03135584edc26c16ab1e69990f1c91dc6c839e1fad1b2aa97fc6874c4d4",
+        "ms": 2692
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song/narration": {
+    "": [
+      {
+        "clip": "692fe9ace4e03c91d80d6972e1a1a8840b0bcdbda02b0b1f92c8474875cdeec9",
+        "ms": 7127
+      },
+      {
+        "clip": "54d239ca26ae9f5ac69c6878345ef55041f30970e93a977cb218a1001bd1ba72",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_bearing/narration": {
+    "": [
+      {
+        "clip": "ecf37e8ac97d797bd7e326f48c8969488c50ccabbb5c6c0809d243ceba950c44",
+        "ms": 10707
+      },
+      {
+        "clip": "5978d1f1d22cd079ea71c3bd989fa54beb4e03eceeed4d47a75ed80e3bb53e4a",
+        "ms": 1073
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "6bfa63570100cdd7900260c7722df26719478db3ce2cf679e52eba2b1de93030",
+        "ms": 1042
+      },
+      {
+        "clip": "7610aac255ba076ce7ed4bc729f5b9d685fe8167ec00c0a4adefdb12ac00055e",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_check/prompt": {
+    "": [
+      {
+        "clip": "a277d9891698295e5f7d8ce9db13372349f9b3780cfbd71b4eb8e790061740cc",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/interaction/cue": {
+    "": [
+      {
+        "clip": "f18f60051f0b7ff3a473bb7e6f8bf2763bad770033fb0565aad393a1aab0bd4c",
+        "ms": 2756
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/narration": {
+    "": [
+      {
+        "clip": "430dc5d7aba8d790a9574f834326ebca37ed101da320e499c22447dd23837c67",
+        "ms": 6207
+      },
+      {
+        "clip": "1704fff5d28178b3121ff3cadb180b3db568b7bc22df3d3ac12f128dc386758c",
+        "ms": 2511
+      },
+      {
+        "clip": "ad5ccfebf6d27bcc667b901bed3596198462f8f5cac4ae22d9d425af8a0f1099",
+        "ms": 828
+      },
+      {
+        "clip": "ab2d84073b39e0b045877a36005bbb6fffb6cd587841728c1410a6eb4022dc04",
+        "ms": 1430
+      },
+      {
+        "clip": "fb3ff4dcd6d2961864aa1f098b5f4ecf909eed9824aeff3be3513fea9de77ce4",
+        "ms": 806
+      },
+      {
+        "clip": "1ea9c1ac7e4d5f3acdc3e60ec21bb5fe0a1a0a4143a15f1d858e956dd2bb5db8",
+        "ms": 1986
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/onAssisted/narration": {
+    "": [
+      {
+        "clip": "8e334b7c12ad8eda4d4100d506f18554ab129ceb2969784d7f21c6e8ed1d5d01",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/onFailure/narration": {
+    "": [
+      {
+        "clip": "4a95d4891e7d006c5c0ab5a8861d3227a1627be7ec0541bb1f35a8557d7561d6",
+        "ms": 6507
+      },
+      {
+        "clip": "cf5cb615be2af3c0a472fe1166ee692db7674c4c67f2bbe48fbd80d4d605d3a4",
+        "ms": 1773
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_echo/onSuccess/narration": {
+    "": [
+      {
+        "clip": "7205fe8900d0c239ed43782bb7fef441b20571f4b9edd4b743ea4277cb6e0212",
+        "ms": 5707
+      },
+      {
+        "clip": "462625797377d6bd6cd7a259927e286315fc808748cafbbbef257125ca3f58c1",
+        "ms": 1158
+      },
+      {
+        "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
+        "ms": 873
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/song_muddled/narration": {
+    "": [
+      {
+        "clip": "a8baaa65a9dbb67b764602104ec17e9df5a45dd626ad37302a5600a6b9d6a93a",
+        "ms": 7407
+      },
+      {
+        "clip": "c1d76e3ba0f86f131047dbb211d642a95c9166e245a1f56b1d4baf499e4fb2c8",
+        "ms": 1735
+      },
+      {
+        "clip": "b2456fdf6aac6dcb040f4ac3485bb2135ed3ec014f20392e578c1bbdb9763f9f",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/thimble/narration": {
+    "": [
+      {
+        "clip": "75f303832fe8191e9fa1ca9ff826b8955fdfabc1e5c84923100b68b067dc19ed",
+        "ms": 3707
+      },
+      {
+        "clip": "4469671a4aa31ff907249906ce78a447848a1862020340ec1f030ab0cb5b27a8",
+        "ms": 9107
+      },
+      {
+        "clip": "34ede1d76e38bab3c733f4b8b7cdb9d8daad7dc4da556856ce23a2957f95cd12",
+        "ms": 5807
+      },
+      {
+        "clip": "e19ee4bc3e4e8844a064be296ac53ed6ef238d51d5a032b93ff488730a18a6fe",
+        "ms": 1576
+      },
+      {
+        "clip": "6ec91abb475fe62d42d308c5d9ed203085cbef28395681445ddf5d563ba7bc8f",
+        "ms": 852
+      },
+      {
+        "clip": "bca46100857b41c9c5a5925bfdcaa4c67df82df611609c0762200dd62f5058b3",
+        "ms": 2269
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker/narration": {
+    "": [
+      {
+        "clip": "4aab06773c45bf944dfac8cfab0799e038b85a3ac05b0e215e8c0f88798950a6",
+        "ms": 12407
+      },
+      {
+        "clip": "331f77bb943db9b6b766d1a57b2ce4abf0ebef630fce5d8e7883cee28c5ff491",
+        "ms": 1360
+      },
+      {
+        "clip": "ec66f9008f06b3812c49f9befff48f8458e1025787a5143bf093f27c71dc3ac2",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_call/prompt": {
+    "": [
+      {
+        "clip": "7c75fca347bcbdbc99886916d735eead0ad0ae7f548a72e90f296a73235c063c",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_catch/prompt": {
+    "": [
+      {
+        "clip": "ef37dd18b25cf79fa7a89d57302b2bb877e1fb995c30cafc3ae1747bdc2b6a82",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_dragged/narration": {
+    "": [
+      {
+        "clip": "b2fe9be55952b8160873f0fc64b833ac460523dbab638ebf2519b44feab8c442",
+        "ms": 10707
+      },
+      {
+        "clip": "3a70e05441952e08893c3401ad9ec7b5c5ba43482fb7720477f740e1a087fb92",
+        "ms": 1693
+      },
+      {
+        "clip": "22cc033eef48c90dbbb9918b430d2ebea68ca83b81072afebdaad2c52b918551",
+        "ms": 4007
+      },
+      {
+        "clip": "66ddc2296c2d5117859ebdf1df82a2dc71031bcb34d16a7cc6e410fad29e396f",
+        "ms": 2607
+      },
+      {
+        "clip": "848c0f4eceabb4ed08840badecbf065c1eab661d88cdac73bc374c2a1c5afdef",
+        "ms": 2568
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_leap/prompt": {
+    "": [
+      {
+        "clip": "b50841f4736a3994e55ace1b87ea7f481ff6371a12cd64fa0c5cf1dbb355c2d5",
+        "ms": 4808
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/walker_safe/narration": {
+    "": [
+      {
+        "clip": "22071993c852ae5a8f9302fd7a0a11f9b84e3b64d9e62ac4f7f556baa469adcc",
+        "ms": 6407
+      },
+      {
+        "clip": "26d5d400f6259dba64833758b62f1ae6232fdc19976b791fc294beabc2364b3a",
+        "ms": 3607
+      },
+      {
+        "clip": "53de289ec6fa6a5d477d407b4a34e58d6c1bb98f66276fa5aab1a58e2bb2e248",
+        "ms": 2061
+      },
+      {
+        "clip": "4ba65ffce6f6bdb92dab17a711fc674419d4d218bcecd1162c53cd2b7901369f",
+        "ms": 1246
+      },
+      {
+        "clip": "d914f0e96741bda8950679633c5b5944b8364564bc5da67c7e0216e584449ae5",
+        "ms": 3407
+      },
+      {
+        "clip": "66ddc2296c2d5117859ebdf1df82a2dc71031bcb34d16a7cc6e410fad29e396f",
+        "ms": 2607
+      },
+      {
+        "clip": "e725b3f96f97b768c583dce217c29c2da161ff974b4eda08b618b96f8ff194b3",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/windbreak_rest/narration": {
+    "": [
+      {
+        "clip": "a59b6344229ef06ded1a194fdca341c14c0f3075676e71bea249f09ee60cf32d",
+        "ms": 15907
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisp_fight/narration": {
+    "": [
+      {
+        "clip": "47a02304dea5d7f8709e6bfb26df8374d8cd5db546ff466a4dd60e26fb19ecc1",
+        "ms": 17607
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisp_fight/onVictory/variants/0": {
+    "": [
+      {
+        "clip": "b9ea2548dc14078534bbd8e7e0d6e85daa1ee4ae99ef70f6e56f39f0bb10fef9",
+        "ms": 7707
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisps/narration": {
+    "": [
+      {
+        "clip": "47c513a7704cde6285b9690870aaeddf2858019dbb112887d26ffae5234b5792",
+        "ms": 13207
+      },
+      {
+        "clip": "a623811c745395201e25404c8642107a962592b5df84c311918a753ca264cbc0",
+        "ms": 1491
+      },
+      {
+        "clip": "713aee12f223c73a247600c2b1a3a98e1978dd3ba5e33377c3492494ce369d28",
+        "ms": 1093
+      },
+      {
+        "clip": "16ac554bbff880414b8f4881762eda1ea9d1105efbf45b90e411493da5093068",
+        "ms": 1543
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisps_rescued/narration": {
+    "": [
+      {
+        "clip": "8ac8bc498b1606382bf69e9643d61e7e54df2628107da5a8bbd2c21048da5bf2",
+        "ms": 16007
+      }
+    ]
+  },
+  "riftlight-sky-islands-arrival/wisps_shooed/narration": {
+    "": [
+      {
+        "clip": "c9597f0679fae2831f65f728c464edc5167d84394d238ad3a4421bb8006907c1",
+        "ms": 8807
+      },
+      {
+        "clip": "facf0f57a7b1eac11d54315d1e0cce81de5707f890b0f63c8a4fabf2d488fb38",
+        "ms": 1310
+      },
+      {
+        "clip": "adb3fd43c5fad1ab90f59d3fc430c3f4ef0e5a2e95d9e1685692767b27cdd9e7",
+        "ms": 1826
+      },
+      {
+        "clip": "eea62ea66d1285a4c9775e61440f512020fcef1699700e823666b948a624e36a",
+        "ms": 1208
+      },
+      {
+        "clip": "eefb53ef1350ba97713adf063f9c2e9bfff7b029a1070e9ea37f4a9305d530cf",
+        "ms": 3107
+      }
+    ]
+  }
+}

@@ -1,0 +1,1710 @@
+{
+  "riftlight-cairnstep-pass/@goal": {
+    "": [
+      {
+        "clip": "57fb9d43e3f1067de541bd4372222d7124787fc55171ac55a7038606101210ad",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/@plate": {
+    "": [
+      {
+        "clip": "c0662ede71f811ef496987c62f1d5ef0f8c4e4757f2929d00e007fe929084895",
+        "ms": 11307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cache_fight/narration": {
+    "": [
+      {
+        "clip": "aba13a52a23794e3da95d5d4427272436cb78dafabbbe1f17666e6b8be67eda9",
+        "ms": 9007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cache_fight/onDefeat/narration": {
+    "": [
+      {
+        "clip": "9b233ce08f3f780d49b42fb21b5ef2030d858c2dbe21c8a1027fe1b99fdf5c37",
+        "ms": 2600
+      },
+      {
+        "clip": "5402812e8c0e81cbcdf64ecb38ceb58d97ee99775c3702426f457c1e1b4d1e76",
+        "ms": 1650
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "f568cb36ff4589b53e6b9861cf2f4370ba40430e97a2fc60e60932cc1fec2005",
+        "ms": 1661
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cache_fight/onVictory/narration": {
+    "": [
+      {
+        "clip": "000f5b71457362840f4e6da288bfc29d14b390eb973f5234edacd1012d13cff0",
+        "ms": 6807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/cairns/narration": {
+    "": [
+      {
+        "clip": "4071e9d0156d9e887ae5e5e3d28778d14cb3239e5448428147a1a30ffcf8161d",
+        "ms": 12007
+      },
+      {
+        "clip": "291f70e0ccd16fb14787792cef9dfcf21f82c1586ba856c02fb8ad20c598632b",
+        "ms": 3307
+      },
+      {
+        "clip": "19eae9242f1f58ce3a8911f8295ed27a5f9ff50f53c875caf9a34089ca2f9915",
+        "ms": 1809
+      },
+      {
+        "clip": "30a3b1362324be3336682e3244464e902ab9c2c7dd43533c156fb24a91b47e1d",
+        "ms": 11007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone/interaction/cue": {
+    "": [
+      {
+        "clip": "2c0a92eeff1996cfd1dbc5dd290d13c1ab2597d9c7fb9a84d08e95a99a464a5c",
+        "ms": 2809
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone/narration": {
+    "": [
+      {
+        "clip": "24bdb11135d17e63a49a26b6b546353364532a0617cb4d851b232be4b3cc4855",
+        "ms": 6107
+      },
+      {
+        "clip": "0c4ae60b574a562c2dbebb2bc97f509508540cebd7cd39ec5d11a8405dd6ce58",
+        "ms": 1730
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "9632f4d91310f1b700a45f9527eba5433dee2a95ba0cbc372cf9743f4734275e",
+        "ms": 1252
+      },
+      {
+        "clip": "c6a160d9c7bb9ca5afeb79197314b5a3e80804c2e635c7c0e746688b2aa5e570",
+        "ms": 2290
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone/onAssisted/narration": {
+    "": [
+      {
+        "clip": "5d8411ad2c76eb1e31e2cd5f16616fc8412c5973868fd34dcc4213aac21e9423",
+        "ms": 2401
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone/onFailure/narration": {
+    "": [
+      {
+        "clip": "7ccf5c80244c2817cc39bde50b9e4a0a19759efc08d0ffd2b3107d2f394b175a",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone/onSuccess/narration": {
+    "": [
+      {
+        "clip": "abb1f1f2eb780717052b2b5724f0724e87d639c4f3869c9168d64ee10a2e1b78",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone_done/narration": {
+    "": [
+      {
+        "clip": "df110cd5142d494c79397c7d375858fa129e61b7d875ea779897000e538d17ef",
+        "ms": 5807
+      },
+      {
+        "clip": "6589acc814c105a0dade80f6e6dccaadc9009c5b084e85b8ed8029fe2ec06846",
+        "ms": 2704
+      },
+      {
+        "clip": "9d80558ff6473e4c98319d17729a2ec52360cbd5c85e61d193a91333c4426267",
+        "ms": 10107
+      },
+      {
+        "clip": "59ab768d10c581d63646cb01108fdb6460b41eb41b5abc743a5030552122203b",
+        "ms": 961
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "be822760a8c2729365a14887302d346c792fcf3493b861781c2c87bc651b36af",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone_done/variants/0": {
+    "": [
+      {
+        "clip": "052e83976af6e3e89b2f3a43a584c713481629bb58bebaf18f21555914da309b",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone_done/variants/1": {
+    "": [
+      {
+        "clip": "cf09d8b93fe9c15764cac8e9d120406571d3254c17a5417812081639d2e59d4a",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/capstone_fall/narration": {
+    "": [
+      {
+        "clip": "3ad4b83ce226d629159294cdb6f7a911709fb7dafd6ef9ac3776b1bb32ffb804",
+        "ms": 12007
+      },
+      {
+        "clip": "29d10bb02da8349739c66c9cd281791218bd5c30458333397632ca9bfea498dd",
+        "ms": 3207
+      },
+      {
+        "clip": "405a0fb9bd72ecb5f926ea5e82a9b010d69abb1243dacd06b4a5e2c3ea379134",
+        "ms": 882
+      },
+      {
+        "clip": "308d25a9f35ae880c0510adbd73b59c5e27937bdfc2cb297573e3bf7e81a5b40",
+        "ms": 1831
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_leap/narration": {
+    "": [
+      {
+        "clip": "c245d4abcc7d6f07990fef3ab37e863739cd8cc820154fac38f0efc11ac55e56",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_leap/onFailure/narration": {
+    "": [
+      {
+        "clip": "4e1a11c937c32965903909b27fb92225c891cb5b8b72894de435e4d658b40ee0",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_leap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "41fb2f37a9780d4629894ffbcb77877d41332466529ba26b95dd6e7971b4d2aa",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_leap/prompt": {
+    "": [
+      {
+        "clip": "1d3e723217971224984d6ee1325be9e44de44b9b7becaf38120d42b6ce4bd0b0",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_line/narration": {
+    "": [
+      {
+        "clip": "fe1293dfadb6c6eba175270b491882991a06312f566dc61d7f3a9cb30ee81ae1",
+        "ms": 2976
+      },
+      {
+        "clip": "48b4bc87b87d6dd60edac6277353474d2f1d0297ed6b78c32289b21bedbb3a7a",
+        "ms": 646
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "6632cb72e5da678ca61133d7f337afb0b41084af2966b9ddc49ebada7481d3b1",
+        "ms": 1531
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_line/onFailure/narration": {
+    "": [
+      {
+        "clip": "69895713ac1d540486bbd97a14283969fa2ad30c1eebd5cd048769c7611aa2e6",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_line/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5d15914964123c098145bcbe3e1ad60e2b8527293a663bf43b41d006b287815a",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_line/prompt": {
+    "": [
+      {
+        "clip": "2171f0e25c406c56fa6f2fe1a65bfe8791129b32f4b312943f315708d58d08d1",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_rally/narration": {
+    "": [
+      {
+        "clip": "587462e3f650736f7513bcca4cf896040d94030990aeb0406c0bf5af0132d95c",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_rally/onFailure/narration": {
+    "": [
+      {
+        "clip": "aecd1ffc9ad9df53d53a823abddf9748f552dd72ce1007d731ee1dc2e63d0000",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_rally/onSuccess/narration": {
+    "": [
+      {
+        "clip": "305908328597f03b764bd2932f5a8042a677c20cefbb548e1905da8ecd1938d9",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_rally/prompt": {
+    "": [
+      {
+        "clip": "a364e740e1a906e8dc891a07210adad3e1975c29a5cfc3687f7ecb6e015269ab",
+        "ms": 2878
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_scout/narration": {
+    "": [
+      {
+        "clip": "1a4f9273a173d162aa31ebddcf627594a2155dc965c4fa602cccaf53b62ef001",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_scout/onFailure/narration": {
+    "": [
+      {
+        "clip": "25db53b1ae266fc7cc14d2d33106386f8b0b680aa2958c78970bf9ae85a53e78",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_scout/onSuccess/narration": {
+    "": [
+      {
+        "clip": "548281a0ff16fa0190a15cde4821c2978de9e79209b6d12dc74c0330f79ee30a",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/climb_scout/prompt": {
+    "": [
+      {
+        "clip": "3551e774722b180dfe8f0b1e7130220ec03261fb5f73118698c454dcf96bfc18",
+        "ms": 2831
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/compared/narration": {
+    "": [
+      {
+        "clip": "f0f987299e95e6bd243f9bbf99aeccf8486007ea1a00f105e7a46b03b9f76f99",
+        "ms": 7407
+      },
+      {
+        "clip": "763d4f8b7df238aef5c29b2ae5405dab1d99e875c593de15de390ea7ca02bd74",
+        "ms": 1881
+      },
+      {
+        "clip": "405a0fb9bd72ecb5f926ea5e82a9b010d69abb1243dacd06b4a5e2c3ea379134",
+        "ms": 882
+      },
+      {
+        "clip": "2ee1167c5e716ba91b9f81ecca2064f0987646a32c2f35d697e5c0ff84c3fcf3",
+        "ms": 1668
+      },
+      {
+        "clip": "46ee7c52f46b362010b6e21d08139112a97766d39875a736eae82728107bfdc4",
+        "ms": 2294
+      },
+      {
+        "clip": "7d80b1eb9c1e29193f341a2c75feea149971f7724bb5ce835d006eb776b8291c",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/interaction/cue": {
+    "": [
+      {
+        "clip": "f075b8d662702d89fb8eadb4e5f51f76116fffbf0d1d97cd8d60b77ced508b1f",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/narration": {
+    "": [
+      {
+        "clip": "55465ad7b566c18a67957d46a873c3d2fee1a49ea727528c7730303c54f47cfd",
+        "ms": 1918
+      },
+      {
+        "clip": "2468ae531559079ae44a750098a9236d123667de8d94318ba71986c8ef45cac2",
+        "ms": 757
+      },
+      {
+        "clip": "4d39fb75814e11cd7571857a217998a67b1c20de190e77f630658a3478cc6b39",
+        "ms": 1739
+      },
+      {
+        "clip": "a829b461068dc723a5d58cc85ae5820f0a0d001d3c9a8ed4270330b2bde8db2c",
+        "ms": 3507
+      },
+      {
+        "clip": "8b72f6f9bee2d0ec087f07999d151be69bb0e812c36049971af086d5f548dc27",
+        "ms": 2379
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/onAssisted/narration": {
+    "": [
+      {
+        "clip": "da5996a6f2216a453b7f2217a6b69c68e847c9ea81b30ab805f3f447cfc532f1",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/onFailure/narration": {
+    "": [
+      {
+        "clip": "703b364091eec2df65e53554bb83ee7a8fffe578bd006015e063254edeb8c0c6",
+        "ms": 4707
+      },
+      {
+        "clip": "41d77d38ca6dc930576524e836dd9459e7c69edb55e33d1070e6956878b2e011",
+        "ms": 1566
+      },
+      {
+        "clip": "f103defcfffa7279e05c351ea7f4aa454c0c34816b143b8fb8e7a00bd0e9bd87",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/drawing_memory/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5cc8fcecb45acc3c869f531920e98e6bb690ec023cf5c95e0d0bc343ab4a5345",
+        "ms": 899
+      },
+      {
+        "clip": "524beca8ee2d06ac908b3b0ca42e942b46c0fb5061d71ce4339b861cad85ddef",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/ledger/narration": {
+    "": [
+      {
+        "clip": "912dac05ed07e1f493f41b7ef8f9d267b0892f4fb32d6ffd6c197af295e61b40",
+        "ms": 13507
+      },
+      {
+        "clip": "fbede57076346252e8c6620899d0692fa712bd6a5fc1b4f2eae9bf9b94010eff",
+        "ms": 2214
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "2b318d688445ea2cef6e3a9499dcc33c00d9801881436d3494e8cbd6f613649c",
+        "ms": 2139
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/ledger_sky/narration": {
+    "": [
+      {
+        "clip": "b8f2599defca127c4b56b25baac08b621fa1e5f3d0d8a0caeead5425039c5f65",
+        "ms": 8907
+      },
+      {
+        "clip": "c63163e34e4703c5285478fa6a6630ee3a08cfb97682722a0a9b5d6de9c997ac",
+        "ms": 1057
+      },
+      {
+        "clip": "cfebab31e521ebce90566a7239d9fffd2f44ff07177221a024ed5a4ea945dedd",
+        "ms": 1795
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark/narration": {
+    "": [
+      {
+        "clip": "d2276527c7496741a74cb78db766c818844b9b208767df0daa840aff4b6866e6",
+        "ms": 2765
+      },
+      {
+        "clip": "f44db3b3b9517ac40c99a086fcf62c7b6d7e1ed18e0258a2153c8cddb9da1df7",
+        "ms": 6407
+      },
+      {
+        "clip": "43f5887e9845d1a03b37adbecdc9de247fdf0cac852fe39768e00c2cde79a75a",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark/variants/0": {
+    "": [
+      {
+        "clip": "d9a49744f115768e2ebf75b70bb7decda65a273db1aeab6b6a8af5639ebc77a9",
+        "ms": 1758
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "f37c60e5b81cd86be81b8e2d51349d5e6f07cadbff27985d8d2dda585a14c606",
+        "ms": 2805
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark_closed/narration": {
+    "": [
+      {
+        "clip": "3a9df27f0478cfd7ee2f99ef0e5c34daabfa8ddb62d7253f3b4be99b6f203e45",
+        "ms": 3307
+      },
+      {
+        "clip": "d2a08ea43293e0fdab6df10f3423843057a016b539e279dfd265270fbbc5ad9d",
+        "ms": 5307
+      },
+      {
+        "clip": "8ba6b44ccac4389c514808225fb553bd31b827fedb9915c19b9b4dca95d17880",
+        "ms": 3507
+      },
+      {
+        "clip": "f6d9fe9d74119858a237606e2cb4e04062ff16df27c8ab3c0501d1b346db4a6e",
+        "ms": 1980
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "bee74236f90f9db5e6c8500058097b9407d838b2788a5b0910b94446c756589a",
+        "ms": 2761
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark_open/narration": {
+    "": [
+      {
+        "clip": "3126b0952803dca2a015c45477de9d66eddf65b41a938355491bf9e5b69e52b9",
+        "ms": 3006
+      },
+      {
+        "clip": "d7d16572a18c47ccecb2d5b8e1505f325c4656b52cd2b2bd591d7250c966005b",
+        "ms": 1816
+      },
+      {
+        "clip": "6992cabe0dfda769b9d34d4d6edd180ab70cac551dad943a6bcb5676b3fd4b4f",
+        "ms": 3907
+      },
+      {
+        "clip": "bc6bc581d817feaf323e2e71a07f7d53d8075a324047aa73106de6774192c369",
+        "ms": 1295
+      },
+      {
+        "clip": "5d78d48b5b5b5a2445c1ac96e8505c7d5359b1b84d78c08cd5ea6d89684f1091",
+        "ms": 2351
+      },
+      {
+        "clip": "311fd9dbd49c4731d7cd08a612c65a3ce20c4dde2df3f9a26daf4dc1598b606e",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/mark_warn/narration": {
+    "": [
+      {
+        "clip": "529fdc02b64141d400bd2616276a136c47248860c102dba8a38bcf2f026cd3cf",
+        "ms": 8407
+      },
+      {
+        "clip": "1ac0979f48bbe62ba18918a71d96893a9900d8208633a5b698df6810c4e06a8f",
+        "ms": 2114
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "728355a2dba807754faf1d5c5df8c2f7208bc54c3831ddebb72ef59282e1758d",
+        "ms": 894
+      },
+      {
+        "clip": "1ca24a967dadebadf9f8409265043f3813a9ab38bc810c5ac15c074e456c0e6f",
+        "ms": 1414
+      },
+      {
+        "clip": "29b4f1d4ebcd913b3da46fed31b0e00a3adde4eca5ed94df9416fc483d6102c7",
+        "ms": 2087
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/narration": {
+    "": [
+      {
+        "clip": "0c2cfb4b030ab709575c721e5e37eedd66181cd014e9b940f39d7818c4be58d1",
+        "ms": 1835
+      },
+      {
+        "clip": "7856635d2e9106df4599e6e41a399f65593cc641816d621fcf4d1d78fd1f80b3",
+        "ms": 5007
+      },
+      {
+        "clip": "b414561d814b3c1543921eb8708569d6150047273513bded8d9922c90654a788",
+        "ms": 1272
+      },
+      {
+        "clip": "4f07c549c54c145b5a6f547e0cee73de772d7507c8f198580c5a5c5395cf9a8b",
+        "ms": 4807
+      },
+      {
+        "clip": "14fd02fb31d6e3d21e3b3cdbe5c9b404710fb44c5062fa60ad917e3a1ea75786",
+        "ms": 15607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/0": {
+    "": [
+      {
+        "clip": "7f9463d45582d92be55db379b1ec936c96fef2be50077db082a2c533c125e17b",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/1": {
+    "": [
+      {
+        "clip": "886abc383e7b114a9971af88fd0df511618abcbcc08eaddf732576d5f1727d47",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/2": {
+    "": [
+      {
+        "clip": "fab4bcf6f8297c12b9ed916b0171adccf44cba645182b7892ccc20d52606a35e",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/3": {
+    "": [
+      {
+        "clip": "54922276a60873697ff6f0edafc30c2581a196916122ca0b4b5b32683b040848",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/4": {
+    "": [
+      {
+        "clip": "e9213a79f2c9add75ba44cd65f8bf48237b49c70fd1586d1016e1976048b8272",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/5": {
+    "": [
+      {
+        "clip": "fa35e9e1290df201bb0799f5bf5d77405d12ba17df844b54ec1df9ee9f4b48dd",
+        "ms": 3507
+      },
+      {
+        "clip": "b136cbed374bd2fff22629da7e4844cce67d2062556205c11c90a8d0ef13ab16",
+        "ms": 1247
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/6": {
+    "": [
+      {
+        "clip": "269e23ab61172dc1663136abccec766bfd176dc4c123dbdf89673543407c9c2d",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/message/variants/7": {
+    "": [
+      {
+        "clip": "e7b143c22d9b525ade730718788cf13995251df475d92d339e634b834eb364ea",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/moved/narration": {
+    "": [
+      {
+        "clip": "7f73e7b83eeae3b4efc83db3a53dfe735159b432be856c4bee33bd47af0c629a",
+        "ms": 8607
+      },
+      {
+        "clip": "bd6c9f423f32e49047bd2aa1f9f783f439b374a5912e471076e90a38bdaaf788",
+        "ms": 2390
+      },
+      {
+        "clip": "68cd649d1bf4ede29776c160cd142d6d53747c1556d9ac93fcb0f7dec3153787",
+        "ms": 740
+      },
+      {
+        "clip": "1b9603ead044a68d47970dd22c0c64e77b951aece4363af3f92ecbd61faf0155",
+        "ms": 2689
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "86e9951491f36743f78ecb2874de6dab4d3cffbd75ae4b89eb7bb076c6947615",
+        "ms": 3107
+      },
+      {
+        "clip": "d9c09f4ed671d01ff3c7775337565e972831b612b2ff91d37d1827ae9c75833f",
+        "ms": 1087
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck/narration": {
+    "": [
+      {
+        "clip": "933c48f7c676a07af69479cb65b54c3392ae93a1e196ca158ae42e13cbbeffea",
+        "ms": 5407
+      },
+      {
+        "clip": "1e6a2219c0756688334fc6ea6ec347c115e53536d833e1516d74e8a5abc984a4",
+        "ms": 1811
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "a4555134edf61f99c6f14168ad697ac7f743d3707e0ac7c3bc1b34edf76ddd65",
+        "ms": 2848
+      },
+      {
+        "clip": "c4672433f6bc73c34782baa1f8b936654a78c1c76d9b8ad4c9acc13e42a2a03d",
+        "ms": 1182
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck/variants/0": {
+    "": [
+      {
+        "clip": "bab48cfd15f64a62df4069187772de89e8e264d3c8f657e8d6c064a065882cf8",
+        "ms": 2146
+      },
+      {
+        "clip": "9d3eef11521030cd91c48d0bc979bd5d04ed2788390f0dfd86f60b21ce7b521b",
+        "ms": 962
+      },
+      {
+        "clip": "68cd649d1bf4ede29776c160cd142d6d53747c1556d9ac93fcb0f7dec3153787",
+        "ms": 740
+      },
+      {
+        "clip": "bea8230e0f021a65b365006eecc5c1299f37e24f7b6e6381fa0c27221f8c8808",
+        "ms": 2144
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_done/narration": {
+    "": [
+      {
+        "clip": "d924ef1e19500325164fcf9a2269ec5951145799299975a8f34f15c5db8e6989",
+        "ms": 5807
+      },
+      {
+        "clip": "a25d8f7d11febb20404e11a6c295ccdedea7386a276372f47f9ffac13c988c0b",
+        "ms": 1331
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "8c15bc104410e5e00612d68c5601754a74c419ea0017dd7d45d523ed9c88a2e8",
+        "ms": 2260
+      },
+      {
+        "clip": "6a9791b7b8189b8b3116b2b9ad6ff21d27dbbc8e80910428726fe2e02e0de550",
+        "ms": 1604
+      },
+      {
+        "clip": "f853a1fe86cb11739a2e26189b1223f821c93a30483248cdb86842b5328fbb94",
+        "ms": 2099
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_heard/narration": {
+    "": [
+      {
+        "clip": "d8ee357441f95e722d890a471435aefbca508e4a09d30993e7e80f4a5c906456",
+        "ms": 10807
+      },
+      {
+        "clip": "2a7b693c66ff2b79d2f3c755aea9bc0d2df87d02e20250fc9c170c6b36f9bb5f",
+        "ms": 2258
+      },
+      {
+        "clip": "405a0fb9bd72ecb5f926ea5e82a9b010d69abb1243dacd06b4a5e2c3ea379134",
+        "ms": 882
+      },
+      {
+        "clip": "bd6fe9e3d5a4b54be3380a5b527622055cff65bb3d40bc97d7f82a17b7becf15",
+        "ms": 1523
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_rope/narration": {
+    "": [
+      {
+        "clip": "5a04b4aef6f1aafc7bd4dc7a9350af89e631bf3d20aaa7a7754ed77dd53aa977",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_rope/onFailure/narration": {
+    "": [
+      {
+        "clip": "384ee84f362c96efe2554013468f57faa2d90700f6f33703ea27a399ff9ce3b0",
+        "ms": 7908
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_rope/onSuccess/narration": {
+    "": [
+      {
+        "clip": "30f1c8f54a0e7b70b294f3e9016ecde01a3d07a4f36a016a7f227690f8bd93c3",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_rope/prompt": {
+    "": [
+      {
+        "clip": "ca0f4030725e3a0e5e3964fb759e6463fdcbaa73bfd9af289f2a5d3fe2f7b618",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_tap/narration": {
+    "": [
+      {
+        "clip": "a9c3459d01aa2bcacfbab96937b0832388726983437bb67a1025d38e44364a78",
+        "ms": 4307
+      },
+      {
+        "clip": "a11c56ec1f38349f9ca535a6ee10ab591a5418aa157f1101a0766019930372e7",
+        "ms": 1346
+      },
+      {
+        "clip": "4048d86ffef5f47d47613807a79e13b7fee13cae272dee2a28dd6c6d797e5d71",
+        "ms": 1053
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_tap/onFailure/narration": {
+    "": [
+      {
+        "clip": "8537db25bdfa38657653eac55da99ec8e263ced2973db09c81af2c90318cd123",
+        "ms": 9807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_tap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ac3caac40c5c4543b1e97c030837e366dcd640fa5bb46b27b65a467399a7438f",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/neck_tap/prompt": {
+    "": [
+      {
+        "clip": "5328bdb62ab49b0735e364a9586af1810a469f03c64b928a64f441184ac43dc6",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/notch/narration": {
+    "": [
+      {
+        "clip": "5d1e25a9f8efbcaf4a002f66276a312a13cc13b1470dc443ab583bcb780795af",
+        "ms": 22907
+      },
+      {
+        "clip": "e154a712a42899fd94aeedd151f0fbe457f2d5f7c40adb5dd9dea7050ccb2852",
+        "ms": 2108
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/old_page/narration": {
+    "": [
+      {
+        "clip": "cc006095cc559f854f3e87af46cff65c048a656ad38f74e4ad1d5282d95fd714",
+        "ms": 6808
+      },
+      {
+        "clip": "4c31e9eef517cd1514158335aad469749891ea2dadc2f0bd049d5dcced17c410",
+        "ms": 2654
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "3d06d3126e4b9ef8f7da435222acf19021cabb1bee66152969faba64b435f93e",
+        "ms": 1419
+      },
+      {
+        "clip": "0acbc080065d8bddea995c45b35767e178b5e36015c556339250373e632f6d7f",
+        "ms": 15207
+      },
+      {
+        "clip": "053a6164e5233e8c076bc94c43ef9ca3e686e8324e83d0cc79c9467da9bf663a",
+        "ms": 2114
+      },
+      {
+        "clip": "c1bc323f1516754d61663af1e2df91260c989617f8180d3ac88572fe089f75a4",
+        "ms": 1644
+      },
+      {
+        "clip": "19174f8c056c0faee3413337bea88ac6ec51c0ee8a95a477d95b540ed82919a9",
+        "ms": 2657
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pages_x/narration": {
+    "": [
+      {
+        "clip": "0a7a48ebf7c740071869733334232bd5b53174bf29c5ffd15e4dc402915dd7ad",
+        "ms": 6507
+      },
+      {
+        "clip": "a4b5c1b822d213bbf9980df10b2a01f139f5fae84ec710bedcb0396368878c28",
+        "ms": 2760
+      },
+      {
+        "clip": "4f78a43231d08f95cd08ac9eca1d5f9048f7c03a6345f256b0955a400ad8dbba",
+        "ms": 3807
+      },
+      {
+        "clip": "c169120e5a55ee8c8af15d1ba2627fe84e46bdb7da3e589e026a55e564c5d3df",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble/narration": {
+    "": [
+      {
+        "clip": "d1f585fe71fa03fbced0968ad81545fb8f9d11795df245f6d0ce98f9fce4883c",
+        "ms": 5307
+      },
+      {
+        "clip": "668b95817dbd754a071de05a0e67af59ae9420cfcdea938e05504bc5b2f5a402",
+        "ms": 1305
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "f46cc70be79d24468bc03e3804ade686f57e5e801897bc23ca0f252b44cfc099",
+        "ms": 3807
+      },
+      {
+        "clip": "3cac2ff646a7368f96f67460890771bb687e7b8a4291d8f167ba9b02c88776fe",
+        "ms": 1656
+      },
+      {
+        "clip": "11b9d163bc30ee3f37577db1b52216c5e46548efabb36d17db3f4c8354e1091c",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_done/narration": {
+    "": [
+      {
+        "clip": "5cf763c5708b29b49341d1cd7bc2f3f0f55332f00c68590f2a3e39d4995ef231",
+        "ms": 7227
+      },
+      {
+        "clip": "aa16b7e09eb5265b10284123e5c5641655f04d07ad6360731a5ce20217026b98",
+        "ms": 1906
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "d27ff4c4de0f4954792a620e42094a7410dbb21774eebb1289706f95bff4496a",
+        "ms": 1445
+      },
+      {
+        "clip": "9f1325ee8877512c0f5ec94328cfa63008125ee58092bdb734c3eaae5dc86235",
+        "ms": 2134
+      },
+      {
+        "clip": "ca7b0498528d79458831f5b6e4be2e056b56d35e73c029ceb58ca3214e9510b3",
+        "ms": 1428
+      },
+      {
+        "clip": "bbbbd8e2685b2bcabf1397563f795c79c7b0c163280ea8e22ebad88e00049880",
+        "ms": 1668
+      },
+      {
+        "clip": "1913d0ee32d0296861bd37f18a5c5a8cfdc91e4999471cecbfad2a11098a1a0b",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_help/narration": {
+    "": [
+      {
+        "clip": "a5b20eca5dbb99dd3c03db338b42d021d84ba494097b802999963fb1d79240ec",
+        "ms": 8307
+      },
+      {
+        "clip": "ce6b944e6968a55e7c5944146b3dd51b38213ee99c04246ffa5f19d856afd61f",
+        "ms": 2416
+      },
+      {
+        "clip": "e694b191247eb71c55a5531a0bea330139f4a5dc68d6dde3394903d1d35d0a63",
+        "ms": 2376
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_mend/narration": {
+    "": [
+      {
+        "clip": "81dc60f03c302068d2514660b4445569b1f92b239292ab2b92d55b07807416a5",
+        "ms": 5207
+      },
+      {
+        "clip": "8d73c6c7d516e55addc270aeac6e5d5780e4332d7725b1fbdbdeb49b4e0a9498",
+        "ms": 1500
+      },
+      {
+        "clip": "f6e0576d7f755d6c16e74c4b73c44f0c2f20bc223cfcfa2f7761f0bf2a4b5beb",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_page/narration": {
+    "": [
+      {
+        "clip": "6a5a2948b600e32985766158125537bebf4ada51e5650cdde19750cff7d8c6c3",
+        "ms": 10507
+      },
+      {
+        "clip": "cec26014e6fa528230b5416b245d451a132f0032720da2c6e17d43880197ae8f",
+        "ms": 1677
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "c46bdff1270c3c08a589545644e705dfc01859b440154b6ca6b6a182344e53e6",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_walk/narration": {
+    "": [
+      {
+        "clip": "52476214cd74c73eafe52c8ef20f69f2971344903421e53c91906783e7aaf432",
+        "ms": 2173
+      },
+      {
+        "clip": "e01c3061953bbf128ec4ad65ccaea709169d24d37581c3a4f07cd54a3642b6b1",
+        "ms": 1590
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "4068699ebdcc818171cebae97a6b6994142002cdb67987ba3d316945f6237aea",
+        "ms": 1030
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_walk/onFailure/narration": {
+    "": [
+      {
+        "clip": "77b0c0cb639094436344553424b4d69662a9182230796975dec8ebf7bbb0ec1a",
+        "ms": 6607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_walk/onSuccess/narration": {
+    "": [
+      {
+        "clip": "488790930ad036b5b6adbd58e9356d90b99b1f0c47c93b982fd16390b62ace96",
+        "ms": 2509
+      },
+      {
+        "clip": "4fff7f2691557326a91b87cceaeef076a25277e709c0aa6c268b97ef83f229d2",
+        "ms": 2529
+      },
+      {
+        "clip": "ec60ee842b30af9773f61cfa4f1237bc86ffc2a0c90e7c94a777c172ef1d69d6",
+        "ms": 1728
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/pebble_walk/prompt": {
+    "": [
+      {
+        "clip": "b9f659eec0c9915ac5303f32e653385b5a9bfc81d9ef75711655e6665d49ee16",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/rest_tea/narration": {
+    "": [
+      {
+        "clip": "1feb684782d93fb2b409bb8f2c54fa6edc2e2f94f2afa806c6d3537446c2d211",
+        "ms": 14307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/ridge/narration": {
+    "": [
+      {
+        "clip": "1b509c9e33b4f08ff93a30754ed3d84bb4a36957bef2b42fbbb8b59a3cc46278",
+        "ms": 11807
+      },
+      {
+        "clip": "88405671a820fd2c99292b634d66a03551d56aaf5af3ddd5d8c766e3c1c77d2d",
+        "ms": 1708
+      },
+      {
+        "clip": "a87a75cc7748dd8c786950928adff83d55fc02329911851ca79b3ab40acb45be",
+        "ms": 1954
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter/narration": {
+    "": [
+      {
+        "clip": "aae9924ac6e04df6051e6891474e9956cfc5b80ff6263989769a204416aec946",
+        "ms": 1496
+      },
+      {
+        "clip": "7bfab4b2d5b804df1c3132b461b2d2d7f1da2d9c79a342a3af70dd305ff46b11",
+        "ms": 4207
+      },
+      {
+        "clip": "32f25c997d49156de5c2a9c7686de4d511b0b854a48f8eb5ec3da212c13b82c0",
+        "ms": 6807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_cover/narration": {
+    "": [
+      {
+        "clip": "55167ae6c764ad5dd65330b8dd92bc336b29ee1c157ee9ecc2c28aabc47a0a57",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_cover/onFailure/narration": {
+    "": [
+      {
+        "clip": "286d79463c72255a9436fecb318197ddba68b78e807ba9ded057c01325db6c5e",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_cover/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5e6aa42214e40ef3f10c3a902cd4b0daae0bbb6aa61c8589767260145f5c2a47",
+        "ms": 2275
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_cover/prompt": {
+    "": [
+      {
+        "clip": "dbdb5acda29f51a5a557596f7e5742ed27f94882c9a8881a342d84d025b8077b",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_dig/narration": {
+    "": [
+      {
+        "clip": "943df162582d41ea87a25460d7ee662910f9dcd28a4126710dde28ecc271fa17",
+        "ms": 2615
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_dig/onFailure/narration": {
+    "": [
+      {
+        "clip": "ab2b94377e2ce03bbd729283844ad6a528c98d12e6befb0ce312bec1aea7ac77",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_dig/onSuccess/narration": {
+    "": [
+      {
+        "clip": "6e328f1cfde9ffe7ba2f238539fd9704d959707e591b454d517d4f2f8110319b",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_dig/prompt": {
+    "": [
+      {
+        "clip": "688018965a89042ebd095d26c5743c24db4cd0b90aac4aa6835daffdf7485097",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_drip/narration": {
+    "": [
+      {
+        "clip": "f5e1b01d2e6253d638019932e579024bab88af2c1b2ed9c047ab2a436fb79f13",
+        "ms": 3507
+      },
+      {
+        "clip": "95a343e685becdf58a9d9d7c7570908aac21529c3dedb582945f47b2063309f2",
+        "ms": 1027
+      },
+      {
+        "clip": "3e4c54bdfcf1f126580ff16d50f60f616ad86207eae9f861970afb544bc72379",
+        "ms": 1219
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_drip/onFailure/narration": {
+    "": [
+      {
+        "clip": "accbb537f965c8cb3a97cafdc3093bd85085cc9c59f2c79d60b96ba071a31c50",
+        "ms": 3427
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_drip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8167e423ac60b7f54bafa122e3ed3d66d2fe28ed4f23d50bed16482e3a483ff0",
+        "ms": 2889
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_drip/prompt": {
+    "": [
+      {
+        "clip": "238e4a533dd554f12ace15504af481d70db5290d22fbcaa2b469fdbfb4eff6f7",
+        "ms": 2797
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_found/narration": {
+    "": [
+      {
+        "clip": "671714e7a67fa186aa98eb8b278f30883be9e6507fa2adfcddd1511befced0e6",
+        "ms": 14807
+      },
+      {
+        "clip": "1c6930f1e1ca64fcb557e4998af625721879376a465e69acd1dfb331956e8832",
+        "ms": 2230
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "f2974261e1f4209d2c8847557cd51285f2e67f2a8fa8b96713542ae4771637e8",
+        "ms": 1883
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_found/variants/0": {
+    "": [
+      {
+        "clip": "fdebed73568b15dc2ee37e593c3b5f39bcea97f63b65e2b806ffa929fa096e5f",
+        "ms": 6107
+      },
+      {
+        "clip": "c0be7ac221cdefe91f0684a7b977a1277b860708386b771f0cef24de49a14a87",
+        "ms": 1812
+      },
+      {
+        "clip": "4c69656660cbbd647d490dd06e76390a0311c9513dbec061d1d6b1890b428cd8",
+        "ms": 1672
+      },
+      {
+        "clip": "79254910d940e4217c13a8ce2d0c19b5c918fc1fd7fd574a31b2b2a48a15cd91",
+        "ms": 1538
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_leap/narration": {
+    "": [
+      {
+        "clip": "799ce370b278f1b2390ecd378e93e034281f7f32c5a9b621ea06c7a03308dc87",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_leap/onFailure/narration": {
+    "": [
+      {
+        "clip": "e7c8e9674aca5f1083c671709b52217edda3a435885605e9484f7b8cb9ffe7d5",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_leap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "6d4ce65bbcf88051010084339ca4bae3f44a6450f71aa4aad86788560e44c6d2",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/shelter_leap/prompt": {
+    "": [
+      {
+        "clip": "252a3f3c0df68fa83df24b612c0e4413e5e974c97d3ad013f26a5b62d7e0fb53",
+        "ms": 2482
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal/narration": {
+    "": [
+      {
+        "clip": "8bbc29869d6f1025071f968cb3127794b29f4bf3c9d971c7c849190a42481649",
+        "ms": 2445
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "a53379439f1f25cf5f93f1d47b84214cc192eb08ae8852c421064365dc70d94f",
+        "ms": 1223
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_back/narration": {
+    "": [
+      {
+        "clip": "d507b45f6f6bd102c4b6505f163cacecf544f562e54d794c6c06b466cce0eaf0",
+        "ms": 1734
+      },
+      {
+        "clip": "c62598641f1555860f1514c07c7ab48e8299c97c49ca20b892ead478532cceed",
+        "ms": 1649
+      },
+      {
+        "clip": "b4510e7d3c9cd70de62e9a477cf3423590a8c3e3bb3ce2efa4a937086e407bcd",
+        "ms": 1069
+      },
+      {
+        "clip": "27b9f4efd7df5cd45ffd4886fefde6e713a257da9713f676056cfe7a3662b61c",
+        "ms": 6007
+      },
+      {
+        "clip": "5a027111ac37c371cbde22092fe0e6f63b2e36e90582cd2146466563ce125654",
+        "ms": 2697
+      },
+      {
+        "clip": "412bf03e211526834e710078227452512895b233705a015040cd6d74354c4215",
+        "ms": 1580
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_back/variants/0": {
+    "": [
+      {
+        "clip": "d507b45f6f6bd102c4b6505f163cacecf544f562e54d794c6c06b466cce0eaf0",
+        "ms": 1734
+      },
+      {
+        "clip": "f665517c23c18336a817e0f09b77c7392a5eb5fb3814a8d427c48b70f061e6d2",
+        "ms": 1589
+      },
+      {
+        "clip": "b4510e7d3c9cd70de62e9a477cf3423590a8c3e3bb3ce2efa4a937086e407bcd",
+        "ms": 1069
+      },
+      {
+        "clip": "a5a8ac8746053281930b2b70a0ac1d074e8834599b0028f896c8e587dbd04fd6",
+        "ms": 3607
+      },
+      {
+        "clip": "5a027111ac37c371cbde22092fe0e6f63b2e36e90582cd2146466563ce125654",
+        "ms": 2697
+      },
+      {
+        "clip": "412bf03e211526834e710078227452512895b233705a015040cd6d74354c4215",
+        "ms": 1580
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_wave/narration": {
+    "": [
+      {
+        "clip": "e74bf3c3c68559046109940bdf33deb3337f9fbc792da5a2f1f1aad10617c326",
+        "ms": 12307
+      },
+      {
+        "clip": "faec9ef554dd134d2a801b09539865a333923383888e176b2d5a3bc53400718b",
+        "ms": 1817
+      },
+      {
+        "clip": "854bda8819e1f81bd8efd4fbfc74273e74fd75abdbe8df6afbadbfde76eceebc",
+        "ms": 1175
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/signal_whistle/narration": {
+    "": [
+      {
+        "clip": "42f1ffa6d760d97ddbb2c51c58d1b83cc79b3043d70be6b8043f18fe0328bba4",
+        "ms": 9607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/steps/narration": {
+    "": [
+      {
+        "clip": "d6d61240214b4573955d66f21aff1513eaa6619d7e0ff523de0dd288ee1200d2",
+        "ms": 5407
+      },
+      {
+        "clip": "1327716ec289564d5cfda4a552435b2a0673ff4507e6d7a1433be7c3ce0668be",
+        "ms": 2515
+      },
+      {
+        "clip": "f447113f66cd5dfdd29cb3273ae88df2b89d448a35d39cce1d607597f1acd030",
+        "ms": 787
+      },
+      {
+        "clip": "f64b56ebff81be3183dd1493ae0adf520702d2adfa2e534ccf3af484ec6178dc",
+        "ms": 2585
+      },
+      {
+        "clip": "ed6774f065579b3d6dfc39848e95a429f45d8596862e35461c0bd25988ae20be",
+        "ms": 1112
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/supplies/narration": {
+    "": [
+      {
+        "clip": "19447705e8ec27ab77e06bcd058863099f4113de6b0856c87206478378ee969c",
+        "ms": 7827
+      },
+      {
+        "clip": "2065e51f160f1f906bf57b0419f958aa219a3dcb766aaa10069e959bfef256ac",
+        "ms": 2124
+      },
+      {
+        "clip": "405a0fb9bd72ecb5f926ea5e82a9b010d69abb1243dacd06b4a5e2c3ea379134",
+        "ms": 882
+      },
+      {
+        "clip": "d8c7a9719ad46dfe635aa6612fced23dc2bae4d1076a2aadb4719cffdfd6cbf5",
+        "ms": 3907
+      },
+      {
+        "clip": "d4650a6461f26ae6e160c24deaff23451f6719093859d23d6445707dcbc68d57",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/survey_done/narration": {
+    "": [
+      {
+        "clip": "9e4647b47d31d9902a631da846eafa7251e168d1b338a8f449aa25f2fd33352c",
+        "ms": 21727
+      },
+      {
+        "clip": "17b68ac2f448f86890d6554bf3b03095f3673418b203f72ec8470af44d6e2802",
+        "ms": 1712
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tea_share/narration": {
+    "": [
+      {
+        "clip": "134032e9fa152b32a1c5eea43ccbd35ed1245ffc418ef578c0a92f01a3f32b1c",
+        "ms": 6707
+      },
+      {
+        "clip": "316d4959e799fb8118a391c7482f62d277345886d48a76b3bd57897c940459da",
+        "ms": 1372
+      },
+      {
+        "clip": "6a51191831bc00e99c6155d871e19b3662b101c5966be43845be7b114a17795e",
+        "ms": 3307
+      },
+      {
+        "clip": "9a1ae04665eff341b33dea65c6b31f79ef8029e784199f3e84e21b3038751c0e",
+        "ms": 1001
+      },
+      {
+        "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
+        "ms": 839
+      },
+      {
+        "clip": "ab6ceb7f8c2dbadbaa4d100baededdc9cf5837ae0d73f40287f0ad5991cffb6c",
+        "ms": 2883
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tea_x/narration": {
+    "": [
+      {
+        "clip": "5de8e332c2bc81d6533dcbc349bcdfc347dc72c3ccdde8b86c929b4204d4706b",
+        "ms": 6807
+      },
+      {
+        "clip": "53dd86253fe85209293ef9f9f3e394590c1bb4ed6c67545182cfb4bb4d00fed2",
+        "ms": 2123
+      },
+      {
+        "clip": "68cd649d1bf4ede29776c160cd142d6d53747c1556d9ac93fcb0f7dec3153787",
+        "ms": 740
+      },
+      {
+        "clip": "56f0057a61b5ada8e6a65b5e22e31e2ad1ba29fca963ae5f4b16c4e8524ae0c3",
+        "ms": 2356
+      },
+      {
+        "clip": "7be06c3726602ac7661de9620efdc4558856f060e5969843d901b10b8fd0c7ad",
+        "ms": 959
+      },
+      {
+        "clip": "03b261465f014ea2deb2aefb8ff00186fcdbe24fb0d1a641ac00bfae24d309ee",
+        "ms": 1341
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_brace/narration": {
+    "": [
+      {
+        "clip": "ea20c99246b958a26f461398431b7cc19a68a7672b2fea0cc5ec7c8aa1316575",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_brace/onFailure/narration": {
+    "": [
+      {
+        "clip": "531774538e62154edf03e2969b7afd895498216c49180d4d680f83ef1407a20d",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_brace/onSuccess/narration": {
+    "": [
+      {
+        "clip": "486924c610b3002ed472aa15fc63309da5fd1a0cf12eddffb99b737753a23109",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_brace/prompt": {
+    "": [
+      {
+        "clip": "bbaafe93fd37b7f1054307a0bf0a86743bf3ec41b29d67aea65bc7c225dc99bb",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_lean/narration": {
+    "": [
+      {
+        "clip": "59ca2d3c55071d732767431beedeaa064f6b8eca26356fb232e408252831c858",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_lean/onFailure/narration": {
+    "": [
+      {
+        "clip": "6e3a957265eeb801827fa0e5d65685bb0698cbebc1f8417befb651fd932517f2",
+        "ms": 6607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_lean/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1f8cebd8ece97518fa7a12fb0a4f37ba25cc89dbeeb5916a89c5a3320c64e485",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_lean/prompt": {
+    "": [
+      {
+        "clip": "56dfdce191fe951b7ee5261deb3871811c0d6a7dffaf532df29996affd485d17",
+        "ms": 4408
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_roll/narration": {
+    "": [
+      {
+        "clip": "b80d7eb96b65bcd90b19ac6827e44c680b2b97a98a226b334c04314af8edbe93",
+        "ms": 10807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_roll/onFailure/narration": {
+    "": [
+      {
+        "clip": "41907fc6b42994e08e4a6c0025a01739a5197b09a4fcda147507d013a6ffec51",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_roll/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8b6ea0db8a1e38e63af894ac55d2b67272d362d372880bfa165fbc6855b6acf5",
+        "ms": 8807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_roll/prompt": {
+    "": [
+      {
+        "clip": "ab95a02036b58bd76d98054cfaddcd2b94504397964a55d0474f9f6d8d17a521",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_smash/narration": {
+    "": [
+      {
+        "clip": "55da82581e504e6579d0e2297317b9fddd6fbb76496465df3955dfd076934d9a",
+        "ms": 2985
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_smash/onFailure/narration": {
+    "": [
+      {
+        "clip": "abb06d2426c83ac27721710e3e7049636a6510f33828a0d653c5fd8f859be0b9",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_smash/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e065c16f1d41a183c20c27f99347e642375cfaa567cad65d4ae4e9eaa9c552a1",
+        "ms": 6027
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/test_smash/prompt": {
+    "": [
+      {
+        "clip": "a0e40cd0b715b1a6cfab0339b77e0b718da4a860eba74627f872ef2c5e88e1ea",
+        "ms": 2258
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tested/narration": {
+    "": [
+      {
+        "clip": "19f52ee5254a420d79359de62463e92cf8c0b143d27606e0a22bf112fc7dbee9",
+        "ms": 9607
+      },
+      {
+        "clip": "2de297998a533e2fd804bc9c7e2a3f49048ee927514cf4e5024dd7cfeda1b0a8",
+        "ms": 960
+      },
+      {
+        "clip": "de85303d5c5307fe43b3e0854a34bd158399927abfdac172ecf2bcf352c55b71",
+        "ms": 1686
+      },
+      {
+        "clip": "086199aa3f13c82f442f1d96be95258ba3f2730d0cb16e05f05b57c70be16c22",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tested/variants/0": {
+    "": [
+      {
+        "clip": "18354eb962ddb8388fb040da17386f86f0a2e71d9caa0488d20ea4857502fab1",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-cairnstep-pass/tested/variants/1": {
+    "": [
+      {
+        "clip": "da7a5e4af4118b46dadf58fddd8bcc6c16d665be27c6ac0bc69628bb2d4edf1f",
+        "ms": 1446
+      },
+      {
+        "clip": "68cd649d1bf4ede29776c160cd142d6d53747c1556d9ac93fcb0f7dec3153787",
+        "ms": 740
+      },
+      {
+        "clip": "ca5acc53c29585f1949fd560e6b50e3158485731acbd718753c0840bfc887e78",
+        "ms": 1246
+      }
+    ]
+  }
+}

@@ -1,0 +1,1818 @@
+{
+  "gemfall-05c/@goal": {
+    "": [
+      {
+        "clip": "ffe16b41549d19c19ad73cb15d2a0f9f341a26153bb8974b8887d18611de8a22",
+        "ms": 5507
+      }
+    ]
+  },
+  "gemfall-05c/@plate": {
+    "": [
+      {
+        "clip": "ad4e4bbbc98baec9853d558478a0f4988a7c71311b52410bd8ce28e12cdb6235",
+        "ms": 14607
+      }
+    ]
+  },
+  "gemfall-05c/check_ask_wend/onFailure/narration": {
+    "": [
+      {
+        "clip": "8e96682be6a14da8e566e8225b680812cec4776eae1f4631f1e31df1b3ba44d0",
+        "ms": 13607
+      }
+    ]
+  },
+  "gemfall-05c/check_ask_wend/onSuccess/narration": {
+    "": [
+      {
+        "clip": "900cfff7e9fd27e7414d3f2c5abcc26abd751434cc9d684380c384aea0c5d919",
+        "ms": 2266
+      },
+      {
+        "clip": "3cccaeb6447509228d933f6c7e92931c08de5db275f5bc46b7731cbe3142a91e",
+        "ms": 2436
+      },
+      {
+        "clip": "8b23b47cd2c41dbd217d2ee9efeb2f6bca7a950174ac3a6ffbdde63ef0557475",
+        "ms": 1552
+      },
+      {
+        "clip": "715a7bb282c1fd54dd493218e6736cf17bf20d27a03975a4e25000ec3856c259",
+        "ms": 2499
+      },
+      {
+        "clip": "a4f824d5a2c7cf72cafae7bff1629aee678bbd2974803846b0ac797a6f5c95d4",
+        "ms": 7707
+      }
+    ]
+  },
+  "gemfall-05c/check_ask_wend/prompt": {
+    "": [
+      {
+        "clip": "8bac08c9ad9b8393b3db32d5ce08b2513b102359509e9297fd1b9b0dd28df6ec",
+        "ms": 1960
+      }
+    ]
+  },
+  "gemfall-05c/check_big_bell/onFailure/narration": {
+    "": [
+      {
+        "clip": "711229afe245e36b750b081b0bc0a2f4f1314d00b6f83fbecd7c2432d638d3a3",
+        "ms": 15307
+      }
+    ]
+  },
+  "gemfall-05c/check_big_bell/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8e4136b0078638a6504c9c6b044c29f18b8e4d4cdecf70c194e092a687bf978e",
+        "ms": 17107
+      }
+    ]
+  },
+  "gemfall-05c/check_big_bell/prompt": {
+    "": [
+      {
+        "clip": "b90280ac01aa41e872b580118d8b9e9602cb3f671dddb616402ff585219ae2b2",
+        "ms": 3807
+      }
+    ]
+  },
+  "gemfall-05c/check_carry/onFailure/narration": {
+    "": [
+      {
+        "clip": "85362a7e5465284ee0c4071c28a69badf4dcab82520b87cb2c71729aa8f752fd",
+        "ms": 7207
+      },
+      {
+        "clip": "d3a3a8435e7bc9eee66eea478ea7876805ee61eb24e6f502c8a2a21ea7c11141",
+        "ms": 2740
+      },
+      {
+        "clip": "35e50671481446cb8f88abd4280d9dcae88a23ab10b2f9dfb1302e1004f16c7d",
+        "ms": 4427
+      }
+    ]
+  },
+  "gemfall-05c/check_carry/onSuccess/narration": {
+    "": [
+      {
+        "clip": "3cbab96c9cb4bd4ef8e4da47b9029785cfd0ecb33e7c5834563d7f35e4a39d69",
+        "ms": 11707
+      },
+      {
+        "clip": "1fccf1f39242c3b6cd101d635c964f036db6c32d8e5ff729da98f77f00b36250",
+        "ms": 4207
+      }
+    ]
+  },
+  "gemfall-05c/check_carry/prompt": {
+    "": [
+      {
+        "clip": "15436a980f17ddf3532a948847da43f2d003cdef9de41accf44843f90faf1167",
+        "ms": 7907
+      }
+    ]
+  },
+  "gemfall-05c/check_count_picks/onFailure/narration": {
+    "": [
+      {
+        "clip": "0020c7e7b834559c4ffe7249e8a045298daddba6d09b574bc65112e63a83b608",
+        "ms": 12707
+      },
+      {
+        "clip": "efe841eec620c913569476cee7272932140df82ab837952db3f25807305a840b",
+        "ms": 1990
+      },
+      {
+        "clip": "21055db03f6651f2278950cabf3c407e9eea27196d7ea7faaef1e34a9c3b97b2",
+        "ms": 1040
+      },
+      {
+        "clip": "949404443fed6fd08a0f6497a54df74f3a4d147f4f570b0f068a31bbc0c5e0d7",
+        "ms": 1017
+      }
+    ]
+  },
+  "gemfall-05c/check_count_picks/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4ab4258f779ca0eb8dcbd7777dfe6dbe14c66c28134e33f10aa62b1ec15d8d33",
+        "ms": 11007
+      },
+      {
+        "clip": "dce4cd417d54de1491b5f932eadf466f38c18b1820a2e591405cebb9fb45eedc",
+        "ms": 1551
+      },
+      {
+        "clip": "1cf15858b8be2bfbc1e16f9bf0cd1fcf7e952066de594be4d3a604b64cebb056",
+        "ms": 1009
+      },
+      {
+        "clip": "21e3aff676f132cd7292736faa452873ce81d61307d482c999a585f13e3998f1",
+        "ms": 1011
+      }
+    ]
+  },
+  "gemfall-05c/check_count_picks/prompt": {
+    "": [
+      {
+        "clip": "54c9faf874def19cd969c9c9879b760048ff1506aca04ea2ae7986fe92af98fd",
+        "ms": 2462
+      }
+    ]
+  },
+  "gemfall-05c/check_follow_moths/onFailure/narration": {
+    "": [
+      {
+        "clip": "f636bd6ef63ffa8e92e5ca9fccca2fdd5f7563726f35aca1a1cf8b6e0e0035d7",
+        "ms": 14607
+      }
+    ]
+  },
+  "gemfall-05c/check_follow_moths/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1dded78ccf5f597a1799b9b9fec40fbbb9331b64ce8a6739372dfc74540c5086",
+        "ms": 16607
+      }
+    ]
+  },
+  "gemfall-05c/check_follow_moths/prompt": {
+    "": [
+      {
+        "clip": "566e4aea83da0b8bd41c80846752ff2d4e6ae400a753f0c25d830142220d1c0d",
+        "ms": 3507
+      }
+    ]
+  },
+  "gemfall-05c/check_night_talk/onFailure/narration": {
+    "": [
+      {
+        "clip": "d3a7614b84477e310b8d9cedaec277ac36425ac97d01d50d6d688e72ab566ec4",
+        "ms": 19107
+      }
+    ]
+  },
+  "gemfall-05c/check_night_talk/onSuccess/narration": {
+    "": [
+      {
+        "clip": "de4913dcca1878b3e4094d3cce5ac66092307e7fd21c3b93c71264cf2e776f82",
+        "ms": 18707
+      }
+    ]
+  },
+  "gemfall-05c/check_night_talk/prompt": {
+    "": [
+      {
+        "clip": "c17bde617d96217de0a38acd1efc1ab722c211e8beb131ab0163d0dd73d1bf80",
+        "ms": 2446
+      }
+    ]
+  },
+  "gemfall-05c/check_not_diggers/onFailure/narration": {
+    "": [
+      {
+        "clip": "60fdace77563fa1e09b319ff79a95efd7e18e9ec07c1cb12bb400f28ef166a1a",
+        "ms": 16307
+      }
+    ]
+  },
+  "gemfall-05c/check_not_diggers/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8464fd1effe558e8a46774a6ccf5465c8199abe8767ad76886952619fb8fdcde",
+        "ms": 12107
+      },
+      {
+        "clip": "804ac89242b874f01d43b88fb5f48beb888801e9c21869cd96fb0fea1452c8aa",
+        "ms": 1191
+      },
+      {
+        "clip": "c80cf45d95e066ca20bd2f6dbb3954a82f75145c39a457973d101de6427d386e",
+        "ms": 2257
+      },
+      {
+        "clip": "faf58e24b75bde32c10b970e0f1a912a6d780dd04665895e3756e33b12875bb5",
+        "ms": 1289
+      },
+      {
+        "clip": "94ee03e8b1b9123d96ee7e0d0095d38e741a676988f4712defc2f3a4386a03f9",
+        "ms": 3407
+      }
+    ]
+  },
+  "gemfall-05c/check_not_diggers/prompt": {
+    "": [
+      {
+        "clip": "a04d42f6b88f37f25233e4a8ac093753c3ecafa2322433ac8931a594d1ffc010",
+        "ms": 7807
+      }
+    ]
+  },
+  "gemfall-05c/check_one_rule/onFailure/narration": {
+    "": [
+      {
+        "clip": "b4b82befdac78d6614c9d78d0ee999b1a323daa7669292a2bbd19b77087f6d15",
+        "ms": 3407
+      },
+      {
+        "clip": "9162b6c3b2e577c201c642411a1d05fa8e3fcab916f0a545837e6363de94b928",
+        "ms": 1483
+      },
+      {
+        "clip": "eab41310de7b2b82d08e2c92e1d7265038e1dfbbdd6d47379db88436f8348444",
+        "ms": 5707
+      }
+    ]
+  },
+  "gemfall-05c/check_one_rule/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2f64b9552ae521b221c376b42c9ff049190484ffbf9d430ce1a7891be61ba319",
+        "ms": 21107
+      }
+    ]
+  },
+  "gemfall-05c/check_one_rule/prompt": {
+    "": [
+      {
+        "clip": "352dd8bd70c3de6fe59d88552de480df18d567368fc62bf4855209f762e12594",
+        "ms": 8707
+      }
+    ]
+  },
+  "gemfall-05c/check_outline/interaction/cue": {
+    "": [
+      {
+        "clip": "d2076142278fc197c008cacd03530f91d25d8065f5dc6cf059f0276d71bbb39d",
+        "ms": 3307
+      }
+    ]
+  },
+  "gemfall-05c/check_outline/narration": {
+    "": [
+      {
+        "clip": "5095f0557a0b8398d31a51baeb24151538ea7b465c717a78ef54758aa35054e4",
+        "ms": 4907
+      },
+      {
+        "clip": "fc5e857e41667b84a614ec8901925478171038630f063fc3863b26c0dace9df2",
+        "ms": 647
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "328aa5d5cf8f1890eb6bdb324f69bcb53c579df90c662b827b154a5e5bf6f37c",
+        "ms": 3707
+      }
+    ]
+  },
+  "gemfall-05c/check_outline/onAssisted/narration": {
+    "": [
+      {
+        "clip": "b2b02b9ae79adfa4a67e0fdfa107e1a2fa35104773658294f0b8db9d2a0edf39",
+        "ms": 11407
+      }
+    ]
+  },
+  "gemfall-05c/check_outline/onFailure/narration": {
+    "": [
+      {
+        "clip": "9e1f07f45c59079fdaf976f65bd89ef017c5a8354647783335deb657eea5134c",
+        "ms": 6607
+      }
+    ]
+  },
+  "gemfall-05c/check_outline/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f9a74ad8cb9ba984e1d3ae5b8820d2c5fbbfd3dcaa955dfb269bed6021f70b70",
+        "ms": 10407
+      }
+    ]
+  },
+  "gemfall-05c/check_read_crab/onFailure/narration": {
+    "": [
+      {
+        "clip": "9fc7e6d3f5c8cb3508fbcf8e005d11fdda389c702d028eec057cfe0496ba5830",
+        "ms": 4107
+      }
+    ]
+  },
+  "gemfall-05c/check_read_crab/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8e21d9823b38d5303b451657b3ac9a4c28593ef6d06281ab77b0f60129d64b1e",
+        "ms": 10107
+      }
+    ]
+  },
+  "gemfall-05c/check_read_crab/prompt": {
+    "": [
+      {
+        "clip": "cd7746e661d4636dc9546cd502b2fc7e6f1b859cbf7686788ba0889db7e19692",
+        "ms": 2645
+      }
+    ]
+  },
+  "gemfall-05c/check_read_stone/onFailure/narration": {
+    "": [
+      {
+        "clip": "2fdec93992367a46139c80eb0d670407fe834845c5418335fecee728b395b668",
+        "ms": 12007
+      },
+      {
+        "clip": "7cc7e9cea798631e4a733eddbb5531ac1c7763bc315169b503dcd8a8886140a4",
+        "ms": 677
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "79d238dc2932dd7502a86b34fcea2b17869f133a1318a520de650fe3c66930dc",
+        "ms": 2283
+      }
+    ]
+  },
+  "gemfall-05c/check_read_stone/onSuccess/narration": {
+    "": [
+      {
+        "clip": "abdbef01efc003fe9567208e2ebd2e1d1ee4d935c0ef88cf7fa1bd167bc1d3bb",
+        "ms": 19007
+      },
+      {
+        "clip": "a03a97012fc9a7db52ba0089ef7c3ce929d60644ffe757f0ed18a2b88950aee9",
+        "ms": 1662
+      }
+    ]
+  },
+  "gemfall-05c/check_read_stone/prompt": {
+    "": [
+      {
+        "clip": "826b4bc2f1111ee88e2578109d3a1d4a93ed777a856a0fbbbcf3608026a508a0",
+        "ms": 2956
+      }
+    ]
+  },
+  "gemfall-05c/check_supper_story/onFailure/narration": {
+    "": [
+      {
+        "clip": "b1c364832144176285402b0ccde31c1d47f8835314668399003792e328086348",
+        "ms": 12107
+      }
+    ]
+  },
+  "gemfall-05c/check_supper_story/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9c677dfce34e41211a91319a449c1666ba2ed27f7e7438bd9899e63c0a6a057c",
+        "ms": 15107
+      }
+    ]
+  },
+  "gemfall-05c/check_supper_story/prompt": {
+    "": [
+      {
+        "clip": "36a0e56a9f31620daab7c7f18e9b689c46bc059936f7afd42584733bb0410d50",
+        "ms": 2472
+      }
+    ]
+  },
+  "gemfall-05c/check_tell_crowd/onFailure/narration": {
+    "": [
+      {
+        "clip": "c92f6d13dcf5e5f8cfc5290b397004c93f9b876509ed421454d071bb23df7444",
+        "ms": 16507
+      }
+    ]
+  },
+  "gemfall-05c/check_tell_crowd/onSuccess/narration": {
+    "": [
+      {
+        "clip": "633974defcdd8c015807f49d2c604a468ebe731c7e5179b83fccb6e5d5dd3106",
+        "ms": 18007
+      }
+    ]
+  },
+  "gemfall-05c/check_tell_crowd/prompt": {
+    "": [
+      {
+        "clip": "8823fd53e1bba70e9dd506b9055b678f04326e27e3e70147c2e3349f4e84a5b0",
+        "ms": 2273
+      }
+    ]
+  },
+  "gemfall-05c/choice_crowd_at_stones_sing_verses/narration": {
+    "": [
+      {
+        "clip": "0cae84efb1937c6cbaa21faee64d7fd7f994cbd25235eabfaa70d77cc6be4253",
+        "ms": 14107
+      }
+    ]
+  },
+  "gemfall-05c/choice_crowd_at_stones_stand_with/narration": {
+    "": [
+      {
+        "clip": "7c00ab17021368399ce86f2980943c3d201a0a91d39a342d0bd2c9dc7b0fedda",
+        "ms": 15707
+      }
+    ]
+  },
+  "gemfall-05c/encounter_crabs/narration": {
+    "": [
+      {
+        "clip": "3179cb29e0e52c6d26e7a8ea608e2a546025d169739fa9e3236ec166d85c3be9",
+        "ms": 11207
+      }
+    ]
+  },
+  "gemfall-05c/encounter_crabs/onDefeat/narration": {
+    "": [
+      {
+        "clip": "22d20707d8c8572c62153668246f09cdda6cacc8ff09f5a3aeda1e8d5eaca2b6",
+        "ms": 5107
+      }
+    ]
+  },
+  "gemfall-05c/encounter_crabs/onEscape/narration": {
+    "": [
+      {
+        "clip": "00a7184858f917f9f802f81b7e9cb7fe83ed82e93603ee75fee86d750a70c180",
+        "ms": 9507
+      }
+    ]
+  },
+  "gemfall-05c/encounter_crabs/onTimeout/narration": {
+    "": [
+      {
+        "clip": "22d20707d8c8572c62153668246f09cdda6cacc8ff09f5a3aeda1e8d5eaca2b6",
+        "ms": 5107
+      }
+    ]
+  },
+  "gemfall-05c/encounter_crabs/onVictory/narration": {
+    "": [
+      {
+        "clip": "046248513af97df332a7842a265eca5d675b2a913a8eaa4b7fbf31d15a94822d",
+        "ms": 7907
+      }
+    ]
+  },
+  "gemfall-05c/encounter_crawlers/narration": {
+    "": [
+      {
+        "clip": "f13f506e4d33b23607fe1cf88c43970eb102e56def18c74c505147ce70f18361",
+        "ms": 10607
+      }
+    ]
+  },
+  "gemfall-05c/end_through_the_stones/narration": {
+    "": [
+      {
+        "clip": "efcda1762ec7a0af32cbb1af798b08ae26150bb1bdb5000ea1fc900a84ed6bf9",
+        "ms": 15307
+      }
+    ]
+  },
+  "gemfall-05c/end_through_the_stones/variants/0": {
+    "": [
+      {
+        "clip": "09a9cc2dbfdaf77bbfc358c6789194e7de47ad1c80556e9c950fa43a3feedc40",
+        "ms": 2433
+      }
+    ]
+  },
+  "gemfall-05c/interaction_bell_cart/interaction/cue": {
+    "": [
+      {
+        "clip": "bdd9d26556a806929498509f723ba706f2ff68f5438c46d8de809259ca5d6fa3",
+        "ms": 3507
+      }
+    ]
+  },
+  "gemfall-05c/interaction_bell_cart/narration": {
+    "": [
+      {
+        "clip": "5d1b8bc20edd286f76d885e2948aad1e42c2450b7850523287114108c4a4c508",
+        "ms": 6608
+      },
+      {
+        "clip": "7fefad390f785bbc936f7c1eb736e27e9b78000e8988f466ff637554f8c7aaa4",
+        "ms": 1125
+      },
+      {
+        "clip": "b7023a352f599bce7414bdff54aa316764ab3ba58d12a5841d4875a960155f91",
+        "ms": 1777
+      },
+      {
+        "clip": "2c97d815dc595c321a68a770b512d2cc2d7a7b65d2dbc4bef3a6dcb89fa72586",
+        "ms": 2237
+      }
+    ]
+  },
+  "gemfall-05c/interaction_bell_cart/onFailure/narration": {
+    "": [
+      {
+        "clip": "d48d7a052a4fe707c06711f1008b667465d24607db62b8acfeef625c322c1b74",
+        "ms": 8007
+      }
+    ]
+  },
+  "gemfall-05c/interaction_bell_cart/onSuccess/narration": {
+    "": [
+      {
+        "clip": "58f94dab08b08841c6673e7a74f77b5df71603eee831ac185d7c80879650e0ff",
+        "ms": 8707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_bell_tuck/narration": {
+    "": [
+      {
+        "clip": "379cf6244789720d2ef01db91f4dcfd8ce539fb6aa168ae03d737a7ef0299c0e",
+        "ms": 11507
+      },
+      {
+        "clip": "291e0e151c27ea34ccc6cd4bbc7e67ad281310165acd08eb51b9b2670c63a771",
+        "ms": 812
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crab_warning/interaction/cue": {
+    "": [
+      {
+        "clip": "29fe3fe759b8fbbb273c1292faf33a0a9b9ed7ef1f1fa4c1600f60d12edcb6ad",
+        "ms": 3507
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crab_warning/narration": {
+    "": [
+      {
+        "clip": "150a698dc7fe13e3b420581a71a31f56be5a6ca709eecb414744783f2b2c1854",
+        "ms": 9207
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crab_warning/onAssisted/narration": {
+    "": [
+      {
+        "clip": "40fd591d79178d453da9dc3cb1e7b2526491a81fe819274eecfad50163f01e7c",
+        "ms": 4807
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crab_warning/onFailure/narration": {
+    "": [
+      {
+        "clip": "9fc7e6d3f5c8cb3508fbcf8e005d11fdda389c702d028eec057cfe0496ba5830",
+        "ms": 4107
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crab_warning/onSuccess/narration": {
+    "": [
+      {
+        "clip": "11f2fded18b981623fe1c8730d547e8da50e4999b719ed47c9dcf1953782b203",
+        "ms": 3207
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_account/narration": {
+    "": [
+      {
+        "clip": "ff269dfae652bb48572d7b49d1f3b8c4548f3471c467b28bb79056ca1f18465e",
+        "ms": 9107
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_account_response_moths/narration": {
+    "": [
+      {
+        "clip": "974ddddc1a42ca023b754c28857bccff44ea6ff0ce405f112ddb93384ff672a8",
+        "ms": 10307
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_account_response_rule/narration": {
+    "": [
+      {
+        "clip": "6021555bc2591337fe911eb67d8be9a898a7a2571e5ebe2aac6a8768ff611541",
+        "ms": 10807
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_account_response_tallies/narration": {
+    "": [
+      {
+        "clip": "9400f19b3771a9cea4f198bedc65320d9889155382706a34595ffd607421d8c4",
+        "ms": 8707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_bell_line/interaction/cue": {
+    "": [
+      {
+        "clip": "715b7e8614f70e4d9e0e80cdf3f6c926ad712aa9a92984eb02da731f10622948",
+        "ms": 2555
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_bell_line/narration": {
+    "": [
+      {
+        "clip": "5c94975cada31780097745f5ac44cca9a1b7544594ddf6aa63253e1c3b334397",
+        "ms": 8307
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_bell_line/onAssisted/narration": {
+    "": [
+      {
+        "clip": "95a86e8a930684324dae7036b4bdd815ec0a8a7a399a8dc8ac86fbd33e8b1847",
+        "ms": 5207
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_bell_line/onFailure/narration": {
+    "": [
+      {
+        "clip": "3d7b4056d84bac001a3c4af3a49b52913dce6297aeb400fc91fdf9c8c7f89fbe",
+        "ms": 5607
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_bell_line/onSuccess/narration": {
+    "": [
+      {
+        "clip": "c2c4760c3eb31540c3ab5d26902f6b5e62ec4f2126f8f4a0f67308aa257b3701",
+        "ms": 6407
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_hand_bells/interaction/cue": {
+    "": [
+      {
+        "clip": "84891053a34e173d787c9877227f34bb71417fabdfc6b9860b084d563d8855e7",
+        "ms": 3907
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_hand_bells/narration": {
+    "": [
+      {
+        "clip": "d6f8ba2947b9e2ebc3dac3c206c058da72d7ddb529997b52ecf71ce13c795286",
+        "ms": 12007
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_hand_bells/onAssisted/narration": {
+    "": [
+      {
+        "clip": "764ac3885e82c5c4477b255920ab0d9248beff817403033683465b57ac1ef130",
+        "ms": 4307
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_hand_bells/onFailure/narration": {
+    "": [
+      {
+        "clip": "916f25d60c58f9ae152575526f946ad5d4900ee124a5d33653d7e2d066c1b2a9",
+        "ms": 5107
+      }
+    ]
+  },
+  "gemfall-05c/interaction_crowd_hand_bells/onSuccess/narration": {
+    "": [
+      {
+        "clip": "dc87dad8c2c9430ceddb64f54bb91e61d237dbc1db002082ba76f003b9cee3d8",
+        "ms": 5707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_dawn_rope/interaction/cue": {
+    "": [
+      {
+        "clip": "2140b48e03107a7c66e83732d8eeb8f901638ece931b07ca83889d2941a23176",
+        "ms": 4007
+      }
+    ]
+  },
+  "gemfall-05c/interaction_dawn_rope/narration": {
+    "": [
+      {
+        "clip": "6a74f9069858d886b38fd3540e4f8d00be3031e55d3a33dd62d8ebf7fb1ba077",
+        "ms": 9707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_dawn_rope/onAssisted/narration": {
+    "": [
+      {
+        "clip": "1fbe5319b9c5395fceaff1b5f70a93523f38161bcbdd53b8b9ccd287e46caa67",
+        "ms": 5007
+      }
+    ]
+  },
+  "gemfall-05c/interaction_dawn_rope/onFailure/narration": {
+    "": [
+      {
+        "clip": "cd9ec2b93ffa53a34057877524037624cf994813c0ca19cdbfe8c9c630b3834f",
+        "ms": 10107
+      }
+    ]
+  },
+  "gemfall-05c/interaction_dawn_rope/onSuccess/narration": {
+    "": [
+      {
+        "clip": "19975ffd9634b0cd9dff86fd53c51adf1b82be9cb52565fcf6ced808c6ef8d14",
+        "ms": 3907
+      }
+    ]
+  },
+  "gemfall-05c/interaction_gear_inventory/narration": {
+    "": [
+      {
+        "clip": "9f3e661fb3f149215b902e94555fc1ecb6236fa576bc5f784ac9ea571a8f6e69",
+        "ms": 10507
+      }
+    ]
+  },
+  "gemfall-05c/interaction_gear_inventory_response_check/narration": {
+    "": [
+      {
+        "clip": "1f55415835b74eaa7241e353a6e3e9e725b893e53856a712421471b67a37cd4b",
+        "ms": 6707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_gear_inventory_response_show/narration": {
+    "": [
+      {
+        "clip": "a9932cf1f9f2ed43882fa01136875a74fb7d844b91c0518aed8a9bf99b410f96",
+        "ms": 5707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_gear_inventory_response_use/narration": {
+    "": [
+      {
+        "clip": "e19359c1434c96a55b09227911ed981e49b3722151d9d1b95b54126ddaefc460",
+        "ms": 6107
+      }
+    ]
+  },
+  "gemfall-05c/interaction_kept_stone/interaction/cue": {
+    "": [
+      {
+        "clip": "cce6eef3bad38489880146c75da7db1fc6e91c5ee13a45ad19fea8bf05176dea",
+        "ms": 4207
+      }
+    ]
+  },
+  "gemfall-05c/interaction_kept_stone/narration": {
+    "": [
+      {
+        "clip": "1b147d857b08fcba5bdf580efc3f0fabca053a415fcd13e07b7b21b91f6d873b",
+        "ms": 7007
+      }
+    ]
+  },
+  "gemfall-05c/interaction_kept_stone/onAssisted/narration": {
+    "": [
+      {
+        "clip": "dbb2404ea1c3a5e9bbe301aaeedf3cd763e5f9d2b9995612b930b495945386bd",
+        "ms": 5607
+      }
+    ]
+  },
+  "gemfall-05c/interaction_kept_stone/onFailure/narration": {
+    "": [
+      {
+        "clip": "b6dc86b4d1efc7ccde6e56dcbae3ceca11983f1fa4a6cb1e103b0cb8afa7bba7",
+        "ms": 3907
+      },
+      {
+        "clip": "d3a3a8435e7bc9eee66eea478ea7876805ee61eb24e6f502c8a2a21ea7c11141",
+        "ms": 2740
+      },
+      {
+        "clip": "9a4aed3bbc720d7d7b93458e424af74131e06f4cab5d958b5602d97f726bb940",
+        "ms": 1835
+      }
+    ]
+  },
+  "gemfall-05c/interaction_kept_stone/onSuccess/narration": {
+    "": [
+      {
+        "clip": "12fb03c6fb590e20d29fc31377dccf321a2bcf822f25192f2f1750690ae14e9f",
+        "ms": 7507
+      }
+    ]
+  },
+  "gemfall-05c/interaction_one_rule/interaction/cue": {
+    "": [
+      {
+        "clip": "d5d245719e7c58e9726b1ea95c78eed02256ce4cdc204aef75db7a25db520583",
+        "ms": 2673
+      }
+    ]
+  },
+  "gemfall-05c/interaction_one_rule/narration": {
+    "": [
+      {
+        "clip": "7b38dcc72d6f6ad4f22d2fd3a9203364b0048c5d44e688d8d111af626d24e680",
+        "ms": 12707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_one_rule/onAssisted/narration": {
+    "": [
+      {
+        "clip": "38eec5c8a94178e1d5011a34dc8c205087df89e7c618b035b58b8bc6588b19bb",
+        "ms": 5907
+      }
+    ]
+  },
+  "gemfall-05c/interaction_one_rule/onFailure/narration": {
+    "": [
+      {
+        "clip": "1fc23baf86a24d4ddf1eba0c4d1103a6773c2228c39ceb6b0eefb5c3b5a9a348",
+        "ms": 1770
+      },
+      {
+        "clip": "9162b6c3b2e577c201c642411a1d05fa8e3fcab916f0a545837e6363de94b928",
+        "ms": 1483
+      },
+      {
+        "clip": "6b73eddad6cce7b7b7665acc9e738ef8f8016f35a4efd86ae6869fdc5c8470f8",
+        "ms": 5707
+      }
+    ]
+  },
+  "gemfall-05c/interaction_one_rule/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b48f4b84d9199c233a4cd80e82faf28703f9f05d1c109260207f67df92ce6042",
+        "ms": 5607
+      }
+    ]
+  },
+  "gemfall-05c/interaction_pry_bars/narration": {
+    "": [
+      {
+        "clip": "211f7e4752610c3cf085eccc5a8d8d6228cf6c170407e05603d37b028c0a3469",
+        "ms": 9708
+      },
+      {
+        "clip": "662c0ccc31e9f5f2fa17d59d7be1d185b5e35c3bc9260d80ed10af78ee5bdc43",
+        "ms": 3707
+      }
+    ]
+  },
+  "gemfall-05c/rest_bell_house/narration": {
+    "": [
+      {
+        "clip": "f09fa28b76fc7ae6a9ac65d29411c946e9444f2affbabd49962c1e68be731ec4",
+        "ms": 13907
+      }
+    ]
+  },
+  "gemfall-05c/scene_bell_code/narration": {
+    "": [
+      {
+        "clip": "c02298845d010dd1c59b99436486de51fbd1f636bffd0c279d2d9360ef6af77c",
+        "ms": 14507
+      }
+    ]
+  },
+  "gemfall-05c/scene_bell_house_supper/narration": {
+    "": [
+      {
+        "clip": "80fc1a1d89774bbdcd92a72dd15f32f8e8bdd5393fbe13b072f372396c82f12b",
+        "ms": 7807
+      },
+      {
+        "clip": "086a8e800b18cc57df8148b493257c45045849e77833ae78ff58969c400ed08b",
+        "ms": 6407
+      },
+      {
+        "clip": "5b8a07701ab0def1b9eb4aec51ed2661024c1c5e3f1b93a67ae419b45fd40617",
+        "ms": 2480
+      }
+    ]
+  },
+  "gemfall-05c/scene_bell_house_supper_ask_recipe/narration": {
+    "": [
+      {
+        "clip": "b7c74627163fd66d7979a2ab2672bf4b1141e62c78adad22eab655063665f60a",
+        "ms": 12707
+      }
+    ]
+  },
+  "gemfall-05c/scene_bell_house_supper_depot_tag/narration": {
+    "": [
+      {
+        "clip": "41930897cb89949f9ab867976db51fc1d5760a87544b5331c4b33d8b43d30476",
+        "ms": 9127
+      },
+      {
+        "clip": "f0c6fdb6ca09f7d8fc733f4261f71a2904507652937b47c211cc1b478166e614",
+        "ms": 2581
+      },
+      {
+        "clip": "795fcd1be4d634615bd2e68df56bbe8a6ba9bb5e1d38f6151347c6f1616a5001",
+        "ms": 1848
+      },
+      {
+        "clip": "839c4f8a0447b74cdbc6a2b8ab072ea543533451c2d1f52bb19d596f662a0911",
+        "ms": 2641
+      }
+    ]
+  },
+  "gemfall-05c/scene_bell_house_supper_honey/narration": {
+    "": [
+      {
+        "clip": "b681f89dabffc14bc467ffdb7c2206747f5dd0c41fca9195cd0c6ec4e7a84f11",
+        "ms": 13607
+      },
+      {
+        "clip": "60bf8caac2fc07aeb001ac24a5ae3adf941625257851d39fedad2efeace18e8b",
+        "ms": 797
+      }
+    ]
+  },
+  "gemfall-05c/scene_centaur_whisper/narration": {
+    "": [
+      {
+        "clip": "d9048b6e42bff33a9227cf14e39c17135a244e1f9da8814851cb6429d16f96d6",
+        "ms": 5307
+      },
+      {
+        "clip": "ac88570343e5aa9c4c1307788f338e3d13354c8ea1352c1a19bd8c9743ea8bb3",
+        "ms": 1946
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      },
+      {
+        "clip": "930119929b9eefa43a017de58adf5577a26b41c98baac6c3edabcf1bacad8e34",
+        "ms": 4307
+      }
+    ]
+  },
+  "gemfall-05c/scene_centaur_whisper_caravan_road/narration": {
+    "": [
+      {
+        "clip": "a95abafd4f3730bab62feb9928dd36fc22bffbab14a37baf57393d7073183e67",
+        "ms": 4807
+      },
+      {
+        "clip": "e27b3673f8878a6a01c03fe8d5678e2be4d91a99e0808a24414f8f9f7479e392",
+        "ms": 2158
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "dc1f08729ebbb9219d2ed0ebfe31cc6f89761abf30c95da9b9a1da0db8fe3d26",
+        "ms": 3627
+      },
+      {
+        "clip": "da122b44b8ecff16b1bd2ed1d242aaf06d26ec0505bd27361fbf7f8e0de3d03a",
+        "ms": 1925
+      }
+    ]
+  },
+  "gemfall-05c/scene_centaur_whisper_show_bark/narration": {
+    "": [
+      {
+        "clip": "f38b6390f5b12f3e2b86eba9cc0ef108694f63a0bf9215c21f0947062220984c",
+        "ms": 5507
+      },
+      {
+        "clip": "4f7551837172007276f7e460b42fda80fcfe65bc35b9318460956ce82033e984",
+        "ms": 4927
+      },
+      {
+        "clip": "62874bfab8f86290a2031db1995af812b6bfb55b55b20fd54136107c3fe1f9fb",
+        "ms": 2433
+      },
+      {
+        "clip": "385d82ad4bb3b1b90218b8f702a965b49973bb14ee764bbb28dc3558db466d4a",
+        "ms": 1268
+      }
+    ]
+  },
+  "gemfall-05c/scene_charm_rings/narration": {
+    "": [
+      {
+        "clip": "7e0ce99291534027ce9b4564a5d6e2ad903793180fa076af51b0124cd9daaf14",
+        "ms": 9707
+      },
+      {
+        "clip": "3f8c0ed7ea4a377c11685a1fd7bf754dec8197c75f74fd34fd31b0b0b327f31a",
+        "ms": 3307
+      }
+    ]
+  },
+  "gemfall-05c/scene_crab_settles/narration": {
+    "": [
+      {
+        "clip": "2bc4dbbfaf43637fb2223024d9f78c133fb77990c0a5ca2600f44ea7e1a5eac8",
+        "ms": 15107
+      }
+    ]
+  },
+  "gemfall-05c/scene_crab_warning/narration": {
+    "": [
+      {
+        "clip": "0147b7df53fb0d9010d6a963be001e218d302ab49e194adff28944512354121d",
+        "ms": 13707
+      }
+    ]
+  },
+  "gemfall-05c/scene_crabs_rescue/narration": {
+    "": [
+      {
+        "clip": "01362f2922143c9ecc8b26f73c54bcf219fc1caec960c9a323d32cfb3c25a086",
+        "ms": 7407
+      },
+      {
+        "clip": "c9ee225c7071bd01868612fcdff7ca2665a5ea331b033da903bf969e479b3c12",
+        "ms": 2224
+      },
+      {
+        "clip": "db29ea421bbd037d20faa4339a627a321e6a0a5b7883dcf76af0a3ae104173fe",
+        "ms": 6307
+      }
+    ]
+  },
+  "gemfall-05c/scene_crabs_rescue_pay/narration": {
+    "": [
+      {
+        "clip": "aba9216015632c96d137ae7bf37f7d5817dcc0c255f2a6792825ea171a74b7f7",
+        "ms": 12807
+      }
+    ]
+  },
+  "gemfall-05c/scene_crabs_rescue_supper/narration": {
+    "": [
+      {
+        "clip": "17bd6570ae737a948fcceab3df3ae61e6daadd92805dea961934831c325026dd",
+        "ms": 11907
+      }
+    ]
+  },
+  "gemfall-05c/scene_crabs_rescue_work/narration": {
+    "": [
+      {
+        "clip": "7723b96d493d88d10ee5d6e286b3b89cfc8d1683b9fe0daedd191ebbff8b2124",
+        "ms": 14607
+      }
+    ]
+  },
+  "gemfall-05c/scene_crawlers_porch/narration": {
+    "": [
+      {
+        "clip": "696ea1a5e5a699b053b2903ba6644da4862b20447498d8bba97c485b20720c7b",
+        "ms": 15407
+      },
+      {
+        "clip": "b402cf0c851fcae8591453bda246b27552a6bf8684521e6d4456541a8632cae1",
+        "ms": 1417
+      },
+      {
+        "clip": "2a5e0172dfa203a1be843368e1ffe44599f050852c9025758c963d5041b29ef5",
+        "ms": 899
+      },
+      {
+        "clip": "a1afbe821b3332d2d7daddce5ed90dbb632165cf19fce9d64b03a821bf544936",
+        "ms": 1200
+      }
+    ]
+  },
+  "gemfall-05c/scene_crawlers_scattered/narration": {
+    "": [
+      {
+        "clip": "d1fe7c36801d7b1a964b96a374b8879429f24287fb83deabea38344a3807452e",
+        "ms": 12807
+      }
+    ]
+  },
+  "gemfall-05c/scene_crawlers_shooed/narration": {
+    "": [
+      {
+        "clip": "279d814e024e739d61033d0d72c8effc19c07339aebc01656ad1fdee2384337e",
+        "ms": 8807
+      },
+      {
+        "clip": "c9272da676d8d60cd70dbd2e89b4eba75d017d00d1a60c48eeeaa1c4f97745d6",
+        "ms": 4207
+      },
+      {
+        "clip": "a2fd8e0c2779b5caaef2a5e11fa7a7dab840112ac3eb98986885804e08d8a536",
+        "ms": 1931
+      }
+    ]
+  },
+  "gemfall-05c/scene_crowd_at_stones/narration": {
+    "": [
+      {
+        "clip": "9033a065102ef62aae13bfec3021009c40ceb1ec9879cc24e5bf82d2384988c9",
+        "ms": 7307
+      },
+      {
+        "clip": "1175db9c5b9de61791cb9338123c610d7eb39d4ba4521d9a7c9a6057fb4ecbf2",
+        "ms": 2067
+      },
+      {
+        "clip": "e5cc1de5d6b94a825454b8d3783a924aa0cb8d66e35dadf5860e5c7bc5cae32e",
+        "ms": 5407
+      }
+    ]
+  },
+  "gemfall-05c/scene_dragonling_home/narration": {
+    "": [
+      {
+        "clip": "208ade24117d69e8f11d2d9168503468aec30be88d2e3d4fcfaddff93f59b4c7",
+        "ms": 3307
+      },
+      {
+        "clip": "47eac6c55f2a38c281b4545a0ebe504d83c0f8b43fea1f1a46c785151e805a40",
+        "ms": 3407
+      },
+      {
+        "clip": "d787641037799d8f1e4cd85c65c370a8a4dab3e099883b007707f16a143f1eda",
+        "ms": 4107
+      },
+      {
+        "clip": "4c9116990a610ce2fed555a681f8d870f2a8ace2c92cb7243367fce342a31a94",
+        "ms": 3107
+      }
+    ]
+  },
+  "gemfall-05c/scene_gate_town/narration": {
+    "": [
+      {
+        "clip": "970449e105781c1faeca88de033591f8c2aaa040e5c0002fd12a7304dddca239",
+        "ms": 5107
+      },
+      {
+        "clip": "0c43ed3926ee10a95a03c5d4f7973fe5bc90d55102d5437ca4750ac09a5c302c",
+        "ms": 1661
+      },
+      {
+        "clip": "eac6a538326edaa8f087f1a3ba4b7d2a37e9d4ddf44efd211bfaf00384ebaaa1",
+        "ms": 1018
+      },
+      {
+        "clip": "433f9a8f3b4b34dc131717b83aad9bf082ad52bc4643437891924b2a857aeed6",
+        "ms": 2048
+      },
+      {
+        "clip": "f1f811f3f409b6134e3f60cbcdd9d031c06de24116426990661c8ffde98b73e1",
+        "ms": 4807
+      }
+    ]
+  },
+  "gemfall-05c/scene_gate_town_explain_home/narration": {
+    "": [
+      {
+        "clip": "52125893826799b18bfbc708ff618a6f3f7cad3a4e5204d5f103d0eb11481f99",
+        "ms": 4507
+      },
+      {
+        "clip": "2c4b6889889080ed26dcf0e199c95d4dbd4add89b15d66e12b91b9b0d85681f7",
+        "ms": 5507
+      },
+      {
+        "clip": "75c9964bc2150b41caaebc0b68cd53c99df712d7201e192e39dcc8bf2a9049c2",
+        "ms": 3507
+      }
+    ]
+  },
+  "gemfall-05c/scene_here_first/narration": {
+    "": [
+      {
+        "clip": "438f176d744330b60ca76133e93a804d31de54392922dfc5d22f5c9e2b2e30aa",
+        "ms": 1034
+      },
+      {
+        "clip": "2a5e0172dfa203a1be843368e1ffe44599f050852c9025758c963d5041b29ef5",
+        "ms": 899
+      },
+      {
+        "clip": "0dbcf70cbf2a1155ed77c9e55f2e704390f4a94d883e0b250e8f9064bc5544ba",
+        "ms": 6807
+      },
+      {
+        "clip": "84764fc46383eadfecbb5ab2f53ffe1d11fc6e37a9a35a59574ec8f03b5eb212",
+        "ms": 8007
+      }
+    ]
+  },
+  "gemfall-05c/scene_here_first_onward/narration": {
+    "": [
+      {
+        "clip": "d1e783caa71ee6ffb1a207fae8c0957cd209e68d51911361071d7e149ba90fc3",
+        "ms": 4607
+      },
+      {
+        "clip": "bf058206217025bdaa7307e31b161190454e624865b7c52a9f7c059a5fb36caa",
+        "ms": 1213
+      },
+      {
+        "clip": "8adb85dbb5408670d30becdd576ce156e3b6071e6f8881148ad45d6e53e99049",
+        "ms": 6407
+      },
+      {
+        "clip": "dfab252bcf155e10407b362ec76999104fb3c99ce08c4f9a959d99575ce5c262",
+        "ms": 1983
+      }
+    ]
+  },
+  "gemfall-05c/scene_inspection/narration": {
+    "": [
+      {
+        "clip": "f8943aba8cd359c642235a52710a845d4fde60c64c97232cd308c2e649a183e2",
+        "ms": 5607
+      },
+      {
+        "clip": "dba85e605a7c93fa4fbd96c627e618d27c84006024f0a9b0e8200d6c79fd0a38",
+        "ms": 3307
+      },
+      {
+        "clip": "76c3f6e0eb19d26464919146daf521ba2829f326c3592e4faa7cd175c726524c",
+        "ms": 4507
+      }
+    ]
+  },
+  "gemfall-05c/scene_inspection_open_packs/narration": {
+    "": [
+      {
+        "clip": "f662de174802eb1da9d5aeeef6c560df0f30d5ac521c27c48e5016d6ead2c308",
+        "ms": 3827
+      },
+      {
+        "clip": "c1aa86134e36a0c785004645bec692a297160e7b278a9d5a63e6f99dfd0d5dc2",
+        "ms": 2073
+      },
+      {
+        "clip": "af886118e17f5cd95aa8169dec9c9f3d57902c9298986eba64e5cdb06e1e1404",
+        "ms": 3307
+      }
+    ]
+  },
+  "gemfall-05c/scene_inspection_show_charm/narration": {
+    "": [
+      {
+        "clip": "8438fe7789427da0270fdb5f9501f9f8de143351d63322b556376e01491da33a",
+        "ms": 5708
+      },
+      {
+        "clip": "f770ef4b95d4fa99664d32aa077642c9acc9792902b3277e04577674e91c2635",
+        "ms": 1443
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "88404ed62f1ba85ca54cf9b616ab5ede82db3b5a6238760bf7b272891db155aa",
+        "ms": 5207
+      }
+    ]
+  },
+  "gemfall-05c/scene_keep_close/narration": {
+    "": [
+      {
+        "clip": "f3e4ec644e82d2c4a8e9c643d00a0fc28585d7f7329f24dfd271715c53b2af8f",
+        "ms": 3607
+      },
+      {
+        "clip": "21e38766da3ccb5a408b5ba593297e98984fa3a12e61dc31370ae82ffeaee8d0",
+        "ms": 4407
+      },
+      {
+        "clip": "3994faef478a6b97fb44e372686aa9878fdebbc4d643cb4e14e4e85a32ce52f9",
+        "ms": 2770
+      }
+    ]
+  },
+  "gemfall-05c/scene_morning_bells/narration": {
+    "": [
+      {
+        "clip": "09787c54238c563a85fb262942a386791e89a334c8ef3362c745a96ed0d6c60f",
+        "ms": 2829
+      },
+      {
+        "clip": "f12a9070298d73355544694036e2c483f327fa624aa0147f49240f883bb7bf60",
+        "ms": 2352
+      },
+      {
+        "clip": "fac9e80ecc93ce3cf6c9f28dc96747923718b86422ef7f8e2fbea700c22eced8",
+        "ms": 1863
+      },
+      {
+        "clip": "ad368adc5a3afefce303185ac18789e8a5521b2e7deb0569fb1566f68b0d842d",
+        "ms": 5107
+      },
+      {
+        "clip": "022a84ba601f239d8a415637108c4d7ba4e0c295f037e508bb0101d3e2c69dd7",
+        "ms": 4007
+      }
+    ]
+  },
+  "gemfall-05c/scene_morning_bells_polish/narration": {
+    "": [
+      {
+        "clip": "2cded5dcf00b18f0ee862291d1c5dce84a581dec70c046e5371bb5a5eafa6b48",
+        "ms": 12007
+      }
+    ]
+  },
+  "gemfall-05c/scene_morning_bells_unrung/narration": {
+    "": [
+      {
+        "clip": "43a795070f6d0395beb10a5a28def0d0df9ba7544a7470fe79dbe1f3b887db51",
+        "ms": 4807
+      },
+      {
+        "clip": "263ce0a9a1d14d073f0e2cf2d2980b527044184ded583f10e400d0832f250f91",
+        "ms": 1562
+      },
+      {
+        "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
+        "ms": 1313
+      },
+      {
+        "clip": "c4b830db58832bd4b8bd9a0ad9eb190f72eaaa2ff1836fc182ff00a54fd3dd4a",
+        "ms": 3107
+      },
+      {
+        "clip": "f3f86d8f1ef6aaf60b0a61bc13189fc4c007c62ede780df5b432e6d74bb58ea6",
+        "ms": 5707
+      }
+    ]
+  },
+  "gemfall-05c/scene_moths_leaving/narration": {
+    "": [
+      {
+        "clip": "713f237a2f6dc4597fe6473bad31cf8dbd756f947d424d58bfa774d7d5fdf177",
+        "ms": 9107
+      },
+      {
+        "clip": "d417a901c2a80b8aacd49bf16a39eed0ca335e74e9bdaf25886f09a26ea77d6c",
+        "ms": 2253
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "52a489d7b8847c521f7ed1a1cbea334cc668ffd9eb266cda0497c2c7ecbf3925",
+        "ms": 1537
+      }
+    ]
+  },
+  "gemfall-05c/scene_moths_leaving_ask_bells/narration": {
+    "": [
+      {
+        "clip": "337d3886afe72abe160391eaeace99fd1d8b8ba9f644d38cc0d7d7442c97aa1b",
+        "ms": 2954
+      },
+      {
+        "clip": "cc158b61e6a56c9ca23236e0e7f2b9dbfd6f02a11af55e524a763d28ee9dfba8",
+        "ms": 2319
+      },
+      {
+        "clip": "b832c1ae9a65ffeac23759bedd45fc3d9b60d0c50c95c6a6e927d5bdb85bc00e",
+        "ms": 3507
+      },
+      {
+        "clip": "444ebbb39ce3654e767d6514499a825cac8887b9586cab8c91b896e3103da66c",
+        "ms": 1017
+      },
+      {
+        "clip": "76d4593bb414f44973ef17da10f730c3feebb2a773396226fb11a9ff53210fd4",
+        "ms": 3507
+      }
+    ]
+  },
+  "gemfall-05c/scene_moths_leaving_hold_one/narration": {
+    "": [
+      {
+        "clip": "d4aaf00390075807053fe8bf75cfd49cee29a1bf433ce594eb18390dbc5e144e",
+        "ms": 14007
+      },
+      {
+        "clip": "8e5ca386d7132a4e93fa228b4ef5b9c2a40a9b40e12edb668065f8fa870177fe",
+        "ms": 1359
+      }
+    ]
+  },
+  "gemfall-05c/scene_night_lights/narration": {
+    "": [
+      {
+        "clip": "f65b5e95975cfe092ac6445a6ff0a357b85ec2fe55b8a9768a0bd4d4c587fd1c",
+        "ms": 5607
+      },
+      {
+        "clip": "b8b3de04f5bdf31f8b9fb7bd45283db7d941b27be80c1f827a91a4176ac2575d",
+        "ms": 1697
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "9b5c646cbbc923a7e44e660e78f1637050a18c62e20ce6545d33fb5223f5b2ab",
+        "ms": 1546
+      },
+      {
+        "clip": "7973b97924e8e49a13978c55aad403137c7886b3f44e643adbab2e8a0eb10111",
+        "ms": 1994
+      }
+    ]
+  },
+  "gemfall-05c/scene_night_lights_fly_look/narration": {
+    "": [
+      {
+        "clip": "0bf62f3368fcd2970fa9a097817c82e7b6cdebe02e004b15ab0935129d7cda92",
+        "ms": 13107
+      }
+    ]
+  },
+  "gemfall-05c/scene_night_lights_wake_grans/narration": {
+    "": [
+      {
+        "clip": "4ecf02088280da3a096300a5f06ba217cca06254a9a431249958b9d765db92dd",
+        "ms": 9807
+      },
+      {
+        "clip": "fed23786e53144613027f3a1f2a61d1d04c12106f8d6b74b174344b389114c12",
+        "ms": 2317
+      }
+    ]
+  },
+  "gemfall-05c/scene_rule_heard/narration": {
+    "": [
+      {
+        "clip": "a517572cd311e061a29c7fe208913941d54a65792f7bd0d8cb527184ed9dd6b0",
+        "ms": 5207
+      },
+      {
+        "clip": "76034c82af5f0ec2496ec5469f8490af5a0020e61bc56e0349082b90709228b7",
+        "ms": 2649
+      },
+      {
+        "clip": "1d3d6879823ce49d950895d8c24c3ff514c3a5d1a2ab01347631043c3b6d84ec",
+        "ms": 3207
+      }
+    ]
+  },
+  "gemfall-05c/scene_shortcut/narration": {
+    "": [
+      {
+        "clip": "d81aa2f6fa0993b918d2508c824ea1f3e5aadc2111d5650a7ef20b968ad63e3d",
+        "ms": 9807
+      },
+      {
+        "clip": "fe774a60f71cf68f8d730cb7134856a56f38ec32e254d12aec0a745008e47f90",
+        "ms": 1570
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "01e2d378cf313751d1e4e713f1b6bd48e6b483097df8405b915aae211da2f704",
+        "ms": 1884
+      }
+    ]
+  },
+  "gemfall-05c/scene_stones_line/narration": {
+    "": [
+      {
+        "clip": "ac4f8865df37b2a7ca3f20c76959301d56be0619a2c4acd32598dd71e74ffc3b",
+        "ms": 15507
+      }
+    ]
+  },
+  "gemfall-05c/scene_tallies/narration": {
+    "": [
+      {
+        "clip": "4181e2177c6c6b11922510e570e4ef555267dc7ca8bc40d9cb88540a35b24ba2",
+        "ms": 11107
+      },
+      {
+        "clip": "75a57749f057b625953489ee086964706d1c61b807f59ae5d43e3ee00262ffeb",
+        "ms": 1255
+      },
+      {
+        "clip": "a7d16b811c6f5abe9520e0f724ab7229208ac8e9c50d2d44a46aa4f3b908bb16",
+        "ms": 2266
+      },
+      {
+        "clip": "befa47619fcdfc5cbc3aac2268bb283b5ba1ba6792e411672ad8ab0fe5ee28ce",
+        "ms": 1323
+      }
+    ]
+  },
+  "gemfall-05c/scene_tallies_hear_tallies/narration": {
+    "": [
+      {
+        "clip": "73e461151d144019d6928f0781c574546839f53e5baf5072538b6a68f8022def",
+        "ms": 13907
+      }
+    ]
+  },
+  "gemfall-05c/scene_tell_gatherers/narration": {
+    "": [
+      {
+        "clip": "3fbc3af08523f571366af68111595ed41e561b4eaaa6e91e0d16e6bc0be87da6",
+        "ms": 9707
+      }
+    ]
+  },
+  "gemfall-05c/scene_tell_wardens/narration": {
+    "": [
+      {
+        "clip": "4ada51bb2bd22e4f193f0e7acf8d4d2e5b45d1f290cf9412fb0273d7199e4ea4",
+        "ms": 4707
+      },
+      {
+        "clip": "adf5175d4f698ef2fad72fe25cfef6f19e34ef98da60ca98d23d46fe369b70eb",
+        "ms": 1855
+      },
+      {
+        "clip": "617a26cd15893fc78367547f0c66a762c4750561dfb688acee763a15f41d01d5",
+        "ms": 2651
+      }
+    ]
+  },
+  "gemfall-05c/scene_turned_back/narration": {
+    "": [
+      {
+        "clip": "220633f43d2e65fad4d612054eaa62a3091f02ca78f26c883871d721629ec285",
+        "ms": 14807
+      }
+    ]
+  },
+  "gemfall-05c/scene_turned_back_coin/narration": {
+    "": [
+      {
+        "clip": "3071203e1df172caf2deaaf5dc99ef730a6c5ed1369536700fcd017ab66878c8",
+        "ms": 3707
+      },
+      {
+        "clip": "353bada2c31734d7cc002ecaa387f112b817b3553590ff6368d6eb5e84c428c1",
+        "ms": 1242
+      },
+      {
+        "clip": "85421dc1423c0ebb6fa79e922ea525da8f87b33aae1bb20d4561af1b2ce84ef9",
+        "ms": 6807
+      }
+    ]
+  },
+  "gemfall-05c/scene_turned_back_said_no/narration": {
+    "": [
+      {
+        "clip": "2c1dd6d56c5cbbbfb0713bb8f046ed99ec1247b4eba4c11342567c933245b863",
+        "ms": 1146
+      },
+      {
+        "clip": "3352638cc9b53e63bd743f514ed1a2fadb1044b01229ebcaaa028e0e3118e4f0",
+        "ms": 963
+      },
+      {
+        "clip": "2eb70e140ea0839ecfb75ef304e5184518d328b0015112ef2a08eeb1c39d81c7",
+        "ms": 1066
+      },
+      {
+        "clip": "d8364fb0a585bac92b50c0a24a9279c98770e92b157320554dc15e5d6cc7a902",
+        "ms": 930
+      },
+      {
+        "clip": "0a85d17a7c356e207fe4bdea5f5439a650f83a8a952ff50368089cbbba510b37",
+        "ms": 935
+      },
+      {
+        "clip": "cf2395b42de977a82af7a336e4f2e206dbdb2a477159c63d40cf67af31655dd2",
+        "ms": 3107
+      },
+      {
+        "clip": "5bb144b55de569a0d212014b10f7e9e5230e3f6a56f45fdf8b2457eca46ab09e",
+        "ms": 2471
+      },
+      {
+        "clip": "1bdee35b276f6a2ad5232f9b44296ee9fa45812bd2deaa5a557f83d1b12e4eed",
+        "ms": 3107
+      }
+    ]
+  },
+  "gemfall-05c/scene_turned_back_share_soup/narration": {
+    "": [
+      {
+        "clip": "4fe7af02ec917a1ddf5e9c641188c06b19275866524961d6e5cbf247713c7602",
+        "ms": 12608
+      }
+    ]
+  },
+  "gemfall-05c/scene_unassigned/narration": {
+    "": [
+      {
+        "clip": "f8d747b263cc39b293cf09282079620155d75dedb5bc44a54e950d5472140e0a",
+        "ms": 5507
+      },
+      {
+        "clip": "6ea474f868494c46d31d2c1fa7547933574709fc1c2ee6ce19660e3084f004d2",
+        "ms": 658
+      },
+      {
+        "clip": "2a5e0172dfa203a1be843368e1ffe44599f050852c9025758c963d5041b29ef5",
+        "ms": 899
+      },
+      {
+        "clip": "5eba016368da8e731f9ac1dc8ba28e9e668aecff641cb9481df151346e8a36b0",
+        "ms": 1003
+      },
+      {
+        "clip": "62c9d73926b4bba356c8c1af84baa2329c329c59c03fe468d515e1db626aca3e",
+        "ms": 5807
+      }
+    ]
+  },
+  "gemfall-05c/scene_unassigned_ask_proper/narration": {
+    "": [
+      {
+        "clip": "68624ff06225339d1fd250e121c09bcac3ec72702e526df830503b0d31a83133",
+        "ms": 11707
+      },
+      {
+        "clip": "6647126d8e40b9cee83ffeab0a7df16dc46b3cbe125081df80dc590f9844c506",
+        "ms": 3807
+      }
+    ]
+  },
+  "gemfall-05c/scene_unassigned_leave_kept/narration": {
+    "": [
+      {
+        "clip": "566555b49867d6e83be27e943a3bbcfbe53d042d7ea5ddedf0642b52883707d2",
+        "ms": 4507
+      },
+      {
+        "clip": "c5bfceaf7af519e64fcf668094f7c659155f7ed5f7cff0c1ca61013caf24ca91",
+        "ms": 2669
+      },
+      {
+        "clip": "3df3797e54fa99c9c25ccfcf88457936c30dfd2c17723b1eda4da3ad0bd702b2",
+        "ms": 2399
+      }
+    ]
+  },
+  "gemfall-05c/scene_verses_sung/narration": {
+    "": [
+      {
+        "clip": "be7aa74e82310e8e4097fe69b77d81a5adde56abbaa684b48c3c2a32477bcd6f",
+        "ms": 14407
+      }
+    ]
+  },
+  "gemfall-05c/scene_warden_count/narration": {
+    "": [
+      {
+        "clip": "2841d8747231150cd3e5b03d419b1a27e71727e9caf4b94dd57dcdbfab30c034",
+        "ms": 4407
+      },
+      {
+        "clip": "f6ecab924c7c7442ad21855de5a320dc429fc03e523c402aad610ab62b7ebb0e",
+        "ms": 8508
+      }
+    ]
+  },
+  "gemfall-05c/scene_warden_count_ask_logs/narration": {
+    "": [
+      {
+        "clip": "fa8553bc4349431cad08e0c548c53c2e7e11e07dbb4d1883555aa39ea800381b",
+        "ms": 1010
+      },
+      {
+        "clip": "f275191c7bf06a1551916a5da36ff59a3deb15197ee455583272aa341074e3d2",
+        "ms": 885
+      },
+      {
+        "clip": "22e9466c7395f36502f568dac4891e7a9966d60c6ae56c1ce439927d642aeea0",
+        "ms": 5907
+      },
+      {
+        "clip": "3a0796dd58cd25c70f2d840f58c2b8c461f873aed34f3658a74b7a25d2d7fe41",
+        "ms": 1685
+      },
+      {
+        "clip": "b06d26fc3f23627cff3124f778d071442cce30e12c187d8d2e04e6f56bdcdd7a",
+        "ms": 1708
+      }
+    ]
+  },
+  "gemfall-05c/scene_warden_count_sky_news/narration": {
+    "": [
+      {
+        "clip": "b7bb05b6c727b0677eefa7d4450272efd065dd245421abee87f665fe615134ec",
+        "ms": 11307
+      },
+      {
+        "clip": "d4f60e1f430d393d86b2b389ce16ffd79aea557ff51c947278536cc6f18088d8",
+        "ms": 1091
+      },
+      {
+        "clip": "1d0ab084186cae6a262944086665354ee10d899c1f7f48ced5cd7f20ea820fe6",
+        "ms": 1499
+      }
+    ]
+  },
+  "gemfall-05c/scene_who_to_tell/narration": {
+    "": [
+      {
+        "clip": "867332ab85d2cab22b7e6680d9bfe0082d453dae1549aec2dfc831651d24f95c",
+        "ms": 1558
+      },
+      {
+        "clip": "af49a6f8d8b5032f8d8c0434a1418f7c6d93aed8ecaa9be3313313de67861d0b",
+        "ms": 1894
+      },
+      {
+        "clip": "2a4d73a3659949ce2e3353539cb8c8c86a334e31ca56644782d1846bd8344017",
+        "ms": 967
+      },
+      {
+        "clip": "e0da69c002f3d9d81a1ca89ecb12b46a7f07b7973d1e43c532294b8fcea9f0aa",
+        "ms": 8107
+      },
+      {
+        "clip": "68ea3411e4bcd40b9d354399d4580c561aa6ff8264de40c0a2648683e6fd7b6a",
+        "ms": 2004
+      }
+    ]
+  },
+  "gemfall-05c/scene_who_to_tell_ring_home/narration": {
+    "": [
+      {
+        "clip": "044b65ede0fb45bbd71aefe1552f2d84b59c803337b4284a801f4934c12a563f",
+        "ms": 12907
+      }
+    ]
+  }
+}

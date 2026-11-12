@@ -1,0 +1,1774 @@
+{
+  "riftlight-frostfang-shore/@goal": {
+    "": [
+      {
+        "clip": "18cfb98e7e2fdd9fc4f2fc7f7258dcb2983f390a5ca75cfdf174c7d69d8af448",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/@plate": {
+    "": [
+      {
+        "clip": "ec4f8606076896fb07b3375e799dbd720f13ca03b969ed20d1a6185d52379372",
+        "ms": 11207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ascend/narration": {
+    "": [
+      {
+        "clip": "769d51b7f2cf9873498b55759d3cc9713dc82720fd18c41666db289e07b99f8e",
+        "ms": 8307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ascend/variants/0": {
+    "": [
+      {
+        "clip": "76a8c164e42dcad09bbf350cf9a263c96ebe7d2d3b163052140cdcb2dbb9db58",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bank/narration": {
+    "": [
+      {
+        "clip": "4d840b394b42bf34899152bf2885ae79a4d05c02ab3d84a5916c372d12f9ad5d",
+        "ms": 11207
+      },
+      {
+        "clip": "298782f45773592e941bad8e4fb5c46c2eb3bbf3cba7e2cbeebb2dff9179ed33",
+        "ms": 2175
+      },
+      {
+        "clip": "b74a524012517aa96f9115baaf5ad5b057d5f3ceaa980967173504d6869f3bf3",
+        "ms": 3207
+      },
+      {
+        "clip": "424b4f99cc585b791db3022b9c65ea64322da37105168a7e89584fbe058a7dbe",
+        "ms": 4907
+      },
+      {
+        "clip": "6fa48a15362d19f9c9aae03fc8298349ab4e0ec6e119c1c440db8947afe5420d",
+        "ms": 2607
+      },
+      {
+        "clip": "608b4bea72549063094637b89d2f9006b463bd62bfa6330c4a0a10616b7d9799",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bank/variants/0": {
+    "": [
+      {
+        "clip": "6c8ee9d945ae08bd4937943688d449d14a512a012bfc9be53097789e27de66f4",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar/narration": {
+    "": [
+      {
+        "clip": "fffd1402ce1a4b9302c136d87a063ed0e9ec6960f407e868386e94bcdb0ca62c",
+        "ms": 3907
+      },
+      {
+        "clip": "db71917527d3c409f756375cf4bbfc24655a167fb5b7ee2a39bc6c718d74d04a",
+        "ms": 1368
+      },
+      {
+        "clip": "4757e6c0b6c593338c5ff435b23f8b8dedd362abe392fa255602f95070679d8f",
+        "ms": 1068
+      },
+      {
+        "clip": "d98d91beade6a0448434d03eff18ef379565c841d220191c32f08bc8a5867c49",
+        "ms": 1213
+      },
+      {
+        "clip": "fa46cf1a00028cbe4c356ea2e5b65e244633dbbddc6498fa9efe48abe770cd34",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_carry/interaction/cue": {
+    "": [
+      {
+        "clip": "90c9afe0e40f646c70e2b6174bf9da4abfae2b174f2247a591a1da743c3cf0ba",
+        "ms": 2366
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_carry/narration": {
+    "": [
+      {
+        "clip": "ea37b6f3ddaa689ea3d75abaa4a936f1ac8683cf309aa75c0233ea90b69ca476",
+        "ms": 11407
+      },
+      {
+        "clip": "413f23cc5ceb88b94c033f17a0cac0cd81f1cd1c2d99db870e8744b9dfd435b1",
+        "ms": 1130
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_carry/onAssisted/narration": {
+    "": [
+      {
+        "clip": "83ed6b434ac63bc2661895b8bcbb7d3904ec9db041731471b00b726a6dabbe00",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_carry/onFailure/narration": {
+    "": [
+      {
+        "clip": "a78501cdd78bbbaad4aff52f5364b9141409a510cbb7b42b7c70dfcab16fb084",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_carry/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2e3eb71759c5631233caeba75cdf3cf770266394987e69c0b714627838268d3a",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_crab/narration": {
+    "": [
+      {
+        "clip": "5abd2df3ad26f683e4148ecabb9bf873ec5ed569c84afc95f12e8df832055906",
+        "ms": 17907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_crab/onDefeat/narration": {
+    "": [
+      {
+        "clip": "4036caccac238f52b74d1b63f72cb495a16b88e21d81ee53ac71facdddb67012",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_crab/onTimeout/narration": {
+    "": [
+      {
+        "clip": "4036caccac238f52b74d1b63f72cb495a16b88e21d81ee53ac71facdddb67012",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_crab/onVictory/narration": {
+    "": [
+      {
+        "clip": "68b4ddf0246048f7715d3cf375ab154d07b12271beec430937b5e357dabc4ba3",
+        "ms": 6507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_crab/onVictory/variants/0": {
+    "": [
+      {
+        "clip": "827ae1be6062594bdbfeadc75da49d12fef0002ac90abd58c08ffdfc520e4f0b",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_fly/narration": {
+    "": [
+      {
+        "clip": "dc8f2ade70fde3505457d620188139e93119d154d7d012c9395582c832cdb6c8",
+        "ms": 2926
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_fly/onFailure/narration": {
+    "": [
+      {
+        "clip": "0a9145fe2bfa949d0de5c6e6b307b7fa384ba0e1a56f46e1146a1dfad835b36a",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_fly/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4a1bc1be655210a79ec68b8a12805bbb7d28560e9b632f06092779af401de3b1",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_fly/prompt": {
+    "": [
+      {
+        "clip": "e501d97adf9c2b533c4346646f05d1cc91211ba9fdb2551c1e0ac2542564d6f7",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_leap/narration": {
+    "": [
+      {
+        "clip": "7014fd83ab57807052b87d260a6fd743e716f741feeaf09b18c458d4c7b11d09",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_leap/onFailure/narration": {
+    "": [
+      {
+        "clip": "116726de72555dd4ad783cab9c212bc27592da5c1d695761620701e401ebc2d6",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_leap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "11daac8ce31a1536b59572c82b777b72d477ef9330f7330fd6e935495f0087b9",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_leap/prompt": {
+    "": [
+      {
+        "clip": "7470b81db426dbd7363235aff35f7dec6537696695753eac4087707a1002a08c",
+        "ms": 2660
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_reached/narration": {
+    "": [
+      {
+        "clip": "dcdf9978dfbfae0e0d0793ebebda201f2f0984574f47a97935ee4bd7471545a0",
+        "ms": 14507
+      },
+      {
+        "clip": "41910342285235640736de39912e4e3f78fd1b2ec8e1aa35b110499efe16ede3",
+        "ms": 1344
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "5bfa0a993c5d2313e10daceb8fa898d08d40480f84db6e0206b5faea8e8b534c",
+        "ms": 2188
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_stones/narration": {
+    "": [
+      {
+        "clip": "7dcc75fef4e329a8d0d139c99153b10f14a2c27588c5ffebe4e0f49e4abfd45c",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_stones/onFailure/narration": {
+    "": [
+      {
+        "clip": "c4d441c28ba7f923eddb5cf70e0b791d80a80f6c6f1a0c19a523c475eec51bdd",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_stones/onSuccess/narration": {
+    "": [
+      {
+        "clip": "c9919a5459fc3a0387f237aeb1da07ebd5575daf8bc56f9e3a5a0d1bb322716f",
+        "ms": 2688
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_stones/prompt": {
+    "": [
+      {
+        "clip": "0c9b88531b94f20b09e2da47483e62fa19194accb09a332926c9aca540e50986",
+        "ms": 2839
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_wade/narration": {
+    "": [
+      {
+        "clip": "aae9d02af7764cdc1d8c20bc0b1ac29610ca59043ee270d0d3af7580f7d348c6",
+        "ms": 3005
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_wade/onFailure/narration": {
+    "": [
+      {
+        "clip": "28b56a79e789dc14d6deb7f787e7a6ea906b744fc5203aefdef3d565809336d3",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_wade/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ef90d25e1c3ffca9958074073fc75cdfbc4deb8e0055d4fc1a5df64910a6e714",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/bar_wade/prompt": {
+    "": [
+      {
+        "clip": "1cb41c95d64f047d6fb4686eef3b79849ce3e3cb8a801e70a492c288fc9b7de9",
+        "ms": 2897
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/boss_sulk/narration": {
+    "": [
+      {
+        "clip": "62aa74b459941d5a2c35618e340b83d492eef0cbcc31170c7c70d564ef41c851",
+        "ms": 5407
+      },
+      {
+        "clip": "749366ce15204a395f3cc5069a1a37af1213deace9bf98cc78d26cb936b7c175",
+        "ms": 430
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "377592b59a09748372d1c6c075f73232bb2939ef660b5072f6e4caef485a60f5",
+        "ms": 1731
+      },
+      {
+        "clip": "b4a252c81ea436b2b1a46106532413217898903cc850d3a05e908b7a7e938915",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/boss_sulk/onFailure/narration": {
+    "": [
+      {
+        "clip": "915568bab07bc79e79b6ad67151dc37678cb4ea554111822b7bc71ad6822b693",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/boss_sulk/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5c015ef5f74a56007080cbf953f50a740baa8d903eba252c168b1feb2f6a16c9",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/boss_sulk/prompt": {
+    "": [
+      {
+        "clip": "39d413e23f63433b3faec9b8d56b9e8542c92b9af6ef05d93db8d15002b78f12",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/brace_foot/narration": {
+    "": [
+      {
+        "clip": "168ade5d53047bf5cb0880f6ea96380aa6ddd3e19a21dd5151bff65cdab13d28",
+        "ms": 3507
+      },
+      {
+        "clip": "ad348537d85606042f6bdd7b54c36fa502246b68f78ea30cc009b22ecb6aacf8",
+        "ms": 1329
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/brace_foot/onFailure/narration": {
+    "": [
+      {
+        "clip": "56b0eee3470ffe7391b3f86c2031798dc48cb378ecc6ac175e00fbf1d154f24f",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/brace_foot/onSuccess/narration": {
+    "": [
+      {
+        "clip": "50c244921515412df9201f28d35ebab9ee0c06d203b4ff5456f4fae78b5dda14",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/brace_foot/prompt": {
+    "": [
+      {
+        "clip": "bda4602b2a18c38be165cc479e134112a032f6f2b2628ecb558a031ae256e1b2",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/chime/narration": {
+    "": [
+      {
+        "clip": "9c75e31820deab8020ae8c4d6d383ef2506613d6ff0a63461982ccd79ee08241",
+        "ms": 17207
+      },
+      {
+        "clip": "6ed725865d5bedbdd423cb8976dcbc512d3a458ad9ce627b9b2c0ff4d4c50cfd",
+        "ms": 1364
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "840510ccf40b2162a417979259a4e0f087396db02b9cb0efdaa06e9b162eed85",
+        "ms": 1293
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/narration": {
+    "": [
+      {
+        "clip": "d24b41dc028374363fb12560048afc78ec987b7728823d4d71abcdf4a39d70bf",
+        "ms": 26507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/0": {
+    "": [
+      {
+        "clip": "2fdd65a6eefb6ea7b228bf833a915f777dff5dc7b243be236bc457d54b777ac5",
+        "ms": 1950
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "e4c2d123fb3ad25a9b84526bda65c3a36bbefed6a2eb83f0a77e6a4b6dde2bd7",
+        "ms": 1209
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/1": {
+    "": [
+      {
+        "clip": "4e57159f1dbb71a2e237d013432260fe4f91a8ef5fa7c8c5b935065d9f7941c0",
+        "ms": 2555
+      },
+      {
+        "clip": "f6ac554f1ae42b4286ae6335440111ded3e67e835924f4286eba8fac0eed5f01",
+        "ms": 1449
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "a97864e9658d3270882d335197de6bd59d908ea4672b2a0aa6a08a8ad140e941",
+        "ms": 1686
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/2": {
+    "": [
+      {
+        "clip": "f00372b47e7502bfe346d285c1146d27f4870e799953e000b05e7fcd00310313",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/3": {
+    "": [
+      {
+        "clip": "918556c7149d1cd2d42fd7707fa497c759d2363fafc4fcca96254fdc22f93509",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/4": {
+    "": [
+      {
+        "clip": "545634469b46a6d5c2db9a5e77656de0f898f800bf94a83a97836024de619638",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/5": {
+    "": [
+      {
+        "clip": "299b6fd62a97c80991d62583bb2c5a27592e534ad8472b80cff37397d81f2657",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb/variants/6": {
+    "": [
+      {
+        "clip": "c85277bbf6107510c124dcff70ff7bb65a31977a05cc4c5830ecda17e7cb2041",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_line/narration": {
+    "": [
+      {
+        "clip": "d5ec65d64c156cab892a0a1b4ac1b00ca7a422c28849f659ae7e6c3762941b8d",
+        "ms": 1877
+      },
+      {
+        "clip": "e81bdfafdb83627eb396112e6b8b26e9f393218b3a8178e53f63a42382b343af",
+        "ms": 1126
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "04d6725041a6346341db3296caa09619365809024efc86094f3d6da11b210fc6",
+        "ms": 1959
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_line/onFailure/narration": {
+    "": [
+      {
+        "clip": "23e34bfdfbc79143f6939ce4a07b4d22af20da019e12d8bd92c9dc7ad9a1b013",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_line/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8ce49e6647ce28c659dd1bc4f290763bca34d4b3dc2fb430a9a40b94c321e1c2",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_line/prompt": {
+    "": [
+      {
+        "clip": "24805256410ca9ad64e403cbf54b3b33016c23326f176f5fd3b9f5774dda5894",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_rally/narration": {
+    "": [
+      {
+        "clip": "cbe3fc47535dab4ff78b517fa080a5b30475d3dc5a49ff88529cfc083e2a5d48",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_rally/onFailure/narration": {
+    "": [
+      {
+        "clip": "43aaa15c264241b59729e9d9afea0454f1d273f74962380ec754cd0d54bb5beb",
+        "ms": 5627
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_rally/onSuccess/narration": {
+    "": [
+      {
+        "clip": "692e1983ba810453cddb59dcd852bd8565aa2b8b836afa5bd8e1b9c86313b458",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_rally/prompt": {
+    "": [
+      {
+        "clip": "9db9107b5b117bf9501495a0ffcb7bbbe87e3c375b937502d3034a18844f3869",
+        "ms": 2949
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_sling/narration": {
+    "": [
+      {
+        "clip": "1bcd36f7c0ee50bbd3800ba12a6fc7e708477449c6d4452bb8510aaef204738b",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_sling/onFailure/narration": {
+    "": [
+      {
+        "clip": "37cf5a0577c55707547ef860731215defa291f74758560048f228aeaf8cd89e2",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_sling/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b80801797c3f2cce8b8a1fbc8ea786c1e54911138be9bf470d84f3522d6428c1",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_sling/prompt": {
+    "": [
+      {
+        "clip": "29e8dc05f065771d2ea4d2026b203d133646162559f6abd426783c40a98cfe63",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_sling/variants/0": {
+    "": [
+      {
+        "clip": "7117030a3a8ce341f63d11dc562c751510efeedff6d4ba3255f6d2527171d550",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_track/narration": {
+    "": [
+      {
+        "clip": "dba0ab27e96c418606a69aa79930136af8ca08c03e5d6fc7d1c3cbbd526210a9",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_track/onFailure/narration": {
+    "": [
+      {
+        "clip": "b4349bb19df54efdb710d76179622484f8628ab6dc868c3af2b8468a9931fb64",
+        "ms": 6008
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_track/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f7bf41d6f5105a47c588b40af74b1e8f49180e0f42923ccdd34f103a2677f1fe",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_track/prompt": {
+    "": [
+      {
+        "clip": "36db5226cb11564608551655afe00d44187c6afd95d0d25b39bb2f2944e1a399",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_wings/narration": {
+    "": [
+      {
+        "clip": "83ce4f3e5227131471f884bc1d8174f6172b7d4aa743c0e5d7bf9cee48d6309e",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_wings/onFailure/narration": {
+    "": [
+      {
+        "clip": "09653023f92399abd9ce779b772ebc98f9cdbf36bba769d98a859f7c2a7f8a62",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_wings/onSuccess/narration": {
+    "": [
+      {
+        "clip": "493f393a644d8da77922f3aee20c2a29062b4c5805fb64826c919fdf56c7b5cb",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/climb_wings/prompt": {
+    "": [
+      {
+        "clip": "75be5dfbe5807f4fd3428682685ac2c1eb43913f4d7af67b82959058eb13aa9c",
+        "ms": 2875
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/driftline/narration": {
+    "": [
+      {
+        "clip": "a555ab1ec646c6b8eb06ce46b73048f1f1adf7897fe526c5b96ad194964ae458",
+        "ms": 9807
+      },
+      {
+        "clip": "3692106ff6a5df2d736e7fd9be9ba714e3937b1bf0db322d68da2a0829e5ff66",
+        "ms": 1491
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "7ee6c55771258f3d3144e885faa67601ad7e2bfb26f66052a2ea5fb849c8d0d8",
+        "ms": 2818
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/foot_set/narration": {
+    "": [
+      {
+        "clip": "55f8f5ae2949860b653a64cac020551727528cc20b9da4c0e15da8018e18774d",
+        "ms": 5707
+      },
+      {
+        "clip": "190519b9c109c3a856a03d7fdb3d669da1eaea1ad5827148e8494b253afc857b",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/foot_set/variants/0": {
+    "": [
+      {
+        "clip": "84443916953af4e8370cddc741d7138010ace24fcd3db03ca004217cd9c679db",
+        "ms": 3607
+      },
+      {
+        "clip": "0fd7a87b75765520907ded5145953c64e5d9f106d417594df59b7d616832cf7f",
+        "ms": 739
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "190519b9c109c3a856a03d7fdb3d669da1eaea1ad5827148e8494b253afc857b",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_back/narration": {
+    "": [
+      {
+        "clip": "4036acf552211d1bf13570f776e0e70305ca2acd1bb7da3235500fc83b814c93",
+        "ms": 4707
+      },
+      {
+        "clip": "c89345b30e51d827097851bc6b6e5e6f29df46e27fc2036787bc0e7ad4aa5e6f",
+        "ms": 540
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "86f47e9416b2a7cb994944d4bb3fe4ffd50e78f01334ccd1f5c52c2588407d51",
+        "ms": 1775
+      },
+      {
+        "clip": "0bb0573a2de26e9f391ff46afd89d2dd440cd9b4339f16b40a7d4c1d3f4ec7cc",
+        "ms": 2447
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_back/variants/0": {
+    "": [
+      {
+        "clip": "4ad297bda2016e447283dbc83c115613527173b760ccc40c78cecf369e12bba4",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_back/variants/1": {
+    "": [
+      {
+        "clip": "39af4fadb54ed1e9f3d9f9557468822770244da3e3ad7e8e4811890b07103e4a",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_back/variants/2": {
+    "": [
+      {
+        "clip": "4def25d01438e645544e8db5928a86285c13a6d85554beda5ef28db290c1389d",
+        "ms": 7307
+      },
+      {
+        "clip": "e20dd3d76616f722f13dee944f4b4d580661b43f5923914539c8c7c2678abc28",
+        "ms": 2751
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_bait/narration": {
+    "": [
+      {
+        "clip": "4a9641980deed5936cf6bf430cbc51f5b1256e9f81cf65c4058e8262b55558a7",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_bait/onFailure/narration": {
+    "": [
+      {
+        "clip": "56930375847bcbcdee3a9f735444740d2fc2bbb7030fe8291483e0da77ce2ab0",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_bait/onSuccess/narration": {
+    "": [
+      {
+        "clip": "81ef2e8c81322e9f93f293ad26e43abbff97f54309be4f1e71a4bc1cd954be6b",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_bait/prompt": {
+    "": [
+      {
+        "clip": "270c254c9b7a6d0664ffe0c2f3943d68b90618809eb731a6280399699ab92c94",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_push/narration": {
+    "": [
+      {
+        "clip": "68f1afcb8eb14d62a8e591932c42956ac5e914efa878254d3b150fad151f00f5",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_push/onFailure/narration": {
+    "": [
+      {
+        "clip": "ccb108d3b7e1e981d1519190b92facf0b34df6e30eb931d875c727d0bba78b05",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_push/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2fced02754465d50b7666109bd2146f267362d4ec2efe4ab5163f5b96ac5678d",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_push/prompt": {
+    "": [
+      {
+        "clip": "6f4c292842d96b173cbe285fdb340962fa2ef5386c1d67e0cce8e0b54dd4e946",
+        "ms": 3308
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_song/narration": {
+    "": [
+      {
+        "clip": "2b2e3c34753e3999c54b6ea6ce1f4e0e69809f9dcd30def9f5e3d36698087e2f",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_song/onFailure/narration": {
+    "": [
+      {
+        "clip": "9f1653e83f5016eeac660d7a5abd86eeb26021299b00ce4a786de5a89f92a911",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_song/onSuccess/narration": {
+    "": [
+      {
+        "clip": "096079ebdba0250c4f057624cf8de03e552a9beacf4d2af00d2b8feef5b6e12f",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_song/prompt": {
+    "": [
+      {
+        "clip": "5d9678eac29be7ac7d18052e37abd780400ef601d8caad467f54dbc97fe4c090",
+        "ms": 2972
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_track_seen/narration": {
+    "": [
+      {
+        "clip": "03afd35a288d3396c06bb60e2fd3b8c28384187b0bb67a615e37a0aa07876edd",
+        "ms": 16907
+      },
+      {
+        "clip": "ab353fc75bac313f879b9ae7f9fa7b5b9721474de34676230a38c2c1119b6e34",
+        "ms": 1538
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "8eee0c2fd7ea72c9edd7523e474c37b277a505ffeed5ab5487664d60b12bd81d",
+        "ms": 1748
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_watch/narration": {
+    "": [
+      {
+        "clip": "df561f9038582bdf2bf6d2336fd47339108888872a8a5e0f74c89585ee5354dc",
+        "ms": 10507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_watch/onFailure/narration": {
+    "": [
+      {
+        "clip": "7643c72ef1a5cc876a5506bf24305f087e711a29d3b9f946e3fb5a56fb6fda7e",
+        "ms": 8207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_watch/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5e96c11384646e5a7b63628da91c73545ad6d584d4d305f2d14a7264229087f9",
+        "ms": 1565
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goat_watch/prompt": {
+    "": [
+      {
+        "clip": "f1568e3fa19857b2539682685218c288cfa31afe8ca8a365f4d53fb37dff9c09",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/goats/narration": {
+    "": [
+      {
+        "clip": "12effc9a0cf7234d2e6c5ff68074880ccf63d851f276d471337f3e751dde94a7",
+        "ms": 8507
+      },
+      {
+        "clip": "17adc43844457f303bf88156f16dbbf737da2218f67dd07728dfda5c3bfcb1ac",
+        "ms": 1328
+      },
+      {
+        "clip": "255d249c22dd68afdb23adbe2cdf1eccf2b8bb6d51c019d28092ef8cf6452ab5",
+        "ms": 1115
+      },
+      {
+        "clip": "c2171f43c70751462f90d456b077b5cce6c743627ff0d585b3866b37170a6543",
+        "ms": 2023
+      },
+      {
+        "clip": "3f35565a99b1b4dca2f021fb2b58a57b9c3dd6ff9a7af4e68ca50bd2f7f170f8",
+        "ms": 1009
+      },
+      {
+        "clip": "e23d09559ad40c687662eea2e71a8bf96135dc4026c393c9d6cef556ed687199",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/haul_foot/narration": {
+    "": [
+      {
+        "clip": "b8bd022cbcd8fb965e7cdd573e35bb7475e80c07a512ecd5d5e5d68d8d4c1526",
+        "ms": 5007
+      },
+      {
+        "clip": "adf29f88ccd91ae3e5844c5b36e388836f230bfe38cb7b85b121efde43175cd1",
+        "ms": 723
+      },
+      {
+        "clip": "42139cf439381c7b40dbc7105f26f23267f31decf9050b23d36a3490587c6e02",
+        "ms": 1081
+      },
+      {
+        "clip": "8b6afdc36c4f3025ff0a99f5ecae9e8bc9f4ae9c4eddf6ca83bb0f5353476c79",
+        "ms": 2313
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/haul_foot/onFailure/narration": {
+    "": [
+      {
+        "clip": "066c51b3187fbe003064d85fae0ea20f9989f12f3e43c038b90a431bb3d04378",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/haul_foot/onSuccess/narration": {
+    "": [
+      {
+        "clip": "2826d05cbabbf4c3131b5daa49dd709b160e217dd58f502b0bba6e171b2e10e1",
+        "ms": 2777
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/haul_foot/prompt": {
+    "": [
+      {
+        "clip": "a3e4fb51ae096f410622612c876b05d5a2a4956dcd2c21e9591fdf30e3c81de3",
+        "ms": 2851
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/help/narration": {
+    "": [
+      {
+        "clip": "2d872c5ffbb2dcb97d611231a28cfdb92d87c658924ae6b093851337aead131e",
+        "ms": 7107
+      },
+      {
+        "clip": "945fc8c9f89aa712bfd6c0b7e4e29aad0b9aaa80df068036de28a4cd4ca17690",
+        "ms": 1070
+      },
+      {
+        "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
+        "ms": 778
+      },
+      {
+        "clip": "b5315579b4f3195b79b42053478d0fafb3ef57da7d79b24d76a68efcb6efc030",
+        "ms": 7307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/kid_swept/narration": {
+    "": [
+      {
+        "clip": "c90425b45dfdb6350acf93ca2a6d1ddb1b4f4bd69df13c23bdd97f86d7caf0b3",
+        "ms": 9207
+      },
+      {
+        "clip": "bc6718863929452c4cd079e50a2833c44340ca9b4405aaf72f227fc595558a6d",
+        "ms": 921
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "c71c2b3dbb268430783a055be678d1136fc8485f4fcde662702f030788df0b4a",
+        "ms": 2424
+      },
+      {
+        "clip": "3243ef069ae72ca4c591a0ac960c6348ed2c83a82092d03ab03be6375730e7b1",
+        "ms": 2941
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ladder_hold/interaction/cue": {
+    "": [
+      {
+        "clip": "adeb4d7800f0f8136b463fc2876bdcfb56073588d62e2963168135921d3593eb",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ladder_hold/narration": {
+    "": [
+      {
+        "clip": "bab8579e759ad6ec2231a8057e2c645d962483d44e38f02decdf47e2840e2f86",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ladder_hold/onAssisted/narration": {
+    "": [
+      {
+        "clip": "8c84fd67b3cfc24d59918f033199e3e07af5ea310c140ebe46159b39e665b26d",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ladder_hold/onFailure/narration": {
+    "": [
+      {
+        "clip": "d1963296182347622a90f2615b865ff224a98089493e305a0c9d7dee6697838b",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/ladder_hold/onSuccess/narration": {
+    "": [
+      {
+        "clip": "721ce6aa3ed4c6e1ad8999837794da8dd023a4e2f9bdfdbb37999e8f721b7bd3",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/lash_foot/narration": {
+    "": [
+      {
+        "clip": "450dd35bd3ae44add695b313875727392ff142fb30cece7975e6312841e7aba9",
+        "ms": 1929
+      },
+      {
+        "clip": "f743d563410d2b025c7ca7062d4ef628207b0f84e04d217cc836316034ae084e",
+        "ms": 1237
+      },
+      {
+        "clip": "34f4aa46ebed84b1815fd904c861b5a549da61d65cacb9774e6ff83476357683",
+        "ms": 946
+      },
+      {
+        "clip": "21f317860b3431440316f93eca718f2fa2f9e5ba9bd481fa83e8bd824deb0cc7",
+        "ms": 1453
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/lash_foot/onFailure/narration": {
+    "": [
+      {
+        "clip": "0c5ccd16e5e8ade10bace7f09f77861f31c13edea94580f8557ce2a12383a937",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/lash_foot/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a8b43265cac70fd95ace6f9bf9d762eb4edb4753b4d978481d3f0aeba31d2b5c",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/lash_foot/prompt": {
+    "": [
+      {
+        "clip": "d884b3158fb536e17f8c0cceaaaa4c30b95d6364ce87128e42c9b8d975323615",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_drag/narration": {
+    "": [
+      {
+        "clip": "ed9daf88cba7836d5a18b4fb81fd9aafc9032c06d728258b69c755a0ae4db925",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_drag/onFailure/narration": {
+    "": [
+      {
+        "clip": "8b07285ec24304f835d3128d71fd75c0a6b45a1b92d64f7d3f42a03ad1a93228",
+        "ms": 4808
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_drag/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0f3ee60838b4a9919bd67ce9f6d0351f00dbe1cb1965344cbf1fab6c6999d3aa",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_drag/prompt": {
+    "": [
+      {
+        "clip": "46046da5aa05d6ad37522ff62dc71fe7efd9c9c087681c9df1825f5bf89cb5a9",
+        "ms": 2741
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_hook/narration": {
+    "": [
+      {
+        "clip": "b0f39a1bd8ed3bc62f3960fd7bdfabb3a3a1f68828cada758382d723ea06c7ba",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_hook/onFailure/narration": {
+    "": [
+      {
+        "clip": "60a917fbfae8c69a31ade12704b222d6a7c87625f928e41c820e716f85426faa",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_hook/onSuccess/narration": {
+    "": [
+      {
+        "clip": "33f4645d6d2840583eb642888fe429b5810d6164507f474304904b0841197ec4",
+        "ms": 4708
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_hook/prompt": {
+    "": [
+      {
+        "clip": "ec94fe27cd6f3395412bb0a22fa3c86716ee39c0422577b22cfc0031ab749225",
+        "ms": 2375
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/net_saved/narration": {
+    "": [
+      {
+        "clip": "cdbfb05365f4f3d517e5bbb5ec0f9a8a6d4196c1fc9c5999ab17cf7a25524807",
+        "ms": 7007
+      },
+      {
+        "clip": "68cfa4e35db8d1b33facf6965cc6f26965153c205b2d67a32968ded8c2c92984",
+        "ms": 1953
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "b3f6d7066755e8b27e08a0cacc2bf5e055b30c19d6f3555d2377f5b1d8ed867c",
+        "ms": 6807
+      },
+      {
+        "clip": "5e95de930c0f3713738734fcd7bf703c788e8cdefac8957e8f30c4ff74e62754",
+        "ms": 5107
+      },
+      {
+        "clip": "29ceb5aa7cde465d4df054d2da8670aae07bac565be9873cf407df827503240a",
+        "ms": 2140
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/rest_fire/narration": {
+    "": [
+      {
+        "clip": "dc70360e73d41e71f208604ca5e259605932cd75802e803af5e2bc6a0802084a",
+        "ms": 14807
+      },
+      {
+        "clip": "b6fbb0321467b454920b9449e06f44f5401294a7f949103519e1af9d627ca501",
+        "ms": 1174
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "fa8e38efcbc8f08817a5d3f9191d7f44fc27028400dc0a86ef67ae3d6b7e42e8",
+        "ms": 2923
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/rest_fire/variants/0": {
+    "": [
+      {
+        "clip": "29677a17d462521490302b69b792ea89e8b14a8d3c370e38232af8bb8950cfb1",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/rest_share/narration": {
+    "": [
+      {
+        "clip": "f24144003c103b9fd3a7b7ed87f885e848a5914dc5f704ffb5775c728810b014",
+        "ms": 9407
+      },
+      {
+        "clip": "857600440f25a2eea3beb50d4ee9424eecd02d42e05c76b28a1ab862e5babadc",
+        "ms": 2522
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/rest_socks/narration": {
+    "": [
+      {
+        "clip": "14cfcd62006cbecb78c2a341378409a3c2ca70c3452f2534fc9e3ae0e7055485",
+        "ms": 7007
+      },
+      {
+        "clip": "ccac08f2055c3fca1ff48807d28fd4c0e9e3cdb44724f8e7a820bb88c4884ce3",
+        "ms": 1018
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/rest_story/narration": {
+    "": [
+      {
+        "clip": "412f4874976f92303623056b20a9ac3bc146933306e721d9f1800934d2deb3db",
+        "ms": 1768
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "048c8043558312d3b8cbec4966d15890dfd437602d0dd5f6c219be791fdd7e11",
+        "ms": 8507
+      },
+      {
+        "clip": "4cba62d8e731162357d5a53931cf2e9bd777a5a8e9962f8f97a4793e40928b39",
+        "ms": 1412
+      },
+      {
+        "clip": "4b7fb4481c8558aa4069fb5670284afc775e0499a9733153ff2269031e2c905e",
+        "ms": 2873
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/river_line/narration": {
+    "": [
+      {
+        "clip": "c872ce28ae53f7e92f805a2888e78b1650c0de31a50e5cf7fc3a836bebc6bc77",
+        "ms": 7107
+      },
+      {
+        "clip": "2d97c39dc755bc4fb7478409787afc47e07a815e624509ec6fc2ee6efbc1fe7c",
+        "ms": 855
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "50fd62b1940f22c6435c0ef41e867f6cbb9a6594abdc05282db12ec1358e3d80",
+        "ms": 7007
+      },
+      {
+        "clip": "c3c29d9b487dfaa7fef61529423277a7b44cb7a05104bd615eb1971aa5f3898d",
+        "ms": 4607
+      },
+      {
+        "clip": "42c4fb875927ade45ee0f08a09deefb26ab3c011d0644d18a45044b539c0b429",
+        "ms": 1756
+      },
+      {
+        "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
+        "ms": 1313
+      },
+      {
+        "clip": "3d027f5b099b6a95ec4a92e2483270e03fa6bda6169686a64e8ff145197cd34f",
+        "ms": 2110
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/safety/narration": {
+    "": [
+      {
+        "clip": "28f60f2d6b129680bcade727c516ef3308caa4c3eaf9ad8aaa004d0cb7c37a15",
+        "ms": 3407
+      },
+      {
+        "clip": "ae543fd623eb43a13c2458cca797ba606b941bdd77d823636d5146d107fb51a5",
+        "ms": 1518
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "324cd2e236f28ad0ba7e04ab7d7d265b7ee8c5efa50d4964fcb5927bdc4cbe1e",
+        "ms": 5307
+      },
+      {
+        "clip": "f04fb082b864d0ea621391e866518005b18254e5ee5b896bb3c20de30b29c678",
+        "ms": 2546
+      },
+      {
+        "clip": "b97728d741b31f9aeb1aaa38a0f7c5c898d6399b772104e7616626295a842ed4",
+        "ms": 1381
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/safety_buy/narration": {
+    "": [
+      {
+        "clip": "05eff9c5a8cd73a7feac2cdc9d719f041007a273f69a9d4fa57b7e6ebdaeb168",
+        "ms": 11107
+      },
+      {
+        "clip": "cd0205b487fd5dc47392d165b9533799e3d2e6063a305084f4c56ac2cbe02f2e",
+        "ms": 1897
+      },
+      {
+        "clip": "8a9492bab435c7b6d5e237235ac50042f817fdc2aaa12c9e14e4de194c03fddf",
+        "ms": 3507
+      },
+      {
+        "clip": "6ab01a5b062531b58994961a4d7fd4cb26c0c7f7a08182a0eebf756634a99537",
+        "ms": 2220
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/safety_leave/narration": {
+    "": [
+      {
+        "clip": "940c8a251ed572a3abbb8a2c45a99b433fb4dcb2336d562d2847c498ee7a05b8",
+        "ms": 824
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "b5b82bc4fdb17d9a8f3ad9f11aba3bea6a974f896a6284c0391d9de8f48eab3a",
+        "ms": 1304
+      },
+      {
+        "clip": "d69db140834c4cff0e32b93454d844751e35e25d0e694c255624a4170f71c14f",
+        "ms": 1148
+      },
+      {
+        "clip": "653bf73ba35fc889d1a28f7e3d5247fa9d6bc71ec503974360f3300dd1ecd9a0",
+        "ms": 2406
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/safety_leave/variants/0": {
+    "": [
+      {
+        "clip": "3785e144bd1b75e03ada3bf945ab54b681703b0a752465f7b190293651b1b153",
+        "ms": 1768
+      },
+      {
+        "clip": "8e9f2c8249ccd9354168af66fda05f9f6aa5dc3dd92758f630a402cf8e0d96c6",
+        "ms": 1977
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/safety_rope/narration": {
+    "": [
+      {
+        "clip": "5be59154a0e0a88b95c800f35d1330174061f03138eb69a8bc4a36b0e7ca8a84",
+        "ms": 11207
+      },
+      {
+        "clip": "cd0205b487fd5dc47392d165b9533799e3d2e6063a305084f4c56ac2cbe02f2e",
+        "ms": 1897
+      },
+      {
+        "clip": "8a9492bab435c7b6d5e237235ac50042f817fdc2aaa12c9e14e4de194c03fddf",
+        "ms": 3507
+      },
+      {
+        "clip": "6ab01a5b062531b58994961a4d7fd4cb26c0c7f7a08182a0eebf756634a99537",
+        "ms": 2220
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/smash_foot/narration": {
+    "": [
+      {
+        "clip": "c3ec5f2b0b13f399085cc686d895f0da7b321123cbe6cbae01a2189825eaa057",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/smash_foot/onFailure/narration": {
+    "": [
+      {
+        "clip": "c272bc7241e493d4cd73d3ea88b73283e54e8296693d0e13d06a379c70dc8638",
+        "ms": 2861
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/smash_foot/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4e39d64467afe15d583016010cb5e28511a8dbca8a196bbeaeb1211df771e474",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/smash_foot/prompt": {
+    "": [
+      {
+        "clip": "5b03699aa2227a3badff20c5b46c9f3801edf1f80d92126cefe146ad646606c7",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge/narration": {
+    "": [
+      {
+        "clip": "07679f60e2b0703df13bf4ba44030e52f8207f1b2151ba66d2ce065e6ca53984",
+        "ms": 9107
+      },
+      {
+        "clip": "c15cbb0ed66d41f26a65afbbc9c7a6140b9602c10aa19e9451b7c2486dcc3bec",
+        "ms": 1394
+      },
+      {
+        "clip": "9c1c0c39e0d273294baa1b0fda4b48265976088ae0b09bf1c99bfcbdeaede778",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge/variants/0": {
+    "": [
+      {
+        "clip": "d8b32e6e40720e7d0d6e79f28117d08175f1344cc43a9bf6f6a0f19a8538cabc",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_after/narration": {
+    "": [
+      {
+        "clip": "0ccabab455b4a57ec4dd0dd9f3e244db6bf4a6e642715076e5979a0df0cc28cc",
+        "ms": 3807
+      },
+      {
+        "clip": "f62e4f1f03f6f6f9f0694f35c3141df8c6bcef29d042d7955b4120bfd22dd61d",
+        "ms": 1404
+      },
+      {
+        "clip": "13bdeb7231aa581ea152108954f820ad1dd99ed1fb9266440976fe91315472e0",
+        "ms": 4707
+      },
+      {
+        "clip": "faff952353055cb4353b789e24735a9a6dac7f5b519b9548fecdfd496eaf7e18",
+        "ms": 1787
+      },
+      {
+        "clip": "05b45ca806c2c2d8123119b92439548c1efd0332c3c8a4e0d3f90e2fb4a72bc9",
+        "ms": 2030
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_after/variants/0": {
+    "": [
+      {
+        "clip": "5f5488a105b43918893900818cce1bcd177968ac0c9bbdea88834e05778cefa9",
+        "ms": 9807
+      },
+      {
+        "clip": "faff952353055cb4353b789e24735a9a6dac7f5b519b9548fecdfd496eaf7e18",
+        "ms": 1787
+      },
+      {
+        "clip": "05b45ca806c2c2d8123119b92439548c1efd0332c3c8a4e0d3f90e2fb4a72bc9",
+        "ms": 2030
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_brace/narration": {
+    "": [
+      {
+        "clip": "047d5789e216c53acf440b5ab41b53e067d2d9b1af10d6523980c53ce8fe35ef",
+        "ms": 2668
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_brace/onFailure/narration": {
+    "": [
+      {
+        "clip": "324f4f2a573b93eb57e0e345b96fc187947b6249ec04df539d770869fc893ca0",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_brace/onSuccess/narration": {
+    "": [
+      {
+        "clip": "140ab4f11c0d891a881b15647cd7e415958452af7febb9679616f06780398378",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_brace/prompt": {
+    "": [
+      {
+        "clip": "75451b99fcd167f15ab1d40a1a13839f9121dc13adbfe0dbcecfbde8f7ecbffc",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_chain/narration": {
+    "": [
+      {
+        "clip": "4ff90e2f46e9c44b30b22ebd961b18322bfe9ad579f1ea216f35078f3a96843b",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_chain/onFailure/narration": {
+    "": [
+      {
+        "clip": "6c7e719e1fbace78deba04ae1ce1e417679614cbc5e087cb8d55a4a09799745c",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_chain/onSuccess/narration": {
+    "": [
+      {
+        "clip": "61743fb875f0050a8f1f086945cf10a34daa4c51c7b299202e82e72e17438a67",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_chain/prompt": {
+    "": [
+      {
+        "clip": "4a1a2d3ec7bdeabdb0a8b44a686a9810be517f374f6df4a3a56834323f2db2b9",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_roar/narration": {
+    "": [
+      {
+        "clip": "67f88f373fe274489b612479cc8281b931fc30947f59cd248ac84149c3a0314e",
+        "ms": 3208
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_roar/onFailure/narration": {
+    "": [
+      {
+        "clip": "5091844fda185c4d69ff943517bed4a549604041ffeec6b9133a0407b94e577d",
+        "ms": 5407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_roar/onSuccess/narration": {
+    "": [
+      {
+        "clip": "9a072e1016a1d7c88b57f642066f01909a8efa647d47513fba83a47212d3e434",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_roar/prompt": {
+    "": [
+      {
+        "clip": "75cea1d51989a0320366f1f042fc462e75a115bbbd607d7cd1cc84862400b25c",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_run/narration": {
+    "": [
+      {
+        "clip": "daf8a4de45bfcfa0ee1284e913dc2a00c66285789687d955243b6392e40c1ab7",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_run/onFailure/narration": {
+    "": [
+      {
+        "clip": "0c6621c68f0c21790ddd36f1e4f0d6f96c762e5af63df61a816c0981373f32b2",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_run/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ea86a253e114b011f0de2d627f0e2e774b582e061305defdacef816db461d871",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/surge_run/prompt": {
+    "": [
+      {
+        "clip": "1f32b136845a2008ff6a2a5f6b14159d42fcdeaeda1a9040d7349ca94bbea1be",
+        "ms": 2666
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/top/narration": {
+    "": [
+      {
+        "clip": "a13847a4284b4efee7ffa395701495bbafc9c7c7d05c81d2dc74a4555760172a",
+        "ms": 9407
+      },
+      {
+        "clip": "1b4d00a187abe8066729ef773e36b5538b5b98d9f3cf13c5b741c8ba8af9af69",
+        "ms": 960
+      },
+      {
+        "clip": "eb4022496a75d7ff1f7ed8058103734a841d561a2e21cde07d5f4908cc22f474",
+        "ms": 913
+      },
+      {
+        "clip": "49507c0c80b6c9fef7b79eb0d93ddc6531bec092df6003833e80a2097764c898",
+        "ms": 7407
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/wave_catch/narration": {
+    "": [
+      {
+        "clip": "29b7ed8567927c4ea298cb4eb7573e7afa051c96340b0d505273eb1de46154cc",
+        "ms": 6307
+      },
+      {
+        "clip": "ec81080f76d38f12ef1070816af8f20480d7c47dd6fbcaabcb916785ff7a9cda",
+        "ms": 2001
+      },
+      {
+        "clip": "8bb27189fceae34bffdbc5d086282d99cd09ace423e68d8434f04e35ba8fd145",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/wave_gap/interaction/cue": {
+    "": [
+      {
+        "clip": "0da31aac2137b57c1e6ca3f9ec5146bc1eed6ba6002e672036d61b5f9eb6568e",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/wave_gap/narration": {
+    "": [
+      {
+        "clip": "ea5094ff79e8f7ba2f57033471ee2def5284111bff2205e44b96611ae5ca4740",
+        "ms": 6707
+      },
+      {
+        "clip": "70cd7b9ff519a1c6828adbac41c23b8b69ad523d92433ccf347a61aa9d6c4121",
+        "ms": 1281
+      },
+      {
+        "clip": "42139cf439381c7b40dbc7105f26f23267f31decf9050b23d36a3490587c6e02",
+        "ms": 1081
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/wave_gap/onAssisted/narration": {
+    "": [
+      {
+        "clip": "55c39ee7bafa925d28e0f3a0b77f379be8d9ee0eef3f7bfd40ebfc97559efbe3",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/wave_gap/onFailure/narration": {
+    "": [
+      {
+        "clip": "952ce365773463693bf547f457114a2890ef1f431ace7e8497b98e0f3f033500",
+        "ms": 1346
+      }
+    ]
+  },
+  "riftlight-frostfang-shore/wave_gap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "f371a2ca7dec40d354e4150f724b71e5c952028661a329bbde8bdebc7c7ca95b",
+        "ms": 3407
+      }
+    ]
+  }
+}

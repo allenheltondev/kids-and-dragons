@@ -1,0 +1,1830 @@
+{
+  "riftlight-glacier-survival/@goal": {
+    "": [
+      {
+        "clip": "1180b10de9a7dad33686c4d408dc60d880a11f10c93bdc7e670cfa54a6464fbd",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/@plate": {
+    "": [
+      {
+        "clip": "0710ce0bc0234830db6d95c331bd656873fa1d6269211822b164d859501383ed",
+        "ms": 12607
+      }
+    ]
+  },
+  "riftlight-glacier-survival/arrival/narration": {
+    "": [
+      {
+        "clip": "160f009e2603defe72bf45b599e34474da9ce674207a287edb455b3eafdebffc",
+        "ms": 23707
+      },
+      {
+        "clip": "ca8860b48068791692c83d0be020cd51b3342654013f875450f6502ac6e54d75",
+        "ms": 2982
+      },
+      {
+        "clip": "d64d2ee5eb917ee5ae8af7a1df03db9b501721bf278b5cf0bed42c1de582f043",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ask_help/narration": {
+    "": [
+      {
+        "clip": "bbd0d491b8a0d90ed32e1461f475213e590ed9ca94dc4e9a4ed1ee62031d25a1",
+        "ms": 2825
+      },
+      {
+        "clip": "83eca4d483d74d67d3152ef6d8006785319e197fe17f3a1871033195cb1e7ee6",
+        "ms": 8807
+      },
+      {
+        "clip": "96d3154f7f8a0e9780f4c3d37d1dacb37e94a75d57c366c21aa9623b416841cd",
+        "ms": 6907
+      },
+      {
+        "clip": "a9801c4c2cd4e829644a8180f57700d07c39de5b9f69a86124b4be716c78014a",
+        "ms": 2263
+      }
+    ]
+  },
+  "riftlight-glacier-survival/blankets/narration": {
+    "": [
+      {
+        "clip": "f188c7e20943a67b8251cb5c1a218048eff5f8196caa3945c20e9cdbbd87b5b4",
+        "ms": 2213
+      },
+      {
+        "clip": "3cf8860cd50a6210f7207937d6bab529ab9217dacccacdb3cb6c3ba2bcaced1c",
+        "ms": 3607
+      },
+      {
+        "clip": "e4ab2d8c0f39d9e9ef2774afede23159fe822c50ff4befecb81e8d2bbade268f",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn/narration": {
+    "": [
+      {
+        "clip": "27f9942fadc5e36a0076b14908e4ecee42f866d652ecd7dda2f183d2718c12cb",
+        "ms": 14007
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "75775b0fa44b41f85d6ab02a547c0443a04f08e5c32363523a6a1b43c01526db",
+        "ms": 2856
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_dig/narration": {
+    "": [
+      {
+        "clip": "ebc1fe427fd19b85e55fb86c44853b534c84d732cdeae86a781120046803ea4f",
+        "ms": 5307
+      },
+      {
+        "clip": "1c5c39e1642dc8b16cfaa4c4aacefbe539cbd530298aeac6283674ea3e83dea3",
+        "ms": 2601
+      },
+      {
+        "clip": "5deed196d5294843f44eb6b684a8b959ce4398d6cb1e3bfe77f1e09a6e886cbe",
+        "ms": 2130
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_dig/onFailure/narration": {
+    "": [
+      {
+        "clip": "e7e4f8e03d2de50a85933020e80701a22122e3f723e3218ff71c27289eda9d53",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_dig/onSuccess/narration": {
+    "": [
+      {
+        "clip": "27df5240f83d2940b6544f22336ed4fb73aae525cd5501f567061e29984f874c",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_dig/prompt": {
+    "": [
+      {
+        "clip": "e03eeef1478f002e003285e45dc8b43743fee214d5bb9530ded3b2042e94a5d2",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_open/narration": {
+    "": [
+      {
+        "clip": "4e287c330836f8d0b7de064def12a719415d0a04c06e602943065e0df568d329",
+        "ms": 17307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_pry/narration": {
+    "": [
+      {
+        "clip": "4de4fd1ffbce93f864ac8a5c6bea0987a0913fa5155cbc8ff0997bc69b5543f0",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_pry/onFailure/narration": {
+    "": [
+      {
+        "clip": "577d35545201021414231f1f107216b87e1aac4e470109559e8688b754aafd2f",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_pry/onSuccess/narration": {
+    "": [
+      {
+        "clip": "562b007778fe5e2850016b2ee58e006263a151080d1cddd08f73b7be12b214e0",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_pry/prompt": {
+    "": [
+      {
+        "clip": "e4f1ea79f8578a4def8e19d2ef1ae65a45030d74881efb0d5d77a559585a73f9",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_smash/narration": {
+    "": [
+      {
+        "clip": "c36e54e66ee58faa4e9ce4d5206fd225ceace05c543a813ee73783554db1cd98",
+        "ms": 5707
+      },
+      {
+        "clip": "4cb478cacc8c4ddbeb4ca4cafe826433ab70fa8fbdd78ccb70bdb276bc32949a",
+        "ms": 1579
+      },
+      {
+        "clip": "12994c373c264f5854cb517a0eb9df1d5db3011eccc8cca0fa97451d906983dd",
+        "ms": 2359
+      }
+    ]
+  },
+  "riftlight-glacier-survival/cairn_stuck/narration": {
+    "": [
+      {
+        "clip": "7071d4cb5b7a4187456ecd52548802438817dc379662f4cb51fed6d494db9d3c",
+        "ms": 19707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/carry/narration": {
+    "": [
+      {
+        "clip": "e26bb4c0dc07989fbf401bd6b09c1fd025310211fee3c6252b77dfd66a2345f0",
+        "ms": 5307
+      },
+      {
+        "clip": "db2adb32cf0540bbe3a9167acb667f1f36e89fb3ae897cb5c3fe0c9ee902f74e",
+        "ms": 1617
+      },
+      {
+        "clip": "f57ff4636b5ec25f507b5d421e2e0a70cb0d567a0f7796e95121f24729af4638",
+        "ms": 2497
+      },
+      {
+        "clip": "0b51b3dddc5d95f075c8aaea9e0466054201ec62c56e0eaad52600cea5e410d4",
+        "ms": 1363
+      },
+      {
+        "clip": "5751371062e9f095247d08b72f7e758ca745973ad517be2fc09727c2fefcc6e9",
+        "ms": 2565
+      }
+    ]
+  },
+  "riftlight-glacier-survival/changing/narration": {
+    "": [
+      {
+        "clip": "5ad0422300420bdec2e164a69d35abfc6546a24ea0f8a14a4d3ddf1c77306f45",
+        "ms": 3907
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "6d9b170c424567de87a417de0b62eaead2e57197d892525cd15082da4876f028",
+        "ms": 11707
+      },
+      {
+        "clip": "90ec1fa33413a6a55cf4a0c56ce6c3400e4201acb18183a4867f9f042fb4cbd2",
+        "ms": 1461
+      },
+      {
+        "clip": "37045690b621dafb8c58c9b9de4dcf188ed0be8954bc0735ca04018877e0ee7f",
+        "ms": 5707
+      },
+      {
+        "clip": "95b696711f7590e520328640653d82258f68bb6e3c79733e0ac8aa40d47c22e3",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/changing/variants/0": {
+    "": [
+      {
+        "clip": "b2b0afed30273821e0d64c235da411a707ff4da7d77ad55d27e2f52f116d4bca",
+        "ms": 2791
+      },
+      {
+        "clip": "b1793ebe37f30562206d6ffa6345667e0757062107287614d4d6bd9905e17eda",
+        "ms": 777
+      },
+      {
+        "clip": "0dc51b356b246d93f863cd8dbdb5d83dc2942855a130b4e7b592d875d2ae1f63",
+        "ms": 2887
+      }
+    ]
+  },
+  "riftlight-glacier-survival/changing/variants/1": {
+    "": [
+      {
+        "clip": "de32cfbc74f27d1b9ee06d008fd33ad74a49f8a98c5b434d7aa61ca5ed8f17a4",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/channel/narration": {
+    "": [
+      {
+        "clip": "a8472f795f1b0256606ae71395d407cc35bf005e15091155130c5e66666fea53",
+        "ms": 11107
+      },
+      {
+        "clip": "a98a61180d39d80bb93b4b7c5c14566bee19b62443ca09a60362a179169cb96e",
+        "ms": 2898
+      },
+      {
+        "clip": "08658737e27deb421035cf279056ca8930b04702abcab8b8bf108f73a6804c4c",
+        "ms": 1825
+      }
+    ]
+  },
+  "riftlight-glacier-survival/conservatory/narration": {
+    "": [
+      {
+        "clip": "c9c5d52eb5ac4795d09f98b41d7a48fff0d549b8f8597a88e5607d9e009db006",
+        "ms": 26407
+      },
+      {
+        "clip": "5c36c321106167698d72f50a060c78bdaf182e0a65d529e24bc4c8525a3c1864",
+        "ms": 3407
+      },
+      {
+        "clip": "e25ab0c620407b23902dcffd6c25154fef33cd57f55ffc1b7ef367bb0bea0cf3",
+        "ms": 1033
+      }
+    ]
+  },
+  "riftlight-glacier-survival/conservatory/variants/0": {
+    "": [
+      {
+        "clip": "6cab52e762583eae4e7d9682d10336da7349703d9dd5812393d2e259ed010a9e",
+        "ms": 1774
+      },
+      {
+        "clip": "a27736ec03c249d73fe636bfde9dea76293946705b57cd2d1c92874a1635dfbd",
+        "ms": 2295
+      },
+      {
+        "clip": "ebe4dcee065e08eaa1e77a075d0632003f44bd116176e063e72a109ebfdb93d7",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/conservatory_sing/narration": {
+    "": [
+      {
+        "clip": "bf1b4586c01d2119baca8e04909310fcfb8b79e903db8bc073459a0f72510469",
+        "ms": 10707
+      },
+      {
+        "clip": "5078f7de8d409b7c1d3dbdc77ecc157ce839b22ab35bc69d8748d5c8af59d532",
+        "ms": 1751
+      },
+      {
+        "clip": "60ee337d20c58ff7482e3747e10a35435b430e13399891cb4eca3025d913cf8e",
+        "ms": 1271
+      },
+      {
+        "clip": "3de9a0b9d0b4d69296cdd3d5420f99df266b0357f4dcbd9b210ffc75deaf242f",
+        "ms": 1014
+      }
+    ]
+  },
+  "riftlight-glacier-survival/crust_hold/interaction/cue": {
+    "": [
+      {
+        "clip": "5a4281568ead23402275c6b4b4083aba96b8c42da5d5116c05bbb6dc1cf0fe2f",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/crust_hold/narration": {
+    "": [
+      {
+        "clip": "5f50ec5de1fdd7924b9a6df61ed76e71da3cf680e08a50d480b8498b9fd8a2f4",
+        "ms": 14207
+      }
+    ]
+  },
+  "riftlight-glacier-survival/crust_hold/onAssisted/narration": {
+    "": [
+      {
+        "clip": "b39e223b6b6829e063066c0439dcc8a3869427c09eb16c99dfe354eebeaafce8",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/crust_hold/onFailure/narration": {
+    "": [
+      {
+        "clip": "7c285924f009b90e2324dcf83f2509a86953e0d0f547e0b6971fbf979c71ddf2",
+        "ms": 12407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/crust_hold/onSuccess/narration": {
+    "": [
+      {
+        "clip": "d763480d773bac9d48d23a612e78af35260dc3e128a4d7bccddffff312efa5bc",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/departure/narration": {
+    "": [
+      {
+        "clip": "ca4fab90f26ba146dd10878ed5a97a7f2fe41058695d86a103f35da1729f2656",
+        "ms": 22907
+      },
+      {
+        "clip": "3f4b5c9f670d5ac5f0f01360309e09a26ac71594365f897869d57dfd1c215d55",
+        "ms": 1344
+      },
+      {
+        "clip": "51ddc756f583eb7f963abe0087e4af7ea640341111a76e0f76016e59c560b747",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/departure/variants/0": {
+    "": [
+      {
+        "clip": "97dc65cfcdb8ad17c00ac23bb21fa4e879c3ba654d16b142dca7bfb565bd44b0",
+        "ms": 2153
+      },
+      {
+        "clip": "111173e6fe87211563fb94ed697f332acce3609d95681736ef81797129a55d14",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift/narration": {
+    "": [
+      {
+        "clip": "2d6220c48fba18181b49fa81a971a3fd42e4f92589ed9479258229288b07925a",
+        "ms": 27607
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift_detour/narration": {
+    "": [
+      {
+        "clip": "b4be7e1cc1ee805db8f9877530f7cdf1156f1aec96fddb567432ea416f2306fb",
+        "ms": 7207
+      },
+      {
+        "clip": "1c5c39e1642dc8b16cfaa4c4aacefbe539cbd530298aeac6283674ea3e83dea3",
+        "ms": 2601
+      },
+      {
+        "clip": "ba21802f94496ddc3cdd3a91d5f67c30de3b193f703d2a00bc202e7cab12bd1b",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift_probe/narration": {
+    "": [
+      {
+        "clip": "48f5d058c66fd41f0caf2390b4e594d745b72c731931466f517ca433a8363848",
+        "ms": 10407
+      },
+      {
+        "clip": "4cb478cacc8c4ddbeb4ca4cafe826433ab70fa8fbdd78ccb70bdb276bc32949a",
+        "ms": 1579
+      },
+      {
+        "clip": "63b0e346404238e9fbd63cbb092c7af815750a97c6f85a64479fac371918b357",
+        "ms": 2845
+      }
+    ]
+  },
+  "riftlight-glacier-survival/drift_slip/narration": {
+    "": [
+      {
+        "clip": "e248413d965028f17ae3406bdcbc6b6ea4b402b70a96e77e18f9028e2dad6ccb",
+        "ms": 13607
+      },
+      {
+        "clip": "4b1f62045c1431fea54c164017f23375160a261f24d76bc17d7ebe8fdaa1b78a",
+        "ms": 1588
+      },
+      {
+        "clip": "5452c260bd7fa249b57e0e1d56231facee08724fd30cc7360963a3e9030f58c0",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/dry_bank/narration": {
+    "": [
+      {
+        "clip": "1cb2097ffd511bd4ebc9980d63c47812e5836e7d92d7e384ee106f53d745ce5f",
+        "ms": 8907
+      },
+      {
+        "clip": "f948dfe41f08fad17f09704068613951ec3875da0a115d474e48edd0c3af3d3f",
+        "ms": 2164
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall/narration": {
+    "": [
+      {
+        "clip": "57664a6bf1e8f24a801e47ed582d8d3589b9d778872d6b1841ff052cddf3ee4c",
+        "ms": 14207
+      },
+      {
+        "clip": "3eaa1d24ed282d3fe7d095f7f68120bd03ef5ccec53d1e743fdb22b53d563601",
+        "ms": 2548
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "65bc45ae3ae75838d3f226e0c75045f39074ab659e07e6beced8d6a5952b8928",
+        "ms": 2352
+      },
+      {
+        "clip": "def09f6de9400268b8439ea193e7a532034b3f91ddcc3aad41cb33fb6fd21f18",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall/variants/0": {
+    "": [
+      {
+        "clip": "9c8609905f4ffd7e45312e8573ecb6b3c531896cab3982629bdd83436a9fffa3",
+        "ms": 2108
+      },
+      {
+        "clip": "118c517408440c68d0ce33aff29034ca9122e612057b176109f1cbb3ca0b3b25",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_buy/narration": {
+    "": [
+      {
+        "clip": "e09eb5005f1b7bb0b6ac60719bb1302cd1a5913620172a35bfbfce44180b06cd",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_dry/narration": {
+    "": [
+      {
+        "clip": "0467f6767e2bac5729ccd5fa0c6d74b28055a78fb0612f287efd9a7515ef545b",
+        "ms": 15907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_dry/variants/0": {
+    "": [
+      {
+        "clip": "441e7dc5c403e0439150fdf9ff611e6e9cc95b977ccb87f6db1245e568bdcb5a",
+        "ms": 10107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_share/narration": {
+    "": [
+      {
+        "clip": "9802cf85a8b27b23446cb40e0f0a64cc7c912f31233ab23d17c7359731fa2e5c",
+        "ms": 15827
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hall_table/narration": {
+    "": [
+      {
+        "clip": "6be12eba6f68f5a5431cb6b46504805096c3ddd19e55f51bc165db751f8763e6",
+        "ms": 14607
+      }
+    ]
+  },
+  "riftlight-glacier-survival/herd/narration": {
+    "": [
+      {
+        "clip": "7538228bcef326e56436ae340a4c4bf113bf8c7a0037727dcabe93dfdc146e53",
+        "ms": 1361
+      },
+      {
+        "clip": "9effeaa50df250a898fe31990da50f3a43840cbc4ea1419d744c76493f55eb1d",
+        "ms": 17507
+      }
+    ]
+  },
+  "riftlight-glacier-survival/herder_gift/narration": {
+    "": [
+      {
+        "clip": "351a4727c8e76881231920c9646d2cb91a85d89b00a0ed22551f8bb6add36fcd",
+        "ms": 2379
+      },
+      {
+        "clip": "0f1e035debdbaa8abebd1f1f2f341cee71dba8b4b71ca6acd6050c2624fb62a0",
+        "ms": 4407
+      },
+      {
+        "clip": "bc2cefc04c35e4f04a37db5d16b821d45e58bef7e027f5fcace61993f8bb5c82",
+        "ms": 2399
+      },
+      {
+        "clip": "7ef6d45bee263d9bead870ac0dc1817f8af2616eefba5d3e8a0ead4028700b9c",
+        "ms": 5707
+      },
+      {
+        "clip": "61ddb7ce0474e68780a73b9e44b456f4c7f7209abef68fd96417fab4f06fd2de",
+        "ms": 1480
+      },
+      {
+        "clip": "9c14d9f94e48e784586ccd278010205620b3d0db6773f9aa1ed32f2f23bc4503",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/narration": {
+    "": [
+      {
+        "clip": "0a5ed236cbcfa165a8b5bd7048641c1218cc897c1263ecb611414280f8f90c1f",
+        "ms": 1077
+      },
+      {
+        "clip": "5200bc133f5cb153a7908ca42aeeac07e9389d40de1ca62e05bff7cd7fc40c42",
+        "ms": 1194
+      },
+      {
+        "clip": "bba46b968cf948957159dd86191fe91a7a41420ebccca103c1931f73bbe28bfa",
+        "ms": 2273
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/onFailure/narration": {
+    "": [
+      {
+        "clip": "d5bc28dfa158c48a34e58dba5cb558d65372b861efcff46aecfa5f5d5c7ff341",
+        "ms": 12607
+      },
+      {
+        "clip": "31cd04d9541b50002791f844c9d806f90783453a1405528f77bb629e03cb42ad",
+        "ms": 2742
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "1abf9f3ddbfff36f8c8aabb20cec980417af1f0f1f09dcc9a592e70a6a245e0f",
+        "ms": 1907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ec73c5169a2f7ebf879f26113032516b84ce39b9b239de62e740591dab498c35",
+        "ms": 12107
+      },
+      {
+        "clip": "391e15fc49b390827c5559944705d5484e46f019ee05f196f3da122ef0364135",
+        "ms": 2199
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "55247efe572acdbd5e8a32046b17d7b2731bbf3cf77f629628fd58df373cc98c",
+        "ms": 2047
+      }
+    ]
+  },
+  "riftlight-glacier-survival/hum_door/prompt": {
+    "": [
+      {
+        "clip": "e6ef8ab2021da2e942e0a4e9b1946e5a6de973377a6e5f1024fe005151c6dd6a",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_along/narration": {
+    "": [
+      {
+        "clip": "f7fe5718f3b3b8bc013bfb8e7473df1f12039b94758b4940fdc8594cff280a2f",
+        "ms": 4607
+      },
+      {
+        "clip": "3cdde0de8fa4b413df62290d407ea2bc115591df15ec9d59cde2b369598c1b6d",
+        "ms": 2145
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "eb5b65de4b0c6fec7cc939070bd60115e22acd5fbf32485ab759e413a14c78bc",
+        "ms": 1884
+      },
+      {
+        "clip": "5df0a7c5a02ae2ae8167259ade72b082ff8a07a2b30752e084354ad63ce309f3",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_burrow/interaction/cue": {
+    "": [
+      {
+        "clip": "3080b2ddf30fcb0fd21e8e1025561ad259709b95f9da64b5431a18910a791e8f",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_burrow/narration": {
+    "": [
+      {
+        "clip": "4afe84d86a3099a44e246702d226dabc6e019fc55add85815531c42e43c65384",
+        "ms": 9907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_burrow/onAssisted/narration": {
+    "": [
+      {
+        "clip": "7dffee529930ad632e0e3502a95094f75ae9bcd75307f11eae11cda98f7a2b95",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_burrow/onFailure/narration": {
+    "": [
+      {
+        "clip": "e69d32db4d099d8f98318988015df82cf26811a9f39ad1eefafa8fb7bfdaa772",
+        "ms": 9407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_burrow/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1c6ec362fbf71bc49513ad6559bd964f0fc7fb8de1070cdae864c5301e7183b8",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_friend/narration": {
+    "": [
+      {
+        "clip": "8449208e016ffd36b2f4a5bb4ee376524d5012a2c5d3a4e8bb8f806b4bf6fc9d",
+        "ms": 16207
+      },
+      {
+        "clip": "b058272cb3ebcb74d79d4d78f9ed801e5586c564eeb58b66522b359090b5b30b",
+        "ms": 3707
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "7e18daacbc973ed40d2216fbc9ec33e6b6c27e6d893d2cfc770d47ce276ea4a7",
+        "ms": 6207
+      },
+      {
+        "clip": "7162b1d143ca663311738eb60bd3f4ac069823cd6b1c6c5fcbe786d979788853",
+        "ms": 2178
+      }
+    ]
+  },
+  "riftlight-glacier-survival/kid_goodbye/narration": {
+    "": [
+      {
+        "clip": "35e64a3e0bcc8c24442ab09b029db11f3475500f074e623d095389cb785953e0",
+        "ms": 7807
+      },
+      {
+        "clip": "38a39a5cd500ea73476e5ec3130dcb20e60596edd61edaa66b9bdc788c830846",
+        "ms": 3207
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      }
+    ]
+  },
+  "riftlight-glacier-survival/learn_note/narration": {
+    "": [
+      {
+        "clip": "90104e891329b5630b500e12fc7779142f45fee0f57a191e4ce716c513d0d703",
+        "ms": 11007
+      },
+      {
+        "clip": "f7492eb88cee2706112a6be1b984bba6f8ce076e9eeedab3eae30660f5ed5c78",
+        "ms": 2790
+      }
+    ]
+  },
+  "riftlight-glacier-survival/learn_note/variants/0": {
+    "": [
+      {
+        "clip": "90f5b1f14a3ae9dcf05d69d32b3976694da4429bbd90c884d4e24184be78e9a2",
+        "ms": 2449
+      },
+      {
+        "clip": "2a05a0aac39b19a6c4b3ba67f371e26dec4c1f02b509d88131185c041fb7a238",
+        "ms": 6408
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_brace/narration": {
+    "": [
+      {
+        "clip": "7fd3a02db9380e8cab36447ac2ab657c55fe023c3a5f7bb8b37056d8a342b009",
+        "ms": 6007
+      },
+      {
+        "clip": "8784b0dcafb043d48272d65791c846ad0bc6b38e19b57de2295bdca84a9b1de8",
+        "ms": 2353
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_brace/onFailure/narration": {
+    "": [
+      {
+        "clip": "962c8dff7e9e0cb57858f9a9f8b46fce7528f43033dad73075d77e2b629b0155",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_brace/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ea10ac99807f6d47d220ce2ed68e9b87c5370c76dbcd9382d876370c548f6082",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_brace/prompt": {
+    "": [
+      {
+        "clip": "749513f380b08e226d874a4abfa152a3ca5af5562b8086cfbe3eb126fae8147c",
+        "ms": 2943
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_done/narration": {
+    "": [
+      {
+        "clip": "a90a6cd58e61b8a9d3d91304ee787b5dd5fcae70157590ed9edee5294c402a90",
+        "ms": 4207
+      },
+      {
+        "clip": "98a5cb335e710ea5dcef948550b288623daa8b478b7638ea931b036a515ebfa0",
+        "ms": 2329
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "e52c790671e075e142abdb2774d8cbf2f7f53bab339cfacb536ca51ce8f59130",
+        "ms": 3507
+      },
+      {
+        "clip": "e472552f314a89d8369b0dd32cf9409eb3f36fc1c514b9bb9dd8e3a19783e602",
+        "ms": 2143
+      },
+      {
+        "clip": "44ad5f0e9b56cd3e31b2527b380883b31f6eedf35656db8b6fbea5dfa14a467d",
+        "ms": 6007
+      },
+      {
+        "clip": "555ca6aab227392402032b62e94de6f74b151c87de64d0ca0b000bd145fe1b5f",
+        "ms": 2824
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_hay/narration": {
+    "": [
+      {
+        "clip": "15a7c468c9731dfc467df5dc50f52a2410828b19cca4f06c6660de5cde8ca7bd",
+        "ms": 4707
+      },
+      {
+        "clip": "5c7df399ec30f44bdb5cfc40cadad9bed568589747425f0af3b5e06c3143a9da",
+        "ms": 1910
+      },
+      {
+        "clip": "3eeffe24fccf6461db197e06038db9b84e41215c1b2eaf552536600ede9d3118",
+        "ms": 987
+      },
+      {
+        "clip": "5a4ccdc7ad551544f6c166d2800b513f6e7376e2126e19f1be089eba03c3b890",
+        "ms": 2264
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_hay/onFailure/narration": {
+    "": [
+      {
+        "clip": "6116df985464b8bca5770ded3f64cc300d50435d306b36feda9945626ff35409",
+        "ms": 7007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_hay/onSuccess/narration": {
+    "": [
+      {
+        "clip": "19f8afda54a1d9489b14b72ecb9504f87b2e4f4229e4f84b9a0ff6ed42a4eae8",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_hay/prompt": {
+    "": [
+      {
+        "clip": "4d6cf50206aaca0e9a0d26615588b33e0a08cde9a190dcd0f116986fd658a62f",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_look/narration": {
+    "": [
+      {
+        "clip": "408b30a8b04778749ad36373edbbbd13d85d7f9f96467e244bef10eacc947c5f",
+        "ms": 8307
+      },
+      {
+        "clip": "5913f288a0aff857f66341a822dbcf97fe088cb3621fea53bfa4c08c2ece88cd",
+        "ms": 3607
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "1c6f9740251834f5fd777ffd8d71f838e0db77116ddf58078afa579cfa755e08",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_poles/narration": {
+    "": [
+      {
+        "clip": "62d34c1b2ba1b5452cc0a854e57cc47d54797beb67db15c9f08a582f1632fd41",
+        "ms": 4407
+      },
+      {
+        "clip": "83ab77b5e113c47a8763f2affd81ff203eb9879b7715d621c71c3bf646109181",
+        "ms": 3227
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_poles/onFailure/narration": {
+    "": [
+      {
+        "clip": "f3fd227ffe71209244bfbe098231ed0d81a44fe146acbaca6c2fd656fd1f3028",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_poles/onSuccess/narration": {
+    "": [
+      {
+        "clip": "0cf61960fa70b40cac32236c7573f8f08d11d4c422b57ee81e4dc2a01e828bdc",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_poles/prompt": {
+    "": [
+      {
+        "clip": "4958942278a01bbdf17e56cb6e5cec2b425d6e8c8245acc2d595cdbcc044835f",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-glacier-survival/ledge_whistle/narration": {
+    "": [
+      {
+        "clip": "0c9a350a6edba59d49660365225d3eb026673b92363e3631872ba2d021f9e8a3",
+        "ms": 6407
+      },
+      {
+        "clip": "21139bdb382ee33f96e3e9dc93c6d200e38f0088b10c9841c88759deb41e6871",
+        "ms": 3107
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "a467aae8e68aedea9114e09c6d68eafd22a56cc85df8af897f167081daad8cac",
+        "ms": 3107
+      },
+      {
+        "clip": "13501de057590d26aa550f534d5a9e4165cfadf7c64e09365af91a3a8ca88c2f",
+        "ms": 1726
+      }
+    ]
+  },
+  "riftlight-glacier-survival/listen/narration": {
+    "": [
+      {
+        "clip": "ca4018c8378b027edf82a39fd4b62285fc8ecc8259bc37a9a7100fb196c2d9ac",
+        "ms": 7307
+      },
+      {
+        "clip": "b0d752372333bee9c8d1d4a88d1c41ef521e3cd88e1444fa2aa74cdd331aaf71",
+        "ms": 940
+      },
+      {
+        "clip": "935b97f9c9feab3bdff9a49242ee49f00beee713d64c66e5335eda154363eb2b",
+        "ms": 770
+      },
+      {
+        "clip": "e44cb05936a6cde934b187a5f38cddaced410aaad6cc733c5d8ad17a4b407391",
+        "ms": 1485
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "452fe23eb2109a828bfa5653a8052d66eb7003f81c252acfd92bda5ac256c7f1",
+        "ms": 8127
+      },
+      {
+        "clip": "1b187e51dce09990dee906c95d053bbaf0b5538163aaa3b90f5d4c49ac85aadf",
+        "ms": 1168
+      },
+      {
+        "clip": "e7b655001ce02a9f90910d556b39c62fd70864f621e4c52531aef05db429f721",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/mend/narration": {
+    "": [
+      {
+        "clip": "703fc532faad67c809b7e94808332659677ba21a687c5e952d20664907a9b169",
+        "ms": 9507
+      },
+      {
+        "clip": "99309326b2af07fe766ab678a437bda4060315efcdbd9bce4128e02b36b8f328",
+        "ms": 1786
+      },
+      {
+        "clip": "a45f7203b4a27ff68c7f28bc27aa20c6b0a5321aa4c84162637e2ec1983076bb",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-glacier-survival/note_try/interaction/cue": {
+    "": [
+      {
+        "clip": "8a8ea0c952fa19fb60d27d49df7eb4b613e88c91e50e2bff16a12e224369e081",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/note_try/narration": {
+    "": [
+      {
+        "clip": "a84719801384612f0492158840db83ab22f24ea1d88f1a5525f9868d1638e300",
+        "ms": 2934
+      },
+      {
+        "clip": "fe80c84b66682ae00703a68caa0cc4248870b4267db9f328e7d045c5ecac9d1c",
+        "ms": 1978
+      },
+      {
+        "clip": "3182d61b26243f890e53bf26e01788f1c124e13b05c7d6aa45112504a7b380ad",
+        "ms": 1412
+      },
+      {
+        "clip": "c7dfa573d8263838f4deb3b56ec7a2dff3ef272ef4aadcd8bf905c26ce50447a",
+        "ms": 1375
+      }
+    ]
+  },
+  "riftlight-glacier-survival/note_try/onAssisted/narration": {
+    "": [
+      {
+        "clip": "82c3b5eae3886ccc8d655fcd541e23f09580e58e8298995eb662867cc7c7533c",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/note_try/onFailure/narration": {
+    "": [
+      {
+        "clip": "d87a37b09fe30d8b7fed06abfc370a2b309ebf4ec576c90156838b2d5f5e9a3a",
+        "ms": 16307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/note_try/onSuccess/narration": {
+    "": [
+      {
+        "clip": "775389075255e0420b33430bbcad5a4a5aa8477482bd9f73606581a871a38b37",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints/narration": {
+    "": [
+      {
+        "clip": "00d69c999c4b5758bf5a36f08ea7f63351aaf873b2354692e6e08f59afedbc1b",
+        "ms": 14207
+      },
+      {
+        "clip": "ca8860b48068791692c83d0be020cd51b3342654013f875450f6502ac6e54d75",
+        "ms": 2982
+      },
+      {
+        "clip": "8cdadede0d57c3ab373e0d0da9fe5138a520df76432912cccade1d9888f9b5ef",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_air/narration": {
+    "": [
+      {
+        "clip": "2e6ae16bf7925e5a93b715ffd106b3ef6ab6ccf452394cf96dee48bb5cdb19a6",
+        "ms": 7007
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_air/onFailure/narration": {
+    "": [
+      {
+        "clip": "c259cb037b17098a51477e8c0fab5165af6ad3fac32bfebb10b7e7057c510e10",
+        "ms": 6907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_air/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5a5afb44d0d3f69ee61d48a92d2dfd80c810d581770e37559fbe9b6f0f9116f7",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_air/prompt": {
+    "": [
+      {
+        "clip": "11f9678c2493db03830ede8ee4624b0767845c55c55431f4c454ab8af845b4b9",
+        "ms": 3507
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_march/narration": {
+    "": [
+      {
+        "clip": "15788bc3fc55b2541e3671b82cb8664e2f6263363f60521fb6f758aae5879488",
+        "ms": 5407
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "2e759b431bd90cc120c986fb693fe065baf71fe8753c9688abe3bf299de47593",
+        "ms": 1561
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_march/onFailure/narration": {
+    "": [
+      {
+        "clip": "3c78431955b83ff11f91b5a30283e77c335d4716cfbf1612403987d656bf9faf",
+        "ms": 7707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_march/onSuccess/narration": {
+    "": [
+      {
+        "clip": "eb8077f4262f4a6f3790b222cac011464d672f4238293c1732f1421e22f83862",
+        "ms": 2922
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_march/prompt": {
+    "": [
+      {
+        "clip": "9f19fcb0f11c7b321e72edf7cc557055f65ef1e87589a9ca3691c6ca38c5cb0e",
+        "ms": 2948
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_read/narration": {
+    "": [
+      {
+        "clip": "f668e5f29a0da7bf21820927637436a06fd50566ce9a238188fa4d8646af136f",
+        "ms": 4607
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "2e759b431bd90cc120c986fb693fe065baf71fe8753c9688abe3bf299de47593",
+        "ms": 1561
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_read/onFailure/narration": {
+    "": [
+      {
+        "clip": "d6b6baf2134c93c82fb0e167d99362a64144510d823e7842ab440a15540eb399",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_read/onSuccess/narration": {
+    "": [
+      {
+        "clip": "1fb68f58f817afea6a0a82c77c9f05b1e282976a5e325132a99331ee9491eac6",
+        "ms": 4507
+      }
+    ]
+  },
+  "riftlight-glacier-survival/prints_read/prompt": {
+    "": [
+      {
+        "clip": "0afacf119c0c37bb9a2de9c1690c7c70d5c9a479d0b8b253a4a8c3b8e1d22845",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/read_water/narration": {
+    "": [
+      {
+        "clip": "8bc6b9d4919926c3d5d2d66349c571e5f8be4ecde9f01bacb3a26007596bdbdc",
+        "ms": 6307
+      },
+      {
+        "clip": "cc3570077ff429a6bedf28fdcf45083b561f92634e25f2748634fbb2afde3f3c",
+        "ms": 1965
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      }
+    ]
+  },
+  "riftlight-glacier-survival/read_water/onFailure/narration": {
+    "": [
+      {
+        "clip": "4ae870b69dc8c41bd7618d491b0287e1e5cb4f948fc8e39f31870e4733ad9b57",
+        "ms": 3807
+      },
+      {
+        "clip": "a83649161ca216f7c5cff6c6a0dc82f0788152e040654e5e42f58893813a4f8f",
+        "ms": 1988
+      },
+      {
+        "clip": "c492d69884ddb4ff46b7d577a5e6cd918db1ede67a8eceb29b22cd21e739a1ff",
+        "ms": 2341
+      }
+    ]
+  },
+  "riftlight-glacier-survival/read_water/onSuccess/narration": {
+    "": [
+      {
+        "clip": "def04d2f83d7b637a557b4f18da904f9135e364959681c25c4dbd036309c827d",
+        "ms": 4807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/read_water/prompt": {
+    "": [
+      {
+        "clip": "1fea954402cef27c46f6c113b0b72f84bf9dd0e55e8d237c0b74d8dc6288b811",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-glacier-survival/rocks/narration": {
+    "": [
+      {
+        "clip": "c072765b9265f00a89e5b7e3b89cedf9542673eabeb7b26d8de2b38d216a9828",
+        "ms": 9007
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "f5414637e1d92ebffe8b5e6e2e1f2d11f5c08372640b94be9958783c1d2d56e0",
+        "ms": 2681
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_hum/narration": {
+    "": [
+      {
+        "clip": "315c9a21269e46e056d3a0fc7ca43dc76d8e5f186ec7316e9b8e62762e8fc757",
+        "ms": 10807
+      },
+      {
+        "clip": "49e78442efb007f1d462944bb068b56a92cbc1b603dd773e0cb7c98b57a2ed86",
+        "ms": 2658
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_listen/narration": {
+    "": [
+      {
+        "clip": "ee5bbcbabd82465c8e50e20493358227f3e680d3afeb3a8796cf1028a3cbca49",
+        "ms": 11107
+      },
+      {
+        "clip": "463330abf9432749fdea21a6e6b71036fffd17dfe76ad528a6cd033d284aae03",
+        "ms": 1619
+      },
+      {
+        "clip": "a87a2c5cc115410e51cbbca67470f85908a9bc7841dd1327eba540c9fba63774",
+        "ms": 1576
+      },
+      {
+        "clip": "7a2d59ed9b507a049a31cfb9454a51713ccdfcfac362d53c2b3dfbfe4b6bcaa8",
+        "ms": 1311
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_response/narration": {
+    "": [
+      {
+        "clip": "282934ca2e52321c96fc9cc6e307a2cc2b47abf05dcfdd4e395a4f9957861c44",
+        "ms": 7707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_response/variants/0": {
+    "": [
+      {
+        "clip": "1750cac1f8a5c2dce340940ef2df130349c411891f43928c54ec475a8448592b",
+        "ms": 2958
+      },
+      {
+        "clip": "912e74653dc16c13567aa6507efed75a4bc0e9fe4a5a969108257962e150c933",
+        "ms": 1836
+      },
+      {
+        "clip": "ab670d5b7de198d0a2b06b0ca33a45a222dcbfe20b9cfbedef17c39407900608",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-glacier-survival/seam_touch/narration": {
+    "": [
+      {
+        "clip": "e573ce651b489a1b237ff2fc9add1c3ba29e0e8188f19bc95705131b3bb4d330",
+        "ms": 12008
+      },
+      {
+        "clip": "a6d0a60a5419e7cd818b957aa271d009a4669849a9f95c8930a680dcb96e8d04",
+        "ms": 1417
+      },
+      {
+        "clip": "5bc969604102c0edd26cadf3b7be6cb3825c45826f4bea320b14d9decc49c6a0",
+        "ms": 1138
+      },
+      {
+        "clip": "58a443123016d1f2f8d22bb4904f1ca7a5094397ac22e5a909cfbad82860100e",
+        "ms": 1716
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle/narration": {
+    "": [
+      {
+        "clip": "7b692d8bf8e93f4a8e8413f3940a4e5ea944fb90b2d34dd2c98c7890eadb8090",
+        "ms": 8607
+      },
+      {
+        "clip": "8fb78776fb6231c811e74cf81b04fd198acb1ff9ab2acda999108ee8579bc27b",
+        "ms": 3307
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "f115dd54d5113bfbd2d273bd237e233d2328dc782210754065d6b5980a62cf56",
+        "ms": 1836
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_brush/narration": {
+    "": [
+      {
+        "clip": "fd6eda318a499dfc58e1d88733ac2b541e98005eb02b21bdae99383d668a4a30",
+        "ms": 11407
+      },
+      {
+        "clip": "31a25424908135a2c663351b36b413c809a7cdbe69b70cb91267f48d920e79a3",
+        "ms": 2182
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "d75cd22facc682cf9c301acd4ffbc9ca9c336ccc948fcc2a795684c1e20461ac",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_count/narration": {
+    "": [
+      {
+        "clip": "46ec640765db384c9ad2ea029ce6c5c96e829823ee755a687a31977ec89c88fd",
+        "ms": 15407
+      },
+      {
+        "clip": "88d7ae515ff5faaa8ad00161f3908990f79f9157c56334d93cb80d1578bb4ca6",
+        "ms": 1539
+      },
+      {
+        "clip": "474bceb1611c8c93cc91e5a9fcde4689fe3708fc8f6ecba7c58e561508fd56e7",
+        "ms": 1995
+      },
+      {
+        "clip": "a200d2ec33b645294e37558a2b3176833ea1fd5b1bef58befe61567a261408cc",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_feed/narration": {
+    "": [
+      {
+        "clip": "58bfe393a5607430b8a7ca13a793e42cac9a03571ece006adb340589a38b3a56",
+        "ms": 9807
+      },
+      {
+        "clip": "64b626ec135a8763668a0cdda21cea341b602abd2981288542345e237dd8466a",
+        "ms": 1591
+      },
+      {
+        "clip": "ab5bdbf88d1f80b5b83dcb99bb31fcf41b8cfd31a591541ff62752b59d8bc5e7",
+        "ms": 1501
+      }
+    ]
+  },
+  "riftlight-glacier-survival/settle_lull/narration": {
+    "": [
+      {
+        "clip": "1068ada934f9d7ae5f9883a3123b1d3b183a1c6904b1bf7311dc632c9a104283",
+        "ms": 11307
+      },
+      {
+        "clip": "c1321d61e37451001bfafc8280221c1040fce202acec3e0132eb58bbfaf679c2",
+        "ms": 2846
+      },
+      {
+        "clip": "3db1f5be1a3a5df004cbb1c7d7caeb69f4fa42b098537f05b7759853c4215dd3",
+        "ms": 1800
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/interaction/cue": {
+    "": [
+      {
+        "clip": "769bbfe4aee5fbc7aa77432231e9264c3e62f6d0b19eb884baae70c09bae04e8",
+        "ms": 2655
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/narration": {
+    "": [
+      {
+        "clip": "4b4a8322f2f12dce56604aacd74872afa09a4a8c7df8241d399f33342b97505e",
+        "ms": 2567
+      },
+      {
+        "clip": "6f7f244b251e2b0b57fbedcacde532f97397a2e0852c85f0e541fd23c5c64d6b",
+        "ms": 3207
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "13ec96bb38af8a1825b1422fbb82a11c25f1ed2babf972f1a5e90ec361308161",
+        "ms": 3107
+      },
+      {
+        "clip": "c8452f04d452d33f90cc8a054d3124c1d52d67b56b31521a30c90a6bcfce446c",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/onAssisted/narration": {
+    "": [
+      {
+        "clip": "7dcc90c17f668d89562d247852e9fb47bf1dc9f0fb1ce0c4e8c935a93a1b43db",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/onFailure/narration": {
+    "": [
+      {
+        "clip": "cc5bc259d2d3081888961e079e3d1f4c91c51d94ed7c808dc9dd2e53928a1bd5",
+        "ms": 5107
+      },
+      {
+        "clip": "aee1d1c3ed0053afdc39886e05fc03322a83bdd778eb3423505c3ac6a6cc2a01",
+        "ms": 1572
+      },
+      {
+        "clip": "7c4e0c6925037e023f870ad9786e53383369a8a8c6f5aaf9a4e3053cb0ccd36c",
+        "ms": 2677
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelf_cross/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a2631953fc70d05d26dfb2752ced7e528c9f88e34b3c79fe190604394e532730",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/shelter/narration": {
+    "": [
+      {
+        "clip": "b445c3fd9e4f83d3387a0a1ef3fcbad301729d2affee520bdd1e72371db193e4",
+        "ms": 12207
+      },
+      {
+        "clip": "1c5c39e1642dc8b16cfaa4c4aacefbe539cbd530298aeac6283674ea3e83dea3",
+        "ms": 2601
+      },
+      {
+        "clip": "913407bb5459e467b2720d3e4c0a64774bdfc78f1f6cf65329818b323850d20f",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-glacier-survival/sledge/narration": {
+    "": [
+      {
+        "clip": "6e8e52df2b3153b6ae05cc943e8cb514db7ff17c9cf7bc6d7b4774706ba6848f",
+        "ms": 1838
+      },
+      {
+        "clip": "6cd90486bf3c449db6f5a7dacf9a7c8507e7aad2bbe61323c9d733c136af7d6b",
+        "ms": 2029
+      },
+      {
+        "clip": "0e377bcda8b8d54ebb46c31fab502e527d8d4be5891960fa7a1d8bfc9826ff9f",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/sledge/onFailure/narration": {
+    "": [
+      {
+        "clip": "5f8a8dd071c2ab58d48a5cd48e53b4f6f90e560e97355aba44385e31036cb5da",
+        "ms": 5807
+      }
+    ]
+  },
+  "riftlight-glacier-survival/sledge/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b165d15ba423130178c89d57c4b136470489bc0723fbee9740b09e958abcfb6c",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/sledge/prompt": {
+    "": [
+      {
+        "clip": "53b0eab068260596ec0fb288eb4051e595385930a3296cf129806b82e53125c5",
+        "ms": 2752
+      }
+    ]
+  },
+  "riftlight-glacier-survival/song_step/narration": {
+    "": [
+      {
+        "clip": "9b066f4fa4908a67989eee56011f98bbdeef64f06309b46bbbdafa880d377513",
+        "ms": 1747
+      },
+      {
+        "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
+        "ms": 893
+      },
+      {
+        "clip": "798732b61a67ef9b4cec9758a604c9e37d3625f5601c2f60ab9d6ad7645f1101",
+        "ms": 2113
+      }
+    ]
+  },
+  "riftlight-glacier-survival/song_step/onFailure/narration": {
+    "": [
+      {
+        "clip": "865e33e63978f1e7bbf7b0405860862e6e1950e410a8e0595f66bf0caedea05a",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/song_step/onSuccess/narration": {
+    "": [
+      {
+        "clip": "3883580c6c3f46be4c9571ee4e3785aa983f72d244d74aaa2e2a6939aa0202e1",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-glacier-survival/song_step/prompt": {
+    "": [
+      {
+        "clip": "65bcbefea26cac31ef7a64721bbb4b5e172af3b2a4c8f5860277a72d1bd6894e",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/step/narration": {
+    "": [
+      {
+        "clip": "a8d69955affd197e168a02e63f94d3b3eba9f8dd7f7e3ce23569bd68fa495525",
+        "ms": 4207
+      },
+      {
+        "clip": "c03f9d6e806d3130df99621adb57b78d110aabba11358ee4f28ea39a93726b13",
+        "ms": 2948
+      }
+    ]
+  },
+  "riftlight-glacier-survival/step/onFailure/narration": {
+    "": [
+      {
+        "clip": "9c6eee1258cd2a24143d6e8583d8bcd294c742c6a5b564da4bece12caef7034b",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/step/onSuccess/narration": {
+    "": [
+      {
+        "clip": "abfc8424440adb9089733d3e4789220eaa69e51233c695758400ab313bd095fa",
+        "ms": 2836
+      }
+    ]
+  },
+  "riftlight-glacier-survival/step/prompt": {
+    "": [
+      {
+        "clip": "0ac9191b3bd5c77a5d16b3ccd5627abf7eebc045c0e604a6dcd02175c519c01b",
+        "ms": 3308
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tell_rift/narration": {
+    "": [
+      {
+        "clip": "238e31389946a243e537562a8f81719cd56414410e1261d1ed2a2ef309057cf5",
+        "ms": 7207
+      },
+      {
+        "clip": "3f5e29e15e15ceed14559f1b48d448344d9577eee6ae2f213ba831d6f00669c5",
+        "ms": 3807
+      },
+      {
+        "clip": "3626a47f3f931cfb90010e7d18389e613a343e4539633dbed32f9e3ff8d5999d",
+        "ms": 3507
+      },
+      {
+        "clip": "e71e9ed0329d591df8bb046ce09502e6e438cab105b2d4b760c285fb302a525e",
+        "ms": 3107
+      },
+      {
+        "clip": "59eaa8e105591e355d4fb1f53b5af031ec1e49458ba8f9f83e9f9578456335ff",
+        "ms": 2099
+      },
+      {
+        "clip": "bcf010c6f49d2780cd98d6e0abef638dc8fbd839c9c334944bf951b3f3820d79",
+        "ms": 6207
+      },
+      {
+        "clip": "074bef38770307fff6934dbf396e0ef97095a7f1f990085572e3dea245158524",
+        "ms": 2206
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/narration": {
+    "": [
+      {
+        "clip": "d51141e54cf317e335ad74308f3985885e5d191f3a620e5adaf8208e3fea57bf",
+        "ms": 3607
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "3726f1b84c9fdc13f27c5b9fce67847dda3e5ecf25fda736341b23621650d968",
+        "ms": 3407
+      },
+      {
+        "clip": "32d20d500b0413290207909b9a971de0e9659a4de0c3de0e954423ffe6d6e324",
+        "ms": 3507
+      },
+      {
+        "clip": "288c3f071f74d81eb9b05bea77168338375aab1420f0ecd791e9714195450a66",
+        "ms": 3607
+      },
+      {
+        "clip": "eb44ed828309a6707dbb485dcfecb032e01c4bf8a208317972bd14e76f1f27de",
+        "ms": 1848
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/variants/0": {
+    "": [
+      {
+        "clip": "a218d65a29e20fbfc1b75c9006b101f74b8fe4f9874f2a70b7415db4bbb69dff",
+        "ms": 1947
+      },
+      {
+        "clip": "485cec3e51ae4b6ac356ea2bf74f3db64abf86a21e7d3c0a64b4d0778847bf66",
+        "ms": 4307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/variants/1": {
+    "": [
+      {
+        "clip": "730df09403d059e11fbf586878a4adca3e013bd0e31846759aad004119b809a2",
+        "ms": 2569
+      },
+      {
+        "clip": "5473f46d9d9c19b6cd5100cbccd1eed62e34003964a3e6a09a0a7da323b47621",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/tracks/variants/2": {
+    "": [
+      {
+        "clip": "a52961d71d364d1a838e41f9408ba1bfd753e3a224cd4586a39ceeb1211ae32f",
+        "ms": 2923
+      },
+      {
+        "clip": "c10ff53ea90da61f3921b8abf76005a61125220a5938476475000a4c1c5d118e",
+        "ms": 4007
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wet_bank/narration": {
+    "": [
+      {
+        "clip": "6f08827cd40d34c3b4f5024f499df9dbbb51cd1ddf23fff6d2383798bba5bc72",
+        "ms": 2697
+      },
+      {
+        "clip": "da78c1063d8f5d6334fcdf9e89a09f6942beb2b378202d95017b6ae6368bc409",
+        "ms": 2647
+      },
+      {
+        "clip": "8ad32b9ce7b978b335e3cb5d6c5acee37c4378534beb0029d9d63c35dbd7520e",
+        "ms": 5808
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wind_warm/narration": {
+    "": [
+      {
+        "clip": "afed61d1f3d47401737a50625dd1b40341a5d2beeb9c4090a4a47dc6bc127ca3",
+        "ms": 13407
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "bc59382b7bbbd6b71c3111a6992c786ef80cdea0246c0186efcda8c372fc380f",
+        "ms": 2592
+      }
+    ]
+  },
+  "riftlight-glacier-survival/windbreak/narration": {
+    "": [
+      {
+        "clip": "7dd500c7e012135e3ebf153d2f340b65ef448cf135bc435b1c70da342872f4f0",
+        "ms": 11007
+      },
+      {
+        "clip": "304fe71b98d26215befb4caf80545821ba2080ece2c55ecca0b1f67883206579",
+        "ms": 2727
+      },
+      {
+        "clip": "9411f81488ffe4ed7262b3f5c4411648cad3786b0ada3e6099296e4206fe7591",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wing_line/narration": {
+    "": [
+      {
+        "clip": "33e8a81ae8fa5f495ae872a961dd054eba29be201fde47ca95b8f01947c1e001",
+        "ms": 1495
+      },
+      {
+        "clip": "bb448703d50e84d141381df81604055b7c0da2651cf385fd35b3f04d3e588444",
+        "ms": 1771
+      },
+      {
+        "clip": "54ad42b54ad9a90045a1b3b2c5f88d14e7cd408292773249d93288ffb7e0a373",
+        "ms": 1730
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wing_line/onFailure/narration": {
+    "": [
+      {
+        "clip": "f85fb85799f15fc6083fb69da76d82be27e2139cfd0c2fa1e266102ebb3f0e81",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wing_line/onSuccess/narration": {
+    "": [
+      {
+        "clip": "500f6524fb8650ac8d9766e6f2663f962db827a618974603d2dfa4a8ed20aca9",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-glacier-survival/wing_line/prompt": {
+    "": [
+      {
+        "clip": "ed1beac0eac8d69dbb86b2257bb83b9b9c705e3e9c2f6eae8322c673983f3d00",
+        "ms": 4607
+      }
+    ]
+  }
+}

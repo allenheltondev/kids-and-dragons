@@ -1,0 +1,154 @@
+{
+  "help/howToPlay/0": {
+    "": [
+      {
+        "clip": "effada12062bcd07de7eca1b9b004e0a226525cfdfe884cb5d8a2cacaa9ac5d2",
+        "ms": 5707
+      }
+    ]
+  },
+  "help/howToPlay/1": {
+    "": [
+      {
+        "clip": "6cec13141ceb04ec6302152aaeb3c014f1c6afc38cf7436c02e3193b32a5f6ef",
+        "ms": 5807
+      }
+    ]
+  },
+  "help/howToPlay/2": {
+    "": [
+      {
+        "clip": "3cf68c0480f172f6c863c4b67ff9239b7a424e2f8b349048d259152a82d6db32",
+        "ms": 6807
+      }
+    ]
+  },
+  "help/howToPlay/3": {
+    "": [
+      {
+        "clip": "4ac7ef14d58f0d051bcc1e4d11d856ff8fc7f5fb4b5ec3e1d53c542e441339d7",
+        "ms": 7107
+      }
+    ]
+  },
+  "help/howToPlay/4": {
+    "": [
+      {
+        "clip": "83f79611806cbc551e7e15fd7360a73fc4ca06ae57e3a38eed6d4ecd06efe974",
+        "ms": 5527
+      }
+    ]
+  },
+  "help/howToPlay/5": {
+    "": [
+      {
+        "clip": "e9d1ea7418001384caecb5f9c70879e425e256aa17e99c51187457541f0ccd25",
+        "ms": 5807
+      }
+    ]
+  },
+  "help/join": {
+    "": [
+      {
+        "clip": "dd38f41b8fd03f77630949fbceaa13b089b2f647dbb57463498517406aedf659",
+        "ms": 4407
+      }
+    ]
+  },
+  "help/surfaces/combat": {
+    "": [
+      {
+        "clip": "80ba18c129e079abbf5e72e5b6b7b38beb1d8f66d09b436f30457db080ec2108",
+        "ms": 7407
+      }
+    ]
+  },
+  "help/surfaces/creation": {
+    "": [
+      {
+        "clip": "9b2bd0bf918d67819a87a3945fdf6c3ad0be6622b56267f9524b18775a2a7590",
+        "ms": 4907
+      }
+    ]
+  },
+  "help/surfaces/guide": {
+    "": [
+      {
+        "clip": "7a84f2ac73dcdd76d672c55aba256b6be72b7575d6e2457877655384250f304a",
+        "ms": 4707
+      }
+    ]
+  },
+  "help/surfaces/inventory": {
+    "": [
+      {
+        "clip": "048a643c8130e1c51babdd83a7b70e299c48e7038bd56c90225e7df542d256de",
+        "ms": 4007
+      }
+    ]
+  },
+  "help/surfaces/map": {
+    "": [
+      {
+        "clip": "a9e768abfb584ffe9d687490403f60de6ea05b4123f85c4440a7cd00c78dbe24",
+        "ms": 6207
+      }
+    ]
+  },
+  "help/surfaces/sheet": {
+    "": [
+      {
+        "clip": "a00fa3ebedbf7d3e2084fe0e0033ba281fca216be6a994093a705f08c743252c",
+        "ms": 6408
+      }
+    ]
+  },
+  "help/surfaces/story": {
+    "": [
+      {
+        "clip": "c66c5f88e36863ef5942af0732d591517da633661b05ab807c3045c0774a78d7",
+        "ms": 3707
+      }
+    ]
+  },
+  "help/surfaces/world": {
+    "": [
+      {
+        "clip": "1a596cbc32c51c02cdc7ed71751c844d643be7b64dc966190b45647bc35f9902",
+        "ms": 4407
+      }
+    ]
+  },
+  "help/things/buff": {
+    "": [
+      {
+        "clip": "ce318430bf3c9484f84f54ab686463cbc6c04f55a88835cf51cedebdf5909b87",
+        "ms": 5807
+      }
+    ]
+  },
+  "help/things/card": {
+    "": [
+      {
+        "clip": "2ac65384d4dd47463402c0b87a1044aa6ed8caba23698bc9d691b16bcbf2c865",
+        "ms": 3407
+      }
+    ]
+  },
+  "help/things/item": {
+    "": [
+      {
+        "clip": "66019f04347a570ea1ebd2910203bb58ecd610c7698fd11a9b88b5e059013ef8",
+        "ms": 3807
+      }
+    ]
+  },
+  "help/things/token": {
+    "": [
+      {
+        "clip": "6feb0d4ddfbbce059c935a1427f61c52245ca0ca1d1d270571fbc80eb508106f",
+        "ms": 7007
+      }
+    ]
+  }
+}

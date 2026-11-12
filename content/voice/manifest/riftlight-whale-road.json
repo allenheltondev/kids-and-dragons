@@ -1,0 +1,1778 @@
+{
+  "riftlight-whale-road/@goal": {
+    "": [
+      {
+        "clip": "71aba9d10a137f481a5a1ad496acf7071ed46ffec7958f0725188005e877b6be",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-whale-road/@plate": {
+    "": [
+      {
+        "clip": "6b9ed33438adae934112f760e4a601cc36217b1638d916d6ef3c8378cc8941bc",
+        "ms": 11907
+      }
+    ]
+  },
+  "riftlight-whale-road/arrive/narration": {
+    "": [
+      {
+        "clip": "919caa98868e7938ea9eebe490b0eb62792b9523935106117485063043521bcb",
+        "ms": 18407
+      },
+      {
+        "clip": "57a5aee64b21fec0428e75da3b3e9259cbf0ba6cef9a8c98f9d54497fec1f222",
+        "ms": 1094
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "160268cebcc89e7d3467764635bcd31042c13c3ddf6b2339a5f6b418d3f14073",
+        "ms": 5708
+      },
+      {
+        "clip": "cf9cc82f46efb8b9226f6c4cd607aef531611b6dbbff66c840775732b44c3f20",
+        "ms": 1986
+      },
+      {
+        "clip": "612f40223301c9aeac3f0bf3519bd48fcc9b8caf6376cf847c1fce5a462100f9",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-whale-road/bell_hung/narration": {
+    "": [
+      {
+        "clip": "7376841ad6f3c94611367c69a00d7422a8179fb53a8cfe83be16dd32021d2700",
+        "ms": 4307
+      },
+      {
+        "clip": "d237555e4eb40e0eb2552a80491e677760b3e69fe530e4fa872e4cd0e52d8ed5",
+        "ms": 3907
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "1c53e8694481f1cea5ac77a6c955722c26c0acb5579c30e066605fa75799eba6",
+        "ms": 1604
+      },
+      {
+        "clip": "25b270f701dc1fa27c27e0d940a6e355af5535bb2bbb29e8fcbc969003cec13a",
+        "ms": 3207
+      },
+      {
+        "clip": "1c3adf4eae668c705220588eab6889ae9d91255df767951af8646621e1167438",
+        "ms": 2009
+      }
+    ]
+  },
+  "riftlight-whale-road/billow_balks/narration": {
+    "": [
+      {
+        "clip": "e4a2a3ef3e79299e4602771287850bd7b424550f13881c93d965287c38b8cba1",
+        "ms": 12407
+      },
+      {
+        "clip": "f34ff621df1da300cbdb3f1d86bd48531ebecc2e963650f8872a59c3d2d4c6f0",
+        "ms": 628
+      },
+      {
+        "clip": "c0a82dee12ae6d9dcc0f9bcab9ddc7c4f17b43bf2632f1a996bbaa61bb5c14a3",
+        "ms": 2098
+      },
+      {
+        "clip": "9ca1b4d751467cbf434bfe786e31f314259a618fa6ca4ced8fd6b4fda98cb83a",
+        "ms": 2020
+      },
+      {
+        "clip": "2d2a6a3a7b27d109e4247001223dd65504b17868fc4d851695f68553dc83205b",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/billow_out/narration": {
+    "": [
+      {
+        "clip": "021820f7cc79b5fd84d9b47d5ccca3a221080a2b58a7c5e48dee127d904fd55c",
+        "ms": 16027
+      },
+      {
+        "clip": "3c3618e4f0a7ffa8b5d1b78f86307af2a232f3901ebf91db00e3ce131b8e4957",
+        "ms": 464
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "60beedc49ba2a4e0a24a5d5978e8024fe8b5d6ec9cdf56ce703493f5f520fdde",
+        "ms": 1057
+      },
+      {
+        "clip": "dcc793fe7fe5a51e348865170556e322d16881c2897cfe63e27b0bcbef5a0c57",
+        "ms": 2155
+      },
+      {
+        "clip": "675d9f9d421549cd8fe4808532f9dc07497929f72283b6aafd97536d40696680",
+        "ms": 1137
+      },
+      {
+        "clip": "20bf28756a950b61b78f88562b570e51cb39acfc953c453ea6b0d4a3ab54e4a5",
+        "ms": 1572
+      }
+    ]
+  },
+  "riftlight-whale-road/calf_stuck/narration": {
+    "": [
+      {
+        "clip": "ca35eb459cacc28666e2c5d71727cdc62523ab35d0557b2dd216131d5fc2bf6b",
+        "ms": 7327
+      },
+      {
+        "clip": "64835d2e401938c9b8885492e6f8dd1a366c09f1998ffa8c5bdf827a6fc337ee",
+        "ms": 1410
+      },
+      {
+        "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
+        "ms": 814
+      },
+      {
+        "clip": "c6378d6c1c98362ab1027fe275761f861befa3f4e2da2320def37297d9a869ae",
+        "ms": 2717
+      },
+      {
+        "clip": "71544844d9ac75dbe59a255d9a21f911e1a10ed6e1b5994e2e7ecd1348b035e9",
+        "ms": 1383
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "63bc7ef587ffb3ecfa2c3fbdf33d42d19fd0c31fc468221f5c6f6ad2ecce7e66",
+        "ms": 3607
+      },
+      {
+        "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
+        "ms": 884
+      }
+    ]
+  },
+  "riftlight-whale-road/calf_stuck/variants/0": {
+    "": [
+      {
+        "clip": "5155e42a171c6cbc385d78b3a0723873539dede08749170d20997b637437368e",
+        "ms": 3327
+      }
+    ]
+  },
+  "riftlight-whale-road/check_anchor/narration": {
+    "": [
+      {
+        "clip": "a88ca0f152c084d59c7896f810b120817f2387ebbd6e576c28a7685136801f46",
+        "ms": 8008
+      }
+    ]
+  },
+  "riftlight-whale-road/check_anchor/onFailure/narration": {
+    "": [
+      {
+        "clip": "7fed0d16f63c8fd0e86783aa3c709e4a2ddd0d3555c9a684dc6330cabe7c6cc9",
+        "ms": 8307
+      },
+      {
+        "clip": "1db81b610b662fa67bf316acf8f85d400f9876b1ad5ae544d2c12313f92ca6d0",
+        "ms": 621
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "36843705d3e660da64374f2fce900663b4731fd87340be46972a978c25e3d2b3",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-whale-road/check_anchor/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8b1b0c84814d75c443083cc7412e32fe3c680be0a31f1a8856e937673f017947",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-whale-road/check_anchor/prompt": {
+    "": [
+      {
+        "clip": "0e0ff871a8450f37987a145a3d283cafe19485605f74124245e7c488dedf2ae3",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/check_bell/narration": {
+    "": [
+      {
+        "clip": "0fb10b8be60762efa65988b5292b7269dce42f9db92bf5b36a565c45bb79dfc9",
+        "ms": 6407
+      }
+    ]
+  },
+  "riftlight-whale-road/check_bell/onFailure/narration": {
+    "": [
+      {
+        "clip": "7d09d61bde67e96b56e8b84d2140627527945898f42e42ba68a8ea171737088d",
+        "ms": 8727
+      }
+    ]
+  },
+  "riftlight-whale-road/check_bell/onSuccess/narration": {
+    "": [
+      {
+        "clip": "37773a01c013788427db25fc1feabd030761506bece090ae9ff55755eb01b5ac",
+        "ms": 6007
+      }
+    ]
+  },
+  "riftlight-whale-road/check_bell/prompt": {
+    "": [
+      {
+        "clip": "0eae7927e0555d206cc16847ff81b1c7cc46e6f8e1c9bd7c5bf3f6a79fc881e4",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-whale-road/check_brace/narration": {
+    "": [
+      {
+        "clip": "a3a1d7ad5a971e1987afd8d9a4644cf382a2d3153ee814f2a9452aae104488ca",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_brace/onFailure/narration": {
+    "": [
+      {
+        "clip": "7fed0d16f63c8fd0e86783aa3c709e4a2ddd0d3555c9a684dc6330cabe7c6cc9",
+        "ms": 8307
+      },
+      {
+        "clip": "1db81b610b662fa67bf316acf8f85d400f9876b1ad5ae544d2c12313f92ca6d0",
+        "ms": 621
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "36843705d3e660da64374f2fce900663b4731fd87340be46972a978c25e3d2b3",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-whale-road/check_brace/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8b1b0c84814d75c443083cc7412e32fe3c680be0a31f1a8856e937673f017947",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-whale-road/check_brace/prompt": {
+    "": [
+      {
+        "clip": "5aa601ac5920b46215ab837ca41895aa8bda7eba207a39dd6803a53012019da2",
+        "ms": 2577
+      }
+    ]
+  },
+  "riftlight-whale-road/check_fly/narration": {
+    "": [
+      {
+        "clip": "585aa00d6d1c0f20f71ec062064c99334f89a355c5bd914699980ec33813e1e5",
+        "ms": 8707
+      }
+    ]
+  },
+  "riftlight-whale-road/check_fly/onFailure/narration": {
+    "": [
+      {
+        "clip": "2b532b8d93d1053217a9c4c5290091468f26e9f2177840b9e26b6a23bbb63feb",
+        "ms": 6807
+      },
+      {
+        "clip": "298e2c5efcb72392c9bcf2d8d02b4c53acae43eb33453f5503058868c9364eb0",
+        "ms": 1034
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "01d41a41cfc41741973559fe50a359adce7ff407301343ec115525d63a89c4b2",
+        "ms": 1096
+      }
+    ]
+  },
+  "riftlight-whale-road/check_fly/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a28e4accfbbf5f710f010b2a9ee523f878b52481bb3a34f1c65ecfaa008b7a27",
+        "ms": 8207
+      },
+      {
+        "clip": "298e2c5efcb72392c9bcf2d8d02b4c53acae43eb33453f5503058868c9364eb0",
+        "ms": 1034
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "29eea525ab00f26b849f8613706cba8aabd7a239c357cb93497304cc0ca2bfe1",
+        "ms": 1679
+      }
+    ]
+  },
+  "riftlight-whale-road/check_fly/prompt": {
+    "": [
+      {
+        "clip": "2b0c01038162d43aa88751c3e915bc994ce3dc40fd5b9c9dc63e3048a88cd047",
+        "ms": 2536
+      }
+    ]
+  },
+  "riftlight-whale-road/check_haul/narration": {
+    "": [
+      {
+        "clip": "2be583ac5a315a4ddb4e75a8f33cde3423796510d5f73a5f5233890617ad69c2",
+        "ms": 5907
+      },
+      {
+        "clip": "089d5ae3387fc24444aa1416f498775fc9254cd62609fb7bf1b0ded9aee9e173",
+        "ms": 953
+      }
+    ]
+  },
+  "riftlight-whale-road/check_haul/onFailure/narration": {
+    "": [
+      {
+        "clip": "e62bf51d2dd589deb28fd1f85e31e80abe18a1f1b42610a5f3eafed353d1a51d",
+        "ms": 7707
+      }
+    ]
+  },
+  "riftlight-whale-road/check_haul/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ff0110a1c7da8d885a61abd44fe9bb4e6f364d197f6eac477628dc9feeb64aa4",
+        "ms": 3927
+      }
+    ]
+  },
+  "riftlight-whale-road/check_haul/prompt": {
+    "": [
+      {
+        "clip": "80238f638dd0535e104959d8a5bd8be56f265fb7e599ae6e96bd7a8511853248",
+        "ms": 2666
+      }
+    ]
+  },
+  "riftlight-whale-road/check_hum/narration": {
+    "": [
+      {
+        "clip": "4c852c1262426ad0d5e6bd2117a5a1c7ab9938db5e3d7625cc28ea0c5302221e",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-whale-road/check_hum/onFailure/narration": {
+    "": [
+      {
+        "clip": "738d99bf90e3c20e9a2c9518c873067888f023fd50f3b0675f1b021d83a5b62b",
+        "ms": 12007
+      }
+    ]
+  },
+  "riftlight-whale-road/check_hum/onSuccess/narration": {
+    "": [
+      {
+        "clip": "b8f07977575cc6eac714cda3b8d0547fec5ff837bfc8c65c8acaced7eac7ced9",
+        "ms": 10707
+      }
+    ]
+  },
+  "riftlight-whale-road/check_hum/prompt": {
+    "": [
+      {
+        "clip": "f5fe8999961a34ecdeb8b57778c086cb6e2d404d191be63c352a237e245baf77",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern/narration": {
+    "": [
+      {
+        "clip": "3ecdf997920406220708a3f0ed0aa75344797faca09b2f5e67a5ff45f74acbfe",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern/onFailure/narration": {
+    "": [
+      {
+        "clip": "35435c19d6c2b256be900dd36c358dfcf935f4aa6e3d0532d6eafde028039729",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5af0da57d9aab3ab9af0d998f935795aaac4d4a82cd872cfce2c7fe0044750ae",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern/prompt": {
+    "": [
+      {
+        "clip": "ea00d871766f5440a47a4f3241a45c5019a9bd73f77d18ae80c40bd962c3eb89",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern_pip/narration": {
+    "": [
+      {
+        "clip": "3199fbd37722731f3129166b6aa6051bcb05778aa58fb1f624e0e00d5b5a02d0",
+        "ms": 4607
+      },
+      {
+        "clip": "caa82386ec6d859c2de328e0389cdfe723e7e079716de490cffdd85d5a12fc8c",
+        "ms": 2285
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern_pip/onFailure/narration": {
+    "": [
+      {
+        "clip": "35435c19d6c2b256be900dd36c358dfcf935f4aa6e3d0532d6eafde028039729",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern_pip/onSuccess/narration": {
+    "": [
+      {
+        "clip": "5af0da57d9aab3ab9af0d998f935795aaac4d4a82cd872cfce2c7fe0044750ae",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lantern_pip/prompt": {
+    "": [
+      {
+        "clip": "19e79f3aba657fb9c5154216a4e370d39bbf31c784734fa65b100297f1c5c2f2",
+        "ms": 2024
+      }
+    ]
+  },
+  "riftlight-whale-road/check_leap/narration": {
+    "": [
+      {
+        "clip": "7cd00a41536d78fdce8b23cab87fea332acdb4570aae6fd0a17744e716d527f7",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-whale-road/check_leap/onFailure/narration": {
+    "": [
+      {
+        "clip": "c90423a0f7cf523a668764c35a818ab15411020e44295d537e9470d427f55260",
+        "ms": 10427
+      }
+    ]
+  },
+  "riftlight-whale-road/check_leap/onSuccess/narration": {
+    "": [
+      {
+        "clip": "54836d95d8f2c58719898761a6442aec77023fc3d28ba324a89dc8f2f6361b07",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_leap/prompt": {
+    "": [
+      {
+        "clip": "00e53d0fc74fd3dffcea2eeb665a45ffca74aa91527b2bcb779138f9574703a8",
+        "ms": 3907
+      }
+    ]
+  },
+  "riftlight-whale-road/check_listen/narration": {
+    "": [
+      {
+        "clip": "a08159190d674396470144a73049d4a6086067ece7afdbd28640315e0c0ffbac",
+        "ms": 8907
+      }
+    ]
+  },
+  "riftlight-whale-road/check_listen/onFailure/narration": {
+    "": [
+      {
+        "clip": "370af3049373025867fb951ecddc0c0bff5261c092b46f6184377b2b6db5c942",
+        "ms": 5907
+      },
+      {
+        "clip": "60503558e3591422ec2a436dd77783a0cefa96e6fdf70bba7ae9899c6e626db8",
+        "ms": 1114
+      },
+      {
+        "clip": "e415218cc61c7ac3632538dee7b3fd05257e9bba1d6d5de8d37dc61bed45a06d",
+        "ms": 2990
+      }
+    ]
+  },
+  "riftlight-whale-road/check_listen/onSuccess/narration": {
+    "": [
+      {
+        "clip": "dbc4ac282376fc2749cd82e14268bb4649a625e8d854b9aa1c141d7cb15f2c84",
+        "ms": 12107
+      }
+    ]
+  },
+  "riftlight-whale-road/check_listen/prompt": {
+    "": [
+      {
+        "clip": "de0a8afb07148eed3553e4abf3efe76327ea6a5611bf0460d405048468d171d1",
+        "ms": 2933
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lullaby/narration": {
+    "": [
+      {
+        "clip": "659db41f4f79508feab69d76fa2cdc3b6a16581dbfd27db2ceaaf85581e88dba",
+        "ms": 8107
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lullaby/onFailure/narration": {
+    "": [
+      {
+        "clip": "fe50c45b63f574dbffc111c0ecdbbc96a43502e3409ea45c6cd04b814ecfa015",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lullaby/onSuccess/narration": {
+    "": [
+      {
+        "clip": "faa55ee6e2137b9c0467e667557910ec82043b4c42889a8a97160c293e55c52e",
+        "ms": 4207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_lullaby/prompt": {
+    "": [
+      {
+        "clip": "7ea8c9bfa70ee6f87c8e48fa2b297719001b30e4b898f176cca80279481a99d2",
+        "ms": 2934
+      }
+    ]
+  },
+  "riftlight-whale-road/check_posts/narration": {
+    "": [
+      {
+        "clip": "02ab6e43287f162e210cbf308886ccd6d87f6b6661ce6967ef4de46f67ac584a",
+        "ms": 6707
+      }
+    ]
+  },
+  "riftlight-whale-road/check_posts/onFailure/narration": {
+    "": [
+      {
+        "clip": "0351c69ca9ff98a35f146afaffe8aabac5288c0957771acbf7ae737e65738dbe",
+        "ms": 7807
+      }
+    ]
+  },
+  "riftlight-whale-road/check_posts/onSuccess/narration": {
+    "": [
+      {
+        "clip": "a738656f4ca3e22fc16239e1c462b1fb7946224346cd310c4d14944df909c5eb",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_posts/prompt": {
+    "": [
+      {
+        "clip": "327c17b33f317a3fe3fa12ae0dbe2ae657c0f772c2799129909542b6d475de2c",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-whale-road/check_read/narration": {
+    "": [
+      {
+        "clip": "97fc58ef6605d8afd38cfd0470df6080d8bf6059bcafbd16033c586eea40b121",
+        "ms": 7507
+      }
+    ]
+  },
+  "riftlight-whale-road/check_read/onFailure/narration": {
+    "": [
+      {
+        "clip": "f0509c33b8cace2c404649e55845aedbba7dd54ff7110abde64f41957aada6f4",
+        "ms": 7607
+      }
+    ]
+  },
+  "riftlight-whale-road/check_read/onSuccess/narration": {
+    "": [
+      {
+        "clip": "4e47168b9404146ad823dd5c253d96ef09722ac7f40e2a58b51164321905ad40",
+        "ms": 8607
+      }
+    ]
+  },
+  "riftlight-whale-road/check_read/prompt": {
+    "": [
+      {
+        "clip": "bdb86d4e83f6f6fbfe6bd3732c9904c718b9fd8672a44eca4427f7c8afe122e3",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-whale-road/check_ropewalk/narration": {
+    "": [
+      {
+        "clip": "1c755dcdda26cc081d42b75c0085bf9d145cee7cb22b6b957956e82168ef5f00",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-whale-road/check_ropewalk/onFailure/narration": {
+    "": [
+      {
+        "clip": "b0f8d10c4c6e50a161fbf82578231e336e6b07da9235570377be409ef66a3655",
+        "ms": 11107
+      }
+    ]
+  },
+  "riftlight-whale-road/check_ropewalk/onSuccess/narration": {
+    "": [
+      {
+        "clip": "ea013ba7e91c413aebf3467c06dd9fbb0d87f4a6cc40dfb1d199000e6672e64e",
+        "ms": 6307
+      }
+    ]
+  },
+  "riftlight-whale-road/check_ropewalk/prompt": {
+    "": [
+      {
+        "clip": "dad831fee119393c7dd315146c3c0c75e7fcd6abdb31f2fc141fe438c3b8af37",
+        "ms": 2929
+      }
+    ]
+  },
+  "riftlight-whale-road/check_tether/narration": {
+    "": [
+      {
+        "clip": "022afca94d3175083bca92c2dc180027082540bfcfbc15670d1ee456361e70c9",
+        "ms": 8007
+      }
+    ]
+  },
+  "riftlight-whale-road/check_tether/onFailure/narration": {
+    "": [
+      {
+        "clip": "7fed0d16f63c8fd0e86783aa3c709e4a2ddd0d3555c9a684dc6330cabe7c6cc9",
+        "ms": 8307
+      },
+      {
+        "clip": "1db81b610b662fa67bf316acf8f85d400f9876b1ad5ae544d2c12313f92ca6d0",
+        "ms": 621
+      },
+      {
+        "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
+        "ms": 782
+      },
+      {
+        "clip": "36843705d3e660da64374f2fce900663b4731fd87340be46972a978c25e3d2b3",
+        "ms": 832
+      }
+    ]
+  },
+  "riftlight-whale-road/check_tether/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8b1b0c84814d75c443083cc7412e32fe3c680be0a31f1a8856e937673f017947",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-whale-road/check_tether/prompt": {
+    "": [
+      {
+        "clip": "a1429bea16ae8d64ccbb05465ba10490982db6e0362e8686ddd81bbd88659eda",
+        "ms": 2851
+      }
+    ]
+  },
+  "riftlight-whale-road/check_yarn/narration": {
+    "": [
+      {
+        "clip": "c5abf38f86439ab87e7a0a4ed48888cf051de8ef3819cdb4fa6a1422bb091b2b",
+        "ms": 6207
+      }
+    ]
+  },
+  "riftlight-whale-road/check_yarn/onFailure/narration": {
+    "": [
+      {
+        "clip": "32782c4e2a182942762e3d106b1a272dbaf6b121e6fba3ba5d6837c01bef8c1e",
+        "ms": 9407
+      },
+      {
+        "clip": "9115e8dee6faad1a9eaf3384b893097c0da7811f4982ed6872319b3eba368115",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-whale-road/check_yarn/onSuccess/narration": {
+    "": [
+      {
+        "clip": "816fd4a13b7a890b4d9c1865d1b3954572ce4d146e95c18ac3d68ae9af4ee7ee",
+        "ms": 7807
+      }
+    ]
+  },
+  "riftlight-whale-road/check_yarn/prompt": {
+    "": [
+      {
+        "clip": "40dfcdb48a7638b60f35374c36ae7c5b67c8013f1a0de8e1820e42398b41ef48",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-whale-road/chime_lean/narration": {
+    "": [
+      {
+        "clip": "93479f43f517f90dbf971bef2f16ece4a6ba692fb36a5c313fce366cbf19e5b5",
+        "ms": 14907
+      },
+      {
+        "clip": "0a0b6739057dfab6ab3a9368efb0e492dc97921ca341a494858485cc47027eeb",
+        "ms": 1635
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "d6e933a757fa7a143027d8b40981ec02795727788e089aaed95b82b47acfb283",
+        "ms": 3607
+      },
+      {
+        "clip": "c5bf06fbb013839abcfe76439ecc4338191d66634ab3dcb4b236a53f4efbc480",
+        "ms": 3407
+      }
+    ]
+  },
+  "riftlight-whale-road/decide/narration": {
+    "": [
+      {
+        "clip": "4a5138e2e33eae7c7f7109c92d4167959db434072f865c6e185a7edf9a3c84dd",
+        "ms": 7507
+      },
+      {
+        "clip": "dd85341a9e7d62b82cd6968b13760356e6d41fcea9ad645c95d9c20910a32e78",
+        "ms": 1693
+      },
+      {
+        "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
+        "ms": 913
+      },
+      {
+        "clip": "b87e5178fd9095002b15462150e1c5d6062d9caef780bc01f5ced697066b8c14",
+        "ms": 4607
+      },
+      {
+        "clip": "8b077f23f76b7ac5523371a4c8e9cc44208f633ca999afe996e705e27f9c5951",
+        "ms": 2518
+      },
+      {
+        "clip": "1bade2d818a46773a5ad25efb8f2c7c4cc677ea77bb3a2a757256219289b8e63",
+        "ms": 5307
+      },
+      {
+        "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
+        "ms": 884
+      }
+    ]
+  },
+  "riftlight-whale-road/decide/variants/0": {
+    "": [
+      {
+        "clip": "8b1520f2119dba78885174dc889858365a553c1cc153f92da968454f79008408",
+        "ms": 3607
+      }
+    ]
+  },
+  "riftlight-whale-road/decide/variants/1": {
+    "": [
+      {
+        "clip": "2b80602f7215b46a4f3255d3e6267ce8f3cf0b3545b559bad8bbae3c108c2a9b",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-whale-road/echo_test/narration": {
+    "": [
+      {
+        "clip": "9cec3657a04978559d8c5b0c485de9272a6877c4ce23aaf5881d0810c3fa0263",
+        "ms": 3207
+      },
+      {
+        "clip": "6ff2cc9059c100e04ae190da55df5342c70270555bf6017c1f6df4f2ac5fce2b",
+        "ms": 4007
+      },
+      {
+        "clip": "29ac771e7e2c5235bc34ba3184a706a90979925690e63c04837b4ec455c0c0e2",
+        "ms": 5307
+      }
+    ]
+  },
+  "riftlight-whale-road/guided/narration": {
+    "": [
+      {
+        "clip": "a7d88b81e4f18d66292f27dda93d04ac890ac1736d81d4b75a16792a79450f9d",
+        "ms": 14207
+      },
+      {
+        "clip": "b2b7e06db4405beaeaa26556c12576fb9ac30c2494a6043c6833a5cf95edffe5",
+        "ms": 2810
+      },
+      {
+        "clip": "d070e8b78b832b514a373989ef155e529601d8d32424862f1de2f5d1f46b32e2",
+        "ms": 17907
+      }
+    ]
+  },
+  "riftlight-whale-road/guided/variants/0": {
+    "": [
+      {
+        "clip": "d2e32a250955b1e65ecb9ce757ecedd209f32b098dca25c7c599d751705d1984",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-whale-road/hauled/narration": {
+    "": [
+      {
+        "clip": "d69e556ea2f9f73bb9e571066b543eb0493910d4ca3e43dd36a9327e352955d6",
+        "ms": 12407
+      },
+      {
+        "clip": "76d55c5b703d77944b698c6d5fec713bfadf05a2bf28b2f3f0a2bf9b38e50c0b",
+        "ms": 1669
+      },
+      {
+        "clip": "f1a45a59598d9e2d8171fae7e1c0bc70ec551456acf87fad632ab8e79865ca35",
+        "ms": 5607
+      }
+    ]
+  },
+  "riftlight-whale-road/hauled/variants/0": {
+    "": [
+      {
+        "clip": "152e4bcf67e1a07c52c7e910ee8ba5c8492d323955fcc78399ed81c7f01973dd",
+        "ms": 7207
+      },
+      {
+        "clip": "72ad59b7005bf075fadee2932f1b5c5d5c92e47271d5ee36888a8fb43f2f0553",
+        "ms": 2286
+      }
+    ]
+  },
+  "riftlight-whale-road/hiccup_leads/narration": {
+    "": [
+      {
+        "clip": "b254741253c27e2d705d904592f8cf2546a413f2d5b1dbd6b57de2648a97da9b",
+        "ms": 13907
+      },
+      {
+        "clip": "0bbc8ce229dacebda4b1240e57ad65285bce7c3c49c46bd981002d67f70ea327",
+        "ms": 1031
+      },
+      {
+        "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
+        "ms": 913
+      },
+      {
+        "clip": "dc60d063cf8261b1439c614ed52d14493954a47b7ff7ab9654eac020f1b1962b",
+        "ms": 3207
+      }
+    ]
+  },
+  "riftlight-whale-road/hiccup_night/narration": {
+    "": [
+      {
+        "clip": "b317b762f3687d5ca0a3a81a1562f30364242cd324832a045d7a76604004a78b",
+        "ms": 15907
+      },
+      {
+        "clip": "3e27cf640d8e084b31b1b67dba8622c71651d9e82ad7ceeca55eaf15ce7f2b31",
+        "ms": 1402
+      },
+      {
+        "clip": "ed9d41d1ca07ec541048b732eddb056565a443995079754ca23ed5f8e7b59e10",
+        "ms": 4907
+      }
+    ]
+  },
+  "riftlight-whale-road/island_tug/narration": {
+    "": [
+      {
+        "clip": "48288316c065fb09484e48b99f68b0b82ac41e27413b583b754dd6e7af29e00c",
+        "ms": 12707
+      },
+      {
+        "clip": "e5a9ba8729173295c7045879497d1c065d0e26325a1bd37cc100b101d19939fc",
+        "ms": 2918
+      },
+      {
+        "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
+        "ms": 814
+      },
+      {
+        "clip": "9d11cf51a2304e588d389b8d3aa76cda352597633f8ae1cfccd8300841bc60db",
+        "ms": 4207
+      },
+      {
+        "clip": "5e03db096f55aed6b384cf78091deff98204f67fc70c9155cb93f069e8c8d2e0",
+        "ms": 1907
+      }
+    ]
+  },
+  "riftlight-whale-road/juniper_answer/narration": {
+    "": [
+      {
+        "clip": "2247e4d943dd73dae7ae0fecce89aad77eb7cf03a4f286cb1f9d5fadd7f8819d",
+        "ms": 2202
+      },
+      {
+        "clip": "97c49af417f3de933b89f1412279652098599a47700b0b46020275b6af799eb1",
+        "ms": 16707
+      },
+      {
+        "clip": "798365dba9789c6baef38c4acc504aca28b2ef0199689f54677306a3d2b3d380",
+        "ms": 1509
+      },
+      {
+        "clip": "95b7a1cade5199082794d59dea19d83d32a75ceae9d9b76967e4e20e8d388973",
+        "ms": 2944
+      }
+    ]
+  },
+  "riftlight-whale-road/juniper_night/narration": {
+    "": [
+      {
+        "clip": "e15262b44ccb7be1ba083d4e819076f3c7b90eb0471c842d06ad772e392e0f87",
+        "ms": 1693
+      },
+      {
+        "clip": "c0b0c9956d55b2a146831e1ec9f4a56ab721cc1e775af7e4064c589ea17a0d33",
+        "ms": 3407
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "81e722cf3bb9e41173f5430a77ac286e7002f3925b83fd0c66b50080c829d426",
+        "ms": 7327
+      },
+      {
+        "clip": "72134e19fae6fa194e3afc6f23169b24b252940cf356c31449d0a1584da71f23",
+        "ms": 1438
+      },
+      {
+        "clip": "8bbeec5154aeba7ccd8729beded233b468d0f7388ba5c766db63711e8fd8bf04",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_night/narration": {
+    "": [
+      {
+        "clip": "46ad5ff0c79d535ba1e6e17fb41ade3f373ca9e71482af04e9af3f21d1706843",
+        "ms": 13407
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_night/onFailure/narration": {
+    "": [
+      {
+        "clip": "b9e27de2ea4c463f67a2df28f965e95ecee9fcaaa4062cb1cf1c21bd6ac18fb0",
+        "ms": 12007
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_night/onSuccess/narration": {
+    "": [
+      {
+        "clip": "fe1104a90bf90f06a4a3f88efbdde3eab8a234915c785348424924e1d2086ccf",
+        "ms": 8307
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_night/prompt": {
+    "": [
+      {
+        "clip": "698c0ad204be50cd60068f180250357a4baa1d74c89d557aea0bbcf37ee0fd71",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_test/narration": {
+    "": [
+      {
+        "clip": "03c9e669459e3ff8f407df43f30ecc011d0198cbf07c131ce9e973989732a8b2",
+        "ms": 2387
+      },
+      {
+        "clip": "e00f5d4cb71ab511c822c4d8666cc1eedee6b94b74820df88810a81a4cdb3127",
+        "ms": 1691
+      },
+      {
+        "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
+        "ms": 991
+      },
+      {
+        "clip": "066c75d87d56cd7928fcf3c84e71ab77b9a33f6145e9b115a6b499a6894ddff9",
+        "ms": 5907
+      },
+      {
+        "clip": "7fb1628c7c414049423f8a813397d76825e55094c32b0d6427b5651f3367c4a4",
+        "ms": 5008
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_test/variants/0": {
+    "": [
+      {
+        "clip": "0013fca112592b3a6b72681b1558ed7642ec019dcbc8bd179a3a29102730c309",
+        "ms": 3807
+      }
+    ]
+  },
+  "riftlight-whale-road/lead_test/variants/1": {
+    "": [
+      {
+        "clip": "ba913fac1ae24788c6079a59f976be663a4c636feed68aab4d51b05307f7c0d3",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/low_pass/narration": {
+    "": [
+      {
+        "clip": "4ebe0f8cd437195ab7cff6382717c948603bd87ce96ea8efcaef1897c8298ab3",
+        "ms": 9407
+      },
+      {
+        "clip": "e6badce7b8be3ce50e88ae8e732960122a5e50e9cca5da99f43abb6a1580e15e",
+        "ms": 4007
+      },
+      {
+        "clip": "3e3aa9a08e0c712f2b19c17d5dbe2ce700486cf77e311a090d327850ddee4a3b",
+        "ms": 2045
+      }
+    ]
+  },
+  "riftlight-whale-road/not_promised/narration": {
+    "": [
+      {
+        "clip": "15c52abd5124bd962ec6031e9729fb589bdf36ababee42e8dd3d9848a986b8b8",
+        "ms": 1023
+      },
+      {
+        "clip": "58379ff62b0dd713c4bde18f9d878b1d72246a896c22516ea8f66ac526a2e0e9",
+        "ms": 4407
+      },
+      {
+        "clip": "28353894163d097272b4a6ea6afc7326f354b26bdc188a2cdf74158ce830aeb0",
+        "ms": 5107
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_here/narration": {
+    "": [
+      {
+        "clip": "ce2addaf31b595773cb66d00a64263af5ad6d6cf18172a6959e9f31e21352447",
+        "ms": 11807
+      },
+      {
+        "clip": "14e352660a3491ee85fb5155477376e2c09ecc59deec0e6fb84fccedabaf27c9",
+        "ms": 2461
+      },
+      {
+        "clip": "bc92e738c4293a7a99a99506f5733222cf4de855ac5c3dbce6f0fa44fdf03fee",
+        "ms": 5607
+      },
+      {
+        "clip": "5c479aaa560065d374d57fb214da9ae5a2478f9a1a99e1abd2435f472bc47bd0",
+        "ms": 947
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "4625b5e3f5e730f4fe9acd105b382c2e1026121492e48baa7e5829c438e74ce0",
+        "ms": 4307
+      },
+      {
+        "clip": "3c1a16c88c7b282e092cd7f4168a462b3707dcbbb7dbd1440faf99fdb05c4554",
+        "ms": 1267
+      },
+      {
+        "clip": "1c6b5aa95d912d7c61bbef14a2c59fb6f0c6aea29cbdf42617bea51c5c238bbb",
+        "ms": 1789
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_night/narration": {
+    "": [
+      {
+        "clip": "33a975cef785c6bae78eb9ad078a2938c1203df5d9e5f335ee388d8d5db96e19",
+        "ms": 3907
+      },
+      {
+        "clip": "7cfb4ef794afe95bd235281bae6e73fe5cc4b68616ef46c8a068056a28f1918b",
+        "ms": 2058
+      },
+      {
+        "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
+        "ms": 712
+      },
+      {
+        "clip": "619ea55d346684e21bd111a3db230b951982b64f2ebbf86bb45a0136894007c2",
+        "ms": 10707
+      },
+      {
+        "clip": "53faa56ead01c375b73672985b6865609c59065668096422bd10102dfd378c31",
+        "ms": 1061
+      },
+      {
+        "clip": "faef15a0b08699592e32e5dd5aca27b1a38b18c518ec76d51aeaa1ab838a0eb5",
+        "ms": 2807
+      },
+      {
+        "clip": "227c052e3acbf7892705d04d2d450e5e3c0812cb771e448d7ad4dcf0a820147d",
+        "ms": 2243
+      },
+      {
+        "clip": "29e418c69ce3d5b34d71ce33065b6351805953e02af7373aae50a5bda619565a",
+        "ms": 2732
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_offer/narration": {
+    "": [
+      {
+        "clip": "834cbbbcc25571225d03e29cdd59a878d1e7bfc744ec04f2cc3b99adf291448d",
+        "ms": 1316
+      },
+      {
+        "clip": "a861cc7a4c12ea4adb522f9907684b162b28652a2123bd2f6ab5886ad0141964",
+        "ms": 2726
+      },
+      {
+        "clip": "a7fe52e4d92848ea78d6bfb91204bf3d35d6151efea5376d7b8890c51590f62a",
+        "ms": 15707
+      },
+      {
+        "clip": "16622db59a47249e8ebe6f3dcdc1d03553f942bb9b0082b8dd19529adeaac1a9",
+        "ms": 1219
+      },
+      {
+        "clip": "f0ce4e4d62e315445491c903dc78880ccddacbfad0485aaa9e83f418258dae87",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_offer/variants/0": {
+    "": [
+      {
+        "clip": "1a19446ae44e72f1c9ceb3c6bb70ac19b9768e454d32faea0081cf37025dfc93",
+        "ms": 5507
+      }
+    ]
+  },
+  "riftlight-whale-road/olivia_offer/variants/1": {
+    "": [
+      {
+        "clip": "bc85837222aa67f692d2811dcef8004bee220c642bb6720e90351287bd9ce31c",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/pair_seen/narration": {
+    "": [
+      {
+        "clip": "df95586ba816276d2be1e9952dce543da0e5a0d6c1a0acc814086ef40f29e8fd",
+        "ms": 27307
+      },
+      {
+        "clip": "158b10a44b8f212693babd08a92cb55fba4cd48e119121735fb5f01c76ecac36",
+        "ms": 1749
+      },
+      {
+        "clip": "89ab6ceb68ba9d1759465bb76494f0c6a75f7e70b7ee79ade9b6767db0994e0e",
+        "ms": 1143
+      }
+    ]
+  },
+  "riftlight-whale-road/pip_bell/narration": {
+    "": [
+      {
+        "clip": "483adc0ab6f5372639b8f857f292294738b7fed217208a7dc568ccfb0331caa6",
+        "ms": 4807
+      },
+      {
+        "clip": "5f5781e041dfe6911dceca0780792b90bab4d22ac635d89b7197ac827e838b6b",
+        "ms": 4207
+      },
+      {
+        "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
+        "ms": 960
+      },
+      {
+        "clip": "aa23230cf4d0b97a78ecc6774924d21382b238ceff4197e2c213f9131de91021",
+        "ms": 2867
+      },
+      {
+        "clip": "cda459feff414b210f5bcee094c21bc9705c1269653db57b99ee8c8ae66b4c19",
+        "ms": 2211
+      },
+      {
+        "clip": "05aba8489e509d744d428ddbc1d7ee6e1341b65c45c2bf62bab700457561656a",
+        "ms": 1932
+      },
+      {
+        "clip": "8a02801c127a9bd062a2a3c3c0ca392e54f24a279bb7231460a70cb5d348aaf3",
+        "ms": 1187
+      }
+    ]
+  },
+  "riftlight-whale-road/pip_lanterns/narration": {
+    "": [
+      {
+        "clip": "649d6b2fd1e869f612ce653099cd25ea2f10d503c0f754628300b2cd473e4a25",
+        "ms": 7327
+      },
+      {
+        "clip": "8891b622063d304eb6afda88ae45154ccefd2878ef9c2805d6ae89f1d3246994",
+        "ms": 3807
+      },
+      {
+        "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
+        "ms": 697
+      },
+      {
+        "clip": "cecacdeda6bc17bb2c813cb257f799f8f88e131413f88e6a15aa0f47cd3107fc",
+        "ms": 2312
+      },
+      {
+        "clip": "db395a6be09a6672647f1425ce5d9097b3401f91b79bd9ffb6d2074eda1f932a",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-whale-road/pip_notebook/narration": {
+    "": [
+      {
+        "clip": "fc077ffc7c8b878bbfbb850f1def2d55f5409babca237b46d55d91002e06eca8",
+        "ms": 8907
+      },
+      {
+        "clip": "104b938736e4e3c523014f29bf007ca50e5f823670a6d03a6a15a73b7809204a",
+        "ms": 2313
+      },
+      {
+        "clip": "0d07fd069968d4b36b2f828fc0aa558b8c14b48c59df7e9424050866411bda1f",
+        "ms": 1953
+      },
+      {
+        "clip": "14a6274ad3dc9f4fbc08a4573cfe6cdec9c68151ce80ed009e404ed638c51848",
+        "ms": 3707
+      }
+    ]
+  },
+  "riftlight-whale-road/promise/narration": {
+    "": [
+      {
+        "clip": "f7b4373f2ab88f834f2aa908434ab70ead3b8af66db54caa289b09d60dc95fed",
+        "ms": 1746
+      },
+      {
+        "clip": "29b3ca39f6c70c38788e4eb89a09693b37e313e7b53bd1f60ae803c7331fa350",
+        "ms": 11507
+      }
+    ]
+  },
+  "riftlight-whale-road/promised/narration": {
+    "": [
+      {
+        "clip": "c4b3a397b7843dc83c476fb571d6c2122058722ccf7785273eeab2a9a2ea1296",
+        "ms": 949
+      },
+      {
+        "clip": "4c6619fe8e590b90e5f3c035e88754ac1bfb3b82664b06a95f702068040286e8",
+        "ms": 3507
+      },
+      {
+        "clip": "5e246df16e39d9715fdb0d06e2fafda9a3c8da1e65993957cb3945f2c68e13a0",
+        "ms": 2771
+      },
+      {
+        "clip": "e5d572253fa0e22afa9e95b0f78c4e3bbb274cc0a227324e517ada05acf8b3df",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-whale-road/quiet_beat/interaction/cue": {
+    "": [
+      {
+        "clip": "52aa19d4c3d2e6df9a9930805c2b77b35c3c939bd1ed83164a7d347770bd9961",
+        "ms": 2081
+      }
+    ]
+  },
+  "riftlight-whale-road/quiet_beat/narration": {
+    "": [
+      {
+        "clip": "d5c2af5d1e43ce91584e3b1e0cbab8103ad847a13a7dba3a37c9553be3c9ea66",
+        "ms": 14407
+      }
+    ]
+  },
+  "riftlight-whale-road/quiet_beat/onAssisted/narration": {
+    "": [
+      {
+        "clip": "2a24fc938ee37bc657e4cccad31835ae58fddcf238b86e8156905899daa03927",
+        "ms": 5907
+      }
+    ]
+  },
+  "riftlight-whale-road/quiet_beat/onFailure/narration": {
+    "": [
+      {
+        "clip": "ad392ef1028b8e103cc9bf80d98e149c3aab6cefba2c6e9beced3da01333c1df",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-whale-road/quiet_beat/onSuccess/narration": {
+    "": [
+      {
+        "clip": "e3e66addfb839ce8c5bdf1f94f3ee2fd483f5c5135412e31ada9d66e5d82f4db",
+        "ms": 5207
+      }
+    ]
+  },
+  "riftlight-whale-road/rest/narration": {
+    "": [
+      {
+        "clip": "0051fb7c5bbe229dc3513b0c7f1601c16cda90fefb173d51b22bd4da2d52d6dd",
+        "ms": 15407
+      }
+    ]
+  },
+  "riftlight-whale-road/rest/variants/0": {
+    "": [
+      {
+        "clip": "b30de4a8f3a9a50fb087c425d763f002ec1ec34bc049df1b0ce16d87da94636a",
+        "ms": 16007
+      }
+    ]
+  },
+  "riftlight-whale-road/rest/variants/1": {
+    "": [
+      {
+        "clip": "140cb41c11d5b2bf71f06b30017cfaad73ad8c1796da215f2997ce022247d60c",
+        "ms": 4707
+      }
+    ]
+  },
+  "riftlight-whale-road/rest/variants/2": {
+    "": [
+      {
+        "clip": "e73c8b5224c56c7a9638aca6cdc9e287d09eeef6916545b86127f8060795b3c6",
+        "ms": 4107
+      }
+    ]
+  },
+  "riftlight-whale-road/rest/variants/3": {
+    "": [
+      {
+        "clip": "9fe306af418bda01db151564240748241aaf2ea4680c8360ed4d153e4f13691c",
+        "ms": 2931
+      },
+      {
+        "clip": "61811ca75c5dc338aa23b3b01058ed8c487d3fabc33f1cc70edb1617f6103219",
+        "ms": 1139
+      },
+      {
+        "clip": "574118c7b257db605c70da9564d5eb4a5c58230f7acd4bb0bd617f16f567ce44",
+        "ms": 1474
+      },
+      {
+        "clip": "30fde22b197af918ea11653d5bb13ccadb9b803086d755e314792dce4fd23a7c",
+        "ms": 1729
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road/interaction/cue": {
+    "": [
+      {
+        "clip": "099722df41827d8dd2f6bc78136b8a9d9fe2e8b6064788f5bdeef8133ea53192",
+        "ms": 2579
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road/narration": {
+    "": [
+      {
+        "clip": "bc83ffd3aba7f05f5b00fc580cdfcd6b1890c737d3867a07662d1cc4e68072fd",
+        "ms": 7907
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road/onAssisted/narration": {
+    "": [
+      {
+        "clip": "3c86c41beb834fd5045da5e0ecf11315cf43291aa37cb0b4280a3021062838ca",
+        "ms": 7007
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road/onFailure/narration": {
+    "": [
+      {
+        "clip": "b7d162eaec88e1359197d8621565764a1bf918db1eecb2e1c055a05cd9bc3997",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road/onSuccess/narration": {
+    "": [
+      {
+        "clip": "638f96ca12a575836c964b3ce09e26f32778c2edca5f8c9d4b46451a80d44ca1",
+        "ms": 2947
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road_wary/interaction/cue": {
+    "": [
+      {
+        "clip": "09c496dc376eff2855ca59a89ece974e20efa74be04dec4c2ce8b4cf940bb954",
+        "ms": 2910
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road_wary/narration": {
+    "": [
+      {
+        "clip": "9d99f0570650c46b6e797d24d204a62181e0d24af36fc757377cf0cfe01032af",
+        "ms": 10707
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road_wary/onAssisted/narration": {
+    "": [
+      {
+        "clip": "3c86c41beb834fd5045da5e0ecf11315cf43291aa37cb0b4280a3021062838ca",
+        "ms": 7007
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road_wary/onFailure/narration": {
+    "": [
+      {
+        "clip": "b7d162eaec88e1359197d8621565764a1bf918db1eecb2e1c055a05cd9bc3997",
+        "ms": 5007
+      }
+    ]
+  },
+  "riftlight-whale-road/sing_road_wary/onSuccess/narration": {
+    "": [
+      {
+        "clip": "638f96ca12a575836c964b3ce09e26f32778c2edca5f8c9d4b46451a80d44ca1",
+        "ms": 2947
+      }
+    ]
+  },
+  "riftlight-whale-road/sleep_on_it/narration": {
+    "": [
+      {
+        "clip": "cd60e84ac4ca72d48fcaea17ca12b20e6c2d9994822faebd872f39e716145d8f",
+        "ms": 10207
+      }
+    ]
+  },
+  "riftlight-whale-road/sung_out/narration": {
+    "": [
+      {
+        "clip": "d64113c6b4d62ccbedd5e9cc7f01b55d6da6d69afdea9fe798f360423d847e0f",
+        "ms": 7307
+      },
+      {
+        "clip": "3d7185b80d676aed47845f9a5666e9f4572b79ac1da9ce494e276d93fa43c0b7",
+        "ms": 1088
+      },
+      {
+        "clip": "10b0cc1eb9b99dbfea0bfa5b01e13b9013ebfba63752daa0b7e828c39bc99abb",
+        "ms": 6007
+      },
+      {
+        "clip": "e094b61a2dbf9e7dfe2d5065c5367913c6880791cf7dd67b8483e2711a3dd8a3",
+        "ms": 1371
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "8e1614ad6b83cab02a3cd8782da7ba68f3fd79d7f4a97e8b32afe2c7300cfbb5",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-whale-road/sung_slow/narration": {
+    "": [
+      {
+        "clip": "f1874e5d0a4159cb0eea262c3a6e3960dece085dabe0a5bd9196361f3ab8eb37",
+        "ms": 12307
+      },
+      {
+        "clip": "e094b61a2dbf9e7dfe2d5065c5367913c6880791cf7dd67b8483e2711a3dd8a3",
+        "ms": 1371
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "8e1614ad6b83cab02a3cd8782da7ba68f3fd79d7f4a97e8b32afe2c7300cfbb5",
+        "ms": 3107
+      }
+    ]
+  },
+  "riftlight-whale-road/toss/interaction/cue": {
+    "": [
+      {
+        "clip": "ad5ac3eff4c4d152117a14b9ea89d03894fd4d0d320a4620649edab72ed58f38",
+        "ms": 2349
+      }
+    ]
+  },
+  "riftlight-whale-road/toss/narration": {
+    "": [
+      {
+        "clip": "18e5c4e107b202444158dd7ca4e05160b899428b92d2f5233705417a2c4df89c",
+        "ms": 9107
+      }
+    ]
+  },
+  "riftlight-whale-road/toss/onAssisted/narration": {
+    "": [
+      {
+        "clip": "9bde933ff21d84b516e8f71cc81f1a0c94e7a62be83545cb6dd6b97759799d8a",
+        "ms": 6208
+      }
+    ]
+  },
+  "riftlight-whale-road/toss/onFailure/narration": {
+    "": [
+      {
+        "clip": "ba9502f6e15a6638441ce72c782a34e1e2ffb7bf4a547be3cc0b74abf5aad2e7",
+        "ms": 8507
+      }
+    ]
+  },
+  "riftlight-whale-road/toss/onSuccess/narration": {
+    "": [
+      {
+        "clip": "8cbaaf5b35507ef279a5828f879a9b588b30a1b7203759367a066c64d5ae3a4a",
+        "ms": 7107
+      }
+    ]
+  },
+  "riftlight-whale-road/turn_watch/narration": {
+    "": [
+      {
+        "clip": "5758791c22e28b65674cb6a963452cc641d1ddafc8a3192229e2f3ef4b47813b",
+        "ms": 7407
+      },
+      {
+        "clip": "a81246bd8b11ff11e129c3f8d90ed32343fccb8e9491c85a832b9fe9a302d5f3",
+        "ms": 1848
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "da99680dccbf684b845850cf39ed10387ccca9411d5fb9c844601ed3bb2c8a34",
+        "ms": 2722
+      },
+      {
+        "clip": "c005c5cb47d17dde45ee3293bb908e5f7ce30a6d326f6ba697144d88b400a9e8",
+        "ms": 1917
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/narration": {
+    "": [
+      {
+        "clip": "9b403e7b8828bd15111e5db323482f76d70ae68cd2726ffdecc61bfab2a6772d",
+        "ms": 2628
+      },
+      {
+        "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
+        "ms": 814
+      },
+      {
+        "clip": "6258c6b7ea1c6bbf277a08533f2030c3750c62720ad5a2f521dd6117ce97dacf",
+        "ms": 5707
+      },
+      {
+        "clip": "678cb269f3f28f31a8a47162dd82a8d9a8a1a5d9a97976e68f49dfffe06989fc",
+        "ms": 1308
+      },
+      {
+        "clip": "abdf005adaac46cdc9a98ad6860469454b3ec70afdd0c2bebf12a34ec686b46e",
+        "ms": 8807
+      },
+      {
+        "clip": "c82303183fe44427c58f2e2fd9e6add89df840e9b38280450469196bd5450cb1",
+        "ms": 2106
+      },
+      {
+        "clip": "abcbb03884dae123f05dd578c76613fa5c3cbca6c31345dffa277296e8e62980",
+        "ms": 1883
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/variants/0": {
+    "": [
+      {
+        "clip": "989772ff04a50916cd4cb52d6c93f68aaaf7382fb9a6d5b050b63d0320ea5daf",
+        "ms": 2455
+      },
+      {
+        "clip": "a2d7e2d215e609e61f70b392818d41bb60510225076c735de3714a532ab4fea8",
+        "ms": 2471
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/variants/1": {
+    "": [
+      {
+        "clip": "f76fcde6dc21ece5913fb767910572c3eb926aad95f5a7db02b1088074e09ff2",
+        "ms": 6107
+      }
+    ]
+  },
+  "riftlight-whale-road/two_ways/variants/2": {
+    "": [
+      {
+        "clip": "b51aebc65e0b514cd13976fdd18fc4eb65e22691df5e78c4f05a240551e081ac",
+        "ms": 1429
+      },
+      {
+        "clip": "3bc524b0348186416c4047a5a8659847a39c38cdf3435a152325cb7d8b8f0f9c",
+        "ms": 4407
+      }
+    ]
+  },
+  "riftlight-whale-road/wait_ending/narration": {
+    "": [
+      {
+        "clip": "47087e08627d67dfbd728655c758d10a53bc1a924decfce546a2d9496ad103bb",
+        "ms": 32307
+      }
+    ]
+  },
+  "riftlight-whale-road/wait_ending/variants/0": {
+    "": [
+      {
+        "clip": "919a26232adc54991da1909c05593544b6802c70445feec6e9cb8e5cf2205c85",
+        "ms": 4607
+      }
+    ]
+  },
+  "riftlight-whale-road/wait_ending/variants/1": {
+    "": [
+      {
+        "clip": "a23fec3e07f6ecc430f1c2e1e1e06107c2fd4b03da5326781f827098e7dbac6c",
+        "ms": 5707
+      }
+    ]
+  },
+  "riftlight-whale-road/whale_eye/narration": {
+    "": [
+      {
+        "clip": "595ddeff55304de0af54a0a0331051c74852a7aceaa323614ba058dc58152808",
+        "ms": 8307
+      },
+      {
+        "clip": "ec1b21d9676d5b738932a9f7001cce9068df5deafa01e22249932ac293b75334",
+        "ms": 1043
+      },
+      {
+        "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
+        "ms": 911
+      },
+      {
+        "clip": "1d639c98b01ee2b6e3bfa79c6c515bdae3739c57b68844cb84d69d65225dd9be",
+        "ms": 12107
+      },
+      {
+        "clip": "2c4b05433a49945cca4cd7bab3f98d7dee6120ae245a1b50fe92b4020e6b0bc9",
+        "ms": 1079
+      },
+      {
+        "clip": "a2cfe426c14785bd9ad9f0ae9343f7e028b46a8343baa236d7800eacd0d84e04",
+        "ms": 3307
+      }
+    ]
+  },
+  "riftlight-whale-road/why_circle/narration": {
+    "": [
+      {
+        "clip": "156827eeb5d8ef2ec2bf287ae6a474de512a359612dda094e699c154753f064f",
+        "ms": 16207
+      },
+      {
+        "clip": "1d4c15ff2aa1accfc3bbe7c1cbf8fccb5857b32d90a002de7fac5b4a3bb18baf",
+        "ms": 4707
+      },
+      {
+        "clip": "8c3c4a047e3fb43c6208f49cf497f729b25930cbccb930a5352a014b670dbdfd",
+        "ms": 4807
+      }
+    ]
+  }
+}
