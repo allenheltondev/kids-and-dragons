@@ -291,10 +291,11 @@ const sameJson = (a: string | undefined, b: string | undefined): boolean => {
  * entry one side added, changed or removed is taken from that side; one both sides changed
  * is merged by line where its lines allow, and otherwise is a conflict, with ours kept. The
  * merged lists come out in order whatever order they came in, so a branch cut before the
- * lists were sorted merges cleanly with one cut after.
+ * lists were sorted merges cleanly with one cut after. The result has Unix line endings
+ * whatever came in: that is how the file is stored (.gitattributes), and git stores what a
+ * merge driver writes without converting it.
  */
 export function mergeManifests(base: string, ours: string, theirs: string, mergeText: TextMerge, lists: readonly (readonly string[])[] = SORTED_LISTS): ManifestMerge {
-  const eol = ours.includes("\r\n") ? "\r\n" : "\n";
   const unix = (text: string): string => text.replace(/\r\n/g, "\n");
   const [b, o, t] = [takeApart(unix(base), lists), takeApart(unix(ours), lists), takeApart(unix(theirs), lists)];
   const conflicts: string[] = [];
@@ -341,7 +342,7 @@ export function mergeManifests(base: string, ours: string, theirs: string, merge
     else inner = shaped.lead + [...merged.values()].join(shaped.between ?? `,${shaped.lead}`) + shaped.tail;
     text = text.split(mark).join(inner);
   }
-  return { text: eol === "\n" ? text : text.replace(/\n/g, eol), conflicts };
+  return { text, conflicts };
 }
 
 // --- Run as a command -----------------------------------------------------------------------

@@ -28,7 +28,8 @@ from the issue to the asset store. In short:
 3. Fit the image to its contract, then run `npm run art:verify` and the kind's tests. Where you
    declare it in `assets/manifest.json`, the growing lists are kept in order: put a new entry in
    its place, or add it anywhere and run `npm run art:sort`. Never at the end by habit; that is
-   what made every two art branches conflict.
+   what made every two art branches conflict. If a merge of `main` stops on the manifest, run
+   `npm run art:resolve` ([docs/art-pipeline.md](docs/art-pipeline.md#declaring-art-the-manifests-lists-are-kept-in-order)).
 4. **Character art** (`assets/characters/`, `assets/character-rigs/`, `assets/gear-portraits/`)
    waits for the user's approval. Other art does not. After the cutover, CI fails the PR until
    the user labels it `art-approved`; never add that label yourself.

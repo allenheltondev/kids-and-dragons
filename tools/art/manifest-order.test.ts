@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { MANIFEST_FILE, REPO_ROOT, SORTED_LISTS, findList, listName, mergeManifests, orderProblems, sortLists } from "./manifest-order.ts";
-import { driveMerge, gitTextMerge } from "./merge-manifest.ts";
+import { driveMerge, gitTextMerge, resolveConflict } from "./merge-manifest.ts";
 
 /** A small manifest laid out by hand the way the real one is: inline objects, an escape, a list of each kind. */
 const manifest = (parts: { cast?: string[]; scenes?: string[]; motions?: string[]; tolerance?: string; entities?: string[] } = {}): string => {
@@ -246,12 +246,12 @@ describe("merging the manifest", () => {
     expect(fought.text).not.toContain("@@kad-list");
   });
 
-  it("writes the merge in ours' line endings", () => {
+  it("writes Unix line endings whatever came in, as the file is stored", () => {
     const windows = (text: string): string => text.replace(/\n/g, "\r\n");
     const merged = merge(windows(sorted()), windows(sorted({ scenes: [...SCENES, '"scenes/gemfall/cellar"'] })), sorted({ scenes: [...SCENES, '"scenes/gemfall/chapel"'] }));
     expect(merged.conflicts).toEqual([]);
-    expect(merged.text).not.toMatch(/[^\r]\n/);
-    expect(keys(merged.text, ["sceneIllustrations"])).toHaveLength(5);
+    expect(merged.text).not.toContain("\r");
+    expect(merged.text).toBe(merge(sorted(), sorted({ scenes: [...SCENES, '"scenes/gemfall/cellar"'] }), sorted({ scenes: [...SCENES, '"scenes/gemfall/chapel"'] })).text);
   });
 
   it("falls back to git's own line merge when a side is not JSON", () => {
@@ -338,5 +338,60 @@ describe("the merge driver, run by git", () => {
     expect(git("status", "--porcelain")).toMatch(/^UU assets\/manifest\.json$/m);
     // What merged is merged, and the disputed entry is ours, with no markers to break the JSON.
     expect(read()).toBe(real(["scenes/a", "scenes/b"], 155));
+  }, 60_000);
+
+  it("is not there for a branch cut before it, whose first merge of main art:resolve finishes", () => {
+    // Before: no driver named for the file, lists in the order they grew, Windows line endings.
+    fs.rmSync(path.join(repo, ".gitattributes"));
+    const old = (scenes: string[]): string => real(scenes).replace(/\n/g, "\r\n");
+    write(old(["scenes/m", "scenes/a"]));
+    git("add", "-A");
+    git("commit", "-qm", "base");
+    git("checkout", "-qb", "old-art");
+    write(old(["scenes/m", "scenes/a", "scenes/b"]));
+    git("commit", "-qam", "an art branch adds at the end");
+    git("checkout", "-q", "main");
+    fs.writeFileSync(path.join(repo, ".gitattributes"), "assets/manifest.json merge=kad-art-manifest text eol=lf\n");
+    write(real(["scenes/a", "scenes/c", "scenes/m"]));
+    git("add", "-A");
+    git("commit", "-qm", "main sorts the lists and names the driver");
+
+    git("checkout", "-q", "old-art");
+    expect(resolveConflict(repo)).toEqual({ outcome: "none", conflicts: [] });
+    expect(() => git("merge", "-q", "--no-edit", "main")).toThrow();
+    expect(git("status", "--porcelain")).toMatch(/^UU assets\/manifest\.json$/m);
+
+    expect(resolveConflict(repo)).toEqual({ outcome: "resolved", conflicts: [] });
+    expect(read()).toBe(real(["scenes/a", "scenes/b", "scenes/c", "scenes/m"]));
+    expect(git("status", "--porcelain")).not.toMatch(/^UU/m);
+    expect(git("ls-files", "--eol", "assets/manifest.json")).toMatch(/^i\/lf\s/);
+    git("commit", "-qm", "merge main");
+    // From here on the branch names the driver, and the next merge needs no help.
+    git("checkout", "-q", "main");
+    write(real(["scenes/a", "scenes/c", "scenes/d", "scenes/m"]));
+    git("commit", "-qam", "main adds another");
+    git("checkout", "-q", "old-art");
+    write(real(["scenes/a", "scenes/b", "scenes/c", "scenes/cc", "scenes/m"]));
+    git("commit", "-qam", "the branch adds a neighbour");
+    git("merge", "-q", "--no-edit", "main");
+    expect(read()).toBe(real(["scenes/a", "scenes/b", "scenes/c", "scenes/cc", "scenes/d", "scenes/m"]));
+  }, 60_000);
+
+  it("leaves what it cannot decide unstaged, and says what", () => {
+    fs.rmSync(path.join(repo, ".gitattributes"));
+    write(real(["scenes/a"]));
+    git("add", "-A");
+    git("commit", "-qm", "base");
+    git("checkout", "-qb", "left");
+    write(real(["scenes/a"], 160));
+    git("commit", "-qam", "left");
+    git("checkout", "-q", "main");
+    write(real(["scenes/a"], 155));
+    git("commit", "-qam", "right");
+    expect(() => git("merge", "-q", "--no-edit", "left")).toThrow();
+
+    expect(resolveConflict(repo)).toEqual({ outcome: "conflicts", conflicts: ['castFigures "pellam": both sides changed it differently; ours is kept'] });
+    expect(read()).toBe(real(["scenes/a"], 155));
+    expect(git("status", "--porcelain")).toMatch(/^UU assets\/manifest\.json$/m);
   }, 60_000);
 });

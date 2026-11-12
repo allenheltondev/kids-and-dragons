@@ -17,6 +17,16 @@
  * file the usual way; for an entry both sides changed differently ours is kept, and the
  * entry is named on stderr. GitHub does not run merge drivers: a pull request it calls
  * conflicted is merged locally, where this runs.
+ *
+ * git reads which driver a file has from the branch being merged INTO. A branch cut before
+ * this driver existed does not name it yet, so the merge that first brings main into such
+ * a branch stops on the manifest with git's own line conflict. For that merge, and any
+ * other left conflicted on the manifest:
+ *
+ *   npm run art:resolve      (node tools/art/merge-manifest.ts --resolve)
+ *
+ * It takes the three versions git is holding for the conflicted file, merges them the way
+ * the driver would have, writes the result and, when nothing is left to decide, stages it.
  */
 
 import { spawnSync } from "node:child_process";
@@ -24,7 +34,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { MANIFEST_FILE, mergeManifests, orderProblems, type TextMerge } from "./manifest-order.ts";
+import { MANIFEST_FILE, REPO_ROOT, mergeManifests, orderProblems, type TextMerge } from "./manifest-order.ts";
 
 /** git's own three-way line merge (`git merge-file`), on text instead of files. */
 export const gitTextMerge: TextMerge = (base, ours, theirs) => {
@@ -68,11 +78,56 @@ export function driveMerge(base: string, ours: string, theirs: string, mergeText
   }
 }
 
+export interface Resolution {
+  /** "resolved": merged and staged. "conflicts": written, with things left to decide. "none": the file is not conflicted. */
+  outcome: "resolved" | "conflicts" | "none";
+  conflicts: string[];
+}
+
+/**
+ * Finishes a merge that stopped on the manifest: merges the three versions git holds for
+ * the conflicted file (its index stages) and writes the result. Staged when clean.
+ */
+export function resolveConflict(root: string, mergeText: TextMerge = gitTextMerge): Resolution {
+  const git = (...args: string[]) => spawnSync("git", args, { cwd: root, encoding: "utf8", maxBuffer: 1 << 28 });
+  const held = git("ls-files", "-u", "--", MANIFEST_FILE);
+  if (held.status !== 0) throw new Error(`git ls-files failed: ${held.stderr}`);
+  const stages = new Set(held.stdout.split("\n").map((line) => line.split(/\s+/)[2]).filter(Boolean));
+  if (stages.size === 0) return { outcome: "none", conflicts: [] };
+  if (!stages.has("2") || !stages.has("3")) throw new Error(`one side deleted ${MANIFEST_FILE}; that is for a person to decide`);
+  const stage = (n: 1 | 2 | 3): string => {
+    if (!stages.has(String(n))) return "";
+    const shown = git("show", `:${n}:${MANIFEST_FILE}`);
+    if (shown.status !== 0) throw new Error(`git show :${n}:${MANIFEST_FILE} failed: ${shown.stderr}`);
+    return shown.stdout;
+  };
+  const { text, conflicts } = driveMerge(stage(1), stage(2), stage(3), mergeText);
+  fs.writeFileSync(path.join(root, MANIFEST_FILE), text);
+  if (conflicts.length > 0) return { outcome: "conflicts", conflicts };
+  const added = git("add", "--", MANIFEST_FILE);
+  if (added.status !== 0) throw new Error(`git add ${MANIFEST_FILE} failed: ${added.stderr}`);
+  return { outcome: "resolved", conflicts: [] };
+}
+
 // Run directly, not imported. Compared as URLs, so it is true on Windows too.
-if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href && process.argv.includes("--resolve")) {
+  try {
+    const { outcome, conflicts } = resolveConflict(REPO_ROOT);
+    if (outcome === "none") console.log(`${MANIFEST_FILE} is not conflicted: nothing to resolve`);
+    else if (outcome === "resolved") console.log(`${MANIFEST_FILE}: merged entry by entry and staged`);
+    else {
+      console.error(`${MANIFEST_FILE}: merged, with ${conflicts.length} thing(s) left to decide, then git add it:`);
+      for (const conflict of conflicts) console.error(`  ${conflict}`);
+      process.exitCode = 1;
+    }
+  } catch (error) {
+    console.error(`${MANIFEST_FILE}: ${error instanceof Error ? error.message : String(error)}`);
+    process.exitCode = 1;
+  }
+} else if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [basePath, oursPath, theirsPath] = process.argv.slice(2);
   if (!basePath || !oursPath || !theirsPath) {
-    console.error("usage: node tools/art/merge-manifest.ts <base> <ours> <theirs>");
+    console.error("usage: node tools/art/merge-manifest.ts <base> <ours> <theirs>   (as git's merge driver)\n       node tools/art/merge-manifest.ts --resolve                 (finish a merge that stopped on the manifest)");
     process.exit(2);
   }
   const read = (file: string): string => (fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "");

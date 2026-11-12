@@ -39,6 +39,12 @@ lines unless they sort next to each other, and git merges them, on GitHub too.
   it. GitHub's merge button does not run merge drivers: if it reports a conflict in the
   manifest, merge `main` into the branch locally. An entry both sides changed differently keeps
   ours and is named in the merge's output for you to decide.
+- A merge that still stops on the manifest is finished with `npm run art:resolve` (or
+  `node tools/art/merge-manifest.ts --resolve` when `package.json` is conflicted too). It merges
+  the three versions git is holding the way the driver would have, and stages the result when
+  nothing is left to decide. A branch cut before the lists were sorted needs it once, the first
+  time `main` is merged into it: git takes the driver's name from the branch being merged into,
+  and that branch does not have it yet.
 - The file is checked out with Unix line endings on every OS (`.gitattributes`).
 
 Story and combat share a six-second breath of at most 0.8% vertical stretch around
