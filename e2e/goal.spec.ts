@@ -168,19 +168,22 @@ test.describe("the chapter's goal (#356)", () => {
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
     await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0);
 
-    // In a fight it folds to the goal and its pips in the TV's top corner; the phone still shows none.
+    // The painted encounter gives the TV its immediate stakes instead of repeating
+    // the chapter goal. The chapter's earned tick must return after the fight.
     await jumpTo(kid, code, "encounter_bramblewisps");
     // The kid readies up on the phone, as before any fight; the TV is still only watched.
     await openPlayerTask(kid);
     await kid.getByRole("button", { name: /i'm ready to fight/i }).click(TAP);
     await expect.poll(async () => Boolean((await roomState<{ encounter?: unknown }>(kid, code)).encounter), TAP).toBe(true);
-    await expect(tv.locator(".world__goal .goal--folded")).toBeVisible(TAP);
-    await expect(tv.locator(".world__goal .goal__pips")).toHaveAttribute("aria-label", "1 of 3 done");
+    await expect(tv.locator(".rift-status")).toContainText("The wisps tie your laces", TAP);
+    await expect(tv.locator(".rift-status")).toContainText("Thorn shortcut", TAP);
+    await expect(tvGoal).toHaveCount(0);
     await expect(kid.locator(".goal--phone")).toHaveCount(0);
     await shot(tv, "tv-fight");
 
     // The rest of the way: through the wood, and the door opens whichever way the roll goes.
     await jumpTo(kid, code, "scene_shrine_hollow");
+    await expect(tvGoal).toBeVisible(TAP);
     await expect.poll(() => ticks(tvGoal), TAP).toEqual([true, true, false]);
     await jumpTo(kid, code, "rest_lanternfall");
     // An ending reached by a jump skips the door's roll, so the last box stays as it was;

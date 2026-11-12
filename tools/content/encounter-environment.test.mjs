@@ -69,6 +69,13 @@ describe("the schema", () => {
       // built for; ordered campaigns opt in only through the exceptions below.
       if (chapter.campaignId === "riftlight") continue;
       for (const [sceneId, scene] of Object.entries(chapter.scenes)) {
+        if (chapter.id === "bramblewood-01" && sceneId === "encounter_bramblewisps") {
+          expect(scene.environment.clock).toMatchObject({ rounds: 12, onExpire: "collapse" });
+          expect(scene.environment.hazards[0]).toMatchObject({ id: "thorn-shortcut", slow: { steps: 2, turns: 1 } });
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          expect(scene).not.toHaveProperty("onEscape");
+          continue;
+        }
         if (chapter.id === "gemfall-01" && sceneId === "encounter_quay_wisps") {
           expect(scene.environment.objectives[0]).toMatchObject({ id: "ferry-rope", turns: 2, endsFight: true });
           expect(scene.environment.clock.onExpire).toBe("collapse");

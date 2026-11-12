@@ -1034,8 +1034,16 @@
   "riftlight-ashspan-bridge/mimic_fight/narration": {
     "": [
       {
-        "clip": "d47021c6079073dc146f0127630d0ab4efc6081d6da3f3a1a8d385a0dfb5b087",
-        "ms": 11107
+        "clip": "d90e1d12cc478e19bf988f50fde9ed05ffe6269709f110904fe1ca7b8ff66bad",
+        "ms": 18007
+      }
+    ]
+  },
+  "riftlight-ashspan-bridge/mimic_fight/onEscape/narration": {
+    "": [
+      {
+        "clip": "82ca392ba3e7c5bf752b0849d4073a10aef3067fed7cce1d1396a0839eaacf42",
+        "ms": 7607
       }
     ]
   },

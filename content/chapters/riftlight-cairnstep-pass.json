@@ -1338,8 +1338,8 @@
     },
     "cache_fight": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "The wolves creep toward the cairn, tails glowing. They are hungry, but not very big. A good shout and a firm stand should do it.",
+      "map": "sausage_lane",
+      "narration": "The wolves creep toward the winter stores, tails glowing. Keep a hero at the marked cairn for two round ends, with no wolf on it, to save the hay and bread. Draw them aside if they crowd it. They are quick: leaving the cairn unguarded gives them room to steal.",
       "enemies": [
         {
           "id": "wolf",
@@ -1355,6 +1355,14 @@
             "type": "grantItem",
             "itemId": "hearthstone_bead",
             "to": "party"
+          }
+        ],
+        "variants": [
+          {
+            "when": {
+              "flag": "winter_stores_guarded"
+            },
+            "text": "The wolves nose at the guarded cairn, then give up and turn away. Brask pulls the hay farther under its stones."
           }
         ]
       },
@@ -1373,7 +1381,52 @@
           }
         ]
       },
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The wolves take the winter stores",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "winter-stores",
+            "kind": "hold",
+            "label": "Guard the winter stores",
+            "art": "fight-supply-cairn",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "winter_stores_guarded",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "neck",
+        "narration": "The wolves dart off with a loaf and some hay. \"Hay can be bought,\" says Brask. \"Friends are harder.\"",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "wolves_took_hay"
+          }
+        ]
+      }
     },
     "neck": {
       "type": "choice_point",
@@ -2059,7 +2112,7 @@
       {
         "chapter": "riftlight-cairnstep-pass",
         "scene": "cache_fight",
-        "board": "switchback",
+        "board": "sausage_lane",
         "creature": "cinder_wolf",
         "introScenes": [
           "shelter_found"
