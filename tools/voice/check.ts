@@ -22,7 +22,7 @@
 
 import { isClipKey } from "../../packages/shared/src/voice-clips";
 import type { Desired } from "./desired";
-import { mergeManifest, type Lock, type Manifest } from "./manifest";
+import { mergeManifest, SHORT_KEY, SHORT_KEY_LENGTH, type Lock, type Manifest } from "./manifest";
 import type { Finding } from "./sources.ts";
 
 export { checkSources, type Finding } from "./sources.ts";
@@ -118,9 +118,27 @@ export function checkManifests(input: ManifestInput): VoiceVerdict {
     }
   }
 
+  // A short approval stands for every clip whose key begins with it, so two different clips (played
+  // today or wanted today) sharing a prefix the lock files an approval under would both be approved
+  // by one entry: the lock cannot say which was heard. 64 bits makes that vanishingly unlikely; this
+  // is what makes it impossible to miss.
+  const byShort = new Map<string, string>();
+  const shared = new Set<string>();
+  const wantedKeys = [...input.desired.values()].flatMap((desired) => desired.lines.flatMap((line) => line.segments.map((segment) => segment.key)));
+  for (const key of [...clips.keys(), ...wantedKeys]) {
+    const short = key.slice(0, SHORT_KEY_LENGTH);
+    const other = byShort.get(short);
+    if (other === undefined) byShort.set(short, key);
+    else if (other !== key && input.lock.approved[short] !== undefined && !shared.has(short)) {
+      shared.add(short);
+      failures.push({ at: "content/voice/voice.lock.json", message: `files an approval under ${short}, which both ${other.slice(0, 24)}… and ${key.slice(0, 24)}… begin with; file each under its whole key` });
+    }
+  }
+  const shortKeys = new Set([...clips.keys()].map((key) => key.slice(0, SHORT_KEY_LENGTH)));
   for (const key of Object.keys(input.lock.approved)) {
-    if (!isClipKey(key)) failures.push({ at: "content/voice/voice.lock.json", message: `approves "${key}", which is not a clip key` });
-    else if (!clips.has(key)) notes.push({ at: "content/voice/voice.lock.json", message: `approves ${key.slice(0, 12)}, which no manifest plays` });
+    const whole = isClipKey(key);
+    if (!whole && !SHORT_KEY.test(key)) failures.push({ at: "content/voice/voice.lock.json", message: `approves "${key}", which is not a clip key` });
+    else if (!(whole ? clips.has(key) : shortKeys.has(key))) notes.push({ at: "content/voice/voice.lock.json", message: `approves ${key.slice(0, 12)}, which no manifest plays` });
   }
 
   return { failures, notes, clips };

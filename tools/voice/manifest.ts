@@ -19,8 +19,22 @@ export type { ManifestClip };
 /** address, then variant (`""` when the line has no tokens), then the clips in play order. */
 export type Manifest = VoiceManifest;
 
+/**
+ * An approval is filed under a clip's whole key, or under the first SHORT_KEY_LENGTH hex digits
+ * of it. The short form is for approving thousands of takes at once (the lock written when the
+ * narration first shipped): 64 bits of a SHA-256 cannot collide across a few thousand clips, and
+ * the file is a fifth the size.
+ */
+export const SHORT_KEY_LENGTH = 16;
+export const SHORT_KEY = new RegExp(`^[0-9a-f]{${String(SHORT_KEY_LENGTH)}}$`);
+
 export interface Lock {
   approved: Record<string, { at?: string; note?: string }>;
+}
+
+/** Whether the lock approves this clip, under its whole key or its short one. */
+export function isApproved(lock: Lock, key: string): boolean {
+  return lock.approved[key] !== undefined || lock.approved[key.slice(0, SHORT_KEY_LENGTH)] !== undefined;
 }
 
 /** Which manifest file holds a line (voice-clips.ts, the layout the client reads too). */
@@ -66,7 +80,7 @@ export function clipStatus(desired: Desired, manifest: Manifest, lock: Lock): St
     for (const segment of line.segments) {
       wantedKeys.add(segment.key);
       if (wanted.has(segment.key)) continue;
-      const state: ClipState = lock.approved[segment.key]
+      const state: ClipState = isApproved(lock, segment.key)
         ? "approved"
         : rendered.has(segment.key)
           ? "awaiting-review"
