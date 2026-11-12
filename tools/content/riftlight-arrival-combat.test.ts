@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { applyIntent, committedAttacks, currentActorId, encounterOutcome, enterScene, legalMoves, positionOf, stepsBetween, type ClientIntent, type EngineContext, type RunState } from "@kad/shared";
 import { loadContent } from "../../packages/server/src/content/loader.ts";
 import { context, start } from "./riftlight-test-support.ts";
+import { describeBeats } from "../../packages/client/src/screens/fight-log.ts";
 
 const content = await loadContent(path.resolve(import.meta.dirname, "../../content"));
 const cases = [
@@ -99,6 +100,7 @@ it("the gravel-bar tell can be interrupted with Fox Fire, while the other crab r
   expect(result.presentation?.kind).toBe('COMBAT_SEQUENCE');
   if(result.presentation?.kind!=='COMBAT_SEQUENCE')throw Error('Expected combat sequence');
   expect(result.presentation.events).toContainEqual({type:'windupInterrupted',actorId:target});
+  expect(describeBeats(result.presentation.events, result.state.encounter!, null, 1).map(beat => beat.text).join(" ")).toContain("lowers its claws");
   expect(result.presentation.events).toContainEqual(expect.objectContaining({type:'windupReleased',actorId:threats[1]!.actorId}));
   state=result.state;
   for(let turn=0;state.encounter&&turn<40;turn++)state=work(state,ctx,cases[1]);

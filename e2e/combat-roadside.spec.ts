@@ -426,7 +426,7 @@ for (const fight of roadFights) {
           await expect.poll(async () => (await roomState<RunState>(page, table.code)).encounter?.combatants.find(c => c.id === "crab#1")?.windup ?? null).toBeNull();
           sawClawInterrupted = true;
           state = await roomState<RunState>(page, table.code);
-          await expect(panel).toContainText("lowers its claws");
+          await expect(panel).toContainText("Glassback claw sweep");
           await display.page.screenshot({ path: info.outputPath("claw-interrupted.png") });
           if (!state.encounter || currentActorId(state.encounter) !== actorId) continue;
         }

@@ -15,20 +15,23 @@ The compact boards reuse existing painted props and terrain. The Frostfang missi
 | Encounter | 320px phone | Largest-text TV |
 | --- | --- | --- |
 | Saltrot | [Phone](https://assets.kd.readysetcloud.io/sha256/29/29c31b4b530c779a66cd8cdcf4ef845017bd7eb0b2db2c9cc4589c2d647178d2.png) | [TV](https://assets.kd.readysetcloud.io/sha256/62/629eef8b768540092745cf0b99f717ebb41de7f06c424af5cb5920761b20a31b.png) |
-| Frostfang | [Phone](https://assets.kd.readysetcloud.io/sha256/24/243d6cbac490cded0ab7012f5357b80d9c5ddffb8d91ba609a13b9de195f4071.png) | [TV](https://assets.kd.readysetcloud.io/sha256/2b/2b12634546e05be6e448ebd3f7b7494c815a7d1bde825ed19f0b7428bd6591b4.png) |
-| Sky Islands | [Phone](https://assets.kd.readysetcloud.io/sha256/03/03edde9e610dff36e14a13f43c7f2ec1b7ac45bfae78693cdfb4b65e5239f9ae.png) | [TV](https://assets.kd.readysetcloud.io/sha256/d6/d62b3ce4b0f452f5b0a4ba6de7773c18c1b200ced5121ab625fc2aad45c94255.png) |
+| Frostfang | [Phone](https://assets.kd.readysetcloud.io/sha256/2a/2a28ec20e36348150806f45f256e3b0993c290c4a2cdd7059e065b3906a358ae.png) | [TV](https://assets.kd.readysetcloud.io/sha256/0c/0c54d21bcee8918d12246dec72da9f1b77c7c73c3b46e09ca17779e687896f4c.png) |
+| Sky Islands | [Phone](https://assets.kd.readysetcloud.io/sha256/84/84c967f76795aa5ba9499ecf5fa2e4070185d7acddad1f7f5930380ad4f3b514.png) | [TV](https://assets.kd.readysetcloud.io/sha256/65/653bf39983a8dc737f00244737f9ac57b0ed1587614a6c8efa755b6d5bcd3d8d.png) |
 
-Frostfang also captures [the phone-triggered interruption](https://assets.kd.readysetcloud.io/sha256/9c/9cdb2e400e4df9feea0d449d88e2b110eabb5d96f10bd24c94a15ad67b70af2e.png). Existing authored art is visible in these captures; no replacement paintings were generated.
+Frostfang also captures [the phone-triggered interruption](https://assets.kd.readysetcloud.io/sha256/aa/aa30fd045ee0c69b07ec4063b6d3ec4fb778b5cd25abc66887a45617be3f7aa9.png). Existing authored art is visible in these captures; no replacement paintings were generated.
+
+[Frostfang's recorded sequence](https://assets.kd.readysetcloud.io/sha256/ba/ba65d825f8057c95767f7732eacf1bd6063a645cdcfad7b3207d538773658d58.webm) shows marked claw ground, movement out of it, saved burrow work, interruption and the goat-carry payoff. It was captured from the running TV through CDP frames and encoded afterward; live Playwright video encoding stalled on Windows. Final functional checks disable video locally; CI keeps recording enabled.
 
 ## Verification
 
 - 1,931 Riftlight tests pass across 40 files. The 17 new encounter tests cover one, two and four support heroes, saved-state round trips, unattended objectives, actual story consequences, a silt mistake and recovery, interruption, damage and recovery, and the basket's required rescue rule.
 - 47 focused encounter, caption and persisted-art tests pass after the CI follow-up.
 - Three phone/TV browser cases pass, including a real phone Fox Fire interruption. Each checks 320px and large-text 390px phones plus the largest TV text setting, including measured containment of the deadline, mission and forecast.
+- All three reload and reduced-motion playthroughs pass together; subsequent Sky Islands and Frostfang reruns pass after their final caption/presentation corrections.
 - Typecheck, content validation (218 passes, five warnings), continuity (zero new or stale findings), voice verification and production-length build/bundle checks pass. Payload remains 331/332 KB first paint and 1802/1802 KB total; no budget increase.
 
 Browser success uses controlled misses to isolate movement, objectives and UI behavior. Separate engine checks use damaging rolls to verify that standing in the claw sweep hurts and recovery remains possible. These checks establish behavior and presentation, not children's enjoyment; no fresh family observation was collected.
 
-The first Linux CI run exposed two regressions: the persisted-art test still manufactured a basket victory by downing every wisp, and the basket's verbose rescue instructions overflowed the largest-text TV panel. The fixture now saves the basket before asserting victory art. The painted rescue line keeps work progress and remaining tugs concise beside the already visible clock, preserving the containment assertions and text size. The browser interruption waits for the confirmed server action, then checks that the crab lowers its claws. Reload restores the actual phone encounter; play continues with reduced motion on every device.
+The first Linux CI run exposed two regressions: the persisted-art test still manufactured a basket victory by downing every wisp, and the basket's verbose rescue instructions overflowed the largest-text TV panel. The fixture now saves the basket before asserting victory art. The painted rescue line keeps work progress and remaining tugs concise beside the already visible clock, preserving the containment assertions and text size. The browser interruption waits for the confirmed server action and removal of the pending sweep. The engine-to-caption check confirms that the interrupted crab lowers its claws. Reload restores the actual phone encounter; play continues with reduced motion on every device.
 
 Remaining ordinary Riftlight fights: Ashspan Bridge mimic, Cairnstep Pass cache and Headwaters Washout drake. Hollow Crown's Bramblewood fight also remains in the broader catalog.
