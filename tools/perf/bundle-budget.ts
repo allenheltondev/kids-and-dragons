@@ -340,7 +340,11 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // addresses on `StartPlates`, and the reel's title-then-recording split. 1803KB measured, 1KB
 // over, the code spread over the entry and the lazy read-aloud and help chunks. First paint
 // 331KB, unchanged. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1805;
+// 1805 -> 1808 on 2026-11-12 for fetching the narration ahead (speech/voice-prefetch.ts): the
+// scenes-ahead walk and its hook in the entry, `prefetchNarration` and `stopPrefetchNarration`
+// in shared `speak.ts`, and the clip speaker's queue and in-memory clip cache in the lazy
+// read-aloud chunk. 1806KB measured, 1KB over. First paint 331KB, unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1808;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
