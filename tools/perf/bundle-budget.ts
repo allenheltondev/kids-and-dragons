@@ -344,7 +344,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // scenes-ahead walk and its hook in the entry, `prefetchNarration` and `stopPrefetchNarration`
 // in shared `speak.ts`, and the clip speaker's queue and in-memory clip cache in the lazy
 // read-aloud chunk. 1806KB measured, 1KB over. First paint 331KB, unchanged. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1808;
+// 1808 -> 1812 on 2026-11-12 for keeping a chapter's voices for no signal (#547): the lazy
+// "Keep this chapter's voices" panel and its voice-pack helpers (in the Help chunk's reach, not
+// the first paint). 1810KB measured, 2KB over. First paint 331KB, unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1812;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
