@@ -1180,7 +1180,8 @@
       "direction": "Youthful, slightly faster than normal",
       "elevenlabs": {
         "voiceId": "hpp4J3VqNfWAUOO0d1Us",
-        "name": "Bella - Professional, Bright, Warm"
+        "name": "Bella - Professional, Bright, Warm",
+        "approved": true
       }
     },
     "lead_drover": {
@@ -1216,7 +1217,8 @@
       },
       "elevenlabs": {
         "voiceId": "Tw2LVqLUUWkxqrCfFOpw",
-        "name": "kad-centaur-man"
+        "name": "kad-centaur-man",
+        "approved": true
       },
       "lines": [
         {
@@ -2277,7 +2279,8 @@
       },
       "elevenlabs": {
         "voiceId": "XrExE9yKIg1WjnnlVkGX",
-        "name": "Matilda - Knowledgable, Professional"
+        "name": "Matilda - Knowledgable, Professional",
+        "approved": true
       },
       "lines": [
         {
@@ -3091,7 +3094,8 @@
       },
       "elevenlabs": {
         "voiceId": "BlgEcC0TfWpBak7FmvHW",
-        "name": "kad-dragonling-brisk"
+        "name": "kad-dragonling-brisk",
+        "approved": true
       },
       "lines": [],
       "lineCount": 0,
@@ -3625,7 +3629,8 @@
       "accent": "New York American",
       "elevenlabs": {
         "voiceId": "vGQNBgLaiM3EdZtxIiuY",
-        "name": "kad-tally"
+        "name": "kad-tally",
+        "approved": true
       }
     },
     "brask_pass_keeper": {
@@ -3652,7 +3657,8 @@
       },
       "elevenlabs": {
         "voiceId": "OYWwCdDHouzDwiZJWOOu",
-        "name": "kad-brask"
+        "name": "kad-brask",
+        "approved": true
       },
       "lines": [
         {
