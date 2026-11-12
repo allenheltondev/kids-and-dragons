@@ -58,7 +58,7 @@ describe("deploy.sh and the voice manifests (#545)", () => {
   });
 
   it("checks every clip is on the site before content/ goes up, with plain node and whatever the checks setting", () => {
-    const verify = script.indexOf('node tools/voice/verify-site.ts "$SITE_URL"');
+    const verify = script.indexOf('node tools/voice/verify-site.ts "$site"');
     const content = script.indexOf('aws s3 sync content "s3://$BUCKET/content"');
     expect(verify).toBeGreaterThan(0);
     expect(verify).toBeLessThan(content);
@@ -67,11 +67,13 @@ describe("deploy.sh and the voice manifests (#545)", () => {
     expect(script.slice(script.indexOf("KAD_SKIP_CHECKS"), verify)).toMatch(/\nfi\n/);
   });
 
-  it("lets only staging go on without the clips; every other stage still stops", () => {
+  it("asks prod's site for the clips on staging, and the stage's own site on every other stage", () => {
     const start = script.indexOf("voice_clips_on_site() {");
     const body = script.slice(start, script.indexOf("\n}\n", start));
-    // A failed check reaches the staging branch, which warns and returns; anything else exits non-zero.
-    expect(body).toMatch(/if \[ "\$STAGE" = "staging" \]; then[\s\S]*return 0[\s\S]*fi\s+exit 1/);
-    expect(body).not.toMatch(/"\$STAGE" = "prod"/);
+    expect(body).toContain('local site="$SITE_URL"');
+    expect(body).toMatch(/if \[ "\$STAGE" = "staging" \]; then\s+site="\$PROD_SITE_URL"\s+fi/);
+    // Still a hard stop: a missing clip is never turned into a warning, on any stage.
+    expect(body).not.toMatch(/WARNING|return 0|\|\| true/);
+    expect(script).toMatch(/PROD_SITE_URL="\$\{KAD_PROD_SITE_URL:-https:\/\/kd\.readysetcloud\.io\}"/);
   });
 });
