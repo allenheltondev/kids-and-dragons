@@ -74,7 +74,7 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     urls.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
     for(const member of ("cast" in scene ? scene.cast ?? [] : [])) {
       const url=castArtUrl(member.figure);if(url)urls.add(url);
-      if(member.figure==="entities/skywardens")for(const id of ["skywarden_griffin","skywarden_faun","skywarden_centaur"])urls.add("/assets/cast/"+id+"/assembled.png");
+      if(member.figure==="entities/skywardens")for(const id of ["skywarden_griffin","skywarden_faun","skywarden_centaur"]){const each=castArtUrl("cast/"+id);if(each)urls.add(each);}
     }
     if (scene.type === "encounter") {
       urls.add(biomeTilesUrl(chapter.biome));

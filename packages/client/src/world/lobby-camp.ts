@@ -27,7 +27,7 @@ import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
 import { CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
 import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
-import { ANCHOR_Y } from "./art-paths";
+import { ANCHOR_Y, fitArt } from "./art-paths";
 import { campHeightPx, campMeasure } from "./camp-motion";
 
 /**
@@ -70,13 +70,23 @@ export function campLayoutFor(stage: number, family: string = LOBBY_CAMP_FAMILY)
   const key = `${family}:${String(at)}`;
   if (!parsedLayouts.has(key)) {
     try {
-      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), family, at));
+      parsedLayouts.set(key, fitBackdrop(campLayout(parseCampManifest(campManifest), family, at)));
     } catch (error) {
       globalThis.reportError?.(error);
       parsedLayouts.set(key, null);
     }
   }
   return parsedLayouts.get(key) ?? null;
+}
+
+/**
+ * `layout`, its backdrop the file this device draws (art-paths.ts `fitArt`: the half-size
+ * copy on a phone): the one layout the Pixi camp (camp.ts) and the still one (StillCamp.tsx)
+ * are both handed, so neither builds the name itself. A path under `assets/`, as the manifest's.
+ */
+function fitBackdrop(layout: CampLayout): CampLayout {
+  const path = fitArt(`/assets/${layout.backdrop.path}`).slice("/assets/".length);
+  return path === layout.backdrop.path ? layout : { ...layout, backdrop: { ...layout.backdrop, path } };
 }
 
 /**

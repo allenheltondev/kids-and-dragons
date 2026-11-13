@@ -28,18 +28,28 @@ export const CAMP_ART = {
 
 /*
  * ---------------------------------------------------------------------------
- * SMALL ART, FOR A PHONE
+ * SMALL ART, FOR A PHONE, AND LIGHT ART FOR EVERY SCREEN
  *
- * A backdrop is painted 1920 x 1080 and a figure 1024 x 1024, for a television. A phone's
- * world pane draws the backdrop some 800 pixels wide and a figure a few hundred, from the
- * same files: four times the download and four times the decoded memory it can show. So each
- * of those paintings has a half-size copy beside it (`npm run art:small` makes them, and
- * tools/art/small-art.test.ts keeps one for every painting the rule below names), and a phone
- * asks for that instead.
+ * A backdrop is painted 1920 x 1080, a story plate 1600 x 900 and a figure 1024 x 1024, for
+ * a television. Two kinds of copy stand beside a painting (`npm run art:small` makes both,
+ * and tools/art/small-art.test.ts keeps one for every painting the rules below name):
  *
- * The copy's name ends `@0.5x.webp`, which is Pixi's own convention: a texture loaded from
- * it reports the full painting's width and height at half the pixels, so nothing that places
- * or sizes a sprite knows the difference. A DOM `<img>` is sized by its box either way.
+ *   - **Half size, for a phone** (`<name>@0.5x.webp`). A phone's world pane draws a backdrop
+ *     some 800 pixels wide and a figure a few hundred, from the same files: four times the
+ *     download and four times the decoded memory it can show. So scene, biome and camp
+ *     backdrops, story plates and the figures of everyone who is not a hero have a copy half
+ *     as wide and half as tall, and a phone asks for that instead.
+ *   - **Full size, for every other screen** (`<name>@1x.webp`). A figure is a PNG of about
+ *     a megabyte; the same pixels as a WebP are a fifth to a tenth of that, its alpha
+ *     exactly the painting's. So every figure, a hero's paintings among them, has one, and a
+ *     tablet, a laptop and a television ask for it. A hero has only this copy, so a phone
+ *     asks for it too: her coat is tinted from her painting and its mask pixel for pixel, and
+ *     the copy is on the mask's own canvas (docs/art-pipeline.md says why she has no half).
+ *
+ * The names are Pixi's own convention: a texture loaded from `@0.5x` reports the full
+ * painting's width and height at half the pixels, and `@1x` is what it would have assumed,
+ * so nothing that places or sizes a sprite knows the difference. A DOM `<img>` is sized by
+ * its box either way.
  *
  * Here, and pure, because the service worker concatenates this file: the chapter it warms
  * overnight (sw/chapter-art.ts) must be the files this device will draw, and a worker has a
@@ -47,21 +57,55 @@ export const CAMP_ART = {
  */
 
 /**
- * Whether this build has every half-size copy, current (small-art-build.ts): set for the
- * page by vite.config.ts and for the worker by sw-build.ts, and not at all in a test or a
- * tool, where every URL is the painting's own.
+ * Whether this build has every copy, of both kinds, current (small-art-build.ts): set for
+ * the page by vite.config.ts and for the worker by sw-build.ts, and not at all in a test or
+ * a tool, where every URL is the painting's own.
  */
 declare const __KAD_SMALL_ART__: boolean | undefined;
 
-/** The paintings that have a half-size copy: scene and biome backdrops, and the figures of everyone who is not a hero. */
-const SMALL_ART = /^\/assets\/(?:(?:scenes\/[^/@]+\/[^/@]+|biomes\/[^/@]+\/bg)\.webp|(?:entities|cast)\/[^/@]+\/assembled\.png)$/;
+/** The paintings that have a half-size copy: scene, biome and camp backdrops, story plates, and the figures of everyone who is not a hero. */
+const SMALL_ART = /^\/assets\/(?:(?:scenes\/[^/@]+\/[^/@]+|biomes\/[^/@]+\/bg|plates\/[^/@]+\/[^/@]+|camp\/backdrops\/[^/@]+)\.webp|(?:entities|cast)\/[^/@]+\/assembled\.png)$/;
+
+/**
+ * The paintings that have a full-size WebP: every figure. Someone met or fought, a hero's
+ * base and class paintings, and her gear portraits (`<species>.png`, never the
+ * `<species>.coat-mask.png` beside it: a mask's channels are weights and stay lossless).
+ */
+const WHOLE_ART = /^\/assets\/(?:(?:entities|cast)\/[^/@]+\/assembled|characters\/[^/@]+\/[^/@]+\/assembled|character-rigs\/[^/@]+\/[^/@]+\/[^/@]+\/assembled|gear-portraits\/[^/@]+\/[^/@]+\/[^/@.]+)\.png$/;
 
 /** What a half-size copy's name ends with, in place of its painting's extension. */
 export const SMALL_ART_SUFFIX = "@0.5x.webp";
 
+/** What a full-size WebP's name ends with, in place of its painting's `.png`. */
+export const WHOLE_ART_SUFFIX = "@1x.webp";
+
 /** A painting's half-size copy, or null when it is not one that has one. */
 export function smallArtUrl(url: string): string | null {
   return SMALL_ART.test(url) ? url.replace(/\.(?:png|webp)$/, SMALL_ART_SUFFIX) : null;
+}
+
+/** A painting's full-size WebP, or null when it is not one that has one. */
+export function wholeArtUrl(url: string): string | null {
+  return WHOLE_ART.test(url) ? url.replace(/\.png$/, WHOLE_ART_SUFFIX) : null;
+}
+
+/** Every copy a painting has, of either kind: what the build holds the asset store to. */
+export function artCopyUrls(url: string): string[] {
+  return [smallArtUrl(url), wholeArtUrl(url)].filter((copy): copy is string => copy !== null);
+}
+
+/**
+ * The painting a full-size WebP was made from: `x@1x.webp` → `x.png`, and anything else as it
+ * is. What is said of a painting by its path (its coat mask, whether it is a cut-out) is said
+ * of the painting, whichever of the two files a device drew.
+ */
+export function paintingOfCopy(url: string): string {
+  return url.endsWith(WHOLE_ART_SUFFIX) ? url.slice(0, -WHOLE_ART_SUFFIX.length) + ".png" : url;
+}
+
+/** Whether this build may ask for copies at all: it has every one, current. Never in a test or a tool. */
+export function artCopiesReady(): boolean {
+  return typeof __KAD_SMALL_ART__ !== "undefined" && __KAD_SMALL_ART__ === true;
 }
 
 /**
@@ -72,14 +116,17 @@ export function smallArtUrl(url: string): string | null {
  */
 export function wantsSmallArt(
   agent: string | undefined = typeof navigator === "undefined" ? undefined : navigator.userAgent,
-  ready: boolean = typeof __KAD_SMALL_ART__ !== "undefined" && __KAD_SMALL_ART__ === true,
+  ready: boolean = artCopiesReady(),
 ): boolean {
   return ready && agent !== undefined && /\bMobile\b|iPhone/.test(agent) && !/\biPad\b|\bTV\b|Tizen|Web0S|SMART-TV/i.test(agent);
 }
 
-/** `url`, or its half-size copy on a phone. */
-export function fitArt(url: string, small: boolean = wantsSmallArt()): string {
-  return (small ? smallArtUrl(url) : null) ?? url;
+/**
+ * The file this device draws `url` from: its half-size copy on a phone, else its full-size
+ * WebP where the build has the copies (`whole`), else the painting itself.
+ */
+export function fitArt(url: string, small: boolean = wantsSmallArt(), whole: boolean = artCopiesReady()): string {
+  return (small ? smallArtUrl(url) : null) ?? (whole ? wholeArtUrl(url) : null) ?? url;
 }
 
 /**
@@ -105,7 +152,7 @@ export function artTierOf(tier: TierId): TierId {
 }
 
 export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER): string {
-  return `/assets/characters/${species}/${artTierOf(tier)}/assembled.png`;
+  return fitArt(`/assets/characters/${species}/${artTierOf(tier)}/assembled.png`);
 }
 
 /**
@@ -152,7 +199,7 @@ export function characterWorldArtUrl(
   characterClass?: ClassId,
 ): string {
   if (hasClassFigure(species, tier, characterClass)) {
-    return `/assets/character-rigs/${characterClass}/${artTierOf(tier)}/${species}/assembled.png`;
+    return fitArt(`/assets/character-rigs/${characterClass}/${artTierOf(tier)}/${species}/assembled.png`);
   }
   return characterArtUrl(species, tier);
 }
@@ -174,7 +221,7 @@ export function gearPortraitUrl(
   tier: TierId,
 ): string | null {
   if (tier === "fledgling") return null;
-  return `/assets/gear-portraits/${characterClass}/${artTierOf(tier)}/${species}.png`;
+  return fitArt(`/assets/gear-portraits/${characterClass}/${artTierOf(tier)}/${species}.png`);
 }
 
 /** The best commissioned still image available for a resolved character. */
@@ -192,9 +239,11 @@ export function characterPortraitArtUrl(
 /**
  * Where a painting's coat mask would be (docs/hero-looks.md §4.2), whether or
  * not it has one: `x/assembled.png` → `x/coat-mask.png`, a gear portrait's
- * `x/<species>.png` → `x/<species>.coat-mask.png`.
+ * `x/<species>.png` → `x/<species>.coat-mask.png`. A painting's full-size WebP
+ * (`fitArt`) has the painting's own mask: same canvas, same alpha.
  */
-export function maskPathBeside(painting: string): string {
+export function maskPathBeside(drawn: string): string {
+  const painting = paintingOfCopy(drawn);
   return painting.endsWith("/assembled.png")
     ? painting.slice(0, -"assembled.png".length) + "coat-mask.png"
     : painting.replace(/\.png$/, ".coat-mask.png");
@@ -221,7 +270,7 @@ export function wearsLook(look: { coat?: string | null; accent?: string | null; 
  */
 export function coatMaskFor(paintingUrl: string, masked: ReadonlySet<string> | readonly string[]): string | null {
   if (!paintingUrl.startsWith("/assets/")) return null;
-  const path = paintingUrl.slice("/assets/".length);
+  const path = paintingOfCopy(paintingUrl).slice("/assets/".length);
   const listed = Array.isArray(masked) ? masked.includes(path) : (masked as ReadonlySet<string>).has(path);
   return listed ? maskPathBeside(paintingUrl) : null;
 }
@@ -276,6 +325,6 @@ export function castArtUrl(figure: string): string | null {
  const match=/^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure);
  if(!match)return null;
  const [,kind,id]=match;
- // A hero's painting stays whole on every device: her coat is tinted from it and its mask, pixel for pixel.
- return kind==="characters" ? "/assets/characters/"+id+"/fledgling/assembled.png" : fitArt("/assets/"+kind+"/"+id+"/assembled.png");
+ // A hero's painting is never halved: her coat is tinted from it and its mask, pixel for pixel.
+ return fitArt(kind==="characters" ? "/assets/characters/"+id+"/fledgling/assembled.png" : "/assets/"+kind+"/"+id+"/assembled.png");
 }

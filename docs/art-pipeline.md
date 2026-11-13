@@ -69,16 +69,39 @@ Phase 2 hero-colored kit layers, are in `docs/briefs/camp.md`; prompts in
 
 ## Half-size copies for phones
 
-A backdrop is painted 1920 x 1080 and a figure 1024 x 1024, for a television. A phone's world
-pane shows the backdrop about 800 pixels wide and a figure a few hundred, so each scene and
-biome backdrop, and each entity and cast figure, has a half-size WebP beside it:
-`bg.webp` → `bg@0.5x.webp`, `assembled.png` → `assembled@0.5x.webp`. A phone asks for the copy
-(`packages/client/src/world/art-paths.ts`, `fitArt`); a tablet, a laptop and a television ask
-for the painting. The name is Pixi's own convention for a half-resolution texture, so a sprite
-made from a copy has the painting's size and nothing that places it changes.
+A backdrop is painted 1920 x 1080, a story plate 1600 x 900 and a figure 1024 x 1024, for a
+television. Two kinds of copy stand beside a painting, both made by `npm run art:small` and
+both asked for through one function (`packages/client/src/world/art-paths.ts`, `fitArt`):
 
-Not copied: hero paintings (a hero's coat is tinted from her painting and its mask pixel for
-pixel), tile sheets and effect sheets (cut up by pixel), and anything already small.
+| Copy | Name | Made for | Who asks for it |
+| --- | --- | --- | --- |
+| Half size, lossy WebP (quality 82, Lanczos) | `bg.webp` → `bg@0.5x.webp`, `assembled.png` → `assembled@0.5x.webp` | scene and biome backdrops, camp backdrops (`camp/backdrops/`), story plates (`plates/`), entity and cast figures | a phone |
+| Full size, lossy WebP (quality 90) | `assembled.png` → `assembled@1x.webp`, `<species>.png` → `<species>@1x.webp` | entity and cast figures; hero paintings (`characters/`, `character-rigs/`) and gear portraits (`gear-portraits/`) | every other screen, and a phone for a hero |
+
+A phone's world pane shows a backdrop about 800 pixels wide and a figure a few hundred, so the
+half is a quarter of the pixels to download and to hold decoded. The full-size WebP is for the
+bytes alone: a figure's PNG is about a megabyte, and the same pixels as a WebP are a fifth to
+a tenth of that (measured over the store: 366 figures, 355 MB of PNG, 55 MB as `@1x.webp`).
+WebP keeps the alpha plane lossless, so a cut-out's edge is the painting's exactly. Both names
+are Pixi's own convention for a texture's resolution, so a sprite made from a copy has the
+painting's size and nothing that places it changes.
+
+**A hero has a full-size copy and no half.** Her coat is tinted on the device from her
+painting and its coat mask, pixel for pixel (`hero-coat-pass.ts`; [hero-looks.md](hero-looks.md)),
+and the pass refuses a mask that is not on its painting's canvas. The full-size WebP is on
+that canvas with that alpha, so the tinter reads it with the mask as painted: the swap takes
+each pixel's lightness and chroma and each part's medians, none of it exact-valued, and on
+the real paintings the tinted result from the WebP differs from the tinted PNG by no more
+than the WebP differs from the PNG. A half would not be wrong for the mask (its channels are
+soft coverage weights, which a box filter halves exactly, kept lossless), but the tinted
+texture a stage draws is made at resolution 1 (`hero-art-pixi.ts`), so a half-size tint would
+stand half as tall, and a phone shows her portrait larger than half its pixels. Masks
+(`coat-mask.png`, `<species>.coat-mask.png`) are never copied: a lossy WebP stores colour at
+half resolution and would bleed one part's weight into another's.
+
+Not copied at all: tile sheets and effect sheets (cut up by pixel), camp pieces and kits
+(recoloured from 1024 x 1024 pixels, `camp-kit-canvas.ts`), props, icons, and anything
+already small.
 
 - `npm run art:small` makes every copy that is missing or whose painting changed, and records
   the painting each was made from in `assets.small.json`. It needs the paintings on disk
@@ -86,7 +109,9 @@ pixel), tile sheets and effect sheets (cut up by pixel), and anything already sm
 - Then `npm run assets:push`, and commit `assets.lock.json` and `assets.small.json` together.
 - `npm run art:small -- --check` lists what is owed and writes nothing.
 
-A build turns small art on only when every copy is in the lock and was made from the painting
-the lock holds now (`packages/client/small-art-build.ts`). So a repaint that skipped
-`art:small` never leaves a phone on the old picture: `tools/art/small-art.test.ts` fails in
-that PR, and a build made anyway serves every device the paintings themselves.
+A build turns the copies on, both kinds at once, only when every one is in the lock and was
+made from the painting the lock holds now (`packages/client/small-art-build.ts`). So a repaint
+that skipped `art:small` never leaves a screen on the old picture: `tools/art/small-art.test.ts`
+fails in that PR, and a build made anyway serves every device the paintings themselves. The
+service worker is told the same thing by the same build, so what it warms overnight
+(`sw/chapter-art.ts`) is what the device then draws.

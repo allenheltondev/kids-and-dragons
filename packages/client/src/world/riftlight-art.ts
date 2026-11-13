@@ -1,4 +1,5 @@
 /** Painted presentation for the authored Riftlight opening. No input or reward logic. */
+import { fitArt } from "./art-paths";
 import { playbackStepMs, type CastMember, type Chapter, type InteractionPrompt, type RunState } from "@kad/shared";
 
 export type FightAppearance = NonNullable<NonNullable<Chapter["presentation"]>["fights"]>[number];
@@ -58,9 +59,9 @@ export function castPoseUrl(figure: string, chapter: Chapter, state: RunState): 
   const reaction=reactionFigure(state.sceneId,prompt,0,chapter);
   const matches=reaction?.startsWith("duckling_")?figure==="entities/duckling":reaction?.startsWith("kid_")?figure==="cast/snowhorn_kid":figure==="entities/snowhorn_goat";
   if(reaction && matches)
-   return "/assets/cast/"+reaction+"/assembled.png";
+   return fitArt("/assets/cast/"+reaction+"/assembled.png");
   const special=chapter.presentation?.castPoses?.[state.sceneId??'']?.[figure];
-  if(special)return '/assets/cast/'+special+'/assembled.png';
+  if(special)return fitArt('/assets/cast/'+special+'/assembled.png');
  }
  return null;
 }

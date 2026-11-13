@@ -147,14 +147,18 @@ commit the file with its prompts record, as before, and skip the store steps bel
 
 Only after the gates pass, and for character art only once the user has approved it:
 
-0. **A scene or biome backdrop, or an entity or cast figure: make its half-size copy first.**
-   `npm run art:small` writes `<name>@0.5x.webp` beside each such painting that is new or
-   repainted (a phone draws the copy, not the painting) and records it in `assets.small.json`
+0. **A backdrop, a story plate or a figure: make its copies first.**
+   `npm run art:small` writes, beside each such painting that is new or repainted,
+   `<name>@0.5x.webp` (half size, which a phone draws: scene, biome and camp backdrops, story
+   plates, entity and cast figures) and `<name>@1x.webp` (full size, which every other screen
+   draws in place of the PNG: entity and cast figures, hero paintings and gear portraits), and
+   records them in `assets.small.json`
    ([docs/art-pipeline.md](../../../docs/art-pipeline.md#half-size-copies-for-phones)). It
-   needs all the lock's art on disk (`npm run assets:pull`). The copy sits in the folder you
-   worked in, so the push below takes it with the painting. Nothing else gets a copy: not
-   hero paintings, plates, camp art, props, icons or sheets. `npm run art:small -- --check`
-   says whether anything is owed; skip this and `tools/art/small-art.test.ts` fails the PR.
+   needs all the lock's art on disk (`npm run assets:pull`). The copies sit in the folder you
+   worked in, so the push below takes them with the painting. Nothing else gets a copy: not
+   coat masks, camp pieces, props, icons or sheets, and a hero gets no half.
+   `npm run art:small -- --check` says whether anything is owed; skip this and
+   `tools/art/small-art.test.ts` fails the PR.
 1. `npm run assets:push -- --issue <the art issue> <the folder you worked in> art/source/originals/<the issue>`
    uploads the new bytes to the asset store, stamps each with the issue and the uploading key,
    and records them in `assets.lock.json` ([docs/asset-store.md](../../../docs/asset-store.md)).

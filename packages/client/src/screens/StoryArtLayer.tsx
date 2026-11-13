@@ -1,3 +1,4 @@
+import { fitArt } from "../world/art-paths";
 import { useChapter, useRunState } from "../store";
 import { useSyncExternalStore } from "react";
 import { onStageInset, stageInsetBottom, onStageInsetTop, stageInsetTop } from "../world/stage-inset";
@@ -32,7 +33,7 @@ export function StoryArtLayer() {
  return <div className="story-art-layer" style={result && chapter.campaignId === "gemfall" ? outcomeSpace : undefined} aria-hidden="true" key={state.chapterId+":"+state.sceneId+":"+(result?.won?"won":"arrival")}>
   {showRetreat&&<img className="story-art-layer__retreat" data-direction={art.retreatDirection} src={art.retreatUrl} alt="" />}
   {props.map(id=><img key={id} className={"story-art-layer__prop"+(id==="fight-disguised-planks"?" story-art-layer__breath":"")} src={"/assets/story-props/"+id+".webp"} alt="" />)}
-  {intro?.creature==="will_o_wisp"&&[0,1].map(i=><img key={i} className="story-art-layer__wisp" style={{animationDelay:(-i*1.6)+"s"}} src="/assets/entities/will_o_wisp/assembled.png" alt="" />)}
+  {intro?.creature==="will_o_wisp"&&[0,1].map(i=><img key={i} className="story-art-layer__wisp" style={{animationDelay:(-i*1.6)+"s"}} src={fitArt("/assets/entities/will_o_wisp/assembled.png")} alt="" />)}
   {result?.won&&art.creature==="mire_mimic"&&<img className="story-art-layer__little" src="/assets/entities/mire_mimic/little.png" alt="" />}
   {result?.won&&(state.lastEncounter?.coinsEarned??0)>0&&<span className="story-art-layer__coins">{[0,1,2].map(i=><img key={i} src="/assets/story-glyphs/coin.svg" alt="" style={{animationDelay:(i*.12)+"s"}} />)}</span>}
  </div>;

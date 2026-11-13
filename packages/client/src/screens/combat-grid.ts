@@ -7,6 +7,7 @@
  * `EncounterState` to "what can she tap" is testable without a DOM.
  */
 
+import { fitArt } from "../world/art-paths";
 import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
 import { NUMBED_BUFF_ID, currentActorId, enemyArtId, environmentView } from "@kad/shared";
 import { facingFor, type Facing } from "../world/board-math";
@@ -246,7 +247,7 @@ export function enemyPortraitUrl(
   if ((appearance?.poses.intro === "strongbox" || appearance?.poses.intro === "barge" || appearance?.poses.intro === "marker_post") && appearance.creature === spec?.creature) return appearance.activeUrl;
   const art = spec ? enemyArtId(spec) : null;
   if (!art) return null;
-  if (art.startsWith("cast/")) return `/assets/${art}/assembled.png`;
+  if (art.startsWith("cast/")) return fitArt(`/assets/${art}/assembled.png`);
   const id = art.startsWith("enemies/") ? art.slice("enemies/".length) : art;
   return `/assets/entities/${id}/portrait.webp`;
 }
