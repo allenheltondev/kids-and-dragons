@@ -1,5 +1,5 @@
 import { createECDH, randomBytes } from "node:crypto";
-import webpush from "web-push";
+import * as webpush from "web-push";
 import { describe, expect, it } from "vitest";
 import { PUSH_TAG, turnPushPayload } from "@kad/shared";
 import {
