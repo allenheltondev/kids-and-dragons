@@ -136,6 +136,12 @@ existing piece of the same set) when you generate.
    `art-approved` label. The check's summary links each painting in the store. Never add that
    label yourself; it is the user's word that they looked.
 
+   A hero painting's full-size copy (`<name>@1x.webp`, section 5, step 0) sits in the same folders, so
+   the check lists it beside its painting. It is the approved painting re-encoded, made only
+   after the approval, and the one label covers both. A PR that adds copies of paintings
+   approved long ago (the rule for what gets a copy changed) is listed the same way: the
+   check cannot tell a re-encoding from a repaint, so it is still the user's label.
+
    **Everything else** (story cast, entities, scenes, plates, camp, key art, props, icons,
    frames) needs no review: it is ready once steps 1 and 2 pass. Still look at it yourself
    at play size against its neighbours, and redo anything that does not match the set.
@@ -187,8 +193,9 @@ Only after the gates pass, and for character art only once the user has approved
   painting is stale, and `art:small` makes it again. `push` records the new bytes; the old
   ones stay in the store, so the previous commit still shows the previous painting.
 - **Retiring art**: remove it from the manifest and content first, delete the file and its
-  `@0.5x.webp` copy if it has one, then `npm run assets:push -- --prune <its folder>` to drop
-  them from the lock, and `npm run art:small` to drop the copy from `assets.small.json`.
+  copies beside it (`<name>@0.5x.webp`, `<name>@1x.webp`, whichever it has), then
+  `npm run assets:push -- --prune <its folder>` to drop them from the lock, and
+  `npm run art:small` to drop the copies from `assets.small.json`.
 
 ## Do not
 

@@ -33,8 +33,11 @@ from the issue to the asset store. In short:
 4. **Character art** (`assets/characters/`, `assets/character-rigs/`, `assets/gear-portraits/`)
    waits for the user's approval. Other art does not. After the cutover, CI fails the PR until
    the user labels it `art-approved`; never add that label yourself.
-5. Store it with `npm run assets:push -- --issue <n> <folder>`, then commit `assets.lock.json` and
-   the prompt record, never the image files. **Before the cutover** (no `assets.lock.json` at the
+5. A backdrop, a story plate or a figure has copies that devices draw in its place: run
+   `npm run art:small` first (it writes `<name>@0.5x.webp` and `<name>@1x.webp` beside the
+   painting and records them in `assets.small.json`; the skill's section 5, step 0 says which art gets
+   which). Then store it with `npm run assets:push -- --issue <n> <folder>`, and commit
+   `assets.lock.json`, `assets.small.json` and the prompt record, never the image files. **Before the cutover** (no `assets.lock.json` at the
    repo root yet), the art is still in git: commit the approved image with its prompt record, as
    the skill's step 5 says.
 
