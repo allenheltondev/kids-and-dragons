@@ -536,14 +536,14 @@ function PersonalHome(): ReactElement {
            * Sign in, move a hero to another device, a family tablet, a group:
            * a grown-up's errands, on a page of their own, so the start screen
            * keeps to joining and hosting. Last and quiet, since nobody needs
-           * any of it to play.
+           * any of it to play. The guide is in the footer below, so this is
+           * the one link here, and its words never change: they used to
+           * depend on whether sign-in had loaded yet, and the line jumped
+           * when it did.
            */}
-          <div className="home__host-toggle home__guide" hidden={hosting}>
-            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
-              Grown-up&rsquo;s guide
-            </button>
+          <div className="home__host-toggle home__guide home__guide--end" hidden={hosting}>
             <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "account" })}>
-              {signInAvailable ? "Grown-ups: sign in, or move a hero to another device" : "Move a hero to another device"}
+              Accounts and devices
             </button>
           </div>
         </div>

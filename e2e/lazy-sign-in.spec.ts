@@ -23,14 +23,14 @@ function watch(page: Page): string[] {
 test("the home screen does not fetch sign-in until a grown-up opens it", async ({ page }) => {
   const asked = watch(page);
   await page.goto("/");
-  // Sign-in is offered, so `check()` has run and the home screen is settled.
-  await expect(page.getByRole("button", { name: /grown-ups: sign in/i })).toBeVisible(TAP);
+  // The link is there from the first paint; `networkidle` below is what settles `check()`.
+  await expect(page.getByRole("button", { name: /accounts and devices/i })).toBeVisible(TAP);
   await page.waitForLoadState("networkidle");
   expect(asked.filter((url) => AUTH.test(url))).toEqual([]);
   expect(asked.filter((url) => ORGANIZER.test(url))).toEqual([]);
 
   // Nor does the accounts page, until a grown-up starts signing in there.
-  await page.getByRole("button", { name: /grown-ups: sign in/i }).click();
+  await page.getByRole("button", { name: /accounts and devices/i }).click();
   await expect(page.getByRole("button", { name: /run a group/i })).toBeVisible(TAP);
   await page.waitForLoadState("networkidle");
   expect(asked.filter((url) => AUTH.test(url))).toEqual([]);

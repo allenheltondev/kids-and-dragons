@@ -49,7 +49,7 @@ function loads(page: Page): () => number {
 test("an optional control that cannot load is absent, and the page keeps working", async ({ page }) => {
   await page.route(READ_ALOUD, (route) => route.abort());
   await page.goto("/");
-  await expect(page.getByRole("button", { name: /grown-ups: sign in/i })).toBeVisible(TAP);
+  await expect(page.getByRole("button", { name: /accounts and devices/i })).toBeVisible(TAP);
   // The rest of the row still landed; only read-aloud is missing, and quietly.
   await expect(page.getByRole("button", { name: "Settings", exact: true }).first()).toBeVisible(TAP);
   await expect(page.getByRole("button", { name: /^(Enable sound|Turn sound off)$/ })).toBeVisible(TAP);
