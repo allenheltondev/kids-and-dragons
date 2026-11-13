@@ -41,6 +41,8 @@ export interface KitArt {
   kit?: string;
   tier?: string;
   flap?: string;
+  /** A tent's decoration spots, in slot order: where each one's middle sits, in pixels on its 1024 canvas. */
+  hangPoints?: { x: number; y: number }[];
 }
 
 export const CREW_PIECE_ART: readonly CampArtPiece[] = (campManifest.crewPieces ?? []) as CampArtPiece[];

@@ -60,7 +60,7 @@
   object-fit: contain;
 }
 
-/* Decorations hang on the tent's two spots, as at camp: small, on the tent, never the tent's size.
+/* Decorations hang on the tent's two spots: small, on the tent, never the tent's size.
    (Reached through the tent, so no rule for the tent's own painting can outweigh it.) */
 .book-kit__tent > .book-kit__hung {
   position: absolute;
@@ -69,6 +69,9 @@
   object-fit: contain;
   filter: drop-shadow(0 0.1em 0.15em #0006);
 }
+/* A painted tent says where its spots are (manifest hangPoints; BookKit.tsx hangSpot): the
+   decoration's middle sits there. These two stand in on the drawn stand-in tent. */
+.book-kit__tent > .book-kit__hung--on { translate: -50% -50%; }
 .book-kit__tent > .book-kit__hung--0 { inset-inline-start: 22%; inset-block-start: 22%; }
 .book-kit__tent > .book-kit__hung--1 { inset-inline-end: 20%; inset-block-start: 16%; }
 
