@@ -82,6 +82,17 @@ export interface VoiceBuffer {
 }
 
 /**
+ * The breath between one recorded clip and the next (playtest: back-to-back clips made the
+ * narrator and the characters run on into each other). Every clip boundary gets it, inside a
+ * line (the engine's `play`) and between one line and the next (speech/clip-speaker.ts); never
+ * after the last clip. One number, so the whole table's pacing is tuned here.
+ */
+export const VOICE_GAP_MS = 350;
+
+/** A clip to play: decoded already, or still on its way (fetching or decoding). */
+export type VoiceClip = VoiceBuffer | PromiseLike<VoiceBuffer>;
+
+/**
  * Recorded narration's way out (docs/voice-narration-plan.md §7): clips are decoded in the
  * engine's context and played on their own bus, with the music ducked under them, rather than
  * through an `<audio>` tag that knows nothing of the music. Only a started engine has one.
@@ -92,10 +103,14 @@ export interface VoiceChannel {
   /** Decodes a clip's bytes. Rejects when they will not decode, or there is no context to decode in. */
   decode(bytes: ArrayBuffer): Promise<VoiceBuffer>;
   /**
-   * Plays the buffers back to back with the music ducked, and calls `onEnd` once the last one
-   * has finished. Returns the way to stop early, which restores the music and never calls `onEnd`.
+   * Plays the clips in order with VOICE_GAP_MS between each and the next (none after the last),
+   * the music ducked, and calls `onEnd` once the last one has finished. A clip still on its way
+   * is started as soon as it arrives (never before its gap is over), so the first clip of a line
+   * need not wait for the rest; one that fails ends the line after what was already playing, and
+   * `onEnd` is still called. Returns the way to stop early, which restores the music and never
+   * calls `onEnd`.
    */
-  play(buffers: readonly VoiceBuffer[], onEnd: () => void): () => void;
+  play(clips: readonly VoiceClip[], onEnd: () => void): () => void;
 }
 
 export interface AudioSink {

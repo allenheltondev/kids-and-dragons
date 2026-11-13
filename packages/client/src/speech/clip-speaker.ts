@@ -21,22 +21,33 @@
  * clips turn out not to be there is a device line like any other: it joins the browser's queue
  * at once, never waiting on an "ended" a browser may not send (#593's e2e found the wait).
  *
+ * Every clip boundary gets a breath of VOICE_GAP_MS (audio/cue.ts): between the clips of a line
+ * (the engine schedules it on the audio clock) and between one line and the next (`rest`, here),
+ * whichever voice said them, never after the last. A skip, a stop or a new scene clears it.
+ *
  * Manifests are fetched the first time a chapter's line is spoken, one file per chapter, never
  * at first paint. Clips are fetched when their line is queued, so a line queued behind the
- * "Last time…" is ready by the time its turn comes. The URL is the hash, so the browser's HTTP
- * cache keeps a clip too (the service worker's own `voice` cache is #547's).
+ * "Last time…" is ready by the time its turn comes, in play order with LINE_WINDOW of them in
+ * flight, and a line starts as soon as its **first** clip is decoded: the rest arrive while it
+ * plays. All or nothing still holds for everything known before the first clip sounds; a clip
+ * that fails after that ends the line where it stands rather than repeating it in the device
+ * voice. The URL is the hash and is served immutable for a year, so the browser's HTTP cache
+ * keeps a clip too (the service worker passes `/voice/*` through to it untouched).
  *
  * **Prefetch** (`speaker.prefetch`): over a slow connection, a television might not have a
  * line's clips within RESOLVE_MS, and the line would be read by the device voice instead. So the
- * client asks for the scenes ahead (and, on the television, the rest of the chapter) while the
- * party reads. Their bytes are kept in memory, a few hundred clips at most (a chapter is about
- * 7 MB), and spoken lines use them. Clips are fetched one at a time and low priority, and never
- * while a line the table is waiting on is still resolving, so a prefetch can only make the line
- * being spoken faster, never slower. Data Saver turns it off; the lines themselves still play.
+ * client asks for the scene the party is in and the scenes ahead (and, on the television, the
+ * rest of the chapter) as soon as the scene is known. Their bytes are kept in memory, least
+ * recently used dropped first past KEPT_CLIPS or KEPT_BYTES, and spoken lines use them; decoded
+ * audio is held only by the line playing it, so a scene left behind costs nothing once it ends.
+ * Clips are fetched PREFETCH_CONCURRENCY at a time and low priority, nearest scene first, none
+ * while a line the table is waiting on has no first clip yet and one at a time while a playing
+ * line still fetches its own, so a prefetch can only make the line being spoken faster, never
+ * slower. Data Saver turns it off; the lines themselves still play.
  */
 
 import { clipPath, manifestOfAddress, manifestPath, playlistFor, type NarrationPart, type PrefetchOptions, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
-import { getAudioSink, type VoiceBuffer, type VoiceChannel } from "../audio/cue";
+import { getAudioSink, VOICE_GAP_MS, type VoiceBuffer, type VoiceChannel } from "../audio/cue";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
 /** The slice of `fetch`'s answer in use, so a test can hand in plain objects. */
@@ -68,7 +79,7 @@ export interface ClipSpeakerEnv {
  */
 const MISSING: ReadonlySet<number> = new Set([403, 404, 410]);
 
-/** Long enough for a few small clips over house wifi; short enough that a dead line is not a pause. */
+/** How long a line may wait for its manifest and first clip: long enough over house wifi, short enough that a dead line is not a pause. */
 export const RESOLVE_MS = 2500;
 /**
  * The longest a device line may hold up a recorded one behind it, when the browser never says the
@@ -76,10 +87,17 @@ export const RESOLVE_MS = 2500;
  */
 const DEVICE_MS_PER_CHAR = 110;
 const GRACE_MS = 2000;
-/** The most clips whose bytes are kept in memory: one chapter is about 250, around 8 MB. */
+/** The most clips whose encoded bytes are kept in memory, least recently used dropped first. */
 const KEPT_CLIPS = 600;
-/** How often a prefetch looks again while a line the table is waiting on is still being resolved. */
-const YIELD_MS = 200;
+/** And the most bytes: a chapter is about 7 MB, so this holds the one being played and the next. */
+const KEPT_BYTES = 16 * 1024 * 1024;
+/** How many clips the guessing ahead fetches at once, when nothing the table is waiting on needs the line. */
+export const PREFETCH_CONCURRENCY = 4;
+/**
+ * How many clips of the line being spoken are fetched and decoded ahead of the one playing: the
+ * first clip is not starved by the rest of the line, and a long line does not decode all at once.
+ */
+export const LINE_WINDOW = 3;
 
 /**
  * The lines worth fetching ahead: a scene's narration (and its variants and branches), the goal
@@ -99,14 +117,25 @@ export function manifestOf(address: string | undefined): string | null {
   return manifestOfAddress(address);
 }
 
+/** A recorded line ready to start: its first clip is decoded, the rest are on their way, in order. */
+interface Line {
+  clips: Promise<VoiceBuffer>[];
+  /** How long the manifest says the line runs, pauses included. */
+  ms: number;
+  /** True once any clip of the line has failed. */
+  failed(): boolean;
+}
+
 interface Job {
   text: string;
   opts: SpeakOptions | undefined;
-  /** The decoded clips to play, or null for the device voice. Absent for a line with no parts. */
-  clips?: Promise<VoiceBuffer[] | null>;
+  /** The line to play, or null for the device voice. Absent for a line with no parts. */
+  clips?: Promise<Line | null>;
   /** Set once `clips` has settled to null: the line is the device voice's, and need not wait. */
   deviceOnly?: boolean;
 }
+
+const ignore = (): void => undefined;
 
 export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   const resolveMs = env.resolveMs ?? RESOLVE_MS;
@@ -118,15 +147,23 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   let deviceLines = 0;
   /** A recorded line is resolving or playing; everything behind it waits. */
   let recording = false;
+  /** The pause after a line, before the next one starts (VOICE_GAP_MS). */
+  let resting = false;
   let stopClips: (() => void) | null = null;
   const timers = new Set<ReturnType<typeof setTimeout>>();
   let speaking = false;
-  /** Encoded clips already fetched or on their way, by clip key, oldest first. */
+  /** Encoded clips already fetched or on their way, by clip key, least recently used first. */
   const kept = new Map<string, Promise<ArrayBuffer>>();
-  /** Lines being resolved right now: the table is waiting on their clips. */
+  /** The size of each kept clip that has arrived, and their total. */
+  const sizes = new Map<string, number>();
+  let keptBytes = 0;
+  /** Lines being resolved right now: the table is waiting on their first clip. */
   let urgent = 0;
+  /** Lines playing whose later clips are still being fetched: the guessing ahead makes room for them. */
+  const streaming = new Set<Line>();
   const prefetchQueue: { near: string[]; background: string[] } = { near: [], background: [] };
-  let draining = false;
+  /** Prefetch fetches under way. */
+  let active = 0;
   /** Bumped when the guessing ahead is retired, so work that was already under way drops its result. */
   let prefetchEpoch = 0;
 
@@ -143,10 +180,22 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   };
 
   function mark(): void {
-    const now = recording || deviceLines > 0;
+    // The pause between two lines is part of saying them; the pause after the last one is not.
+    const now = recording || deviceLines > 0 || (resting && queue.length > 0);
     if (now === speaking) return;
     speaking = now;
     env.onSpeaking?.(now);
+  }
+
+  /** Holds the next line back for VOICE_GAP_MS, so two lines never run on into each other. */
+  function rest(): void {
+    resting = true;
+    after(VOICE_GAP_MS, () => {
+      resting = false;
+      // The next line first, so the speaking mark does not blink between the two.
+      pump();
+      mark();
+    });
   }
 
   function manifest(name: string): Promise<VoiceManifest | null> {
@@ -171,30 +220,64 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     return loading;
   }
 
+  function forget(key: string): void {
+    kept.delete(key);
+    const size = sizes.get(key);
+    if (size !== undefined) {
+      keptBytes -= size;
+      sizes.delete(key);
+    }
+  }
+
+  /** Drops the least recently used clips until the memory bound holds; never `keep`, the one just used. */
+  function trim(keep: string): void {
+    for (const oldest of kept.keys()) {
+      if (kept.size <= KEPT_CLIPS && keptBytes <= KEPT_BYTES) return;
+      if (oldest !== keep) forget(oldest);
+    }
+  }
+
   /** A clip's encoded bytes, fetched once however often it is wanted; a failure is forgotten so it is asked again. */
   function bytesOf(key: string, low: boolean): Promise<ArrayBuffer> {
-    let held = kept.get(key);
-    if (held === undefined) {
-      held = env
-        .fetch(clipPath(key), low ? { priority: "low" } : undefined)
-        .then((response) => {
-          if (!response.ok) throw new Error(`clip ${key} is not there`);
-          return response.arrayBuffer();
-        })
-        .catch((error: unknown) => {
-          kept.delete(key);
-          throw error;
-        });
-      kept.set(key, held);
-      for (const oldest of kept.keys()) {
-        if (kept.size <= KEPT_CLIPS) break;
-        kept.delete(oldest);
-      }
+    const had = kept.get(key);
+    if (had !== undefined) {
+      // Used again: the most recently used now, the last to go.
+      kept.delete(key);
+      kept.set(key, had);
+      return had;
     }
+    const held: Promise<ArrayBuffer> = env
+      .fetch(clipPath(key), low ? { priority: "low" } : undefined)
+      .then((response) => {
+        if (!response.ok) throw new Error(`clip ${key} is not there`);
+        return response.arrayBuffer();
+      })
+      .then(
+        (encoded) => {
+          if (kept.get(key) === held && !sizes.has(key)) {
+            sizes.set(key, encoded.byteLength);
+            keptBytes += encoded.byteLength;
+            trim(key);
+          }
+          return encoded;
+        },
+        (error: unknown) => {
+          if (kept.get(key) === held) forget(key);
+          throw error;
+        },
+      );
+    kept.set(key, held);
+    trim(key);
     return held;
   }
 
-  async function gather(parts: readonly NarrationPart[]): Promise<VoiceBuffer[] | null> {
+  /**
+   * The line for `parts`: null when it cannot be recorded, else its clips, fetched and decoded in
+   * play order with LINE_WINDOW of them ahead at a time. Settles as soon as the manifest has
+   * been read, without waiting for any clip.
+   */
+  async function gather(parts: readonly NarrationPart[]): Promise<Line | null> {
+    const at = generation;
     const names = parts.map((part) => manifestOf(part.address));
     if (names.includes(null)) return null;
     const loaded = await Promise.all([...new Set(names as string[])].map(manifest));
@@ -202,92 +285,124 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     const playlist = playlistFor(parts, Object.assign({}, ...loaded) as VoiceManifest);
     const channel = env.channel();
     if (playlist === null || channel === null || !channel.ready()) return null;
+    let failed = false;
     // One fetch and one decode per clip, however often the line repeats it.
     const decoded = new Map<string, Promise<VoiceBuffer>>();
-    const clip = (key: string): Promise<VoiceBuffer> => {
-      let buffer = decoded.get(key);
+    const clips: Promise<VoiceBuffer>[] = [];
+    for (const [index, entry] of playlist.entries()) {
+      let buffer = decoded.get(entry.clip);
       if (buffer === undefined) {
-        // Decoding hands the bytes over, so each decode gets its own copy of what is kept.
-        buffer = bytesOf(key, false).then((encoded) => channel.decode(encoded.slice(0)));
-        decoded.set(key, buffer);
+        const ahead = clips[index - LINE_WINDOW];
+        const turn = ahead === undefined ? Promise.resolve() : ahead.then(ignore, ignore);
+        buffer = turn
+          .then(() => {
+            // A line cut off stops fetching what it no longer needs.
+            if (at !== generation) throw new Error("line dropped");
+            return bytesOf(entry.clip, false);
+          })
+          // Decoding hands the bytes over, so each decode gets its own copy of what is kept.
+          .then((encoded) => channel.decode(encoded.slice(0)));
+        buffer.catch(() => {
+          failed = true;
+        });
+        decoded.set(entry.clip, buffer);
       }
-      return buffer;
-    };
-    return Promise.all(playlist.map((entry) => clip(entry.clip)));
+      clips.push(buffer);
+    }
+    const ms = playlist.reduce((total, entry) => total + entry.ms, 0) + VOICE_GAP_MS * (playlist.length - 1);
+    return { clips, ms, failed: () => failed };
   }
 
-  /** The clips for `parts`, or null, never later than `resolveMs` and never rejecting. */
-  function resolve(parts: readonly NarrationPart[]): Promise<VoiceBuffer[] | null> {
+  /** The line for `parts` once its first clip is ready, or null, never later than `resolveMs` and never rejecting. */
+  function resolve(parts: readonly NarrationPart[]): Promise<Line | null> {
     urgent += 1;
-    return new Promise<VoiceBuffer[] | null>((settle) => {
+    return new Promise<Line | null>((settle) => {
       const cancelTimer = after(resolveMs, () => settle(null));
-      gather(parts).then(
-        (buffers) => {
-          cancelTimer();
-          settle(buffers);
-        },
-        () => {
-          cancelTimer();
-          settle(null);
-        },
-      );
+      gather(parts)
+        .then((line) => (line === null ? null : line.clips[0]!.then(() => line)))
+        .then(
+          (line) => {
+            cancelTimer();
+            settle(line);
+          },
+          () => {
+            cancelTimer();
+            settle(null);
+          },
+        );
     }).finally(() => {
       urgent -= 1;
+      drain();
     });
   }
 
   /**
-   * Fetches the clips for the lines under `prefixes` into memory, nearest first, one at a time and
-   * only while no line is waiting on its own clips. Never throws and never plays anything.
+   * Fetches the clips for the lines under `prefixes` into memory, nearest first, a few at a time
+   * (PREFETCH_CONCURRENCY), never while a line is waiting on its first clip and one at a time
+   * while a playing line still fetches its own. A near request goes ahead of the near guesses
+   * before it (the party has moved on from where they were made); a background one queues
+   * behind its own.
+   * Never throws and never plays anything.
    */
   function prefetch(prefixes: readonly string[], opts?: PrefetchOptions): void {
     if (env.saveData?.() === true) return;
     const epoch = prefetchEpoch;
     void (async () => {
+      const names = [...new Set(prefixes.map(manifestOf).filter((name): name is string => name !== null))];
+      const loaded = (await Promise.all(names.map(manifest))).filter((m): m is VoiceManifest => m !== null);
+      // Retired while the manifest was on its way: the request is over, whatever it would have asked for.
+      if (epoch !== prefetchEpoch) return;
       const wanted = new Set<string>();
-      const names = new Set(prefixes.map(manifestOf).filter((name): name is string => name !== null));
-      for (const name of names) {
-        const loaded = await manifest(name);
-        if (loaded === null) continue;
-        for (const [address, variants] of Object.entries(loaded)) {
-          if (!isNarratedAddress(address) || !prefixes.some((prefix) => address.startsWith(prefix))) continue;
-          for (const clips of Object.values(variants)) {
-            for (const clip of clips) if (!kept.has(clip.clip)) wanted.add(clip.clip);
+      // In the order asked: the scene the party is in, then the nearest scenes, then the rest.
+      for (const prefix of prefixes) {
+        for (const each of loaded) {
+          for (const [address, variants] of Object.entries(each)) {
+            if (!address.startsWith(prefix) || !isNarratedAddress(address)) continue;
+            for (const clips of Object.values(variants)) {
+              for (const clip of clips) if (!kept.has(clip.clip)) wanted.add(clip.clip);
+            }
           }
         }
       }
-      // Retired while the manifest was on its way: the request is over, whatever it would have asked for.
-      if (epoch !== prefetchEpoch) return;
-      const queue = opts?.background ? prefetchQueue.background : prefetchQueue.near;
-      for (const key of wanted) if (!queue.includes(key)) queue.push(key);
-      void drain();
-    })().catch(() => undefined);
+      if (opts?.background) {
+        for (const key of wanted) if (!prefetchQueue.background.includes(key)) prefetchQueue.background.push(key);
+      } else {
+        // The newest request goes first: it is where the party is now. What was asked before
+        // follows it rather than being dropped, since another screen (the story plates) may
+        // have asked for it.
+        prefetchQueue.near = [...wanted, ...prefetchQueue.near.filter((key) => !wanted.has(key))];
+      }
+      drain();
+    })().catch(ignore);
   }
 
   /** Retires every prefetch not yet started. A clip already on its way finishes; a spoken line is untouched. */
   function stopPrefetch(): void {
     prefetchEpoch += 1;
-    prefetchQueue.near.length = 0;
-    prefetchQueue.background.length = 0;
+    prefetchQueue.near = [];
+    prefetchQueue.background = [];
   }
 
-  async function drain(): Promise<void> {
-    if (draining) return;
-    draining = true;
-    try {
-      for (;;) {
-        const key = prefetchQueue.near.shift() ?? prefetchQueue.background.shift();
-        if (key === undefined) return;
-        if (kept.has(key)) continue;
-        // The table's own line goes first, whatever it is waiting on.
-        const epoch = prefetchEpoch;
-        while (urgent > 0) await new Promise<void>((wake) => setTimeout(wake, YIELD_MS));
-        // Retired while it waited: this clip was one of the guesses.
-        if (epoch !== prefetchEpoch) continue;
-        await bytesOf(key, true).catch(() => undefined);
-      }
-    } finally {
-      draining = false;
+  /** How many prefetches may be under way: the table's own line always goes first. */
+  function prefetchSlots(): number {
+    if (urgent > 0) return 0;
+    if (streaming.size > 0) return 1;
+    return PREFETCH_CONCURRENCY;
+  }
+
+  /** Starts queued prefetches up to the slots free. Called whenever a slot may have opened. */
+  function drain(): void {
+    while (active < prefetchSlots()) {
+      const key = prefetchQueue.near.shift() ?? prefetchQueue.background.shift();
+      if (key === undefined) return;
+      if (kept.has(key)) continue;
+      active += 1;
+      void bytesOf(key, true)
+        .catch(ignore)
+        .finally(() => {
+          active -= 1;
+          drain();
+        });
     }
   }
 
@@ -303,6 +418,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
       over = true;
       cancelWatch();
       deviceLines -= 1;
+      // A recorded line waiting behind it gets the same pause as between two recorded lines.
+      if (deviceLines === 0 && queue.length > 0) rest();
       mark();
       pump();
     };
@@ -310,15 +427,16 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     env.device.sayThen(job.text, job.opts, done);
   }
 
-  function playRecorded(job: Job, clips: Promise<VoiceBuffer[] | null>): void {
+  function playRecorded(job: Job, clips: Promise<Line | null>): void {
     const at = generation;
     recording = true;
     mark();
-    void clips.then((buffers) => {
+    void clips.then((line) => {
       if (at !== generation) return;
       const channel = env.channel();
-      if (buffers === null || channel === null || !channel.ready()) {
-        // All or nothing: the whole line, in the device voice, now.
+      // All or nothing, as far as can be known before the first clip sounds: a clip already
+      // missing sends the whole line to the device voice, now.
+      if (line === null || line.failed() || channel === null || !channel.ready()) {
         recording = false;
         deviceSay(job);
         pump();
@@ -326,28 +444,36 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
       }
       let over = false;
       let cancelWatch = (): void => undefined;
+      // While its later clips are still coming, the guessing ahead keeps out of their way.
+      streaming.add(line);
+      const fetched = (): void => {
+        if (streaming.delete(line)) drain();
+      };
+      void Promise.allSettled(line.clips).then(fetched);
       const done = (): void => {
         if (over || at !== generation) return;
         over = true;
         cancelWatch();
+        fetched();
         stopClips = null;
         recording = false;
+        rest();
         mark();
         pump();
       };
-      // A context the browser suspends mid-line never says the clips ended; the scene goes on anyway.
-      const ms = buffers.reduce((total, buffer) => total + buffer.duration * 1000, 0);
-      cancelWatch = after(ms + GRACE_MS, () => {
+      // A context the browser suspends mid-line never says the clips ended, and a clip that hangs
+      // mid-line never arrives; the scene goes on anyway.
+      cancelWatch = after(line.ms + GRACE_MS + resolveMs, () => {
         stopClips?.();
         done();
       });
-      const stop = channel.play(buffers, done);
+      const stop = channel.play(line.clips, done);
       if (!over) stopClips = stop;
     });
   }
 
   function pump(): void {
-    while (queue.length > 0 && !recording) {
+    while (queue.length > 0 && !recording && !resting) {
       const job = queue[0]!;
       if (job.clips === undefined || job.deviceOnly) {
         queue.shift();
@@ -369,32 +495,37 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     const stop = stopClips;
     stopClips = null;
     recording = false;
+    resting = false;
     deviceLines = 0;
+    // The lines that were playing are gone, and so is their claim on the connection.
+    streaming.clear();
     try {
       stop?.();
     } finally {
       env.device.cancel?.();
       mark();
+      drain();
     }
   }
 
   const speaker: Speaker = (text, opts) => {
     if (opts?.interrupt) cancel();
-    const { interrupt: _interrupt, parts, ...rest } = opts ?? {};
-    const job: Job = { text, opts: Object.keys(rest).length > 0 ? rest : undefined };
+    const { interrupt: _interrupt, parts, ...others } = opts ?? {};
+    const job: Job = { text, opts: Object.keys(others).length > 0 ? others : undefined };
     if (parts !== undefined && parts.length > 0) {
       const clips = resolve(parts);
       job.clips = clips;
       const at = generation;
       // Nothing to play: hand it to the browser behind what it already has, now.
-      void clips.then((buffers) => {
-        if (buffers !== null || at !== generation) return;
+      void clips.then((line) => {
+        if (line !== null || at !== generation) return;
         job.deviceOnly = true;
         pump();
       });
     }
     queue.push(job);
     pump();
+    mark();
   };
   speaker.cancel = cancel;
   speaker.prefetch = prefetch;

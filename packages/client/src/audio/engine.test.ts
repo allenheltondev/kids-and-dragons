@@ -11,7 +11,7 @@
 import { describe, expect, it } from "vitest";
 import { createAudioEngine, type PrefStore } from "./engine";
 import { QUIET_VOLUME_SCALE, setQuiet } from "../quiet";
-import type { CueId } from "./cue";
+import { VOICE_GAP_MS, type CueId } from "./cue";
 import { CUE_QUIET } from "./cues";
 
 class FakeParam {
@@ -600,13 +600,16 @@ describe("recorded voice (docs/voice-narration-plan.md §7)", () => {
     await expect(voice.decode(new ArrayBuffer(0))).rejects.toThrow();
   });
 
-  it("plays clips back to back on its own bus, ducks the music about 10 dB, and restores it after", () => {
+  it("plays clips in order on its own bus with a breath between them, ducks the music about 10 dB, and restores it after", () => {
     const { ctx, music, voiceBus, voice } = voiced();
     let ended = 0;
     voice.play([{ duration: 1.5 }, { duration: 2 }], () => { ended += 1; });
     const [first, second] = ctx.sources.slice(-2);
     expect(first!.connectedTo).toContain(voiceBus);
-    expect(second!.startedAt! - first!.startedAt!).toBeCloseTo(1.5);
+    expect(second!.startedAt! - first!.startedAt!).toBeCloseTo(1.5 + VOICE_GAP_MS / 1000);
+    // The first clip ending is not the line ending: no pause is owed after the last.
+    first!.onended!();
+    expect(ended).toBe(0);
     expect(music.gain.value).toBeCloseTo(DUCKED);
     expect(20 * Math.log10(music.gain.value / MUSIC)).toBeCloseTo(-10);
     second!.onended!();
@@ -636,6 +639,74 @@ describe("recorded voice (docs/voice-narration-plan.md §7)", () => {
     engine.setQuiet(true);
     expect(voiceBus.gain.value).toBeCloseTo(0.5 * QUIET_VOLUME_SCALE);
     engine.setQuiet(false);
+  });
+
+  it("starts on the first clip and plays a later one as it arrives, never before its breath is over", async () => {
+    const { ctx, voice } = voiced();
+    let ended = 0;
+    let arrive: (buffer: { duration: number }) => void = () => undefined;
+    const late = new Promise<{ duration: number }>((resolve) => (arrive = resolve));
+    const before = ctx.sources.length;
+    voice.play([{ duration: 1 }, late], () => { ended += 1; });
+    expect(ctx.sources.length - before).toBe(1);
+    const first = ctx.sources.at(-1)!;
+    // On time: it waits for the end of the first clip and the breath after it.
+    arrive({ duration: 2 });
+    await late;
+    await Promise.resolve();
+    const second = ctx.sources.at(-1)!;
+    expect(second).not.toBe(first);
+    expect(second.startedAt! - first.startedAt!).toBeCloseTo(1 + VOICE_GAP_MS / 1000);
+    first.onended!();
+    expect(ended).toBe(0);
+    second.onended!();
+    expect(ended).toBe(1);
+  });
+
+  it("starts a clip that arrives after the last one ended straight away", async () => {
+    const { ctx, voice } = voiced();
+    let ended = 0;
+    let arrive: (buffer: { duration: number }) => void = () => undefined;
+    const late = new Promise<{ duration: number }>((resolve) => (arrive = resolve));
+    voice.play([{ duration: 1 }, late], () => { ended += 1; });
+    const first = ctx.sources.at(-1)!;
+    ctx.currentTime = 5;
+    first.onended!();
+    expect(ended).toBe(0);
+    arrive({ duration: 1 });
+    await late;
+    await Promise.resolve();
+    const second = ctx.sources.at(-1)!;
+    expect(second.startedAt!).toBeGreaterThanOrEqual(5);
+    expect(second.startedAt!).toBeLessThan(5.1);
+  });
+
+  it("ends the line after what was playing when a later clip fails, and says it ended", async () => {
+    const { ctx, music, voice } = voiced();
+    let ended = 0;
+    const broken = Promise.reject(new Error("404"));
+    voice.play([{ duration: 1 }, broken, { duration: 1 }], () => { ended += 1; });
+    await broken.catch(() => undefined);
+    await Promise.resolve();
+    expect(ended).toBe(0);
+    ctx.sources.at(-1)!.onended!();
+    expect(ended).toBe(1);
+    expect(music.gain.value).toBeCloseTo(MUSIC);
+  });
+
+  it("a stop while a clip is still on its way plays nothing more", async () => {
+    const { ctx, voice } = voiced();
+    let ended = 0;
+    let arrive: (buffer: { duration: number }) => void = () => undefined;
+    const late = new Promise<{ duration: number }>((resolve) => (arrive = resolve));
+    const stop = voice.play([{ duration: 1 }, late], () => { ended += 1; });
+    const count = ctx.sources.length;
+    stop();
+    arrive({ duration: 1 });
+    await late;
+    await Promise.resolve();
+    expect(ctx.sources.length).toBe(count);
+    expect(ended).toBe(0);
   });
 
   it("stops a voice still playing when the engine goes", () => {

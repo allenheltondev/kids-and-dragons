@@ -17,6 +17,10 @@
  *  - a clip the manifest names that the site does not have (`checkSources`,
  *    sources.ts): the browser would fetch a 404 mid-sentence.
  *
+ * It also notes, for listening, a short line whose clip runs far longer than its
+ * speaker takes for those words (`stretchedShortClips`): a take that says the line
+ * twice in one clip.
+ *
  * Pure: the destinations are asked in sources.ts.
  */
 
@@ -46,6 +50,26 @@ export const MAX_CLIP_MS = 120_000;
  */
 export const RATE_CHARS_PER_SECOND = { min: 3, max: 40 } as const;
 const RATE_MIN_CHARS = 24;
+/**
+ * A short line (under RATE_MIN_CHARS, where a rate means nothing) whose clip runs this many times
+ * as long as its own speaker takes for that many letters is noted for listening. A one-word line
+ * sent alone with its speaker's tags ("Right.", "Hm,") can come back said twice, or said and then
+ * mumbled again, in one clip: the table hears the line duplicated in two inflections (Old Ossley in
+ * riftlight-ashspan-bridge). The speaker's own pace is the yardstick, so a slow speaker is not
+ * flagged for being slow. A note, never a failure: only listening can say the take is wrong.
+ */
+export const SHORT_CLIP_STRETCH = 3;
+const STRETCH_SLACK_MS = 350;
+/** A speaker's pace is read from their lines of at least this many letters, and only when they have a few. */
+const PACE_MIN_LETTERS = 40;
+const PACE_MIN_LINES = 3;
+
+/** About how many sounds the words are: letters, and a digit as a short word. */
+function soundedLetters(text: string): number {
+  return text.replace(/[^\p{L}]/gu, "").length + text.replace(/\D/g, "").length * 4;
+}
+
+const speakerOf = (by: string): string => by.split("#")[0] ?? by;
 
 export interface ManifestInput {
   /** Manifest name (a chapter, `_<campaign>`, `_help`) to its contents. */
@@ -141,7 +165,58 @@ export function checkManifests(input: ManifestInput): VoiceVerdict {
     else if (!(whole ? clips.has(key) : shortKeys.has(key))) notes.push({ at: "content/voice/voice.lock.json", message: `approves ${key.slice(0, 12)}, which no manifest plays` });
   }
 
+  notes.push(...stretchedShortClips(input));
   return { failures, notes, clips };
+}
+
+/** Short lines whose clip runs far longer than their speaker takes for those words (SHORT_CLIP_STRETCH). */
+export function stretchedShortClips(input: ManifestInput): Finding[] {
+  interface Played { at: string; by: string; text: string; clip: string; ms: number }
+  const played: Played[] = [];
+  for (const [name, manifest] of input.manifests) {
+    const desired = input.desired.get(name);
+    if (desired === undefined) continue;
+    for (const line of desired.lines) {
+      const entry = manifest[line.address]?.[line.variant];
+      if (!Array.isArray(entry)) continue;
+      line.segments.forEach((segment, i) => {
+        const clip = entry[i];
+        // Only a clip that is this segment's take: a stale entry is failed above.
+        if (clip?.clip !== segment.key || !Number.isInteger(clip.ms)) return;
+        played.push({ at: `content/voice/manifest/${name}.json ${line.address}${line.variant === "" ? "" : ` [${line.variant}]`}`, by: speakerOf(segment.by), text: segment.text, clip: clip.clip, ms: clip.ms });
+      });
+    }
+  }
+
+  const perLetter = new Map<string, number[]>();
+  for (const p of played) {
+    const letters = soundedLetters(p.text);
+    if (letters < PACE_MIN_LETTERS) continue;
+    const rates = perLetter.get(p.by) ?? [];
+    rates.push(p.ms / letters);
+    perLetter.set(p.by, rates);
+  }
+  const pace = new Map<string, number>();
+  for (const [by, rates] of perLetter) {
+    if (rates.length < PACE_MIN_LINES) continue;
+    const sorted = [...rates].sort((a, b) => a - b);
+    pace.set(by, sorted[Math.floor(sorted.length / 2)]!);
+  }
+
+  const notes: Finding[] = [];
+  const seen = new Set<string>();
+  for (const p of played) {
+    const msPerLetter = pace.get(p.by);
+    if (msPerLetter === undefined || p.text.length >= RATE_MIN_CHARS || seen.has(`${p.at}\u0000${p.clip}`)) continue;
+    const expected = soundedLetters(p.text) * msPerLetter + STRETCH_SLACK_MS;
+    if (p.ms <= SHORT_CLIP_STRETCH * expected) continue;
+    seen.add(`${p.at}\u0000${p.clip}`);
+    notes.push({
+      at: p.at,
+      message: `clip ${p.clip.slice(0, 12)} (${p.by}: ${JSON.stringify(p.text)}) is ${String(p.ms)} ms, ${(p.ms / expected).toFixed(1)} times what ${p.by} takes for those words; listen for the line said twice, and re-take it by editing the line`,
+    });
+  }
+  return notes;
 }
 
 /**

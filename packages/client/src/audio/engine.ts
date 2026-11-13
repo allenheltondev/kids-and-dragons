@@ -38,7 +38,7 @@ import { DICE_PLAYBACK_RATE } from "../dice-timing";
  * ducks VOICE_DUCK_DB and comes back when the voice ends or is cut off.
  */
 
-import type { AmbienceId, AudioSink, AudioState, CueId, VoiceChannel } from "./cue";
+import { VOICE_GAP_MS, type AmbienceId, type AudioSink, type AudioState, type CueId, type VoiceBuffer, type VoiceChannel, type VoiceClip } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_QUIET } from "./cues";
 import { QUIET_VOLUME_SCALE, isQuiet } from "../quiet";
@@ -63,6 +63,11 @@ export const VOICE_DUCK_DB = -10;
 const VOICE_DUCK = 10 ** (VOICE_DUCK_DB / 20);
 const DUCK_S = 0.25;
 const UNDUCK_S = 0.8;
+
+/** A clip still on its way, rather than one already decoded. */
+function isThenable(clip: VoiceClip): clip is PromiseLike<VoiceBuffer> {
+  return typeof (clip as { then?: unknown }).then === "function";
+}
 
 /** The slice of Storage this uses, so tests can hand in a plain object. */
 export interface PrefStore {
@@ -442,25 +447,23 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     decode(bytes) {
       return ctx ? ctx.decodeAudioData(bytes) : Promise.reject(new Error("no audio context"));
     },
-    play(buffers, onEnd) {
-      if (!ctx || !voiceBus || buffers.length === 0) {
+    play(clips, onEnd) {
+      if (!ctx || !voiceBus || clips.length === 0) {
         onEnd();
         return () => undefined;
       }
       const context = ctx;
       const bus = voiceBus;
+      const gap = VOICE_GAP_MS / 1000;
       const sources: AudioBufferSourceNode[] = [];
-      // Back to back on the context's clock, so no timer can open a gap between clips.
+      // Scheduled on the context's clock, so the pause between clips is exactly VOICE_GAP_MS
+      // whatever the main thread is doing; a clip that arrives late starts as soon as it is here.
       let at = context.currentTime + 0.05;
-      for (const buffer of buffers) {
-        const source = context.createBufferSource();
-        // Only `decode` above makes these, so each is the context's own AudioBuffer.
-        source.buffer = buffer as AudioBuffer;
-        source.connect(bus);
-        source.start(at);
-        at += buffer.duration;
-        sources.push(source);
-      }
+      /** The next clip to schedule; past the end once every clip is playing or played. */
+      let next = 0;
+      let failed = false;
+      /** The last clip scheduled has finished: the line ends there unless another is coming. */
+      let lastEnded = false;
       let over = false;
       const end = (natural: boolean): void => {
         if (over) return;
@@ -475,13 +478,56 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
             // Already ended, or a context torn down under it.
           }
         }
+        sources.length = 0;
         if (voicePlays.size === 0) duckMusic(false);
         if (natural) onEnd();
       };
       const stop = (): void => end(false);
-      sources[sources.length - 1]!.onended = () => end(true);
+      const settled = (): boolean => failed || next >= clips.length;
+      const schedule = (buffer: VoiceBuffer): void => {
+        const source = context.createBufferSource();
+        // Only `decode` above makes these, so each is the context's own AudioBuffer.
+        source.buffer = buffer as AudioBuffer;
+        source.connect(bus);
+        const start = Math.max(at, context.currentTime + 0.02);
+        source.start(start);
+        at = start + buffer.duration + gap;
+        sources.push(source);
+        next += 1;
+        lastEnded = false;
+        source.onended = () => {
+          if (source !== sources[sources.length - 1]) return;
+          lastEnded = true;
+          if (settled()) end(true);
+        };
+      };
+      const pump = (): void => {
+        while (!over && !settled()) {
+          const clip = clips[next]!;
+          if (!isThenable(clip)) {
+            schedule(clip);
+            continue;
+          }
+          const index = next;
+          Promise.resolve(clip).then(
+            (buffer) => {
+              if (over || next !== index) return;
+              schedule(buffer);
+              pump();
+            },
+            () => {
+              if (over || next !== index) return;
+              // The rest of the line is not coming: it ends once what is playing has played.
+              failed = true;
+              if (sources.length === 0 || lastEnded) end(true);
+            },
+          );
+          return;
+        }
+      };
       if (voicePlays.size === 0) duckMusic(true);
       voicePlays.add(stop);
+      pump();
       return stop;
     },
   };
