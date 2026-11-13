@@ -6,7 +6,7 @@
     <figure class="wiki-map">
       <div class="wiki-map__frame">
       {{ with resources.Get "art/world/realm_of_red_sky.webp" }}
-      <img class="wiki-map__image" src="{{ .RelPermalink }}"
+      <img class="wiki-map__image" src="{{ partial "asset-url.html" "world/realm_of_red_sky.webp" }}"
            alt="Painted map of the {{ site.Params.brand.world }}, from the Sky Islands in the northwest to the Bone Yard in the southeast"
            width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
       {{ end }}

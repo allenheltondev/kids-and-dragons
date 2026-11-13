@@ -8,7 +8,7 @@ of the four issues. Exact prompts, reference roles, generation filenames, output
 paths and SHA-256 hashes are in [prompts.json](prompts.json). The export script
 registers figures without repainting them and converts backdrops to WebP.
 
-![First batch, with figures on light and dark at two sizes](first-batch.webp)
+![First batch, with figures on light and dark at two sizes](https://assets.kd.readysetcloud.io/sha256/60/60900e67a11201dea2b022eae442dd89352e7e1a6dd57cffdb19eaa5d2d6925b.webp)
 
 | Issue | Delivered | Wiring |
 | --- | --- | --- |
@@ -45,8 +45,8 @@ when the callback does not fire. Her dedicated figure is ready for that follow-u
 - Inventory now lists 24 missing class figures: 14 within #400, plus 10 Mythic figures outside it.
 
 Real-stage capture: **1 passed**, two backgrounds on TV, watcher phone and host
-phone. [Island TV](island-tv.webp), [island phone](island-phone.webp),
-[Conservatory TV](conservatory-tv.webp), [Conservatory phone](conservatory-phone.webp).
+phone. [Island TV](https://assets.kd.readysetcloud.io/sha256/c7/c720a2b8548231ec70c5c0ad82497d463c62ce06a2f53cc2840a5cabe24e2476.webp), [island phone](https://assets.kd.readysetcloud.io/sha256/c2/c210432d8cf8201e2a92a92cebee2d3c636ad100eeadf094771f1518dcf5fa6b.webp),
+[Conservatory TV](https://assets.kd.readysetcloud.io/sha256/26/2676f8dfb328c692c79e18ceaf476ca1741df528aac004fd39c68ea61e713288.webp), [Conservatory phone](https://assets.kd.readysetcloud.io/sha256/3f/3f51ed2bd5dba1f820a623d2507b061e998fb161fe6a9c24b0f75319e1c04b21.webp).
 These use unchanged Gemfall review narration and Thimble on both backgrounds to
 inspect composition; they are not an authored Riftlight playthrough. The initial
 capture failed because the existing helper creates an unauthenticated TV context.

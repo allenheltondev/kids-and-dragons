@@ -122,8 +122,8 @@ household saves untouched.
 
 | Activity | TV | Phone controls |
 | --- | --- | --- |
-| Bracken cart crossing | [TV](interaction_bracken_crossing-tv.png) | [phone](interaction_bracken_crossing-phone.png) |
-| Shared depot claim | [TV](interaction_form_nine-tv.png) | [phone](interaction_form_nine-phone.png) |
+| Bracken cart crossing | [TV](https://assets.kd.readysetcloud.io/sha256/83/835e4b53954e2d200ce6fc0321c36f5fdc3298dfb3be0e18123f70d9c99cace9.png) | [phone](https://assets.kd.readysetcloud.io/sha256/48/48b74493d4fcfd7758d31c9e37cbe25fb29ad8e6db546051c51bfaed710b861b.png) |
+| Shared depot claim | [TV](https://assets.kd.readysetcloud.io/sha256/31/31aa5b77d6980c8d9c9d3de4d77128c7a078bea0f163c953f71a55851e6d04c2.png) | [phone](https://assets.kd.readysetcloud.io/sha256/bd/bd71ed03b8be783bdf722957b73f3cb243ff7f3c4386edffb2fb23a760e758c4.png) |
 
 ## Validation
 

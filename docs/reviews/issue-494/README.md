@@ -18,9 +18,9 @@ The delivered catalog contains **39 figure exports, 10 alternate creature poses,
 - [Final verification and screenshots](final/README.md)
 - [Scene and interaction catalog](../../../packages/client/src/world/riftlight-art.generated.json)
 - [Final catalog additions](final/catalog-additions.json)
-- [Latest story paintings](batch-8/final-1.jpg)
-- [Reaction figures, first sheet](batch-7/final-1.jpg), [second sheet](batch-7/final-2.jpg)
-- [Fight terrain](batch-5/tiles-contact-sheet.jpg)
+- [Latest story paintings](https://assets.kd.readysetcloud.io/sha256/f4/f49c1985503c2a514d8adb042aa2eb102ba008c05b88b88d736fcb93aa76116d.jpg)
+- [Reaction figures, first sheet](https://assets.kd.readysetcloud.io/sha256/40/40083fb8a6d7e18eb164b244a12272c73b03ee947180816b941e432f363f584c.jpg), [second sheet](https://assets.kd.readysetcloud.io/sha256/6e/6e629816ff66770786edf4083ee3c6d142dce97780418ec9691f38c2c53ddc7d.jpg)
+- [Fight terrain](https://assets.kd.readysetcloud.io/sha256/ec/ecee5fd07f065d123607174351a605b5dd7c95d43e3e318298d0e45d01ec5c6c.jpg)
 - [First fight-art delivery](batch-4/README.md)
 - Earlier approved deliveries: [batch 1](batch-1.md), [batch 2](batch-2/README.md), [batch 3](batch-3/README.md).
 

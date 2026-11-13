@@ -64,9 +64,9 @@ No new images are needed. New presentation entries reuse the painted wagon wheel
 
 Inspected actual TV (1920×1080) and phone (390×844) captures:
 
-- [Return handover TV](interaction_return_handover-tv.png) / [phone](interaction_return_handover-phone.png).
-- [Collection wagon tracking TV](interaction_wagon_watch-tv.png) / [phone](interaction_wagon_watch-phone.png).
-- [Tether quiet council TV](interaction_quiet_council-tv.png) / [phone](interaction_quiet_council-phone.png).
+- [Return handover TV](https://assets.kd.readysetcloud.io/sha256/6d/6d8c02310e3ff61f3024d3e8a5473173a5bfbeeb5ec1c641804b05322026e8d0.png) / [phone](https://assets.kd.readysetcloud.io/sha256/43/43607cc1ff6c9ca966461e76bc4518177e6d35a34827d208fb255fa5a046ac42.png).
+- [Collection wagon tracking TV](https://assets.kd.readysetcloud.io/sha256/7d/7de9b029b24b6867581360107294471129cf844e5c44add1abd1e8170976dc16.png) / [phone](https://assets.kd.readysetcloud.io/sha256/13/132ff9e6b9bb1b25a188ff9b67ad3d54a83732e662711786b86bcdaa071ea0e5.png).
+- [Tether quiet council TV](https://assets.kd.readysetcloud.io/sha256/35/352a000dd1a8a808f6d12616154aa361b85f85b3a0b947b29a3dc8ba97220562.png) / [phone](https://assets.kd.readysetcloud.io/sha256/19/1983256b8be80a36661790321deb36f221ada3a85ad38413e8caa9a4903a50bf.png).
 
 The isolated solo preview temporarily stages each chapter at index 1 for screenshots; shipped order is unchanged. Phone images show the actual Your turn controls using normal scrolling. Captures use relaxed mode, so the tracking answer hint is intentionally visible. Ordinary household saves were not used.
 

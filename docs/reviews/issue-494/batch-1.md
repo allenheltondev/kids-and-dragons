@@ -2,8 +2,8 @@
 
 This priority batch delivers **eight cast cutouts (seven identities, two Tilly states)** and **nine scene paintings**. Generated with the built-in `image_gen` tool; exact final prompts and reference inputs are in [sources.json](sources.json). Raw source images are in `art/source/issue-494/`. This is a partial delivery of the issue's wishlist, not a claim that every requested painting or animation has shipped.
 
-- [Cast contact sheet](cast-contact-sheet.jpg)
-- [Scenery contact sheet](scenery-contact-sheet.jpg)
+- [Cast contact sheet](https://assets.kd.readysetcloud.io/sha256/37/37f77125ea49d4db3a22f8a05d59c829d884f4b29112bed007412ca00843b8f1.jpg)
+- [Scenery contact sheet](https://assets.kd.readysetcloud.io/sha256/20/207223cb2874062cb1b4313d5ce428a5ff6a282efc9e5c09a0938831ac8bd974.jpg)
 - [Changes against this workspace's starting files](workspace-chapters.patch)
 - [Changes against the expanded opening branch](expanded-chapters.patch)
 

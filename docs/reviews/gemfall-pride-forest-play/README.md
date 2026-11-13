@@ -49,8 +49,8 @@ Voice cast source lines were refreshed while preserving all existing profiles, v
 
 No new art commissions are needed. Existing environments, cast figures, grass/fern covers, rope, blanket and clue props cover the activities. These are captures of actual TV (1920×1080) and phone (390×844) views, using an isolated temporary solo preview. The preview displays chapter 1 because only the reviewed chapter is staged; campaign ordering is unchanged in shipped content.
 
-- [Sash clues — TV](interaction_sashes_pinned-tv.png) and [phone](interaction_sashes_pinned-phone.png): the barn, warden, shared clues and repeated pride tag remain legible.
-- [Mending — TV](interaction_mending_circle-tv.png) and [phone](interaction_mending_circle-phone.png): elder unicorn, moss prop, support action and solo prop alternative are visible.
+- [Sash clues — TV](https://assets.kd.readysetcloud.io/sha256/4b/4b3b8fe0f7776b1e1f3f0a5c92c37b9433cbce665fb8b1c6cda5cfd4e4ff577a.png) and [phone](https://assets.kd.readysetcloud.io/sha256/ab/ab36026274289c59733ea684328538abf947d53f2003b2a1caff5f2f98ff3d4e.png): the barn, warden, shared clues and repeated pride tag remain legible.
+- [Mending — TV](https://assets.kd.readysetcloud.io/sha256/b2/b2de7672d82564be06913d1d279558e5149f17d766d94d171a96378bc667bcda.png) and [phone](https://assets.kd.readysetcloud.io/sha256/1b/1ba550146cc9008f203afc8ba79ea691831cf8614a65dff588dc31bf785e5d47.png): elder unicorn, moss prop, support action and solo prop alternative are visible.
 
 The phone captures show the actual Your turn controls. All four captures were inspected; ordinary household saves were not used.
 

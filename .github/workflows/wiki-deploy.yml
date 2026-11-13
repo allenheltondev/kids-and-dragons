@@ -27,6 +27,7 @@ on:
       - "assets/**"
       # Once the art is in the asset store, a changed painting is a changed lock (docs/asset-store.md).
       - "assets.lock.json"
+      - "assets.config.json"
       # The wiki wears the app's painted UI (tray objects, badges, item icons) —
       # wiki/hugo.yaml mounts it from the client package.
       - "packages/client/src/assets/**"
@@ -77,11 +78,11 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      # The wiki wears the game's art: hugo.yaml mounts ../assets and ../art/reference and
-      # resizes from them at build time, so they must be files on disk (docs/asset-store.md).
+      # Hugo resizes the game's art at build time; full-size links go to the store.
+      # Sources must still be on disk (docs/asset-store.md).
       - uses: ./.github/actions/pull-assets
         with:
-          paths: assets art/reference
+          paths: assets
           cache-name: wiki
 
       - name: Install Python dependencies

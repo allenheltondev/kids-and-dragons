@@ -7,10 +7,10 @@ The preview seeds the two learned regional flags and the shared-chime/trust flag
 so Orin's intervention can be photographed. Shipped prerequisites, order, index,
 chapter files and household saves are not changed by the capture setup.
 
-- [Convergence decision, TV](decision-tv.png)
-- [Convergence decision, phone](decision-phone.png)
-- [Finale brace/rescue preparation, TV](hold_condition-tv.png)
-- [Finale brace/rescue preparation, phone](hold_condition-phone.png)
+- [Convergence decision, TV](https://assets.kd.readysetcloud.io/sha256/b7/b73c26d2177f646a9d1b83f7b46cf677d1907ea16069170b6bb4b87bce46dc16.png)
+- [Convergence decision, phone](https://assets.kd.readysetcloud.io/sha256/74/74e1cbe4e8c57779561c9664a99c02de3e8f33c4ec9be37136f7e9356abca8cc.png)
+- [Finale brace/rescue preparation, TV](https://assets.kd.readysetcloud.io/sha256/5c/5c0541d499d431eaa09732142b23098bd4612cf8734717264080ff02f393eaee.png)
+- [Finale brace/rescue preparation, phone](https://assets.kd.readysetcloud.io/sha256/c8/c8f90b46d9e41d59529fd44e68b0ab985072e365b8ad6a1b06b30d45adfd48a5.png)
 
 TV captures use 1920x1080; phone captures use 390x844 with one unicorn hero. The
 phone uses the existing guest carousel; its bar still overlaps part of very tall

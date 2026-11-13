@@ -77,7 +77,7 @@
     {{/* Block mode: 120×120 thumbnail + name + summary + link */}}
     <div class="wiki-shortcode-block">
       {{- if $hasArtwork -}}
-        <img class="wiki-shortcode-block__thumb" src="{{ $artworkPath | relURL }}" alt="{{ $title }}" width="120" height="120" loading="lazy">
+        <img class="wiki-shortcode-block__thumb" src="{{ partial "asset-url.html" $artworkPath }}" alt="{{ $title }}" width="120" height="120" loading="lazy">
       {{- else -}}
         <div class="wiki-shortcode-icon-placeholder wiki-shortcode__placeholder--{{ $type }}" style="width:120px;height:120px;" aria-hidden="true">
           {{- if eq $type "creature" -}}🐉
@@ -101,7 +101,7 @@
     {{/* Inline mode: 48×48 thumbnail + name link */}}
     <a href="{{ $link }}" class="wiki-shortcode-inline" title="{{ $title }}">
       {{- if $hasArtwork -}}
-        <img class="wiki-shortcode-inline__thumb" src="{{ $artworkPath | relURL }}" alt="" width="48" height="48" loading="lazy">
+        <img class="wiki-shortcode-inline__thumb" src="{{ partial "asset-url.html" $artworkPath }}" alt="" width="48" height="48" loading="lazy">
       {{- else -}}
         <span class="wiki-shortcode-icon-placeholder wiki-shortcode__placeholder--{{ $type }}" aria-hidden="true">
           {{- if eq $type "creature" -}}🐉

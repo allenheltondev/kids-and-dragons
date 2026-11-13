@@ -1,0 +1,10 @@
+{{/* Immutable public URL, using the same layout as assets:url / blobUrl.
+     Accept paths with or without assets/. Never publish an original resource. */}}
+{{- $p := printf "assets/%s" (strings.TrimPrefix "assets/" .) -}}
+{{- $url := "" -}}
+{{- with index site.Data.assetLock.files $p -}}
+  {{- $url = printf "%s/sha256/%s/%s%s" (strings.TrimRight "/" site.Data.assetConfig.storeUrl) (substr .sha256 0 2) .sha256 (lower (path.Ext $p)) -}}
+{{- else -}}
+  {{- errorf "Art missing from assets.lock.json: %s (store it before publishing)" $p -}}
+{{- end -}}
+{{- return $url -}}

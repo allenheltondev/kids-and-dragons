@@ -5,7 +5,7 @@ six-crow flock requested by the owner, and 15 hero variants. The four approved
 first-batch assets are unchanged. Built-in `image_gen` made every new painting;
 no API/CLI fallback was used.
 
-![All eleven backdrops](backdrops.webp)
+![All eleven backdrops](https://assets.kd.readysetcloud.io/sha256/4b/4b327ead740998c565e2be093abbf9b90f8f92f89c88355d980c910fb2231230.webp)
 
 ## Delivery
 
@@ -21,9 +21,9 @@ row at y=900. There are no painted rifts, people or lettering in the backdrops.
 The Academy shows open sky without a snow- or marsh-specific view. The hall's
 drying stones and the camp's sealed wall seam remain ordinary scenery.
 
-![Named cast and the flock, light background](cast-light.webp)
+![Named cast and the flock, light background](https://assets.kd.readysetcloud.io/sha256/ad/adee5e9ae7ece4086ff89772736856bfe913b9f7094e284828e2b86a7154f2b5.webp)
 
-[Dark-background cast review](cast-dark.webp).
+[Dark-background cast review](https://assets.kd.readysetcloud.io/sha256/20/20d118cd1f94f4b18a15fc26e38b921a0584c94ef28bed86814495f0e560b9cc.webp).
 
 Master Dunnick is an old 270 cm bigfoot with a thorn bracer. Professor Nettle is a
 165 cm adult dragonling with spectacles and a practical academic cape. Aunt Bellow
@@ -38,9 +38,9 @@ people. They use `assets/entities/rookery_crows/assembled.png` and the existing
 80 cm tall (about 48 cm per front-row bird); no individual is named or singled out. The generated height table
 includes the flock and all five named figures.
 
-![All fifteen class figures, light background](heroes-light.webp)
+![All fifteen class figures, light background](https://assets.kd.readysetcloud.io/sha256/29/29813ef4ff5941b137df69f0f5d552db24c953cacf502038bec19f45d82dadb4.webp)
 
-[Dark-background hero review](heroes-dark.webp). Rows are Starweaver Radiant,
+[Dark-background hero review](https://assets.kd.readysetcloud.io/sha256/f0/f02526df87f0c85d7f168bd642150fedaab678b0724f00b7f6c892d67c8ef60b.webp). Rows are Starweaver Radiant,
 Songkeeper Sworn and Songkeeper Radiant; columns are unicorn, dragonling, griffin,
 kitsune and manticore. Sworn uses the simpler wrap and single central bell;
 Radiant uses a broader layered wrap and multiple bells. Starweavers preserve

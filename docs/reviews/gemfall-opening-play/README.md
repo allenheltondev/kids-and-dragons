@@ -58,7 +58,7 @@ No new artwork was needed. Existing post, dock, inn, caravan and hedge environme
 
 Actual TV (1920×1080) and phone (390×844) captures were inspected:
 
-- [Post route cards TV](interaction_post_routes-tv.png) / [phone](interaction_post_routes-phone.png): Quill, the labeled-bag prop and sufficient shared clues.
-- [Prepared hedge brace TV](interaction_hedge_brace-tv.png) / [phone](interaction_hedge_brace-phone.png): Pib, the branch brace, support control and solo prop alternative.
+- [Post route cards TV](https://assets.kd.readysetcloud.io/sha256/30/3093a88886d82dca66d39b0efe6cddb0051ff0a8f063b2588209a349509eae3e.png) / [phone](https://assets.kd.readysetcloud.io/sha256/3f/3face7652953c2190f344b54d2366647869c3e26704d7338a47dde83dd0b672f.png): Quill, the labeled-bag prop and sufficient shared clues.
+- [Prepared hedge brace TV](https://assets.kd.readysetcloud.io/sha256/dd/ddf3d0005a343eb6a13aa179dcfdf2ddb923b68d1bfc6f14d9d1e49d12421346.png) / [phone](https://assets.kd.readysetcloud.io/sha256/22/222caabb1fd4417d2bf7d071088ebfda3e608ac4c8ccfe9a76f5771192484a4c.png): Pib, the branch brace, support control and solo prop alternative.
 
 Captures use an isolated temporary solo preview; ordinary household saves were not used. Chapter 02 displays as chapter 1 only because the preview stages one chapter. Shipped ordering is unchanged. Phone captures show actual Your turn controls, with normal scrolling for content below the viewport.

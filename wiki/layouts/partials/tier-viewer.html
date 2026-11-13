@@ -65,7 +65,7 @@
       {{ if $img }}
       <img
         class="wiki-tier-viewer__img{{ if eq . "fledgling" }} wiki-tier-viewer__img--active{{ end }}"
-        src="{{ $img | relURL }}"
+        src="{{ partial "asset-url.html" $img }}"
         alt="{{ $.Title }}, {{ . | title }} tier"
         data-tier="{{ . }}"
         loading="lazy"

@@ -12,12 +12,12 @@
 
   Galleries of art without a committed portrait.webp come through here, so a
   60-portrait cast page costs ~1.5MB of WebP, not 30MB of PNG. Falls back to
-  the static file if the resource cannot be found.
+  the public store URL if the resource cannot be found.
 */}}
 {{- $p := strings.TrimPrefix "assets/" .path -}}
 {{- $w := .width | default 240 -}}
 {{- $res := resources.Get (printf "art/%s" $p) -}}
-{{- $full := printf "assets/%s" $p | relURL -}}
+{{- $full := partial "asset-url.html" $p -}}
 {{- $src := $full -}}
 {{- $h := 0 -}}
 {{- with $res -}}

@@ -44,9 +44,9 @@ is visible. Shipped campaign order and household saves are untouched.
 
 | Situation | TV | Phone |
 | --- | --- | --- |
-| Tracking before: pebble baked into landscape and drawn by activity | [before](before-tv.png) | [before](before-phone.png) |
-| Tracking after: neutral setting with only the activity target | [after](returning_pebble-tv.png) | [after](returning_pebble-phone.png) |
-| Sling: existing broad cloth and rope props | [sling](sling-tv.png) | [sling](sling-phone.png) |
+| Tracking before: pebble baked into landscape and drawn by activity | [before](https://assets.kd.readysetcloud.io/sha256/87/87a09f4485a73d613f8ff97c3d93026e73e7bb7ee85796146461a879de8f6d2a.png) | [before](https://assets.kd.readysetcloud.io/sha256/a1/a1654396a1d20bfb12aebd86479126143dcb578233e531e450189208d799fa53.png) |
+| Tracking after: neutral setting with only the activity target | [after](https://assets.kd.readysetcloud.io/sha256/5f/5f0cd679e9181d05b95368ce2c95c05f3ebdcb9987cf8e6483811705cb585241.png) | [after](https://assets.kd.readysetcloud.io/sha256/c4/c42765cf633790dc1dfa88af920c29699dc55f2129d91ecaebada45ba1b21cea.png) |
+| Sling: existing broad cloth and rope props | [sling](https://assets.kd.readysetcloud.io/sha256/98/987e2024d6bdaafc00c8d831d69ac0154b2a74d9f4c38bdb4eee443f6d3ca332.png) | [sling](https://assets.kd.readysetcloud.io/sha256/38/3833ee1fcb200cb58a3839d90c7b7903e19e5f0498e446ddfa1be94c022c6148.png) |
 
 The phone retains its guest carousel. Known tall-figure overlap with that bar is
 an existing layout issue, not a missing-graphics requirement. This pass changes

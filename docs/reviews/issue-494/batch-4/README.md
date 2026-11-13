@@ -2,9 +2,9 @@
 
 The [new fight wishlist](https://github.com/allenheltondev/kids-and-dragons/issues/494#issuecomment-6404846783) adds six nonlethal encounters. This delivery contains **20 assets: 10 alternate creature poses, 8 props and 2 scene paintings**.
 
-- [Creature poses](pose-contact-sheet.jpg): river drake warning, proud recovery and retreat; crab warning and retreat; wolf cache sniff and retreat; mimic little variant and retreat; wisp retreat.
-- [Props](props-contact-sheet.jpg): five existing-item pickups, supply cairn, warm mud hollow and disguised planks.
-- [Paintings](scenery-contact-sheet.jpg): Headwaters gravel ford and Saltrot surfacing crabs' silt bank.
+- [Creature poses](https://assets.kd.readysetcloud.io/sha256/09/09776ca45989185ad0f0da31766b54cc11a25d04b6d6dd3bdcaf1063599130c9.jpg): river drake warning, proud recovery and retreat; crab warning and retreat; wolf cache sniff and retreat; mimic little variant and retreat; wisp retreat.
+- [Props](https://assets.kd.readysetcloud.io/sha256/06/066f3eecb932e619bbdac1560016f8e84a5c3bfd0284aa063748eb91acee9a4d.jpg): five existing-item pickups, supply cairn, warm mud hollow and disguised planks.
+- [Paintings](https://assets.kd.readysetcloud.io/sha256/dd/dd5b401dab5b51ad379c32911e317dc2ac450d9f5478392aa7ee45266a5373e0.jpg): Headwaters gravel ford and Saltrot surfacing crabs' silt bank.
 - [Exact prompts and references](sources.json); production files are under `assets/entities/`, `assets/story-props/` and `assets/scenes/riftlight/`.
 
 The built-in imagegen tool produced every source; selected source PNGs are preserved under `art/source/issue-494/batch-4/`. The river charm follows the existing item's canonical holed pebble and grass cord. Every exit shows a healthy creature retreating. New crab cutouts have continuous shells; the originals and portraits are unchanged.

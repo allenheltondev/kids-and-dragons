@@ -18,14 +18,14 @@ replacing the earlier swelling teardrop after visual review.
 Color above, grayscale below. The columns show neutral; green + amber + violet;
 amber + violet; green + blue; and blue + linked.
 
-![Animated color combinations and grayscale](common-stacks.webp)
+![Animated color combinations and grayscale](https://assets.kd.readysetcloud.io/sha256/3c/3cc50fe10c80049af0aaa823e15f3deb680838642e053360ccd90a1e62ba43d6.webp)
 
 ## Actual stage and glyphs
 
 This review uses the real Pixi stage and React RiftGlyph, including three heroes
 and a guest, against bright glacier and dark tavern backgrounds.
 
-![Actual stage and glyph review](stage-and-glyphs.webp)
+![Actual stage and glyph review](https://assets.kd.readysetcloud.io/sha256/a4/a4cc54fa46d0290932d4fcb27ae472f6e2e97f88cd4ecb68e1dd5295422b657f.webp)
 
 ## Reproduce
 

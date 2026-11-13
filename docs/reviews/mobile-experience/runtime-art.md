@@ -35,7 +35,7 @@ A separate browser scenario forces the animated renderer to fail, then verifies 
 - All 3 runtime-art browser scenarios passed. The still-stage scenario passed again after correcting figure placement.
 - 45 targeted component/generator tests passed after integrating current main, including the fallback renderer, guide-art coverage and cast-mention report.
 - Client TypeScript check and production build passed.
-- [Reviewed still-stage tablet screenshot](still-stage-tablet.png).
+- [Reviewed still-stage tablet screenshot](https://assets.kd.readysetcloud.io/sha256/07/07a0ecbd042539c46b23b3595ae7c9886f3c88cfc825e01310c934ee9a898e0b.png).
 
 ## Boundaries
 
