@@ -33,6 +33,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
 import { isGated, reachableScenes } from "../../packages/shared/src/chapter-graph.ts";
+import { canonicalJson } from "../../packages/shared/src/play-shape.ts";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { sceneExits } from "../../packages/shared/src/scene-exits.ts";
 import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
@@ -1132,8 +1133,8 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
 
   for (const [id, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
     const replaced = scenes[id];
-    if (!replaced || replaced.type === "interaction") {
-      fail(`/resumeInteractions/${id}`, "retired activity must replace an existing non-interaction scene");
+    if (!replaced || (replaced.type === "interaction" && canonicalJson(replaced.interaction) === canonicalJson(retired.interaction))) {
+      fail(`/resumeInteractions/${id}`, "retired activity needs an existing replacement with different controls or a different scene type");
     }
     for (const [target] of outgoing(retired, id)) {
       if (!ids.has(target)) fail(`/resumeInteractions/${id}`, `saved activity continues to unknown scene "${target}"`);

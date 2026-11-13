@@ -114,7 +114,7 @@
       }
     },
     "resumeInteractions": {
-      "description": "Original retired activities used only by interaction prompts already stored in saves. Keys must name replaced non-interaction scenes; branches must target current scenes.",
+      "description": "Original activities used only by prompts already stored in saves. Keys must name existing scenes with a different type or authored interaction spec; branches must target current scenes.",
       "type": "object",
       "minProperties": 1,
       "propertyNames": { "$ref": "#/$defs/sceneId" },

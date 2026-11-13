@@ -4,7 +4,7 @@ import { seedTable, openPhone, openTv, onAir } from "./seed";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 
-test.use({ trace: "retain-on-failure" });
+test.use({ actionTimeout: 15_000, trace: process.env.CI ? "retain-on-failure" : "off" });
 
 for (const height of [720, 640]) {
   test(`a long bridge cue leaves the full relay visible on a ${height}p TV`, async ({ browser }) => {

@@ -179,8 +179,8 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
       // actions in riftlight-interactions.test.ts.
       const scene = chapter.scenes[state.sceneId!]!;
       if (scene.type !== "interaction") throw new Error("Expected interaction");
-      // Only outcomes the engine can produce: cooperate, balance and play games never
-      // resolve to failure (engine.ts), so their authored onFailure is not a way a party can go.
+      // Enumerate current controls, including v2 balance/cooperation strain failures.
+      // Older active attempts are covered separately by save-compatibility tests.
       for (const outcome of ["success", "failure", "assisted"] as const) {
         if (outcome === "assisted" && !scene.onAssisted) continue;
         if (outcome === "failure" && !FAILABLE_KINDS.has(scene.interaction.kind)) continue;
@@ -234,7 +234,17 @@ export function finishInteraction(state: RunState, chapter: Chapter, outcome: "s
   };
   if (outcome === "assisted") act({ action: "assist" });
   else {
-    act({ action: "start", relaxed: false });
+    const teamworkMiss = outcome === "failure" && (spec.kind === "balance" || spec.kind === "cooperate");
+    act({ action: "start", relaxed: false, ...(teamworkMiss ? { rulesVersion: 2 as const } : {}) });
+    if (teamworkMiss) {
+      if (spec.kind === "balance") for (const m of current.party.filter(m => m.connected)) act({ action: "adjust", round: 0, direction: "up", steps: 4 }, m.playerId);
+      for (let turns = 0; current.prompt?.kind === "interaction" && current.prompt.phase === "active"; turns++) {
+        expect(turns).toBeLessThan(20);
+        const round = current.prompt.challenge!.round;
+        if (spec.kind === "cooperate") for (const m of current.party.filter(m => m.connected)) act({ action: "commit", round, position: 1 }, m.playerId);
+        else act({ action: "commit", round });
+      }
+    } else {
     switch (spec.kind) {
       case "precision": case "timing": act({ action: "stop", position: outcome === "failure" ? 0 : spec.target }); break;
       case "tracking": {
@@ -277,6 +287,7 @@ export function finishInteraction(state: RunState, chapter: Chapter, outcome: "s
         for (const m of current.party.filter(m => m.connected)) act({ action: "play", optionId: spec.options[0]!.id }, m.playerId);
         act({ action: "complete" }); break;
       default: throw new Error("Unknown story interaction");
+    }
     }
   }
   expect(current.prompt).toMatchObject({ kind: "interaction", phase: "result", outcome });

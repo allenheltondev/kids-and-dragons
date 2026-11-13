@@ -485,7 +485,7 @@ export function NarrationPanel(): ReactElement | null {
             (ui/story-dock.ts, the host controls' and not the story's); the other is on the plate. */}
         {fighting ? null : (
           <div className="narration__goal-row" ref={goalRow}>
-            <ChapterGoalCard place="world" />
+            <ChapterGoalCard place="world" folded={prompt?.kind === "interaction" && prompt.phase !== "ready"} />
             <div className="narration__dock" ref={headDock} />
           </div>
         )}

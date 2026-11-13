@@ -33,6 +33,7 @@
 
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { cooperationProgress } from "./teamwork.js";
+import { canonicalJson } from "./play-shape.js";
 import { applySkillAction, skillCanStart, skillStart } from "./skill-games.js";
 import { balanceReady, edgeScale, EDGE_KINDS, interactionActor, playbackOver, playReady, precisionSuccess, relayEdgeScale, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
 import { relayStart, relayLaunch, relayCatchScore, relayThrowQuality, relayPickupRadius } from "./relay.js";
@@ -1424,9 +1425,11 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     throw new Illegal("ILLEGAL", "This interaction has moved on.");
   }
   const currentScene = ctx.chapter?.scenes[prompt.sceneId];
-  // A saved activity keeps its original controls and outcome contract even if
-  // fresh play now enters a story or conversation at this scene id.
-  const scene = currentScene?.type === "interaction"
+  // Saved prompts keep the archived outcome contract when their authored spec
+  // matches, including when fresh play has a revised activity at the same id.
+  const archived = ctx.chapter?.resumeInteractions?.[prompt.sceneId];
+  const scene = archived && canonicalJson(prompt.spec) === canonicalJson(archived.interaction)
+    ? archived : currentScene?.type === "interaction"
     ? currentScene : ctx.chapter?.resumeInteractions?.[prompt.sceneId];
   if (!currentScene || !scene || scene.type !== "interaction") throw new Illegal("ILLEGAL", "No interaction scene.");
   const connected = draft.party.filter((member) => member.connected).map((member) => member.playerId);

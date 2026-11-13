@@ -211,6 +211,10 @@
   color: var(--kad-ink-dim, #b9b0d8);
 }
 .narration__plate--game .narration__story > .game { flex: 1 1 0; min-block-size: 0; }
+/* During a v2 game the board and current feedback carry the action. The
+   introduction has already been spoken and stays available on the phones. */
+.narration__plate--game:has(.game--tv:is(.game--active, .game--result) .skill-game) .narration__body { display: none; }
+.narration:has(.game--tv .skill-game) .narration__head { padding-block: .4em; }
 
 /* Past the last rung the story alone scrolls, its edge faded so it reads as more to come. */
 .narration__plate[data-clipped] .narration__story {

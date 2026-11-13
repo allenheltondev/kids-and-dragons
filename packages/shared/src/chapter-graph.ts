@@ -33,6 +33,7 @@ import type {
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.ts";
 import { captivesOf, checkEncounterEnvironment } from "./environment.ts";
 import { sceneExits } from "./scene-exits.ts";
+import { canonicalJson } from "./play-shape.ts";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -176,9 +177,11 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
   // Retired activities are not fresh graph roots. They may only finish a
   // prompt already saved at an existing, replaced scene id.
   for (const [sceneId, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
-    if (!scenes[sceneId] || scenes[sceneId]?.type === "interaction" || retired.type !== "interaction") {
+    const replacement = scenes[sceneId];
+    if (!replacement || retired.type !== "interaction" || (replacement.type === "interaction" &&
+      canonicalJson(replacement.interaction) === canonicalJson(retired.interaction))) {
       issues.push({ severity: "error", code: "BAD_INTERACTION", sceneId,
-        message: `retired interaction "${sceneId}" must replace an existing non-interaction scene` });
+        message: `retired interaction "${sceneId}" needs an existing replacement with different controls or a different scene type` });
     }
     for (const branch of [retired.onSuccess, retired.onFailure, retired.onAssisted].filter(Boolean)) {
       if (!branch?.goto || !scenes[branch.goto]) issues.push({ severity: "error", code: "BAD_INTERACTION", sceneId,

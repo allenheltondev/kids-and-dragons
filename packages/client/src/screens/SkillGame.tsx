@@ -105,7 +105,7 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
         {connected.map(member => game.pulls[member.playerId] !== undefined && <span className="skill-gauge__pull" key={member.playerId} style={{ left: `${game.pulls[member.playerId]! * 100}%` }} title={member.character.name}>●</span>)}
       </div>
       <p className="skill-caption">A friend's pull moves the gold. Help make up the difference, gently.</p>
-      <ul className="skill-team">{connected.map(member => <li key={member.playerId}>{member.character.name}: {game.pulls[member.playerId] === undefined ? "reading the rope" : "pull ready"}</li>)}</ul>
+      <ul className="skill-team">{connected.map(member => <li key={member.playerId}>{member.character.name}: {game.pulls[member.playerId] === undefined ? (playerId ? "reading the rope" : "choosing") : (playerId ? "pull ready" : "pull set")}</li>)}</ul>
       {active && playerId && send && <>
         {!still && <div className="skill-rope-drag" aria-hidden="true" data-ready={committed}
           onPointerDown={event => { if (busy || committed || event.button !== 0) return; event.currentTarget.setPointerCapture(event.pointerId); gesture.current = { id: event.pointerId, y: event.clientY, height: event.currentTarget.clientHeight }; updatePower(0); }}

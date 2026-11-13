@@ -5,7 +5,7 @@ import { API } from "./api";
 
 // Three live rendered surfaces are expensive to trace on a local Windows host.
 // Keep CI failure traces so refresh and multi-phone failures can be diagnosed.
-test.use({ trace: process.env.CI ? "retain-on-failure" : "off" });
+test.use({ actionTimeout: 15_000, trace: process.env.CI ? "retain-on-failure" : "off" });
 
 async function action(page: Page, code: string, intent: ClientIntent) {
   const session = await page.evaluate((room) => JSON.parse(localStorage.getItem(`kad.session.${room}`) ?? "null") as { playerId: string; sessionToken: string }, code);
@@ -20,6 +20,22 @@ async function action(page: Page, code: string, intent: ClientIntent) {
     if (result.error?.code !== "STALE_SEQ") throw Error(JSON.stringify(result));
   }
   throw Error("Interaction test lost the sequence race repeatedly");
+}
+
+async function aimUntilResult(page: Page, code: string, label: string) {
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const state = await roomState<RunState>(page, code), before = state.prompt;
+    if (before?.kind !== "interaction") throw Error("Expected aiming controls");
+    if (before.phase === "result") return;
+    await page.getByRole("region", { name: "Interaction controls" }).getByRole("button", { name: label, exact: true }).click();
+    // A tap starts an async request. Wait for its committed round before
+    // deciding to tap again; a successful attempt removes the aiming button.
+    await expect.poll(async () => {
+      const p = (await roomState<RunState>(page, code)).prompt;
+      return p?.kind === "interaction" && (p.phase === "result" || (p.challenge?.round ?? -1) > (before.challenge?.round ?? -1));
+    }).toBe(true);
+  }
+  expect((await roomState<RunState>(page, code)).prompt).toMatchObject({ phase: "result" });
 }
 
 test("reusable interactions run through real phones, TV, refresh, and authored branches", async ({ browser }) => {
@@ -62,11 +78,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     const world = tv.getByRole("region", { name: "Story interaction" });
     await expect(world).toContainText("seed reaches the gold");
     await controls(one).getByRole("button", { name: "We’re ready" }).click();
-    for (let shot = 0; shot < 8; shot++) {
-      const prompt = (await roomState<RunState>(one, code)).prompt;
-      if (prompt?.kind !== "interaction" || prompt.phase === "result") break;
-      await controls(one).getByRole("button", { name: "Toss the seed!" }).click();
-    }
+    await aimUntilResult(one, code, "Toss the seed!");
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await two.reload();
     // A reloaded phone opens on its turn, not on the bag with a "Your turn" button to find (#588).
@@ -124,11 +136,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
         for (const name of ["Star", "Leaf", "Star", "Bell"]) await controls(lead).getByRole("button", { name, exact: true }).click();
         await controls(lead).getByRole("button", { name: "Send our greeting", exact: true }).click();
       }
-      if (sceneId === "interaction_sneak") for (let crossing = 0; crossing < 8; crossing++) {
-        const prompt = (await roomState<RunState>(lead, code)).prompt;
-        if (prompt?.kind !== "interaction" || prompt.phase === "result") break;
-        await controls(lead).getByRole("button", { name: "Tiptoe!", exact: true }).click();
-      }
+      if (sceneId === "interaction_sneak") await aimUntilResult(lead, code, "Tiptoe!");
       if (sceneId === "interaction_balance") {
         for (const target of [0.5, 0.75, 0.25]) {
           for (const phone of [one, two]) {
@@ -138,7 +146,14 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
             const level = state.prompt.levels?.[playerId] ?? 0;
             for (let step = 0; step < Math.abs(target - level) * 4; step++) await controls(phone).getByRole("button", { name: target > level ? "Lift my side" : "Lower my side", exact: true }).click();
           }
+          const before = (await roomState<RunState>(lead, code)).prompt;
+          if (before?.kind !== "interaction") throw Error("Expected a balance step");
           await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
+          for (const phone of [one, two]) await expect.poll(() => phone.evaluate(async () => {
+            const path = "/src/store/index.ts";
+            const p = (await import(path)).useGameStore.getState().state?.prompt;
+            return p?.kind === "interaction" ? p.challenge?.round : undefined;
+          })).toBe((before.challenge?.round ?? 0) + 1);
         }
       }
       if (sceneId === "interaction_spark") for (const [seat, phone] of [one, two].entries()) {

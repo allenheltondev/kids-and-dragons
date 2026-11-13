@@ -74,7 +74,7 @@ export function tvStatus(view: TableView): string {
   }
   if (prompt.challenge) {
     if (spec.kind === "balance") return `Everyone: adjust your lift. ${lead}: take a careful step when the load is steady in the gold.`;
-    if (spec.kind === "cooperate") return "Everyone: release your pull in the gold on your phone. Watch the gold move after a friend pulls.";
+    if (spec.kind === "cooperate") return "Everyone: choose your pull in the gold on your phone.";
     if (spec.kind === "precision" || spec.kind === "timing") return `${lead}: watch the ${spec.kind === "timing" ? "opening" : "landing"} and tap on your phone. Near misses let you adjust.`;
     if (spec.kind === "sequence") return `Share your clues. ${lead}: test the steps, then commit to your crossing.`;
     if (spec.kind === "tracking" && prompt.challenge.feedback) return prompt.challenge.feedback;

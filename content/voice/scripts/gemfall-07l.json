@@ -816,7 +816,7 @@
     ]
   },
   "gemfall-07l/interaction_set_table/narration": {
-    "source": "sha256:0391123e20d2d4a875f7bb70d20d3a235c9c1c6c4d724688f23aa903e7fa75fa",
+    "source": "sha256:be0df82bac562348f11305c73a439150e930bb07b087a8b1123c52258341f221",
     "reviewed": true,
     "lines": [
       {
@@ -834,6 +834,10 @@
       {
         "by": "pellam",
         "text": "\"Level, please. I will be measuring.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Lift or lower your side before each step. If the door tips too far, it will land on your toes."
       }
     ]
   },
@@ -852,32 +856,6 @@
       {
         "by": "narrator",
         "text": "he says, which from Pellam is a cheer."
-      }
-    ]
-  },
-  "gemfall-07l/interaction_set_table/onFailure/narration": {
-    "source": "sha256:5abd5d3d30813202de6942ed6cbdf73548c7966f66cf960554cabc1fe759e6a1",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The door slides off with a thump."
-      },
-      {
-        "by": "pellam",
-        "text": "\"Almost level,\""
-      },
-      {
-        "by": "narrator",
-        "text": "says Pellam kindly."
-      },
-      {
-        "by": "pellam",
-        "text": "\"Nobody will notice.\""
-      },
-      {
-        "by": "narrator",
-        "text": "Everybody notices."
       }
     ]
   },
