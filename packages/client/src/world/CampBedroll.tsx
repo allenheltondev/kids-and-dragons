@@ -16,19 +16,21 @@ export function CampBedroll({ style, accent }: { style: CampKitStyle; accent: st
  * A hero's tent as a phone's picker shows it: its painting, cloth and flap in
  * her color (the flap is cut from the tent at the same place, so the tent's
  * own cloth region tints it here), cropped to what is painted
- * (camp-paint.ts). `fallback` while it is owed.
+ * (camp-paint.ts). `fallback` while it is owed, or when its painting will
+ * not load; `onDrawn` hears which one shows (true: the painting).
  */
-export function CampTent({ tent, accent, fallback }: { tent: string; accent: string; fallback: React.JSX.Element }): React.JSX.Element {
+export function CampTent({ tent, accent, fallback, onDrawn }: { tent: string; accent: string; fallback: React.JSX.Element; onDrawn?: (painted: boolean) => void }): React.JSX.Element {
   const art = TENT_ART.find((t) => t.id === tent);
   const paint = art ? campPaint(art.path) : null;
   if (!art || !paint) return fallback;
   const px = (v: number) => Math.round(v * 1024);
   const viewBox = `${String(px(paint.left))} ${String(px(paint.top))} ${String(px(paint.right - paint.left))} ${String(px(paint.bottom - paint.top))}`;
-  return <CampClothArt path={`/assets/${art.path}`} cloth={campTentCloth(art.id)} accent={accent} tent={art.id} viewBox={viewBox} fallback={fallback} />;
+  return <CampClothArt path={`/assets/${art.path}`} cloth={campTentCloth(art.id)} accent={accent} tent={art.id} viewBox={viewBox} fallback={fallback}
+    {...(onDrawn ? { onMissing: () => onDrawn(false), onLoaded: () => onDrawn(true) } : {})} />;
 }
 
 /** A painting with its cloth tinted; `viewBox` crops it (a phone's picker shows only what is painted). */
-export function CampClothArt({ path, cloth, accent, kit, tent, viewBox = "0 0 1024 1024", fallback, onMissing }: {
+export function CampClothArt({ path, cloth, accent, kit, tent, viewBox = "0 0 1024 1024", fallback, onMissing, onLoaded }: {
   path: string;
   cloth: string | undefined;
   accent: string;
@@ -37,6 +39,8 @@ export function CampClothArt({ path, cloth, accent, kit, tent, viewBox = "0 0 10
   viewBox?: string;
   fallback: React.JSX.Element;
   onMissing?: (src: string) => void;
+  /** The painting loaded and is what shows. */
+  onLoaded?: () => void;
 }): React.JSX.Element {
   const id = useId().replace(/:/g, "");
   const [failed, setFailed] = useState<string | null>(null);
@@ -48,7 +52,7 @@ export function CampClothArt({ path, cloth, accent, kit, tent, viewBox = "0 0 10
         <feColorMatrix type="matrix" values={campClothMatrix(accent)} />
       </filter>
     </defs>
-    <image href={path} width="1024" height="1024" onError={() => { setFailed(path); onMissing?.(path); }} />
+    <image href={path} width="1024" height="1024" onError={() => { setFailed(path); onMissing?.(path); }} {...(onLoaded ? { onLoad: onLoaded } : {})} />
     {cloth ? <image href={path} width="1024" height="1024" clipPath={`url(#${id}-cloth)`} filter={`url(#${id}-color)`} /> : null}
   </svg>;
 }

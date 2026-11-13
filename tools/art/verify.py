@@ -936,6 +936,12 @@ def check_camp_catalog(rep: Report, mf: dict) -> None:
             problems.append(f"tent {tid} tier in manifest.tiers, past fledgling")
         elif tent.get("group") not in {"catalog", "milestone"}:
             problems.append(f"tent {tid} group catalog or milestone")
+        # Its decoration spots, one per slot (the guidebook hangs a decoration's middle there).
+        spots = tent.get("hangPoints", [])
+        if len(spots) < 2 or not all(
+            0 < spot.get("x", -1) < figure["width"] and 0 < spot.get("y", -1) < figure["originY"] for spot in spots
+        ):
+            problems.append(f"tent {tid} hangPoints, a spot per decoration slot on its canvas, above the ground contact")
     if tents and kits - {tent.get("kit") for tent in tents}:
         problems.append(f"a catalog tent for every kit style, missing {sorted(kits - {tent.get('kit') for tent in tents})}")
 
@@ -1035,8 +1041,10 @@ def check_camp_art(rep: Report, mf: dict) -> None:
     # the ground like frame pieces; their moving parts and the tents' flaps lie over them.
     for piece in spec.get("crewPieces", []):
         cutouts[piece["path"]] = True
+    spots_on: dict[str, list[dict]] = {}
     for tent in spec.get("tentStyles", []):
         cutouts[tent["path"]] = True
+        spots_on[tent["path"]] = [s for s in tent.get("hangPoints", []) if 0 <= s.get("x", -1) < figure["width"] and 0 <= s.get("y", -1) < figure["height"]]
     if spec.get("souvenirDisplay"):
         cutouts[spec["souvenirDisplay"]["path"]] = True
     for piece in spec.get("crewPieces", []):
@@ -1060,6 +1068,13 @@ def check_camp_art(rep: Report, mf: dict) -> None:
             continue
         if grounded:
             check_origin(rep, rel, image, figure, tol)
+            # A tent's decoration spots are on its paint, never in the air beside it.
+            spots = spots_on.get(rel, [])
+            off = [s for s in spots if image[int(s.get("y", 0)), int(s.get("x", 0)), 3] <= tol["alphaThreshold"]]
+            if off:
+                rep.fail(f"{rel} hangPoints", "every decoration spot on the painted tent", ", ".join(f"({s.get('x')}, {s.get('y')})" for s in off))
+            elif spots:
+                rep.ok(f"{rel} hangPoints on the tent")
         else:
             # A moving part is registered to its piece's canvas, so it never reaches
             # below the ground contact the piece stands on.

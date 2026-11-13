@@ -26,6 +26,11 @@ def cutout(bottom=900):
     im = Image.new('RGBA', (1024, 1024))
     ImageDraw.Draw(im).rectangle((300, 600, 700, bottom), fill=(150, 110, 60, 255))
     return im
+def tent_cutout(bottom=900):
+    # A tent is wide and tall enough to carry its decoration spots (tentStyles hangPoints).
+    im = Image.new('RGBA', (1024, 1024))
+    ImageDraw.Draw(im).rectangle((60, 300, 960, bottom), fill=(150, 110, 60, 255))
+    return im
 def decoration(size=512, inset=40):
     im = Image.new('RGBA', (size, size))
     ImageDraw.Draw(im).ellipse((inset, inset, size - inset, size - inset), fill=(200, 160, 60, 255))
@@ -71,6 +76,8 @@ parts = {m['path'] for f in camp['frames'] for m in f['movingParts']} | {t['flap
 parts |= {m['path'] for p in camp['crewPieces'] for m in p.get('movingParts', [])}
 for rel in grounded:
     save(rel, cutout(), 'PNG')
+for t in camp['tentStyles']:
+    save(t['path'], tent_cutout(), 'PNG')
 for rel in parts - grounded:
     save(rel, cutout(820), 'PNG')
 for deco in camp['decorations']:
@@ -128,6 +135,8 @@ describe('camp catalog (#623)', () => {
     ['a milestone tent for a tier the art lacks', `tent('mythic')['tier'] = 'starborn'`],
     ['a tent with no flap', `del tent('sworn')['flap']`],
     ['a tent tinted some other way', `tent('rolled')['tint'] = 'two-layer'`],
+    ['a tent with one decoration spot', `tent('rolled')['hangPoints'] = tent('rolled')['hangPoints'][:1]`],
+    ['a tent decoration spot below the ground', `tent('sworn')['hangPoints'][1]['y'] = 950`],
     ['a souvenir peg below the ground', `camp['souvenirDisplay']['hangPoints'][0]['y'] = 950`],
     ['a class distinction with no decoration', `camp['decorations'] = [d for d in camp['decorations'] if d['id'] != 'deco_songkeeper_master']`],
     ['a kit find with no chapter', `del deco('deco_gull_feather')['chapter']`],
@@ -147,7 +156,8 @@ describe('camp art delivery', () => {
     ['a floating kit variant', `save('camp/kits/rolled.png', cutout(780), 'PNG')`, 'camp/kits/rolled.png origin'],
     ['a moving part below the ground', `save('camp/frames/stage1/campfire-flame.png', cutout(960), 'PNG')`, 'camp/frames/stage1/campfire-flame.png origin'],
     ['an undeclared file', `save('camp/frames/stage1/tent.png', cutout(), 'PNG')`, 'camp/frames/stage1/tent.png undeclared'],
-    ['a floating tent', `save('camp/kits/tents/radiant.png', cutout(780), 'PNG')`, 'camp/kits/tents/radiant.png origin'],
+    ['a floating tent', `save('camp/kits/tents/radiant.png', tent_cutout(780), 'PNG')`, 'camp/kits/tents/radiant.png origin'],
+    ['a decoration spot in the air beside its tent', `save('camp/kits/tents/radiant.png', cutout(), 'PNG')`, 'camp/kits/tents/radiant.png hangPoints'],
     ['a tent flap below the ground', `save('camp/kits/tents/radiant-flap.png', cutout(960), 'PNG')`, 'camp/kits/tents/radiant-flap.png origin'],
     ['a floating shop piece', `save('camp/pieces/shop-log-bench.png', cutout(700), 'PNG')`, 'camp/pieces/shop-log-bench.png origin'],
     ['a decoration on the figure canvas', `save('camp/decorations/bunting.png', decoration(1024), 'PNG')`, 'assets/camp/decorations/bunting.png canvas'],
