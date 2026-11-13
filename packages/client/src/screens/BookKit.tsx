@@ -104,6 +104,10 @@ export function BookKit({ hero, kit, friends, edit }: { hero: ResolvedCharacter;
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);
   const tent = tentArt(kit.tent, style)?.id ?? null;
+  // A tent whose painting would not load shows the drawn stand-in, so its decorations take the stand-in's spots.
+  // Kept here, not in the tent, so a bounce (which redraws the stage) does not forget it.
+  const [unpainted, setUnpainted] = useState<string | null>(null);
+  const painted = tent !== null && unpainted !== tent ? tent : null;
   const slots = kit.slots.length > 0 ? kit.slots : [null, null];
   const buddy = friends.find((f) => f.id === kit.buddy) ?? null;
 
@@ -124,11 +128,15 @@ export function BookKit({ hero, kit, friends, edit }: { hero: ResolvedCharacter;
       <div className="book-kit__pitch" data-testid="book-kit-pitch" style={{ ["--kit-accent" as string]: accent }}>
         <div key={bounce} className={`book-kit__stage${bounce > 0 ? " is-bouncing" : ""}`} aria-hidden="true">
           <div className="book-kit__tent">
-            {tent ? <CampTent tent={tent} accent={accent} fallback={<TentStandIn accent={accent} decorations={0} />} /> : <TentStandIn accent={accent} decorations={0} />}
+            {tent ? (
+              <CampTent tent={tent} accent={accent} fallback={<TentStandIn accent={accent} decorations={0} />} onDrawn={(drawn) => setUnpainted(drawn ? null : tent)} />
+            ) : (
+              <TentStandIn accent={accent} decorations={0} />
+            )}
             {slots.map((slot, i) => {
               const url = slot ? decorationUrl(slot) : null;
               if (!url) return null;
-              const spot = hangSpot(tent, i);
+              const spot = hangSpot(painted, i);
               const at = spot ? { left: `${String(spot.left)}%`, top: `${String(spot.top)}%` } : undefined;
               return <img key={i} className={`book-kit__hung book-kit__hung--${spot ? "on" : String(i)}`} data-slot={i} style={at} src={url} alt="" />;
             })}

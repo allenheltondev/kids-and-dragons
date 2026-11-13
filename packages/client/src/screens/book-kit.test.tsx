@@ -100,6 +100,21 @@ describe("her kit in the book", () => {
     }
   });
 
+  it("hangs them on the stand-in's spots when the tent's painting will not load, and back on the tent once it does", () => {
+    const hung = (c: HTMLElement) => [...c.querySelectorAll(".book-kit__hung")].map((el) => el.className.replace("book-kit__hung ", ""));
+    const view = render(<BookKit hero={hero} kit={kit({ tent: "quilted", slots: ["deco_bunting", "deco_lantern"] })} friends={friends} edit={edit} />);
+    expect(hung(view.container)).toEqual(["book-kit__hung--on", "book-kit__hung--on"]);
+    // The painting fails: the stand-in tent shows, and the decorations take its spots.
+    fireEvent.error(view.container.querySelector('svg[data-camp-tent="quilted"] image')!);
+    expect(view.container.querySelector('svg[data-camp-tent="quilted"]')).toBeNull();
+    expect(hung(view.container)).toEqual(["book-kit__hung--0", "book-kit__hung--1"]);
+    expect(view.container.querySelector<HTMLElement>(".book-kit__hung")!.style.left).toBe("");
+    // Another tent that does load hangs them on its own spots again.
+    view.rerender(<BookKit hero={hero} kit={kit({ tent: "rolled", slots: ["deco_bunting", "deco_lantern"] })} friends={friends} edit={edit} />);
+    fireEvent.load(view.container.querySelector('svg[data-camp-tent="rolled"] image')!);
+    expect(hung(view.container)).toEqual(["book-kit__hung--on", "book-kit__hung--on"]);
+  });
+
   it("falls back to the stylesheet's spots where a tent gives none", () => {
     expect(hangSpot(null, 0)).toBeNull();
     expect(hangSpot("rolled", 2)).toBeNull();
