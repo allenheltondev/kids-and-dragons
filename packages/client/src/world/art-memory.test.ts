@@ -4,10 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const store = vi.hoisted(() => {
   const loaded = new Map<string, { source: { pixelWidth: number; pixelHeight: number }; destroyed: boolean }>();
   const sizes = new Map<string, [number, number]>();
+  /** URLs whose load waits until the test lets it finish. */
+  const deferred = new Map<string, () => void>();
   return {
     loaded,
     sizes,
+    deferred,
     load: async (url: string) => {
+      if (deferred.has(url)) await new Promise<void>((resolve) => deferred.set(url, resolve));
       let texture = loaded.get(url);
       if (!texture) {
         const [w, h] = sizes.get(url) ?? [1024, 1024];
@@ -46,10 +50,26 @@ beforeEach(() => {
   resetArtMemory();
   store.loaded.clear();
   store.sizes.clear();
+  store.deferred.clear();
 });
 afterEach(() => resetArtMemory());
 
 describe("sweepArt", () => {
+  it("keeps a load still in flight through a sweep, and can let it go once it lands", async () => {
+    store.deferred.set("slow", () => undefined);
+    const loading = loadArt("slow");
+    await Promise.resolve();
+    // The scene-change sweep runs before the slow load finishes: nothing to unload yet.
+    expect(sweepArt(stageDrawing(), 0).released).toEqual([]);
+    store.deferred.get("slow")!();
+    await loading;
+    expect(artLoaded("slow")).toBe(true);
+    // Landed and undrawn: the next sweep holds it to the idle budget like any other.
+    expect(sweepArt(stageDrawing(), 0).released).toEqual(["slow"]);
+    expect(artLoaded("slow")).toBe(false);
+  });
+
+
   it("keeps what the stage draws and unloads the oldest undrawn art past the budget", async () => {
     for (const url of ["a", "b", "c", "d"]) await loadArt(url);
     const result = sweepArt(stageDrawing("d"), 2 * FIGURE);

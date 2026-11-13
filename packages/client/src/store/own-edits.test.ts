@@ -16,6 +16,7 @@ function harness() {
   const listeners = new Set<() => void>();
   const sent: ClientIntent[] = [];
   const answers: ((ok: boolean) => void)[] = [];
+  const catchUps = { count: 0 };
   const edits = createOwnEdits({
     send: (intent) => {
       sent.push(intent);
@@ -25,6 +26,9 @@ function harness() {
     subscribe: (listener) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
+    },
+    catchUp: () => {
+      catchUps.count += 1;
     },
     settleMs: 1000,
   });
@@ -40,7 +44,7 @@ function harness() {
     }
     for (const listener of [...listeners]) listener();
   };
-  return { edits, sent, answers, patch, listeners };
+  return { edits, sent, answers, patch, listeners, catchUps };
 }
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -99,17 +103,25 @@ describe("her own kit and look (own-edits.ts)", () => {
     expect(edits.shown("KIT_EDIT", "c_1")).toEqual({});
   });
 
-  it("sends what waited even when the table's view never catches up", async () => {
+  it("never sends what waited on a revision an answered send already used; it catches up first", async () => {
     vi.useFakeTimers();
-    const { edits, sent, answers } = harness();
+    const { edits, sent, answers, patch, catchUps } = harness();
     edits.edit({ type: "KIT_EDIT", characterId: "c_1", revision: 0, style: "quilted" });
     edits.edit({ type: "KIT_EDIT", characterId: "c_1", revision: 0, color: "rose" });
     answers[0]!(true);
-    await vi.advanceTimersByTimeAsync(999);
+    // The first edit landed at revision 3, but its patch is late: nothing goes out on 3 again.
+    await vi.advanceTimersByTimeAsync(2500);
     expect(sent).toHaveLength(1);
-    await vi.advanceTimersByTimeAsync(2);
+    expect(catchUps.count).toBe(2);
+    expect(edits.shown("KIT_EDIT", "c_1")).toEqual({ style: "quilted", color: "rose" });
+    // The catch-up brings the first edit in: the waiting pick goes out on the fresh revision.
+    patch("kit", { style: "quilted" });
     expect(sent).toHaveLength(2);
-    expect(sent[1]).toMatchObject({ type: "KIT_EDIT", revision: 3, color: "rose" });
+    expect(sent[1]).toMatchObject({ type: "KIT_EDIT", revision: 4, color: "rose" });
+    answers[1]!(true);
+    await vi.advanceTimersByTimeAsync(0);
+    patch("kit", { color: "rose" });
+    expect(edits.shown("KIT_EDIT", "c_1")).toEqual({});
   });
 
   it("stops listening to the store once nothing is pending", async () => {

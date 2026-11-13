@@ -53,7 +53,12 @@ export interface OwnEditsDeps {
   state(): RunState | null;
   /** Hear the mirror change. */
   subscribe(listener: () => void): () => void;
-  /** How long an answered send waits for the table's view before the next is sent anyway. */
+  /**
+   * Bring the mirror forward from the server: asked when an answered send's patch has not
+   * arrived within `settleMs`, so the next send can name the revision the server now holds.
+   */
+  catchUp?: () => void;
+  /** How long an answered send waits for the table's view before asking for a catch-up. */
   settleMs?: number;
 }
 
@@ -146,12 +151,27 @@ export function createOwnEdits(deps: OwnEditsDeps) {
       flush(entry);
       return;
     }
+    wait(entry, revision);
+  }
+
+  /**
+   * The send landed but the table's view has not shown it: its patch is late or lost. The
+   * revision the phone holds is the one the server already used, so sending what waits on it
+   * would be refused as stale. Ask for a catch-up and keep waiting; `onState` sends what
+   * waits once the view moves past `revision`.
+   */
+  function wait(entry: Entry, revision: number): void {
     entry.timer = setTimeout(() => {
       entry.timer = null;
       if (entry.sentOn !== revision) return;
-      settle(entry);
-      publish(entry);
-      flush(entry);
+      if (caughtUp(entry)) {
+        settle(entry);
+        publish(entry);
+        flush(entry);
+        return;
+      }
+      deps.catchUp?.();
+      wait(entry, revision);
     }, settleMs);
   }
 
@@ -217,6 +237,7 @@ export function ownEdits(): OwnEdits {
     send: (intent) => useGameStore.getState().send(intent),
     state: () => useGameStore.getState().state,
     subscribe: (listener) => useGameStore.subscribe(listener),
+    catchUp: () => useGameStore.getState().reconnect(),
   });
   return shared;
 }

@@ -40,6 +40,8 @@ export function idleArtBudget(tv: boolean = isTvBrowser()): number {
 /** Every URL loaded here, least recently asked first (a Map keeps insertion order). */
 const known = new Map<string, true>();
 const holds = new Map<string, number>();
+/** URLs with a load still in flight, by how many. */
+const pending = new Map<string, number>();
 
 function touch(url: string): void {
   known.delete(url);
@@ -52,7 +54,27 @@ function touch(url: string): void {
  */
 export function loadArt(url: string): Promise<Texture> {
   touch(url);
-  return Assets.load<Texture>(url).then((texture) => (texture.destroyed ? Assets.load<Texture>(url) : texture));
+  pending.set(url, (pending.get(url) ?? 0) + 1);
+  const done = () => {
+    const left = (pending.get(url) ?? 1) - 1;
+    if (left > 0) pending.set(url, left);
+    else pending.delete(url);
+  };
+  return Assets.load<Texture>(url)
+    .then((texture) => (texture.destroyed ? Assets.load<Texture>(url) : texture))
+    .then(
+      (texture) => {
+        done();
+        // Remembered again now that it is decoded, as the newest: a sweep that ran while it
+        // was loading must not have lost it, or it would sit in Pixi's cache for good.
+        touch(url);
+        return texture;
+      },
+      (error: unknown) => {
+        done();
+        throw error;
+      },
+    );
 }
 
 /** Keep `url` through sweeps until the returned function is called (once is enough; twice is harmless). */
@@ -139,10 +161,10 @@ export function sweepArt(roots: DrawnNode | readonly DrawnNode[], budget: number
   // Newest first, so a budget that runs out lets go of what was asked for longest ago.
   for (const url of [...known.keys()].reverse()) {
     const texture = cache.get(url);
-    // Still loading (or failed): nothing decoded to let go of yet. A failed one is
-    // forgotten so the list cannot grow with every missing file.
+    // Still loading: nothing decoded to let go of yet, and kept so a later sweep can. A
+    // failed one is forgotten so the list cannot grow with every missing file.
     if (!texture) {
-      if (!holds.has(url)) known.delete(url);
+      if (!holds.has(url) && !pending.has(url)) known.delete(url);
       continue;
     }
     if (texture.destroyed) {
@@ -177,4 +199,5 @@ export function sweepArt(roots: DrawnNode | readonly DrawnNode[], budget: number
 export function resetArtMemory(): void {
   known.clear();
   holds.clear();
+  pending.clear();
 }
