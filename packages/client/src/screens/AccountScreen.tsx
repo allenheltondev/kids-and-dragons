@@ -155,6 +155,31 @@ export function AccountScreen(): ReactElement {
             </section>
           ) : null}
 
+          {/*
+           * A phone that forgot its heroes: its device token ran out, a join made it a
+           * new player in a new guest household, and the old heroes are still in the
+           * account's own. Always drawn where sign-in is available, whatever this phone
+           * thinks it is signed in as: the one way back that never reads local state.
+           * It is the sign-in's `recover` ending: it always lists the account's kids,
+           * even when the server says this phone already plays in the household, and
+           * binds this phone to the one picked.
+           */}
+          {signInAvailable ? (
+            <section className="home__card home__account" aria-labelledby="account-recover" hidden={pairing !== "none"}>
+              <h2 className="home__card-title" id="account-recover">
+                <Icon name="forward" />
+                <span>Heroes missing from this phone?</span>
+              </h2>
+              <p className="home__hint kad-muted">
+                Sign in with the email your heroes were saved under, then pick who this phone is. Everything they earned
+                comes back with them.
+              </p>
+              <Button variant="secondary" block icon={<Icon name="envelope" />} onClick={() => openKeepsake("recover", "home")}>
+                Get my heroes back
+              </Button>
+            </section>
+          ) : null}
+
           {/* Moving a hero between devices (#281): a borrowed phone, a hospital tablet. */}
           <section className="home__card home__account" aria-labelledby="account-devices" hidden={pairing !== "none"}>
             <h2 className="home__card-title" id="account-devices">

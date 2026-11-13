@@ -72,7 +72,14 @@ export type KeepsakeStep =
  * passkey: a tablet that remembered the owner's face would hand every kid who
  * picks it up the owner's account.
  */
-export type KeepsakePurpose = "keep" | "restore" | "share" | "forget" | "organize";
+export type KeepsakePurpose = "keep" | "restore" | "recover" | "share" | "forget" | "organize";
+/*
+ * `recover` is `restore` pressed on purpose, from "Heroes missing from this
+ * phone?" on /account: the grown-up says this phone is the wrong kid, or nobody
+ * they know. Plain `restore` trusts a phone the server already counts as bound
+ * to the account's household and moves on; `recover` always asks who this phone
+ * is, because the binding it has is the thing being doubted.
+ */
 /*
  * And one for an organizer (#248): `organize` signs a grown-up in to manage
  * their households and groups, in the organizer panel (store/organizer.ts).
@@ -256,11 +263,18 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
        * brand-new account, where it created the household and made this
        * device its first player, so there is nothing to choose between.
        */
+      const purpose = get().purpose;
+      /*
+       * `recover` asks even when the server says this phone already plays in
+       * the household (`deviceBound`): the grown-up pressed it because the
+       * player it has is wrong. Not when the server just made the binding
+       * (`deviceToken`) or claimed this phone's own guest game (`claimed`):
+       * then there is nothing else to choose between.
+       */
       const needsPlayer =
-        get().purpose === "restore" &&
         !result.deviceToken &&
-        result.deviceBound !== true &&
-        result.players.length > 0;
+        result.players.length > 0 &&
+        ((purpose === "restore" && result.deviceBound !== true) || (purpose === "recover" && !result.claimed));
       if (needsPlayer) {
         const byOwner = new Map<string, string[]>();
         for (const character of result.characters) {
@@ -507,7 +521,22 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         const result = await deps.api.adoptDevice(tokens.idToken, account.householdId, playerId);
         // This is the write that makes the phone *be* that player from now on.
         const identity = loadIdentity(deps.storage);
-        saveIdentity(asPlayerIdentity(identity, result.deviceToken), deps.storage);
+        const picked = get().players.find((p) => p.id === playerId);
+        /*
+         * Who this phone is, not only which token it holds: the next join reads
+         * the household, the player and the name from here, and a phone that came
+         * from another household (a guest game its expired token fell into) or
+         * from another kid in this one would otherwise keep saying so.
+         */
+        saveIdentity(
+          {
+            ...asPlayerIdentity(identity, result.deviceToken),
+            householdId: account.householdId,
+            playerId: result.playerId,
+            displayName: picked?.displayName ?? identity.displayName,
+          },
+          deps.storage,
+        );
         // Only now is this phone somebody in the household — record the account.
         saveAccount(account, deps.storage);
         pendingAccount = null;

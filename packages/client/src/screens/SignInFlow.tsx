@@ -231,7 +231,9 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
             ? "Forget this tablet?"
             : purpose === "organize"
               ? "Run a group"
-              : fromHome
+              : purpose === "recover"
+                ? "Get your heroes back"
+                : fromHome
               ? "Sign in or create an account"
               : "What\u2019s your email?"}
       </h2>
@@ -558,7 +560,7 @@ function KeptStep({ motes, fieldGuide }: { motes: Mote[]; fieldGuide: boolean })
 
   // On the home screen there is no room and therefore no party to name — the
   // characters are in the household, waiting, not on the board yet.
-  const restored = purpose === "restore" || motes.length === 0;
+  const restored = purpose === "restore" || purpose === "recover" || motes.length === 0;
 
   if (purpose === "share" || purpose === "forget") {
     return (
