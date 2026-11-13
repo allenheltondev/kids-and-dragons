@@ -163,6 +163,22 @@ function logStaleSeq(reason: "seq-gate" | "commit-race", input: ActionInput, ser
 const RETRY_CAMP = Symbol("retry-camp");
 
 /**
+ * The camp's dressing-up: a hero's own kit and look (KIT_EDIT, LOOK_EDIT) and
+ * the crew's shared hotspots (CAMP_PLACE, CAMP_UNDO). Each carries its own
+ * guard, checked here against the run and the rows as they are now: a kit or
+ * look names the `revision` it was made on, a hotspot change names its
+ * downtime `moment` (two at once: the later wins), and an undo is refused once
+ * somebody else has changed that hotspot. The run's seq says nothing more
+ * about them, so they are not held to it: in the lobby four kids dress their
+ * heroes and the camp at once, and the seq gate turned most of those taps into
+ * STALE_SEQ, a catch-up and a retry, and twice stale a tap dropped without a
+ * word, which was seconds per tap on a phone. They apply to the run as it is
+ * now, and a commit lost to another step is applied again from a fresh read
+ * (`RETRY_CAMP`), up to `CAMP_WRITE_ATTEMPTS` times.
+ */
+const SEQ_FREE_EDITS: ReadonlySet<ClientIntent["type"]> = new Set(["KIT_EDIT", "LOOK_EDIT", "CAMP_PLACE", "CAMP_UNDO"]);
+
+/**
  * One intent, applied to the run (architecture §4.2). A camp change whose
  * commit lost only to the camp or kit it changed is applied again from the
  * top, at most `CAMP_WRITE_ATTEMPTS` times; after that, as after any lost
@@ -207,7 +223,7 @@ async function applyActionOnce(
   // means it is acting on a world that no longer exists — including the ahead
   // case, which is a client that replayed a patch twice. Both answers are the
   // same: here is the real seq, resync.
-  if (input.seq !== state.seq) {
+  if (input.seq !== state.seq && !SEQ_FREE_EDITS.has(input.intent.type)) {
     logStaleSeq("seq-gate", input, state.seq);
     return {
       ok: false,
@@ -863,6 +879,9 @@ async function applyActionOnce(
     // camp or kit it changed, which moved on underneath. Nothing landed;
     // apply it again to what is there now.
     if ((campWrite || kitWrite || lookWrite) && mayRetryCamp && current?.seq === state.seq) return RETRY_CAMP;
+    // A camp change beaten to the seq by somebody else's step: read the run
+    // again and apply it there, rather than send the phone round again.
+    if (SEQ_FREE_EDITS.has(input.intent.type) && mayRetryCamp) return RETRY_CAMP;
     logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,

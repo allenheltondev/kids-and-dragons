@@ -189,6 +189,41 @@ describe("the lobby's camp on the stage", () => {
     lobby.destroy();
   });
 
+  it("ends a Begin fade nobody saw when the stage is seen again, rather than laying the camp over the story", () => {
+    // A phone or tablet with its world pane hidden (upright, the controls in front) sleeps its
+    // ticker, so Begin's fade never advanced: turned sideways, the world showed the lobby's camp
+    // at full strength where the chapter's first scene and its heroes should be.
+    const { lobby, app, covered } = table();
+    lobby.sync(lobbyWith([member(1), member(2)]));
+    const camp = lobby.camp()!;
+    lobby.sync(lobbyWith([member(1), member(2)], "scene"));
+    expect(covered.at(-1)).toBe(false);
+    // Asleep: no frames, so the camp is still all there.
+    expect(lobby.leaving()).toBe(camp);
+    expect(camp.view.alpha).toBe(1);
+    lobby.settle();
+    expect(lobby.leaving()).toBeNull();
+    expect(camp.view.destroyed).toBe(true);
+    expect(lobby.camp()).toBeNull();
+    // Only the controller's own ticker is left, and the next frame draws the story alone.
+    expect(app.ticker.count).toBe(1);
+    run(app, 0.1);
+    expect(app.stage.children).toHaveLength(0);
+    lobby.destroy();
+  });
+
+  it("keeps the lobby's camp as it is when the stage wakes in the lobby", () => {
+    const { lobby, covered } = table();
+    lobby.sync(lobbyWith([member(1)]));
+    const camp = lobby.camp()!;
+    lobby.settle();
+    expect(lobby.camp()).toBe(camp);
+    expect(camp.view.destroyed).toBe(false);
+    expect(camp.view.alpha).toBe(1);
+    expect(covered).toEqual([true]);
+    lobby.destroy();
+  });
+
   it("in reduced motion, nobody hops, a Ready is a fade into the line, and Begin is a fade", () => {
     const { lobby, app } = table({ still: true });
     lobby.sync(lobbyWith([member(1), member(2)]));
@@ -272,6 +307,21 @@ describe("the camp at a rest scene (docs/camp.md §3.2, #625)", () => {
     expect(camp.view.alpha).toBe(1);
     expect(covered).toEqual([false, true]);
     expect(camp.figures().map((f) => f.id).sort()).toEqual(["c_1", "c_2"]);
+    lobby.destroy();
+  });
+
+  it("is up at once, covering the scene, when the stage wakes partway through its crossfade", () => {
+    const { lobby, app, covered } = table();
+    lobby.sync(rest(true));
+    const camp = lobby.camp()!;
+    run(app, 0.3);
+    expect(camp.view.alpha).toBeLessThan(1);
+    lobby.settle();
+    expect(camp.view.alpha).toBe(1);
+    expect(covered).toEqual([false, true]);
+    // Settled: further frames neither fade it nor cover the scene twice.
+    run(app, 2);
+    expect(covered).toEqual([false, true]);
     lobby.destroy();
   });
 

@@ -87,6 +87,46 @@ describe("voice:verify fails on broken, never on missing (#545)", () => {
   });
 });
 
+describe("a short line whose clip runs far past its words (Old Ossley's doubled \"Right.\")", () => {
+  const LONG = "Folk cannot walk over the river today, so they ride with me on the flat boat.";
+  /** A speaker's three long lines at their own pace (60 ms a letter), and one short line in a clip of `ms`. */
+  function ossley(ms: number, by = "old_ossley"): { manifest: Manifest; desired: Desired } {
+    const lines = [LONG, `${LONG} Slowly.`, `${LONG} Again.`, '"Right."'].map((text, n) => ({
+      address: `ch/s${String(n)}/narration`,
+      chapter: "ch",
+      campaign: "c",
+      variant: "",
+      segments: [{ key: key(n + 1), by, text }],
+    }));
+    const letters = (text: string): number => text.replace(/[^a-z]/gi, "").length;
+    const manifest: Manifest = Object.fromEntries(
+      lines.map((line, n) => [line.address, { "": [{ clip: key(n + 1), ms: n === 3 ? ms : letters(line.segments[0]!.text) * 60 }] }]),
+    );
+    return { manifest, desired: { lines, deviceVoice: [] } };
+  }
+
+  it("notes it for listening, by its scene and words, and never fails on it", () => {
+    const { manifest, desired } = ossley(2893);
+    const verdict = check(manifest, desired);
+    expect(verdict.failures).toEqual([]);
+    expect(verdict.notes).toEqual([
+      expect.objectContaining({ at: "content/voice/manifest/ch.json ch/s3/narration", message: expect.stringContaining('(old_ossley: "\\"Right.\\"") is 2893 ms') }),
+    ]);
+  });
+
+  it("leaves alone a short clip at its speaker's pace, and a speaker with too few long lines to have one", () => {
+    expect(check(ossley(900).manifest, ossley(900).desired).notes).toEqual([]);
+    const { manifest, desired } = ossley(2893);
+    const fewer = { ...desired, lines: desired.lines.slice(2) };
+    expect(check(manifest, fewer).notes.filter((note) => note.message.includes("times what"))).toEqual([]);
+  });
+
+  it("reads a speaker's pace without their `#who` suffix", () => {
+    const { manifest, desired } = ossley(2893, "old_ossley#a");
+    expect(check(manifest, desired).notes).toEqual([expect.objectContaining({ message: expect.stringContaining("old_ossley:") })]);
+  });
+});
+
 describe("a lock that approves by a clip's short key", () => {
   const short = (n: number): string => key(n).slice(0, 16);
 

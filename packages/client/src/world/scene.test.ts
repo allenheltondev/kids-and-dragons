@@ -1049,3 +1049,32 @@ describe("a friend tap goes to whichever stage shows the friend (#624)", () => {
     } finally { lobby.destroy(); s.destroy(); load.mockRestore(); }
   });
 });
+
+describe("art memory (art-memory.ts)", () => {
+  /** Every live display object on the stage. */
+  const live = (app: FakeApp): number => {
+    let n = 0;
+    const walk = (node: Container): void => {
+      if (node.destroyed) return;
+      n += 1;
+      for (const child of node.children) walk(child as Container);
+    };
+    walk(app.stage);
+    return n;
+  };
+
+  it("lets go of the board, and the fight's figures and tiles with it, once the fight is over", () => {
+    const { scene: s, app } = scene();
+    const story = live(app);
+    s.setEncounter(encounterView());
+    const fighting = live(app);
+    expect(fighting).toBeGreaterThan(story);
+    s.setEncounter(null);
+    // Nothing of the board is left on the stage for the art sweep to count as drawn.
+    expect(live(app)).toBe(story);
+    // The next fight builds its own.
+    s.setEncounter(encounterView());
+    expect(live(app)).toBe(fighting);
+    s.destroy();
+  });
+});

@@ -127,6 +127,10 @@ function PhoneLayout(): React.JSX.Element {
   const shows = (pane: Showing): boolean =>
     sideBySide ? (pane === "player" ? youOpen : pane === beside) : pane === showing;
   const onMap = shows("map");
+  // The world pane is built the first time it is shown, then kept (WorldView `drawn`).
+  const worldShown = shows("world");
+  const [worldDrawn, setWorldDrawn] = useState(worldShown);
+  if (worldShown && !worldDrawn) setWorldDrawn(true);
   const inGuide = shows("player") && section === "guide";
   // Side by side, You and Guide open the drawer and leave the map where it is.
   const showPlayer = (): void => {
@@ -206,7 +210,7 @@ function PhoneLayout(): React.JSX.Element {
         </div>
         <div className="kad-party__pane" data-pane="world" data-showing={shows("world")}>
           {/* Mounted behind the controls, so it says when it is actually seen. */}
-          <WorldView gatesPresentations={false} prefetch={shows("world")} />
+          <WorldView gatesPresentations={false} prefetch={worldShown} drawn={worldDrawn || worldShown} />
           <PaneFrame />
         </div>
         {onMap ? (

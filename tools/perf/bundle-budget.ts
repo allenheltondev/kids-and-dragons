@@ -344,7 +344,16 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // scenes-ahead walk and its hook in the entry, `prefetchNarration` and `stopPrefetchNarration`
 // in shared `speak.ts`, and the clip speaker's queue and in-memory clip cache in the lazy
 // read-aloud chunk. 1806KB measured, 1KB over. First paint 331KB, unchanged. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1808;
+// 1808 -> 1816 on 2026-11-13 for the playtest fixes (#767): the TV letting go of art it no
+// longer draws and decoding the next scenes' ahead (world/art-memory.ts, art-upkeep.ts, in the
+// stage chunk), a phone's kit and look taps shown at once (store/own-edits.ts), narration
+// starting on its first clip with a pause between clips (the lazy read-aloud chunk), and a
+// phone keeping its renewed device token (`keepRenewedDeviceToken`, in the entry). 1814KB
+// measured against main's 1806KB. First paint 332KB, at its cap. 2KB of slack again.
+// 1816 -> 1820 on 2026-11-13 for keeping a chapter's voices for no signal (#547): the lazy
+// "Keep this chapter's voices" panel and its voice-pack helpers (in the Help chunk's reach, not
+// the first paint). 1818KB measured on top of #767, 2KB over. First paint 332KB, unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1820;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

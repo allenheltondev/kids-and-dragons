@@ -296,6 +296,58 @@ export function saveIdentity(identity: LocalIdentity, storage: KeyValueStorage =
 }
 
 /**
+ * What a personal device token says about itself: the binding (`sub`) and the
+ * household (`hh`) it was signed for. Read, never verified: the server is the
+ * only judge of a token, and this is only used to tell two of this browser's
+ * own tokens apart. `null` for anything that is not a signed device token (the
+ * local dev server's tokens among them), so callers fall back to doing nothing.
+ */
+export function deviceTokenClaims(token: string): { deviceId: string; householdId: string } | null {
+  const parts = token.split(".");
+  if (parts.length !== 3 || !parts[1]) return null;
+  try {
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+    const claims = JSON.parse(atob(padded)) as { sub?: unknown; hh?: unknown; aud?: unknown };
+    if (claims.aud !== "device" || typeof claims.sub !== "string" || typeof claims.hh !== "string") return null;
+    return { deviceId: claims.sub, householdId: claims.hh };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The server renewed this device's token (`x-kad-device-token` on a response,
+ * architecture §4.5 "The device token"): keep it in place of the old one.
+ *
+ * A device token lives 30 days and is re-issued once past halfway, but only a
+ * device that keeps the re-issue lives on. Before this was kept, every phone's
+ * token died 30 days after it was first issued however often it played, and
+ * the next join quietly made the phone a new player in a new household: its
+ * heroes still on the server, under a player the phone no longer was.
+ *
+ * Kept only when it renews the binding this browser already holds (the same
+ * `sub`), so a response that raced a pairing, a sign-in or a leave can never
+ * put back a binding the device has since moved off.
+ */
+export function keepRenewedDeviceToken(renewed: string, storage: KeyValueStorage = defaultStorage()): boolean {
+  try {
+    const raw = storage.getItem(DEVICE_KEY);
+    if (!raw) return false;
+    const stored = JSON.parse(raw) as Partial<LocalIdentity>;
+    if (typeof stored.deviceToken !== "string" || stored.deviceToken === renewed) return false;
+    const was = deviceTokenClaims(stored.deviceToken);
+    const now = deviceTokenClaims(renewed);
+    if (!was || !now || was.deviceId !== now.deviceId) return false;
+    storage.setItem(DEVICE_KEY, JSON.stringify({ ...stored, deviceToken: renewed }));
+    return true;
+  } catch {
+    // Not kept this time; the server renews again on the next request.
+    return false;
+  }
+}
+
+/**
  * This browser is its household's **shared device** (#250): a family tablet
  * the kids take turns on. It holds the tablet's own token, which names the
  * household and nobody in it, and never a kid's device token: each kid picks
@@ -427,6 +479,14 @@ function clearAllSessions(storage: KeyValueStorage): void {
  * whether a household is a guest, and this is only ever used to decide whether
  * to make an offer. The worst a stale value can do is skip an offer, or make
  * one that turns out to be a no-op — both of which are quiet.
+ *
+ * Except one, which was not quiet: a record for a household this device no
+ * longer plays in. A phone whose binding was replaced (a token that ran out,
+ * then a join that made it somebody new) kept saying "Signed in" and hid the
+ * sign-in that would have found its heroes again. So `loadAccount` answers
+ * only for the household the device's own token names; a record for another
+ * reads as no record, and the home screen offers to sign in, which goes back
+ * to the account's household and asks who this phone is.
  */
 export interface AccountRecord {
   householdId: string;
@@ -443,6 +503,9 @@ export function loadAccount(storage: KeyValueStorage = defaultStorage()): Accoun
   try {
     const parsed = JSON.parse(raw) as Partial<AccountRecord>;
     if (typeof parsed.householdId !== "string" || typeof parsed.email !== "string") return null;
+    const token = loadPlayerDeviceToken(storage);
+    const bound = token === null ? null : deviceTokenClaims(token);
+    if (bound !== null && bound.householdId !== parsed.householdId) return null;
     return {
       householdId: parsed.householdId,
       email: parsed.email,

@@ -36,6 +36,8 @@ export type SwStrategy =
   | "asset"
   /** Unindexed pictures (`/brand/*`, the favicon): saved, refreshed behind. */
   | "image"
+  /** `/voice/*.webm`, a recorded narration clip: named by its hash, so the cache answers first. */
+  | "voice"
   /** Not the worker's business — the browser fetches it exactly as without one. */
   | "passthrough";
 
@@ -47,6 +49,8 @@ export const SW_CACHES = {
   /** Fingerprinted art, audio and content, keyed `path?v=fingerprint`. */
   files: "kad-files-v1",
   image: "kad-image-v2",
+  /** Recorded narration clips (docs/voice-narration-plan.md §5), keyed by path alone. */
+  voice: "kad-voice-v1",
 } as const;
 
 /**
@@ -151,6 +155,37 @@ export function swBudgetFor(quota: number | undefined): number {
 /** Unindexed pictures are few (brand art); a count is enough. */
 export const SW_IMAGE_LIMIT = 100;
 
+/**
+ * Where the voice cache's bookkeeping (sizes, last use) lives, inside that
+ * cache under a path no request can have.
+ */
+export const SW_VOICE_META_KEY = "/__kad/voice-meta";
+
+/**
+ * Limit saved narration on a family phone; least recently used clips go
+ * first. A clip is named by a hash of its sound, so it never goes stale: the
+ * only reason to drop one is room. A chapter is about 7 MB, the whole game
+ * about 380 MB, so this holds a few chapters, not all of it.
+ */
+export const SW_VOICE_BUDGET_BYTES = 150 * 1024 * 1024;
+
+/** The least the voice budget is, however small the quota: four chapters' narration (about 7 MB each). */
+export const SW_VOICE_BUDGET_FLOOR_BYTES = 30 * 1024 * 1024;
+
+/** The share of the origin's quota narration may take, beside the art's (`SW_FILES_BUDGET_SHARE`). */
+export const SW_VOICE_BUDGET_SHARE = 0.15;
+
+/**
+ * The voice budget for this phone, from `navigator.storage.estimate()`'s
+ * quota, the way `swBudgetFor` does it for art: a share of it, at most
+ * `SW_VOICE_BUDGET_BYTES` and at least the floor. A missing or nonsense quota
+ * gets the fixed budget.
+ */
+export function swVoiceBudgetFor(quota: number | undefined): number {
+  if (quota === undefined || !Number.isFinite(quota) || quota <= 0) return SW_VOICE_BUDGET_BYTES;
+  return Math.round(Math.max(SW_VOICE_BUDGET_FLOOR_BYTES, Math.min(SW_VOICE_BUDGET_BYTES, quota * SW_VOICE_BUDGET_SHARE)));
+}
+
 const IMAGE = /\.(?:webp|png|jpe?g|gif|svg|avif|ico)$/i;
 
 export interface SwRequestFacts {
@@ -178,6 +213,8 @@ export function swStrategyFor(request: SwRequestFacts, origin: string): SwStrate
   if (path.startsWith("/bundle/")) return "bundle";
   if (path.startsWith("/content/") && path.endsWith(".json")) return "content";
   if (path.startsWith("/assets/")) return "asset";
+  // A clip, not a manifest (`/content/voice/manifest/*.json` is content, above).
+  if (path.startsWith("/voice/") && path.endsWith(".webm")) return "voice";
   if (IMAGE.test(path)) return "image";
   return "passthrough";
 }

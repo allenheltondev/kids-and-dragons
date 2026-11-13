@@ -43,6 +43,7 @@ import { HERO_ART_PLACES, PREVIEW_TINT_PX, heroPaintingUrl, type HeroArtSubject 
 import { HeroImage, useCoatsReady } from "../world/hero-art-dom";
 import { coatPartLabel, hasCoatMask } from "../world/coat-masks";
 import { reducedMotion } from "../a11y/prefs";
+import { useOwnEdits, withOwnEdits } from "../store/own-edits";
 import "./LookEditor.css";
 
 /** One tap on a shelf: the one field it changes. */
@@ -352,7 +353,8 @@ export function tableLook(member: PartyMember): HeroLookView {
 /** Her look at the table (§8.2): the compact editor in the phone's camp panel, downtime only, no limit. */
 export function LookEditor({ member, held, dispatch }: { member: PartyMember; held: boolean; dispatch: (intent: ClientIntent) => void }): ReactElement {
   const hero = member.character;
-  const look = tableLook(member);
+  // What she tapped shows at once, over the table's view, until the table shows it too (own-edits.ts).
+  const look = withOwnEdits(tableLook(member), useOwnEdits("LOOK_EDIT", hero.id));
   const base = useId();
   const edit = (change: LookChange): void => dispatch({ type: "LOOK_EDIT", characterId: hero.id, revision: look.revision, ...change });
   const tile: Tile = ({ on, label, onTap, data, preview, swatch, pending }) => (
