@@ -51,7 +51,15 @@ export async function warm(
   const queue = [...urls];
   const lane = async (): Promise<void> => {
     for (let url = queue.shift(); url !== undefined; url = queue.shift()) {
-      await fetch(url, { priority: "low" } as RequestInit).catch(() => undefined);
+      const response = await fetch(url, { priority: "low" } as RequestInit).catch(() => undefined);
+      // The worker keeps its own copy (sw.ts caches a clone); this page never reads the
+      // bytes, so it lets go of its side at once rather than leave a chapter of open
+      // bodies buffered until a garbage collection (a television warms the whole chapter).
+      try {
+        void Promise.resolve(response?.body?.cancel()).catch(() => undefined);
+      } catch {
+        // A body already read or locked: nothing to let go of.
+      }
     }
   };
   await Promise.all(Array.from({ length: lanes }, lane));

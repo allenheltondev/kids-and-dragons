@@ -95,6 +95,7 @@ import {
   type Footprint,
 } from "./actor-art";
 import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
+import { artLoaded, loadArt } from "./art-memory";
 
 import {
   createNameplate,
@@ -490,12 +491,16 @@ export function createBoardLayer(): BoardLayer {
    * sheet is one 404, not one per rebuild.
    */
   const sheets = new Map<string, Promise<{ floor: Texture[]; blocked: Texture[] } | null>>();
+  const slicedSheets = new Set<string>();
 
   function tileSheet(url: string): Promise<{ floor: Texture[]; blocked: Texture[] } | null> {
     const cached = sheets.get(url);
-    if (cached) return cached;
-    const task = Assets.load<Texture>(url)
+    // Unless the art sweep (art-memory.ts) took a sheet that had loaded: then it is sliced anew.
+    if (cached && (!slicedSheets.has(url) || artLoaded(url))) return cached;
+    slicedSheets.delete(url);
+    const task = loadArt(url)
       .then((sheet) => {
+        slicedSheets.add(url);
         const slice = (row: number, col: number) =>
           new Texture({
             source: sheet.source,
@@ -546,7 +551,7 @@ export function createBoardLayer(): BoardLayer {
       const blocked=board.terrain.flatMap((kind,index)=>kind==="blocked"?[{x:index%board.width,y:Math.floor(index/board.width)}]:[]).sort((a,b)=>Math.hypot(a.x-board.width/2,a.y-board.height/2)-Math.hypot(b.x-board.width/2,b.y-board.height/2));
       decorations.slice(0,blocked.length).forEach((id,index)=>{
         const at=blocked[index]!;
-        void Assets.load<Texture>("/assets/story-props/"+id+".webp").then(texture=>{
+        void loadArt("/assets/story-props/"+id+".webp").then(texture=>{
           if(destroyed || revision!==tileRevision)return;
           const prop=new Sprite(texture);prop.label="fight-prop:"+id;prop.anchor.set(.5);
           prop.position.set((at.x+.5)*BOARD_TILE_PX,(at.y+.5)*BOARD_TILE_PX);
@@ -742,10 +747,10 @@ export function createBoardLayer(): BoardLayer {
       }
       const url = enemyArtUrlFor(combatant, current);
       if (!url) return;
-      void Assets.load<Texture>(url).then(show).catch(missing);
+      void loadArt(url).then(show).catch(missing);
     };
 
-    if(actor.retreatUrl)void Assets.load<Texture>(actor.retreatUrl).catch(()=>{});
+    if(actor.retreatUrl)void loadArt(actor.retreatUrl).catch(()=>{});
     loadCutout();
 
     return actor;
@@ -1091,7 +1096,7 @@ export function createBoardLayer(): BoardLayer {
           actor.down = true;
           if(actor.retreatUrl) {
             actor.retreating=true;actor.leaving=true;actor.art.rotation=0;
-            void Assets.load<Texture>(actor.retreatUrl).then(texture=>{
+            void loadArt(actor.retreatUrl).then(texture=>{
               if(destroyed || actors.get(actor.id)!==actor || !actor.sprite)return;
               actor.sprite.texture=texture;actor.paint=measurePaint(texture);
               actor.footprint=groundedFootprint(measureFootprint(texture),actor.paint);sizeActors();
