@@ -188,27 +188,54 @@ export async function applyAction(
   received: ActionInput,
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
+  return (await applyActionUnlessRevoked(received, deps, NOT_REVOKED)) as ActionResponse;
+}
+
+const NOT_REVOKED: Promise<boolean> = Promise.resolve(false);
+
+/**
+ * `applyAction` for a principal taken from a room session whose device's
+ * revocation is still being read (`IdentityService.claimSession`). That read
+ * goes beside the run's own instead of in front of them, which on every tap
+ * was one store round trip before anything else could start. Nothing is
+ * written, and nothing decided, until it has answered: `null` when the device
+ * was revoked, for the caller to treat the session as the token it no longer
+ * is, exactly as when `resolveSession` said so up front.
+ */
+export async function applyActionUnlessRevoked(
+  received: ActionInput,
+  deps: HandlerDeps,
+  revoked: Promise<boolean>,
+): Promise<ActionResponse | null> {
   for (let attempt = 1; ; attempt++) {
-    const response = await applyActionOnce(received, deps, attempt < CAMP_WRITE_ATTEMPTS);
+    const response = await applyActionOnce(received, deps, attempt < CAMP_WRITE_ATTEMPTS, revoked);
+    if (response === SESSION_REVOKED) return null;
     if (response !== RETRY_CAMP) return response;
   }
 }
+
+const SESSION_REVOKED = Symbol("session-revoked");
 
 async function applyActionOnce(
   received: ActionInput,
   deps: HandlerDeps,
   mayRetryCamp: boolean,
-): Promise<ActionResponse | typeof RETRY_CAMP> {
+  revoked: Promise<boolean>,
+): Promise<ActionResponse | typeof RETRY_CAMP | typeof SESSION_REVOKED> {
   let input = received;
-  // The three reads every tap needs, side by side rather than one after
-  // another: none depends on another's answer once the principal names the
-  // household (always, in prod). `authorize` still checks them in order.
+  // The reads every tap needs, side by side rather than one after another:
+  // none depends on another's answer once the principal names the household
+  // (always, in prod). `authorize` still checks them in order, and the
+  // session's revocation is answered before anything else is (an idle room's
+  // closing below is a write).
   const principalHome = input.principal?.householdId;
-  const [stored, run, principalPlayer] = await Promise.all([
+  const [stored, run, principalPlayer, isRevoked] = await Promise.all([
     deps.repo.getState(input.runId),
     deps.repo.getRun(input.runId),
     principalHome ? deps.repo.getPlayer(principalHome, input.playerId) : Promise.resolve(undefined),
+    revoked,
   ]);
+  if (isRevoked) return SESSION_REVOKED;
   if (!stored) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
   }
@@ -910,6 +937,10 @@ async function applyActionOnce(
   // awaited only after the broadcast below, so a slow store call can never
   // hold the completion back from the table.
   const renewal = finishedChapter ? keepHomes(auth.run.householdId, next, deps) : null;
+  // The session clock's mark (#511), in its own store, so started beside the
+  // claims below and awaited with the other after-commit work. It cannot fail
+  // the turn.
+  const recording = recordTiming(deps, { runId: input.runId, chapterId: next.chapterId, seq: nextSeq, at: event.at }, timing);
 
   /*
    * The finds land in the household's book now that the step has, and what the
@@ -917,62 +948,16 @@ async function applyActionOnce(
    * signal (#110). On the message and not on `event`: the log is what a
    * reconnect replays (§4.3), and a replay must never announce a find twice.
    *
-   * This is the one store write that sits in front of the broadcast, and only
-   * on a step that found something not already in the book — a handful of
-   * times a chapter. It is there so the signal can ride the patch that shows
-   * the scene; publishing first would mean a second, out-of-band message.
+   * It sits in front of the broadcast only on a step that found something not
+   * already in the book — a handful of times a chapter — so the signal can
+   * ride the patch that shows the scene; publishing first would mean a second,
+   * out-of-band message. The book is its own row, which nothing in
+   * `claimStepRewards` reads or writes, so the two go side by side.
    */
-  const discovered = await recordStepFinds(finds, deps);
-
-  /*
-   * The camp's finds (docs/camp.md §5.1, §5.4), saved when found (§12.2):
-   * what this step's `findForCamp` / `findForKit` effects recorded on the run
-   * is claimed now that the step has landed, once per reward id, and what
-   * each claim did rides this broadcast as `campClaims`. Like `discovered`,
-   * on the message and never in the log, so a replay claims and announces
-   * nothing again (camp-finds.ts).
-   */
-  const stepFinds = stepCampFinds(state, next, input.intent.type === "START_CHAPTER");
-  const campClaims = await claimCampFinds(stepFinds, { run: auth.run, state: next }, deps);
-  // A tier or distinction this step landed writes its kit piece now (#621,
-  // camp-milestones.ts); her phone says so after the transformation.
-  const milestoneSteps = stepMilestones(state, next);
-  const kitUnlocks = await claimMilestones(milestoneSteps, { run: auth.run }, deps);
-  /*
-   * Lucky drops (§5.2), saved when they land, the same way and for the same
-   * reasons: claimed once by run and scene, and only what paid rides this
-   * broadcast as `campDrops`, live only. Then, on the chapter's last step,
-   * the sweep and the chapter's pay (camp-pay.ts), in that order, so a drop
-   * this step rolled lands before the pay closes the chapter to drops.
-   */
-  const campDrops = await claimCampDrops(stepDrops, { run: auth.run, state: next }, deps);
-  // The friends this step brought out at a new moment, counted once (camp-edit.ts, #624).
-  await recordOuting(stepOuting(state, next), { run: auth.run, state: next }, deps);
-  if (chapterEndCamp) {
-    campClaims.push(...(await settleChapterEndCamp(chapterEndCamp, { run: auth.run, state: next, stepFinds }, deps)));
-  }
-  /*
-   * Earned looks (docs/hero-looks.md §6; #669), after the kit's and the camp's
-   * so a friend this step made and a campaign it finished are on the record:
-   * a look find, a tier or rank, a finished campaign, the crew's camp. Written
-   * to each hero's look once, and what was new rides this broadcast as
-   * `lookUnlocks`, live only (look-unlocks.ts). Cosmetic: nothing in play moves.
-   */
-  const lookUnlocks = await claimLookUnlocks(
-    {
-      milestones: milestoneSteps,
-      tiers: Object.fromEntries((settlement?.awards ?? []).flatMap((a) => (a.newTier ? [[a.characterId, a.newTier]] : []))),
-      finishedCampaign: settlement?.campaignView?.ended === "complete" ? settlement.campaignView.id : null,
-      finds: stepLookFinds(state, next, input.intent.type === "START_CHAPTER"),
-      friendJoined: campClaims.some((c) => c.kind === "friend" && c.result === "friend"),
-    },
-    { run: auth.run, before: state, state: next },
-    deps,
-  );
-
-  // The session clock's mark (#511), written alongside the broadcast and
-  // awaited with the other after-commit work. It cannot fail the turn.
-  const recording = recordTiming(deps, { runId: input.runId, chapterId: next.chapterId, seq: nextSeq, at: event.at }, timing);
+  const [discovered, { campClaims, kitUnlocks, campDrops, lookUnlocks }] = await Promise.all([
+    recordStepFinds(finds, deps),
+    claimStepRewards({ state, next, run: auth.run, intent: input.intent, stepDrops, chapterEndCamp, settlement }, deps),
+  ]);
 
   const message = {
     kind: "patch" as const,
@@ -1520,6 +1505,80 @@ function withHome(state: RunState, playerId: string, home: string): RunState {
   const party = [...state.party];
   party[at] = { ...member, homeHouseholdId: home };
   return { ...state, party };
+}
+
+/**
+ * What a committed step claims for the camp and the heroes' kits and looks,
+ * each saved once by its receipt and announced on the broadcast, never in
+ * the log (camp-finds.ts, camp-milestones.ts, camp-pay.ts, look-unlocks.ts).
+ *
+ * The writes are read-modify-write on two kinds of row, each conditional on
+ * the row as read and re-read on a lost race a few times only: the crew's
+ * camp, and each hero's own row (her kit and her look). So two claims on the
+ * same kind of row run one after the other, never together, and only these
+ * two strands go side by side:
+ *
+ * - the kit's milestones, which write heroes' rows and nothing else;
+ * - the lucky drops and the moment's outing, which write the camp and
+ *   nothing else.
+ *
+ * The camp's finds write both kinds, so they go first. The chapter's end
+ * (its sweep, which writes both, and its pay) waits for both strands: a drop
+ * this step rolled lands before the pay closes the chapter to drops. The
+ * looks go last, so a friend this step made and a campaign it finished are on
+ * the record: a look find, a tier or rank, a finished campaign, the crew's
+ * camp. None of these throws (each logs and gives nothing), so running two
+ * at once never starts a write a failure would have stopped.
+ */
+export async function claimStepRewards(
+  step: {
+    state: RunState;
+    next: RunState;
+    run: RunRecord;
+    intent: ClientIntent;
+    stepDrops: ReturnType<typeof stepCampDrops>;
+    chapterEndCamp: ChapterEndCamp | null;
+    settlement: ChapterSettlement | null;
+  },
+  deps: HandlerDeps,
+) {
+  const { state, next, run } = step;
+  const started = step.intent.type === "START_CHAPTER";
+  // The camp's finds (docs/camp.md §5.1, §5.4), saved when found (§12.2):
+  // what this step's `findForCamp` / `findForKit` effects recorded on the run.
+  const stepFinds = stepCampFinds(state, next, started);
+  const campClaims = await claimCampFinds(stepFinds, { run, state: next }, deps);
+  // A tier or distinction this step landed writes its kit piece (#621); her
+  // phone says so after the transformation. Lucky drops (§5.2) are claimed
+  // once by run and scene, and the friends this step brought out at a new
+  // moment are counted once (camp-edit.ts, #624).
+  const milestoneSteps = stepMilestones(state, next);
+  const [kitUnlocks, campDrops] = await Promise.all([
+    claimMilestones(milestoneSteps, { run }, deps),
+    (async () => {
+      const paid = await claimCampDrops(step.stepDrops, { run, state: next }, deps);
+      await recordOuting(stepOuting(state, next), { run, state: next }, deps);
+      return paid;
+    })(),
+  ]);
+  if (step.chapterEndCamp) {
+    campClaims.push(...(await settleChapterEndCamp(step.chapterEndCamp, { run, state: next, stepFinds }, deps)));
+  }
+  // Earned looks (docs/hero-looks.md §6; #669), written to each hero's look
+  // once. Cosmetic: nothing in play moves.
+  const settlement = step.settlement;
+  const lookUnlocks = await claimLookUnlocks(
+    {
+      milestones: milestoneSteps,
+      tiers: Object.fromEntries((settlement?.awards ?? []).flatMap((a) => (a.newTier ? [[a.characterId, a.newTier]] : []))),
+      finishedCampaign: settlement?.campaignView?.ended === "complete" ? settlement.campaignView.id : null,
+      finds: stepLookFinds(state, next, started),
+      friendJoined: campClaims.some((c) => c.kind === "friend" && c.result === "friend"),
+    },
+    { run, before: state, state: next },
+    deps,
+  );
+  return { campClaims, kitUnlocks, campDrops, lookUnlocks };
 }
 
 /**

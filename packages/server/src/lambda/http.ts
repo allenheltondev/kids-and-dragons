@@ -22,7 +22,7 @@ import type {
   Context,
 } from "aws-lambda";
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount, vetTypedName } from "../handlers/account.ts";
-import { applyAction } from "../handlers/action.ts";
+import { applyAction, applyActionUnlessRevoked } from "../handlers/action.ts";
 import {
   admitCodeLookup,
   admitRoomOpen,
@@ -67,7 +67,7 @@ import {
   shareDevice,
   tabletHost,
 } from "../handlers/shared-device.ts";
-import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
+import type { ClaimedSession, DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
 import { pushKey, subscribePush, unsubscribePush } from "../handlers/push.ts";
 import { openAccount, requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
@@ -736,15 +736,31 @@ async function postAction(req: Req, deps: HandlerDeps) {
     return error(400, "ILLEGAL", "expected { runId, playerId, seq, intent }");
   }
 
-  const session = await resolveSession(req, deps);
-  if (session && session.runId !== runId) {
+  const request = {
+    runId,
+    playerId,
+    seq: Number(seq ?? 0),
+    intent: intent as never,
+    ...(typeof context === "string" ? { context } : {}),
+  };
+
+  // A session for this run acts at once, its device's revocation read beside
+  // the run's own reads (`applyActionUnlessRevoked`). A revoked one comes back
+  // `null` before anything is written, and falls through below as though
+  // `resolveSession` had refused it, which is what it did before.
+  const claimed = await claimSession(req, deps);
+  if (claimed && claimed.session.runId === runId) {
+    const response = await applyActionUnlessRevoked(
+      { ...request, principal: { householdId: claimed.session.householdId, playerId: claimed.session.playerId } },
+      deps,
+      claimed.revoked,
+    );
+    if (response) return json(200, response);
+  } else if (claimed && !(await claimed.revoked)) {
     return error(403, "FORBIDDEN", "that session belongs to another run");
   }
-  const resolved = session ? null : await resolvePrincipal(req, deps);
-  const principal =
-    (session
-      ? { householdId: session.householdId, playerId: session.playerId }
-      : undefined) ?? resolved?.principal;
+  const resolved = await resolvePrincipal(req, deps);
+  const principal = resolved?.principal;
 
   /*
    * No principal, no action. Binding the token when one is *present* is not
@@ -753,17 +769,7 @@ async function postAction(req: Req, deps: HandlerDeps) {
    */
   if (!principal) return error(401, "FORBIDDEN", "this action needs a room session token");
 
-  const response = await applyAction(
-    {
-      runId,
-      playerId,
-      seq: Number(seq ?? 0),
-      intent: intent as never,
-      ...(typeof context === "string" ? { context } : {}),
-      principal,
-    },
-    deps,
-  );
+  const response = await applyAction({ ...request, principal }, deps);
   // A rejection is part of the protocol, not an HTTP failure: the client reads
   // `error.code` and resyncs. 200 keeps that path free of fetch() error
   // handling on a phone with a flaky connection.
@@ -1384,6 +1390,25 @@ async function resolveSession(req: Req, deps: HandlerDeps): Promise<SessionIdent
   const token = bearer(req);
   if (!token) return null;
   return deps.identity.resolveSession(token);
+}
+
+/**
+ * `resolveSession` with the device's revocation left to the caller to await
+ * (`IdentityService.claimSession`). An identity without the split resolves
+ * the whole session first, as `resolveSession` does.
+ */
+async function claimSession(req: Req, deps: HandlerDeps): Promise<ClaimedSession | null> {
+  const token = bearer(req);
+  if (!token) return null;
+  if (!deps.identity.claimSession) {
+    const session = await deps.identity.resolveSession(token);
+    return session ? { session, revoked: Promise.resolve(false) } : null;
+  }
+  const claimed = await deps.identity.claimSession(token);
+  // A failed read still fails the request where it is awaited; this only
+  // keeps it from being reported as unhandled in the moment before that.
+  claimed?.revoked.catch(() => undefined);
+  return claimed;
 }
 
 function bearer(req: Req): string {
