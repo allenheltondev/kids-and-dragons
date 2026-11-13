@@ -14,7 +14,9 @@
  */
 
 import { useEffect, useState } from "react";
-import { createFrameStats, verdictOf, type FrameReading } from "./frame-stats";
+import { isTvBrowser } from "../display/tv";
+import { createFrameStats, frameBudgetMs, verdictOf, type FrameReading } from "./frame-stats";
+import { stageBudget } from "./PixiStage";
 import { onFrame } from "./scene";
 
 import "./FrameMeter.css";
@@ -23,11 +25,14 @@ import "./FrameMeter.css";
     the meter itself becoming the busiest thing on the screen. */
 const REFRESH_MS = 250;
 
+/** What this screen's frames are judged against: the stage's own frame cap. */
+const budgetMs = frameBudgetMs(stageBudget(isTvBrowser()).maxFPS);
+
 export function FrameMeter(): React.JSX.Element | null {
   const [reading, setReading] = useState<FrameReading | null>(null);
 
   useEffect(() => {
-    const stats = createFrameStats();
+    const stats = createFrameStats(undefined, budgetMs);
     const stop = onFrame((ms) => { stats.push(ms); });
     const timer = setInterval(() => { setReading(stats.read()); }, REFRESH_MS);
     return () => {
@@ -37,7 +42,7 @@ export function FrameMeter(): React.JSX.Element | null {
   }, []);
 
   if (!reading || reading.samples === 0) return null;
-  const verdict = verdictOf(reading);
+  const verdict = verdictOf(reading, budgetMs);
 
   return (
     <div className={`kad-frame-meter kad-frame-meter--${verdict}`} role="status">

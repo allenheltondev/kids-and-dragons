@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { createFrameStats, FRAME_BUDGET_MS, verdictOf } from "./frame-stats";
+import { createFrameStats, FRAME_BUDGET_MS, frameBudgetMs, verdictOf } from "./frame-stats";
 
 const feed = (stats: ReturnType<typeof createFrameStats>, ms: number, times: number): void => {
   for (let i = 0; i < times; i += 1) stats.push(ms);
@@ -91,5 +91,20 @@ describe("the verdict", () => {
     // a meter that opens on red teaches everyone to ignore it before it has
     // said anything true.
     expect(verdictOf(reading(0, 0, 0, 0))).toBe("smooth");
+  });
+
+  it("judges a television capped at thirty against a thirtieth of a second", () => {
+    const tv = frameBudgetMs(30);
+    expect(frameBudgetMs(0)).toBe(FRAME_BUDGET_MS);
+    const stats = createFrameStats(undefined, tv);
+    feed(stats, 1000 / 30, 60);
+    const steady = stats.read();
+    expect(steady.dropped).toBe(0);
+    expect(verdictOf(steady, tv)).toBe("smooth");
+    // The same frames judged as if at sixty: every one late. What the meter used to say.
+    expect(verdictOf(steady)).toBe("struggling");
+    // A real hitch on the television still shows.
+    feed(stats, 120, 1);
+    expect(verdictOf(stats.read(), tv)).toBe("uneven");
   });
 });
