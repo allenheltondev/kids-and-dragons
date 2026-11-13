@@ -1,5 +1,9 @@
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { stageCast } from "./cast";
+import type { Chapter, VoiceManifest } from "@kad/shared";
+import { makeState } from "../testing/fixtures";
+import { castFor, castKeyParts, stageCast } from "./cast";
 import { PULSE_BASE, PULSE_BEAT, PULSE_HOP, PULSE_STILL, pulseHop, pulseScale, speaksFor } from "./cast-pulse";
 
 describe("who pulses when a recorded clip is heard (#551)", () => {
@@ -88,5 +92,52 @@ describe("the hop", () => {
   it("is nothing when silent or with reduced motion", () => {
     expect(pulseHop(0, 0.3, 0, false)).toBe(0);
     expect(pulseHop(1, 0.3, 0, true)).toBe(0);
+  });
+});
+
+describe("a stage key, whatever was added to it (#778 review)", () => {
+  it("reads the figure and nameplate through a group's number and a special pose", () => {
+    expect(castKeyParts("cast/pib|Pib")).toEqual({ figure: "cast/pib", name: "Pib" });
+    expect(castKeyParts("entities/sheeple|#2")).toEqual({ figure: "entities/sheeple", name: "" });
+    expect(castKeyParts("cast/old_ossley|Old Ossley@/assets/cast/ossley_pole_tip/assembled.png")).toEqual({ figure: "cast/old_ossley", name: "Old Ossley" });
+    expect(castKeyParts("entities/sheeple|Flock#1@/assets/cast/x/assembled.png")).toEqual({ figure: "entities/sheeple", name: "Flock" });
+  });
+
+  it("pulses a posed speaker", () => {
+    expect(speaksFor("cast/old_ossley|Old Ossley@/assets/cast/ossley_pole_tip/assembled.png", { figure: "cast/old_ossley", names: ["Old Ossley"] })).toBe(true);
+    expect(speaksFor("entities/goat|@/assets/cast/kid_hop/assembled.png", { figure: "entities/goat" })).toBe(true);
+  });
+
+  it("pulses every posed speaker in the content as it would unposed, keys built by castFor", () => {
+    const root = fileURLToPath(new URL("../../../../content/", import.meta.url));
+    const posed: string[] = [];
+    for (const file of readdirSync(`${root}chapters`)) {
+      const chapter = JSON.parse(readFileSync(`${root}chapters/${file}`, "utf8")) as Chapter;
+      const poses = chapter.presentation?.castPoses ?? {};
+      const manifestFile = `${root}voice/manifest/${chapter.id}.json`;
+      if (Object.keys(poses).length === 0 || !existsSync(manifestFile)) continue;
+      const manifest = JSON.parse(readFileSync(manifestFile, "utf8")) as VoiceManifest;
+      for (const sceneId of Object.keys(poses)) {
+        const scene = chapter.scenes[sceneId];
+        if (!scene) continue;
+        const prompt = { kind: "interaction", phase: "play", spec: (scene as { interaction?: unknown }).interaction ?? { kind: "timing" } };
+        const plain = castFor(chapter, makeState({ chapterId: chapter.id, sceneId }));
+        const drawn = castFor(chapter, makeState({ chapterId: chapter.id, sceneId, prompt: prompt as never }));
+        const clips = Object.entries(manifest)
+          .filter(([address]) => address.startsWith(`${chapter.id}/${sceneId}/`))
+          .flatMap(([, variants]) => Object.values(variants).flat())
+          .filter((clip) => clip.by !== undefined);
+        drawn.forEach((member, i) => {
+          if (!member.key.includes("@")) return;
+          for (const clip of clips) {
+            const who = { ...(clip.figure ? { figure: clip.figure } : {}), ...(clip.names ? { names: clip.names } : {}) };
+            expect(speaksFor(member.key, who), `${chapter.id}/${sceneId} ${member.key} for ${clip.by}`).toBe(speaksFor(plain[i]!.key, who));
+            if (speaksFor(member.key, who)) posed.push(`${chapter.id}/${sceneId} ${clip.by}`);
+          }
+        });
+      }
+    }
+    // The review's two cases are among them, so the sweep is not vacuous.
+    expect(posed).toEqual(expect.arrayContaining(["riftlight-ashspan-bridge/ferry_dock old_ossley", "riftlight-glacier-survival/shelf_cross yeti_herder"]));
   });
 });

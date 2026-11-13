@@ -19,6 +19,7 @@
  */
 
 import type { SpeakingCast } from "@kad/shared";
+import { castKeyParts } from "./cast";
 
 /** How fast the pulse comes on when they start speaking and goes when they stop, per second. */
 export const PULSE_RATE = 6;
@@ -38,15 +39,15 @@ export const PULSE_STILL = 0.03;
 export const PULSE_HOP = 0.011;
 
 /**
- * Whether the stage member under `key` (world/cast.ts `stageCast`: `<figure>|<name>`, a group's
- * or an ensemble's others `…#<n>`) is the one speaking. Named on both sides: one of the
- * speaker's names. Otherwise: the same painting.
+ * Whether the stage member under `key` (world/cast.ts: `<figure>|<name>`, with `#<n>` for a
+ * group's others and `@<url>` for a special pose, read by `castKeyParts`) is the one speaking.
+ * Named on both sides: one of the speaker's names. Otherwise: the same painting.
  */
 export function speaksFor(key: string, who: SpeakingCast | null): boolean {
   if (who === null) return false;
-  const bar = key.indexOf("|");
-  const figure = bar < 0 ? key : key.slice(0, bar);
-  const name = sameName(bar < 0 ? "" : key.slice(bar + 1).replace(/#\d+$/, ""));
+  const parts = castKeyParts(key);
+  const figure = parts.figure;
+  const name = sameName(parts.name);
   const theirs = (who.names ?? []).map(sameName).filter((n) => n !== "");
   if (name !== "" && theirs.length > 0) return theirs.includes(name);
   return who.figure !== undefined && who.figure !== "" && figure === who.figure;
