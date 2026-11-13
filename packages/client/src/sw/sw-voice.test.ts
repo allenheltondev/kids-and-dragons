@@ -19,6 +19,9 @@ const source = buildServiceWorker({
   campaignFiles: [],
   fileIndexUrl: INDEX_URL,
   build: "abc123def456",
+  // Pinned, never read from this repo's lock: whether the art copies exist is the build's
+  // business (small-art-build.ts), and these tests are about the worker.
+  smallArt: false,
 });
 
 const key = (n: number): string => n.toString(16).padStart(64, "0");

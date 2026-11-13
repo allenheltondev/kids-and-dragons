@@ -416,6 +416,63 @@ interface PieceView {
 
 const toFacing = (face: CampFace): 1 | -1 => (face === "right" ? 1 : -1);
 
+/** The firelight's rings: how many, and each one's colour and strength. */
+const FIRE_RINGS = 14;
+const FIRE_COLOR = [0xff, 0x94, 0x48] as const;
+/*
+ * A ring's strength was written as 0.034, and drawn as 8 parts in 255: the
+ * renderer keeps a fill's alpha as a whole byte, rounded down. The painting
+ * below is of what reached the screen.
+ */
+const FIRE_RING_ALPHA = Math.floor(0.034 * 255);
+
+/**
+ * The fire's light on the ground for a fire `heightPx` tall, as one picture:
+ * `FIRE_RINGS` ellipses about its middle, the widest 3 fires across and 0.68
+ * of one tall, each a fraction of the last, every one adding the same faint
+ * orange to what is under it. So a pixel holds that orange once for each
+ * ring it is inside, already multiplied by its alpha, which is what adding
+ * the picture to the ground needs to come to the same sum as adding the
+ * rings one at a time. Each ring's colour is rounded to whole bytes before
+ * it is counted, as a screen rounds each one it is given. Pure.
+ */
+export function fireGlowPixels(heightPx: number): { width: number; height: number; data: Uint8Array } {
+  const rx = heightPx * 1.5;
+  const ry = heightPx * 0.34;
+  // Whole pixels either side of the middle, so the middle falls between two of them.
+  const width = Math.max(2, 2 * Math.ceil(rx));
+  const height = Math.max(2, 2 * Math.ceil(ry));
+  const data = new Uint8Array(width * height * 4);
+  const ring = FIRE_COLOR.map((channel) => Math.round((channel * FIRE_RING_ALPHA) / 255));
+  for (let y = 0; y < height; y++) {
+    const dy = (y + 0.5 - height / 2) / ry;
+    for (let x = 0; x < width; x++) {
+      const dx = (x + 0.5 - width / 2) / rx;
+      const r = Math.sqrt(dx * dx + dy * dy);
+      if (!(r <= 1)) continue;
+      // Ring k of the fourteen reaches k/14 of the way out, so this pixel is inside every ring from ceil(14r) up.
+      const inside = Math.min(FIRE_RINGS, FIRE_RINGS + 1 - Math.ceil(r * FIRE_RINGS));
+      const at = (y * width + x) * 4;
+      data[at] = ring[0]! * inside;
+      data[at + 1] = ring[1]! * inside;
+      data[at + 2] = ring[2]! * inside;
+      data[at + 3] = FIRE_RING_ALPHA * inside;
+    }
+  }
+  return { width, height, data };
+}
+
+/**
+ * `fireGlowPixels` as a texture. The bytes are red, green, blue, alpha, and the texture says
+ * so: left to itself, Pixi takes a byte buffer for `bgra8unorm`. Its WebGL renderer, the only
+ * one this game builds (pixi-webgl-only.ts), uploads either as RGBA, so the light was orange
+ * on screen all the same; a renderer that honours the name would have drawn it blue.
+ */
+export function fireGlowTexture(heightPx: number): Texture {
+  const pixels = fireGlowPixels(heightPx);
+  return Texture.from({ resource: pixels.data, width: pixels.width, height: pixels.height, format: "rgba8unorm", alphaMode: "premultiplied-alpha" });
+}
+
 export function createCamp(app: Application, layout: CampLayout, options: CampOptions = {}): CampStage {
   const W = layout.canvas.width;
   const H = layout.canvas.height;
@@ -590,11 +647,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function updateAir(): void {
     airLayer.visible = air !== undefined && !still;
     if (!airLayer.visible) return;
-    motes.forEach((mote, i) => {
-      const pose = motePose(air!, mote, elapsed, W);
-      moteViews[i]!.position.set(pose.x, pose.y);
-      moteViews[i]!.alpha = pose.alpha;
-    });
+    for (let i = 0; i < motes.length; i++) {
+      const pose = motePose(air!, motes[i]!, elapsed, W);
+      const dot = moteViews[i]!;
+      dot.position.set(pose.x, pose.y);
+      dot.alpha = pose.alpha;
+    }
   }
 
   /*
@@ -610,16 +668,32 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
    * The fire's warm light on the ground round it, added over the painting and
    * flickering (`tick`); steady when the camp is still.
    */
-  const fireGlows: Graphics[] = [];
-  function fireGlow(heightPx: number): Graphics {
-    const glow = new Graphics();
+  const fireGlows: Container[] = [];
+  /** One painting of the light per size of fire, shared by every fire that size and gone with the camp. */
+  const fireGlowTextures = new Map<number, Texture>();
+  /*
+   * The light was fourteen ellipses added one over another, so the middle of
+   * it was painted fourteen times a frame on a television that has little to
+   * spare. Nothing in it moves but its strength, so it is worked out once
+   * (`fireGlowPixels`) and drawn as one picture, added to the ground the same
+   * way. It sits inside a plain container, which carries the label and the
+   * flicker, so that a piece's own painting is still the first Sprite among
+   * its children.
+   */
+  function fireGlow(heightPx: number): Container {
+    const glow = new Container();
     glow.label = "camp-ground-firelight";
-    const rings = 14;
-    for (let ring = rings; ring > 0; ring--) {
-      const spread = ring / rings;
-      glow.ellipse(0, -heightPx * 0.02, heightPx * 1.5 * spread, heightPx * 0.34 * spread).fill({ color: 0xff9448, alpha: 0.034 });
+    let texture = fireGlowTextures.get(heightPx);
+    if (!texture) {
+      texture = fireGlowTexture(heightPx);
+      fireGlowTextures.set(heightPx, texture);
     }
+    const light = new Sprite(texture);
+    light.anchor.set(0.5);
+    light.y = -heightPx * 0.02;
+    // Added to the ground, as the rings were; the picture inside takes the container's blend.
     glow.blendMode = "add";
+    glow.addChild(light);
     fireGlows.push(glow);
     return glow;
   }
@@ -2371,6 +2445,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actors.clear();
     view.destroy({ children: true });
     for (const texture of tintedTextures.splice(0)) texture.destroy(true);
+    for (const texture of fireGlowTextures.values()) texture.destroy(true);
+    fireGlowTextures.clear();
     for (const release of artHolds.values()) release();
     artHolds.clear();
   }

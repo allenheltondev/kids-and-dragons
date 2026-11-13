@@ -28,6 +28,7 @@
  */
 
 import { coverStage } from "../world/stage-cover";
+import { fitArt } from "../world/art-paths";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
@@ -65,7 +66,8 @@ function preload(picked: StartPlates): Promise<Frame[]> {
     picked.plates.map(
       (plate, at) =>
         new Promise<Frame | null>((resolve) => {
-          const url = storyPlateUrl(plate.art);
+          // A phone's pane draws the half-size copy (world/art-paths.ts); the worker warms the same file.
+          const url = fitArt(storyPlateUrl(plate.art));
           const image = new Image();
           const done = (frame: Frame | null): void => {
             clearTimeout(timer);

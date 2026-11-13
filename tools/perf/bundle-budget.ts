@@ -128,7 +128,11 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // are their own module now (screens/hero-names.ts). And the display dock reads the plate's
 // height and the head's reach from world/story-inset.ts, so the framing maths in
 // stage-inset.ts (the camp's cover top among them) stays with the lazy stage.
-const FIRST_PAINT_BUDGET_KB = 332;
+// 332 -> 334 on 2026-11-13: the same nineteen chunks, the entry a little larger. Nothing lazy
+// moved in. What grew is what every screen needs before it draws: which file a painting is
+// drawn from on this device (world/art-paths.ts, the half-size and full-size WebP rules) and
+// `useRunStateFields` in the store. 333KB measured after sitting at 332 exactly.
+const FIRST_PAINT_BUDGET_KB = 334;
 
 /**
  * Everything, including what is lazily fetched.
@@ -359,7 +363,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // the stage asleep under a plate reel, its pixel cap, two music loops kept (the stage and audio
 // chunks), and the half-size art rule. 1821KB measured against main's 1818KB. First paint
 // 332KB, unchanged. 2KB of slack.
-const TOTAL_BUDGET_KB = 1823;
+// 1823 -> 1826 on 2026-11-13 for the second smoothness pass: the art copy rules (the entry),
+// the memoised narration plate and combat controls, the board's nameplate fitting on change and
+// the firelight worked out once (the stage chunk). 1824KB measured, 1KB over. 2KB of slack.
+const TOTAL_BUDGET_KB = 1826;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

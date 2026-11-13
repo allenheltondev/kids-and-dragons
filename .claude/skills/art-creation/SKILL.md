@@ -12,4 +12,5 @@ so the two of you cannot drift apart.
 The one difference for you: Codex generates the art, not you. Do every step except
 generating. Read the art issue and its contract, and write the prompt and its record for Codex
 to run. When an image comes back, fit it to the contract, run the gates, get the
-user's approval if it is character art, then push it and commit the lock and the record.
+user's approval if it is character art, make the copies devices draw in its place
+(`npm run art:small`), then push it and commit the lock, `assets.small.json` and the record.

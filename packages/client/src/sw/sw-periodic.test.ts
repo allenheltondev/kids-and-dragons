@@ -10,7 +10,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createContext, Script } from "node:vm";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Chapter } from "@kad/shared";
 import { buildServiceWorker } from "../../sw-build";
 import { swNextChapterArt, swHeroesOf } from "./next-chapter";
@@ -18,12 +18,20 @@ import { swVersionedKey } from "./policy";
 
 const ORIGIN = "https://kad.test";
 const INDEX_URL = "/bundle/files-x1.json";
-const source = buildServiceWorker({
+const WORKER = {
   bundleFiles: ["/bundle/index-a1.js", INDEX_URL],
   campaignFiles: ["/content/campaigns/gemfall.json"],
   fileIndexUrl: INDEX_URL,
   build: "abc123def456",
-});
+};
+/*
+ * Whether the art copies exist is pinned here, never read from this repo's lock
+ * (small-art-build.ts): the worker under test and the paths this file expects of it must
+ * agree, and the day the last copy was pushed is the day they stopped agreeing.
+ */
+const source = buildServiceWorker({ ...WORKER, smallArt: false });
+/** The same worker from a build that has every copy. */
+const sourceWithCopies = buildServiceWorker({ ...WORKER, smallArt: true });
 
 const repo = (path: string): Uint8Array => readFileSync(new URL(`../../../..${path}`, import.meta.url));
 const fp = (bytes: Uint8Array): string => createHash("sha256").update(bytes).digest("hex").slice(0, 16);
@@ -79,9 +87,11 @@ interface HarnessOptions {
   pages?: number;
   /** Another worker's Cache Storage: the same origin, a new build's worker. */
   caches?: Map<string, MemoryCache>;
+  /** The worker to run: this file's `source` unless given. */
+  worker?: string;
 }
 
-function harness({ saveData = false, newer, broken = false, pages = 0, caches: shared }: HarnessOptions = {}): Harness {
+function harness({ saveData = false, newer, broken = false, pages = 0, caches: shared, worker = source }: HarnessOptions = {}): Harness {
   // A plain object, as a scope sees another `ServiceWorker`: nothing on it is called.
   const next = {};
   const chapters = ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-04a"];
@@ -161,7 +171,7 @@ function harness({ saveData = false, newer, broken = false, pages = 0, caches: s
     clearTimeout,
     console,
   });
-  new Script(source).runInContext(context);
+  new Script(worker).runInContext(context);
   return { listeners, files, fetched, caches };
 }
 
@@ -208,6 +218,25 @@ describe("the built worker's overnight refresh", () => {
     expect(h.fetched).not.toContain("/api/journal");
     expect(await record(h)).toMatchObject({ outcome: "saved-data", warmed: 0 });
   }, 15_000);
+
+  it("warms the copies a device draws, in a build that has them", async () => {
+    // The page's own rule, told what the worker was built with, so both name the same files.
+    vi.stubGlobal("__KAD_SMALL_ART__", true);
+    try {
+      const h = harness({ worker: sourceWithCopies });
+      await fire(h, "periodicsync", { tag: "kad-refresh" });
+      const keys = [...h.files.entries.keys()].map((url) => new URL(url).pathname + new URL(url).search);
+      const second = JSON.parse(readFileSync(new URL("../../../../content/chapters/gemfall-02.json", import.meta.url), "utf8")) as Chapter;
+      const art = swNextChapterArt([second], swHeroesOf({ heroes: [HERO] as never }));
+      // Not a phone (the sandbox has no phone's name), so figures are their full-size WebP.
+      expect(art.some((url) => url.endsWith("@1x.webp"))).toBe(true);
+      expect(art.some((url) => /\/assembled\.png$/.test(url))).toBe(false);
+      for (const url of art) expect(keys).toContain(swVersionedKey(url, fp(new TextEncoder().encode(`art ${url}`))));
+      expect(await record(h)).toMatchObject({ outcome: "done", warmed: art.length });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 
   it("hands the run to a newer build through a marker its activate takes", async () => {
     // Worker A: the update finds B installing. A posts nothing; it leaves a marker.

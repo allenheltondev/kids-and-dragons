@@ -1,3 +1,4 @@
+import { drawnArt } from "./drawn-art";
 import { revealPagedChoice } from "./choice-pages";
 /**
  * The adventure book with no signal — on a reload, and in a new tab — against
@@ -491,7 +492,7 @@ test("the book's kit shelves open whole offline, even one never opened with a si
     await expect(phone.getByTestId("book-kit-pitch")).toBeVisible(TAP);
     await expect(phone.locator("[data-decoration]")).toHaveCount(0);
     // Every shelf's paintings are saved, opened or not: a decoration, a bedroll, the friend.
-    for (const url of ["/assets/camp/decorations/bunting.png", "/assets/camp/kits/patched.png", "/assets/entities/duckling/assembled.png"]) {
+    for (const url of ["/assets/camp/decorations/bunting.png", "/assets/camp/kits/patched.png", drawnArt("/assets/entities/duckling/assembled.png")]) {
       await expect.poll(() => kept(phone, url), { timeout: 60_000 }).toBe(true);
     }
 

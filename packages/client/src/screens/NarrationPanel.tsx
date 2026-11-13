@@ -11,14 +11,14 @@
  * that owns them (PlayerPanel).
  */
 
-import { Suspense, useEffect, useLayoutEffect, useRef } from "react";
+import { memo, Suspense, useEffect, useLayoutEffect, useRef } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { combatTurnAway, currentActorId, rollerAway, speak, turnHolderAway } from "@kad/shared";
-import type { NarrationPart, PartyMember, SpeakOptions } from "@kad/shared";
+import type { NarrationPart, PartyMember, RunState, SpeakOptions } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
 import { useSpeaking } from "../speech/read-aloud";
-import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
+import { useAbilities, useItems, useParty, usePreviews, useRules, useRunStateFields } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { coverBottom, setStageCoverTop, setStageInsetBottom, setStageInsetTop } from "../world/stage-inset";
 import { fitPlate, unfitPlate } from "./fit-plate";
@@ -94,13 +94,57 @@ export function goalParts(chapterId: string | null, text: string): NarrationPart
   return [{ address: `${chapterId}/@goal`, line: `Your goal: ${text}` }];
 }
 
+/**
+ * What of the run the plate reads, and so what it is drawn again for (store `useRunStateFields`).
+ * `visited` and `storyTurn` are here for `tablePreviews`, which tells one question from the
+ * next by them; `campaign` because `chapterHeading` asks for it.
+ */
+const PLATE_FIELDS = [
+  "runId", "phase", "chapterId", "chapterInfo", "campaign", "sceneId", "narration", "narrationParts",
+  "scenePriority", "decision", "hint", "classPlace", "rankUps", "prompt", "trades", "encounter",
+  "party", "visited", "storyTurn",
+] as const satisfies readonly (keyof RunState)[];
+
+/**
+ * The preface and the goal read the whole run, so they are asked here, and the plate under
+ * this is handed only their answers: a patch that changes neither those nor a field the plate
+ * reads (a flag set, a roll's XP, a tick of `seq`) draws none of the plate again.
+ */
 export function NarrationPanel(): ReactElement | null {
-  const state = useRunState();
+  const preface = useStartPreface();
+  const goal = useChapterGoal();
+  return (
+    <NarrationPlate
+      prefacePending={preface.status === "pending"}
+      goalChapter={goal?.chapterId ?? null}
+      goalEntry={goal?.entry ?? null}
+      goalText={goal?.goal.text ?? null}
+    />
+  );
+}
+
+interface NarrationPlateProps {
+  /** A prologue or chapter plate is up, or may be coming: nothing is said yet (useStartPreface). */
+  prefacePending: boolean;
+  /** The chapter whose goal is in play, with its first scene and its sentence; all null with no goal. */
+  goalChapter: string | null;
+  goalEntry: string | null;
+  goalText: string | null;
+}
+
+const NarrationPlate = memo(function NarrationPlate({
+  prefacePending,
+  goalChapter,
+  goalEntry,
+  goalText,
+}: NarrationPlateProps): ReactElement | null {
+  const state = useRunStateFields(PLATE_FIELDS);
   const party = useParty();
   const items = useItems();
   const abilities = useAbilities();
   const rules = useRules();
-  // Who is leaning toward what, on their phone, before "Do it!" (world/previews.ts).
+  // Who is leaning toward what, on their phone, before "Do it!" (world/previews.ts). It reads
+  // the question in play, the fight and the party, all of which are in PLATE_FIELDS.
   const leaning = tablePreviews(state, usePreviews());
   // Something is being read aloud on this screen (§7's spoken-line cue): a small mark on the plate.
   const speaking = useSpeaking();
@@ -192,8 +236,6 @@ export function NarrationPanel(): ReactElement | null {
    * A chapter's first scene waits only behind a prologue or chapter plate (useStartPreface),
    * and every line after it waits with it so nothing jumps the queue. Its goal follows the story.
    */
-  const preface = useStartPreface();
-  const prefacePending = preface.status === "pending";
   const spokenNarration = useRef<string | null>(null);
   useEffect(() => {
     const key = `${sceneId ?? "-"}:${narration}`;
@@ -237,16 +279,14 @@ export function NarrationPanel(): ReactElement | null {
    * but not read out: the owner found "Done: ..." after every tick too much.
    *
    */
-  const goal = useChapterGoal();
-  const goalChapter = goal?.chapterId ?? null;
-  const atStart = goal !== null && sceneId !== null && goal.entry === sceneId;
+  const atStart = goalChapter !== null && sceneId !== null && goalEntry === sceneId;
   const spokenGoal = useRef<string | null>(null);
   useEffect(() => {
-    if (goal === null || goalChapter === null || sceneId === null || spokenGoal.current === goalChapter || prefacePending) return;
+    if (goalChapter === null || goalText === null || sceneId === null || spokenGoal.current === goalChapter || prefacePending) return;
     spokenGoal.current = goalChapter;
     if (atStart) {
-      const parts = goalParts(goalChapter, goal.goal.text);
-      speak(`Your goal: ${goal.goal.text}`, { source: "narration", ...(parts ? { parts } : {}) });
+      const parts = goalParts(goalChapter, goalText);
+      speak(`Your goal: ${goalText}`, { source: "narration", ...(parts ? { parts } : {}) });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalChapter, atStart, sceneId, prefacePending]);
@@ -712,7 +752,7 @@ export function NarrationPanel(): ReactElement | null {
       </div>
     </section>
   );
-}
+});
 
 /** What the stop offer needs beside the goal card, in rem: its two buttons and a few words. */
 const HEAD_DOCK_REM = 34;

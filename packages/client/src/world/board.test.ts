@@ -623,3 +623,45 @@ describe("true size on the board", () => {
     expect(huge.c0!.height).toBeCloseTo(215 * 1.1);
   });
 });
+
+describe("the plates are laid out when one changes, not every frame", () => {
+  it("fits a standing board once, again while a figure walks, and again when a name leaves", () => {
+    const a = character("c_1", "Sparklehoof");
+    const b = character("c_2", "Thistle");
+    const { layer, encounter, draw } = board([a, b], [{ x: 1, y: 1 }, { x: 3, y: 1 }]);
+    const settled = layer.plateFits();
+    expect(settled).toBeGreaterThan(0);
+    const boxes = layer.nameplateBoxes();
+
+    // Nobody moves: a second of frames measures nothing and moves nothing.
+    for (let i = 0; i < 60; i++) layer.tick(1 / 60);
+    expect(layer.plateFits()).toBe(settled);
+    expect(layer.nameplateBoxes()).toEqual(boxes);
+
+    // One walks: the plates are laid out as she goes, and stop when she does.
+    const moved: EncounterState = {
+      ...encounter,
+      board: { ...encounter.board, actors: encounter.board.actors.map((x) => (x.id === "c_1" ? { ...x, x: 4, y: 4 } : x)) },
+    };
+    draw([a, b], moved);
+    expect(layer.plateFits()).toBeGreaterThan(settled);
+    for (let i = 0; i < 600; i++) layer.tick(1 / 60);
+    const walked = layer.plateFits();
+    for (let i = 0; i < 60; i++) layer.tick(1 / 60);
+    expect(layer.plateFits()).toBe(walked);
+
+    // A new name is a new width: fitted on the next frame.
+    draw([{ ...a, name: "Bo" }, b], moved);
+    expect(layer.plateFits()).toBe(walked + 1);
+
+    // One leaves: the plates that stay are laid out again, since her title may have crowded theirs.
+    const gone: EncounterState = {
+      ...moved,
+      combatants: moved.combatants.filter((c) => c.id !== "c_2"),
+      board: { ...moved.board, actors: moved.board.actors.filter((x) => x.id !== "c_2") },
+    };
+    draw([{ ...a, name: "Bo" }], gone);
+    expect(layer.plateFits()).toBe(walked + 2);
+    layer.destroy();
+  });
+});

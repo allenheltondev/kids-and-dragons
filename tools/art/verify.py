@@ -689,6 +689,8 @@ def check_story_plates(rep: Report, mf: dict) -> None:
     root = os.path.join(ROOT, "assets", "plates")
     for folder, _, files in os.walk(root):
         for filename in sorted(files):
+            if "@" in filename:
+                continue  # a derived copy (`npm run art:small`): its painting is what is declared
             stem, _ = os.path.splitext(filename)
             plate = os.path.relpath(os.path.join(folder, stem), os.path.join(ROOT, "assets")).replace(os.sep, "/")
             if plate not in declared:
@@ -1100,6 +1102,8 @@ def check_camp_art(rep: Report, mf: dict) -> None:
     directory = os.path.join(ROOT, "assets", "camp")
     for folder, _, files in os.walk(directory):
         for filename in sorted(files):
+            if "@" in filename:
+                continue  # a derived copy (`npm run art:small`): its painting is what is declared
             rel = os.path.relpath(os.path.join(folder, filename), os.path.join(ROOT, "assets")).replace(os.sep, "/")
             if rel not in declared:
                 rep.fail(f"{rel} undeclared", "a path in manifest.camp", "undeclared file")

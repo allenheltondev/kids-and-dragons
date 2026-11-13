@@ -19,6 +19,7 @@
 
 import type { Campaign, Chapter, ChapterRoute, JournalResponse } from "@kad/shared";
 import { chapterAssets, type FigureOf } from "./chapter-art";
+import { fitArt } from "../world/art-paths";
 
 /**
  * Where the page keeps the saved journal (store/journal-db.ts), read by the
@@ -180,14 +181,14 @@ export function swHeroesOf(journal: Partial<Pick<JournalResponse, "heroes">> | n
 
 /**
  * The art to warm for the chapters ahead, nearest first: each chapter's
- * story plate (`storyPlateUrl`, the first thing it shows), then everything it
+ * story plate (`storyPlateUrl`, fitted to this device as StoryPlates.tsx fits it: the first thing it shows), then everything it
  * can draw (`chapterAssets`), with the heroes' figures, portraits and their
  * coat masks (`masked`, the worker's `__KAD_COAT_MASKS__`). No duplicates.
  */
 export function swNextChapterArt(chapters: readonly Chapter[], heroes: readonly FigureOf[], masked: readonly string[] = []): string[] {
   const urls = new Set<string>();
   for (const chapter of chapters) {
-    if (chapter.plate?.art) urls.add(`/assets/${chapter.plate.art}.webp`);
+    if (chapter.plate?.art) urls.add(fitArt(`/assets/${chapter.plate.art}.webp`));
     for (const url of chapterAssets(chapter, heroes, masked)) urls.add(url);
   }
   return [...urls];

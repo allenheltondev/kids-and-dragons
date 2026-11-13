@@ -26,6 +26,11 @@
  *   --out DIR          where the PNGs go (default test-results/playtest)
  *   --open             show the browsers and keep the table open until Ctrl-C
  *
+ * `KAD_PLAYTEST_PHONE_UA` gives the phones that user agent. Without it they are phone-sized
+ * windows with a desktop browser's name, which is enough for layout but not for what the game
+ * decides by the device's name: a real phone's (one with `Mobile` in it) draws the half-size
+ * art copies (docs/art-pipeline.md), and this is how to look at them.
+ *
  * It starts the dev server itself when nothing answers at localhost:5173, and stops it after.
  * The table is a throwaway household; nothing it does reaches anyone's saved journey. See
  * tools/playtest/table.ts for the library the scripts under it use.

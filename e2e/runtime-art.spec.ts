@@ -1,3 +1,4 @@
+import { drawnArt } from "./drawn-art";
 import { test, expect } from "@playwright/test";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -165,7 +166,7 @@ test("the still-image experience keeps the story's cast and visible rift", async
     });
   });
   const board = page.getByTestId("static-stage");
-  await expect(board.locator('img[src="/assets/cast/marda_thorn/assembled.png"]')).toBeVisible();
+  await expect(board.locator(`img[src="${drawnArt("/assets/cast/marda_thorn/assembled.png")}"]`)).toBeVisible();
   await expect(board.locator(".kad-static-stage__rift")).toBeVisible();
   await expect.poll(() => board.locator("img").evaluateAll((images) => images.every(img => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0))).toBe(true);
   await page.screenshot({ path: test.info().outputPath("still-stage-tablet.png") });

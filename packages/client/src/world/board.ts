@@ -267,6 +267,8 @@ export interface BoardLayer {
   /** Called from the scene's ticker — this module adds no ticker of its own,
       so PixiStage's stopped-when-hidden discipline holds for free. */
   tick(dtSeconds: number): void;
+  /** How many ticks have laid the plates out again: a board standing still adds none. For tests. */
+  plateFits(): number;
   /** The party names currently drawn, as boxes in board pixels. See
       `NameplateBox` for why this is readable at all. */
   nameplateBoxes(): NameplateBox[];
@@ -341,6 +343,8 @@ interface BoardActor {
   labelText: string | null;
   /** Her frame and title beside `label` in `nameLayer` (#664), or null: exactly as before looks. */
   dress: NameDress | null;
+  /** What the name and its dress were last fitted for (`tick`); absent until the first fit. */
+  fit?: PlateFit;
   /**
    * `art.scale.x`'s target: 1 as drawn (facing left), -1 turned to face
    * right. Set from `facingFor` on every patch, so a figure squares up to
@@ -397,6 +401,64 @@ function drawShadow(side: string, height: number, footprint: Footprint | null): 
   return drawContactShadow(height, footprint, BOARD_SHADOW_SQUASH, side === "party" ? 1 : 0.9);
 }
 
+/**
+ * Everything the fit of a name's dress and the crowding of its title are
+ * worked out from, and what they came to. While every plate on the board
+ * still matches its record, fitting again would only measure the same text
+ * and write the same numbers, so the tick skips it.
+ */
+interface PlateFit {
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  visible: boolean;
+  text: string | null;
+  dress: NameDress | null;
+  title: Text | null;
+  frame: NameDress["frame"];
+  /** As the fit and the crowding pass left them, so a hand from outside is noticed. */
+  titleShown: boolean;
+  frameShown: boolean;
+}
+
+/** Whether a plate has moved, changed or been touched since it was last fitted. */
+function plateChanged(actor: BoardActor): boolean {
+  const { label, dress, fit } = actor;
+  if (!label) return false;
+  if (!fit) return true;
+  const title = dress?.title ?? null;
+  const frame = dress?.frame ?? null;
+  return fit.x !== label.x || fit.y !== label.y
+    || fit.scaleX !== label.scale.x || fit.scaleY !== label.scale.y
+    || fit.visible !== label.visible || fit.text !== actor.labelText
+    || fit.dress !== dress || fit.title !== title || fit.frame !== frame
+    || fit.titleShown !== (title?.visible ?? false)
+    || fit.frameShown !== (frame?.visible ?? false);
+}
+
+function recordPlate(actor: BoardActor): void {
+  const { label, dress } = actor;
+  if (!label) return;
+  const title = dress?.title ?? null;
+  const frame = dress?.frame ?? null;
+  const fit = actor.fit ?? (actor.fit = {} as PlateFit);
+  fit.x = label.x;
+  fit.y = label.y;
+  fit.scaleX = label.scale.x;
+  fit.scaleY = label.scale.y;
+  fit.visible = label.visible;
+  fit.text = actor.labelText;
+  fit.dress = dress;
+  fit.title = title;
+  fit.frame = frame;
+  fit.titleShown = title?.visible ?? false;
+  fit.frameShown = frame?.visible ?? false;
+}
+
+/** The room a board plate's title has; one object, not one per name per frame. */
+const PLATE_ROOM = { maxWidth: NAMEPLATE_MAX_WIDTH, minFont: BOARD_TITLE_MIN_FONT };
+
 /** How long a figure's art may take before its stand-in is drawn instead. */
 const PLACEHOLDER_GRACE_MS = 700;
 
@@ -434,6 +496,11 @@ export function createBoardLayer(): BoardLayer {
   // Footprints on the floor, under every figure and over the reach glow.
   const trailLayer = new Graphics();
   let windupLayer: Graphics | null = null;
+  // A plate left the board, so the titles that stay may have room again.
+  let platesStale = true;
+  let plateFits = 0;
+  // The crowding pass's lists, kept between ticks rather than made each time.
+  const plated: BoardActor[] = [];
   let wagonStage: ReturnType<typeof createWagonStage> | null = null;
   let wagonFight: number | undefined;
   container.addChild(tilesLayer, highlightLayer, trailLayer, actorsLayer, nameLayer, floatLayer);
@@ -839,6 +906,7 @@ export function createBoardLayer(): BoardLayer {
       actor.label?.destroy();
       destroyNameDress(actor.dress);
       actors.delete(id);
+      platesStale = true;
     }
     // Who is on the board decides how big everybody is drawn.
     sizeActors();
@@ -1230,17 +1298,23 @@ export function createBoardLayer(): BoardLayer {
       wagonStage?.tick(dtSeconds, still);
       clock += dtSeconds;
       pulse += dtSeconds;
-      const charging = [...actors.values()].filter(actor => actor.charging && !actor.down);
-      const slamming = [...actors.values()].filter(actor => actor.slam && actor.slamAge < .6);
-      if ((charging.length || slamming.length) && !windupLayer) {
+      // Counted, not listed: most frames nobody is winding up, and a list
+      // made to find that out is thrown away thirty times a second.
+      let charging = 0, slamming = 0;
+      for (const actor of actors.values()) {
+        if (actor.charging && !actor.down) charging += 1;
+        if (actor.slam && actor.slamAge < .6) slamming += 1;
+      }
+      if ((charging || slamming) && !windupLayer) {
         windupLayer = new Graphics();
         container.addChildAt(windupLayer, container.getChildIndex(actorsLayer));
-      } else if (!charging.length && !slamming.length && windupLayer) {
+      } else if (!charging && !slamming && windupLayer) {
         windupLayer.destroy(); windupLayer = null;
       }
       windupLayer?.clear();
-      for (const actor of charging) {
+      if (charging) for (const actor of actors.values()) {
         if (!windupLayer) break;
+        if (!actor.charging || actor.down) continue;
         const swell = still ? 1 : 1 + .05 * Math.sin(pulse * 3);
         const x = actor.container.x, y = actor.container.y;
         if (actor.slam) continue; // The rearing body is the tell, not floating magic.
@@ -1252,10 +1326,13 @@ export function createBoardLayer(): BoardLayer {
             .fill({ color: 0xffe7aa, alpha: .95 });
         }
       }
-      if (!still && windupLayer) for (const actor of slamming) for (const tile of actor.slamTiles) {
+      if (!still && windupLayer && slamming) for (const actor of actors.values()) {
+        if (!actor.slam || actor.slamAge >= .6) continue;
+        for (const tile of actor.slamTiles) {
         const t = actor.slamAge / .6;
         windupLayer.ellipse((tile.x + .5) * BOARD_TILE_PX, (tile.y + .7) * BOARD_TILE_PX, BOARD_TILE_PX * (.2 + .3 * t), BOARD_TILE_PX * (.08 + .12 * t))
           .stroke({ color: 0xc7ac78, width: 7, alpha: 1 - t });
+        }
       }
 
       // Due beats, in order. The queue is short (≤ a round of events) and
@@ -1270,6 +1347,7 @@ export function createBoardLayer(): BoardLayer {
         }
       }
 
+      let refit = platesStale;
       for (const actor of actors.values()) {
         actor.slamAge = Math.min(1, actor.slamAge + dtSeconds);
         const next = actor.route[0];
@@ -1301,7 +1379,7 @@ export function createBoardLayer(): BoardLayer {
         if (actor.label) {
           actor.label.x = actor.container.x;
           actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y - lift;
-          fitNameDress(actor.dress, actor.label, { maxWidth: NAMEPLATE_MAX_WIDTH, minFont: BOARD_TITLE_MIN_FONT });
+          if (!refit && plateChanged(actor)) refit = true;
           if (actor.dress?.title) actor.dress.title.alpha = actor.label.alpha;
         }
         // Turning to face the nearest opponent: a quick squash through
@@ -1347,13 +1425,32 @@ export function createBoardLayer(): BoardLayer {
         }
       }
 
-      // A title that would run into a neighbour's plate is hidden (§7.2).
-      const plated = [...actors.values()].filter((a) => a.label !== null && a.label.visible);
-      if (plated.some((a) => a.dress?.title?.visible)) {
-        const crowded = crowdedTitles(plated.map((a) => ({ name: nameplateBoxOf(a.label!), title: titleBoxOf(a.dress) })));
-        plated.forEach((a, i) => {
-          if (crowded[i]) hideNameTitle(a.dress);
-        });
+      // Titles and frames are laid out, and a title that would run into a
+      // neighbour's plate is hidden (§7.2), only on a frame where some plate
+      // moved, changed or left. Both are worked out from the plates alone, so
+      // a board standing still would measure every name and get the answer it
+      // already has; one crowded title can depend on any other plate, so one
+      // change refits them all.
+      if (refit) {
+        platesStale = false;
+        plateFits += 1;
+        plated.length = 0;
+        let titled = false;
+        for (const actor of actors.values()) {
+          if (!actor.label) continue;
+          fitNameDress(actor.dress, actor.label, PLATE_ROOM);
+          if (!actor.label.visible) continue;
+          plated.push(actor);
+          if (actor.dress?.title?.visible) titled = true;
+        }
+        if (titled) {
+          const crowded = crowdedTitles(plated.map((a) => ({ name: nameplateBoxOf(a.label!), title: titleBoxOf(a.dress) })));
+          plated.forEach((a, i) => {
+            if (crowded[i]) hideNameTitle(a.dress);
+          });
+        }
+        for (const actor of actors.values()) recordPlate(actor);
+        plated.length = 0;
       }
 
       // The turn marker: a pulsing ring under whoever the clock is on.
@@ -1400,6 +1497,10 @@ export function createBoardLayer(): BoardLayer {
         floater.text.y = still ? floater.y : floater.y - FLOATER_RISE * t;
         floater.text.alpha = t < 0.15 ? t / 0.15 : 1 - Math.max(0, (t - 0.6) / 0.4);
       }
+    },
+
+    plateFits() {
+      return plateFits;
     },
 
     nameplateBoxes() {

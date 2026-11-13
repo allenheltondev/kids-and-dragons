@@ -15,13 +15,15 @@
  *
  * Keyed by painting URL, so it sits under whichever resolver picked the painting
  * (`characterArtUrl`, `characterWorldArtUrl`, `characterPortraitArtUrl`): ask
- * `coatMaskUrl(paintingUrl)`. The path rule itself (`maskPathBeside`, `coatMaskFor`) is in
+ * `coatMaskUrl(paintingUrl)`. Where a build has them the resolvers hand out a painting's
+ * full-size WebP (`x@1x.webp`, art-paths.ts `fitArt`); its mask is the painting's, so every
+ * question here is answered for the painting it was made from. The path rule itself (`maskPathBeside`, `coatMaskFor`) is in
  * art-paths.ts, which the service worker concatenates and so can use without the JSON.
  */
 
 import type { CoatPart, SpeciesId } from "@kad/shared";
 import { coatMasks } from "../../../../assets/manifest.json";
-import { coatMaskFor, maskPathBeside } from "./art-paths";
+import { coatMaskFor, maskPathBeside, paintingOfCopy } from "./art-paths";
 
 export { maskPathBeside };
 
@@ -96,10 +98,11 @@ export function coatMaskUrl(paintingUrl: string): string | null {
 /**
  * Whether a painting is transparent around her figure, so its own alpha is her figure (the mask's
  * blue channel matches it there): every `assembled.png`, base and class. A gear portrait is
- * painted on an opaque backdrop, and only its mask knows where she ends.
+ * painted on an opaque backdrop, and only its mask knows where she ends. The same of a
+ * painting's full-size WebP (art-paths.ts `fitArt`), whose alpha is the painting's exactly.
  */
 export function paintingIsCutOut(paintingUrl: string): boolean {
-  return /\/assembled\.png(?:$|[?#])/.test(paintingUrl);
+  return /\/assembled\.png$/.test(paintingOfCopy(paintingUrl.replace(/[?#].*$/, "")));
 }
 
 /**

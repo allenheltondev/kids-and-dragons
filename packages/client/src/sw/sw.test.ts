@@ -263,6 +263,8 @@ describe("the built sw.js", () => {
     campaignFiles: ["/content/campaigns/gemfall.json"],
     fileIndexUrl: "/bundle/files-x1.json",
     build: "abc123def456",
+    // Pinned, never read from this repo's lock (small-art-build.ts).
+    smallArt: false,
   });
 
   it("is one classic script: no import or export survives", () => {
@@ -280,7 +282,7 @@ describe("the built sw.js", () => {
   it("carries the paintings with coat masks, which it cannot import, so it warms their masks too (#666)", () => {
     // As the art manifest lists them today (none yet), and as a later wave will.
     expect(source).toContain(`const __KAD_COAT_MASKS__ = ${JSON.stringify(coatMaskPaintings())};`);
-    const listed = buildServiceWorker({ bundleFiles: files, campaignFiles: [], fileIndexUrl: "/bundle/files-x1.json", build: "b", coatMasks: ["characters/unicorn/fledgling/assembled.png"] });
+    const listed = buildServiceWorker({ bundleFiles: files, campaignFiles: [], fileIndexUrl: "/bundle/files-x1.json", build: "b", coatMasks: ["characters/unicorn/fledgling/assembled.png"], smallArt: false });
     expect(listed).toContain('const __KAD_COAT_MASKS__ = ["characters/unicorn/fledgling/assembled.png"];');
     expect(listed).toMatch(/swNextChapterArt\(next\.chapters, next\.heroes, __KAD_COAT_MASKS__\)/);
     expect(() => new Script(listed)).not.toThrow();
@@ -388,7 +390,7 @@ describe("\"It's your turn\" (#466)", () => {
     };
     const context = createContext({ self: scope, URL, console });
     new Script(
-      buildServiceWorker({ bundleFiles: ["/bundle/index-a1.js"], campaignFiles: [], fileIndexUrl: "/bundle/files-x1.json", build: "b" }),
+      buildServiceWorker({ bundleFiles: ["/bundle/index-a1.js"], campaignFiles: [], fileIndexUrl: "/bundle/files-x1.json", build: "b", smallArt: false }),
     ).runInContext(context);
     const dispatch = async (type: string, event: Record<string, unknown>) => {
       const work: Promise<unknown>[] = [];
