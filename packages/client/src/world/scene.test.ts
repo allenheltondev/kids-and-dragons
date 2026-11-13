@@ -37,6 +37,7 @@ import { packedFriends, packedKits } from "./packed-camp";
 import { TAP_GAP_S, WORDS_S, routeFriendTap } from "./camp-taps";
 import type { BoardViewState } from "./board";
 import { RIFT_SHEET, RIFT_SHEET_MS } from "../screens/riftlight";
+import { holdArt, loadArt, resetArtMemory, sweepArt, type ArtCache, type DrawnNode } from "./art-memory";
 
 beforeAll(installFakeCanvas2D);
 
@@ -82,26 +83,74 @@ describe("illustrated backdrops", () => {
 describe("letting go of backdrops", () => {
   const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-  it("keeps the one on screen and the one before it, and unloads the rest", async () => {
-    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+  /** A texture of its own for each URL, so the sweep can tell them apart. */
+  const paintings = () => {
+    const byUrl = new Map<string, Texture>();
+    const unloaded: string[] = [];
+    const textureFor = (url: string): Texture => {
+      let texture = byUrl.get(url);
+      if (!texture) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 4;
+        canvas.height = 4;
+        texture = Texture.from(canvas);
+        byUrl.set(url, texture);
+      }
+      return texture;
+    };
+    const cache: ArtCache = {
+      get: (url) => byUrl.get(url),
+      unload: (url) => { unloaded.push(url); byUrl.delete(url); },
+    };
+    const load = vi.spyOn(Assets, "load").mockImplementation(
+      ((url: string) => Promise.resolve(textureFor(url))) as unknown as typeof Assets.load,
+    );
+    return { cache, unloaded, load };
+  };
+
+  it("never unloads a backdrop itself: the sweep decides", async () => {
+    resetArtMemory();
+    const { load } = paintings();
     const unload = vi.spyOn(Assets, "unload").mockResolvedValue(undefined);
     const scene = createScene(fakeApp() as unknown as Application);
     try {
-      for (const biome of ["plains", "whispering_marsh", "enchanted_woods"]) {
+      for (const biome of ["plains", "whispering_marsh", "enchanted_woods", "plains"]) {
         scene.setBiome(biome);
         await settle();
       }
-      expect(unload.mock.calls).toEqual([["/assets/biomes/plains/bg.webp"]]);
+      expect(unload).not.toHaveBeenCalled();
+    } finally { scene.destroy(); load.mockRestore(); unload.mockRestore(); resetArtMemory(); }
+  });
 
-      // Back to the room just left: still loaded, so nothing new lets go
-      // except what falls off the end.
-      scene.setBiome("whispering_marsh");
-      await settle();
-      expect(unload.mock.calls).toEqual([["/assets/biomes/plains/bg.webp"]]);
+  it("keeps a backdrop the look-ahead holds, and lets go of the one the scene stopped drawing", async () => {
+    resetArtMemory();
+    const { cache, unloaded, load } = paintings();
+    const app = fakeApp();
+    const scene = createScene(app as unknown as Application);
+    const ahead = "/assets/biomes/enchanted_woods/bg.webp";
+    const release = holdArt(ahead);
+    try {
+      const held = await loadArt(ahead);
       scene.setBiome("plains");
       await settle();
-      expect(unload.mock.calls.at(-1)).toEqual(["/assets/biomes/enchanted_woods/bg.webp"]);
-    } finally { scene.destroy(); load.mockRestore(); unload.mockRestore(); }
+      scene.setBiome("whispering_marsh");
+      await settle();
+      // Nothing undrawn may stay but what is held: plains goes, the held one and the one
+      // on screen stay.
+      const sweep = sweepArt(app.stage as unknown as DrawnNode, 0, cache);
+      expect(sweep.released).toEqual(["/assets/biomes/plains/bg.webp"]);
+      expect(unloaded).toEqual(["/assets/biomes/plains/bg.webp"]);
+
+      // The party walks into the held one: the sweep left it alone, so the very texture
+      // decoded ahead is the one that goes up.
+      scene.setBiome("enchanted_woods");
+      await settle();
+      const art = (app.stage.children[0] as Container).children[1] as Container;
+      expect((art.children.at(-1) as Sprite).texture).toBe(held);
+      release();
+      // Drawn now, so still kept; the marsh it replaced is the one let go.
+      expect(sweepArt(app.stage as unknown as DrawnNode, 0, cache).released).toEqual(["/assets/biomes/whispering_marsh/bg.webp"]);
+    } finally { release(); scene.destroy(); load.mockRestore(); resetArtMemory(); }
   });
 
   it("loads again when handed a texture an unload just destroyed", async () => {

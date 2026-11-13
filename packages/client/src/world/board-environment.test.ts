@@ -328,4 +328,28 @@ describe("painted environment markers", () => {
       await vi.waitFor(() => expect(load).toHaveBeenCalledWith("/assets/entities/snowhorn_goat/portrait.webp"));
     } finally { layer.destroy(); load.mockRestore(); }
   });
+  it("asks again for a marker the art sweep unloaded while it was not drawn", async () => {
+    // A texture of its own, so destroying it (as Assets.unload does) leaves Texture.WHITE alone.
+    const first = new Texture({ source: Texture.WHITE.source });
+    const bunUrl = "/assets/combat-ux/rescue-bun.webp";
+    let firstBun = true;
+    const load = vi.spyOn(Assets, "load").mockImplementation(((url: string) => {
+      const texture = url === bunUrl && firstBun ? first : Texture.WHITE;
+      if (url === bunUrl) firstBun = false;
+      return Promise.resolve(texture);
+    }) as unknown as typeof Assets.load);
+    const encounter = riftFight({ rescue: { name: "Bun", at: { x: 1, y: 7 } } });
+    const layer = drawn(encounter);
+    try {
+      await vi.waitFor(() => expect(nodes(layer).some(n => n instanceof Sprite && n.label === "combat-marker:Bun")).toBe(true));
+      const asks = () => load.mock.calls.filter(([url]) => (url as unknown) === bunUrl).length;
+      expect(asks()).toBe(1);
+      layer.update(viewOf({ ...encounter, environment: { ...encounter.environment!, rescue: "freed" } }));
+      await vi.waitFor(() => expect(load).toHaveBeenCalledWith("/assets/entities/snowhorn_goat/portrait.webp"));
+      first.destroy();
+      layer.update(viewOf(encounter));
+      await vi.waitFor(() => expect(asks()).toBe(2));
+      await vi.waitFor(() => expect(nodes(layer).some(n => n instanceof Sprite && n.label === "combat-marker:Bun" && n.texture === Texture.WHITE)).toBe(true));
+    } finally { layer.destroy(); load.mockRestore(); }
+  });
 });

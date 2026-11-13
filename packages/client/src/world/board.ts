@@ -64,7 +64,7 @@ import {
   type PaintBox,
   type StageMeasure,
 } from "./figure-scale";
-import { Assets, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
+import { Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
 import type {
   Board,
   CastStance,
@@ -1013,6 +1013,11 @@ export function createBoardLayer(): BoardLayer {
     for (const tile of overlay.tiles) {
       const marker = tile.glyph === "objective" ? tile.objectiveKind === "hold" ? "hold" : "seal" : tile.glyph;
       const url = tile.state === "lost" || tile.state === "gone" ? null : combatMarkerArt(marker, tile.label, tile.state === "freed", tile.art);
+      // A marker the art sweep unloaded since it was last drawn is asked for again.
+      if (url && environmentTextures.get(url)?.destroyed) {
+        environmentTextures.delete(url);
+        environmentLoads.delete(url);
+      }
       const texture = url ? environmentTextures.get(url) : undefined;
       drawOverlayTile(g, tile, texture !== undefined);
       if (texture) {
@@ -1028,7 +1033,7 @@ export function createBoardLayer(): BoardLayer {
         envLayer.addChild(sprite);
       } else if (url && !environmentLoads.has(url)) {
         environmentLoads.add(url);
-        void Assets.load<Texture>(url).then(texture => {
+        void loadArt(url).then(texture => {
           if (destroyed) return;
           environmentTextures.set(url, texture);
           envKey = "";

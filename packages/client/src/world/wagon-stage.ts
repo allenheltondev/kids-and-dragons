@@ -1,6 +1,7 @@
-import { Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Container, Graphics, Sprite } from "pixi.js";
 import type { EncounterState } from "@kad/shared";
 import { wagonDefense } from "../screens/wagon-defense";
+import { loadArt } from "./art-memory";
 
 /** A physical wagon above the defended lane; never a second source of rules. */
 export function createWagonStage(size: number) {
@@ -17,7 +18,8 @@ export function createWagonStage(size: number) {
   const fallback = new Graphics().roundRect(-size * .6, -size * .35, size * 1.2, size * .5, 10).fill(0x9b6a35)
     .circle(-size * .4, size * .15, size * .15).circle(size * .4, size * .15, size * .15).fill(0x3e2c22);
   cart.addChild(fallback);
-  void Assets.load<Texture>("/assets/story-props/sausage-wagon.webp").then(texture => {
+  // Through art-memory.ts, so the sweep can let go of the painting once the wagon is gone.
+  void loadArt("/assets/story-props/sausage-wagon.webp").then(texture => {
     if (!alive) return;
     fallback.visible = false;
     const sprite = new Sprite(texture);

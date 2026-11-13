@@ -2,7 +2,7 @@ import { interactionBackdrop, fightAppearance } from "./riftlight-art";
 /** Container-sized renderer; state updates do not recreate its WebGL context. */
 
 import { useEffect, useRef, useState } from "react";
-import { Application } from "pixi.js";
+import { Application, type TextureSource } from "pixi.js";
 import type { Chapter, PartyMember, RunState } from "@kad/shared";
 import type { HeldPreview } from "../store/contract";
 import { currentActorId, enemyArtId } from "@kad/shared";
@@ -405,7 +405,9 @@ export function PixiStage(): React.JSX.Element {
     if (!stageUp || !app) return;
     const tv = isTvBrowser();
     const ahead = display ? artAhead(chapter, upkeepScene, tv ? ART_AHEAD.tv : ART_AHEAD.other) : artAhead(chapter, upkeepScene, ART_AHEAD.phone, true);
-    return scheduleArtUpkeep(app.stage, { ahead, tv });
+    // Only the television's GPU is slow enough that a backdrop's first upload shows as a hitch.
+    const upload = tv && display ? { ticker: app.ticker, initSource: (source: TextureSource) => app.renderer.texture.initSource(source) } : undefined;
+    return scheduleArtUpkeep(app.stage, { ahead, tv, upload });
   }, [stageUp, upkeepKey, upkeepScene, chapter, display]);
 
   // A rift in plain view (#401), keyed by the scene so an opening plays once.
