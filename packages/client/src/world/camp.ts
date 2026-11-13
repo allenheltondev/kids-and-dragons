@@ -462,6 +462,17 @@ export function fireGlowPixels(heightPx: number): { width: number; height: numbe
   return { width, height, data };
 }
 
+/**
+ * `fireGlowPixels` as a texture. The bytes are red, green, blue, alpha, and the texture says
+ * so: left to itself, Pixi takes a byte buffer for `bgra8unorm`. Its WebGL renderer, the only
+ * one this game builds (pixi-webgl-only.ts), uploads either as RGBA, so the light was orange
+ * on screen all the same; a renderer that honours the name would have drawn it blue.
+ */
+export function fireGlowTexture(heightPx: number): Texture {
+  const pixels = fireGlowPixels(heightPx);
+  return Texture.from({ resource: pixels.data, width: pixels.width, height: pixels.height, format: "rgba8unorm", alphaMode: "premultiplied-alpha" });
+}
+
 export function createCamp(app: Application, layout: CampLayout, options: CampOptions = {}): CampStage {
   const W = layout.canvas.width;
   const H = layout.canvas.height;
@@ -674,8 +685,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     glow.label = "camp-ground-firelight";
     let texture = fireGlowTextures.get(heightPx);
     if (!texture) {
-      const pixels = fireGlowPixels(heightPx);
-      texture = Texture.from({ resource: pixels.data, width: pixels.width, height: pixels.height, alphaMode: "premultiplied-alpha" });
+      texture = fireGlowTexture(heightPx);
       fireGlowTextures.set(heightPx, texture);
     }
     const light = new Sprite(texture);

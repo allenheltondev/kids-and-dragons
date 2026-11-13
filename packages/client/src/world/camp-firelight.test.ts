@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { fireGlowPixels } from "./camp";
+import { fireGlowPixels, fireGlowTexture } from "./camp";
 
 /** How many of the fourteen ellipses the old drawing laid over a point, counted the slow way. */
 function ringsOver(heightPx: number, x: number, y: number): number {
@@ -45,5 +45,18 @@ describe("the firelight as one picture", () => {
     expect([...data.slice(middle, middle + 4)]).toEqual([112, 70, 28, 112]);
     expect([...data.slice(0, 4)]).toEqual([0, 0, 0, 0]);
     expect([...data.slice(data.length - 4)]).toEqual([0, 0, 0, 0]);
+  });
+
+  it("is a texture that names its bytes for what they are: red, green, blue, alpha, premultiplied", () => {
+    const texture = fireGlowTexture(120);
+    const { width, height } = fireGlowPixels(120);
+    expect(texture.source.format).toBe("rgba8unorm");
+    expect(texture.source.alphaMode).toBe("premultiplied-alpha");
+    expect([texture.source.pixelWidth, texture.source.pixelHeight]).toEqual([width, height]);
+    // The middle of the light is more red than blue: orange, whichever way a renderer reads the name.
+    const bytes = texture.source.resource as Uint8Array;
+    const middle = (Math.floor(height / 2) * width + Math.floor(width / 2)) * 4;
+    expect(bytes[middle]!).toBeGreaterThan(bytes[middle + 2]!);
+    texture.destroy(true);
   });
 });
