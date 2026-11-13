@@ -23,7 +23,10 @@
       },
       {
         "clip": "7af91764d8e9ce90fb6df4b1347886f5e1e70d7f715a20285bb0dad2abd75e75",
-        "ms": 1269
+        "ms": 1269,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -31,7 +34,10 @@
       },
       {
         "clip": "2707694ce12d9702fd7b7e39f7c3afb7961377e97854e9cfe759b0819f0a207c",
-        "ms": 11907
+        "ms": 11907,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -43,7 +49,10 @@
       },
       {
         "clip": "27c208ec6d45447a9a5d151ccaa72648463dae650b2e17b407430d768e19865b",
-        "ms": 8807
+        "ms": 8807,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "d9e80aca1228fe87a7bf37b7cbaaa4d9694bac77792c2d31b4cf1fd261c3fa34",
@@ -59,7 +68,10 @@
       },
       {
         "clip": "c4ef30c15116db9a6f662e9e147f38aab15841fa7db7cf7db99ca003cec59599",
-        "ms": 1386
+        "ms": 1386,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "8d0ce563f49c03408bfd9f0024c683126189e39d183c8121775b492f116b2bbb",
@@ -67,7 +79,10 @@
       },
       {
         "clip": "85ba7c85b7069a90d0c35e12a8fa114c5c0b11b33710cad4642810ea766a4bed",
-        "ms": 3107
+        "ms": 3107,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "d09b2835eb2d1fafed71c24fcdbd7267f328e63e56cc9adf981d3c6601d3431a",
@@ -91,7 +106,10 @@
       },
       {
         "clip": "ccb2b00219f66558d4acc2023e2950d39227f3beb9f41e4fa78eb349e43e5ad7",
-        "ms": 1419
+        "ms": 1419,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "9dec571fbc94f295abfea0e70b8fc6be4cbe12f01d0243905345274d277f21ab",
@@ -107,7 +125,10 @@
       },
       {
         "clip": "16e345d83fdafaa2e9d992d53f6dabcf18a9c90cfde809514c63e20d5420713a",
-        "ms": 940
+        "ms": 940,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "04b1a88be6ae10ce8ac5e5fc43efd1c7dac356b0517ce494ae47269d1afd39a5",
@@ -131,7 +152,10 @@
       },
       {
         "clip": "66a9c0d561af3ae81b2ae46f7aef0d31bd567f7e7ac69197269dc08dd6a49858",
-        "ms": 874
+        "ms": 874,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "0d93e5d168506176f405514475c09ae7393fcdb352107aeb06cff4d585a86efd",
@@ -171,7 +195,10 @@
       },
       {
         "clip": "8cc5810e3f5a5bc8b6b012d160b0b36a2d02135eaf5bc6c8e18f1f64537a2312",
-        "ms": 1710
+        "ms": 1710,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "bc4ccdee965915034265f2d3ed2d8f2a74bf3abf1339e15b74b73a46c8ad48ef",
@@ -179,7 +206,10 @@
       },
       {
         "clip": "87be88d1f61122d91dba0eebbb11c3c5ba9bfa3eb65ad4c46e9f97880405ec3f",
-        "ms": 2930
+        "ms": 2930,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -231,7 +261,10 @@
       },
       {
         "clip": "7ec595e903f87e5fd94225c201e405fd08e5046fb25801f16d5f6a154c1ad0c4",
-        "ms": 1419
+        "ms": 1419,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       }
     ]
   },
@@ -251,7 +284,10 @@
       },
       {
         "clip": "87adf0a914b7fa424ffccc2a7f5d78f98840f153f3768f138e72a8bb2a9b3d4e",
-        "ms": 2043
+        "ms": 2043,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "4748907ffe6102d36e630566ea1e4ffb33447b1adaefca1fbcca07a3efc29704",
@@ -291,7 +327,10 @@
       },
       {
         "clip": "9716f200038f15aa27f9b4c09adcfbb0f0087f7e12e50b9a1612b316e075198a",
-        "ms": 1953
+        "ms": 1953,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -299,7 +338,10 @@
       },
       {
         "clip": "2aed9b72d84abdeb7abfdb4481b1553463bfc9f25ab6187d42be72c9851b5f20",
-        "ms": 1556
+        "ms": 1556,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -351,7 +393,10 @@
       },
       {
         "clip": "2c8a84fdee58c8eb6fa87744115d3f9cbc1bdf8c634c4850cfe5dced98c4d10d",
-        "ms": 1686
+        "ms": 1686,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -359,7 +404,10 @@
       },
       {
         "clip": "466c84340d9babc141bcb31753fca54f94d1b4f3ccf1cf17e38b30b4d70a3950",
-        "ms": 1886
+        "ms": 1886,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       }
     ]
   },
@@ -379,7 +427,10 @@
       },
       {
         "clip": "b096b9ce936bd665e9a6d80f1abcd769369e7ae9b720bbee5d4d323940597a72",
-        "ms": 1290
+        "ms": 1290,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -387,7 +438,10 @@
       },
       {
         "clip": "a713ff7f955ab13269c08c564b7d85f686c4c292fed3ecef6f206ebd6d04bf82",
-        "ms": 3807
+        "ms": 3807,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -543,7 +597,10 @@
       },
       {
         "clip": "643f7f649d2d6071a8694819e4e13fd99e8fc67554e63a5ab4f003aabb40f71a",
-        "ms": 2608
+        "ms": 2608,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -551,7 +608,10 @@
       },
       {
         "clip": "348a26467b45349499050ce3a41314da22bd77f61692d89760a435d6f1289185",
-        "ms": 2312
+        "ms": 2312,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -611,7 +671,10 @@
       },
       {
         "clip": "ac581a2f99b3175a5606fe6eb962351f3cc52b59ed6091be9d98ac2ac5fe2ebb",
-        "ms": 5307
+        "ms": 5307,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "name": "Yeti builders"
       },
       {
         "clip": "20ff63261552762539d7a0c8232aa96c255df74243e009f9eeafaa3b65e28521",
@@ -619,7 +682,10 @@
       },
       {
         "clip": "5e95849684bf2484842bfaa75446cf793d34e70cc13547a366cc2567ea14b540",
-        "ms": 1823
+        "ms": 1823,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "5dea0308b3c715fed17e1f8145adf7e60e5503921b57fb617682e1f2eda0ef9d",
@@ -659,7 +725,10 @@
       },
       {
         "clip": "1d5cedfa84c912ef162db11da6f697c6e0ed74713ecdbce07d83fb820a2f37bc",
-        "ms": 3107
+        "ms": 3107,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "0cfa71988c7d225cd482f308963b0560d27d45d7355a7d17b82f42dc0e317ae9",
@@ -675,7 +744,10 @@
       },
       {
         "clip": "c768e8c3fc1efe340bf61bea3388f794ffd3427b4214f4eb31af1fbaec9c2330",
-        "ms": 1796
+        "ms": 1796,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "f10cf6faa9e05dfe219071231f601f77be907c021c42230ae1962f9139ab37d5",
@@ -691,7 +763,10 @@
       },
       {
         "clip": "53f963773b118f62b31b1a929408c8c266c54e29dde5fac0a93c891719863ee7",
-        "ms": 1714
+        "ms": 1714,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -711,7 +786,10 @@
       },
       {
         "clip": "749e071cb55a80b937b53348f2a346834ad2a9f60852f4b5f8efef8b14b536a3",
-        "ms": 1344
+        "ms": 1344,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "43d1fb8558638fbf4f3c254b4008f219ac0248c6f05e1cc5240a1047364c4ce0",
@@ -727,7 +805,10 @@
       },
       {
         "clip": "8adc364a3910f3a3e57e1ee33549e872e2ff9737fd93ddb67178747d63ee0f5d",
-        "ms": 3207
+        "ms": 3207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "897f213a59676d1c19159a10b71bdf83cd7cc0ba86a23b03c36570d02a06af81",
@@ -743,7 +824,10 @@
       },
       {
         "clip": "b0cb7c81c42e432645c5d3747e23383a066a58364b0e37df9dd3edac5d8da090",
-        "ms": 925
+        "ms": 925,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "133b54aafad31500790bdb439e5dfb2ef2113748be155d82aab1e222eea92a28",
@@ -759,7 +843,10 @@
       },
       {
         "clip": "623bdd98407c8ead0e7c6ecb3634899bb61deeb74dc2674242d8c5dbd1bbb2fd",
-        "ms": 3307
+        "ms": 3307,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -779,7 +866,10 @@
       },
       {
         "clip": "9d3b08cd4fad8c036e5c096339bf880a7b52bdce8e43e5bd91fd0be86714f94d",
-        "ms": 4207
+        "ms": 4207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -791,7 +881,10 @@
       },
       {
         "clip": "006f724a67b1dc07b6c154431b9c319d55df598323f0682390207198c680cd28",
-        "ms": 4907
+        "ms": 4907,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -803,7 +896,9 @@
       },
       {
         "clip": "4afacf6cfcffb01c8b2b57acd8a41ff8a7b2264c38e78cf15da6a1c9631e2a0a",
-        "ms": 1131
+        "ms": 1131,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "3b8bdb60e0b4796ec455a0c967606fa940325e5170d96402f0e5bc72980fe722",
@@ -811,7 +906,10 @@
       },
       {
         "clip": "4a1025175e49d778bd964764e1ca305685ffa382b3642d58ec6c70ca1a3630a0",
-        "ms": 2324
+        "ms": 2324,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -823,7 +921,10 @@
       },
       {
         "clip": "f20a30892b440610c9c7bcdd17ae1a7d87281d8267f0aaa29fa8434fa14555c5",
-        "ms": 1800
+        "ms": 1800,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -835,7 +936,10 @@
       },
       {
         "clip": "7616770070dba272bf60530f7d4a61aa245341f630c5ded751e2dd9d341805b0",
-        "ms": 2960
+        "ms": 2960,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "8d0ce563f49c03408bfd9f0024c683126189e39d183c8121775b492f116b2bbb",
@@ -843,7 +947,10 @@
       },
       {
         "clip": "cf20f5af1ceeb608f6cd92368b045d7c8f519c93aca80021a06d073154ae4577",
-        "ms": 2698
+        "ms": 2698,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "e707893c107effeac7dd3cfe25e8b136d2847fda2aca4c0f9ef8459983812d54",
@@ -851,7 +958,10 @@
       },
       {
         "clip": "e9d0af6c43cb4268a8ee1f8b4d8c54957a9b1455829f4a8152a709d97e9c3262",
-        "ms": 767
+        "ms": 767,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -859,7 +969,10 @@
       },
       {
         "clip": "62a39c6d091c13493d27831892d2f9799b18c1e7e9d1c324d53821a8efb419a6",
-        "ms": 1263
+        "ms": 1263,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "e06d2b02d4fe0a7756a97fe69e19215717949776003d7d1c27b2b0f2a95cd684",
@@ -875,7 +988,10 @@
       },
       {
         "clip": "f5afb4891d575fc5433071b61483a7ece33981d8101f74fee4552cdc993a9f82",
-        "ms": 1289
+        "ms": 1289,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "ab21424a3a73dca1c1f6c1d6b99bf6299c56a55e35254f007dd02a951f7ca36c",
@@ -891,7 +1007,10 @@
       },
       {
         "clip": "2df66501e5627858b83b16529181f38366da3d0c7b50b2d0fe2365459ac0dbe6",
-        "ms": 1154
+        "ms": 1154,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -899,7 +1018,10 @@
       },
       {
         "clip": "9a597f5691231598e373947f83c434ef3e40abe9dd4d377f64196abd31ca113d",
-        "ms": 1464
+        "ms": 1464,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       }
     ]
   },
@@ -911,7 +1033,10 @@
       },
       {
         "clip": "b00fbfc2b3f7f6aa584035a1cc5bd1b34660c677194cc1fbce4c544fc6428634",
-        "ms": 3327
+        "ms": 3327,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -919,7 +1044,10 @@
       },
       {
         "clip": "d61beea16acd8f12b92025d30852808d25a99e09490b3e4315d7ee7d0f38df49",
-        "ms": 8707
+        "ms": 8707,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "7e6fd73bcabbdf6999f9dfbb36e924c31976e71d2d4a3e817ffd03ed3546a84c",
@@ -935,7 +1063,10 @@
       },
       {
         "clip": "f5d13940fd2892837e71d26912ee6ac01186673a82c1e27db19ec6a4e8368171",
-        "ms": 1982
+        "ms": 1982,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "4e2a2c362827f77ef1cf2e7487086c75f0aa17996e2cb43429d50bf1a3b95c9d",
@@ -975,7 +1106,10 @@
       },
       {
         "clip": "432c71a18b5de80b763aa190f7838e21658f255c8a2d6f0627277c12e7b1dd93",
-        "ms": 4407
+        "ms": 4407,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -983,7 +1117,10 @@
       },
       {
         "clip": "f2cb6abaa9830fd83351164642b9783f595a82fd9a2422ec5a5f8a85dfd163d4",
-        "ms": 2733
+        "ms": 2733,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -995,7 +1132,10 @@
       },
       {
         "clip": "3627f3c5c8780fb36236f89792bd74b7ba305cc8f5f31bb48cd71c2b9ca9205a",
-        "ms": 5108
+        "ms": 5108,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "d66490b4fc257ff69a3fbb0b5f7342d232f1ec890dd223b0790ef36ccb8242f2",
@@ -1003,7 +1143,10 @@
       },
       {
         "clip": "1c05498cc22fd978f1e15fd7158027538b35892533cfcf50aaa20fdca7850270",
-        "ms": 7708
+        "ms": 7708,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -1023,7 +1166,10 @@
       },
       {
         "clip": "2312ff5dbcab53dedb5c276ad82db69faa642d90c4bfc4930fd4a4e4aca1a18f",
-        "ms": 1504
+        "ms": 1504,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "7cbb67dd209fe9117199bf10b6ccce6a148da53bbd586dc150d18bcfef2e45cc",
@@ -1039,7 +1185,10 @@
       },
       {
         "clip": "257647096f7b2de502ae380379a3fa23bae0ff0065ae79ed8be745c92d81b1ad",
-        "ms": 2704
+        "ms": 2704,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -1051,7 +1200,10 @@
       },
       {
         "clip": "4b9e1366a8754d27b20f3e00cf7d6129129abc49a71b1a1b92dfc7c74ad5ec51",
-        "ms": 4407
+        "ms": 4407,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "9b0ececeb5c77ee24cfd4f488f0df01d2418f20657bfc61894172a54ece4717f",
@@ -1059,7 +1211,10 @@
       },
       {
         "clip": "260615ed9336ef93e6a6bc2e88fb8eaad8c6f68c293e87c5290943e9829835e3",
-        "ms": 1883
+        "ms": 1883,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "4e2a2c362827f77ef1cf2e7487086c75f0aa17996e2cb43429d50bf1a3b95c9d",
@@ -1075,7 +1230,10 @@
       },
       {
         "clip": "eba1abb6ab5a31242c9f3d62ca4730c202aafe1b29db0ba78ea7950854e58198",
-        "ms": 6307
+        "ms": 6307,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -1087,7 +1245,10 @@
       },
       {
         "clip": "0a3eb327ea4da77f1cbfd4fb484ae7a76a35920118482e17cc01eba2ca5405c5",
-        "ms": 6807
+        "ms": 6807,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -1099,7 +1260,10 @@
       },
       {
         "clip": "b5de8444d02ef3acc7bfe71c96fa9289a0e130df2fa370601d58e8ebf7ff996a",
-        "ms": 6407
+        "ms": 6407,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "f3571792cc07c5a277944f67e512b3c57ce762a87777dcc8414a1766b6d9e4dd",
@@ -1107,7 +1271,10 @@
       },
       {
         "clip": "26cfb16ef28d9c16a95fc86437b2409b705ef76c0ffe2a4f99692254d6fb691e",
-        "ms": 702
+        "ms": 702,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "b277dc7449b48cbf48bae848e7edf2435b1bcc195f27640d87d3f422c532936f",
@@ -1131,7 +1298,10 @@
       },
       {
         "clip": "2acc53a52c1c1ed72040b06d16e8d98e72b3154983550ea070bc64cb1df2b4ec",
-        "ms": 3005
+        "ms": 3005,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "05bef86a9349821d401190d60167bb0dd3cffb297757ead4b516b86fd9415c8f",
@@ -1147,7 +1317,10 @@
       },
       {
         "clip": "53e478fa14453236d30245193fb5940f4ec4f241d311f29baca7e2c290897d90",
-        "ms": 1355
+        "ms": 1355,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "809ed8e36c4ade080bd2e420795cf9b9ca1bbd71ee8f0aca100260297575a10d",
@@ -1195,7 +1368,10 @@
       },
       {
         "clip": "448d19b957947b67097dd9c0bbb84fbd693967097c583d91c49dc77b6de5fd04",
-        "ms": 2774
+        "ms": 2774,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "7333f6aa6a0c77893f2e6e740d0fb0f574658b9fbb785c9be8a25c613436a6b5",
@@ -1211,7 +1387,10 @@
       },
       {
         "clip": "7dcc0c9f080f29b29e672f592a09e609c09f0c15aa5bf29973ef41486b989c0b",
-        "ms": 1433
+        "ms": 1433,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1219,7 +1398,10 @@
       },
       {
         "clip": "3b585c5b5777b048ee777b54743de0c002d013e281bbc9994ea7256747e39ac8",
-        "ms": 5607
+        "ms": 5607,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -1239,7 +1421,10 @@
       },
       {
         "clip": "08e6cb8a4692d7a6d39da6e85912a728bb78e5af5354589e8adad1a53c9348f7",
-        "ms": 2481
+        "ms": 2481,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "6e22eb08c803c3b69f32c1a7a796b3e1054709b633eff9faa8017829edce5831",
@@ -1255,7 +1440,10 @@
       },
       {
         "clip": "567c9c535585399e19ec77e20d415d5b3e325a65f7b8d45b3c37d313434b1d68",
-        "ms": 921
+        "ms": 921,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "70ad04646206346016e7ab7450333081ab4a911560ef55214f475b36c5ea7695",
@@ -1263,7 +1451,10 @@
       },
       {
         "clip": "43f9fe70d173afa3c9b73970c10dbef7c5c3ed117f6856835ea9948819dc0733",
-        "ms": 1680
+        "ms": 1680,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       }
     ]
   },
@@ -1275,7 +1466,10 @@
       },
       {
         "clip": "906e748a68c5edbedbb1199637fb13fe18a02494908c950115369b6df3ca135d",
-        "ms": 806
+        "ms": 806,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1283,7 +1477,10 @@
       },
       {
         "clip": "0950f2caa627669cf0d44f630439216707842b4eca8c4410086823d9a6a0ad60",
-        "ms": 1464
+        "ms": 1464,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       }
     ]
   },
@@ -1303,7 +1500,10 @@
       },
       {
         "clip": "2e38ac3196c9fd7c433442c57f9ccb6fefe706964c7f6cd4c0b7125ad53d2a49",
-        "ms": 1246
+        "ms": 1246,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1311,7 +1511,10 @@
       },
       {
         "clip": "f5515afdecbcd9d93d9cb7f952b7cce4f7cf084b5fc36c216c13dd0100459d68",
-        "ms": 2340
+        "ms": 2340,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "6050c5d10bc033481485ec2dd2de3a7fab0eecba7e9777f23e1fc521b1ec75ac",
@@ -1319,7 +1522,10 @@
       },
       {
         "clip": "ffe1ada223b6f7f2a7f0175988a01959a3b7153b703e2a815be44d4c6901e6e8",
-        "ms": 5307
+        "ms": 5307,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "af3340b8798082098aa49b9778ebc58bc39278e053620ef60bfb179ddff4ff83",
@@ -1335,7 +1541,10 @@
       },
       {
         "clip": "73ae90dac0d8ae63fcb4421ebb3da2c6b47375a4465ddfa5e7cfe83e311aacad",
-        "ms": 1614
+        "ms": 1614,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1343,7 +1552,10 @@
       },
       {
         "clip": "53cab6dd185fc91ccd1044b1df07187412838e426047dd262c0f80524cc86fb4",
-        "ms": 4308
+        "ms": 4308,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "name": "Elder Murmur"
       },
       {
         "clip": "4c25a741ceb3307c92636294584145389a284f92ae6c1a31071b4a7b08ab7a27",
@@ -1351,7 +1563,10 @@
       },
       {
         "clip": "509528fccf54d8a5f10ff12b1d9a98543fdeb3433ace943807821f6f99a4b33c",
-        "ms": 7407
+        "ms": 7407,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       }
     ]
   },
@@ -1363,7 +1578,10 @@
       },
       {
         "clip": "8b71ac4f7ba39532031c961b1004e8203ee3f9bf399a26adf3c0eab851dfee44",
-        "ms": 3607
+        "ms": 3607,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "714a39c544568271a5daf404ecb3c1d2e2d372326d95a963351f2f20d0a35be0",
@@ -1379,7 +1597,10 @@
       },
       {
         "clip": "13a3c4513ac7e8e35c9ead2d9a41ad025e4b3f02fab7810fce381f4da352020c",
-        "ms": 2195
+        "ms": 2195,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1387,7 +1608,10 @@
       },
       {
         "clip": "016f06f52cf967a239d589f83dc823ccf203dae5082eb1babaa9d333b53677e0",
-        "ms": 4007
+        "ms": 4007,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "7f762097a2e9be45e3262f703b521f8502cd9b17e870834e97d8f72cfa0c3014",
@@ -1395,7 +1619,10 @@
       },
       {
         "clip": "df123bf9d88c29d736defce676fad7e7c184b729c9c03b81e72d78b22399ec23",
-        "ms": 2080
+        "ms": 2080,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       }
     ]
   },
@@ -1407,7 +1634,10 @@
       },
       {
         "clip": "6506abdb1dd2808f039e502ccc4d3bce9213e9001215261f00f7e5430a08cb6a",
-        "ms": 4807
+        "ms": 4807,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "56d855ed97a37441e792db956469b9c205640c2733837fbc119de7ba38670256",
@@ -1479,7 +1709,10 @@
       },
       {
         "clip": "ea524a25b01029557d6a52d21e7904e1878b7371ce80df5ce6621d1e49b781f2",
-        "ms": 722
+        "ms": 722,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "262969c147a80f4de437a9eba01cbf9a7ed5e916e2681e80243f6d40c08e101c",
@@ -1527,7 +1760,10 @@
       },
       {
         "clip": "ea524a25b01029557d6a52d21e7904e1878b7371ce80df5ce6621d1e49b781f2",
-        "ms": 722
+        "ms": 722,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "dba8fbee141138f7f93a889b3f6b8d2b7db55a46f4a0f5d7e40b23448b59ad1e",
@@ -1559,7 +1795,10 @@
       },
       {
         "clip": "ed70eb7c10b980313399fe7e26e3a4f94e0a5e6e9ef2d6e8ceebe9e14ef0b7d5",
-        "ms": 1098
+        "ms": 1098,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "name": "Flurry"
       },
       {
         "clip": "57916d02e43913254d632ee0bbbd270b15e1a803d8b6f896379cca94e5f40a97",
@@ -1599,7 +1838,9 @@
       },
       {
         "clip": "9d883cdcc3d0ce9c91586b86c9f850c9bf2f72623780554e2016e3f2bf4412b9",
-        "ms": 608
+        "ms": 608,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "9c8d8af4d7a4f1894b88bf8b16adbe47adc6ccdddc80b445c21386052a184579",

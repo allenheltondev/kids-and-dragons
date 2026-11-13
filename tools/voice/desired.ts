@@ -23,6 +23,10 @@ export interface CastSpeaker {
   elevenlabs?: { voiceId?: string; name?: string; approved?: boolean };
   accent?: string;
   direction?: string;
+  /** Their painting (`cast/pib`, `entities/faun`): the figure the stage pulses while they speak. */
+  figure?: string;
+  /** What they are called: the stage also pulses whoever stands under this name. */
+  name?: string;
   [field: string]: unknown;
 }
 
@@ -45,6 +49,9 @@ export const ELEVENLABS: Provider = { provider: "elevenlabs", model: "eleven_v4"
 export interface DesiredSegment {
   key: string;
   by: string;
+  /** The speaker's figure and name on the cast sheet, if they have them. Not in the key: the stage reads them, the provider never does. */
+  figure?: string;
+  name?: string;
   /** What is sent to the provider. */
   text: string;
   delivery?: string;
@@ -119,7 +126,15 @@ export function desiredClips(lines: readonly ClassifiedLine[], options: DesireOp
     if (spoken === "") return null;
     const meaning = delivery === undefined ? undefined : options.deliveries?.[delivery] ?? delivery;
     const key = clipKey({ ...provider, voice, ...(meaning !== undefined ? { delivery: stableStringify(meaning) } : {}), text: spoken });
-    return { key, by, text: spoken, ...(delivery ? { delivery } : {}) };
+    const { figure, name } = options.cast.speakers[baseSpeaker(by)] ?? {};
+    return {
+      key,
+      by,
+      text: spoken,
+      ...(delivery ? { delivery } : {}),
+      ...(typeof figure === "string" && figure !== "" ? { figure } : {}),
+      ...(typeof name === "string" && name !== "" ? { name } : {}),
+    };
   };
 
   for (const line of lines) {

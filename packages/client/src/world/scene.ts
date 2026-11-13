@@ -37,7 +37,7 @@
 
 import { stanceIdle } from "./idle-motion";
 import { Application, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
-import type { CastStance, PartyMember, Position, SceneRift } from "@kad/shared";
+import type { CastStance, PartyMember, Position, SceneRift, SpeakingCast } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
   createCameraState,
@@ -114,6 +114,7 @@ import {
 import { heroNameStyle } from "./hero-name";
 import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
+import { pulseHop, pulseScale, PULSE_RATE, speaksFor } from "./cast-pulse";
 import { boardStageWidth, storyStageFrame } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
 import { packedCampSpots, type PackedFriend, type PackedKit, type PackedSpot } from "./packed-camp";
@@ -291,6 +292,11 @@ export interface PartyScene {
    * across scenes stays put. Empty clears the stage back to the party alone.
    */
   setCast(members: readonly StageCastMember[]): void;
+  /**
+   * Whose recorded voice is heard (their figure and name on the cast sheet), or null: the cast
+   * member standing in the scene as them swells gently while they speak (cast-pulse.ts).
+   */
+  setSpeaking(cast: SpeakingCast | null): void;
   /**
    * The rift in plain view in this scene (world/scene-rift.ts), or null.
    * `key` names the scene, so an `"open"` or `"collapse"` plays once as the
@@ -491,6 +497,8 @@ interface CastActor extends StageFigureArt {
   presence: number;
   leaving: boolean;
   phase: number;
+  /** 0 silent → 1 speaking: the cast pulse (cast-pulse.ts), eased by tick(). */
+  voice: number;
 }
 
 /**
@@ -617,6 +625,8 @@ export function createScene(app: Application): PartyScene {
   const packedTaps = createWordsTaps();
   const packedWords = new Map<string, { view: Container; words: string }>();
   const castActors = new Map<string, CastActor>();
+  /** Whose recorded voice is heard (setSpeaking): they pulse in tickCast. */
+  let speakingCast: SpeakingCast | null = null;
 
   /*
    * A scene's rift (#401): one sprite standing between the party and the
@@ -1424,10 +1434,17 @@ export function createScene(app: Application): PartyScene {
         // stance — see the party's idle in tick().
         const idle = stanceIdle(member.stance, elapsed, member.phase, still);
         const reach = motionReach(member.height);
-        member.art.y = restY(member) + idle.dy * reach;
+        // Speaking a recorded line: a little hop and a gentle swell about the feet, on top of
+        // the idle. The hop is a share of the stage, not of the figure, so a tiny one shows it
+        // too; the container is scaled to fit the figure, so it is undone here.
+        member.voice = approach(member.voice, !member.leaving && speaksFor(member.key, speakingCast) ? 1 : 0, PULSE_RATE, dt);
+        const hop = (pulseHop(member.voice, elapsed, member.phase, still) * DESIGN.height) / (Math.abs(member.container.scale.y) || 1);
+        member.art.y = restY(member) + idle.dy * reach - hop;
         member.art.x = idle.dx * reach;
         member.art.rotation = idle.rotation;
-        member.art.scale.y = 1 + idle.breath;
+        const pulse = pulseScale(member.voice, elapsed, member.phase, still);
+        member.art.scale.x = pulse;
+        member.art.scale.y = (1 + idle.breath) * pulse;
         member.shadow.scale.set(shadowScale(member, idle.shadow * breathingShadowScale(idle.breath)));
         if (member.ripple) member.ripple.scale.set(rippleWidth(member) * idle.ripple / RIPPLE_UNIT);
       }
@@ -1482,6 +1499,7 @@ export function createScene(app: Application): PartyScene {
       presence: 0,
       leaving: false,
       phase: Math.random() * Math.PI * 2,
+      voice: 0,
     };
     applyStance(actor);
     container.x = DESIGN.width + CAST_ENTRY_OFFSET;
@@ -1873,6 +1891,10 @@ export function createScene(app: Application): PartyScene {
           if (riftKey === key && riftSequence[riftPassAt]?.effect === pass.effect) riftPassStart = elapsed;
         });
       }
+    },
+
+    setSpeaking(cast) {
+      speakingCast = cast;
     },
 
     setCast(members) {

@@ -23,7 +23,10 @@
       },
       {
         "clip": "cce0b4434d87fcf6c9c893ffc37e45e706fc3717267a849297920ca1243d0f59",
-        "ms": 1653
+        "ms": 1653,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -31,7 +34,10 @@
       },
       {
         "clip": "7f3c140b9bcab0f396164c4d495a944df6f7ef9124beb23ef22319f66d80794a",
-        "ms": 2356
+        "ms": 2356,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -43,7 +49,10 @@
       },
       {
         "clip": "114285b7bac8708ee8c2d2c0e7fb22e671892940e5b484f3da3516c4b98a963a",
-        "ms": 907
+        "ms": 907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -51,7 +60,10 @@
       },
       {
         "clip": "f78b8e7e67b0f52a2a536539296e446111c1fdc7eff759267a9189954fa627a7",
-        "ms": 1598
+        "ms": 1598,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -239,7 +251,10 @@
       },
       {
         "clip": "d8adff2f3f3047b97e3b0ace9d96837d880236fc3465f930a90837cb162fc285",
-        "ms": 1156
+        "ms": 1156,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "944172e9b141ed95972c71864f6d5de8bab5ef614542dbea305ac233a6de9f05",
@@ -303,7 +318,10 @@
       },
       {
         "clip": "114285b7bac8708ee8c2d2c0e7fb22e671892940e5b484f3da3516c4b98a963a",
-        "ms": 907
+        "ms": 907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -311,7 +329,10 @@
       },
       {
         "clip": "433437edb2bc09c21365b82458dbd4264915e557373b89c99c8e6cb84b93f0f5",
-        "ms": 1429
+        "ms": 1429,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -323,7 +344,10 @@
       },
       {
         "clip": "e6fd9ff4958000e446bab5cda81b65cc8721c3e7b9561b6a4020580d52de19a7",
-        "ms": 1755
+        "ms": 1755,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -331,7 +355,10 @@
       },
       {
         "clip": "e7019cf8be57eb5fefc15a9cda72901cb3f072258b053af0c07b8aaddd61327b",
-        "ms": 2424
+        "ms": 2424,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -343,7 +370,10 @@
       },
       {
         "clip": "114285b7bac8708ee8c2d2c0e7fb22e671892940e5b484f3da3516c4b98a963a",
-        "ms": 907
+        "ms": 907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -351,7 +381,10 @@
       },
       {
         "clip": "433437edb2bc09c21365b82458dbd4264915e557373b89c99c8e6cb84b93f0f5",
-        "ms": 1429
+        "ms": 1429,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -643,7 +676,10 @@
       },
       {
         "clip": "0b836e524135c67991bdbce0c8ac7bdf754004d2c377f2b12b3d69c1ea5ebcbd",
-        "ms": 1389
+        "ms": 1389,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -651,7 +687,10 @@
       },
       {
         "clip": "61bbd2fa5611ffe650bee93ecd2fae8d23c88e97008c466a9a9e34c9bce6b89b",
-        "ms": 2262
+        "ms": 2262,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       }
     ]
   },
@@ -687,7 +726,10 @@
       },
       {
         "clip": "0b836e524135c67991bdbce0c8ac7bdf754004d2c377f2b12b3d69c1ea5ebcbd",
-        "ms": 1389
+        "ms": 1389,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -695,7 +737,10 @@
       },
       {
         "clip": "57a958aadc056a8b7d3393363032be38e14e14ff426f5fc50d0b086d5dc84bd1",
-        "ms": 2699
+        "ms": 2699,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       }
     ]
   },
@@ -827,7 +872,10 @@
       },
       {
         "clip": "eaa56412a9b478857c2f0dad5df12fe8c12e7acddd6f09f8b066b3763f631555",
-        "ms": 1693
+        "ms": 1693,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -843,7 +891,10 @@
       },
       {
         "clip": "92a972c491b48bf971a59c77b2f2ecb2da053f9265e09b303ee7fc155aab92c1",
-        "ms": 554
+        "ms": 554,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "a5c425cd9fb6f4bea426fe26d0b8d421fe7b79e61839da5e4d8c121fa85c3161",
@@ -1227,7 +1278,9 @@
       },
       {
         "clip": "3c5fdbd190cc17e183b04a8aa9f62eddb838bfe2dadcd7ee5d073026bc200628",
-        "ms": 695
+        "ms": 695,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "2b4ccc70f7c4ae6eb07517653c6a2fe08905b44f83707c73a6f9aa6efb0490a4",
@@ -1235,7 +1288,9 @@
       },
       {
         "clip": "b43644109c5e4b132e1b6110520b7240d8823ebf7bddfbc51a6ce7400a5cfe6a",
-        "ms": 3507
+        "ms": 3507,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "932576e6cd692a4bbf898827b6440a4f119f7259a90a2e3da71cf809ea704918",
@@ -1243,7 +1298,9 @@
       },
       {
         "clip": "8263cf1e1f3d1ec3cc963aeb8bf26c13cfabab19bba0fa4fd7275bbbcfe98434",
-        "ms": 1078
+        "ms": 1078,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "8eb00ffac734b64f1c42a42d58c59ab1684a19679ec6a50fb453cda7806fcb63",
@@ -1271,7 +1328,10 @@
     "": [
       {
         "clip": "970e8185765570dbc3e4c72019a30d48759645f5230aa88a8ef1841449e4fe90",
-        "ms": 2207
+        "ms": 2207,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "c70736f563929bbee070469cc01c1f11b36ad0089b1623becd3d54d696d6e8ee",
@@ -1319,7 +1379,10 @@
       },
       {
         "clip": "053f77cfb66e10c4e27f2f6a734604bd606af79fbacbea9afa9441bbacc54390",
-        "ms": 2185
+        "ms": 2185,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "d5bda90a8da3c25f3c81ba68f304f780dbe91a34284ff430287c1162842237d0",
@@ -3771,7 +3834,10 @@
       },
       {
         "clip": "4f429d699705a3a21f8b867895fdbf457105414f91c22150b13c429b7da1b4a0",
-        "ms": 981
+        "ms": 981,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -4347,7 +4413,10 @@
     "": [
       {
         "clip": "f06bebc2470ec5ecf659d1a798c6125c73eb957e5198b406add535bb382c8260",
-        "ms": 2714
+        "ms": 2714,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "f041d0da37c45e815d9bc11f7f269b3cf1d810f511d6862bc5eaf823166c6a61",
@@ -4363,7 +4432,10 @@
       },
       {
         "clip": "4ec3f312d4782557111e933e1b1d46c56b08b3ca967a41ce345f2a9e277363d3",
-        "ms": 2871
+        "ms": 2871,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -4379,7 +4451,10 @@
       },
       {
         "clip": "4ec3f312d4782557111e933e1b1d46c56b08b3ca967a41ce345f2a9e277363d3",
-        "ms": 2871
+        "ms": 2871,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -4395,7 +4470,10 @@
       },
       {
         "clip": "4ec3f312d4782557111e933e1b1d46c56b08b3ca967a41ce345f2a9e277363d3",
-        "ms": 2871
+        "ms": 2871,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -4723,7 +4801,10 @@
       },
       {
         "clip": "fedb79aa8881f8a685b2f9b9426b9a8c6ba1bc872b972f2ee4282f76ccf3f834",
-        "ms": 1313
+        "ms": 1313,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       },
       {
         "clip": "b6556bfc735b627e03eae498e93debc57a2f184ed1b4db945ee8e03fbea8f308",
@@ -4739,7 +4820,10 @@
       },
       {
         "clip": "46483c65b8c5f1154690f74c4606c55f4b6c98faf33164febe9fca0a8bc61af0",
-        "ms": 2350
+        "ms": 2350,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -4747,7 +4831,10 @@
       },
       {
         "clip": "99f76ec3cf3cf0aab2d74a33c76aeb54e6fd5b87321935579352732215a7fd40",
-        "ms": 3207
+        "ms": 3207,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
       }
     ]
   },
@@ -4759,7 +4846,10 @@
       },
       {
         "clip": "3b08d2ebc1215b18e81a1e4ded980126dd552e62a23615574cb032fd538f4185",
-        "ms": 1120
+        "ms": 1120,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "3ed7349e57653fad3b966fce93fe2d9b2aaae33d52c093c6ee09ed2407746d5a",
@@ -4927,7 +5017,9 @@
     "": [
       {
         "clip": "625107c4ddad81bde13fbdede82b98b3a203482d2b39cf2e7955416de4327443",
-        "ms": 1015
+        "ms": 1015,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "c9321a376f67e37ca0aea575afaf9022713689e97d1fff5089dac71cde7285b8",
@@ -4935,7 +5027,10 @@
       },
       {
         "clip": "abfb301cc007b215378be80221bda2e21d3aaf59aa1b9ff6c01dc23e78d1debf",
-        "ms": 2385
+        "ms": 2385,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -4943,7 +5038,10 @@
       },
       {
         "clip": "d81a50cffd76786f77f16eb821883f195b9a01426db08aa2f3fe03b8114da629",
-        "ms": 2597
+        "ms": 2597,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "a5a06ffb4706747a5ed843dc8676e346e1925dbaad9b0185908b6bdebdcdc2ec",
@@ -4983,7 +5081,10 @@
       },
       {
         "clip": "0e1f7b31f508064722e7bd275e2361b69e47a1e7f981a24e0441eb3e37f9b95d",
-        "ms": 2753
+        "ms": 2753,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -4991,7 +5092,10 @@
       },
       {
         "clip": "fd7b8ede4f993c3387dc6bf5eb7f867af5138a29c31cda4eaac87b948d2bcfb7",
-        "ms": 2030
+        "ms": 2030,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5003,7 +5107,10 @@
       },
       {
         "clip": "be3449117fdc419143d7c716cf4103b43d206f2d0a91bc7277c94b4b6b62a750",
-        "ms": 2066
+        "ms": 2066,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "dba743eeb65c4d08dd322f01cc616a06149eee52a2bace46aba1b6db9215882b",
@@ -5015,7 +5122,10 @@
     "": [
       {
         "clip": "3d8361a2ec27706443fa79daf21770651566beaf04a8619c6c82ebf1ee9b5242",
-        "ms": 805
+        "ms": 805,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "bec92ca0164ea4e824c99a6c6951304f8e7205c866b91491275475c6f4682e8f",
@@ -5023,7 +5133,10 @@
       },
       {
         "clip": "c1e7b9b9f41033f8c23123c12c2ef82be9f0fd15da01e1b38ebc1e534fd9423a",
-        "ms": 1637
+        "ms": 1637,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5031,7 +5144,10 @@
     "": [
       {
         "clip": "b511bc3200cb4563afc11ad06cae955e34818a2a152b01dbb514431423c7816b",
-        "ms": 769
+        "ms": 769,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "9e73cf9a57478aa841e703c67c681f1e570e42282db78cbe5e18f1fba79a798e",
@@ -5039,7 +5155,10 @@
       },
       {
         "clip": "3c3493414a84a42fb741e83302db3c3d39bb15a91873d1c4544e2b99a0c90d30",
-        "ms": 1722
+        "ms": 1722,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5083,7 +5202,10 @@
       },
       {
         "clip": "a6eef87a735f0485ad0213e530358f3d4a3753727cce3275f8c41be6c84dfdf3",
-        "ms": 2258
+        "ms": 2258,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "name": "Tansy"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -5091,7 +5213,10 @@
       },
       {
         "clip": "3dad8bc3ee40c83bfca63e123a57b2838d6e32181d4bfa8da33b52ea0fbc31c3",
-        "ms": 2341
+        "ms": 2341,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "name": "Tansy"
       }
     ]
   },
@@ -5295,7 +5420,10 @@
       },
       {
         "clip": "08b23e86e923d9703592ac2a1be1de44fc493950a6a0d1ce1b96f5efe0dbf70e",
-        "ms": 1325
+        "ms": 1325,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "name": "Tansy"
       },
       {
         "clip": "90c4de672b05ce77d91e2fa6140b45720c4bc59aed2d3a20e4a232b75d842222",
@@ -5307,7 +5435,9 @@
     "": [
       {
         "clip": "48f5ef9a384a054447d0643f5a53b89fb992bb39414be07babc3ef0532c5a7c4",
-        "ms": 1620
+        "ms": 1620,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "5dd52ccce5cd2715a0a485bba5da878179facca7533b97e518e9b892db06d71b",
@@ -5315,7 +5445,10 @@
       },
       {
         "clip": "3c345e446158e6afcdab815918e335d26bdbc9ea3708a00b06375b4151b4bb9a",
-        "ms": 656
+        "ms": 656,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "name": "Tansy"
       },
       {
         "clip": "ed50656f103b9d4f0351a172f8f7177a11f8604aab1532ad678199b0eac2c1e3",
@@ -5339,7 +5472,10 @@
       },
       {
         "clip": "18cbaf00f09d1c500997475313c3835926a8471da87d503245b23018ee997505",
-        "ms": 2264
+        "ms": 2264,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "0c2e9d8be8305bff22df8b3aa08be41d1103e74861747a2eb5a236715122686d",
@@ -5355,7 +5491,10 @@
       },
       {
         "clip": "0d367ed5489f0a856a7b755eec575f2a45133149715988244840196f5f80af15",
-        "ms": 1561
+        "ms": 1561,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5363,7 +5502,10 @@
       },
       {
         "clip": "17b935ab62576539e8628ae938c187c4f9a0872570060f0912d4ad6209a64584",
-        "ms": 805
+        "ms": 805,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5375,7 +5517,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5383,7 +5528,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=1": [
@@ -5393,7 +5541,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5401,7 +5552,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=10": [
@@ -5411,7 +5565,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5419,7 +5576,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=11": [
@@ -5429,7 +5589,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5437,7 +5600,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=12": [
@@ -5447,7 +5613,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5455,7 +5624,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=13": [
@@ -5465,7 +5637,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5473,7 +5648,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=14": [
@@ -5483,7 +5661,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5491,7 +5672,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=2": [
@@ -5501,7 +5685,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5509,7 +5696,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=3": [
@@ -5519,7 +5709,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5527,7 +5720,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=4": [
@@ -5537,7 +5733,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5545,7 +5744,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=5": [
@@ -5555,7 +5757,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5563,7 +5768,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=6": [
@@ -5573,7 +5781,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5581,7 +5792,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=7": [
@@ -5591,7 +5805,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5599,7 +5816,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=8": [
@@ -5609,7 +5829,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5617,7 +5840,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=9": [
@@ -5627,7 +5853,10 @@
       },
       {
         "clip": "d34574e7ad21028bc7df0b8bbc2bbbbc83882683519c225e83822898769c5e6e",
-        "ms": 1674
+        "ms": 1674,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5635,7 +5864,10 @@
       },
       {
         "clip": "98f1f9feda01c08e0c5de9e62ea920e6563b27e85781dc573d19f72b7747f584",
-        "ms": 2438
+        "ms": 2438,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5643,7 +5875,10 @@
     "facets=0": [
       {
         "clip": "94e0ef77cc8842205180e7cff470402d40349734ed85254ce176c55eefa8f365",
-        "ms": 2872
+        "ms": 2872,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5651,13 +5886,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=1": [
       {
         "clip": "1ac541075da26d54181fc7ae1941e40e31ec2f0acb04844ee1fd7233fd8a4a1c",
-        "ms": 3307
+        "ms": 3307,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5665,13 +5906,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=10": [
       {
         "clip": "275f18b67ed00000fb7720a2f17f36b66af42926a7eb5f6b57f4f60112703d1d",
-        "ms": 3507
+        "ms": 3507,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5679,13 +5926,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=11": [
       {
         "clip": "49cce581ad19ac8cd7f614b6ec40d81ced59addb3221be353da2cd8938e6164f",
-        "ms": 3407
+        "ms": 3407,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5693,13 +5946,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=12": [
       {
         "clip": "037d935026fbaefdbe2abef609fd5c7c46637e14d45556c7b548ca92ac96aa53",
-        "ms": 3507
+        "ms": 3507,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5707,13 +5966,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=13": [
       {
         "clip": "1f2171c62751ffc0bee44d2a5d02c509afcc295645ae03a35ef8bf9e35a50a16",
-        "ms": 3507
+        "ms": 3507,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5721,13 +5986,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=14": [
       {
         "clip": "6882c92ef1ac73078ee3c9a4c520a60dd21a47824084e5ba2912955927f84fd9",
-        "ms": 3607
+        "ms": 3607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5735,13 +6006,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=2": [
       {
         "clip": "bbe1a7bf156eef0b16962e5a4c8947cd51e7e1c3a15817ab45eb82411090dd35",
-        "ms": 3307
+        "ms": 3307,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5749,13 +6026,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=3": [
       {
         "clip": "96567e96b61c923f5ac27d06a91f57ac00b9a46185f533fbd3cde19f67b961b4",
-        "ms": 3407
+        "ms": 3407,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5763,13 +6046,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=4": [
       {
         "clip": "2c07f704ea43b4a4b175065cd4bcc5197422ee6b04bfe901c6666d770a9076b2",
-        "ms": 3507
+        "ms": 3507,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5777,13 +6066,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=5": [
       {
         "clip": "d68d6fa4cacf1ae204c1b14ebfb371a2b891aec7d6cc95dafc413a8b06f3af60",
-        "ms": 3407
+        "ms": 3407,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5791,13 +6086,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=6": [
       {
         "clip": "44b4f1840618985c7168b1e18f87f0768fca804bb6c50d181e96cc5804ce5fab",
-        "ms": 3407
+        "ms": 3407,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5805,13 +6106,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=7": [
       {
         "clip": "87803a19c64e4987497afbe79a045591b9bc3a60a10a9146fc881eda726d0302",
-        "ms": 3407
+        "ms": 3407,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5819,13 +6126,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=8": [
       {
         "clip": "173def8975f3df1f13a6990855b1e13fe2ae2e32884c6ee1fdc8a24f85dabc37",
-        "ms": 3307
+        "ms": 3307,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5833,13 +6146,19 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=9": [
       {
         "clip": "1ec0e20c86af7cd7aefb67bf7f7c11057d18f1ee341f9fb3d867899798765081",
-        "ms": 3607
+        "ms": 3607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5847,7 +6166,10 @@
       },
       {
         "clip": "8a01a99d1a3605ef7956ea43cca16ac881cc173cdd869e268d5352bde81a96cf",
-        "ms": 2469
+        "ms": 2469,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5855,7 +6177,9 @@
     "": [
       {
         "clip": "ac5cb2f8eca476832203bbcf3ac13313bb65f855296b47d3e0eada43bd4a3a3e",
-        "ms": 1004
+        "ms": 1004,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "84b88035b13c9f7feaf2241f2afa754691edc8e9eadab946b9ff8e24fad13ad4",
@@ -5863,7 +6187,10 @@
       },
       {
         "clip": "9d49e5ad7d4ea3f03787fa10f5ecbd354ce9574aa380f4fc3fdb8c0d4b12d32d",
-        "ms": 2002
+        "ms": 2002,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "03b3c53ba66fafc70a0028981d159a50b60ff5f7aca0623d661c00e886a1f2bf",
@@ -5871,7 +6198,10 @@
       },
       {
         "clip": "88564e0356972e5ebe0213524e3c7be437f8952e39a20b78a0404b9d0041fdb6",
-        "ms": 5307
+        "ms": 5307,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5879,7 +6209,9 @@
     "": [
       {
         "clip": "66b4f4e18a5e52d4bd70287d17bbcafcb851ce2ad7b0cafb3481bcd4b730ffa7",
-        "ms": 1204
+        "ms": 1204,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -5887,7 +6219,9 @@
       },
       {
         "clip": "4dbf37b292759a7e616cc2bc573138e80cf403bf97b7c39bd600c5fe6bd9c504",
-        "ms": 1001
+        "ms": 1001,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "a457a967b5b3e3c9eb3e8746add97c2a8264dc3e8dafa6cb344f3aeec5191c1f",
@@ -5895,7 +6229,10 @@
       },
       {
         "clip": "c3079c1973c569367396900039597f7bb3c69213afc489853b866022e8c295a1",
-        "ms": 3507
+        "ms": 3507,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -5903,7 +6240,10 @@
       },
       {
         "clip": "6128cb1ed24a700008457ad77420ea823ed1d63b7e6cc102dd48b4700a677ce2",
-        "ms": 5307
+        "ms": 5307,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "4828dc9debdcbed9ab0ecc4670feb6f3cb5c021cc08ff2da8cde09c122bafc2a",
@@ -5911,7 +6251,10 @@
       },
       {
         "clip": "b285aebc91cc96aeb4ca853f5534990dbcff604ba452a816e7c0f4f949b06bc0",
-        "ms": 1360
+        "ms": 1360,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "0a2c20a4c3c916d50085e4660bc2646757c5d7551b4782de54457b872231d9d8",
@@ -5919,7 +6262,10 @@
       },
       {
         "clip": "ce8799d7d6db9b80dc7624bd8e4a8d80b0524ef5300546c0100621bef257387a",
-        "ms": 2566
+        "ms": 2566,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -5931,7 +6277,10 @@
       },
       {
         "clip": "852117390843fb027219918e3d99506b59cbaedcc5986999e948fd3e3478bae9",
-        "ms": 2376
+        "ms": 2376,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -5939,7 +6288,10 @@
       },
       {
         "clip": "fc9121cfa6d8bedb47c92f0086773f2daeb1501a8b718e05c5d837edb20a8405",
-        "ms": 1423
+        "ms": 1423,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "73fcdc2bf9c848802e7aa86f73c02b2cf6f1f9435f76104eccc5c58996dea7b8",
@@ -5955,7 +6307,10 @@
       },
       {
         "clip": "32f9fcec0ed2862c7e7a9959c75aecd0b37d55bb066f1412eb974087443e572e",
-        "ms": 1971
+        "ms": 1971,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -5963,7 +6318,10 @@
       },
       {
         "clip": "ca681761daeade1dd20f6fb88bf472935b447b81d6519af3fb13e2fe23fe7e46",
-        "ms": 1854
+        "ms": 1854,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "487ea041503619d5e5a0f0e527ca45de85bf7a692f179972b89c69800dfe5c17",
@@ -5975,7 +6333,9 @@
     "": [
       {
         "clip": "330d0926aba784eec6baae6b886956df8a63fc7b0117aeb3f013498617f06c6f",
-        "ms": 1718
+        "ms": 1718,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -5983,7 +6343,9 @@
       },
       {
         "clip": "e93b97106af9088af922bf65d205e1bb558dfc4e88b86f2877ae7f64fb19503e",
-        "ms": 984
+        "ms": 984,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "96dfb1993ece0622a38694bf24137fa75d4cd919e1c8f49f693caa401bf06d13",
@@ -5991,7 +6353,10 @@
       },
       {
         "clip": "978c715e0f1d96afb14eb33029ebaed0612dda15fb5df785b25c895bd972f767",
-        "ms": 1658
+        "ms": 1658,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "4af5bce09242b2ca76a48c904ac3973e3cfad1e2240694f563654713c7aac885",
@@ -6007,7 +6372,9 @@
       },
       {
         "clip": "adc5d74f712b1bb6a99b44b6afb865acabfabe06d15bd96a8da03527cb3152b2",
-        "ms": 1846
+        "ms": 1846,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -6015,7 +6382,10 @@
       },
       {
         "clip": "ed45b16a562b6ebcc75c7c00876476ab61eeb5758501a4dc3517751f71f22a9c",
-        "ms": 4607
+        "ms": 4607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -6023,7 +6393,10 @@
       },
       {
         "clip": "6ccfcc34165a707ac9dd17fb5c4ef978536a74376409f8a9818c972225d8bc3d",
-        "ms": 1173
+        "ms": 1173,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6035,7 +6408,10 @@
       },
       {
         "clip": "baf846ea8b17366d7ca062de2ec5fedf540eda98fd0b67eab9f3b84d416a1564",
-        "ms": 1608
+        "ms": 1608,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "6137822cbdb16576aa6dc868fa7e88a3a69b38baec632dfd9f0af08ff382642c",
@@ -6043,7 +6419,10 @@
       },
       {
         "clip": "a456ae5bec59f5ab231b9e613ce1515a70e5b96e9e40f8fde360575ce24d6d41",
-        "ms": 2173
+        "ms": 2173,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "b02bba70e5d84ddb4a5051a50b5d90a587cf326b2a59d109c6879749d5ffb2df",
@@ -6059,7 +6438,10 @@
       },
       {
         "clip": "a2e4d230b8736db4c76f7fd65f67abbf7709a09141dff26636bb464bca60942b",
-        "ms": 1652
+        "ms": 1652,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6067,7 +6449,10 @@
       },
       {
         "clip": "d026cc9fe95d4143ce0ced4d6d6e8a038bfea058d6ce59422f5e209bf9ed1f47",
-        "ms": 1141
+        "ms": 1141,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6075,7 +6460,9 @@
     "": [
       {
         "clip": "89564ac551f3cc60d077e3131626d941068e7549c9fa1b018a998669c7fee8b3",
-        "ms": 1622
+        "ms": 1622,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -6083,7 +6470,9 @@
       },
       {
         "clip": "e518f3756d7d571de53f766c3e3af085ca21c4586821b0629ae84bf280d67133",
-        "ms": 885
+        "ms": 885,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "7774bec8cdd070f26831137c2a12608bc98db0c0f05eac11f8094cd707e7b46a",
@@ -6091,7 +6480,10 @@
       },
       {
         "clip": "822d1ae16039d7ea4649813b3e74ea97488c31dac950f4d1bec8dcdcdfb7c343",
-        "ms": 1634
+        "ms": 1634,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6099,7 +6491,10 @@
       },
       {
         "clip": "011a505a9c4051dcc30825f852b84c6fda9989e8b76998648172c8a1fe09acfd",
-        "ms": 2339
+        "ms": 2339,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6111,7 +6506,10 @@
       },
       {
         "clip": "a447b96ce3b8fdbc8e7805a6a3106833e04ffd7e8c9d70b806d873bc9c7dd93d",
-        "ms": 1953
+        "ms": 1953,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -6119,7 +6517,10 @@
       },
       {
         "clip": "d5924cc20ade9d0c05bbcdc0e3e1ac17d04bbbeab1fc970130a7c81774bcdf60",
-        "ms": 2583
+        "ms": 2583,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6131,7 +6532,10 @@
       },
       {
         "clip": "114285b7bac8708ee8c2d2c0e7fb22e671892940e5b484f3da3516c4b98a963a",
-        "ms": 907
+        "ms": 907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "7d17f81584eb1dcabad23cd19e55ed25a82e1d6d1a1175ea2f3390ed7b6b1338",
@@ -6139,7 +6543,10 @@
       },
       {
         "clip": "f5afc643907dbbe71568dc2b5986bba438803b409a01fbc69bf2f8afda199a90",
-        "ms": 1947
+        "ms": 1947,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6151,7 +6558,10 @@
       },
       {
         "clip": "114285b7bac8708ee8c2d2c0e7fb22e671892940e5b484f3da3516c4b98a963a",
-        "ms": 907
+        "ms": 907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -6159,7 +6569,10 @@
       },
       {
         "clip": "4f75e92aedf6a7d3918ca916b1884b70f69beeb6076ab3cac45f1e402c34a8cc",
-        "ms": 2704
+        "ms": 2704,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6355,7 +6768,10 @@
       },
       {
         "clip": "8fba8f52faefbf48b3c509ea746e4dba9eba5a326499991e251fa10bc299a6b4",
-        "ms": 1718
+        "ms": 1718,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -6363,7 +6779,10 @@
       },
       {
         "clip": "ef9957a78128a45422e844847c2c69883f3806c3c47e83f13a05d0bdf6fc5b00",
-        "ms": 3607
+        "ms": 3607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6475,7 +6894,10 @@
       },
       {
         "clip": "ecfa5228abe99fb71d00ee5d55e509210f9d83ef9fbff1d2f01e960a70c9456f",
-        "ms": 705
+        "ms": 705,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6483,7 +6905,10 @@
       },
       {
         "clip": "c1eb0d4fca91e07c3fc5b6dfdd6b08eeab8f8108aa4a47b06b7251c2e92dbe06",
-        "ms": 2049
+        "ms": 2049,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6495,7 +6920,10 @@
       },
       {
         "clip": "119bab5632566daa25017bbae1799156f90dbfe4e3dfcce1a7b19f83f33c40f9",
-        "ms": 1333
+        "ms": 1333,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6503,7 +6931,10 @@
       },
       {
         "clip": "167e0260c1884ab0d002cddddf1359608421cade08c42835dfd7da288e5b2fd4",
-        "ms": 2616
+        "ms": 2616,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6515,7 +6946,10 @@
       },
       {
         "clip": "d846be46f255777243c8e389ccaab9796d1c93a9cbcc6d403c48dacd2ec0f281",
-        "ms": 858
+        "ms": 858,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -6523,7 +6957,10 @@
       },
       {
         "clip": "2b2212c6046efdf8566f1a84858aa7afe4c1c639497d75da5fc505d53c211bdc",
-        "ms": 2013
+        "ms": 2013,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6699,7 +7136,9 @@
       },
       {
         "clip": "d39d8e48219ef7b73823abdcaf66d31a76a7e2578021656679657b7661ee2028",
-        "ms": 1193
+        "ms": 1193,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "ce1648aa04ae546cadcfa97785f96cd4f0d2f48caf7f708ea04e0d5dde2f4232",
@@ -6715,7 +7154,9 @@
       },
       {
         "clip": "91e71fc9120068c8439ea3e3b6d1dca80b7865b17259abc39ad34401ba2d59ee",
-        "ms": 1031
+        "ms": 1031,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "110eed19748873a98c0b661ebbbd5a93d5252dfedec391b0f4238b0c0784c536",
@@ -6739,7 +7180,10 @@
       },
       {
         "clip": "f7f2367fdf20bc8b5b79bd0d98ae9fd95f0673f82ac172dba44233cf26b0afea",
-        "ms": 1558
+        "ms": 1558,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "e898cc5087c47aff839bf30a5a7bb91c5759f174ad19f843b91fc1d4ea7709dd",
@@ -6747,7 +7191,10 @@
       },
       {
         "clip": "c68130431269c239b5624eec84ba276cc39c7fb2863c134816fe510228f2a7a4",
-        "ms": 3607
+        "ms": 3607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6755,7 +7202,10 @@
     "": [
       {
         "clip": "0d367ed5489f0a856a7b755eec575f2a45133149715988244840196f5f80af15",
-        "ms": 1561
+        "ms": 1561,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "11f9690077237c15cdcec1e0b7dd519348e1b54c5170e49bd38a37c9a8fe3ea6",
@@ -6763,7 +7213,10 @@
       },
       {
         "clip": "0757579977b259fa0ccfff0f59c34c00233fc2bd3c8fda57a72aefc6d0b9a42a",
-        "ms": 1017
+        "ms": 1017,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6771,7 +7224,10 @@
     "": [
       {
         "clip": "8cd1589e721976b172f81773a28d0d5b6a27a9155427a313afc7ee0b6dcdf91e",
-        "ms": 2611
+        "ms": 2611,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "0f0fa421b5052172775e751f1393893a025d86ad3d33ebf577d9d809169e11b1",
@@ -6779,7 +7235,10 @@
       },
       {
         "clip": "1de8c029b6ce07503889174681dc71f77ca8b83274f332f9583af61d8471b37a",
-        "ms": 1663
+        "ms": 1663,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -6787,7 +7246,10 @@
     "facets=0": [
       {
         "clip": "6b587d249d145b13837bad4fe0c1670926a424cd2eb95acf7e485d8ca19df114",
-        "ms": 3207
+        "ms": 3207,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6795,13 +7257,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=1": [
       {
         "clip": "7b30dfaf67c3a8d67878159028aaafb5caa07c513214b2786040b3cf06bcaa14",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6809,13 +7277,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=10": [
       {
         "clip": "d4856723844a19367797c2367e3a1d28b2fde262e48fa18e56fd6f9bb4473659",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6823,13 +7297,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=11": [
       {
         "clip": "6af91a0df7fa44b89d105c0926b30f81fa70947e79bdd5134f1df94cd832e6b3",
-        "ms": 4007
+        "ms": 4007,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6837,13 +7317,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=12": [
       {
         "clip": "89dcb056b69008a67004e3abf8d34b5ac655f9091f1e6f8cde38f277c2543999",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6851,13 +7337,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=13": [
       {
         "clip": "cf22d79e509456b0c28f00a818d5d9a3611e449397fd4f6687c4c2c68989587f",
-        "ms": 4207
+        "ms": 4207,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6865,13 +7357,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=14": [
       {
         "clip": "4e2cb221e36a3fe4a40483dd768f3cbb61739d0840704212cb82021e9fe996de",
-        "ms": 4107
+        "ms": 4107,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6879,13 +7377,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=2": [
       {
         "clip": "18c23e4001f2bf01bf5460d1e61296713b2abd075ec67316282340fc2061cb3e",
-        "ms": 3807
+        "ms": 3807,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6893,13 +7397,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=3": [
       {
         "clip": "b6e47724a4ae390a265e5a54ccbdc6b9911cefdf00ff1ae0248da40d6954e1fd",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6907,13 +7417,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=4": [
       {
         "clip": "04265e7647192961d580e2216c31804955bcec9cdca3f725e2853563a11d7239",
-        "ms": 3807
+        "ms": 3807,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6921,13 +7437,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=5": [
       {
         "clip": "e16193a3c7b7e4379448971bfb564d753ab3c0d7647e9b9977a00d22516661d7",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6935,13 +7457,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=6": [
       {
         "clip": "1871f2b2e498c91a294da5f07a372000fe6b6fa4db8d9a011b6e3043e22bc749",
-        "ms": 4007
+        "ms": 4007,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6949,13 +7477,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=7": [
       {
         "clip": "4d97cb9de6f118bfe2efdeca9d104cc1f5e1b9c57a8c3084ce8130f01d12c115",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6963,13 +7497,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=8": [
       {
         "clip": "5b086ebf8cb5afc62788adfb4f26767d5258e95cc70aa7823cf311c753b871bb",
-        "ms": 3807
+        "ms": 3807,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6977,13 +7517,19 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ],
     "facets=9": [
       {
         "clip": "323acbff1af9110436bb3f63aea51a99ad3550ed1938c07c29612428cd6dd701",
-        "ms": 3907
+        "ms": 3907,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -6991,7 +7537,10 @@
       },
       {
         "clip": "b5bb633c39454451fef30b425499a6b060e41754eaf8ce19595f58fa0baa39e3",
-        "ms": 2466
+        "ms": 2466,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7003,7 +7552,10 @@
       },
       {
         "clip": "111aec33d3a06886b0a73ae444f321dd686f2ec5855403dfb6a1504ab431b6da",
-        "ms": 977
+        "ms": 977,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7011,7 +7563,10 @@
       },
       {
         "clip": "50c7612e4a93e7307241bf70e28951ffd36e79b3196b5a251e897c7367b41487",
-        "ms": 4407
+        "ms": 4407,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7019,7 +7574,9 @@
     "": [
       {
         "clip": "eba18ad2020e4f7f590c24462c87379d0f851e4cf583b900ddc577cf4c8ec8d2",
-        "ms": 2825
+        "ms": 2825,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "5aa4bd88b8b69201cef2e0532225ebe31d064c9b7e6427e1641b16acc9760e73",
@@ -7027,7 +7584,10 @@
       },
       {
         "clip": "609ea3cd3ff046da4f2cf10bf8d33bf34cecefea85a480e660d4269132a35088",
-        "ms": 2518
+        "ms": 2518,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7035,7 +7595,10 @@
       },
       {
         "clip": "6a62581695ec29228ae283bc8bb12a0d46c900b4b1c07f6a1a52c5e3457507dd",
-        "ms": 2014
+        "ms": 2014,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7043,7 +7606,9 @@
     "": [
       {
         "clip": "e259f84b9f88f4bdbbb941e05e8b2b3c269976c2e2992f7635d86ff1e7f8b8a8",
-        "ms": 2709
+        "ms": 2709,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -7051,7 +7616,10 @@
       },
       {
         "clip": "238e477a12bbfe052fec5702459686d69e5968bb6f6998a7b0fc9ecbda65106a",
-        "ms": 868
+        "ms": 868,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "614dc229ff8b188e479d0a521619857726c1458b1ba5dc29e6648dac8d59d0fb",
@@ -7067,7 +7635,10 @@
       },
       {
         "clip": "9713a9d2ef2a25021072aac781f13fe8ca33bbf5cbc64524bec8b31798586946",
-        "ms": 1028
+        "ms": 1028,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7075,7 +7646,10 @@
       },
       {
         "clip": "f61a35083d98f1be6385c9cda0c2ab9bf2259911422368f25eef99aa8eb73919",
-        "ms": 3607
+        "ms": 3607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "51e5d356c10ffd8e51eff0b9d19807c9fb12038bb2b598a065928971c29b1343",
@@ -7083,7 +7657,10 @@
       },
       {
         "clip": "f2e4ff8341933c3842294fd788890340c1ad3b4f1092894ebf7315c6c3aaf350",
-        "ms": 887
+        "ms": 887,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7091,7 +7668,9 @@
     "": [
       {
         "clip": "c56478799787b9356dce65822505050ff2c20f2f50ff6f6837edae6fb5b2dab6",
-        "ms": 1512
+        "ms": 1512,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -7099,7 +7678,9 @@
       },
       {
         "clip": "b8adcbdb617e1e03af813af51e9173292b40d69206b3b618d09c97256d26ae93",
-        "ms": 2128
+        "ms": 2128,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "c5d133cd74e74e4daabc245d60b494ae068860e036e5e3ed0d08be710bad8c16",
@@ -7107,7 +7688,10 @@
       },
       {
         "clip": "61a66eaafd12d668233dc01c91e8a798a16353602e9fd37b25d19c3668d1e048",
-        "ms": 1245
+        "ms": 1245,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7115,7 +7699,10 @@
       },
       {
         "clip": "3470f4a4b992fbda595bcf8b6d6befbb982ba5b93ebcac29da5ce02e3429a84a",
-        "ms": 2027
+        "ms": 2027,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7123,7 +7710,9 @@
     "": [
       {
         "clip": "2502a0fe536bf469c13371f83322ac24fb5d4b01bf9b610e19361e73d9b441cf",
-        "ms": 2243
+        "ms": 2243,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "2918b4e01cd3931aebf9c9da625fd06546086c264238a8a16fb69c7e6a71405b",
@@ -7131,7 +7720,10 @@
       },
       {
         "clip": "04348b454fbe86c48407a1e3b874c1a45c6580fdec1c9bca89bff5ed8181e1d1",
-        "ms": 1235
+        "ms": 1235,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7143,7 +7735,9 @@
     "": [
       {
         "clip": "ea42a97ceac5bf94fddd00a99adaefc5b4a6ff7b05e80688c834fa90234a93d6",
-        "ms": 1657
+        "ms": 1657,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -7151,7 +7745,9 @@
       },
       {
         "clip": "740bb690280295febe9f547883c1f0d505420f7077fa99123e98dc2e94fd11bd",
-        "ms": 1587
+        "ms": 1587,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b439d962750731be4cbf0df7cf637e03525f776ac4ac3013b5eab6978dd9cc22",
@@ -7159,7 +7755,10 @@
       },
       {
         "clip": "f96effa106fc73ff88acecbdd2a6d25b0ce23ca6cf0b73e91e470a7b829b066b",
-        "ms": 4807
+        "ms": 4807,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7171,7 +7770,10 @@
       },
       {
         "clip": "f139e724cf167f2696ee3d33afa221c09eaf2e954c6385fb8498a36867d5e0ae",
-        "ms": 830
+        "ms": 830,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -7179,7 +7781,10 @@
       },
       {
         "clip": "749fc28b294301e3c23046f6e91480792949e7ff4b3f977f85292f1bad99db35",
-        "ms": 2014
+        "ms": 2014,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "ebe382ba933d4594186d5f976e409087e8f6f545907ea39a894b96b2e1c0309c",
@@ -7191,7 +7796,9 @@
     "": [
       {
         "clip": "1d98e1532edb8da7d92072edab33364658d93759df6091748d2c5ac06e44fab4",
-        "ms": 2418
+        "ms": 2418,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -7199,7 +7806,10 @@
       },
       {
         "clip": "6125fa96d5d74a762585461e01f61dc2cd903631bd408ad01ece6a4277c7a793",
-        "ms": 716
+        "ms": 716,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "cb6d1e991e902da97b29a861f8a0436bcd2c11ca239d8b6ff3fd50ff2486c619",
@@ -7207,7 +7817,10 @@
       },
       {
         "clip": "e6ea6d5e167bf6146f26f347a36f29533b5cb99759d13c9021a749f1dd4c15b6",
-        "ms": 2574
+        "ms": 2574,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7219,7 +7832,9 @@
     "": [
       {
         "clip": "021fe3160ee43c8342ed678da973d2375e45137c717a6c79228bb374342a4415",
-        "ms": 1389
+        "ms": 1389,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -7227,7 +7842,9 @@
       },
       {
         "clip": "5830a7563ebd752cf009e05821a6f519a27009ce6e6dd38c6f99ead67794fd66",
-        "ms": 1871
+        "ms": 1871,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "d486433ce5868772c3c677bfdd6922742a27ffb3761521abc4dd02dd8b7c78ae",
@@ -7235,7 +7852,10 @@
       },
       {
         "clip": "50963e37f3855fe3a8da3e000d75b268fca88352c25e7b9eea5abae9d86e7934",
-        "ms": 2540
+        "ms": 2540,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -7251,7 +7871,10 @@
       },
       {
         "clip": "ccc0ad0e182d3e1a619724a2ba84fef7f2b5b43746136ea526991ad4dd64b3f8",
-        "ms": 1918
+        "ms": 1918,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "2d475aa978ba20e2b9c51c0707f183541aee1e49ea85209e1f9091ddd358e58e",
@@ -7263,7 +7886,9 @@
     "": [
       {
         "clip": "ddf6c55355bc45eb53918c4499eee26179cc146214a0a1b7ca8bf21db0e3cca8",
-        "ms": 833
+        "ms": 833,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "00008161d69fc23f0a42d4b4e234d48966daa9a7bb7b12087089886c2cd32b1d",
@@ -7271,7 +7896,9 @@
       },
       {
         "clip": "a6ac540cc39a5cc4d744f20636a4cb79e353cdf27c02f6433e5bad41c4f78a6a",
-        "ms": 2595
+        "ms": 2595,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "fd941b744cfdf4f8a6bfc653016d85b62fb5214a0800fdc6c3671f149773b741",
@@ -7287,7 +7914,10 @@
       },
       {
         "clip": "bf08cb500de92739641eff5086b5a281d5e2d21d2f5f2e55b99f31d46648bbdd",
-        "ms": 1230
+        "ms": 1230,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "c0a5c6de28e984853ef7137f7283fba2c4937f823285f088ff3f851cf9e67be0",
@@ -7295,7 +7925,10 @@
       },
       {
         "clip": "6590d1df1bbe566d3b7b848db698826ec041f832738fb2d32a6922dc8c159b0a",
-        "ms": 2900
+        "ms": 2900,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7491,7 +8124,10 @@
       },
       {
         "clip": "e083ac41636c8f660f308640104bc68eab31d594325c4fcbaea032b382f6f7c8",
-        "ms": 1686
+        "ms": 1686,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -7499,7 +8135,10 @@
       },
       {
         "clip": "e7dbabfbf27c50cc01d1235a55b4283faaa93f7f3a3ee0d3926c626de51c6f25",
-        "ms": 1989
+        "ms": 1989,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7527,7 +8166,10 @@
       },
       {
         "clip": "3476b6129e7132c8918f62b786bc31d89791ca9a0b761b3926a77ac7a486e75a",
-        "ms": 1481
+        "ms": 1481,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "c0a5c6de28e984853ef7137f7283fba2c4937f823285f088ff3f851cf9e67be0",
@@ -7535,7 +8177,10 @@
       },
       {
         "clip": "ff11ffbfb8e8dc218f9919435062878f52b5310f2ef83250d520dd4eaa55ee17",
-        "ms": 12607
+        "ms": 12607,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7757,7 +8402,10 @@
       },
       {
         "clip": "6e9ee8a22a9948f8a366251dc15d25aa97c7894871228066dbc70968ba3c5526",
-        "ms": 747
+        "ms": 747,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "24b13c19cb56cdc1d0d57135728e410eadba84bce5b23739f1e55962fe8fb651",
@@ -7781,7 +8429,10 @@
       },
       {
         "clip": "8ca22c295dc34e6413a85406dde5936efb1ae4b70938d2e1e174d59e28a0569e",
-        "ms": 1083
+        "ms": 1083,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "78b6e83b0f8be36fde4bee912da9500f6610e520a6c4effc5d08408fff16e7ca",
@@ -7789,7 +8440,10 @@
       },
       {
         "clip": "879129dfc7ccc94e9462031cb027462d01d8bb242a00253181608d209ecd251a",
-        "ms": 6707
+        "ms": 6707,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7809,7 +8463,10 @@
       },
       {
         "clip": "37eb9e1d66909443ccfd467f3b7bed4e824a4a6e40df88209d517066ca5ccf6d",
-        "ms": 821
+        "ms": 821,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -7817,7 +8474,10 @@
       },
       {
         "clip": "36dd4a78126f4c1c918136ea8f01c62b185be71156dd309a24aa361b187014f5",
-        "ms": 1070
+        "ms": 1070,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7829,7 +8489,10 @@
       },
       {
         "clip": "1e6a4a76ae217e141627a548005d5e3b3e8b91f1baf62e86ae7ea062df06003a",
-        "ms": 2519
+        "ms": 2519,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -7837,7 +8500,10 @@
       },
       {
         "clip": "6372a3245c4bf8a49273f4bf998d6e9283af55ec2a4dd20dddf968d7b6248305",
-        "ms": 1777
+        "ms": 1777,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7845,7 +8511,10 @@
     "": [
       {
         "clip": "63c531cc5421ced122ba33e3ab8d4bb23d2917b8b70c65376bfece83cf254fef",
-        "ms": 1635
+        "ms": 1635,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "87c222b75ed3084ff2d3f4d43ff4314aa7f0cadb3ae3df6ee3eecc6ad05f3506",
@@ -7893,7 +8562,10 @@
       },
       {
         "clip": "da8f33c934feec30d33ead56801f65f670cdd25ab695037716d1eb566bd2eb1f",
-        "ms": 1533
+        "ms": 1533,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -7901,7 +8573,10 @@
       },
       {
         "clip": "cbeafe3d27bc356266e15bd23fca406f350fb4ad6662d588e36f07c1a46da6d9",
-        "ms": 1773
+        "ms": 1773,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -7965,7 +8640,10 @@
     "": [
       {
         "clip": "263a7120ddd64813b76bfa8e056a0d2cfeee7acbfe800268d2783c68f909e723",
-        "ms": 1578
+        "ms": 1578,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -7973,7 +8651,10 @@
       },
       {
         "clip": "874edc1a03c41f19daa976dab58e3ab9c56fd5f0cad67be929ea7f6843dd551e",
-        "ms": 2761
+        "ms": 2761,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "476ef4dcecc6993d45c09adcdcd05730a6a4ac61c4ee950d64c00117e955b08f",
@@ -7985,7 +8666,9 @@
     "": [
       {
         "clip": "e75e61094d2880017b71c204ab9bed225d2d2b5a1c791fe18a2790cc1dd12736",
-        "ms": 1736
+        "ms": 1736,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -7993,7 +8676,9 @@
       },
       {
         "clip": "d9aab4f6e299a38fd4550d7cd01976d65d5f249ae7008fe612a02c25ad016464",
-        "ms": 1215
+        "ms": 1215,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "2883b8af9abd029886a28a33e50ee79487d39b48fc62d95b7cf3b7a1e17a203e",
@@ -8001,7 +8686,10 @@
       },
       {
         "clip": "e059b31fffaf9e7f435d973883efaa740712c88c2426024658d142d942eb58ac",
-        "ms": 3107
+        "ms": 3107,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -8009,7 +8697,10 @@
       },
       {
         "clip": "c2a9b8d298a06adc55d52860322c6f29546a6aa0578fa98746f9a6531ba47161",
-        "ms": 1255
+        "ms": 1255,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -8017,7 +8708,9 @@
     "": [
       {
         "clip": "0dffed22195e6826c4c4b82da5b438737699279b9e10393a5dbe3ac413502adb",
-        "ms": 1307
+        "ms": 1307,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -8025,7 +8718,10 @@
       },
       {
         "clip": "13aff69689c85ebf902cc5d6ef03a0842cd7c90acb1ebef32c29380ee80f813e",
-        "ms": 1090
+        "ms": 1090,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fe33c569e1ef4bdc9f408ec10df1065a0c86e749ecdf95a0ebb30c91bb5bb96f",
@@ -8033,7 +8729,10 @@
       },
       {
         "clip": "6bcb0a9849853ade7d3ad8c37fec9bf7f12c5158f8335d3548fa57e8f1633bae",
-        "ms": 5107
+        "ms": 5107,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "2a9a6638d89169ce4a3ea3b258c18e8720923837bea1649d05f34ff9ed10fe3b",
@@ -8045,7 +8744,9 @@
     "": [
       {
         "clip": "ea275cfbcee182fb2e495d550ceae6901106ca3cc83e83d02a483d580d7157c6",
-        "ms": 1356
+        "ms": 1356,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "4332977fa0ef72465e06b3c0f63b86ef0199bdd238126d18f90d5ba148d86b11",
@@ -8053,11 +8754,16 @@
       },
       {
         "clip": "e382b7baa7304a3a8955f571307882e70e704d786158e2585b15c0a10def6843",
-        "ms": 1718
+        "ms": 1718,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "a704954e6924c930e0adb48416127daa70ac4fcdfe12ea484d2bb1bb8c0d4214",
-        "ms": 3507
+        "ms": 3507,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "c117ddb2475b83cac45777909fac28c26ef082e580945a62b4ca2e713931db3d",
@@ -8065,7 +8771,10 @@
       },
       {
         "clip": "5ae7a69b55308a23a1fcd4e5bae50b19f65d31a90bf4c6af07e5dfcc15961147",
-        "ms": 2564
+        "ms": 2564,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -8077,7 +8786,10 @@
       },
       {
         "clip": "470d018e1feb4f3fe4424964336283f84734eb059b175f1fa986cdc23f814bc1",
-        "ms": 864
+        "ms": 864,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -8085,7 +8797,10 @@
       },
       {
         "clip": "aedcd9cd0e46c2d01270e0725186cbb13adbdfd07ab321079eadce17cd9017a8",
-        "ms": 3307
+        "ms": 3307,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "5d7e461e71821d03d553e3a7a596c558b0fe1b1afe5f1eda59cc8a9896724b30",
@@ -8097,7 +8812,9 @@
     "": [
       {
         "clip": "c1f59455180b941c57af2babd9fbb0daa1f37303a3d4ed0cf6344eca95242c49",
-        "ms": 1765
+        "ms": 1765,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -8105,7 +8822,10 @@
       },
       {
         "clip": "2d0ab2738f8e8cafd4c57bbfeb218913c969928d9aa71e8aff3f96f9b1be16b5",
-        "ms": 1054
+        "ms": 1054,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "6bf55dd4dfa216c94b6398767ed75f3323cc078437a6a096f7a3ad81bf14429c",
@@ -8113,7 +8833,10 @@
       },
       {
         "clip": "3a3a745061a991767d9e13a72fd6c7e14d5ba2f85c06591a3e572f45d9621ad7",
-        "ms": 2034
+        "ms": 2034,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -8121,7 +8844,9 @@
     "": [
       {
         "clip": "58ab42a3931b5b8d44046796bdd4c53e4cff74f05ce1c2537d9bd281242d9881",
-        "ms": 2189
+        "ms": 2189,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "a3fa772dcc92d4d9cb391dd01edee553a4b78c55474376d601ce17a3300ead8a",
@@ -8129,7 +8854,10 @@
       },
       {
         "clip": "e93e7d56ffaafe15658a8a65c0fef95c8e253856af4c8908544ca44fffa6ee38",
-        "ms": 1323
+        "ms": 1323,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -8137,7 +8865,10 @@
       },
       {
         "clip": "d3649aa881264c03d00e4b89d1dfdb3d47fb8afd5921ea2e50c8aa0c8c1689cf",
-        "ms": 2529
+        "ms": 2529,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "001f095f692e0e48f2f1ae2113cf6d0130635ed4990e98b095b1de3468d62ff9",
@@ -8153,7 +8884,10 @@
       },
       {
         "clip": "e08988b4b6780f09c357a3de03a8f69e19d3080b15c961a112c299fd34fab1a3",
-        "ms": 2525
+        "ms": 2525,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -8161,7 +8895,10 @@
       },
       {
         "clip": "07917ff3ba30b8a1265c0ea837efa433b124364fa449e6c058e94f6d916783f7",
-        "ms": 2281
+        "ms": 2281,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "fbce36f2dba71275bf40dda46531dedcc55598087e6e66bc7fe90a4923335591",
@@ -8173,7 +8910,9 @@
     "": [
       {
         "clip": "91aa9b30de06b9e037b0737d7f5e9295cfc12c8b7be576331514ec53275b964b",
-        "ms": 1272
+        "ms": 1272,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "f831ddd5b825bad2d478b2c70e81d1a6e9f6f5477e218044532162988215cb41",
@@ -8181,7 +8920,10 @@
       },
       {
         "clip": "2fe392c3c9c696fa36f91a34c1cf5280f14c8406bc2be225f2cee0be77a82246",
-        "ms": 2449
+        "ms": 2449,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -8189,7 +8931,10 @@
       },
       {
         "clip": "cf6f69ab4a67deec5a1a7478d3293340825bc6885fab3c9c47b3a82c3828d348",
-        "ms": 4207
+        "ms": 4207,
+        "by": "seal_keeper",
+        "figure": "cast/seal_keeper",
+        "name": "Seal Keeper"
       }
     ]
   },
@@ -8273,7 +9018,10 @@
       },
       {
         "clip": "ba67de517c056c0831b1164254a12fdbab1fc7d01ef75d9b7ad5e737bbb9d5f3",
-        "ms": 1871
+        "ms": 1871,
+        "by": "voss",
+        "figure": "cast/captain_voss",
+        "name": "Captain Voss"
       },
       {
         "clip": "e148e6078a1ef618f877937e6d490f7980f803564b3c31ae025473d3ce4bb854",
@@ -8281,7 +9029,10 @@
       },
       {
         "clip": "a18ada2af38a9f596116bf66c48f6cae24a3c526cb2d298e6f5205f400b8956e",
-        "ms": 1049
+        "ms": 1049,
+        "by": "voss",
+        "figure": "cast/captain_voss",
+        "name": "Captain Voss"
       }
     ]
   },

@@ -447,7 +447,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     decode(bytes) {
       return ctx ? ctx.decodeAudioData(bytes) : Promise.reject(new Error("no audio context"));
     },
-    play(clips, onEnd) {
+    play(clips, onEnd, onClip) {
       if (!ctx || !voiceBus || clips.length === 0) {
         onEnd();
         return () => undefined;
@@ -456,6 +456,8 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       const bus = voiceBus;
       const gap = VOICE_GAP_MS / 1000;
       const sources: AudioBufferSourceNode[] = [];
+      /** The `onClip` calls waiting for their clip to be heard. */
+      const heard = new Set<ReturnType<typeof setTimeout>>();
       // Scheduled on the context's clock, so the pause between clips is exactly VOICE_GAP_MS
       // whatever the main thread is doing; a clip that arrives late starts as soon as it is here.
       let at = context.currentTime + 0.05;
@@ -469,6 +471,8 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
         if (over) return;
         over = true;
         voicePlays.delete(stop);
+        for (const timer of heard) clearTimeout(timer);
+        heard.clear();
         for (const source of sources) {
           source.onended = null;
           try {
@@ -493,6 +497,15 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
         source.start(start);
         at = start + buffer.duration + gap;
         sources.push(source);
+        if (onClip) {
+          // Scheduled ahead on the audio clock: told when it is heard, not when it is queued.
+          const index = next;
+          const timer = setTimeout(() => {
+            heard.delete(timer);
+            if (!over) onClip(index);
+          }, Math.max(0, (start - context.currentTime) * 1000));
+          heard.add(timer);
+        }
         next += 1;
         lastEnded = false;
         source.onended = () => {

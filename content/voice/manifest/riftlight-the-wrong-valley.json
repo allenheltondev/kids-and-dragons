@@ -23,11 +23,17 @@
       },
       {
         "clip": "0a59f7c225b47d43c23814acee09a5c734143d7e0ce0b780652147f082655947",
-        "ms": 2378
+        "ms": 2378,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "c03cba9a675e3bd735957ca8fb8751170a6886d1fb494c69381298d65a1d61ec",
-        "ms": 2251
+        "ms": 2251,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -35,7 +41,10 @@
       },
       {
         "clip": "04c3195003eaacd376fc48f0343a0700ea35beb4ec582d0cf10563e56937c595",
-        "ms": 11707
+        "ms": 11707,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -95,7 +104,10 @@
       },
       {
         "clip": "5fa5821a347130fe35dc59fb14c0a576778593df9aa5497e596983327e5e0fa0",
-        "ms": 3407
+        "ms": 3407,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -111,7 +123,10 @@
       },
       {
         "clip": "6d170e84155123472582893dff06e3e36a33ca96bff742e63e22b2ee12765604",
-        "ms": 902
+        "ms": 902,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -131,7 +146,10 @@
       },
       {
         "clip": "825abd8645a09d8fe60f32069812599571206ea9587935fb67beb5c4b50c6e63",
-        "ms": 1496
+        "ms": 1496,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "95546619aaff744b98c0acc26b807e8ac206ae2edbe02fed1d11bfac2ad73f77",
@@ -139,7 +157,10 @@
       },
       {
         "clip": "5fb36c3b7fc77221b8b8d92b4fac7526a7231088ac9dd81ef41fe88c7999a638",
-        "ms": 13307
+        "ms": 13307,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -151,7 +172,10 @@
       },
       {
         "clip": "79b88b0c5d32e61959f31ed851a1828d82741a33e94992b24acc34e0a4f64d38",
-        "ms": 1368
+        "ms": 1368,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -191,7 +215,10 @@
       },
       {
         "clip": "7b43ec3355f8f5347b0b6183496f3e285be87ffdee9ac73d369f0cd8700aa338",
-        "ms": 1454
+        "ms": 1454,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "6adc9ce13c047b3ce4c1f56600725e2f8588bca9657f74a4f1f0ca87030b6805",
@@ -231,7 +258,10 @@
       },
       {
         "clip": "e11b8d38d675aaab6b572892b00669fd5864e046871aae8073aec0ed90b9e451",
-        "ms": 1857
+        "ms": 1857,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -271,7 +301,10 @@
       },
       {
         "clip": "96e046b0037a9681720837aa1fd696d3e6353acecf393daf61cb89fa4359772a",
-        "ms": 2223
+        "ms": 2223,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "8233b5631d05e661be4a511ecdaa4bb1230e12a535625861cf2438eeee25aec7",
@@ -319,7 +352,10 @@
       },
       {
         "clip": "7049f887d094860c1425d05d89061fe7abcc13f155a26506d58057cc1cbac50d",
-        "ms": 1871
+        "ms": 1871,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -347,7 +383,10 @@
       },
       {
         "clip": "d6fcacde1718cf781ec358f6d8dcbfbe86a84926aba54dcf3ae052220137afc1",
-        "ms": 3707
+        "ms": 3707,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "07608802eddf2fd79a1e964597025bdc27942a3743155a8957b40da593fdf05b",
@@ -419,7 +458,10 @@
       },
       {
         "clip": "235e8c27fe094e2aa71f1365598dfa4f1d03e86635b64b1eb7abee011d5be9b9",
-        "ms": 2018
+        "ms": 2018,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "a880976354f73c2a25d520ea728197d23ef0dbb799506b70e8fec4ad5a13588d",
@@ -459,7 +501,10 @@
       },
       {
         "clip": "2686ceebfbfecc30a6ad447733c710d7b804f0b34eafeb99b6fc7d46c617e706",
-        "ms": 2159
+        "ms": 2159,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -515,7 +560,10 @@
       },
       {
         "clip": "7ad7b44b49b1a58d830fa88bdd2446934484264cd29005cc16e886d477a8c17f",
-        "ms": 1238
+        "ms": 1238,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -539,7 +587,10 @@
       },
       {
         "clip": "ef36db9e61265e4333a97d65a04133931fa9a68a8766a8d4e2d7bb57bd4d3bae",
-        "ms": 893
+        "ms": 893,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "277a3fb2d991e38e9a955c4bef58f7ca271102d836698817b86be24c75309b03",
@@ -579,7 +630,10 @@
       },
       {
         "clip": "a01a704ca26759f95ce2c2592c436de1339a4532101794ccac00a00d834ff8e7",
-        "ms": 1590
+        "ms": 1590,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "49ca3987572b65e51dffaa49f2bf233361f041238dcb83d04399ae257ce909a9",
@@ -651,7 +705,10 @@
       },
       {
         "clip": "7623aa818ff17cd92f349b8016a46375a9c0e9c5e933ed4e7ee41cac45fba934",
-        "ms": 953
+        "ms": 953,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "078176e1bb604d04c96e8c95bdda42d45c7164bd0a36a30636e2fd67938efca5",
@@ -691,7 +748,10 @@
       },
       {
         "clip": "0376bac4180bbaef321e41379edfb6e91ca071bc19c30576be7855a1a571db09",
-        "ms": 860
+        "ms": 860,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -699,7 +759,10 @@
       },
       {
         "clip": "456b2829cd4780e1f02d2134a3299b58b42e839702d5640b94e9751fe3ea22e3",
-        "ms": 2561
+        "ms": 2561,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -711,7 +774,10 @@
       },
       {
         "clip": "0376bac4180bbaef321e41379edfb6e91ca071bc19c30576be7855a1a571db09",
-        "ms": 860
+        "ms": 860,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -719,7 +785,10 @@
       },
       {
         "clip": "456b2829cd4780e1f02d2134a3299b58b42e839702d5640b94e9751fe3ea22e3",
-        "ms": 2561
+        "ms": 2561,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -731,7 +800,10 @@
       },
       {
         "clip": "b65ce0cfdc5b0ab51361f5438a0233eec441709711ba1b80875d549035ca0ee3",
-        "ms": 1120
+        "ms": 1120,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "4324903bc81afbd9c5c81c2696efa8467a80d7c60364ebaad72a9c9f71bb57f1",
@@ -743,7 +815,10 @@
     "": [
       {
         "clip": "0c7e66af45f8f195ea8374139cac27d372bd97f99b1170f5bf00a1606815d1bb",
-        "ms": 2770
+        "ms": 2770,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "8233b5631d05e661be4a511ecdaa4bb1230e12a535625861cf2438eeee25aec7",
@@ -751,7 +826,10 @@
       },
       {
         "clip": "42711556a24c6a3d45a925a9c06296b53c26a21a5656963c18ec3a0a9fe72a5b",
-        "ms": 1566
+        "ms": 1566,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "7f15ca2dd5ca08579c5fb502b638f789df860234d6da4f088cb28a6dd0ae1ba6",
@@ -767,7 +845,10 @@
       },
       {
         "clip": "4b3e4d39b2bb6371a20199161d7419ac680aaedf66c9ba1bba75fac35f46ac48",
-        "ms": 1092
+        "ms": 1092,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -803,7 +884,10 @@
       },
       {
         "clip": "7e96020e7035f7365e780af316c33649373fd45ae6122309c1ab4d7ff4ffa6f0",
-        "ms": 1333
+        "ms": 1333,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "d4a4c06eb968da5fc8b830e9147f70badb695298c9a38b3efbf59a5896e3ced8",
@@ -827,7 +911,10 @@
       },
       {
         "clip": "0569fbf6b5a45df38a21acbe77dffdc8dc8583bdc2385135f6f6b63f78e7b784",
-        "ms": 4107
+        "ms": 4107,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "f447113f66cd5dfdd29cb3273ae88df2b89d448a35d39cce1d607597f1acd030",
@@ -835,7 +922,10 @@
       },
       {
         "clip": "d5c4fa2d11485ebbfb7a5acdd853a401a4d54d0f1b5976848afd7d5ffd94f21b",
-        "ms": 6507
+        "ms": 6507,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -855,7 +945,10 @@
       },
       {
         "clip": "f4a7fe5f37bde2d745ab6a0e4cfd99de689819538a01745e76eebb3c94807428",
-        "ms": 3107
+        "ms": 3107,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -863,7 +956,10 @@
       },
       {
         "clip": "5661bee5330a68108698a1a38e9512ac229b1fd6565284b41bedba76fd7f1bcf",
-        "ms": 1991
+        "ms": 1991,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "28050a72e9b76b2535ee90c0b50140ada5e1453b11f126ba6e3dd46f69454903",
@@ -891,7 +987,9 @@
     "": [
       {
         "clip": "7f6c70ee0d0425db5b89e9c016ee8ee62e0a460edcb0500f884f72e3a24aca69",
-        "ms": 3507
+        "ms": 3507,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "e523b6c597221a33667fdc13aa2c4f1ea51dc51f602e5d6ee33ed2a87513834f",
@@ -907,7 +1005,10 @@
       },
       {
         "clip": "cd7797fb1dc407d89a57d1e78d509c8bb53e945031e810a8c5946b566c356681",
-        "ms": 1975
+        "ms": 1975,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -923,7 +1024,10 @@
       },
       {
         "clip": "2ff945eba4ca9c642dab860e3eb93c364365bcf2c125bc366cef5d907b62f84e",
-        "ms": 1363
+        "ms": 1363,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "fdf1b3eba2798fb0c7cd3c3870800ec1f5521a4465cc683c986f868f76e74ac3",
@@ -967,7 +1071,9 @@
     "": [
       {
         "clip": "285766abf743fce50174969d527a850e81f40b0d4a72112175a57356c268cb11",
-        "ms": 552
+        "ms": 552,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "db28183a79384f82e31b1355807c2405511644c95ba4d9eb7b3062800b7fb4d7",
@@ -991,7 +1097,10 @@
       },
       {
         "clip": "a67aebb3abad81bc2273a445026a606a972eb9f9c56303a54820328914b66890",
-        "ms": 1579
+        "ms": 1579,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1007,7 +1116,10 @@
       },
       {
         "clip": "97809bce796a0a432b7c182caa93506cdda3c8fc119fd0fb62da839f2ac1038c",
-        "ms": 1353
+        "ms": 1353,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "c6692c6db3b59512cadc9a578f1d32a26899a5fdb0172ea71922fa6ad899b37d",
@@ -1031,7 +1143,10 @@
       },
       {
         "clip": "884f3934b78fbccdd2bd6d580be77a782fadf69ffc8c3818e3ccd6c6c00ee311",
-        "ms": 1908
+        "ms": 1908,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "ff1955fdd5339668832d649e33bf9c0fea4846fa0c3826319bbc5385c6e555e9",
@@ -1055,7 +1170,10 @@
       },
       {
         "clip": "88165f00e9f79f321a83969f1ed6b81ea7717b5108adef7f0096398a77a071b7",
-        "ms": 856
+        "ms": 856,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1079,7 +1197,10 @@
       },
       {
         "clip": "7f27883538f4f18c95e9e61de2af0803c7df7c474e25b8652e0ebc42baf52a69",
-        "ms": 5007
+        "ms": 5007,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "a215d97bc5db39996386ab9ab24f2c818cd606681dbae1d4ff18ffe5be06b1ce",
@@ -1095,7 +1216,10 @@
       },
       {
         "clip": "1c4a817ca8f154ff10274792d17c6341d2feb4ae14c76bb22bf25ead348a5220",
-        "ms": 4107
+        "ms": 4107,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -1107,7 +1231,10 @@
       },
       {
         "clip": "5a77ef3a1f3ad27fd1b71ce547b242e2f34dbdcd8c9a1befcc2643fcdcb893cf",
-        "ms": 1182
+        "ms": 1182,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "a963ca948c305f51ed5b18f04b24840238ef32f92c2bc08def89d1aae9738052",
@@ -1115,7 +1242,10 @@
       },
       {
         "clip": "b8d3cb0a516a18b5d9d9412030c453787951593f9804fc740304952130318625",
-        "ms": 4007
+        "ms": 4007,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -1127,7 +1257,10 @@
       },
       {
         "clip": "6fdb045a34a02a62ee28a44c26014584d8fa6ee27acf7edaddb1c56180096819",
-        "ms": 3427
+        "ms": 3427,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1135,7 +1268,10 @@
       },
       {
         "clip": "62c92c23f643fbaf559b1a649962c119b05f2604e88fdf7caa7a91d7710237ac",
-        "ms": 8207
+        "ms": 8207,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "36fb3066af166aa5c7cad4443d10f7fd0dbeb9be7e31c9d1b95ed476d052a5b2",
@@ -1143,7 +1279,10 @@
       },
       {
         "clip": "2e7f0f2b85645f4e69d437ac3c16ffc6dd7b7cbc73e7125a87b62d3df985c714",
-        "ms": 4807
+        "ms": 4807,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1155,7 +1294,10 @@
       },
       {
         "clip": "518fd32f6152244667dc8fe461286a0746f3092c3622b3f1f269b92f0483befb",
-        "ms": 1311
+        "ms": 1311,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1163,7 +1305,10 @@
       },
       {
         "clip": "dcf9388cebc32f58ca78a37641d78f5083f08870a89e7a4223bd45f021fe08fe",
-        "ms": 1309
+        "ms": 1309,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -1175,7 +1320,10 @@
       },
       {
         "clip": "ff8e05b2855d03e68e2e53f19236b8f6b01d712a6f7e61ba2715613990ce6355",
-        "ms": 1766
+        "ms": 1766,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -1183,7 +1331,10 @@
       },
       {
         "clip": "787dffc5aa0224f4cc0c436b53935f98816986c0b3abe72869030ff8552d3591",
-        "ms": 1927
+        "ms": 1927,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "56942f2f26a889987b7d666ab3c6bcd9cae8645e1865b3ff53d106962c239445",
@@ -1199,7 +1350,10 @@
       },
       {
         "clip": "3a76490a37e5bae4eac441fd9338a4891b85cc0408fb4d651fde3effee7715ba",
-        "ms": 8407
+        "ms": 8407,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "251c4c39e508ae98a5be9b480f8ed0b3a7e7c8b135fbd75a8b2e0712cf8bd1ca",
@@ -1207,7 +1361,10 @@
       },
       {
         "clip": "6675a2ece56c82d57ee8ed8c2f56ca885e94258fe40ea64da3eebc152974117d",
-        "ms": 12807
+        "ms": 12807,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -1223,7 +1380,10 @@
       },
       {
         "clip": "80d2e63c80ed5d75f451fd528fdc64ba94cd237592e8805e32d100f17a596b38",
-        "ms": 1567
+        "ms": 1567,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "4bb6c3e90ed1ca33b72bef87bd879333053d2eb488b4392d03446bc06d5b3bdf",
@@ -1231,11 +1391,17 @@
       },
       {
         "clip": "19647f763721928dad0c887c3d7290b04806b0f7d9c529053c38b7c58dbf2938",
-        "ms": 2451
+        "ms": 2451,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "cac0394751c540d4499e9a3854cc1d5abc0e22fec2794c5efa1ee96b7760488a",
-        "ms": 2142
+        "ms": 2142,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1251,7 +1417,10 @@
       },
       {
         "clip": "7a7aa59dc822e070243f907c831075ce854f89f04a0151374d6321ca16cd1abf",
-        "ms": 2250
+        "ms": 2250,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1259,7 +1428,10 @@
       },
       {
         "clip": "5a5d1fca6178ff915e6e9b1edb52a9b9cc8ef013de259a2ffd959660a9988612",
-        "ms": 6207
+        "ms": 6207,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1279,7 +1451,10 @@
       },
       {
         "clip": "3bf692a439ea31ec435bcfb9d700e3cd95e51ff37b8ba95ed8f6a2d8a7a50dc0",
-        "ms": 1547
+        "ms": 1547,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1287,7 +1462,10 @@
       },
       {
         "clip": "82e78e3f86618ad31b409aeaf1c6ccdd842f2482712fda4d1f1e5b2cccec3c43",
-        "ms": 3607
+        "ms": 3607,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -1295,7 +1473,10 @@
     "": [
       {
         "clip": "5be592dfd1d2739430beb49df77c94185c898d62bcbe20951103a669e0c6408d",
-        "ms": 1464
+        "ms": 1464,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "25150ee9fb7139b3ff1c8744bdaa3ba0d87f4dab83097b3ae46b8d5ada93fbf3",
@@ -1303,7 +1484,10 @@
       },
       {
         "clip": "0e7d6225914166d0e599ad6115f20f8359828b15e05891dc14bd2c75c1467c98",
-        "ms": 1666
+        "ms": 1666,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1315,7 +1499,10 @@
       },
       {
         "clip": "bd47984ce6587aea125afa41c7e149397b2a35374e8d45fcdfe94c05b88793b6",
-        "ms": 1962
+        "ms": 1962,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1327,7 +1514,10 @@
       },
       {
         "clip": "00c21babe5b4e21216813c0b3b88d5be8a818eda19fb691102ab04274e6466cf",
-        "ms": 1168
+        "ms": 1168,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -1335,7 +1525,10 @@
       },
       {
         "clip": "dc512947f7f4267b0b7acebd37791b7f037a8f444ab8b87b85d94d56ae5da57d",
-        "ms": 4207
+        "ms": 4207,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "80351985ae6832c8ae3b56e546e0ba23fd7725bf8d83b5cf20806213ef8a8849",
@@ -1343,7 +1536,10 @@
       },
       {
         "clip": "bac09973b9584fddcb934d3beca12473df25f424a2e878b74b292abeabed2986",
-        "ms": 3607
+        "ms": 3607,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1351,7 +1547,10 @@
       },
       {
         "clip": "b7aaeee050764c2fe29dfc45e3d8214ac16d359b660cd0f7035018347717ff46",
-        "ms": 1783
+        "ms": 1783,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       }
     ]
   },
@@ -1363,7 +1562,10 @@
       },
       {
         "clip": "eccf60288fd53dfeb1e20ba818154b78b072f68f35739998f04a470af4aead2a",
-        "ms": 2754
+        "ms": 2754,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1375,7 +1577,10 @@
       },
       {
         "clip": "44fa4883988b38f1f4f2b79676b6ce4461beb10d025cf9dee13c7bf0af6490df",
-        "ms": 1663
+        "ms": 1663,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1411,7 +1616,10 @@
       },
       {
         "clip": "78e04d73eb7cbd7ab7eaef61f5a7101f48b59670a2cb43689e2b69373250c2ad",
-        "ms": 1960
+        "ms": 1960,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1419,7 +1627,10 @@
       },
       {
         "clip": "e2fafa10793a4ebfc96116a422c034afdfb9012350272c78e0788f62d199a0f8",
-        "ms": 3307
+        "ms": 3307,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1439,7 +1650,10 @@
       },
       {
         "clip": "88165f00e9f79f321a83969f1ed6b81ea7717b5108adef7f0096398a77a071b7",
-        "ms": 856
+        "ms": 856,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1463,7 +1677,10 @@
       },
       {
         "clip": "b9f1c66d50e4f54067eee9e21e7f54cba45d35d64fc836587a4ba3e90695299c",
-        "ms": 1461
+        "ms": 1461,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "ac4783e875551528b6a78499a0fb0b42706afd4f77a309dec0ec3891f11996d8",
@@ -1471,7 +1688,10 @@
       },
       {
         "clip": "c66ac7a84483813f864e653afa573cc53f1e561aeb6690c4d2a64a0b6916079a",
-        "ms": 4207
+        "ms": 4207,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1483,7 +1703,10 @@
       },
       {
         "clip": "2125ddad02f7e272c9baff897cd1f37c5ada1b75886981ae8208b00c00c8e7af",
-        "ms": 2469
+        "ms": 2469,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1491,7 +1714,10 @@
       },
       {
         "clip": "5237da850c539bda0f60af03fb94c8998ca1505ab00209cbbc158d9e1c38e13d",
-        "ms": 2445
+        "ms": 2445,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "1ef6db25ce9f98583142a573d12ea1f744161b5a15ae85fdf40ad3b7d943d632",
@@ -1507,7 +1733,10 @@
       },
       {
         "clip": "40295cb5748dc422f9825b4d4836ed4ba979e5cbbfc408ea2ba8e24f59456262",
-        "ms": 2436
+        "ms": 2436,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1515,7 +1744,10 @@
       },
       {
         "clip": "07267e24a853cb28b0b8454e015bf4ba6cff26959e1b1e48d6a740a066e72525",
-        "ms": 2257
+        "ms": 2257,
+        "by": "route_worker_yeti",
+        "figure": "cast/route_worker_yeti",
+        "name": "Hummock"
       }
     ]
   },
@@ -1527,7 +1759,10 @@
       },
       {
         "clip": "10c1b08808e706cfdb2f029c353605d28393f4ad299dd40345605d3df0eada38",
-        "ms": 1799
+        "ms": 1799,
+        "by": "grandma_drift",
+        "figure": "cast/yeti_watcher",
+        "name": "Grandma Drift"
       },
       {
         "clip": "4c8f470a0c952b6bf0bc1f15b54451e01649927bd3b8a3d347a6f691a82ce8bb",

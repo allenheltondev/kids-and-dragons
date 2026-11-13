@@ -23,7 +23,10 @@
       },
       {
         "clip": "c92009f7c39381c7df55795a367b674ff9d9fc254ef5ebb3a408b6ce49af151e",
-        "ms": 1211
+        "ms": 1211,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "11deb55730a42dcdaa5a129bdc67f30c9c50016922b6b656ef0f3e014ec7bae1",
@@ -31,7 +34,10 @@
       },
       {
         "clip": "4e7505aa891e214ac52d6768f077668cfd7f23cdb95d327beda18fca8a683863",
-        "ms": 2146
+        "ms": 2146,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       }
     ]
   },
@@ -43,7 +49,10 @@
       },
       {
         "clip": "9b2ea497bf707c424b21dbe8626c606b4b8ede07c6f1abb5f37ef145a8800d1a",
-        "ms": 3707
+        "ms": 3707,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -51,7 +60,10 @@
       },
       {
         "clip": "f23725ee3bc07a238a0bf0f7c7124c1dd151aa7eb00a114a73259824ede32452",
-        "ms": 1502
+        "ms": 1502,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       }
     ]
   },
@@ -239,7 +251,10 @@
       },
       {
         "clip": "9f99baf73d67d1aaabe07bb0b7e25a67b6f9eae0160d342fd50d44c95319d84b",
-        "ms": 1375
+        "ms": 1375,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       },
       {
         "clip": "d9b86169a58bf5560f6debc7010dde3b466d649a2b54a33befa5e40ae8d96506",
@@ -247,7 +262,10 @@
       },
       {
         "clip": "58d1d9f2e1b116b72a2dc7bf078cf0c2b36877c45d027b7744568419c480e9db",
-        "ms": 1985
+        "ms": 1985,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       }
     ]
   },
@@ -283,7 +301,10 @@
       },
       {
         "clip": "694c85f899bd396a1df3c231b125002a359c50b65d1a796788b763bd5b6afaa1",
-        "ms": 4007
+        "ms": 4007,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "9470630f04cfa663ea44fb637d91998147375224ec6e4194a4fbdd7270741bae",
@@ -291,7 +312,10 @@
       },
       {
         "clip": "5a886e642426c1b3ce5c8d9f72ace8d698c0cbd96b70579c5c3bcf08db91899d",
-        "ms": 3807
+        "ms": 3807,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       }
     ]
   },
@@ -311,7 +335,10 @@
       },
       {
         "clip": "0e68727f0efb9e814e36506d9ca96e89086c0a65ce9362339f758748ef05a1f1",
-        "ms": 4107
+        "ms": 4107,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "9470630f04cfa663ea44fb637d91998147375224ec6e4194a4fbdd7270741bae",
@@ -319,7 +346,10 @@
       },
       {
         "clip": "ef572863216ddd1013b919b08730c0abab3f65903dee92192f2c22f9f1151361",
-        "ms": 3707
+        "ms": 3707,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "445074cf1254e00caba25206d889aae681b5077626649aa2c72efde5d14f55aa",
@@ -391,7 +421,9 @@
       },
       {
         "clip": "a786157ed984d1a0a939744638f4e608ad2a029452fb4ac7264dae75dad12abd",
-        "ms": 2379
+        "ms": 2379,
+        "by": "troupe_leader",
+        "name": "Troupe Leader"
       }
     ]
   },
@@ -427,7 +459,10 @@
       },
       {
         "clip": "b7462e589dd99e9fdf1f1853db7acdebe948429d9023849f14bd3a0e3f64f087",
-        "ms": 1529
+        "ms": 1529,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "name": "Relay Runner"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -475,7 +510,10 @@
       },
       {
         "clip": "6125da5f2ba28bc4a647bf8b692ee1c40c3af8df55aac337eefbbf1cbb606c4a",
-        "ms": 4507
+        "ms": 4507,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "01c62429be46c69d4f03ccfed1b181c47cb92b605661c6574eddc846844e3c25",
@@ -491,7 +529,10 @@
       },
       {
         "clip": "38082f529576e14a9b9a4d689f4fccf52bc4703b0d8c991d3818dfea9cffcc37",
-        "ms": 1950
+        "ms": 1950,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       },
       {
         "clip": "32497f5c62dc63e3307b0e3ee2b2fba827995167201970dc94e1bed53da89f69",
@@ -515,7 +556,10 @@
       },
       {
         "clip": "94ea3a4fa292a6217715eac584c77e18eeef68a9371c6f8e598cadbf67cf9030",
-        "ms": 1846
+        "ms": 1846,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -523,7 +567,10 @@
       },
       {
         "clip": "31642c818fab32cd8674f76b6f2a10418994891314dd5d0784be5781338356a4",
-        "ms": 1140
+        "ms": 1140,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       },
       {
         "clip": "9f53cec67e1cbbad67651bddbe52dc6f66a9d623266277b746f901d20319ce04",
@@ -539,7 +586,10 @@
       },
       {
         "clip": "7bf544e46891c6ff43be298db9b054ea2ab0b4ee1f036b99b99c6acc4e281d04",
-        "ms": 1882
+        "ms": 1882,
+        "by": "littlest_bracken",
+        "figure": "cast/littlest_bracken",
+        "name": "Littlest Bracken"
       },
       {
         "clip": "bf577ee15bf7f5322276c59bb4d6686a1fda187d9562c5f808559fcef520a605",
@@ -819,7 +869,10 @@
       },
       {
         "clip": "6e28edf0da6b935f4cffa28f06d91664d2941cc43fc7883dea8d42aaf1fded08",
-        "ms": 838
+        "ms": 838,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "name": "Relay Runner"
       },
       {
         "clip": "43eb8543bc4c326d85a0559a551451466a4a4629fbfbc18e4e605f7881b15acd",
@@ -835,7 +888,10 @@
       },
       {
         "clip": "1f66cd0f56db87b660e9ae2b22d69961caf23d1cfe5a3ccb98e4c877976855fd",
-        "ms": 1149
+        "ms": 1149,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "name": "Relay Runner"
       }
     ]
   },
@@ -943,7 +999,10 @@
       },
       {
         "clip": "fc6d494e576a64a8b413ca8589c035814096bf4cf4bc7817f55b2729233fd918",
-        "ms": 1162
+        "ms": 1162,
+        "by": "wend",
+        "figure": "cast/wend",
+        "name": "Wend"
       },
       {
         "clip": "490aa2732b9f0fd35d349045b1cb8999b80de339a7a9e4fe5fa7fa7f035b50a5",
@@ -959,7 +1018,10 @@
       },
       {
         "clip": "fc6d494e576a64a8b413ca8589c035814096bf4cf4bc7817f55b2729233fd918",
-        "ms": 1162
+        "ms": 1162,
+        "by": "wend",
+        "figure": "cast/wend",
+        "name": "Wend"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1023,7 +1085,10 @@
       },
       {
         "clip": "3f1cc9a8bcc8c8be999f7428101c473d4210477f09f60b3c0fdba007918a786b",
-        "ms": 4607
+        "ms": 4607,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       }
     ]
   },
@@ -1067,7 +1132,9 @@
       },
       {
         "clip": "add9f0253d2a2ca97f2179577668d0c9d68a60d68198072bc8ecd08a9dc6f27d",
-        "ms": 1915
+        "ms": 1915,
+        "by": "troupe_leader",
+        "name": "Troupe Leader"
       },
       {
         "clip": "e79671a26ece15aa3b2ea01a040f6f1acad0c82a7cd23a7a2190986c883da4d1",
@@ -1091,7 +1158,9 @@
       },
       {
         "clip": "4a8b7db63a830a6f77a0aad60ff9e73f90ba767192c84b229cc2c655d61f1f18",
-        "ms": 3307
+        "ms": 3307,
+        "by": "troupe_leader",
+        "name": "Troupe Leader"
       },
       {
         "clip": "9858892e285788568cd52e7556d7200ba2cb965749ddbc0323265daa0f54750d",
@@ -1107,7 +1176,9 @@
       },
       {
         "clip": "ebb33ca11306572795ac86ad8daf9c0e59e04d1d939df5c314ad46d01fbbd7f2",
-        "ms": 2032
+        "ms": 2032,
+        "by": "troupe_leader",
+        "name": "Troupe Leader"
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1147,7 +1218,10 @@
       },
       {
         "clip": "cb11e51ff29510b1600d0f4c7dd488c4fef09a7557a3814cd04b60c09f8ca93d",
-        "ms": 4307
+        "ms": 4307,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "3b1b38ee15e0d3df2a14684b1fbf4cc7ae662c7c906670c776a8b4ff52fc7ed2",
@@ -1171,7 +1245,10 @@
       },
       {
         "clip": "db56b83bc4b9dcd3c5c64df29996befee5d2a8e5809c3e376799dbb7891e7358",
-        "ms": 4507
+        "ms": 4507,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "215d4e27214aab73e7d04cb1171f506f595dfdfc14fdd92bd6e1ec36a4951197",
@@ -1183,7 +1260,10 @@
     "": [
       {
         "clip": "e604de8995791bf5376cde38a07956173501d3c89fbef6ac500515c29b918116",
-        "ms": 3807
+        "ms": 3807,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "831756136c67360cc5fa09f114fb98ad594b027f9cc9d028a4ade6aac2573c3b",
@@ -1271,7 +1351,10 @@
       },
       {
         "clip": "7244b9f02f724a8f3633be7ecd37f1e4838d824b503143982f6908d10bad1b2b",
-        "ms": 1235
+        "ms": 1235,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "name": "Relay Runner"
       }
     ]
   },
@@ -1283,7 +1366,10 @@
       },
       {
         "clip": "82ce53d4ae7a8b7e1d758823920db7265e120626329b093e19e770dda247b698",
-        "ms": 1451
+        "ms": 1451,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       },
       {
         "clip": "e40bfb247d4ebfb3798b169e39c1f8d54b5d6e2ac2e435ed753fbed235456279",
@@ -1299,7 +1385,10 @@
       },
       {
         "clip": "173dbf78281660f258e1479352f7a6173f95d740885a7eaa729621ba6c148d0b",
-        "ms": 1254
+        "ms": 1254,
+        "by": "burdock",
+        "figure": "cast/burdock",
+        "name": "Burdock"
       },
       {
         "clip": "c407bd55fe2812933fbc358ae39a51edc03d3ddf3a7c0a7502c7861bd137e079",
@@ -1347,7 +1436,9 @@
       },
       {
         "clip": "bb23c7204be5f8244048f37422b9ef064237b3792cebf659ebde8a8ef7fefc16",
-        "ms": 1608
+        "ms": 1608,
+        "by": "red_scarves",
+        "name": "Red Scarves"
       },
       {
         "clip": "22ebeceb2cff789234a5ce82cd1bf9274c0b57a7e97afc3b85e24aa3f2fb5fbd",
@@ -1363,7 +1454,10 @@
       },
       {
         "clip": "415457823f2eeef7f96329bc5c6c125ca1cec699cb3deca5f49eb9c9b9763069",
-        "ms": 3607
+        "ms": 3607,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "33af5fde0f245b0897a973275ea6ec1fe05081e2d5ce52189977920681e20de5",
@@ -1379,7 +1473,9 @@
       },
       {
         "clip": "b8dc83db0f0c2dbb466eaee3829e82e0436388cfe08bcbe4704e0dafd644cbe5",
-        "ms": 2788
+        "ms": 2788,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "5aa1376f6c9d6f6e01d67c45c5215e1f8f2b7767966e5fdeb114003b625352e7",
@@ -1395,7 +1491,10 @@
       },
       {
         "clip": "a9ee40bde84a011f7ae73eccd5a994309d014db27a18c5d97c41bcb935e6c8c3",
-        "ms": 3607
+        "ms": 3607,
+        "by": "tamsin",
+        "figure": "cast/tamsin",
+        "name": "Tamsin Three-Cards"
       },
       {
         "clip": "3df8c13b613fa16651198f6968e266379ef64429a98443be3337e3692b373b2e",
@@ -1411,7 +1510,10 @@
       },
       {
         "clip": "716178a341621bd9d04c8d944e6479a9ed67f9f4c399e26396cd63ba5ea3ba9a",
-        "ms": 4407
+        "ms": 4407,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "43d2b509ba6e4490367ca69219cfc2525e9452dc22ce655a4acab689d0c4313f",
@@ -1427,7 +1529,10 @@
       },
       {
         "clip": "6d5bccb4b10f0e8225c04a761678f1fa35bf66623adf24340c33ac55bf7d3bf4",
-        "ms": 2262
+        "ms": 2262,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "name": "Relay Runner"
       },
       {
         "clip": "f5920ad86c92db60bdf54863fcd593a4ccb37f5d9fbf48e54d0c81e7462a584c",
@@ -1443,7 +1548,10 @@
       },
       {
         "clip": "1a2e55a07f9a9fa37476a5dd84dbd1edd047c392392e1510f1a48b1143a2e1a2",
-        "ms": 1993
+        "ms": 1993,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "name": "Relay Runner"
       }
     ]
   },
@@ -1463,7 +1571,10 @@
       },
       {
         "clip": "fc6d494e576a64a8b413ca8589c035814096bf4cf4bc7817f55b2729233fd918",
-        "ms": 1162
+        "ms": 1162,
+        "by": "wend",
+        "figure": "cast/wend",
+        "name": "Wend"
       },
       {
         "clip": "7c8c4676587c13fe0ab30af02b8ff9d95ab4eb048245ed9924697c9b49ec3489",
@@ -1475,7 +1586,10 @@
     "": [
       {
         "clip": "1516be4aa587a4b4f3630990e7a32d9356f1d178cfabe6ff812915329ad42de9",
-        "ms": 1581
+        "ms": 1581,
+        "by": "wend",
+        "figure": "cast/wend",
+        "name": "Wend"
       },
       {
         "clip": "61d6dc057127c2d6fcd33717e29cdf5a5fb494a426c8765d9efb07bcb19c7291",
@@ -1483,7 +1597,10 @@
       },
       {
         "clip": "3e07a253346d8a56f2af6d540fe896e1ac8af5a9e635722ce6b68dd6d5533c62",
-        "ms": 1678
+        "ms": 1678,
+        "by": "wend",
+        "figure": "cast/wend",
+        "name": "Wend"
       },
       {
         "clip": "1563eeb06e2e91bd15279de7625a410c064460ef181485b06b4fe93e2bee78ad",
@@ -1499,7 +1616,10 @@
       },
       {
         "clip": "5446529fe27e785e153df40f9714aaed104b633a02c9816e139a58658bf4a8b2",
-        "ms": 1166
+        "ms": 1166,
+        "by": "wend",
+        "figure": "cast/wend",
+        "name": "Wend"
       },
       {
         "clip": "7e12313d3c613a927875db0944101ef8a1aec45f86ebe84b29845b227fca7a77",
@@ -1515,7 +1635,10 @@
       },
       {
         "clip": "d0c9534f21a80e7272ee83273942b130b0d22f636bf8560e5cacf5e7c09b4819",
-        "ms": 4107
+        "ms": 4107,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "e21762caa2e0bc9ea15c50bfb6785e3fcf206e83be523b1421fe031ce85989b0",
@@ -1539,7 +1662,10 @@
       },
       {
         "clip": "6ed1e3a5cad208018da7edfeb27d874dd8d24e9b1ea85860f927be4f7e533464",
-        "ms": 2704
+        "ms": 2704,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       },
       {
         "clip": "054b75e8032f190833897d739ebdce47efc7104c0714db7e47eda7bd9750de5a",
@@ -1547,7 +1673,10 @@
       },
       {
         "clip": "c166eaf421a166b9c838496ffc1fe87fbcc528f1f33f3d84b6b91cf596b08f33",
-        "ms": 4107
+        "ms": 4107,
+        "by": "lead_drover",
+        "figure": "entities/centaur",
+        "name": "Lead Drover"
       }
     ]
   },
@@ -1571,7 +1700,9 @@
     "": [
       {
         "clip": "bf3cc1edb7c26dc8a20f834c0d2890e96de18b160347283c52668285e7ff8407",
-        "ms": 1542
+        "ms": 1542,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "d0d6a1440660563393653228af1f2f8ccefdbb9b9dc0a5d4a31c80f88c4f9f92",
@@ -1579,7 +1710,9 @@
       },
       {
         "clip": "7397e8923fca63a81e4526a2b7d13e49c73009a207a931a1177eaaba0e39a73e",
-        "ms": 841
+        "ms": 841,
+        "by": "red_scarves",
+        "name": "Red Scarves"
       },
       {
         "clip": "9ca62688c6742774f511790da9c427763968a245f5383dacc80c5fa4c8f4b087",
@@ -1595,7 +1728,10 @@
       },
       {
         "clip": "b2af9eb32f1a11f86a00f9c3a7dcf9b3d5f2fe543d4f3fa2630c776834f2e9c5",
-        "ms": 3907
+        "ms": 3907,
+        "by": "tamsin",
+        "figure": "cast/tamsin",
+        "name": "Tamsin Three-Cards"
       },
       {
         "clip": "b7d5722ec63c49a34b584ee60f5d610a734a3321fa6ce5f15385727b628f8986",
@@ -1611,7 +1747,10 @@
       },
       {
         "clip": "fff31efe598802e3540690bb291a9bf4ef0f2a12bd150425c9a22ecc454a4467",
-        "ms": 2460
+        "ms": 2460,
+        "by": "tamsin",
+        "figure": "cast/tamsin",
+        "name": "Tamsin Three-Cards"
       },
       {
         "clip": "862426bc84f76c7a967ea504cc4d921b158ad3225e143f7e5d96792157d43801",
@@ -1627,7 +1766,10 @@
       },
       {
         "clip": "87957838d327f5cdb785d55c85766104b1ee48359f787d32e10e7fe803f0c91f",
-        "ms": 1496
+        "ms": 1496,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "117ef82b420844ad4e1c95cc584b0157f6958e8fd963d586183b6c75e23c004f",
@@ -1643,7 +1785,10 @@
       },
       {
         "clip": "96778a8be55e1cb9be341d4b1184cb6bbd5a84b4db0e5c536e579e37617ff3a9",
-        "ms": 2346
+        "ms": 2346,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "38e86ff30be615592a47ee2f87723270a5c1e2a36cdc9fe4a46316322751b3f6",
@@ -1659,7 +1804,10 @@
       },
       {
         "clip": "385cf5f9db5aa19028869ed747d04e1b6e57386072e6286f29362e038c3134dc",
-        "ms": 789
+        "ms": 789,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "40438e8988c78135ca05d3d4f2085cf2eb56571ded3cbaa57de55764753fe9dd",
@@ -1667,7 +1815,10 @@
       },
       {
         "clip": "bf06eae8ff6f151d3ab498a38c6466456ec2a46b41b849c3142502d842a8b8c8",
-        "ms": 2054
+        "ms": 2054,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       }
     ]
   },
@@ -1679,7 +1830,10 @@
       },
       {
         "clip": "1b5423da5bcfb2eb61dd6ef5ac80820ec825f70455015fbad9c015c105f0ba16",
-        "ms": 2143
+        "ms": 2143,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "2a4d73a3659949ce2e3353539cb8c8c86a334e31ca56644782d1846bd8344017",
@@ -1695,7 +1849,10 @@
       },
       {
         "clip": "d3d1531be3fdab5b2a5c6f4bbc2280faea92d7ee2b1243b9fb441353c418b5df",
-        "ms": 2399
+        "ms": 2399,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "name": "Mother Thrum"
       },
       {
         "clip": "d5f15be3f2a3968402bdc36095e700b39784fe29ccbbc6cddf5efb08ad9b1c02",

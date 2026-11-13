@@ -13,7 +13,7 @@
 
 import { manifestName, type ManifestClip, type VoiceManifest } from "../../packages/shared/src/voice-clips";
 import type { ClassifiedLine } from "./lines";
-import type { Desired, DesiredLine } from "./desired";
+import type { Desired, DesiredLine, DesiredSegment } from "./desired";
 
 export type { ManifestClip };
 /** address, then variant (`""` when the line has no tokens), then the clips in play order. */
@@ -128,7 +128,9 @@ export function linesByClip(desired: Desired): Map<string, DesiredLine[]> {
  *    falls back to the device voice until its new clips exist.
  * A line the device voice reads now (a stale or broken script) loses its entry
  * for the same reason. Entries for addresses the game no longer has are kept
- * unless `prune`. Output is sorted so the file diffs cleanly in git.
+ * unless `prune`. Every entry the game still wants says who speaks each clip
+ * (`speakerMarks`) as the script and cast sheet say it today. Output is sorted
+ * so the file diffs cleanly in git.
  */
 export function mergeManifest(existing: Manifest, desired: Desired, lengths: ReadonlyMap<string, number>, prune = false): Manifest {
   const lines = new Map(desired.lines.map((line) => [`${line.address}\u0000${line.variant}`, line]));
@@ -146,7 +148,7 @@ export function mergeManifest(existing: Manifest, desired: Desired, lengths: Rea
         // Not a line the game wants any more (or a variant that no longer exists).
         if (!prune) keep(address, variant, clips);
       } else if (sameClips(clips, line)) {
-        keep(address, variant, clips);
+        keep(address, variant, clips.map((clip, i) => clipOf(line.segments[i]!, clip.ms)));
       }
       // else: it maps to different words; leave it out so the line is read by the device voice.
     }
@@ -156,7 +158,7 @@ export function mergeManifest(existing: Manifest, desired: Desired, lengths: Rea
     for (const segment of line.segments) {
       const ms = lengths.get(segment.key);
       if (ms === undefined) break;
-      clips.push({ clip: segment.key, ms });
+      clips.push(clipOf(segment, ms));
     }
     if (clips.length === line.segments.length) keep(line.address, line.variant, clips);
   }
@@ -168,6 +170,34 @@ export function mergeManifest(existing: Manifest, desired: Desired, lengths: Rea
   }
   return sorted;
 }
+
+/**
+ * A manifest's clip for a segment: its key and length, and who says it (the cast pulse,
+ * voice-clips.ts `ManifestClip`). The narrator is not marked: nobody stands on the stage for them.
+ * A speaker's figure is not in the clip key, so a figure added on the cast sheet marks clips
+ * already rendered without rendering them again (`voice:verify -- --fix`).
+ */
+export function clipOf(segment: DesiredSegment, ms: number): ManifestClip {
+  const by = speakerOf(segment.by);
+  if (by === "narrator") return { clip: segment.key, ms };
+  return {
+    clip: segment.key,
+    ms,
+    by,
+    ...(segment.figure === undefined ? {} : { figure: segment.figure }),
+    ...(segment.name === undefined ? {} : { name: segment.name }),
+  };
+}
+
+/** Whether an entry's clips say who speaks them as `line` does today; false when they are not its clips at all. */
+export function sameSpeakers(clips: readonly ManifestClip[], line: DesiredLine): boolean {
+  return sameClips(clips, line) && clips.every((clip, i) => {
+    const want = clipOf(line.segments[i]!, clip.ms);
+    return clip.by === want.by && clip.figure === want.figure && clip.name === want.name;
+  });
+}
+
+const speakerOf = (by: string): string => by.split("#")[0] ?? by;
 
 function sameClips(clips: readonly ManifestClip[], line: DesiredLine): boolean {
   return clips.length === line.segments.length && clips.every((clip, i) => clip.clip === line.segments[i]?.key);

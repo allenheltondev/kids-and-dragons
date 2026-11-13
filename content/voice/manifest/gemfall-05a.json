@@ -19,7 +19,10 @@
     "": [
       {
         "clip": "4e0d2db27f521d3c3e486bd8fe0b926d6bfee4c7170f15d80bb133bc2850e55a",
-        "ms": 1948
+        "ms": 1948,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "fa4b37a189f435a3bab7797ce0bc75ab5216fb9c3d8dc5c08a74ce84e1d12f5a",
@@ -35,7 +38,10 @@
       },
       {
         "clip": "919443d47953320f4ae3912ab7e8b3864656ae5c2804303fe945cf70551bcd09",
-        "ms": 1434
+        "ms": 1434,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -43,7 +49,10 @@
       },
       {
         "clip": "b4692365095477ad4abde26877420da05412cbbe1e20494f84e281a6191cebad",
-        "ms": 2414
+        "ms": 2414,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "041de49c46ebd97dfba04247da6c21e8cbefa3d2a2e00b22d759b787ac4626fb",
@@ -67,7 +76,10 @@
       },
       {
         "clip": "03a0a420be5506df946fcca92099861706986d7b1727e40751fc47e2c7929767",
-        "ms": 1273
+        "ms": 1273,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "fe838587e353272866b234ce9cbbeb1e6428b2544c0cc911caa40e9d36bd3c64",
@@ -75,7 +87,10 @@
       },
       {
         "clip": "f75427bf974294529caf7405c6bd96eb779e1a0122f64283b6086128db93b61c",
-        "ms": 1629
+        "ms": 1629,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "df1df8ca209493badea8cd7974bab5464bc9c10510157644bfc62a88677282e3",
@@ -91,7 +106,10 @@
       },
       {
         "clip": "de3ced8e8a6c06b7d39c063243d19c67c1da591db049b61bc04c9118937e3552",
-        "ms": 2530
+        "ms": 2530,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "c316bb45f7ea232560199be26656498f1269d038c449067154459f0673f0005c",
@@ -99,7 +117,10 @@
       },
       {
         "clip": "64828cb39c123d19a566b9b1d555186335944d919eb71875f75da2385ec91e4b",
-        "ms": 1694
+        "ms": 1694,
+        "by": "carter",
+        "figure": "entities/faun",
+        "name": "Tired carter"
       },
       {
         "clip": "318382675d3e75261ef24df564b2c81d2a07f7ba71885636ed731544919040ad",
@@ -123,7 +144,10 @@
       },
       {
         "clip": "1df578de83a76286501d4cc810f5645310b05c4dcd000bb9a3700d92b610d345",
-        "ms": 1458
+        "ms": 1458,
+        "by": "bracken_swiftmile",
+        "figure": "cast/bracken_swiftmile",
+        "name": "Bracken Swiftmile"
       },
       {
         "clip": "9d5a259e10db29beacc2854b7fe099bbf6d734f7c52a1409c98dd7d70ec6a6f1",
@@ -139,7 +163,10 @@
       },
       {
         "clip": "7872f0a41399d4b0bcb4690369680f4632a88855d685bcaf7e10d62de8ba418b",
-        "ms": 2155
+        "ms": 2155,
+        "by": "bracken_swiftmile",
+        "figure": "cast/bracken_swiftmile",
+        "name": "Bracken Swiftmile"
       },
       {
         "clip": "bd5b64886c71263866de7c170290a8689fb2dc6e29d92c5ef55afcaec0bc952b",
@@ -147,7 +174,10 @@
       },
       {
         "clip": "d1a6805e5439320d39f44c51ac5760b994ff11df8a399dd8048a6e273ad7af36",
-        "ms": 1590
+        "ms": 1590,
+        "by": "bracken_swiftmile",
+        "figure": "cast/bracken_swiftmile",
+        "name": "Bracken Swiftmile"
       }
     ]
   },
@@ -191,7 +221,10 @@
       },
       {
         "clip": "8d59f8a41a6d6a4a9a4c6430f2b265cc553f319c9c296d3d147162c0b7e16494",
-        "ms": 4507
+        "ms": 4507,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "4da0a74c0aae98ddb53ddccaea5a507753392aa5a1468ed88787b73c475d2880",
@@ -231,7 +264,10 @@
       },
       {
         "clip": "a7d0234e3b8023c089b8aaddd31e7a3ccfa5b74eb49dff6b4145ec71f644df42",
-        "ms": 1863
+        "ms": 1863,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "b85b9ee995e51589463e24e1730944f74016c14a73db65da26937ea1f069a5ab",
@@ -239,7 +275,10 @@
       },
       {
         "clip": "b58322739f97c25b7799ae4566e53c74a52b0eaa3db86dbc965f32a21196556e",
-        "ms": 1559
+        "ms": 1559,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       }
     ]
   },
@@ -251,7 +290,10 @@
       },
       {
         "clip": "7ddfa182b068079b43deba2393fc9468eab02a0e5eef6fc18208591f26d05f3c",
-        "ms": 1843
+        "ms": 1843,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "fc4b01c711e755cb603eb40f0a60f00b56291135f1283bc22c45852caa7ccea3",
@@ -259,7 +301,10 @@
       },
       {
         "clip": "ef9db9402da9980495a309cd42adbe1f7df68fecd5af1cd3ff2860791af7f70f",
-        "ms": 2700
+        "ms": 2700,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       }
     ]
   },
@@ -271,7 +316,10 @@
       },
       {
         "clip": "7ddfa182b068079b43deba2393fc9468eab02a0e5eef6fc18208591f26d05f3c",
-        "ms": 1843
+        "ms": 1843,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "fc4b01c711e755cb603eb40f0a60f00b56291135f1283bc22c45852caa7ccea3",
@@ -279,7 +327,10 @@
       },
       {
         "clip": "ef9db9402da9980495a309cd42adbe1f7df68fecd5af1cd3ff2860791af7f70f",
-        "ms": 2700
+        "ms": 2700,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       }
     ]
   },
@@ -331,7 +382,9 @@
       },
       {
         "clip": "6c4d868e29e00b3eab0e48dace83fe71b1014b42bd5bb786bfc21c3a22737bf3",
-        "ms": 2122
+        "ms": 2122,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "a20920eedfb89393f8d3bd1e20a02457eb66889c89b6bec89e7c955048846bc9",
@@ -363,7 +416,9 @@
       },
       {
         "clip": "6c4d868e29e00b3eab0e48dace83fe71b1014b42bd5bb786bfc21c3a22737bf3",
-        "ms": 2122
+        "ms": 2122,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "a20920eedfb89393f8d3bd1e20a02457eb66889c89b6bec89e7c955048846bc9",
@@ -403,7 +458,9 @@
       },
       {
         "clip": "694448df8e371cf114cfae6e878f263118f61b80bea5cf1b61cdff86398407b1",
-        "ms": 5307
+        "ms": 5307,
+        "by": "apprentice",
+        "name": "Apprentice"
       }
     ]
   },
@@ -423,7 +480,9 @@
       },
       {
         "clip": "c94ec8d56d07c46f8237d2d98cf135aeb52c54cdac011a286ea1121b556f57dc",
-        "ms": 2960
+        "ms": 2960,
+        "by": "apprentice",
+        "name": "Apprentice"
       }
     ]
   },
@@ -435,7 +494,9 @@
       },
       {
         "clip": "ba5700fa4a9118f89dde4cc79fb8247e609219d34bdd84e77f64828749ad07ce",
-        "ms": 1880
+        "ms": 1880,
+        "by": "apprentice",
+        "name": "Apprentice"
       },
       {
         "clip": "fdecda78e437da271666fbab183e9c83aabe131acd379da4c02ef788e2ad9b25",
@@ -443,7 +504,9 @@
       },
       {
         "clip": "483b467d3a59270333f034126ff932257b941bf8b9f747f0ca655bb3ae056d90",
-        "ms": 2563
+        "ms": 2563,
+        "by": "apprentice",
+        "name": "Apprentice"
       }
     ]
   },
@@ -455,7 +518,9 @@
       },
       {
         "clip": "94de74f19f15655842b454466d6104b6f2190fbf2c3ffcb948139364de526c79",
-        "ms": 1846
+        "ms": 1846,
+        "by": "apprentice",
+        "name": "Apprentice"
       },
       {
         "clip": "b8ff6b9b842f466a2d720fd128633fcd9d021ad01911f5e7ab62559d39c776c5",
@@ -511,7 +576,10 @@
       },
       {
         "clip": "25541ca3c811acb068f62044b4bd88b17434dcc1b383292b6fc7df7175d74401",
-        "ms": 2528
+        "ms": 2528,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -519,7 +587,10 @@
       },
       {
         "clip": "e75e97ef4a144cdf9927ae3c9650f31c5253a60b6ae066c30c331a99675aa320",
-        "ms": 2024
+        "ms": 2024,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "aad364627057b1b8083ff1af98e9e51a25ee39bf2f15c8f3b44bb144a0eb1e6e",
@@ -531,7 +602,9 @@
     "": [
       {
         "clip": "ddf6c55355bc45eb53918c4499eee26179cc146214a0a1b7ca8bf21db0e3cca8",
-        "ms": 833
+        "ms": 833,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "3bafc43ffb6eaae59825e462ee8e7afe6d695d5bc872ec4dea639a23984c1f64",
@@ -539,7 +612,10 @@
       },
       {
         "clip": "4f94ecdf58de5b4066c6615d142252821fdfd81e9c8b469a534d0c012863cc80",
-        "ms": 1698
+        "ms": 1698,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "aa2979c563580189114b06f9b4478e15f6474885c0160142d9732031d65f4171",
@@ -635,7 +711,9 @@
       },
       {
         "clip": "cbc3d9cdddfea4adf280752fb7e08fd436b0df27453e4c3549e725f233983cc9",
-        "ms": 1809
+        "ms": 1809,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       }
     ]
   },
@@ -655,7 +733,10 @@
       },
       {
         "clip": "81920c95280f20e5affb040a9c7b56191610c160cdcb57d87502f9b908ac7046",
-        "ms": 2776
+        "ms": 2776,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "b97ab8d32e40ad83f0c7dfda87cf686a2c0e6ed838b4b2988092ae93114aaab0",
@@ -671,7 +752,10 @@
       },
       {
         "clip": "0bad230ac03375ec729bace968088e9b63b1fc893ca25b9e2ecacc80015e361b",
-        "ms": 3407
+        "ms": 3407,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       }
     ]
   },
@@ -683,7 +767,10 @@
       },
       {
         "clip": "4e5dec413b100a58ed91462d012fcf8303babd24b5de69d04433cab8a7645242",
-        "ms": 2309
+        "ms": 2309,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "c7de81f3211e07ca4ad45ee00261f890ee9bcfa60100c93c56391ecdfac79dd6",
@@ -699,7 +786,10 @@
       },
       {
         "clip": "f4df60ce51bfa830873e141b86ae4b37a0f2d5f38f6b2e99719b64b578b0783b",
-        "ms": 4307
+        "ms": 4307,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "88a4034b848da6fec9e6b01215deb178df65ac17581b248b1989eed3e6cd56e7",
@@ -707,7 +797,10 @@
       },
       {
         "clip": "b2ba59ef6f22428679bb8061fb2dfea485ea9395a74ca61b12fc2290b475c6ac",
-        "ms": 3407
+        "ms": 3407,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       }
     ]
   },
@@ -887,7 +980,10 @@
       },
       {
         "clip": "3b922957a94eed0b9506648d4efc50ad7f82f3308e5ab808176716952fd961a7",
-        "ms": 626
+        "ms": 626,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -895,7 +991,10 @@
       },
       {
         "clip": "f7618cff6d48eac98c5cc7b9fc8bf8337481c915b8cf0730f519d1abc9206029",
-        "ms": 1524
+        "ms": 1524,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       }
     ]
   },
@@ -915,7 +1014,10 @@
       },
       {
         "clip": "df7adfed138c5ba0a0302f8f70cdc0b7b8386d1f2d2e54fc8fd65b9f7dc3f658",
-        "ms": 1806
+        "ms": 1806,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "e3fa6c2463e9fa689343ef475a7c74ca70a958b34558ccbdb73675bf7822cebf",
@@ -931,7 +1033,10 @@
       },
       {
         "clip": "c3a1801501dc90e4ad74184ccd9aada0fa0599c61078ba6cf81ca0420c864453",
-        "ms": 1629
+        "ms": 1629,
+        "by": "brassbuckle_scout",
+        "figure": "cast/brassbuckle_scout",
+        "name": "Brassbuckle scout"
       },
       {
         "clip": "bb07f4b3cb4aa581a837cc6f3c59ac13232c81a6e3918f2bcc68c7af46c9b5d0",
@@ -943,7 +1048,9 @@
     "": [
       {
         "clip": "a69750315b89da29b297ba4f3926a530afa30e15eeac25aa7be68d81e9f76fd7",
-        "ms": 2986
+        "ms": 2986,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "fe4674334afdf5971b28477d30b4819b9a05c3bcbcefe3f7063258fc5959f783",
@@ -951,7 +1058,9 @@
       },
       {
         "clip": "6a5a6c22083916e07faa88de8c104675aa609c86a2affcc998a1f8687ab6a7bb",
-        "ms": 1500
+        "ms": 1500,
+        "by": "brassbuckles",
+        "name": "Brassbuckles"
       },
       {
         "clip": "da3910d19a4beb2638198c58e6ff835e694f509a73805bc16c1c7cf9041abbac",
@@ -959,7 +1068,9 @@
       },
       {
         "clip": "c17980e30a4d5d5f83f5ec3d3a743d73327254e9ff1fd708252b39042eb4b5cb",
-        "ms": 497
+        "ms": 497,
+        "by": "brassbuckles",
+        "name": "Brassbuckles"
       },
       {
         "clip": "a8af760e1ed653b983c137710214ec0407d947e389656119f13feb71fb3cf3c7",
@@ -971,7 +1082,9 @@
     "": [
       {
         "clip": "d103f8fa1096508328b3dc3c48e63cd690a98ebb11ec1bf9b40f4368cada5b55",
-        "ms": 633
+        "ms": 633,
+        "by": "brassbuckles",
+        "name": "Brassbuckles"
       },
       {
         "clip": "372ed66a16a3f137970ba09013c932d2e06206a886d39288845398435623dd22",
@@ -979,7 +1092,9 @@
       },
       {
         "clip": "90798383a37953f9266c6c0fc4b5e23d90fc8310192a2e3f86fc3c7883fe7bfb",
-        "ms": 5507
+        "ms": 5507,
+        "by": "brassbuckles",
+        "name": "Brassbuckles"
       },
       {
         "clip": "af8986d403877a51979dd2466c7258235531741d05cdfdfd788eea4828cfb137",
@@ -987,7 +1102,9 @@
       },
       {
         "clip": "e0e78cc482ef623326a2a7e472cd68b8104d174cb441cba7312dd4d8aab3941f",
-        "ms": 2061
+        "ms": 2061,
+        "by": "brassbuckles",
+        "name": "Brassbuckles"
       },
       {
         "clip": "97c25c5d73c24fe16e701bc6bf7b18065a6efa2c80b6aae2e32c5bfe8a306d1b",
@@ -1003,7 +1120,9 @@
       },
       {
         "clip": "d869f08e707247236e9ad13d55fb7ed27ae83bbd799bf264e6f995ec8176e05c",
-        "ms": 5707
+        "ms": 5707,
+        "by": "brassbuckles",
+        "name": "Brassbuckles"
       }
     ]
   },
@@ -1023,7 +1142,10 @@
       },
       {
         "clip": "143456096da1d8b6fd82590af1abc5358f670d782031e78a1914435e8c3e6ddd",
-        "ms": 1496
+        "ms": 1496,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "0463c91c1050c8350b18e21d70626683fdcc9cd7d0af0c3d66c647b5f176a564",
@@ -1039,7 +1161,10 @@
       },
       {
         "clip": "4775689a595c2b87a4be5e2359b25091533279265d783a67d9d9bd7bfe831cfd",
-        "ms": 1781
+        "ms": 1781,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1047,7 +1172,10 @@
       },
       {
         "clip": "02051f942b30feb58fb02bdfab86b911a45109bb1cc30f675d710645e59beb81",
-        "ms": 1258
+        "ms": 1258,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "bf090cc53b39880a06415cc79cfef040917363734aadefd40abdfd8d5fff1f6a",
@@ -1087,7 +1215,10 @@
       },
       {
         "clip": "edb9c484ee305b043dd295d87321d9db1752ff5ee8e3da09b2db266ad43e350c",
-        "ms": 8907
+        "ms": 8907,
+        "by": "hollis",
+        "figure": "cast/hollis",
+        "name": "Hollis"
       },
       {
         "clip": "7c3894348088e9ba42da369a8aedd44cd98507ab3a8031d8fa5c5ab10cd220c6",
@@ -1115,7 +1246,9 @@
     "": [
       {
         "clip": "67960c4bd6b1cf39c2f2cf47e82f2fa690087bc5c039b3362c94e1210970882d",
-        "ms": 1180
+        "ms": 1180,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "0ee7cd9ec9e0b7cd795fcc5fa640deafbf647f890991a93d24c1beab294cbef7",
@@ -1123,7 +1256,10 @@
       },
       {
         "clip": "44a8fc65f07cd2dfb56646b07e3a6b95991b28a31fd4f76d5d5f4474da18742f",
-        "ms": 2383
+        "ms": 2383,
+        "by": "hollis",
+        "figure": "cast/hollis",
+        "name": "Hollis"
       },
       {
         "clip": "cdbda935c6efecd85436038f10900a68209fc65af5edf70f044ad35a6ae51b1f",
@@ -1139,7 +1275,10 @@
       },
       {
         "clip": "f468966c7e67bb5d5c8324d56f7b11c45b8c8163c7eaae14032387b76e9bf0d6",
-        "ms": 3607
+        "ms": 3607,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "2a4d73a3659949ce2e3353539cb8c8c86a334e31ca56644782d1846bd8344017",
@@ -1147,7 +1286,10 @@
       },
       {
         "clip": "6823fb3e77a2f863d3583653071356738bf24448956a0561a1ad267c6bce7bd1",
-        "ms": 2785
+        "ms": 2785,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       }
     ]
   },
@@ -1191,7 +1333,10 @@
       },
       {
         "clip": "1c29b591c85abcab01f9a4d45ceca95d71861bbac093e5dc40920b884b124b4e",
-        "ms": 2423
+        "ms": 2423,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "e8a75bc88e1820583d4e672e3cba0debfa4d8b2e916dc24de74bbe07ff3e545b",
@@ -1207,7 +1352,10 @@
       },
       {
         "clip": "4f88cc107730a4647e80c9dfc5f749e85bf7a9589ced7ac4f7149715150a8c19",
-        "ms": 550
+        "ms": 550,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "6e608ae6bf872db689cb08c98d13154ebfdb53fab0889f6d66729031164ce755",
@@ -1223,7 +1371,10 @@
       },
       {
         "clip": "715f9c081ca258fe2146ebfe6fe0c5dc9945b0f0f937e329b57c0ed4c2673d46",
-        "ms": 1521
+        "ms": 1521,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "e19c9289f610eee35ebfefd3d65d73732ac1bc9acfb8f6afcc184e9b4f2682d9",
@@ -1239,7 +1390,10 @@
       },
       {
         "clip": "3fd13450c527e7a947c1235763e2e44a27e3311de1f967aeedac77e5048c6e05",
-        "ms": 2770
+        "ms": 2770,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "b85b9ee995e51589463e24e1730944f74016c14a73db65da26937ea1f069a5ab",
@@ -1247,7 +1401,10 @@
       },
       {
         "clip": "dada522d36ace160bba96d8184440195601e00a12c18f3326be9a12baf69878e",
-        "ms": 3207
+        "ms": 3207,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       }
     ]
   },
@@ -1291,7 +1448,10 @@
       },
       {
         "clip": "143456096da1d8b6fd82590af1abc5358f670d782031e78a1914435e8c3e6ddd",
-        "ms": 1496
+        "ms": 1496,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "5f8cfa4a95050f0ac8be1bea8bbd72646b8aa27687192636fa6c1fef2e1aec58",
@@ -1323,7 +1483,10 @@
       },
       {
         "clip": "64c196275629a9f6715cf0fe5e32d68e2879829d8d15d0a96bf4fbff30f45560",
-        "ms": 1566
+        "ms": 1566,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "name": "Pellam"
       },
       {
         "clip": "c4d889f5b0332ea23d01d87a435baa6d28edaef267758c8ec094d0c39332327a",
@@ -1339,7 +1502,10 @@
       },
       {
         "clip": "06b789619cfbdf7dfbcab8c8b6ccf71b3f1013e53fc782d64fd1c19e31b2f02b",
-        "ms": 2954
+        "ms": 2954,
+        "by": "bracken_swiftmile",
+        "figure": "cast/bracken_swiftmile",
+        "name": "Bracken Swiftmile"
       }
     ]
   },
@@ -1359,7 +1525,10 @@
       },
       {
         "clip": "5fe6c303140e44e98fbf3b1f43ceb236a54e89fd9a91b0a6b4c9b6cb3b4498cb",
-        "ms": 1193
+        "ms": 1193,
+        "by": "bracken_swiftmile",
+        "figure": "cast/bracken_swiftmile",
+        "name": "Bracken Swiftmile"
       },
       {
         "clip": "dcc0c1f0c4944d40e3b0ce3cb7a7713de823dc66125d9345fb2e8ba534e6c597",
@@ -1375,7 +1544,10 @@
       },
       {
         "clip": "944d24fed031b97908241d3a14419358b9d2ab492327cecc0f629870aecdfb88",
-        "ms": 1717
+        "ms": 1717,
+        "by": "bracken_swiftmile",
+        "figure": "cast/bracken_swiftmile",
+        "name": "Bracken Swiftmile"
       },
       {
         "clip": "6c49fbad0bf01ff52b8df182308494928a410274c1b8b6957fc9afe53a8f0b79",
@@ -1391,7 +1563,10 @@
       },
       {
         "clip": "7fc2677546d035ab2f9c832be61ae1952867c7327fa2e15c74258d7f9bf97286",
-        "ms": 2206
+        "ms": 2206,
+        "by": "hollis",
+        "figure": "cast/hollis",
+        "name": "Hollis"
       },
       {
         "clip": "fd9b5d7edfabd5ea7d2075dea9d9bb2b4576198299c044261ea36ccd0ada5996",
@@ -1407,7 +1582,10 @@
       },
       {
         "clip": "3a0b94067efb68b46c323e00042a427de42159f06e8c35a6d979660a6940495f",
-        "ms": 924
+        "ms": 924,
+        "by": "muddy_prospector",
+        "figure": "cast/rush_prospector",
+        "name": "Muddy prospector"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1423,7 +1601,9 @@
       },
       {
         "clip": "a7add51337155b12897c3b6fa071f1472ccbefd8f705d4b992a44ebbcb4f4253",
-        "ms": 1223
+        "ms": 1223,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "2a4d73a3659949ce2e3353539cb8c8c86a334e31ca56644782d1846bd8344017",
@@ -1431,7 +1611,9 @@
       },
       {
         "clip": "a2d6d6a0be6a3e815f67ee2ba9c257e5965fc94332eeb8f8e5b2b9bf408bc5d8",
-        "ms": 1089
+        "ms": 1089,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "cc5ca20da73b8e357283a48000ffc2ecf7124a9434af345ad4d0936f55e5a9a0",
@@ -1447,7 +1629,9 @@
       },
       {
         "clip": "4b1cf7473bcea99584b4708eae3d2910659b86a4db4aeba5db2846be76467d4a",
-        "ms": 2015
+        "ms": 2015,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1455,7 +1639,9 @@
       },
       {
         "clip": "75f3816ea2f49a0f52dc37382f27274d4b6468aba0ab81c1ab56499e3b5df9e7",
-        "ms": 2611
+        "ms": 2611,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       }
     ]
   },
@@ -1463,7 +1649,9 @@
     "": [
       {
         "clip": "d9ea56541b07e9177197ff841cd1606114a681495890b429b41f4ee1d8df2499",
-        "ms": 917
+        "ms": 917,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -1471,7 +1659,9 @@
       },
       {
         "clip": "89dfea6fed0aeae2e0645909389868cb9fb9fac995ad0453c0dfc2eca9a4eea0",
-        "ms": 4407
+        "ms": 4407,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "69adbf970cf2f1fc7d1b87fddf6e4d49d226ccb6c5f32a70b884630ee177aaae",
@@ -1479,7 +1669,9 @@
       },
       {
         "clip": "1932a5423b8ea4ee9c46fccc3cc072ce0cfbc52759d0e6ab510de304a7bdfb4a",
-        "ms": 2679
+        "ms": 2679,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       }
     ]
   },
@@ -1487,7 +1679,9 @@
     "": [
       {
         "clip": "3aebebd695231fdf1d84bae320674b0c16b6be4ba8160a48e7c02c497229eea4",
-        "ms": 1760
+        "ms": 1760,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -1495,7 +1689,9 @@
       },
       {
         "clip": "52b6205f67529c7a595803bb8e0b3f44fe30771433e747f2956fe398aaba1c45",
-        "ms": 2350
+        "ms": 2350,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "28c7e548c382b048f02e24b3c01793f96717c23e1f3a614bfb7e0d0a07cd387b",
@@ -1503,7 +1699,9 @@
       },
       {
         "clip": "3bf7de9af22acbd26866e0e1fbfeb0dd5f81cdd94ad6ce8d529f992d37e1001c",
-        "ms": 1087
+        "ms": 1087,
+        "by": "flag_warden",
+        "name": "Flag Warden"
       },
       {
         "clip": "f1c5dff24ef4d9218c5fc034ec57519b4c61818ee983a371ad9cad80e149c68a",
@@ -1527,7 +1725,10 @@
       },
       {
         "clip": "5fa35c0b5daa708e8f5cc90b8dbacca4489b09105fde6fbf07795dd799d47e6c",
-        "ms": 4207
+        "ms": 4207,
+        "by": "tibbet",
+        "figure": "cast/corporal_tibbet",
+        "name": "Corporal Tibbet"
       },
       {
         "clip": "9adcb89a54772a9d9bc758a26314eadcceaf9122af57ce2e403cfa4e98814ca1",
@@ -1543,7 +1744,10 @@
       },
       {
         "clip": "d19e4565deeb2ac3f48401fc4dec4517a4adb37e64ff8bf51412c4f99963e4ca",
-        "ms": 1563
+        "ms": 1563,
+        "by": "tibbet",
+        "figure": "cast/corporal_tibbet",
+        "name": "Corporal Tibbet"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1567,7 +1771,10 @@
       },
       {
         "clip": "818a132f94e109e1e4006a5d5f0dea49443d502ccc5d2a6e85b5b1cdf97b12af",
-        "ms": 2491
+        "ms": 2491,
+        "by": "nim",
+        "figure": "cast/nim",
+        "name": "Nim"
       },
       {
         "clip": "9b33950987fed5af990efaf16b67462f3af135cf236feee5737465e8c88147ff",
@@ -1583,7 +1790,10 @@
       },
       {
         "clip": "d31d28adddf660f61f4cca2444d8ae45128a806f74369b3d4b6891f5e394a4a1",
-        "ms": 1774
+        "ms": 1774,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "d63dafa6c4fa5745f90b9e6de01436a2b254c147e9840b2985bed3af2898d0fa",
@@ -1619,7 +1829,10 @@
     "": [
       {
         "clip": "cb8cf77f24c462be39d38dda2bc346b10fe65c6a814121436e96b333ca092e65",
-        "ms": 1087
+        "ms": 1087,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "405a0fb9bd72ecb5f926ea5e82a9b010d69abb1243dacd06b4a5e2c3ea379134",
@@ -1627,7 +1840,10 @@
       },
       {
         "clip": "2142caff5cfec6c98a5915fea34e4a8f224cfc302d0f3d3559a16bf526b6e4b4",
-        "ms": 2343
+        "ms": 2343,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "4637f5804226b08e3846b80ce6ad1d331cc0e253e8430d98f6c7b5d985a74b59",
@@ -1651,7 +1867,10 @@
       },
       {
         "clip": "b02c124e74ae76d60646b07b8b969fb64b1f0ce334444e022df9399f961a8e78",
-        "ms": 1003
+        "ms": 1003,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1659,7 +1878,10 @@
       },
       {
         "clip": "8b327ebe93e1b88d6680a29b7ea1f19e1411c903427ac5187ae02104783d74f2",
-        "ms": 2614
+        "ms": 2614,
+        "by": "brask",
+        "figure": "cast/brask",
+        "name": "Engineer Brask"
       }
     ]
   }

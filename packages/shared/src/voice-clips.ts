@@ -27,7 +27,19 @@ export interface ManifestClip {
   /** The clip key, which is also its file name. */
   clip: string;
   ms: number;
+  /** Who says it: their id on the cast sheet (content/voice/cast.json). Absent for the narrator. */
+  by?: string;
+  /**
+   * Their figure on the cast sheet (`cast/pib`, `entities/faun`), when they have one, and their
+   * name there: while the clip plays, the stage pulses whoever stands in the scene with that
+   * figure or under that name (the cast pulse; a chapter may draw someone with another painting).
+   */
+  figure?: string;
+  name?: string;
 }
+
+/** Who says a clip, as the stage finds them: `ManifestClip`'s figure and name. */
+export type SpeakingCast = Pick<ManifestClip, "figure" | "name">;
 
 /** Address, then token variant (`""` when the line has none), then the clips in play order. */
 export type VoiceManifest = Record<string, Record<string, ManifestClip[]>>;

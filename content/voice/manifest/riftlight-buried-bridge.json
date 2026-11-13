@@ -23,7 +23,10 @@
       },
       {
         "clip": "43a2f23e0826c02e7a430d8a5c4eda2f0be845e94ae8cfd176d8b9c1c7400703",
-        "ms": 2380
+        "ms": 2380,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -39,7 +42,10 @@
       },
       {
         "clip": "744262b96ff8bbc6d054f4675d9f7a290c247b718199e5d8589279f20c15c46d",
-        "ms": 922
+        "ms": 922,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "015f5e3ad9cff065a92a4ecc284890102bf14a70923f1616b2781e29802eb697",
@@ -47,7 +53,10 @@
       },
       {
         "clip": "bd83d069cc3896c5db0ea35eecc4d4425de1823abe35e541f9f7537596756c75",
-        "ms": 893
+        "ms": 893,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -59,7 +68,10 @@
       },
       {
         "clip": "6a3437675a74d791b7300815d21105e5c23985b133af4d91a5dc9e299b931223",
-        "ms": 2017
+        "ms": 2017,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "db0324a78104d9cf1b53c79ebf6d291e77a1e77ed91ad14298955cb9c93c6b0f",
@@ -67,7 +79,10 @@
       },
       {
         "clip": "7baf736d687ea6b21d300287b42832c443850ef1e1c7abd4aad826eb0b2622db",
-        "ms": 1601
+        "ms": 1601,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -83,7 +98,10 @@
     "": [
       {
         "clip": "165080d21187ecb65680b2fbc5880129ce48b472aa1af3da2c857f8763c2d60a",
-        "ms": 2546
+        "ms": 2546,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "48aea7df027c17a41d1a3e6788964ddbf8c771aeb1594a91aa1fe75c47037a49",
@@ -295,7 +313,10 @@
     "": [
       {
         "clip": "42f85aa0bb518a3d42120b2105a176072fc47ecd6077a36fed58892de5e60bc2",
-        "ms": 2817
+        "ms": 2817,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "74753e797af9b38b389d12d958e9a17dfad681c6fb8922e24f21e0b260f3dbc9",
@@ -335,7 +356,10 @@
       },
       {
         "clip": "3f5c47ee8f3a4e162163b3ee6ad44b5b3cd71f13b7de91e2b82b429305209339",
-        "ms": 1923
+        "ms": 1923,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -379,7 +403,10 @@
     "": [
       {
         "clip": "a9758702cad91236c60f1c97b1ee3b92b496be606ccf900957493c3bd1b945e7",
-        "ms": 2074
+        "ms": 2074,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "a1cf5fbfd603e113d28d9781aa47578c333b7a04c2016561f037afffd63103ad",
@@ -411,7 +438,10 @@
       },
       {
         "clip": "fc273c203ca63bc945bdd124abe8b9f46eeb732530d7ee4428d54ec272bf23bd",
-        "ms": 1767
+        "ms": 1767,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "234e1d920ca10dafbb2a9bb9b317d5c3b05f0bd14fa18380c896a8a4e3ffcee5",
@@ -451,7 +481,10 @@
       },
       {
         "clip": "034017df9c0d76362472669c806ba6f7ee034dee6500b2aab07ab4af24d8df20",
-        "ms": 2806
+        "ms": 2806,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -479,7 +512,10 @@
       },
       {
         "clip": "b7f6771e644b8c440d6c0e6cf30bd7c3698064519f5ca52ee97d5c9f1009ae14",
-        "ms": 2040
+        "ms": 2040,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "1e147b9c6fe5246350e3087218d371901eb14a45a8bef4410b4bf6e0097c30f6",
@@ -495,7 +531,10 @@
       },
       {
         "clip": "ca514aa6039a80ff2889b6b483acccb51ca894efe333e57e7736b5ec45a64c8a",
-        "ms": 810
+        "ms": 810,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -503,7 +542,10 @@
       },
       {
         "clip": "e533517e6c8b19068d05affe0ae574f728cff97890803656b3265278014e2b48",
-        "ms": 1976
+        "ms": 1976,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "0fd476657c00d19d4623d808fff69e7ff10dccf928f97dfed6d019b9088b01ef",
@@ -519,7 +561,10 @@
       },
       {
         "clip": "6493e62e3b268950c6d62856a1279b1f21e8e6aad3b8783a1ad3c97f97b09b54",
-        "ms": 769
+        "ms": 769,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -527,7 +572,10 @@
       },
       {
         "clip": "bd83d069cc3896c5db0ea35eecc4d4425de1823abe35e541f9f7537596756c75",
-        "ms": 893
+        "ms": 893,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -539,7 +587,10 @@
       },
       {
         "clip": "f154044ccb2dc6b6f4ae5ad0747f0f9110516c928e186894ddafe13547dbd006",
-        "ms": 2180
+        "ms": 2180,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -555,7 +606,10 @@
       },
       {
         "clip": "0a21674e19a0df03cf6494eac19bca5c45ac7a185aaec7ee4fefd87620fbf3c0",
-        "ms": 2836
+        "ms": 2836,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "a6a02217999a0e7286884d93cfd57b734a801e0f6463d0355cf34135b308b51d",
@@ -563,7 +617,10 @@
       },
       {
         "clip": "f1aae4ee0b530bbed824ad80860c2a15bd627a0bc12e65be2ad4b9a8c328365c",
-        "ms": 722
+        "ms": 722,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "a4e859d0d8558dbfb1e3eb12173e9f9a3760df53a6b93d7ad2237405bfa5034b",
@@ -587,7 +644,10 @@
       },
       {
         "clip": "c01343efb9af25ef4e140617a322d809da95b80bc9d9872715356547d7f77fc5",
-        "ms": 2114
+        "ms": 2114,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -643,7 +703,10 @@
       },
       {
         "clip": "60b65cb118a9eaab9f1b1f47fcef76ed9b59dd60fa418b7a002ef95ce8289d47",
-        "ms": 786
+        "ms": 786,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -651,7 +714,10 @@
       },
       {
         "clip": "a0ac7a05df07a33d35130b17697f9de3cb6fa45a2364667c94b79006695aa610",
-        "ms": 995
+        "ms": 995,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -663,7 +729,10 @@
       },
       {
         "clip": "2a55bf565dcef43a0d7c214f90be705a633b5796e876cfe0f5a7e95fcb586208",
-        "ms": 689
+        "ms": 689,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -671,7 +740,10 @@
     "": [
       {
         "clip": "55aec261869f6670b375da75a87c6f20707a98a63636b207fb7e48b3229b513c",
-        "ms": 1432
+        "ms": 1432,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "145717baae1a2842d6aeeff0107b139bb001ac3bab1dd903ee82c42b5af87f54",
@@ -679,7 +751,10 @@
       },
       {
         "clip": "17314b8a415ec91c44ca4f561f2d7c4d78971592fe9be7e247a839be4e9d7044",
-        "ms": 2298
+        "ms": 2298,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "598d6d3bf7f78215041f7f0b154b049dc320dd99fe8de20c48e5ab99051031c6",
@@ -695,7 +770,10 @@
       },
       {
         "clip": "3319b8a95161afe576f96a1c0f1b997a7b5d73a9586c217ebbe7d4f16f5957fd",
-        "ms": 3607
+        "ms": 3607,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -715,7 +793,10 @@
       },
       {
         "clip": "f9221b6f2fd997367ff12e598ff185c0460787381446f625b8a9e2d41ca3dc7e",
-        "ms": 2556
+        "ms": 2556,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "0e999e58aafd78aab1f9fd520202b73c6d8b94b00d2ff90346e177f0387f19c0",
@@ -723,7 +804,10 @@
       },
       {
         "clip": "eb0bccd25365e4347e7db9499b6e4a407bc8a3f9a284863a3c37489a7998e48a",
-        "ms": 792
+        "ms": 792,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -731,7 +815,10 @@
       },
       {
         "clip": "26730a76eef1ff4d6dcbbc1770556274cc55950d3fe2ba0f791bf2c001d93857",
-        "ms": 417
+        "ms": 417,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "d1bbe388d6572e93a168c2a360c014cfce9b523f436729e2a7ddb29020f26c05",
@@ -755,7 +842,10 @@
       },
       {
         "clip": "d589fab24a287c175b79712282bc94cfe69f35fd8e73bc563a53914f4c12a17b",
-        "ms": 1403
+        "ms": 1403,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "858e4dbdb5dc03a8c4c08c1ff24229c2e6e68b903d10ba5afd36cf36a596a8a3",
@@ -787,7 +877,10 @@
       },
       {
         "clip": "2244f2f41cec219744af114627b3f572a5b7a1d3b14fd872730a8485f91422b5",
-        "ms": 4907
+        "ms": 4907,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "96dde1ebf9b88bb1b4a070ff0cc6e179c190f6dbde57902510b1610f996645aa",
@@ -803,7 +896,10 @@
       },
       {
         "clip": "199992c1111a5bddde61374422869ca62a8737d10c9266965b3c5ec3a91ee4ae",
-        "ms": 1184
+        "ms": 1184,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "414e8ddabd714c75f646a30b93947a7838b98ed5bdef62f252a3d591ac0ac343",
@@ -811,7 +907,10 @@
       },
       {
         "clip": "94968de118e1cc89e508b83a5ded47a896bb758bde2f609c106a3611ba7fa188",
-        "ms": 3707
+        "ms": 3707,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "620f877abb56be63459a8d3333af9e549a3538469eb590e7b20ea32d40c1aeba",
@@ -827,7 +926,10 @@
       },
       {
         "clip": "c92b2a857af3881725e3eaee44eecd0d959fa0246a75632595d27132df1a7690",
-        "ms": 11307
+        "ms": 11307,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "3a8911d96fdfdfa99a74d6986c3500e06210aa69cff7c5bc90d9c3f30ab6a0c1",
@@ -835,7 +937,10 @@
       },
       {
         "clip": "c045d95a5f8a77047675214c22b86b4f6636ddde22dac7349c7833a02bb22fb6",
-        "ms": 1684
+        "ms": 1684,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "3a634e8100daf483790a3bad9bb32bb89d5526c04363907e9b375c22ab00d51a",
@@ -867,7 +972,10 @@
       },
       {
         "clip": "210957bdd65b0e2023e1566770ffcd86f98cd18149dc72641a95d5a8da98994e",
-        "ms": 1904
+        "ms": 1904,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "c6692c6db3b59512cadc9a578f1d32a26899a5fdb0172ea71922fa6ad899b37d",
@@ -875,7 +983,10 @@
       },
       {
         "clip": "e714e7c508046b63b87788f8d1e79d487ba575e050e39a91e9caf949763e5f18",
-        "ms": 2776
+        "ms": 2776,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -887,7 +998,10 @@
       },
       {
         "clip": "477f5da24afd58a519488ce70812c56f7a60d9aa17ecd2be5df4972ef6ac6d8a",
-        "ms": 2333
+        "ms": 2333,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "3849eebb693a97c5c624ac1e9a14a5c575daebf06d674a2043227272d13018a6",
@@ -895,7 +1009,10 @@
       },
       {
         "clip": "6ec02a342ca05dc126e85b02a6452632a0d0b42b5befcef01df37f55742df333",
-        "ms": 1527
+        "ms": 1527,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "c6692c6db3b59512cadc9a578f1d32a26899a5fdb0172ea71922fa6ad899b37d",
@@ -903,7 +1020,10 @@
       },
       {
         "clip": "e499e461c5dee284d866a6837b23103025f96028ff1b3bd78624a9d4371efc35",
-        "ms": 1235
+        "ms": 1235,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -915,7 +1035,10 @@
       },
       {
         "clip": "e9cbcb07f5425f55b25fe12e40616b95dff72e76f2db8c68588c725b5a757ae9",
-        "ms": 1880
+        "ms": 1880,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -923,7 +1046,10 @@
       },
       {
         "clip": "82a55978406787bde63c1dbc9c4078091051278cf3fe5edc98ce5e85f37c7275",
-        "ms": 6107
+        "ms": 6107,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "9fd0965feccb12f0f3ac151c398ced923cbbb474feb57d2b0b0949318cd9fea8",
@@ -931,11 +1057,17 @@
       },
       {
         "clip": "55e4a4da7b23f8bc2b7adabb2c0d54c919b48ac19a4aab69024cc0153305011c",
-        "ms": 2049
+        "ms": 2049,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "e3ad4f4fbac8f0b0c59d62710a54a1dd536299f4376d83b2902ea75f8eb51937",
-        "ms": 3207
+        "ms": 3207,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "8bd8e4e7518580738e557933404adea99594fb547f89ba8b5df9a7cb961eab52",
@@ -943,7 +1075,10 @@
       },
       {
         "clip": "678d80c7f655e6789e5ccc8673e1beb5f01a597217c0dc70fdea91c8b54c1be8",
-        "ms": 2007
+        "ms": 2007,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -963,7 +1098,10 @@
       },
       {
         "clip": "9d995d330e7745dd95a2adbe0ebb9c342561cacc28b65f6454b64da7e7fb1305",
-        "ms": 5807
+        "ms": 5807,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "2fd06d1f0139408d565e9b68d421530addcb71dd53999964e5fa88d939d6893b",
@@ -971,7 +1109,10 @@
       },
       {
         "clip": "979ba5eb5b583b5910755e346a0b71ace5b1f1e521b74cd0f15751947dc98d01",
-        "ms": 6807
+        "ms": 6807,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "51b724fa4ff0ad93dd41873fd5395ffead2079e7caa61c45c7c6ce793808dee6",
@@ -979,7 +1120,10 @@
       },
       {
         "clip": "5558c9787b4a5fc1887dd5a7df6ab248af5cca3ded95cc150f182777f9defecb",
-        "ms": 4107
+        "ms": 4107,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -991,7 +1135,10 @@
       },
       {
         "clip": "722eb98f6487ba8571e90be46d2bf922bbacf6773c7daa4bc46e4199a5081979",
-        "ms": 3207
+        "ms": 3207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "024988e38119c55cc779e5458ace7d45bfcc92c50bb2dd99afc694400b93da63",
@@ -1007,7 +1154,10 @@
       },
       {
         "clip": "337c223d371ea312217867c44b45e366a64d48fa9b47013850af3e1dda57ec2b",
-        "ms": 2706
+        "ms": 2706,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "35a35eecc85515ea710fc04c68fb7353356402b87a053d6088e1ffe728b739b0",
@@ -1015,7 +1165,10 @@
       },
       {
         "clip": "65705ea346daabfa821ec7a8f06cf8ff5a1b92f30eba30dde1dac7dae9785e0b",
-        "ms": 2207
+        "ms": 2207,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "7858dd618025139ccb568f1780a687c2926e92c43e755df5eb329f0a7444daa7",
@@ -1039,7 +1192,10 @@
       },
       {
         "clip": "922bda0a92a82ebf75c57b3c15c05dc341e13a43aab713a90da38ef702201d9c",
-        "ms": 609
+        "ms": 609,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "fc94b3317fc03148e263611d423e99e56edd5cb8d7f3006f0db62589059eff05",
@@ -1047,7 +1203,10 @@
       },
       {
         "clip": "9d48e8a21b5473c264e44ebae5bc5d5f2aef6af976cdf32ec4df47e48cef7fc4",
-        "ms": 3407
+        "ms": 3407,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "8b6871ba870e1a6b59d1102a180f727eff74beaf3aff030bdeab42ca0b135104",
@@ -1055,11 +1214,17 @@
       },
       {
         "clip": "d44cef4d213d033b77917fe59c4a3d07e1477a47905c431fb232ff5c4f3cfb5f",
-        "ms": 3107
+        "ms": 3107,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "e1b3d633c393a7463794c74418b6b60524015774e0a1325110569d11cd52ec8e",
-        "ms": 1189
+        "ms": 1189,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "015f5e3ad9cff065a92a4ecc284890102bf14a70923f1616b2781e29802eb697",
@@ -1067,7 +1232,10 @@
       },
       {
         "clip": "7de5f9db464b9bec9e188ad6d0a862215ba6f41554c3c9b73bbe112847a76ab0",
-        "ms": 1937
+        "ms": 1937,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -1079,7 +1247,10 @@
       },
       {
         "clip": "cafcae4e50d73358f81c87caf72e353405d846d256e4df8103e7d4dac7f8446a",
-        "ms": 1556
+        "ms": 1556,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "66b25c99f77040a49485488f8a2edd597642365be42c920f245b0d07c5f469ff",
@@ -1087,7 +1258,10 @@
       },
       {
         "clip": "c99fb62bbfa57af03a0f7938f1bd4823d62a61638174ecea6e3db7616280eebd",
-        "ms": 1374
+        "ms": 1374,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
@@ -1095,7 +1269,10 @@
       },
       {
         "clip": "b350a712b695fa27704051c52304a065a6e271fa27211eda2b5fbbde8582367b",
-        "ms": 1571
+        "ms": 1571,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -1107,7 +1284,10 @@
       },
       {
         "clip": "6eba609d588fb0ba603630b905f2e9aaadf4e5d3dba4588eb7501fd1142e5323",
-        "ms": 3807
+        "ms": 3807,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "01b6bc400354ac7d0144b84f9849b78b960eca67698843a9eb8bf94b23a8f812",
@@ -1115,7 +1295,10 @@
       },
       {
         "clip": "a1f7d58ee51a840e90542bbd098cdee1f6d6d61bccf5107f0d1a93d068e530f7",
-        "ms": 3307
+        "ms": 3307,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -1127,7 +1310,10 @@
       },
       {
         "clip": "7e116b5fc8ebc372083501dcf4323752007cb4bad8b291253c621024c694a7eb",
-        "ms": 1339
+        "ms": 1339,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "504991bcec0305e581eccf9179025fd6566cd244fddf45864e178ddf21ae9f28",
@@ -1135,7 +1321,10 @@
       },
       {
         "clip": "b58ea769434c2ef9154080c44505e0e0d601688b0f86e536b19ef3b295573fb8",
-        "ms": 902
+        "ms": 902,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "d03ef8cb645fdc0b8248ee6d0081a9e9d63224410b92ec5db28594340b08f3c7",
@@ -1143,7 +1332,10 @@
       },
       {
         "clip": "5b777bc1f8791294f48b20a9329a4303056e8331508673918a9ca7a87d8a2db0",
-        "ms": 1619
+        "ms": 1619,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -1155,7 +1347,10 @@
       },
       {
         "clip": "ca53a3aa49189d7b7ce51d21eacd6496d41c2edc20bd9b8357b993ebb52fb166",
-        "ms": 1427
+        "ms": 1427,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
@@ -1163,7 +1358,10 @@
       },
       {
         "clip": "2dfcba2ff1b19dba65f811215d6918f78b1d570c9edc0d62607e466df71831da",
-        "ms": 1236
+        "ms": 1236,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "248ed1b93320470d5df1c097ec22a16a8f3099965d5ecab4f637be30f64b7638",
@@ -1179,7 +1377,10 @@
       },
       {
         "clip": "5d76a3cdbdca437eb6c72f8559e9b152f6b4330b6ebb3c0c8a73799df7bff057",
-        "ms": 1765
+        "ms": 1765,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1187,7 +1388,10 @@
       },
       {
         "clip": "a0207c84f227eacfb74d527f9b81d8e32856668927faebdf13b0afc5a870c0d2",
-        "ms": 4827
+        "ms": 4827,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "8f3c75605dd6369c0b60f6c159bc50e53c09e0a60485455d83d20a03bd9c6254",
@@ -1235,11 +1439,17 @@
       },
       {
         "clip": "ba0336065070ebc64dee95e38edd766b8ccac4d5bb467ff3264b969550faac2c",
-        "ms": 3407
+        "ms": 3407,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "3ebc5a9903d0987bd4660be6d871bfa8f56a1f3ee4617328d6e4998b8e706c1d",
-        "ms": 1501
+        "ms": 1501,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "94cc36e1a58d4aa25f1b1af754e1fd176e806080bd89b7f54909fdb6a6c31cde",
@@ -1247,7 +1457,10 @@
       },
       {
         "clip": "39446f4e9fbf79881e4bc7832d43ae0afc35e0d6906c13d69ba0ce906bd70db6",
-        "ms": 1265
+        "ms": 1265,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -1259,7 +1472,10 @@
       },
       {
         "clip": "64246a8623f0c8b9ca95d6da27fcc3b3f30440385aafc65cbcdf3d881e6162e5",
-        "ms": 1042
+        "ms": 1042,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1267,7 +1483,10 @@
       },
       {
         "clip": "f91ea896537a85fa9800bf7b698e353f32200ed57c563a75ee6cbfe4f31417a7",
-        "ms": 3807
+        "ms": 3807,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "0539be2fe522f9a12926909cd0fac3b3b38d90a58947c5de4cb305389a25847f",
@@ -1275,7 +1494,10 @@
       },
       {
         "clip": "942fb88cb26a64884944ff4a3f18d2578052f6971cf845dd8555b33f43aab46c",
-        "ms": 7207
+        "ms": 7207,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "a39b32e27e46c688487a054e8e81edee8717a9be003e27d4eb42a02df3a34aa6",
@@ -1283,7 +1505,10 @@
       },
       {
         "clip": "0677e84cc67e91d0d23c2e7357a8cbf8d2119f4f6e376015661375372c62df89",
-        "ms": 4307
+        "ms": 4307,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -1295,7 +1520,10 @@
       },
       {
         "clip": "b21094d75c0c648e096cba0331371d44ef35153d88ae607dad6d084c90af6658",
-        "ms": 1222
+        "ms": 1222,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "5fe29d0284b9cab2f4ecd458ddd6775b377629aa160af183eec4ea2bb03fd5c9",
@@ -1303,7 +1531,10 @@
       },
       {
         "clip": "ab1dd25e3325f76d3608cb3bd0bc309c0277875ec18c26e069f817d54e11d8c7",
-        "ms": 1267
+        "ms": 1267,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "0f5abedc6ca971cc815ba8a8b4adbca746af814bc6e90ddda2dd4d22519b9d04",
@@ -1319,7 +1550,10 @@
       },
       {
         "clip": "1432d6e7dd9954bb9ed2cbb4b757da36740dcdf263ac1ea622b387f949958143",
-        "ms": 1466
+        "ms": 1466,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
@@ -1327,7 +1561,10 @@
       },
       {
         "clip": "ab11aa8fee7e10998d279227fc38fb1d73741770ff0493b88b99fc5b8a2464b6",
-        "ms": 3407
+        "ms": 3407,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "43f01c4e8e570f3a837c36ededb5aab70c607d09e997586f84388910a85f1d09",
@@ -1343,7 +1580,10 @@
       },
       {
         "clip": "bf465f7b68848320f1fff553a5140105d86717eedf02289c6b9ef59637dd28f5",
-        "ms": 1466
+        "ms": 1466,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
@@ -1351,7 +1591,10 @@
       },
       {
         "clip": "cc9f5039209e3adfb8ccff28ad5a05ea82a57dfbc37ca3d6f533e1d6f2fd8ac1",
-        "ms": 3207
+        "ms": 3207,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -1379,7 +1622,10 @@
       },
       {
         "clip": "48798e57f11fb46d7ee1ff54cd1264a635e8af24e37f42807f356740141a79eb",
-        "ms": 3607
+        "ms": 3607,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1387,7 +1633,10 @@
       },
       {
         "clip": "561d440b137de1e8183fb4da02022bcb5175c49a38adb7e703f7134b20cc77c2",
-        "ms": 3807
+        "ms": 3807,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "b596b2069b5000cc918307f3e0a553f72889c700523d9140d4c8e3bda2e9e05d",
@@ -1395,7 +1644,10 @@
       },
       {
         "clip": "75818c2cd6d5d4aec5cbc7dbbb4a2447efe29216a8818baada07e4a017f2b50f",
-        "ms": 2672
+        "ms": 2672,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -1407,7 +1659,10 @@
       },
       {
         "clip": "5df3afbb0b7334fb193d0e3d6dda585d897862b5cbbfe426622ea19bed0958d9",
-        "ms": 2583
+        "ms": 2583,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "1e0ddd469c44004e6454cc5aca589a7d8f5b1469585e2869b5db01128ca235d0",
@@ -1431,7 +1686,10 @@
       },
       {
         "clip": "1fc40227e2de8708db7ec78fba9bf1bc1dd5d09c32693b7ba6e4c085e6e3edfe",
-        "ms": 5407
+        "ms": 5407,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },
@@ -1443,7 +1701,10 @@
       },
       {
         "clip": "38c618b58a897a180eae7ea8c8dfb732d4fe3ea23afb7e1b9b5d269e15136e2d",
-        "ms": 735
+        "ms": 735,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       },
       {
         "clip": "4b6c633404f3ae1f81f94b9ab8d7570643e338166267e210f0b76c2ad5ba6d22",
@@ -1451,7 +1712,10 @@
       },
       {
         "clip": "854219f2e3d7182fb8ff4380608a5a46a12c70888c2d2d7df7bc7419709cc83e",
-        "ms": 713
+        "ms": 713,
+        "by": "saltrot_guide",
+        "figure": "cast/saltrot_guide",
+        "name": "Puddle"
       }
     ]
   },

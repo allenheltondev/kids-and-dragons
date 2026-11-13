@@ -23,7 +23,10 @@
       },
       {
         "clip": "6655e0281d49def37eca27425d8f7c01207f9d693cb323cfc0ccf0d437bde399",
-        "ms": 2116
+        "ms": 2116,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -31,7 +34,10 @@
       },
       {
         "clip": "45cef4d0681561e0b43e5cd3294d49edc2d94d2271d376b0a398d49067e5735b",
-        "ms": 2873
+        "ms": 2873,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -43,7 +49,10 @@
       },
       {
         "clip": "7f2eba34bb5aac913274f5f4bc3023e9a9db098013918567a2565655ff0cca1d",
-        "ms": 2521
+        "ms": 2521,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -51,7 +60,10 @@
       },
       {
         "clip": "644a85283c224849d8cc223827fa246f4b641fcc9dd02518e9eda8dc0e782552",
-        "ms": 3727
+        "ms": 3727,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -63,7 +75,10 @@
       },
       {
         "clip": "bdc8668aa9191d91bd4f8eecabbba8e38f2087308d3a3838ae85620322433baa",
-        "ms": 1036
+        "ms": 1036,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -71,7 +86,10 @@
       },
       {
         "clip": "2c2b7c6fa7ac41a2d6a0c1c1477ee4e1b7a1f6fc6804afee858ac92829228b42",
-        "ms": 1523
+        "ms": 1523,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "d9603401ba93fb03024e93a4e7a95bbdd2060eb390e8ccdc87dec2716cd778a4",
@@ -87,7 +105,10 @@
       },
       {
         "clip": "693520215b0c29b8b877ce7cfa4a782fb14afc7970e4b216e6f692a1ae77ab1a",
-        "ms": 1155
+        "ms": 1155,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -95,7 +116,10 @@
       },
       {
         "clip": "41148389d68235244967fcbd8ce6c2c6464a46a93535775c882d17d7647e52db",
-        "ms": 4027
+        "ms": 4027,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "cd7594747d59ae6f40f2ed8eb78a91fb630ed444bb6c087ead655754391f25c8",
@@ -103,7 +127,10 @@
       },
       {
         "clip": "eb8833623373954e23047ecedd1ba0cf44d6cb3794aa599f375402b02db0daff",
-        "ms": 2002
+        "ms": 2002,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "e3a10a4b3933e834f1a6de0d42b6d1404fc78483e32db9db008a96f52a6d4a08",
@@ -111,7 +138,10 @@
       },
       {
         "clip": "68f7eb296310f7e3972e9d41b1c93c150ca390be386e61451c8590ae01e97d38",
-        "ms": 5107
+        "ms": 5107,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       }
     ]
   },
@@ -123,7 +153,10 @@
       },
       {
         "clip": "a9f0ccefec3b8fdc9919d183b1c3c5950e32f15ca935ad7f672c13cf22a34801",
-        "ms": 3307
+        "ms": 3307,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "c54191d8f982fa6d329917aaadf447b07625db7c6620f421206a71939f3f3955",
@@ -175,7 +208,9 @@
     "": [
       {
         "clip": "0787c0322d08f33177fa23a0261abb097be3ecc1200f3f4d47296fc1552f48e1",
-        "ms": 3307
+        "ms": 3307,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "448b7cf432935366bfc3f624c7980b7c0db92820b8614a9186a5084eaaf23481",
@@ -183,7 +218,10 @@
       },
       {
         "clip": "716188a34b02156862283d8de36d2612c22a3f4623f60430381740f55964eaee",
-        "ms": 1073
+        "ms": 1073,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "d901790268b77922bad1e51d67002172bcd5051b6787f801d9ca0b76a2eba29e",
@@ -191,7 +229,10 @@
       },
       {
         "clip": "4fb53136d1a6178ecceb974d17d569878020402fc56da5f5e6f621e87da934ad",
-        "ms": 1588
+        "ms": 1588,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -243,7 +284,10 @@
       },
       {
         "clip": "749e0399dddaa30d2a05a67095c4c0ef05b28b6accede448cfbcedb150e27d6a",
-        "ms": 2037
+        "ms": 2037,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       }
     ]
   },
@@ -255,7 +299,10 @@
       },
       {
         "clip": "716ca4ff6ceff300368010cdb24dffda84db65f5b717fdda0ee10041d7d2455e",
-        "ms": 636
+        "ms": 636,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -263,7 +310,10 @@
       },
       {
         "clip": "189f32318edf90b8f73de3dfb9fa91bc5bbc79dd798017b820ee946f522d9afa",
-        "ms": 3307
+        "ms": 3307,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "d2c36deb26fea20b708443a8301ee4c05a0832536bd62954775dc5cf60964952",
@@ -295,7 +345,10 @@
       },
       {
         "clip": "aca356984204ef04c5bb50da36d82411058d026f1bd976caa2cff8a1163c9a13",
-        "ms": 2223
+        "ms": 2223,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "732edf6c52c708c3ce87c8338905831c0e407cf3e437b131dac04de93fea2c95",
@@ -311,7 +364,10 @@
       },
       {
         "clip": "0516fcbb05db6b67284c7a2185fbfa7fb386931ab7f2285e32509bffde3df163",
-        "ms": 819
+        "ms": 819,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "22b1a06b05038e003cdbba930ad61f6fee01dbb6bddb08132bfa065d7e53e91f",
@@ -319,7 +375,10 @@
       },
       {
         "clip": "a3535357ae12e4fb4314aa6a54312a1280d69333e8904efd995104ea27455b2e",
-        "ms": 962
+        "ms": 962,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       }
     ]
   },
@@ -331,7 +390,10 @@
       },
       {
         "clip": "763b25427e9c84b010b67b97c625e4f2c1bc3b928b4e14f23ba3a30c34bc636a",
-        "ms": 756
+        "ms": 756,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -339,7 +401,10 @@
       },
       {
         "clip": "81a2b5bc4c503f71d105816e3c1e28dd8e2dbe58e012266676392cb0c9c1c76f",
-        "ms": 796
+        "ms": 796,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       }
     ]
   },
@@ -359,7 +424,10 @@
       },
       {
         "clip": "6489811eb54f8e4ea417734f5489b2c69a3e166530a662ef7ce25ea8c207ccab",
-        "ms": 1665
+        "ms": 1665,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -367,7 +435,10 @@
       },
       {
         "clip": "b7e82b805ccde31914272b8f9da6e0a77952aceee48218bb7086b29b1bc4ecfc",
-        "ms": 1829
+        "ms": 1829,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "3298c0ef749dbde020fa4e3373272b8597f515226c334b76d7572ffaf227e3bc",
@@ -383,7 +454,10 @@
       },
       {
         "clip": "32127750d430356e603314527be7a8c48390464f54113517e3ae64aa06574fd8",
-        "ms": 2580
+        "ms": 2580,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -411,7 +485,9 @@
       },
       {
         "clip": "7b0a721766c2bf29d25108702024eee6e3c78d050c098fbcb2eff726a9c63008",
-        "ms": 1015
+        "ms": 1015,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "e56d130caf2fa1e8d207c6d10257c7903a4f2974ecb3483438af40a0ad01cf8c",
@@ -419,7 +495,9 @@
       },
       {
         "clip": "00624d97d56dbba1b9837c0e5dedd15794c8ed9e4b94dfc5dbdeb50768a9deee",
-        "ms": 854
+        "ms": 854,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "ea58de09221feacc6f029593889e189457abd6f15a8c44371f25a59a219632f9",
@@ -435,7 +513,10 @@
       },
       {
         "clip": "29dcb44e8a2a0e263edabb04ef09942c2ea93bc3ed9158a7287959ed860e4e71",
-        "ms": 2128
+        "ms": 2128,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "5dba558e14061d4069b785bb2025c407b080781ce7cb949de063ec017108e527",
@@ -451,7 +532,10 @@
       },
       {
         "clip": "f100697872e753716b26666fec6b51ad8116e2f48f77fffba1511744a3596c45",
-        "ms": 1852
+        "ms": 1852,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -459,7 +543,10 @@
       },
       {
         "clip": "2bdbdd9009f1ca55e009e8b3aa0a9cf48ade60528ae1489927d8e3b0686a9962",
-        "ms": 2393
+        "ms": 2393,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "f0fe46b1df3336748d7f36ba655d1b4e2398202aabc8b8823bb231018e047d6b",
@@ -483,7 +570,10 @@
       },
       {
         "clip": "d587deec1b3a9066b9ac96c73354f280b4532333c503838ff0e5a25f2ac1bbea",
-        "ms": 3607
+        "ms": 3607,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -491,7 +581,10 @@
       },
       {
         "clip": "b86fcd475a384e8e36f6ecddfabe5015ce906ea48134ba55ad159ea4c5608d83",
-        "ms": 2945
+        "ms": 2945,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "b16e9f6a989986a728e97b0adc3dcb12ef8cd2cc6c4782e992314dd34f469f15",
@@ -547,7 +640,10 @@
       },
       {
         "clip": "4780223db4ce66cfed570eabb1e28f7c89516b53d66380ed670221a90e31665c",
-        "ms": 2180
+        "ms": 2180,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -571,7 +667,10 @@
       },
       {
         "clip": "dc98ec7c92a3f14161aa73e337cce8190f2ecd9c3e870af38aec6d4c130a4780",
-        "ms": 1255
+        "ms": 1255,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "b9251e56a5c2e77076c6210660f6667af511d4e8d4a4f8a701593d2a498a0e8f",
@@ -579,11 +678,17 @@
       },
       {
         "clip": "a1b108165459c5a7780bec5f5dc464fc26d92240355a768d5ae92d8610033dd9",
-        "ms": 1823
+        "ms": 1823,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "718acb50d547ee78819895a149cf6567cd36cb8142badf1f85c26a21c5a4993d",
-        "ms": 796
+        "ms": 796,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
@@ -591,7 +696,10 @@
       },
       {
         "clip": "24d40ead6e2cc9533e8913786fcac76c0025c79891aadef240c033bffab22c57",
-        "ms": 4107
+        "ms": 4107,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -615,7 +723,10 @@
       },
       {
         "clip": "fea816bbd29c9294325f5e1a1cc9730bd7fea2b59d80d200177e84c1172b6798",
-        "ms": 4627
+        "ms": 4627,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -627,7 +738,10 @@
       },
       {
         "clip": "4966605c853a02d0bf2901a9bd111da65e058a489873d729f5df26ea9b86ac31",
-        "ms": 1108
+        "ms": 1108,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -635,7 +749,10 @@
       },
       {
         "clip": "1ce91a75274702fbcf986280cf7ea7ad873362b418ea80a207f7168191b169d5",
-        "ms": 1195
+        "ms": 1195,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -647,7 +764,10 @@
       },
       {
         "clip": "1a5df1a41cb433bae0250b7f504b7fbd5615c221ad3d41f12fe34d13fb0caa6b",
-        "ms": 2750
+        "ms": 2750,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -655,7 +775,10 @@
       },
       {
         "clip": "e4628f778113dd6350a0d2ca077fc5c0ee536be18cb2053c6314945e0c8f1c71",
-        "ms": 3407
+        "ms": 3407,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -667,7 +790,10 @@
       },
       {
         "clip": "1f5fa7fcf116fe55fcdb37c4b65a17cfe604af1c7a19919c59418de17a0aea3f",
-        "ms": 1776
+        "ms": 1776,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -675,7 +801,10 @@
       },
       {
         "clip": "9addb451352a57d9bb479f0e198caa300df7219e9c784c960833261dbb4cef49",
-        "ms": 3207
+        "ms": 3207,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "cddf7b40c983268bf600c97d7fd2d1df9043296b06a978477876424e8b2ad421",
@@ -691,7 +820,10 @@
       },
       {
         "clip": "5ad2421e2cf8231fb351e4ed3adff5e282e48f561f5e6525e8045350d51ed70d",
-        "ms": 2763
+        "ms": 2763,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "5bcc0ae2d1bc297b875683f60a82c398b2f92f79198145ec4413d0ead74844cf",
@@ -707,7 +839,10 @@
       },
       {
         "clip": "b77c5640a79bf901e31e07b79b4fd382215f6048d1dfb76685d697e8a89ff660",
-        "ms": 3307
+        "ms": 3307,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -715,7 +850,10 @@
       },
       {
         "clip": "57ce22fabb13465d780bf6486743e74795d1cfe1d7152c3e01c6543b77ecef6c",
-        "ms": 1594
+        "ms": 1594,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "33b48d0e07a6f978340db8c7259373c164c971ac1f9ddd71764ebddd5d7db1e4",
@@ -739,7 +877,10 @@
       },
       {
         "clip": "41ff0d5fdc9b9c95e59f24f7fbdebc848b92ad9a66affb9be349849cc6bb3c34",
-        "ms": 918
+        "ms": 918,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -747,7 +888,10 @@
       },
       {
         "clip": "9b8465ddb755b6bce2e468519f1bbfdeafce2df6bae08d1ddd6cee81859c1990",
-        "ms": 979
+        "ms": 979,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "ebfbad22e84e46f51acd5ddced7e609347fb404a3909f15ae3d85753054c86c2",
@@ -771,7 +915,10 @@
       },
       {
         "clip": "fb3dca50320fd42a129929135fcf5f03db1e7de8c0e30949d7140cac3a57a905",
-        "ms": 1608
+        "ms": 1608,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "5fe29d0284b9cab2f4ecd458ddd6775b377629aa160af183eec4ea2bb03fd5c9",
@@ -779,7 +926,10 @@
       },
       {
         "clip": "d94ca34bb278036ad22c919fe56632e1a33336e08031266a3d289a955c92a3a2",
-        "ms": 1071
+        "ms": 1071,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -799,7 +949,10 @@
       },
       {
         "clip": "b12409a338f58738347b1e84dd62aee20cb53414dd5fda15e2ee437e86fd0691",
-        "ms": 2017
+        "ms": 2017,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "a3b01bad3d921076fd3b2f4594148cca28d491b4abc8d7025627392d2a996ab2",
@@ -807,7 +960,10 @@
       },
       {
         "clip": "d463fd9a2c1a3348281a40743c1cf1a643f0259a44c4ebb3ec76bd1d4510ac12",
-        "ms": 4407
+        "ms": 4407,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "02d494d03bf53a26cbc6b139964eb1198b4200e0485d454fcdbf7f93c07b11c6",
@@ -815,7 +971,10 @@
       },
       {
         "clip": "fac2cbe8814882a30c71ff13c65c5a84d4e89b8687d945d065887a6274f68062",
-        "ms": 1905
+        "ms": 1905,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "5fe29d0284b9cab2f4ecd458ddd6775b377629aa160af183eec4ea2bb03fd5c9",
@@ -823,7 +982,10 @@
       },
       {
         "clip": "ee54d299053cbf1e6d983d16d2e34b576694f161efd58cbe28fb349b5a1598d8",
-        "ms": 1841
+        "ms": 1841,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -859,7 +1021,10 @@
       },
       {
         "clip": "f98eceeed7702bef82c4a52cf98fe147f7bfb8e0f63fbdbb0f6c61fcb287a17a",
-        "ms": 1044
+        "ms": 1044,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -867,7 +1032,10 @@
       },
       {
         "clip": "11760d124ee81f11eb9864d5eb7e823cb0cbb6aa9f29127cfbf95949c7e55486",
-        "ms": 3207
+        "ms": 3207,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "0130c6e359d5811527bf2b24216528063a67909a5c0194f94d538de31df170c6",
@@ -875,7 +1043,10 @@
       },
       {
         "clip": "ab0ed4b625ba0d2a7afe0f1ef1304f6f5e380cdd3b0f84d9185eb52d96f88099",
-        "ms": 4107
+        "ms": 4107,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "8e7d2cc8b7d4b7a0f5f6a51297a0fd7a4c2e6c4bdb46c495f5dd7429933846ee",
@@ -931,7 +1102,10 @@
       },
       {
         "clip": "b1532e8fe203c6b18f51bd57e69e5e122f5a96ec6316c18909c151876a84289d",
-        "ms": 1595
+        "ms": 1595,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -947,7 +1121,10 @@
       },
       {
         "clip": "38398005fec64427566320d788c114bb880ebbf492b5a66889112868876fd644",
-        "ms": 1611
+        "ms": 1611,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "79534b3a0a8a902a5729c7f67ba1c1855a687cff36393bf40746b983d4fae425",
@@ -963,7 +1140,10 @@
       },
       {
         "clip": "d36898696a880c2bf7ea138f2dbbdbd5e134bce98ca1d8ea321312cb834b11ec",
-        "ms": 1807
+        "ms": 1807,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -971,7 +1151,10 @@
       },
       {
         "clip": "a645996ba91f08293d7a539a5d898d2e96478cd172320afbbc16c0e629e81215",
-        "ms": 1380
+        "ms": 1380,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -991,7 +1174,10 @@
       },
       {
         "clip": "a868128c60801274ab160ba7c3d4b8229b5d4f6707f69190c40ae7f6f562bf75",
-        "ms": 2475
+        "ms": 2475,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -1003,7 +1189,10 @@
       },
       {
         "clip": "0df920e0b9a2961ff30db49da852af549e1ff06c2f713dd7ef26ba9ae0a2fe79",
-        "ms": 2453
+        "ms": 2453,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1011,7 +1200,10 @@
       },
       {
         "clip": "f63a0f68a0e6909438d9716455c16bf9020ab78087e344801d0af5d8124bbeae",
-        "ms": 8707
+        "ms": 8707,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "91164d5415471bc3604ab9d158506f1494bcf55714efa4d1f08675059f9a21d1",
@@ -1019,7 +1211,10 @@
       },
       {
         "clip": "4a1e8f4aa2daa99d772440ec24cf0808658ea8f522f26733e68944d450a6863d",
-        "ms": 4007
+        "ms": 4007,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       }
     ]
   },
@@ -1031,7 +1226,10 @@
       },
       {
         "clip": "e8cda8c36e70523b489aa0611b1800b4cc7a1e55dbb0790b2ca47a30e95103e4",
-        "ms": 1856
+        "ms": 1856,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
@@ -1039,7 +1237,10 @@
       },
       {
         "clip": "74c904fee92fd9d43dedb3afb9adf2ff0aee4043b43be39bc127cd8216810b70",
-        "ms": 3407
+        "ms": 3407,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1051,7 +1252,10 @@
       },
       {
         "clip": "e8f3ab73b8baa3d589551c25b7959b00026616d6825e2646f52d7ca397ac0abf",
-        "ms": 3208
+        "ms": 3208,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1059,7 +1263,10 @@
       },
       {
         "clip": "56478899b8e39700896c373404ee4d1860fe0285ff291c0559bc50b8df064bea",
-        "ms": 5408
+        "ms": 5408,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "567c753f0f9f5212bf58fbe88dcbf3fa5c86d25f3bd47179a14113c8c0de7849",
@@ -1067,7 +1274,10 @@
       },
       {
         "clip": "141c5c8717366f964e9ec39ca729e72d6a4ebd32d8820af8b0d4bb31844aabc2",
-        "ms": 1526
+        "ms": 1526,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1087,7 +1297,10 @@
     "": [
       {
         "clip": "a0331d37d4d6b8c62d0cc5a033d82cdd8958efc53cf233905256638c99a3abb8",
-        "ms": 2273
+        "ms": 2273,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "f8c88c2686be7734577b8ebbc90fa0a3fa75db7df17e7b532849e3baf733a0cd",
@@ -1111,7 +1324,10 @@
       },
       {
         "clip": "0a5cd459fee7e070e2ce492707a00a3c18262ec70ecb050e5d8be543775ccd92",
-        "ms": 3307
+        "ms": 3307,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1119,7 +1335,10 @@
       },
       {
         "clip": "133b44d465703564196d2d5b3d73312667becc8f76c37435a20e25bcff4ff447",
-        "ms": 6007
+        "ms": 6007,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "d4383e98ebaec88b4c700359a2b5f34a20f703759997203b3ca69569f03f0587",
@@ -1127,7 +1346,10 @@
       },
       {
         "clip": "84239e8cbb2661ba679e2519f8744237a5d48cf75043aac79904894a4f38b88d",
-        "ms": 2101
+        "ms": 2101,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "bf7aa489a42f8e4b34f7fdd329204cddbe8da52dcd42d6331241e63d4338531f",
@@ -1143,7 +1365,10 @@
       },
       {
         "clip": "d0661d80f5fd9c51b2ad61f6ae042c5845c31ae63cc1f802ed40525336cce5a5",
-        "ms": 3507
+        "ms": 3507,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1151,7 +1376,10 @@
       },
       {
         "clip": "ca2689eaa59dede898f6003a6116049d296e180ef68c8027faf7a9183aee81ef",
-        "ms": 1352
+        "ms": 1352,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "e0d5a442b6c3964a898c338eb0b6baaa7c5d01a59db3c57525d990f4aef680a0",
@@ -1159,7 +1387,10 @@
       },
       {
         "clip": "0d8dff0c495dfe99756f83fb2aa9f47879ad3f21f76449a89eca63c2e69c470b",
-        "ms": 10007
+        "ms": 10007,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "0d4a3ca1d5f96724f8ea9a21b531b4872e77e41df7d0513445db8a7660c02930",
@@ -1171,7 +1402,10 @@
     "": [
       {
         "clip": "4d3867ac247baef5a2a97837d3257393ab8dd10ece7f66deae86d917f2a3a0c5",
-        "ms": 1336
+        "ms": 1336,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "08b1344ef1faea6513656dc3409c788774886cecf80d427374641c354c680eca",
@@ -1179,7 +1413,10 @@
       },
       {
         "clip": "ac8e3644257199c85a7503193e417b07383fd2d812a664efe8b7e8ccdbcb109e",
-        "ms": 3707
+        "ms": 3707,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1187,7 +1424,10 @@
     "": [
       {
         "clip": "bcc0cdcd682a74a5e1589b558fba9bd62585966317617eaa78bd4e80b06e836f",
-        "ms": 3407
+        "ms": 3407,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "dcaa70629e8a38a30b917373cad66611d4df68d713ee6533e7e77a87e0c1d290",
@@ -1203,7 +1443,10 @@
       },
       {
         "clip": "cf584e29f1c36900945173969af11e71a0ec5bf537efb27426eade2029c9ed52",
-        "ms": 2170
+        "ms": 2170,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "9dac36881c2f9c77fe54fa457e2fc2be04b78f22fe1684fde441be8b5764320b",
@@ -1211,11 +1454,17 @@
       },
       {
         "clip": "4bca660c52562eca3fc23cee17849f225d0e15e9bda0f37e250e55ad7958eed9",
-        "ms": 2721
+        "ms": 2721,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "7c5c077482d8945b126b45e2983e075bbd77dcf871f237cc20ee69e3247025f9",
-        "ms": 2828
+        "ms": 2828,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "015f5e3ad9cff065a92a4ecc284890102bf14a70923f1616b2781e29802eb697",
@@ -1223,7 +1472,10 @@
       },
       {
         "clip": "9e8410107fef4e5eec9a081bcc257aedca93de8e52b525c0c8280ab382ecea3f",
-        "ms": 2262
+        "ms": 2262,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "ed487ceac146c2811cb984b7e7f120c803a4c5226e5daf653461575c6a74fb16",
@@ -1239,7 +1491,10 @@
       },
       {
         "clip": "f7428bd7778d9fc90b8f8d9d851ac6115a1d6bf5cd457b66eb2c57a3fc8fcee0",
-        "ms": 3107
+        "ms": 3107,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1247,7 +1502,10 @@
       },
       {
         "clip": "6a6cf083a10f6e9780557eea5d818b4add7b84a73b4d55a05a4eec252fdcee29",
-        "ms": 6507
+        "ms": 6507,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "a4f0c107efa6858e767337e25ca0a10b85cce9a63378d09a7e9697f7f25978f1",
@@ -1263,7 +1521,10 @@
       },
       {
         "clip": "1cf47a545e94f1bf735a15cff33cf28c7c07bd40389e42d0774ffa3fa1bee85c",
-        "ms": 1784
+        "ms": 1784,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "015f5e3ad9cff065a92a4ecc284890102bf14a70923f1616b2781e29802eb697",
@@ -1271,7 +1532,10 @@
       },
       {
         "clip": "d38c0297becd55aecfb40fb592c60cd256bc47ad0b4f5c9450816be042319f19",
-        "ms": 3607
+        "ms": 3607,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "26280b5aa8959ed218b029734aa8172e8b6a6b6d4521d698ad07879ab0a26171",
@@ -1303,7 +1567,10 @@
       },
       {
         "clip": "f2aab1d8a8048bb3dfbeb3b003d4f4b15219d75fd89a19b767caf0985d222375",
-        "ms": 3207
+        "ms": 3207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "3ab2bff6391e0b0a842a207df8926b767444c420ec0bba4fe96e24f0bfa34317",
@@ -1311,7 +1578,10 @@
       },
       {
         "clip": "e25316723ec915d0b0a4ef80ee77ffebbd2b51e4dacf650180cd6000026ffa84",
-        "ms": 4707
+        "ms": 4707,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "149b6057ab122b600d0bb7e494a3973355afbecbf99c1f7c74c3098a2b519c48",
@@ -1327,7 +1597,10 @@
       },
       {
         "clip": "f2aab1d8a8048bb3dfbeb3b003d4f4b15219d75fd89a19b767caf0985d222375",
-        "ms": 3207
+        "ms": 3207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "9f93df1e5a8ad60f2cfe08ad235ca37c40c2c18849c50de97cad5e93ed35301b",
@@ -1335,7 +1608,10 @@
       },
       {
         "clip": "150865cfd2205b11acb7da7b80b921c99b1a552959a75eca83f71853711d694b",
-        "ms": 2721
+        "ms": 2721,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       }
     ]
   },
@@ -1343,7 +1619,10 @@
     "": [
       {
         "clip": "b9507cf7e0435053a3cd12b3f1f31e8dc6398701ed892a0df891d60d95dafaae",
-        "ms": 2424
+        "ms": 2424,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "277a3fb2d991e38e9a955c4bef58f7ca271102d836698817b86be24c75309b03",
@@ -1351,7 +1630,10 @@
       },
       {
         "clip": "58260ad34caf1e1f47088ce4b1910e1432daac8c30389059f793b5da2fb976b1",
-        "ms": 3707
+        "ms": 3707,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "028f3f9baf9cb5e4d74941700640d7a4df3482e35b7011889516b8f663b30874",
@@ -1359,7 +1641,10 @@
       },
       {
         "clip": "c4a0d5e14ae958350b34a63015348aee6d377a818b278ffedc17ca3e90c69aa8",
-        "ms": 454
+        "ms": 454,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "98c2df45494954042fe4eb60bba38b5fbe4c20f1d490fd671154c2eabdd63d13",
@@ -1379,7 +1664,9 @@
     "": [
       {
         "clip": "142e05b1d530cf3c2b4ed5de6d436d06e6f507c2d7e7ce26c0afaba503194821",
-        "ms": 2081
+        "ms": 2081,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "6b64191ed24c8e1594e9843d643382ab417a26d26a450e161b9fe9e2298615f1",
@@ -1387,7 +1674,9 @@
       },
       {
         "clip": "9c50aeab2016eb3b20b4e782144c588c9ed16d459675a0cfd41aff40924e2074",
-        "ms": 1322
+        "ms": 1322,
+        "by": "party",
+        "name": "The party"
       },
       {
         "clip": "2e47d21118683320d86ccf62910fa22f310e242b2cd0fd9ec3d846ea450e204e",
@@ -1419,7 +1708,10 @@
       },
       {
         "clip": "8abe93faa3ea48da0e6aa2f9dee6df17a1d181477f607e718dbcf1b849ddea23",
-        "ms": 2817
+        "ms": 2817,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "7bbbc734e36e28fdcd595749ca0e803e0e5b984cb3d209ce2bdf44285784adf8",
@@ -1427,7 +1719,10 @@
       },
       {
         "clip": "14616e78050e4757d0f61c21e1ff9356b30c295092102b3a98d1bed457427a88",
-        "ms": 5507
+        "ms": 5507,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "e0e02ece7dad1cbe23904acd2b376160414052f890ebafc0a81380e8ac28bd1c",
@@ -1443,7 +1738,10 @@
       },
       {
         "clip": "f173618b7d85894b01453679e1824bdf576dd5d8b729c408063097d40f48070d",
-        "ms": 4107
+        "ms": 4107,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1451,7 +1749,10 @@
       },
       {
         "clip": "6b41b84acb7e8dd07b0ef3a83b250ebf01602204d21590073282ae492a5c1d26",
-        "ms": 6307
+        "ms": 6307,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "9f90f6fb6ea0b5298f249189a0e1b052003323518f53fce1a655a61f66b4cbea",
@@ -1459,7 +1760,10 @@
       },
       {
         "clip": "6f9f831b3d68c351d8fe705ec607eed2f70da0c99a6f4ea115d47533dcd8fc5d",
-        "ms": 1517
+        "ms": 1517,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1471,7 +1775,10 @@
       },
       {
         "clip": "dd2c9751f13e6b995af613fbe889d98f92fac779d21fbe0a2c05a1ac845554a8",
-        "ms": 2377
+        "ms": 2377,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "name": "Bram Lock"
       },
       {
         "clip": "b4974721dcf214c53217b94bab7428559e6f07f8ff062a674c13e358c56c4d54",
@@ -1495,7 +1802,10 @@
       },
       {
         "clip": "5f51e8ac31261e8bcc4e425c518a71c851b69fb34f73beae510f7f14e331cf7b",
-        "ms": 1533
+        "ms": 1533,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
@@ -1503,7 +1813,10 @@
       },
       {
         "clip": "2f8f07c37d0915f526058e3ad45d31377fe519d6dc10732d6439a66cba7d97d6",
-        "ms": 855
+        "ms": 855,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       }
     ]
   },
@@ -1515,7 +1828,10 @@
       },
       {
         "clip": "242fd91624c9a6df38b708c256c1f1ddb021789d5192a260ef8bfd96c085648c",
-        "ms": 1541
+        "ms": 1541,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "d605bd07cb22b69470ea373a2e4db3db921314529f8e154050a87ddb5a9a612f",
@@ -1523,7 +1839,10 @@
       },
       {
         "clip": "b5498783c5a36b464539fac32c1ddbb071dc2b50d823830a3d99459315d218f7",
-        "ms": 1525
+        "ms": 1525,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1535,7 +1854,10 @@
       },
       {
         "clip": "129d33c7ded581871deded42e3861ef6495cfca08148eaa62b052c1de1d5e404",
-        "ms": 2364
+        "ms": 2364,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1547,7 +1869,10 @@
     "": [
       {
         "clip": "b601c87cab55450503c933b94194701dcd92dada34dc329c018c3908f0958726",
-        "ms": 5207
+        "ms": 5207,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "4b60e6bb1fe0034cad3d72eeac4aeaa8eff2cc42af6c7aaed337609eedb59d0c",
@@ -1555,7 +1880,10 @@
       },
       {
         "clip": "be0345825d7df70e11ba0e41ad6e7518f59176724434ebc783939bd47b94c7b0",
-        "ms": 2510
+        "ms": 2510,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1567,7 +1895,10 @@
       },
       {
         "clip": "91105f2bb5259abc471cdcc2ef10ea74906bca1bb5ad2812d96cbbf4bc08860b",
-        "ms": 2183
+        "ms": 2183,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1575,7 +1906,10 @@
       },
       {
         "clip": "aba76d39268477146635fd4e0658b94ce2757a77391d742b94063460c47429cc",
-        "ms": 1051
+        "ms": 1051,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "4489ae71d854ce43ee25446ee73a8bb2ad035920f29def747556ff6ea64b71d7",
@@ -1595,7 +1929,10 @@
     "": [
       {
         "clip": "bdd3b7b7d38d6f6c498bf9a744f416c6f2eb716eba225f610bd0e856c533ac4d",
-        "ms": 2185
+        "ms": 2185,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "21c5280c9596086330ad9e0a2da005970202c754506f896bbdf3bef614239d41",
@@ -1603,7 +1940,10 @@
       },
       {
         "clip": "eeabcec3b1ec6395b82d7ff268f49a1b9c2fbca3532ae9df5b8509f1c63b5953",
-        "ms": 2251
+        "ms": 2251,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "bc909982f3986964d1cd07d2bbaafea5e367607f79b36d3328947ba6296808b8",
@@ -1611,7 +1951,10 @@
       },
       {
         "clip": "fe04a1ab9af0d7a93839c793bdaeaf4d5c95e55808d164d8dda552af72627f0a",
-        "ms": 1937
+        "ms": 1937,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1623,7 +1966,10 @@
       },
       {
         "clip": "34916f3aab01600076d0de0bf57200cce5f5aea013062b6ebef36e7601e0349f",
-        "ms": 2263
+        "ms": 2263,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1631,7 +1977,10 @@
       },
       {
         "clip": "35fbc4fb48723baf88c307ab87a4b4e2e089f7b3fe803ad8acd290b486f4665d",
-        "ms": 1992
+        "ms": 1992,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       }
     ]
   },
@@ -1643,7 +1992,10 @@
       },
       {
         "clip": "ce9602fb5d99d96ad98160f1433796101c46186262b4d7d6f6c43a453bca4e40",
-        "ms": 3307
+        "ms": 3307,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "61ef190034e2329fc9af094e5099f1c7f9dc9e41b4327d961caa45801a7f7241",
@@ -1659,7 +2011,10 @@
       },
       {
         "clip": "55c4c40025c2b6be08cd4a9081103bb8ab09543f56bffc3f78f40db9ff37fb9f",
-        "ms": 1691
+        "ms": 1691,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "name": "Pip Thistledown"
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1675,7 +2030,10 @@
       },
       {
         "clip": "100857ad5081c8f4556d1460ce36b920232fb76fe1bb91525547a16d2d2fed3c",
-        "ms": 1260
+        "ms": 1260,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1683,7 +2041,10 @@
       },
       {
         "clip": "0f4cfc4afdb12cef058a31ab66dc8f6b13e4564e0c46f658c169e92342ff26b9",
-        "ms": 1757
+        "ms": 1757,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -1727,7 +2088,10 @@
       },
       {
         "clip": "242babafe06cd1662bdd25d838abed4f7ab88cb09ebf312d098ef247068fe1d4",
-        "ms": 1078
+        "ms": 1078,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "name": "Master Orin Vale"
       }
     ]
   },
@@ -1755,7 +2119,10 @@
       },
       {
         "clip": "d59a445dd608c01ab8305697c6cc57c4786d17be9f5c4383686b0ed2cd401862",
-        "ms": 1261
+        "ms": 1261,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "906b42a4b478592fbb9a60cfe28454d85989de26452c84fb7c3c689d8e28527f",
@@ -1763,7 +2130,10 @@
       },
       {
         "clip": "a29a928da522156e9d0b8d43b058a1212c805825341857dc918f5f166674095f",
-        "ms": 3707
+        "ms": 3707,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "ee1a86f21a8e97e3e1963191d4a07aaf9a405d54322cd32c6ccbab7bbd8ce03c",
@@ -1771,11 +2141,17 @@
       },
       {
         "clip": "0473082e26a8953ffa7e2ce209235d904981c6573b4a749211d2c853940a8ec3",
-        "ms": 845
+        "ms": 845,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "name": "Lady Olivia"
       },
       {
         "clip": "356ab4355e0bff56713fcebe0dcfd0279d59deed966fe18e178a81c7cda14b54",
-        "ms": 709
+        "ms": 709,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "name": "Seren Wisp"
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
