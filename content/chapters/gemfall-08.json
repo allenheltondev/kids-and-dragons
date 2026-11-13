@@ -5669,12 +5669,14 @@
     },
     "interaction_chimney": {
       "type": "interaction",
-      "narration": "Above the post, the stair turns into a steep chimney of warm rock. A rope hangs down it. A sign says: ONE CLIMBER AT A TIME. EVERYBODY ELSE HOLDS THE ROPE.",
+      "narration": "Above the post, the stair turns into a steep chimney of warm rock. A rope hangs down it. Gusts blow through the opening. Climb in the quiet between them.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends hold the rope steady while someone climbs.",
-        "actionLabel": "Climb the rope",
-        "supportLabel": "Hold the rope steady"
+        "kind": "timing",
+        "cue": "Climb when the marker reaches the gap between gusts.",
+        "actionLabel": "Climb!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
       },
       "onSuccess": {
         "goto": "scene_overlook",
@@ -5682,13 +5684,24 @@
       },
       "onFailure": {
         "goto": "scene_overlook",
-        "narration": "The rope swings, and you slide to a ledge on your bottom. You take the long way, and pop out with your hair full of cloud."
+        "narration": "A gust swings you against the warm rock. You scrape your knees, slide onto a ledge, and take the longer stair to the overlook. Your hair is full of cloud.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_overlook",
         "narration": "Everybody holds the rope, and you climb one slow hand at a time. You pop out with your hair full of cloud."
       },
-      "art": "scenes/gemfall/warm-rock-chimney"
+      "art": "scenes/gemfall/warm-rock-chimney",
+      "tags": [
+        "climb"
+      ]
     },
     "scene_crab_guards": {
       "type": "story",
@@ -6021,7 +6034,7 @@
       "narration": "The wardens make a line, the one your warning made possible. Captain Voss waits at the end. Catch the bucking leash and pass it along to her.",
       "interaction": {
         "kind": "relay",
-        "cue": "Catch the leash and pass it along the prepared line.",
+        "cue": "Catch the bucking leash and aim each pass toward the next pair of hands.",
         "actionLabel": "Pass the leash",
         "objectLabel": "The humming leash"
       },
@@ -6031,7 +6044,15 @@
       },
       "onFailure": {
         "goto": "scene_cage_closes",
-        "narration": "The line wobbles, but the wardens steady the leash before it reaches Captain Voss."
+        "narration": "The leash bucks free and drags you across the floor. Your knees sting. Captain Voss catches the end while Pellam hauls you clear.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_cage_closes",
@@ -6047,10 +6068,10 @@
           "name": "Seal-Keeper"
         }
       ],
-      "narration": "The Keeper sets a claw on the cracked seal. Hold the loose pieces while its warm breath joins them. A moth helps by sitting on a crack. It has misunderstood the job.",
+      "narration": "The Keeper loops cords around the cracked seal. Pull them smoothly together while its warm breath joins the pieces. A moth helps by sitting on a crack. It has misunderstood the job.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Brace the loose pieces while the Keeper warms the cracks.",
+        "cue": "Pull the bracing cords smoothly together to hold the seal pieces still.",
         "actionLabel": "Hold the seal steady",
         "supportLabel": "Brace a piece"
       },
@@ -6060,7 +6081,15 @@
       },
       "onFailure": {
         "goto": "scene_restore_last_gap",
-        "narration": "A piece slips. The Keeper steadies it with another claw. Together you join the cracks."
+        "narration": "The seal bucks, and everybody bounces. Your palms sting, but the Keeper catches the loose piece. Its warm breath joins the cracks. One last gap remains.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_restore_last_gap",
@@ -6434,6 +6463,98 @@
             "value": true
           }
         ]
+      }
+    },
+    "interaction_chimney": {
+      "type": "interaction",
+      "narration": "Above the post, the stair turns into a steep chimney of warm rock. A rope hangs down it. A sign says: ONE CLIMBER AT A TIME. EVERYBODY ELSE HOLDS THE ROPE.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the rope steady while someone climbs.",
+        "actionLabel": "Climb the rope",
+        "supportLabel": "Hold the rope steady"
+      },
+      "onSuccess": {
+        "goto": "scene_overlook",
+        "narration": "Hand over hand, up you go. You pop out at the top with your hair full of cloud."
+      },
+      "onFailure": {
+        "goto": "scene_overlook",
+        "narration": "The rope swings, and you slide to a ledge on your bottom. You take the long way, and pop out with your hair full of cloud."
+      },
+      "onAssisted": {
+        "goto": "scene_overlook",
+        "narration": "Everybody holds the rope, and you climb one slow hand at a time. You pop out with your hair full of cloud."
+      },
+      "art": "scenes/gemfall/warm-rock-chimney"
+    },
+    "interaction_restore_brace": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The Keeper sets a claw on the cracked seal. Hold the loose pieces while its warm breath joins them. A moth helps by sitting on a crack. It has misunderstood the job.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace the loose pieces while the Keeper warms the cracks.",
+        "actionLabel": "Hold the seal steady",
+        "supportLabel": "Brace a piece"
+      },
+      "onSuccess": {
+        "goto": "scene_restore_last_gap",
+        "narration": "Your hands and the Keeper's claw hold the pieces still. The cracks join. One last gap remains."
+      },
+      "onFailure": {
+        "goto": "scene_restore_last_gap",
+        "narration": "A piece slips. The Keeper steadies it with another claw. Together you join the cracks."
+      },
+      "onAssisted": {
+        "goto": "scene_restore_last_gap",
+        "narration": "The Keeper braces beside you. Together you hold the pieces until the cracks join."
+      }
+    },
+    "interaction_leash_transfer": {
+      "type": "interaction",
+      "tags": [
+        "force"
+      ],
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/captain_voss",
+          "name": "Captain Voss"
+        },
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The wardens make a line, the one your warning made possible. Captain Voss waits at the end. Catch the bucking leash and pass it along to her.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the leash and pass it along the prepared line.",
+        "actionLabel": "Pass the leash",
+        "objectLabel": "The humming leash"
+      },
+      "onSuccess": {
+        "goto": "scene_cage_closes",
+        "narration": "Hand to hand, the leash reaches Captain Voss. She braces it while the wardens make their promises."
+      },
+      "onFailure": {
+        "goto": "scene_cage_closes",
+        "narration": "The line wobbles, but the wardens steady the leash before it reaches Captain Voss."
+      },
+      "onAssisted": {
+        "goto": "scene_cage_closes",
+        "narration": "Pellam steps into the gap, and together you pass the leash safely to Captain Voss."
       }
     }
   }

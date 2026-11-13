@@ -4239,34 +4239,10 @@
       }
     ]
   },
-  "gemfall-08/interaction_chimney/interaction/cue": {
-    "": [
-      {
-        "clip": "ee74508e95cbd6651f9caa7197918bb6d2a34e273eeded7fc9951d0844cda623",
-        "ms": 2904
-      }
-    ]
-  },
-  "gemfall-08/interaction_chimney/narration": {
-    "": [
-      {
-        "clip": "3ce40357f03f743723e7839e21adc3e9e4578c3e7f0d0fb97ad14fbc49651fe3",
-        "ms": 11007
-      }
-    ]
-  },
   "gemfall-08/interaction_chimney/onAssisted/narration": {
     "": [
       {
         "clip": "9e24d6f9acffdc99e2ccd59fe96d0d8ddca58109756304e7e800d14fbe46f1f6",
-        "ms": 7307
-      }
-    ]
-  },
-  "gemfall-08/interaction_chimney/onFailure/narration": {
-    "": [
-      {
-        "clip": "7ef97c16ac0e46db5f0954144f5c977bf53a8898a6437982191b25df6d199d69",
         "ms": 7307
       }
     ]
@@ -4287,14 +4263,6 @@
       }
     ]
   },
-  "gemfall-08/interaction_leash_transfer/interaction/cue": {
-    "": [
-      {
-        "clip": "625c4d31b0f648b1906f11bff750f44f21f010bce561e9c816ce2986ea811384",
-        "ms": 2914
-      }
-    ]
-  },
   "gemfall-08/interaction_leash_transfer/narration": {
     "": [
       {
@@ -4311,14 +4279,6 @@
       }
     ]
   },
-  "gemfall-08/interaction_leash_transfer/onFailure/narration": {
-    "": [
-      {
-        "clip": "a5ea3a1b4372ebc8789e6e32ef5b0a83b812d434cfdb6d54b27dccb67fe6fdf4",
-        "ms": 5008
-      }
-    ]
-  },
   "gemfall-08/interaction_leash_transfer/onSuccess/narration": {
     "": [
       {
@@ -4327,35 +4287,11 @@
       }
     ]
   },
-  "gemfall-08/interaction_restore_brace/interaction/cue": {
-    "": [
-      {
-        "clip": "6498da1d5561393407dbb86d4a3152a00e459af8bcf47d6cc0a4f49e25dff522",
-        "ms": 3407
-      }
-    ]
-  },
-  "gemfall-08/interaction_restore_brace/narration": {
-    "": [
-      {
-        "clip": "7c83f2890b3f7ba8648e92940c0157375da1c0cacf7e1effe37371ba250553e6",
-        "ms": 10807
-      }
-    ]
-  },
   "gemfall-08/interaction_restore_brace/onAssisted/narration": {
     "": [
       {
         "clip": "10232a3d240e22fa3f386eca5f566358cb76b610505518593c706668792f0ea6",
         "ms": 5507
-      }
-    ]
-  },
-  "gemfall-08/interaction_restore_brace/onFailure/narration": {
-    "": [
-      {
-        "clip": "65e97d0e78026c9efed92c3fc5257d8956ac80de5e02637e7d3f667a41d03e6d",
-        "ms": 6007
       }
     ]
   },

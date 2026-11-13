@@ -1646,7 +1646,7 @@
       "narration": "One last pole goes across the snow shelf. \"The stream pauses between gulps,\" says the herder. \"Step across when it goes quiet.\" The stream gulps. Then it goes quiet.",
       "interaction": {
         "kind": "timing",
-        "cue": "Step across when the water goes quiet.",
+        "cue": "Step when the marker reaches the quiet gap between the stream's gulps.",
         "actionLabel": "Step!",
         "target": 0.5,
         "width": 0.35,
@@ -1658,7 +1658,15 @@
       },
       "onFailure": {
         "goto": "ledge_done",
-        "narration": "The stream gulps early and splashes you to the knees. You skip back, dripping. \"My turn,\" says the herder, and plants the pole herself."
+        "narration": "The stream gulps early and knocks your shins against the shelf. You scramble back, sore and dripping. The herder plants the last pole herself.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "ledge_done",
@@ -2349,6 +2357,45 @@
       "shelf_cross": {
         "cast/yeti_herder": "herder_hay_water"
       }
+    }
+  },
+  "resumeInteractions": {
+    "shelf_cross": {
+      "type": "interaction",
+      "tags": [
+        "swim"
+      ],
+      "narration": "One last pole goes across the snow shelf. \"The stream pauses between gulps,\" says the herder. \"Step across when it goes quiet.\" The stream gulps. Then it goes quiet.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Step across when the water goes quiet.",
+        "actionLabel": "Step!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "ledge_done",
+        "narration": "You step across in the quiet, plant the pole, and hop back before the next gulp."
+      },
+      "onFailure": {
+        "goto": "ledge_done",
+        "narration": "The stream gulps early and splashes you to the knees. You skip back, dripping. \"My turn,\" says the herder, and plants the pole herself."
+      },
+      "onAssisted": {
+        "goto": "ledge_done",
+        "narration": "The herder counts the gulps aloud. You cross on the count, and the pole goes in."
+      },
+      "art": "scenes/riftlight/glacier-meltwater-step",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ]
     }
   }
 }

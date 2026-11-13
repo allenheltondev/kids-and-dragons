@@ -1563,7 +1563,7 @@
       "interaction": {
         "kind": "relay",
         "objectLabel": "turnip",
-        "cue": "Catch the turnip, then pass it on.",
+        "cue": "Catch each turnip and aim your pass away from the shimmering fold.",
         "actionLabel": "Pass it!"
       },
       "onSuccess": {
@@ -1571,8 +1571,15 @@
         "narration": "The whole load goes around. The empty cart squeaks past the fold with nothing to lose."
       },
       "onFailure": {
-        "goto": "past_slow",
-        "narration": "One turnip bounces off a paw and rolls toward the fold. Pip dives and catches it. Mustard eats it."
+        "goto": "past",
+        "narration": "A sack spills beside the fold. The shimmer swallows the turnips before Pip can reach them. Farmer Gourd takes off his cap. \"Somebody downhill is getting turnips.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_turnips_lost",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "past_slow",
@@ -2132,6 +2139,46 @@
           "text": "Pip says it opens somewhere far downhill, by a big river."
         }
       ]
+    }
+  },
+  "resumeInteractions": {
+    "turnip_relay": {
+      "type": "interaction",
+      "narration": "Turnip by turnip, pass the load around the far side of the Eldest, away from the fold. Mustard helps by eating the small ones. \"That is not helping,\" says Farmer Gourd.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "turnip",
+        "cue": "Catch the turnip, then pass it on.",
+        "actionLabel": "Pass it!"
+      },
+      "onSuccess": {
+        "goto": "past_slow",
+        "narration": "The whole load goes around. The empty cart squeaks past the fold with nothing to lose."
+      },
+      "onFailure": {
+        "goto": "past_slow",
+        "narration": "One turnip bounces off a paw and rolls toward the fold. Pip dives and catches it. Mustard eats it."
+      },
+      "onAssisted": {
+        "goto": "past_slow",
+        "narration": "Farmer Gourd joins the line, and the whole load goes around."
+      },
+      "rift": "steady"
     }
   }
 }

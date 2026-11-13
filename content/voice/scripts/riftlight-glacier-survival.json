@@ -1090,24 +1090,6 @@
       }
     ]
   },
-  "riftlight-glacier-survival/shelf_cross/onFailure/narration": {
-    "source": "sha256:096e5b7380341378ff7bf68d5744afc0ba88f6cc736943e909fb3b8371a52ee4",
-    "reviewed": true,
-    "lines": [
-      {
-        "by": "narrator",
-        "text": "The stream gulps early and splashes you to the knees. You skip back, dripping."
-      },
-      {
-        "by": "yeti_herder",
-        "text": "\"My turn,\""
-      },
-      {
-        "by": "narrator",
-        "text": "says the herder, and plants the pole herself."
-      }
-    ]
-  },
   "riftlight-glacier-survival/ledge_done/narration": {
     "source": "sha256:ec10951f614fd123f34de91c435a2c4ba3d3f1e8f3aedfeba4d2235dbeb18d2c",
     "reviewed": true,

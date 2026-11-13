@@ -637,7 +637,7 @@
       "art": "scenes/riftlight/boundary-river-row",
       "interaction": {
         "kind": "relay",
-        "cue": "Catch the load, then pass it up the bank to your friend.",
+        "cue": "Catch the kettle and aim each pass safely up the bank.",
         "actionLabel": "Pass it up!",
         "objectLabel": "the kettle and the cord"
       },
@@ -647,7 +647,14 @@
       },
       "onFailure": {
         "goto": "surge_safe",
-        "narration": "A sock goes one way, and a teacup goes the other, but most of the pile climbs the bank."
+        "narration": "The kettle slips past the last pair of hands. The river takes it, bobbing toward the sea. You save the cord and climb after Tally.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "kettle_lost",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "surge_safe",
@@ -1822,5 +1829,36 @@
     ],
     "reactions": {},
     "castPoses": {}
+  },
+  "resumeInteractions": {
+    "surge_check": {
+      "type": "interaction",
+      "narration": "Up the bank it all goes, fast, hand to hand: the cord, the board, the kettle and the tea things. Tally counts them as they go.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the load, then pass it up the bank to your friend.",
+        "actionLabel": "Pass it up!",
+        "objectLabel": "the kettle and the cord"
+      },
+      "onSuccess": {
+        "goto": "surge_safe",
+        "narration": "Hand to hand to hand, the whole pile climbs the bank."
+      },
+      "onFailure": {
+        "goto": "surge_safe",
+        "narration": "A sock goes one way, and a teacup goes the other, but most of the pile climbs the bank."
+      },
+      "onAssisted": {
+        "goto": "surge_safe",
+        "narration": "Tally lends a pair of arms, and the pile climbs the bank."
+      }
+    }
   }
 }

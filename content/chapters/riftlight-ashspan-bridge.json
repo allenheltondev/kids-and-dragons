@@ -1309,7 +1309,7 @@
       "art": "scenes/riftlight/ashspan-broken-deck",
       "interaction": {
         "kind": "balance",
-        "cue": "Lift or lower your end until the beam rides level in the middle.",
+        "cue": "Adjust your lift for each shifting load before stepping toward the pier.",
         "actionLabel": "Carry it to the pier",
         "objectLabel": "The new beam"
       },
@@ -1319,7 +1319,15 @@
       },
       "onFailure": {
         "goto": "beam_plan",
-        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt."
+        "narration": "The beam tips, pinching your fingers against the bank. Bryn wedges a log beneath it. You finish the carry with sore hands, keeping everyone clear.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "beam_plan",
@@ -2749,6 +2757,48 @@
     "castPoses": {
       "ferry_dock": {
         "cast/old_ossley": "ossley_pole_tip"
+      }
+    }
+  },
+  "resumeInteractions": {
+    "carry_beam": {
+      "type": "interaction",
+      "tags": [
+        "force"
+      ],
+      "narration": "The new beam lies on the bank, thick as a sleeping cow. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Lift or lower your end until the beam rides level in the middle.",
+        "actionLabel": "Carry it to the pier",
+        "objectLabel": "The new beam"
+      },
+      "onSuccess": {
+        "goto": "beam_plan",
+        "narration": "The beam rides level all the way, like a very long, very serious tray."
+      },
+      "onFailure": {
+        "goto": "beam_plan",
+        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt."
+      },
+      "onAssisted": {
+        "goto": "beam_plan",
+        "narration": "Bryn takes the middle, and the beam rides level the whole way."
       }
     }
   }

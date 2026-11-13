@@ -1643,14 +1643,6 @@
       }
     ]
   },
-  "riftlight-stone-counters/turnip_relay/interaction/cue": {
-    "": [
-      {
-        "clip": "a1c90b3aba6408129e79ba6a064562db6dccf35682effe4213e6fd4c6f28acfa",
-        "ms": 2126
-      }
-    ]
-  },
   "riftlight-stone-counters/turnip_relay/narration": {
     "": [
       {
@@ -1672,14 +1664,6 @@
       {
         "clip": "5772e5ba0559b9500a67595b21d4be4534076d16292b3dc63d78535e8e885bc3",
         "ms": 3707
-      }
-    ]
-  },
-  "riftlight-stone-counters/turnip_relay/onFailure/narration": {
-    "": [
-      {
-        "clip": "25a153d58a67f4d342d2f44adf829a1727324145cc4d8f15c820f6bab778061a",
-        "ms": 6707
       }
     ]
   },

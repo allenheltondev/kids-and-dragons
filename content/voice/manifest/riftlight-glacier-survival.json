@@ -1447,14 +1447,6 @@
       }
     ]
   },
-  "riftlight-glacier-survival/shelf_cross/interaction/cue": {
-    "": [
-      {
-        "clip": "769bbfe4aee5fbc7aa77432231e9264c3e62f6d0b19eb884baae70c09bae04e8",
-        "ms": 2655
-      }
-    ]
-  },
   "riftlight-glacier-survival/shelf_cross/narration": {
     "": [
       {
@@ -1484,22 +1476,6 @@
       {
         "clip": "7dcc90c17f668d89562d247852e9fb47bf1dc9f0fb1ce0c4e8c935a93a1b43db",
         "ms": 4707
-      }
-    ]
-  },
-  "riftlight-glacier-survival/shelf_cross/onFailure/narration": {
-    "": [
-      {
-        "clip": "cc5bc259d2d3081888961e079e3d1f4c91c51d94ed7c808dc9dd2e53928a1bd5",
-        "ms": 5107
-      },
-      {
-        "clip": "aee1d1c3ed0053afdc39886e05fc03322a83bdd778eb3423505c3ac6a6cc2a01",
-        "ms": 1572
-      },
-      {
-        "clip": "7c4e0c6925037e023f870ad9786e53383369a8a8c6f5aaf9a4e3053cb0ccd36c",
-        "ms": 2677
       }
     ]
   },

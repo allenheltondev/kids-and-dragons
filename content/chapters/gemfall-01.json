@@ -2770,7 +2770,7 @@
       "narration": "The letters are drifting toward the canal! A post clerk runs beside you with a ladle. Wait until a letter floats close, then grab it.",
       "interaction": {
         "kind": "timing",
-        "cue": "Wait for the letter to float close, then grab it.",
+        "cue": "Grab the letter when the marker reaches the gold beside the canal.",
         "actionLabel": "Grab!",
         "target": 0.5,
         "width": 0.3,
@@ -2778,7 +2778,13 @@
       },
       "onSuccess": {
         "goto": "scene_gull_dive",
-        "narration": "You snatch the last letter just above the water. The clerk stamps it DELIVERED and hurries off."
+        "narration": "You snatch the last letter just above the water. The clerk stamps it DELIVERED and hurries off. The clerk gives your crew one coin for helping with the post.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 1
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_gull_dive",
@@ -2786,7 +2792,13 @@
       },
       "onAssisted": {
         "goto": "scene_gull_dive",
-        "narration": "The clerk grabs the last letter herself, stamps it DELIVERED, and hurries off."
+        "narration": "The clerk grabs the last letter herself, stamps it DELIVERED, and hurries off. The clerk gives your crew one coin for helping with the post.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 1
+          }
+        ]
       },
       "art": "scenes/gemfall/exchange-docks"
     },
@@ -3005,21 +3017,33 @@
       "narration": "Everything goes on a carrying board, even a fishbowl. Raise or lower your side until it is level. The fish is counting on you.",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the carrying board before lifting the family's bags.",
+        "cue": "Adjust your lift as the board shifts, then take each careful step.",
         "actionLabel": "Carry the bags",
         "objectLabel": "The family's bags and fishbowl"
       },
       "onSuccess": {
         "goto": "interaction_quay_line",
-        "narration": "You carry it all up to the inn, level as a table. The selkie children wave from their new window."
+        "narration": "You carry it all up to the inn, level as a table. The selkie children wave from their new window. The family presses a thank-you coin into your hand.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 1
+          }
+        ]
       },
       "onFailure": {
         "goto": "interaction_quay_line",
-        "narration": "Halfway up the hill, a trunk pops open. Out pour a hundred knitted socks! Chasing them is the most fun anyone has had all week. The selkies get their room at the Empty Chair, socks and all."
+        "narration": "Halfway up the hill, a trunk pops open. Out pour a hundred knitted socks! Chasing them is the most fun anyone has had all week. The selkies get their room at the Empty Chair, socks and all. The family spends its last spare coin on string to tie the trunk shut."
       },
       "onAssisted": {
         "goto": "interaction_quay_line",
-        "narration": "The grandmother steadies the fishbowl, and together you carry it all up to the inn."
+        "narration": "The grandmother steadies the fishbowl, and together you carry it all up to the inn. The family presses a thank-you coin into your hand.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 1
+          }
+        ]
       },
       "art": "scenes/gemfall/exchange-docks"
     },
@@ -3453,6 +3477,57 @@
           "name": "Innkeeper Flint"
         }
       ]
+    },
+    "interaction_letters": {
+      "type": "interaction",
+      "narration": "The letters are drifting toward the canal! A post clerk runs beside you with a ladle. Wait until a letter floats close, then grab it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the letter to float close, then grab it.",
+        "actionLabel": "Grab!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_gull_dive",
+        "narration": "You snatch the last letter just above the water. The clerk stamps it DELIVERED and hurries off."
+      },
+      "onFailure": {
+        "goto": "scene_gull_dive",
+        "narration": "The last letter splashes into the canal. The clerk fishes it out with her ladle and hurries off."
+      },
+      "onAssisted": {
+        "goto": "scene_gull_dive",
+        "narration": "The clerk grabs the last letter herself, stamps it DELIVERED, and hurries off."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "interaction_newcomer_load": {
+      "type": "interaction",
+      "tags": [
+        "force"
+      ],
+      "narration": "Everything goes on a carrying board, even a fishbowl. Raise or lower your side until it is level. The fish is counting on you.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the carrying board before lifting the family's bags.",
+        "actionLabel": "Carry the bags",
+        "objectLabel": "The family's bags and fishbowl"
+      },
+      "onSuccess": {
+        "goto": "interaction_quay_line",
+        "narration": "You carry it all up to the inn, level as a table. The selkie children wave from their new window."
+      },
+      "onFailure": {
+        "goto": "interaction_quay_line",
+        "narration": "Halfway up the hill, a trunk pops open. Out pour a hundred knitted socks! Chasing them is the most fun anyone has had all week. The selkies get their room at the Empty Chair, socks and all."
+      },
+      "onAssisted": {
+        "goto": "interaction_quay_line",
+        "narration": "The grandmother steadies the fishbowl, and together you carry it all up to the inn."
+      },
+      "art": "scenes/gemfall/exchange-docks"
     }
   }
 }

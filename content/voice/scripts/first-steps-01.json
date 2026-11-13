@@ -347,8 +347,8 @@
     ]
   },
   "first-steps-01/interaction_roots/narration": {
-    "source": "sha256:896158155d2e3d7d7a2239baf249759233ac1fc45b0c109445147a5839448c62",
-    "reviewed": true,
+    "source": "sha256:57d8c0ec7a11f9f76f42d696e5bbef86cacabaec10a8def79c53cba8192e2916",
+    "reviewed": false,
     "lines": [
       {
         "by": "narrator",
@@ -356,7 +356,7 @@
       },
       {
         "by": "tansy",
-        "text": "“Somebody hold the branch while somebody fetches it,”"
+        "text": "\"Pull the branch up together, nice and smoothly,\""
       },
       {
         "by": "narrator",
@@ -364,7 +364,7 @@
       },
       {
         "by": "tansy",
-        "text": "“A sturdy prop works too.”"
+        "text": "\"Bun can fetch her own ribbon.\""
       },
       {
         "by": "narrator",

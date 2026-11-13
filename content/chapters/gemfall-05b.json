@@ -1448,7 +1448,7 @@
       "narration": "The spare planks have a tag: CARRY IT LEVEL. The bridge sways, and so does the plank. Everyone keeps their end steady.",
       "interaction": {
         "kind": "balance",
-        "cue": "Everyone lift or lower your end until the plank is level, then carry it to the gap.",
+        "cue": "Adjust the shifting plank until it is level before each careful step.",
         "actionLabel": "Carry the plank",
         "objectLabel": "A long spare plank"
       },
@@ -1458,7 +1458,15 @@
       },
       "onFailure": {
         "goto": "scene_halfway_hut",
-        "narration": "The plank lands crooked. It creaks. You say AAH. It turns out to be perfectly fine, just a very dramatic plank."
+        "narration": "The plank lands crooked and jolts your arms. You steady it against the rope before anyone falls. The crossing holds, but your shoulders ache.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "art": "scenes/gemfall/rope-bridge-spare-planks"
     },
@@ -1966,7 +1974,7 @@
       "narration": "Slap! A wave rolls down the stream. Slap! Another. The stones are slick, but there is a gap between waves, if you watch for it.",
       "interaction": {
         "kind": "timing",
-        "cue": "Wait for the wave to pass, then tap to hop up the stones.",
+        "cue": "Hop when the marker reaches the quiet gap after a wave.",
         "actionLabel": "Hop!",
         "target": 0.5,
         "width": 0.3,
@@ -1978,7 +1986,15 @@
       },
       "onFailure": {
         "goto": "scene_drake_bank",
-        "narration": "You hop too early, and a wave fills your boots. The drake looks at you as if you took its towel."
+        "narration": "You hop too early. A wave knocks your shins against the stones and fills your boots. You climb out sore and dripping. The drake looks as if you took its towel.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "cast": [
         {
@@ -2734,6 +2750,57 @@
         "narration": "The fire is a little smoky and the blankets are a little crooked, but the camp will do."
       },
       "art": "scenes/gemfall/foothills-rim-camp"
+    },
+    "check_bridge_test": {
+      "type": "interaction",
+      "tags": [
+        "force"
+      ],
+      "narration": "The spare planks have a tag: CARRY IT LEVEL. The bridge sways, and so does the plank. Everyone keeps their end steady.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your end until the plank is level, then carry it to the gap.",
+        "actionLabel": "Carry the plank",
+        "objectLabel": "A long spare plank"
+      },
+      "onSuccess": {
+        "goto": "scene_halfway_hut",
+        "narration": "Step by careful step, you lay the plank across the gap. On the far side, you add to the sign: WE MINDED IT."
+      },
+      "onFailure": {
+        "goto": "scene_halfway_hut",
+        "narration": "The plank lands crooked. It creaks. You say AAH. It turns out to be perfectly fine, just a very dramatic plank."
+      },
+      "art": "scenes/gemfall/rope-bridge-spare-planks"
+    },
+    "interaction_stones": {
+      "type": "interaction",
+      "tags": [
+        "swim"
+      ],
+      "narration": "Slap! A wave rolls down the stream. Slap! Another. The stones are slick, but there is a gap between waves, if you watch for it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the wave to pass, then tap to hop up the stones.",
+        "actionLabel": "Hop!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_drake_bank",
+        "narration": "Wave, gap, hop. Wave, gap, hop. You reach the top with dry boots."
+      },
+      "onFailure": {
+        "goto": "scene_drake_bank",
+        "narration": "You hop too early, and a wave fills your boots. The drake looks at you as if you took its towel."
+      },
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "art": "scenes/gemfall/stream-stepping-stones"
     }
   }
 }

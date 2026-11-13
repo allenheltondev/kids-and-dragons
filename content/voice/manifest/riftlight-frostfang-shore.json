@@ -1067,38 +1067,6 @@
       }
     ]
   },
-  "riftlight-frostfang-shore/ladder_hold/interaction/cue": {
-    "": [
-      {
-        "clip": "adeb4d7800f0f8136b463fc2876bdcfb56073588d62e2963168135921d3593eb",
-        "ms": 3407
-      }
-    ]
-  },
-  "riftlight-frostfang-shore/ladder_hold/narration": {
-    "": [
-      {
-        "clip": "bab8579e759ad6ec2231a8057e2c645d962483d44e38f02decdf47e2840e2f86",
-        "ms": 7407
-      }
-    ]
-  },
-  "riftlight-frostfang-shore/ladder_hold/onAssisted/narration": {
-    "": [
-      {
-        "clip": "8c84fd67b3cfc24d59918f033199e3e07af5ea310c140ebe46159b39e665b26d",
-        "ms": 6407
-      }
-    ]
-  },
-  "riftlight-frostfang-shore/ladder_hold/onFailure/narration": {
-    "": [
-      {
-        "clip": "d1963296182347622a90f2615b865ff224a98089493e305a0c9d7dee6697838b",
-        "ms": 5607
-      }
-    ]
-  },
   "riftlight-frostfang-shore/ladder_hold/onSuccess/narration": {
     "": [
       {

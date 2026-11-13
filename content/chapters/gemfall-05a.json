@@ -724,6 +724,13 @@
           "goto": "interaction_settled_span",
           "icon": "hand",
           "requiresFlag": "bridge_settle_recorded"
+        },
+        {
+          "id": "warden_signal",
+          "label": "Follow the warden's flags",
+          "icon": "hand",
+          "requiresFlag": "crossing_signal_known",
+          "goto": "check_span_quiet"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -2188,7 +2195,7 @@
       "narration": "She shows you the signals: wait, walk, wait. The river is too loud for shouting. Repeat the flags in order.",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the signals, then repeat them in order.",
+        "cue": "Copy the flags in order to earn a crossing on the warden's signal.",
         "actionLabel": "Repeat the signals",
         "stepMs": 1300,
         "options": [
@@ -2210,12 +2217,32 @@
         ]
       },
       "onSuccess": {
-        "goto": "scene_crossing"
+        "goto": "scene_crossing",
+        "narration": "Wait, walk, wait. The warden nods. You can cross with her signals now, instead of guessing over the roar.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossing_signal_known",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "scene_crossing"
+        "goto": "scene_crossing",
+        "narration": "You wave walk where she waved wait. She lowers the flag. Take a ration turn or use another safe way across."
       },
-      "art": "scenes/gemfall/cracked-bridge-span"
+      "art": "scenes/gemfall/cracked-bridge-span",
+      "onAssisted": {
+        "goto": "scene_crossing",
+        "narration": "The warden stands beside you and repeats the flags. Together you learn the crossing signal.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossing_signal_known",
+            "value": true
+          }
+        ]
+      }
     },
     "interaction_flag_rope": {
       "art": "scenes/gemfall/cracked-bridge-span",
@@ -2713,6 +2740,40 @@
           "name": "Engineer Brask"
         }
       ]
+    },
+    "interaction_crossing_signal": {
+      "type": "interaction",
+      "narration": "She shows you the signals: wait, walk, wait. The river is too loud for shouting. Repeat the flags in order.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the signals, then repeat them in order.",
+        "actionLabel": "Repeat the signals",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "wait",
+            "label": "Wait",
+            "icon": "hand"
+          },
+          {
+            "id": "walk",
+            "label": "Walk",
+            "icon": "boot"
+          }
+        ],
+        "answer": [
+          "wait",
+          "walk",
+          "wait"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_crossing"
+      },
+      "onFailure": {
+        "goto": "scene_crossing"
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     }
   }
 }

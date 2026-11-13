@@ -991,14 +991,6 @@
       }
     ]
   },
-  "riftlight-boundary-stone-bank/surge_check/interaction/cue": {
-    "": [
-      {
-        "clip": "f6c3beb8ec634fd8c206e33792454944d89992da68d54fbf24a09d872ca7f07d",
-        "ms": 2934
-      }
-    ]
-  },
   "riftlight-boundary-stone-bank/surge_check/narration": {
     "": [
       {
@@ -1012,14 +1004,6 @@
       {
         "clip": "842a65afee598f1d5de043947a22462e4d268e426995c65b686c851f553144de",
         "ms": 3407
-      }
-    ]
-  },
-  "riftlight-boundary-stone-bank/surge_check/onFailure/narration": {
-    "": [
-      {
-        "clip": "952bf0c5156f272e306422f892b0960907ef2e4b67d719f36e62a4cdd7342def",
-        "ms": 5707
       }
     ]
   },

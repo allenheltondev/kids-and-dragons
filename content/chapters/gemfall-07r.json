@@ -2445,7 +2445,7 @@
       "narration": "Past the slide, small red stones trickle across the road in bursts. Ping, ping, ping. Then they stop. \"Go in the gaps!\" calls the warden.",
       "interaction": {
         "kind": "timing",
-        "cue": "Wait for the pebbles to stop, then tap to dash across.",
+        "cue": "Dash when the marker reaches the quiet gap between falling stones.",
         "actionLabel": "Dash!",
         "target": 0.5,
         "width": 0.3,
@@ -2457,7 +2457,15 @@
       },
       "onFailure": {
         "goto": "scene_switchback",
-        "narration": "Ping! A pebble bonks your hat. You run the rest of the way, laughing. Nobody is hurt. The warden writes down \"bonked.\""
+        "narration": "You dash too soon. Pebbles sting your shins before the warden pulls you clear. You reach the switchback with sore legs.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_switchback",
@@ -2733,7 +2741,7 @@
       "narration": "The sacks keep leaning uphill. Odo brings a plank with THIS WAY UP painted on both ends. Brace the load together.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the sacks steady while the load is moved.",
+        "cue": "Choose a smooth pull together. Ease off before the sacks jerk loose.",
         "actionLabel": "Move the load",
         "supportLabel": "Brace a sack"
       },
@@ -2743,7 +2751,15 @@
       },
       "onFailure": {
         "goto": "interaction_shelter_stack",
-        "narration": "The shelter keeper steadies the load. The sacks arrive safely."
+        "narration": "A sack slides onto your toes. Ouch! Brindle blocks the board with her plank, and you carry the load the rest of the way with sore feet.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "interaction_shelter_stack",
@@ -2756,7 +2772,7 @@
       "narration": "The master turns into the pullout. She will send the Caravan Stone home if you hold the wagon steady while she unloads. The mules start their lunch.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Brace the wagon while the master unloads the stone.",
+        "cue": "Set a smooth pull together to keep the wagon from rolling.",
         "actionLabel": "Unload the stone",
         "supportLabel": "Brace the wagon"
       },
@@ -2766,7 +2782,15 @@
       },
       "onFailure": {
         "goto": "scene_caravan_won",
-        "narration": "A driver steadies the wheel. Together you finish the handover."
+        "narration": "The wagon lurches and bumps your knees. The master blocks the wheel before the stone can fall. You finish the handover, rubbing the sore spots.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_caravan_won",
@@ -2845,7 +2869,7 @@
       },
       "interaction_return_handover": {
         "props": [
-          "prop_wagon_wheels",
+          "rope-loop",
           "prop_humming_stone"
         ]
       }
@@ -2953,6 +2977,83 @@
         ]
       },
       "art": "scenes/gemfall/way-shelter-stack"
+    },
+    "interaction_haul_team": {
+      "type": "interaction",
+      "narration": "The sacks keep leaning uphill. Odo brings a plank with THIS WAY UP painted on both ends. Brace the load together.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the sacks steady while the load is moved.",
+        "actionLabel": "Move the load",
+        "supportLabel": "Brace a sack"
+      },
+      "onSuccess": {
+        "goto": "interaction_shelter_stack",
+        "narration": "Not one sack runs away. The plank points both ways, but you do not."
+      },
+      "onFailure": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The shelter keeper steadies the load. The sacks arrive safely."
+      },
+      "onAssisted": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The shelter keeper braces the other side. Together you carry the load uphill."
+      },
+      "art": "scenes/gemfall/way-shelter-stack"
+    },
+    "interaction_return_handover": {
+      "type": "interaction",
+      "narration": "The master turns into the pullout. She will send the Caravan Stone home if you hold the wagon steady while she unloads. The mules start their lunch.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace the wagon while the master unloads the stone.",
+        "actionLabel": "Unload the stone",
+        "supportLabel": "Brace the wagon"
+      },
+      "onSuccess": {
+        "goto": "scene_caravan_won",
+        "narration": "The stone is safe in your arms. \"Home delivery,\" says the master, pointing uphill."
+      },
+      "onFailure": {
+        "goto": "scene_caravan_won",
+        "narration": "A driver steadies the wheel. Together you finish the handover."
+      },
+      "onAssisted": {
+        "goto": "scene_caravan_won",
+        "narration": "The master brings a wheel block. Together you unload the stone."
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin",
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
+      ]
+    },
+    "interaction_trickle": {
+      "type": "interaction",
+      "narration": "Past the slide, small red stones trickle across the road in bursts. Ping, ping, ping. Then they stop. \"Go in the gaps!\" calls the warden.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the pebbles to stop, then tap to dash across.",
+        "actionLabel": "Dash!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_switchback",
+        "narration": "You dash across in the quiet. The pebbles patter behind you."
+      },
+      "onFailure": {
+        "goto": "scene_switchback",
+        "narration": "Ping! A pebble bonks your hat. You run the rest of the way, laughing. Nobody is hurt. The warden writes down \"bonked.\""
+      },
+      "onAssisted": {
+        "goto": "scene_switchback",
+        "narration": "The warden calls out each gap, and you slip across without a single bonk."
+      },
+      "art": "scenes/gemfall/trickling-slide-road"
     }
   }
 }

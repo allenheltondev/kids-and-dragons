@@ -575,14 +575,6 @@
       }
     ]
   },
-  "gemfall-07h/interaction_hairpin/interaction/cue": {
-    "": [
-      {
-        "clip": "7e830234ca00afb869af015f850d27e68de6f8bf2c23e18d11ca093fe5afa13c",
-        "ms": 3407
-      }
-    ]
-  },
   "gemfall-07h/interaction_hairpin/narration": {
     "": [
       {
@@ -596,14 +588,6 @@
       {
         "clip": "4cdcd0a7ff1b73959303a8210bb83810247b1c87aa3a5c5b5c8688b19d1862d6",
         "ms": 6407
-      }
-    ]
-  },
-  "gemfall-07h/interaction_hairpin/onFailure/narration": {
-    "": [
-      {
-        "clip": "4a26eb38866e9a676c847b75a6910edeeb38615a0ffd04772690d6f984e5b920",
-        "ms": 8807
       }
     ]
   },

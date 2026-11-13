@@ -1,5 +1,8 @@
 # Mini-game gameplay follow-up: tooling and Gemfall 7L
 
+The remaining reading list is completed in [the follow-up report](mini-game-708-remaining.md).
+This document records the original 7L/tooling batch and its evidence.
+
 First implementation batch for [#708](https://github.com/allenheltondev/kids-and-dragons/issues/708),
 based on main `554cc0cc`. The issue remains open. Its proposed sequence is tooling,
 then one PR each for 7L, 7R and 8, followed by the other chapter reviews.
