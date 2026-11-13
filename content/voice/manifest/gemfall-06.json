@@ -106,7 +106,9 @@
         "ms": 700,
         "by": "dunmore",
         "figure": "cast/dunmore",
-        "name": "Dunmore"
+        "names": [
+          "Dunmore"
+        ]
       },
       {
         "clip": "03bd32e5e168c29fa9cd5d8a55e660108d422044f35b4770646713718b419696",
@@ -253,7 +255,9 @@
         "ms": 700,
         "by": "dunmore",
         "figure": "cast/dunmore",
-        "name": "Dunmore"
+        "names": [
+          "Dunmore"
+        ]
       },
       {
         "clip": "462d09e276da8bb03745939e1471a19e2d9f0b8ce2265633d2871526822f0c8e",
@@ -320,7 +324,9 @@
         "ms": 2356,
         "by": "grandmother_tull",
         "figure": "cast/grandmother_tull",
-        "name": "Grandmother Tull"
+        "names": [
+          "Grandmother Tull"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -331,7 +337,9 @@
         "ms": 2559,
         "by": "grandmother_tull",
         "figure": "cast/grandmother_tull",
-        "name": "Grandmother Tull"
+        "names": [
+          "Grandmother Tull"
+        ]
       }
     ]
   },
@@ -402,7 +410,9 @@
         "ms": 953,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -413,7 +423,9 @@
         "ms": 1150,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -452,7 +464,9 @@
         "ms": 1567,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -479,7 +493,9 @@
         "ms": 1576,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "ff54f0fe6a29a2e55a9f60a37be1e782bf7a6eca7862ddaedb87a5892367c607",
@@ -490,7 +506,9 @@
         "ms": 3108,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -505,7 +523,9 @@
         "ms": 1087,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "6d202c367acd7d11680eda9ceda1fa679b789fa1329150a107e9af175045d686",
@@ -516,7 +536,9 @@
         "ms": 2107,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -531,7 +553,9 @@
         "ms": 1514,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -542,7 +566,9 @@
         "ms": 1328,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -557,7 +583,9 @@
         "ms": 1305,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "2d728caa18839069147bb50e5be255345bacf5019b1e7c1f7b9e60c9db98210d",
@@ -624,7 +652,9 @@
         "ms": 1710,
         "by": "centaur_drover",
         "figure": "entities/centaur",
-        "name": "Centaur drover"
+        "names": [
+          "Centaur drover"
+        ]
       },
       {
         "clip": "0b8d06446c6d2cd45887f2b0a914905d653d76a10323d66e26fe9dc8d95520b3",
@@ -635,7 +665,9 @@
         "ms": 1421,
         "by": "centaur_drover",
         "figure": "entities/centaur",
-        "name": "Centaur drover"
+        "names": [
+          "Centaur drover"
+        ]
       },
       {
         "clip": "63927ba137bddfba56c8330590356254ae2eedb9948f55f2110098595f6a71d0",
@@ -654,7 +686,9 @@
         "ms": 1032,
         "by": "centaur_drover",
         "figure": "entities/centaur",
-        "name": "Centaur drover"
+        "names": [
+          "Centaur drover"
+        ]
       }
     ]
   },
@@ -677,7 +711,9 @@
         "ms": 2858,
         "by": "centaur_drover",
         "figure": "entities/centaur",
-        "name": "Centaur drover"
+        "names": [
+          "Centaur drover"
+        ]
       }
     ]
   },
@@ -772,7 +808,9 @@
         "ms": 3107,
         "by": "grandmother_tull",
         "figure": "cast/grandmother_tull",
-        "name": "Grandmother Tull"
+        "names": [
+          "Grandmother Tull"
+        ]
       },
       {
         "clip": "e7281cd41592dfa8b29daedaf6299b68faf90a0809d6976a934e56bd5141e61d",
@@ -791,7 +829,10 @@
         "ms": 1666,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "08e810c8c1fc21ccb0f54da02d0441d4a1a0fbe798da46f8def588ad34a6d78a",
@@ -813,7 +854,9 @@
         "clip": "435e2990869c5ff1040974758d21041288ff991d4d3612907489c018d25cbb12",
         "ms": 2033,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "a9e9c9e4a8f3371d0635eceaf6e350c1346a25ccd62fcd98afe9b2844dbffed7",
@@ -824,7 +867,10 @@
         "ms": 4507,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "739ddcd91d7cd4e952f8c2585ab5acea73ad663d4402b93f15f5ae372fe373e2",
@@ -835,7 +881,10 @@
         "ms": 1663,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "e34822de7a8bfaa26881041f64b2148fd92cc26904bdaf0b9aee4ee02266973b",
@@ -870,7 +919,9 @@
         "ms": 1423,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -889,7 +940,9 @@
         "ms": 1448,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -900,7 +953,9 @@
         "ms": 1514,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -915,7 +970,9 @@
         "ms": 1887,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -926,7 +983,9 @@
         "ms": 1736,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "4575766f4f2b4c70c88d6915d2f22331330f6d3391f2f9efe950cf0c5ab57d5c",
@@ -945,7 +1004,9 @@
         "ms": 1138,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "3439c11dbf370ec83a47d68ca7771b1eaf8aa9e3402668181ae0225ca3cab392",
@@ -956,7 +1017,9 @@
         "ms": 1416,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "dbaaf37ae1bf0e460b6d9c4b107d7c437dead4b5878d887acf2178cf4a7a07dc",
@@ -975,7 +1038,9 @@
         "ms": 1249,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -986,7 +1051,9 @@
         "ms": 1033,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "bae3e41133e0979ff135b4549149077262b0853238d8fc3486abbfeed1132618",
@@ -1001,7 +1068,9 @@
         "ms": 1548,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "bb7bab3e1edf38050909e3be017243b66bb41070b9675818078efe14017bdc93",
@@ -1012,7 +1081,9 @@
         "ms": 5007,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "4c7c55e2232cf37459118b06b9bb5a8477a2dfbce030114160b1ede92403dc94",
@@ -1023,7 +1094,9 @@
         "ms": 2365,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -1038,7 +1111,9 @@
         "ms": 1571,
         "by": "burrowfolk_claimant",
         "figure": "entities/burrowfolk",
-        "name": "Burrowfolk Claimant"
+        "names": [
+          "Burrowfolk Claimant"
+        ]
       },
       {
         "clip": "6f8ff4ba76d77eac48f0e950ca2616952a6589a068db828454f1b2e1829b919e",
@@ -1049,7 +1124,9 @@
         "ms": 1539,
         "by": "faun_claimant",
         "figure": "entities/faun",
-        "name": "Faun Claimant"
+        "names": [
+          "Faun Claimant"
+        ]
       },
       {
         "clip": "780fa44ea5a4db9b8813d46c4904c424ba20697e0f6852b6aa6471a668313e8d",
@@ -1068,7 +1145,9 @@
         "ms": 863,
         "by": "burrowfolk_claimant",
         "figure": "entities/burrowfolk",
-        "name": "Burrowfolk Claimant"
+        "names": [
+          "Burrowfolk Claimant"
+        ]
       },
       {
         "clip": "91bc0ef6336123dc3d1106238c6e0d208ed442a67ce46441909c3441d918670e",
@@ -1079,7 +1158,9 @@
         "ms": 2268,
         "by": "faun_claimant",
         "figure": "entities/faun",
-        "name": "Faun Claimant"
+        "names": [
+          "Faun Claimant"
+        ]
       },
       {
         "clip": "693a7aa828e3de77a7dcf8e6b5abcf109d15b50d3157a86f6cdce34baf34e170",
@@ -1114,7 +1195,9 @@
         "ms": 924,
         "by": "dunmore",
         "figure": "cast/dunmore",
-        "name": "Dunmore"
+        "names": [
+          "Dunmore"
+        ]
       },
       {
         "clip": "2a126a7ab8ca0518aa595236de15dfcc2c77ad98faf116da396c5d684b8a9c4d",
@@ -1128,7 +1211,9 @@
         "clip": "c2eef0d91b3e2bc97ae233d287beb48d7be96c345210ddc08064dd1d9b8be2bf",
         "ms": 2700,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "f0e73329b531c622cd0df2c30bc636e927ab0c4ecf778209637fd433e095f3b9",
@@ -1179,7 +1264,9 @@
         "ms": 2680,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "d57bdf1410a710bec8e5f4a69467404b914fd07817596d634ff314862d8f8b69",
@@ -1198,7 +1285,9 @@
         "ms": 3308,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "5521beacac03031a9a43e113f8b37e0c48d061df87ec1d6de109f6b4867368e0",
@@ -1209,7 +1298,9 @@
         "ms": 1397,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -1224,7 +1315,9 @@
         "ms": 1616,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1238,7 +1331,9 @@
         "clip": "fad9ef5d4aba83e6b983073637681d970257974ebd85c4d4cd7c35f6f9f84f7f",
         "ms": 1382,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6945079b3b6ea2c0e1fc6c8244382b53a35ec45ab18239023a6f49b25bfde108",
@@ -1249,7 +1344,10 @@
         "ms": 2301,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "ffef248ab11ccd564d49d6b6e7acef34b46f26b1aef9f7a3a131d1a3f42f2f84",
@@ -1263,7 +1361,9 @@
         "clip": "16369e0fc7e203e38c1ddfef076cc992e25b25f62de88078bb65bc72c7c74e44",
         "ms": 1427,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "7164357b6f09a7a95e38daccd7937aba2bf46d4aa1a24359d688442c2824a252",
@@ -1274,7 +1374,10 @@
         "ms": 2215,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "acc5bfd0acdca7795c1f1e55705cb223edad95288576ff1553d0ea7c4e007e1f",
@@ -1288,7 +1391,9 @@
         "clip": "256f78c2814a3441862335e5f7ebaa5e7b25844d15ee3e9f9e9cad5c22d25956",
         "ms": 2216,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "e93ac4e5162c206a579410b8c5d862a82ca16ae36bc6a98529d1587deb4d9119",
@@ -1299,7 +1404,10 @@
         "ms": 3607,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       }
     ]
   },
@@ -1338,7 +1446,9 @@
         "ms": 924,
         "by": "dunmore",
         "figure": "cast/dunmore",
-        "name": "Dunmore"
+        "names": [
+          "Dunmore"
+        ]
       },
       {
         "clip": "e934e672f8afece1d6b357b8e57290564adc8d0f1d6cd34df0d15ae71ffae39d",
@@ -1364,7 +1474,9 @@
         "clip": "0ee87192395de02239f812c9f4b897e3f6a3987c3957f083d26db6c8b9ed0fd3",
         "ms": 4008,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "0beab84ce903538c4d0ae2c8da35d823af78d5df44b93d0cbda39f2b7ccfafd5",
@@ -1375,7 +1487,9 @@
         "ms": 1310,
         "by": "dunmore",
         "figure": "cast/dunmore",
-        "name": "Dunmore"
+        "names": [
+          "Dunmore"
+        ]
       },
       {
         "clip": "440eadfc501792c93796f0947aa24360e14210ebfe5ba22b405d52ad4a787b4e",
@@ -1398,7 +1512,10 @@
         "ms": 2472,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "e148e6078a1ef618f877937e6d490f7980f803564b3c31ae025473d3ce4bb854",
@@ -1409,7 +1526,10 @@
         "ms": 3407,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "a8223410b97501306fb1aa953dc879b8adf0dc03a2a9e9a615d3a767894d6386",
@@ -1428,7 +1548,9 @@
         "ms": 2069,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "f8e78ad1e2c7446f01272bbd445b09885047a866c02a66a849988cda2c8c34d6",
@@ -1663,7 +1785,9 @@
         "ms": 1085,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "bb7bab3e1edf38050909e3be017243b66bb41070b9675818078efe14017bdc93",
@@ -1706,7 +1830,9 @@
         "ms": 826,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "bb7bab3e1edf38050909e3be017243b66bb41070b9675818078efe14017bdc93",
@@ -1733,7 +1859,9 @@
         "ms": 2033,
         "by": "grandmother_tull",
         "figure": "cast/grandmother_tull",
-        "name": "Grandmother Tull"
+        "names": [
+          "Grandmother Tull"
+        ]
       },
       {
         "clip": "469fbbc6c7edc015ef8471a8f69a9c7d025d03a4ed0319cd2df66f2e0be2b33e",
@@ -1768,7 +1896,9 @@
         "ms": 7007,
         "by": "grandmother_tull",
         "figure": "cast/grandmother_tull",
-        "name": "Grandmother Tull"
+        "names": [
+          "Grandmother Tull"
+        ]
       },
       {
         "clip": "7fa1489b5e1aaf076ba5fa9ecaff13ad73d847c65b45750bdd0ee02a21b43e30",
@@ -1779,7 +1909,9 @@
         "ms": 1974,
         "by": "grandmother_tull",
         "figure": "cast/grandmother_tull",
-        "name": "Grandmother Tull"
+        "names": [
+          "Grandmother Tull"
+        ]
       },
       {
         "clip": "9fcbd71b9e527da57cdc430dc13e396f96af14472cdbb624412639c9f2d7d664",
@@ -1798,7 +1930,9 @@
         "ms": 1265,
         "by": "burrowfolk_prospector",
         "figure": "cast/rush_prospector",
-        "name": "Burrowfolk prospector"
+        "names": [
+          "Burrowfolk prospector"
+        ]
       },
       {
         "clip": "9826309e9b3e5e57ae38797bd1a301d841300de2f47cfd1da5448266a44e2549",
@@ -1836,7 +1970,9 @@
         "clip": "00121e46ef3bd458cf987b534f83c212d76687ba70e18ab44b935047f2d1d425",
         "ms": 2453,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "cb27c84e1e3450a78a6028ab9475a65dbc98154f895fc4df7c004e0997bee708",
@@ -1855,7 +1991,9 @@
         "ms": 2512,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "732e2c193ef879a6923fca44f045be3b1fef4ad7be06e80097e3c70ea1ab9358",
@@ -1866,7 +2004,9 @@
         "ms": 2647,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -1881,7 +2021,9 @@
         "ms": 774,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1892,7 +2034,9 @@
         "ms": 3207,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "5ee6a152e90d58c152fbc9502bfe74f6a544168d4644f1b118845a488f08b4ed",
@@ -1911,7 +2055,9 @@
         "ms": 3907,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "df08f730cceba662feed261be8f351309c384b07639015266aa84308f9032681",
@@ -1930,7 +2076,9 @@
         "ms": 6507,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "c049a5be8c746983a62211933d9fbeef77ff7bfaedcedb6dda6b978c60120185",
@@ -1945,7 +2093,9 @@
         "ms": 834,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "34c53c35a98f07515252b7bb000e8d4308cca03be5f224baf57fe979430af664",
@@ -1956,7 +2106,10 @@
         "ms": 2031,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2019,7 +2172,9 @@
         "ms": 2698,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2030,7 +2185,9 @@
         "ms": 2607,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -2041,7 +2198,9 @@
         "ms": 2508,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "186b83d08969ef05ebc72f40e41d7d568fea93600044303069acd912a38cb070",
@@ -2052,7 +2211,9 @@
         "ms": 1853,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -2063,7 +2224,9 @@
         "ms": 2470,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2074,7 +2237,9 @@
         "ms": 2607,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -2085,7 +2250,9 @@
         "ms": 766,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "b54345a2d3d81c06cc2a30a41482737bcf909ae32898b745094e9a7bdc9f6d2e",
@@ -2096,7 +2263,9 @@
         "ms": 3907,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "e5b3b04aebfeaeeeb5efd760e0273692bddd7fff750d4c1d75bae1b820810a61",
@@ -2159,7 +2328,9 @@
         "ms": 2698,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2170,7 +2341,10 @@
         "ms": 2764,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2185,7 +2359,9 @@
         "ms": 2508,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2196,7 +2372,10 @@
         "ms": 2764,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2211,7 +2390,9 @@
         "ms": 2470,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2222,7 +2403,10 @@
         "ms": 2980,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2237,7 +2421,9 @@
         "ms": 770,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "ce75ca4d70bb4c22778ecfa62fc70f88b5e65daa1e90ee361e25dd70ee9744e4",
@@ -2300,7 +2486,9 @@
         "ms": 2698,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2311,7 +2499,9 @@
         "ms": 1887,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -2322,7 +2512,9 @@
         "ms": 2508,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2333,7 +2525,10 @@
         "ms": 3807,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2348,7 +2543,9 @@
         "ms": 2470,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "353fcc65802c8be9269b167345e4ff344b1523df3027334757de0c46c8d49b3a",
@@ -2359,7 +2556,10 @@
         "ms": 3807,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2378,7 +2578,9 @@
         "ms": 1247,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "139c20a8f900c1ea278963d53a289ba7aa7db0d0236ce8a74fdd2f66784eef9d",
@@ -2392,7 +2594,9 @@
         "clip": "bfe58398fff85bb1fcd35424c0c652bcfcecacd8159f8660f2a49234c1c2e3c0",
         "ms": 1339,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5179db222c6c16bdcdd70b37d07faf1ad34751286a9259f0b656f5494d836df",
@@ -2403,7 +2607,9 @@
         "ms": 645,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "da479449ecff092d17177440627ed9fac6d6c5c39383081d2036159dd1d67908",
@@ -2417,7 +2623,9 @@
         "clip": "277a1558fa3658d9e4678898c1b3a416fe328a360e1eb71397edf6b9821cd5e6",
         "ms": 729,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "e5f7b0dbe4cc907dd04e8c878c665b4f73521fafe4723581e526eca27e3860b9",
@@ -2427,7 +2635,9 @@
         "clip": "95c59e6c33220626aee0b492a20884a568007f40717a0c84450d580c58fb2574",
         "ms": 858,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "2a50d1985ec103f9a1528ef4a76a870063f9e86ff253dd4baf657ad7f593f208",
@@ -2438,7 +2648,9 @@
         "ms": 1329,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "2b18dd1f35d63761a9dc59003aa1efabd9d1cb2c062ab3187ef3f8b862975397",
@@ -2453,7 +2665,9 @@
         "ms": 1888,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "adb305eef68eab7db2d2f013caf7d1b6be4ddadcccbbf4f4ff49a0b187986baf",
@@ -2464,7 +2678,9 @@
         "ms": 1759,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "aff36c5752c019d1b2b32e8c18891d82d8b7d62ff088fb844019530135cf0716",
@@ -2478,7 +2694,9 @@
         "clip": "999b5094e375bf13a9dcf54b7d7af6046bfcd5309f730305d89b9e63979b8877",
         "ms": 977,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "296b303b413f0b82a7c6438920c1e7c59d58daa2212763ffb57fb44e14f3d438",
@@ -2489,7 +2707,9 @@
         "ms": 509,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "488dd6343d178e13126b06f952a26cf3c71e4f24aa0d2ea06b1f753bf7235802",
@@ -2508,7 +2728,9 @@
         "ms": 2666,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "0dd68b19e4f6b5ac1b0baa6781365e1b86b000dda6641eaa6c0e0248ddae81a1",
@@ -2519,7 +2741,9 @@
         "ms": 7427,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       }
     ],
     "party=2": [
@@ -2532,7 +2756,9 @@
         "ms": 2666,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "0dd68b19e4f6b5ac1b0baa6781365e1b86b000dda6641eaa6c0e0248ddae81a1",
@@ -2543,7 +2769,9 @@
         "ms": 7427,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       }
     ],
     "party=3": [
@@ -2556,7 +2784,9 @@
         "ms": 2666,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "0dd68b19e4f6b5ac1b0baa6781365e1b86b000dda6641eaa6c0e0248ddae81a1",
@@ -2567,7 +2797,9 @@
         "ms": 7427,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       }
     ],
     "party=4": [
@@ -2580,7 +2812,9 @@
         "ms": 2666,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "0dd68b19e4f6b5ac1b0baa6781365e1b86b000dda6641eaa6c0e0248ddae81a1",
@@ -2591,7 +2825,9 @@
         "ms": 7427,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       }
     ]
   },
@@ -2606,7 +2842,9 @@
         "ms": 2099,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "dfdaf7db2fc558997c854759b52ef31ca9f9f2958a5e0bb8e98d5fbf7c9ed470",
@@ -2617,7 +2855,9 @@
         "ms": 6507,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "e907cd26a1e61f825307d5b13c077f411e45aafa107aef080b6128125b9c92e5",
@@ -2628,7 +2868,9 @@
         "ms": 2373,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       }
     ]
   },
@@ -2639,7 +2881,9 @@
         "ms": 1712,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "d3315f631119f654ecd7a2a56dc3c1a8ad8eae35b89d92af922ee6e0a5fb59d1",
@@ -2650,7 +2894,9 @@
         "ms": 4907,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "4154177b9c16f400c2b0f96e86a9a79a0663a77922826f5d82cf46dea70928dd",
@@ -2669,7 +2915,9 @@
         "ms": 1333,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "3ef993c1a356c2f5cd4c798df98289072adc28fe17fcd68fa72b71fd841743ff",
@@ -2688,7 +2936,9 @@
         "ms": 3107,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "d909f004012f427ef21718265cb62e125e0ec071b33b8b1aceee24bdea438e31",
@@ -2702,7 +2952,9 @@
         "clip": "67960c4bd6b1cf39c2f2cf47e82f2fa690087bc5c039b3362c94e1210970882d",
         "ms": 1180,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "f83ab8476764b04d587b47068794bc77aee0008f727325727ab0a0251924d968",
@@ -2713,7 +2965,9 @@
         "ms": 2159,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2724,7 +2978,9 @@
         "ms": 2515,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "213f1d2d1faa4d9c40d414ed19e1a848dd5e69f5ec479d48fa68f4e25a7f0124",
@@ -2739,7 +2995,10 @@
         "ms": 953,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "24a62f34d41119bcdf47f91c9dd4ad77554f85086ce8da31c5e8f3493a09ca66",
@@ -2750,7 +3009,10 @@
         "ms": 2651,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "59defea9dd77d126946bdf78fe0735c202f897ad34e7414fea4ae3ce37f77128",
@@ -2769,7 +3031,10 @@
         "ms": 1919,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "7af81805d30abead57f9cde7bfba165d540dbf7d2fa5d8e07d1e315b450c83fb",
@@ -2788,7 +3053,10 @@
         "ms": 1786,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2799,7 +3067,10 @@
         "ms": 2031,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       }
     ]
   },
@@ -2822,7 +3093,9 @@
         "ms": 2248,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "fcfa05ceb6817a9821c1641eb39ec846046cd2d28ad59d113be95ab997a9966b",
@@ -2841,7 +3114,9 @@
         "ms": 1888,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2852,7 +3127,9 @@
         "ms": 1387,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -2866,7 +3143,9 @@
         "clip": "ae7104148178d6786d846d20708a8f1d55cdff7b38974fef70a53ca8732d0a90",
         "ms": 3107,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "1d092833fe9adb77f8af306f66fc77183d00e34144d8f82be17a109ece1a5c7e",
@@ -2877,7 +3156,10 @@
         "ms": 988,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2888,7 +3170,10 @@
         "ms": 1567,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       }
     ]
   },
@@ -2927,7 +3212,10 @@
         "ms": 1895,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2946,7 +3234,10 @@
         "ms": 1281,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5797ad579d38ec490118b08f90f7005785df408bbc27f51780d3cb29a9321eb9",
@@ -2957,7 +3248,10 @@
         "ms": 2751,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "5ed3c08b6d297eba9346bb2dd5008ef351521c292654741c1701fe5dc60ef15d",
@@ -2972,7 +3266,10 @@
         "ms": 2251,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "f85e165a29aabb1c36e42906998680b8636170445845d44fb8eecbb6c4150705",
@@ -2987,7 +3284,10 @@
         "ms": 1538,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "b2044c8235fe06d259c9eaf26da4ddede3bd0c39b5e4fd8fede073fc5221b8f8",
@@ -2998,7 +3298,10 @@
         "ms": 4207,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "50e0c0e533b41791c1241263cfc3567ed3fd96b862e72b7269ac997c2412b3c4",
@@ -3021,7 +3324,10 @@
         "ms": 608,
         "by": "voss",
         "figure": "cast/captain_voss",
-        "name": "Captain Voss"
+        "names": [
+          "Captain Voss",
+          "Voss"
+        ]
       },
       {
         "clip": "50ced0401ad07385883152afd5b1e21418d78e6ecbb9ad9bee89b4dc76e93f8e",
@@ -3044,7 +3350,9 @@
         "ms": 1640,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "4ac881b6ae3f30f77882a7a54c202ecd7547d6c732f5854f73ca0e8d9ab48ca5",
@@ -3079,7 +3387,9 @@
         "ms": 2190,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "e302be1daedc8f77b7bbf43a1908379c4f6ef4b0dd96cd50f204ada8bb30fc35",
@@ -3090,7 +3400,9 @@
         "ms": 979,
         "by": "pellam",
         "figure": "cast/pellam",
-        "name": "Pellam"
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -3129,7 +3441,9 @@
         "ms": 2122,
         "by": "centaur_drover",
         "figure": "entities/centaur",
-        "name": "Centaur drover"
+        "names": [
+          "Centaur drover"
+        ]
       },
       {
         "clip": "35e159863160afff41099d2c5252aefbd1d9c44be17d0ca7aa6ae2b9c7bec686",

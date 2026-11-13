@@ -169,7 +169,9 @@
         "clip": "0a2ccec9504d492b36ab1f6735192f2279103570372ec4f38c3e28b851adf054",
         "ms": 2012,
         "by": "kettle_campers",
-        "name": "Kettle Campers"
+        "names": [
+          "Kettle Campers"
+        ]
       },
       {
         "clip": "5782e7fe05291c5dcf0394f6394dea42c8adcf507fd572c6112d437ac64b41a5",
@@ -351,7 +353,9 @@
         "clip": "0b71a74f298f0e0f44ca90e0e8ef6c8deef16efffb123aa8aac513973f6c2326",
         "ms": 3907,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "2cbe65b1e3f422081fa248aeae3a393020df6d7171bcb1015ac74896006ac15e",
@@ -618,7 +622,9 @@
         "ms": 2536,
         "by": "brassbuckle_recordkeeper",
         "figure": "cast/brassbuckle_recordkeeper",
-        "name": "Brassbuckle recordkeeper"
+        "names": [
+          "Brassbuckle recordkeeper"
+        ]
       },
       {
         "clip": "e589eb1c890775a8483a7b2dfd4e3bdca203d7516b32c8fbceb16c7100c8aaf4",
@@ -701,7 +707,9 @@
         "ms": 5007,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -712,7 +720,9 @@
         "ms": 3107,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "2b007e249ddfc7137affaf29dc38d89de55a1d2a6bc547737f265ca5aabae151",
@@ -810,7 +820,9 @@
         "clip": "02b3f361e45537b202997b9f7078fbb07c2e18d82b7987e14643588251356788",
         "ms": 1093,
         "by": "wagon_driver",
-        "name": "Wagon Driver"
+        "names": [
+          "Wagon Driver"
+        ]
       },
       {
         "clip": "fa465d076c5d5ab7a2b17de0139874f4a2f11ddab3c3bf5f32900b101a9b495d",
@@ -984,7 +996,9 @@
         "clip": "7077a88df0edce8444dd822d89964e45d6774282109e8a1293e6825976b5b35d",
         "ms": 2592,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "3c8076443c931a37588cb66dff44bee62a329665f98ab21d9462a9926564288f",
@@ -994,7 +1008,9 @@
         "clip": "60b6f2d2fba04518f14457d07d48e5ce725c268c0a2789a7d9fdcf3a1bddb62a",
         "ms": 2670,
         "by": "parsnip_driver",
-        "name": "Parsnip Driver"
+        "names": [
+          "Parsnip Driver"
+        ]
       },
       {
         "clip": "448800b3b3a4230a0b544c076c4808229dd4f870e8e83dc98113ae111e71fe76",
@@ -1012,7 +1028,9 @@
         "clip": "23570bd556cc3e5b96bd1dec15f90509c66ae339cad77d819c8aad2d7c199ac9",
         "ms": 1222,
         "by": "parsnip_driver",
-        "name": "Parsnip Driver"
+        "names": [
+          "Parsnip Driver"
+        ]
       },
       {
         "clip": "960bfa5eca0ecdd632aef4fe69241621c2697a0b3316153184ba93560a6abd13",
@@ -1039,7 +1057,10 @@
         "ms": 4307,
         "by": "fennick",
         "figure": "cast/fennick",
-        "name": "Fennick Longstride"
+        "names": [
+          "Fennick Longstride",
+          "Fennick"
+        ]
       },
       {
         "clip": "57ccbd15d4dfc5f54ec22bfe616b62ccd06f3075bc5c800da30e4bb22c1ee493",
@@ -1057,7 +1078,9 @@
         "clip": "4e762882e745c8622eedbc83faea5bd49c8aaa6096a130b9a9db2646f2bf8c98",
         "ms": 1263,
         "by": "dilly",
-        "name": "Dilly"
+        "names": [
+          "Dilly"
+        ]
       },
       {
         "clip": "8d0ce563f49c03408bfd9f0024c683126189e39d183c8121775b492f116b2bbb",
@@ -1067,7 +1090,9 @@
         "clip": "4ffd5c7e3baf9db9a6e9d16eb53093684fec2f942e8441a5c599d5bde20a8da3",
         "ms": 1121,
         "by": "dilly",
-        "name": "Dilly"
+        "names": [
+          "Dilly"
+        ]
       },
       {
         "clip": "0cf7957ed8af5c09e45b3d8d22714e345789c26e86849ae9d621a65c66ef5c4c",
@@ -1102,7 +1127,10 @@
         "ms": 605,
         "by": "prospector",
         "figure": "cast/rush_prospector",
-        "name": "Rush prospector"
+        "names": [
+          "Rush prospector",
+          "Prospector"
+        ]
       },
       {
         "clip": "e758b0a97c80fb2ebe57db1cc3dec76d369f57ec03b76c45596a431e95ad58f4",
@@ -1116,7 +1144,9 @@
         "clip": "56a8a800530d10428ceb15d1bb31c191d7ede170272797b057aaa622837fbb5a",
         "ms": 1936,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6d1e5fa7ce6b0c4a59fcc926a6dfedf5ff393ac8315106570f9a0db72e4f2609",
@@ -1127,7 +1157,10 @@
         "ms": 3307,
         "by": "prospector",
         "figure": "cast/rush_prospector",
-        "name": "Rush prospector"
+        "names": [
+          "Rush prospector",
+          "Prospector"
+        ]
       },
       {
         "clip": "66de89c6f4c003d8152a9b52e7efe375e7685239457dedc1f6f84d527b5bbc44",
@@ -1138,7 +1171,9 @@
         "ms": 2634,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1181,7 +1216,9 @@
         "ms": 1634,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1192,7 +1229,9 @@
         "ms": 2722,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "5109938bb4195ac289e81d2dac2f087fc388a6fd1e8a36ca244711193e898951",
@@ -1211,7 +1250,9 @@
         "ms": 1712,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1222,7 +1263,9 @@
         "ms": 2010,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "5109938bb4195ac289e81d2dac2f087fc388a6fd1e8a36ca244711193e898951",
@@ -1273,7 +1316,9 @@
         "ms": 5007,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "6192cbe65cd59a289dad245ce64a385f2685df410bccefc2eda39dd3e81ca999",
@@ -1324,7 +1369,10 @@
         "ms": 628,
         "by": "fennick",
         "figure": "cast/fennick",
-        "name": "Fennick Longstride"
+        "names": [
+          "Fennick Longstride",
+          "Fennick"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1350,7 +1398,9 @@
         "clip": "c8d7dc01c6256fc8de525cb6c5f684dfbb4da088046a59f14373ebd9d2efcfa3",
         "ms": 1163,
         "by": "brassbuckles",
-        "name": "Brassbuckles"
+        "names": [
+          "Brassbuckles"
+        ]
       },
       {
         "clip": "1d7e2e005081fcb5cf247d570145ae680a0419f1a329e74ea84b85312922d783",
@@ -1364,7 +1414,9 @@
         "clip": "f37987b8e75e64e791746d5829cf561f87cf681400e2a7c98a5b513933047797",
         "ms": 1638,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "aae05a4ef9a9e9b335971b09bfa81445eb5b06ff79823521ef1b374a82233f1e",
@@ -1382,7 +1434,9 @@
         "clip": "18233e65ddddd1bcbeacedfbe4dbe4d8ee4d6aa00fac2162e5535281d18cb844",
         "ms": 994,
         "by": "wagon_driver",
-        "name": "Wagon Driver"
+        "names": [
+          "Wagon Driver"
+        ]
       },
       {
         "clip": "28295799b28ffd33ce4b810114aa30645ca72a1b167599a686118e9cc0c17aab",
@@ -1400,7 +1454,9 @@
         "clip": "5dada25391643383e4d25916561b3ffa893859fea66166ff8543c541eb93f578",
         "ms": 1257,
         "by": "wagon_driver",
-        "name": "Wagon Driver"
+        "names": [
+          "Wagon Driver"
+        ]
       },
       {
         "clip": "9ed794badbde3960b63d8a7accd49fd87f9d071ec50c7a8849f0d479702c794e",
@@ -1410,7 +1466,9 @@
         "clip": "459dfcd1e050d297e7cd040f0c06ed67cb6eefbc479f69c1a608e63c687056a6",
         "ms": 1352,
         "by": "wagon_driver",
-        "name": "Wagon Driver"
+        "names": [
+          "Wagon Driver"
+        ]
       },
       {
         "clip": "d7542ef0aa585a4b312e5d4e8df41917ef3a8a80fdbdaec0ca5e99f877994a35",
@@ -1445,7 +1503,9 @@
         "ms": 1208,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "6192cbe65cd59a289dad245ce64a385f2685df410bccefc2eda39dd3e81ca999",
@@ -1456,7 +1516,9 @@
         "ms": 3707,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "4c716c40a6389a08b6d1756c984e74e48a1cde548ff84d6d5860bb9664308870",
@@ -1483,7 +1545,9 @@
         "ms": 3607,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "6192cbe65cd59a289dad245ce64a385f2685df410bccefc2eda39dd3e81ca999",
@@ -1494,7 +1558,9 @@
         "ms": 8207,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "108f0948beb5aefcdeb5d8c7163b0c0f7054638f723bcb280a81e8aea47c3f03",
@@ -1505,7 +1571,9 @@
         "ms": 5807,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       }
     ]
   },
@@ -1520,7 +1588,9 @@
         "ms": 5007,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "5e948564581e37e17f25454e6325d8e273100d5352beaea11720b1ea1445d7d4",
@@ -1531,7 +1601,9 @@
         "ms": 3507,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       }
     ]
   },
@@ -1541,7 +1613,9 @@
         "clip": "85f2e23864942c0a3126bb309d330f44781ed590fcd5b724b8652f98ac5c8c73",
         "ms": 1046,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "823897ce452bba370f4ae59fd15a2d90459c91e9b4e21bcc5e1f1f50cc16e91c",
@@ -1552,7 +1626,9 @@
         "ms": 4207,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1563,7 +1639,9 @@
         "ms": 3207,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       }
     ]
   },
@@ -1578,7 +1656,9 @@
         "ms": 2552,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1589,7 +1669,9 @@
         "ms": 3507,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       }
     ]
   },
@@ -1604,7 +1686,9 @@
         "ms": 2054,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "5e948564581e37e17f25454e6325d8e273100d5352beaea11720b1ea1445d7d4",
@@ -1615,7 +1699,9 @@
         "ms": 3407,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       },
       {
         "clip": "3acada9d699d625f05f5fa6c9f79f3cbec1f65b64ab3d2d883c9b73076323b55",
@@ -1634,7 +1720,9 @@
         "ms": 5707,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       }
     ]
   },
@@ -1649,7 +1737,9 @@
         "ms": 3807,
         "by": "old_lintel",
         "figure": "cast/old_lintel",
-        "name": "Old Lintel"
+        "names": [
+          "Old Lintel"
+        ]
       }
     ]
   },

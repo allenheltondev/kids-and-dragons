@@ -130,7 +130,7 @@ function setup(
     onSpeaking: (on) => speaking.push(on),
     onCast: (who) => {
       figures.push(who?.figure ?? null);
-      names.push(who?.name ?? null);
+      names.push(who?.names?.join("/") ?? null);
     },
   });
   return { speaker, device, plays, net, speaking, figures, names, unplug: () => void (current = null) };
@@ -1055,7 +1055,7 @@ describe("decoding ahead: the first clip of each line one step ahead", () => {
 
 describe("who is heard, for the stage's cast pulse (#551)", () => {
   const SAID: VoiceManifest = {
-    "ch/s1/narration": { "": [{ clip: A, ms: 1000 }, { clip: B, ms: 500, by: "pib", figure: "cast/pib", name: "Pib" }, { clip: C, ms: 800, by: "echo", name: "Echo" }] },
+    "ch/s1/narration": { "": [{ clip: A, ms: 1000 }, { clip: B, ms: 500, by: "pib", figure: "cast/pib", names: ["Pib"] }, { clip: C, ms: 800, by: "echo", names: ["Echo", "The echo"] }] },
   };
   const LINE: NarrationPart[] = [{ address: "ch/s1/narration", line: "Pib waves." }];
   const routes = (): Record<string, Route> => ({ [manifestPath("ch")]: json(SAID), [clipPath(A)]: bytes(A), [clipPath(B)]: bytes(B), [clipPath(C)]: bytes(C) });
@@ -1071,11 +1071,11 @@ describe("who is heard, for the stage's cast pulse (#551)", () => {
     expect(t.figures).toEqual(["cast/pib"]);
     play.onClip?.(2);
     expect(t.figures).toEqual(["cast/pib", null]);
-    expect(t.names).toEqual(["Pib", "Echo"]);
+    expect(t.names).toEqual(["Pib", "Echo/The echo"]);
     play.onClip?.(1);
     play.onEnd();
     expect(t.figures).toEqual(["cast/pib", null, "cast/pib", null]);
-    expect(t.names).toEqual(["Pib", "Echo", "Pib", null]);
+    expect(t.names).toEqual(["Pib", "Echo/The echo", "Pib", null]);
   });
 
   it("lets go when the line is cut off, and ignores a clip of the line that was cut", async () => {

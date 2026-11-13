@@ -49,7 +49,9 @@
         "clip": "e0939e5dbeefe61772b8c7c44ba3a69bfd8e7120f817255d02627d528cb24dd1",
         "ms": 1679,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "f7b896312da2495aa2dbfe8141da889cac028e24ac42b8348df634fe89f30c35",
@@ -59,7 +61,9 @@
         "clip": "8f7b3f43fcb62942bcc0f97ef3b4392f8158bf196c4fbd9c8f29b90ff0cd9345",
         "ms": 851,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -73,7 +77,9 @@
         "clip": "088e4826128fe5ae7f241c8ac8355080ba970b14d550429095509a9e23c7a6f5",
         "ms": 636,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6bd6ae30b1560e10a57019ff19546f7870ceac668c92a1277229b0d24fec2209",
@@ -91,7 +97,9 @@
         "clip": "0c3ee6a6fea7054560f6e44806770a99e0f277531f4f7dd4378e8c02db163906",
         "ms": 1028,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "1eb2e4b80631649d8b7566b07781d40d86cfa46b89c5b8fd6bb8192d90c3b0fd",
@@ -101,7 +109,9 @@
         "clip": "601781fe71e2fa28ce4391fa2b282a634698aeb7a6267e44ae300b55ee1a54a9",
         "ms": 1359,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "61d0a22b494a476b7e687eeba3b0e96f6a00d369a5020f17cbe45baad4b72200",
@@ -136,7 +146,9 @@
         "ms": 3107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "16d5bd3bb2657342acfa4c0595131fe7715abae9a854c4023c4481976d4d73f9",
@@ -147,7 +159,9 @@
         "ms": 7407,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -162,7 +176,9 @@
         "ms": 1234,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -173,7 +189,9 @@
         "ms": 2535,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -188,7 +206,9 @@
         "ms": 2467,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "100758374ec157e07d0e2786f5d88549e2da6ed8446d736a3ad290910dbbd775",
@@ -207,7 +227,9 @@
         "ms": 4807,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -222,7 +244,9 @@
         "ms": 2510,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "459687619d1dc20f2618c2ab8e33f74aa0b49e37461c7ba59a8d9fa873cb7361",
@@ -241,7 +265,9 @@
         "ms": 2809,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "ca2eeeb2e36d70b01e20a83e4103863daad3e31a429113cb7c04830f0e997c26",
@@ -259,7 +285,9 @@
         "clip": "1f2c47fcd9dec3280df15642168581996075c88469abccc21bb26fcb5bc7e80f",
         "ms": 808,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b8c70c9999d7ec23472994231de12307b2c448fb88c0ba2b1f9cf9787bed039d",
@@ -269,7 +297,9 @@
         "clip": "88f668507f7c724526d12f077bd0f515e50006ca5d19cb0e44448df453a17901",
         "ms": 2790,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b80265cfc6d724f98b32e08d911f9b375ee88d935d1ffcb56efd1a2059c50928",
@@ -296,7 +326,9 @@
         "ms": 989,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -307,7 +339,9 @@
         "ms": 1882,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -330,7 +364,9 @@
         "ms": 1495,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -357,7 +393,9 @@
         "ms": 2048,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -368,7 +406,9 @@
         "ms": 2300,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -383,7 +423,9 @@
         "ms": 2730,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "26320ed7629c24fe141e8a9a0da8067347f6fb4ceda01ca8ca52fe51cf5561c6",
@@ -402,7 +444,9 @@
         "ms": 3507,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -413,7 +457,9 @@
         "ms": 2347,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -428,7 +474,9 @@
         "ms": 1521,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -439,7 +487,9 @@
         "ms": 3407,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -462,7 +512,9 @@
         "ms": 1937,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -473,7 +525,9 @@
         "ms": 2686,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -496,7 +550,9 @@
         "ms": 1290,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -507,7 +563,9 @@
         "ms": 2155,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "428c1227e4a4934aa7976dfbba2bcdfca50c1ce1e834161a488c70f7b8f39bdf",
@@ -526,7 +584,9 @@
         "ms": 2203,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -537,7 +597,9 @@
         "ms": 1936,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "53327df905d7d03f5b021abfbbd13b83a5b2eb81cd4fd106a15b3684f5ccc278",
@@ -564,7 +626,9 @@
         "ms": 1240,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "ac55a27c7d4ac293226f5b0acefd3a4beab79c1819acd499c50e6ac3f525e278",
@@ -575,7 +639,9 @@
         "ms": 1855,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -598,7 +664,9 @@
         "ms": 3207,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -609,7 +677,9 @@
         "ms": 5007,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -640,7 +710,9 @@
         "ms": 4507,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "b8c66978107e40b48983967328f76ef9664f94063792e2edaae9fd87f8f22821",
@@ -659,7 +731,9 @@
         "ms": 1759,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -670,7 +744,9 @@
         "ms": 1579,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -693,7 +769,9 @@
         "ms": 1770,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -704,7 +782,9 @@
         "ms": 3107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -727,7 +807,9 @@
         "ms": 1595,
         "by": "grit_seller",
         "figure": "cast/yeti_grit_seller",
-        "name": "Grit seller"
+        "names": [
+          "Grit seller"
+        ]
       },
       {
         "clip": "d18ac800e71f628c56ec5cd7eb6274ec23d14e5d959adf3a4b5a5c0c6e0535b4",
@@ -746,7 +828,9 @@
         "ms": 3307,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "7fb1fa2773a179f523786f718d488ff5a3ef7e6e43de3ee0708c114ad3aa7384",
@@ -765,7 +849,9 @@
         "ms": 2767,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2f20c60b62ccb0d1ac3ff428c07ebb7122268253f590d02540ba3a6720fafae1",
@@ -784,7 +870,9 @@
         "ms": 1405,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -795,7 +883,9 @@
         "ms": 3207,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "9f90f6fb6ea0b5298f249189a0e1b052003323518f53fce1a655a61f66b4cbea",
@@ -806,7 +896,9 @@
         "ms": 7807,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "ea917dddc229128d961a31cf844a592b5ae15f26bb9455b36868a1681bb5c6cf",
@@ -817,7 +909,9 @@
         "ms": 3707,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -828,7 +922,9 @@
         "ms": 1731,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "b1793ebe37f30562206d6ffa6345667e0757062107287614d4d6bd9905e17eda",
@@ -839,7 +935,9 @@
         "ms": 3107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -854,7 +952,9 @@
         "ms": 3607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "a80f936bb4c3c4514756986bc774174011b103d25c4208a5cd780d449530ba88",
@@ -873,7 +973,9 @@
         "ms": 2634,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -884,7 +986,9 @@
         "ms": 1510,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -907,7 +1011,9 @@
         "ms": 1175,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -918,7 +1024,9 @@
         "ms": 2011,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -949,7 +1057,9 @@
         "ms": 1882,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -960,7 +1070,9 @@
         "ms": 1865,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -983,7 +1095,9 @@
         "ms": 1625,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "70f2be47b6771915f5af7189325169db6bfd8e21857776729830272d07903d6f",
@@ -1010,7 +1124,9 @@
         "ms": 928,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "f8f2e6c555569103a9908afd65b8dc33759acd80556d8035209bc4faf9a6d073",
@@ -1037,7 +1153,9 @@
         "ms": 2211,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "6bd29650c055c0dbb323e345d9851942d94cc045bc67c885c0c49f18a15b21cd",
@@ -1064,7 +1182,9 @@
         "ms": 2538,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1075,7 +1195,9 @@
         "ms": 2209,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1098,7 +1220,9 @@
         "ms": 1527,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1109,7 +1233,9 @@
         "ms": 3107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "20f6da1a8a7582a049ec16307742569027f921909f5b6120874c4a189485765e",
@@ -1120,7 +1246,9 @@
         "ms": 3707,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1135,7 +1263,9 @@
         "ms": 2228,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "d5a49826d417848062050066d60ef443e2310e0c57814b89a0df21295e8f4da5",
@@ -1154,7 +1284,9 @@
         "ms": 961,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "9d1f52467a686339eccb33f53edce569dc0cfcbc966dd5e6cd9f31eeb730b143",
@@ -1165,7 +1297,9 @@
         "ms": 1711,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1196,7 +1330,9 @@
         "ms": 1860,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "ac55a27c7d4ac293226f5b0acefd3a4beab79c1819acd499c50e6ac3f525e278",
@@ -1223,7 +1359,9 @@
         "ms": 3707,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1234,7 +1372,9 @@
         "ms": 4708,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "34e3e7063266cf854a5f0916005e1e4e3add96070bccee9617e47c3226279c82",
@@ -1268,7 +1408,9 @@
         "clip": "bcf2a1a0057ce148cc52acddb75f607e1d9041fb7deb23f7d219a39a6da67844",
         "ms": 1122,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "e5f7b0dbe4cc907dd04e8c878c665b4f73521fafe4723581e526eca27e3860b9",
@@ -1278,7 +1420,9 @@
         "clip": "96ec830f7b0a89baaff2d0227462f78188944a854eb8a2b6251b1f827e7ba935",
         "ms": 2256,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -1292,7 +1436,9 @@
         "clip": "b55d325b56f67667bc60f8d1b05e43f71fac6cd444d60d64c24f528e667cf84f",
         "ms": 2073,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "1eb2e4b80631649d8b7566b07781d40d86cfa46b89c5b8fd6bb8192d90c3b0fd",
@@ -1302,7 +1448,9 @@
         "clip": "4ddebe6462a553a94206ee6993927de655c607b8b2855465d54b8f66ae6c8310",
         "ms": 1206,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -1316,7 +1464,9 @@
         "clip": "7d2fd4743cd9491a4f9cd6d24d125824b5dd09a252f43c0988e5fa4b16110431",
         "ms": 1692,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6bd6ba980182f8c585fd328c656f1a85557ebe9b1a32c3d8e27902d493b0c5c0",
@@ -1343,7 +1493,9 @@
         "ms": 4707,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "54d5717eee6949500c7d677fb6343ac160ba03eeaa690ef5cded3cefbbf93664",
@@ -1354,7 +1506,9 @@
         "ms": 2142,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1365,7 +1519,9 @@
         "ms": 2966,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1380,7 +1536,9 @@
         "ms": 2498,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1391,7 +1549,9 @@
         "ms": 3307,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1406,7 +1566,9 @@
         "ms": 1672,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1417,7 +1579,9 @@
         "ms": 4207,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1432,7 +1596,9 @@
         "ms": 1749,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1443,7 +1609,9 @@
         "ms": 4707,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "3b1dea3e0189ea30ac9d7f89b8eab3c4d4486944ad14269c5cd758cd4769e7dc",
@@ -1462,7 +1630,9 @@
         "ms": 3307,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1477,7 +1647,9 @@
         "ms": 1451,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "62ac9b08e36e1a809c88f1c88ab12524bc0635347c548b41d9d72616ab27e669",
@@ -1488,7 +1660,9 @@
         "ms": 2617,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1511,7 +1685,9 @@
         "ms": 1512,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1530,7 +1706,9 @@
         "ms": 3207,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1541,7 +1719,9 @@
         "ms": 2405,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1564,7 +1744,9 @@
         "ms": 1592,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1575,7 +1757,9 @@
         "ms": 6007,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1590,7 +1774,9 @@
         "ms": 3207,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1601,7 +1787,9 @@
         "ms": 4607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1615,7 +1803,9 @@
         "clip": "fa13d1b78567b5e88757e68b7b609f3341abc2bcbd615317720907435faa873b",
         "ms": 934,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "47495929f79773a9250772b81a7c25e7c471d08329325d2692170019815840f1",
@@ -1634,7 +1824,9 @@
         "ms": 2928,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1645,7 +1837,9 @@
         "ms": 7107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "b13f663df0d982839840b2abb01d840690805663e6e69385eca78c3da294705d",
@@ -1688,7 +1882,9 @@
         "ms": 2607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1699,7 +1895,9 @@
         "ms": 1992,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "5986ac36df6e0b95c6c8720eda4e0fbe28fab645e44acfce8b3d49f48bc303e2",
@@ -1718,7 +1916,9 @@
         "ms": 2186,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1729,7 +1929,9 @@
         "ms": 2069,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1752,7 +1954,9 @@
         "ms": 2563,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1763,7 +1967,9 @@
         "ms": 2123,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1786,7 +1992,9 @@
         "ms": 1695,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1797,7 +2005,9 @@
         "ms": 4707,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "731530351f7553c969fc0d7ce4485e4628467e63961dec39111c62f8f357168f",
@@ -1816,7 +2026,9 @@
         "ms": 2122,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "2248d2ee46ad80b0d7babfdafcc274b474fcefacfa6312497ed83a0255da848b",
@@ -1835,7 +2047,9 @@
         "ms": 1527,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "fa9d9d290f1636cd4ee3269cb396f60c2ddc94a7ffab000d34e8c50db405fb0f",
@@ -1854,7 +2068,9 @@
         "ms": 2307,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "fd325d94245c7071cdb26e747a254396691b9e51e3544bb880519f472b968d9b",
@@ -1873,7 +2089,9 @@
         "ms": 2447,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "c4fbf162e53603a1839c38ed7f235a83e5ea9576821c5d76fd69f4e27adbd470",
@@ -1884,7 +2102,9 @@
         "ms": 4007,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1907,7 +2127,9 @@
         "ms": 1170,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "241de9e4608617029df4673f26d3bcb50f691a3cb294a7dd177a63b4be4962f8",
@@ -1949,7 +2171,9 @@
         "clip": "b8184ca116d04a1d08f9dd3d11666b8120dd2238b10b0faf1d73ca2869de4791",
         "ms": 1991,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "4a9e03da27384847f656bfba04135259895c1b023e15cf8e1c34ce7f6027c66e",
@@ -1992,7 +2216,9 @@
         "ms": 3607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2003,7 +2229,9 @@
         "ms": 11607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -2026,7 +2254,9 @@
         "ms": 1703,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "7ef45a6504e0cc1f64c83028b942671d266b95cfd0e231b955968148783f166d",
@@ -2037,7 +2267,9 @@
         "ms": 3107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -2060,7 +2292,9 @@
         "ms": 2591,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2071,7 +2305,9 @@
         "ms": 1147,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "90ec0ccd1c2e4cb8ac742f2acc322ca56b5fb7828fb153419231e1379e473bd5",
@@ -2089,7 +2325,9 @@
         "clip": "1d7aeb573913d94f5eaf898539b46d960c01dd903066c9569ce2c026aa37f5f1",
         "ms": 652,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "c3b53b9c65bb7383c435250b9adf3814cc4506f04d411349c328436d538045de",
@@ -2099,7 +2337,9 @@
         "clip": "90c494f4f37d1cd5a31fd382c753dfac787d9408e11b6bae002b411eb62419f0",
         "ms": 581,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b3aedb230ae044ca0ea8a6b3f1c74eb1b2c5749c79fe44899e822d9e04335ccf",
@@ -2118,7 +2358,9 @@
         "ms": 1588,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "b8fc670494c89a0abd9fe3a8576a2a5d56febbcb06338491bdee5d7e38146361",
@@ -2129,7 +2371,9 @@
         "ms": 2209,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -2151,7 +2395,9 @@
         "clip": "b28a989bb3fb22bbb89b87cfff96f5ca8b76e84ae66a0749768a0017c955ea3e",
         "ms": 1046,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "691e5622a0d94b1545731c325618ea6aa1cbadf449250152a3f53d961e64b860",
@@ -2185,7 +2431,9 @@
         "clip": "0920d6502d423730a1023a6cffd67cb022c5c71e9416046e9fb75aff49d34efe",
         "ms": 397,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "8f44093e2bcd8d414237bfc9cf5817865578796380b42df5759da7e2edfe61dc",
@@ -2195,7 +2443,9 @@
         "clip": "fc23056ad2a94a766f56cc30a2668baeab5b014888e1c1d4a28db102d9a0e382",
         "ms": 2430,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -2217,7 +2467,9 @@
         "clip": "8913ee937cc30c63c4539f5a3b96dd1f36c249c3b3e666f465ee5ef6b582b133",
         "ms": 689,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b8c70c9999d7ec23472994231de12307b2c448fb88c0ba2b1f9cf9787bed039d",
@@ -2227,7 +2479,9 @@
         "clip": "77b9f38da6c388c6ab89ffd13147d825c8c3bb53d9710231f97c85bbaa5c41c0",
         "ms": 1650,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -2249,7 +2503,9 @@
         "clip": "bf3a3c8b64e0bbf5e7d9bcb2604a053537c4af3d589a9f7471a22305e4445a78",
         "ms": 602,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "1eb2e4b80631649d8b7566b07781d40d86cfa46b89c5b8fd6bb8192d90c3b0fd",
@@ -2259,7 +2515,9 @@
         "clip": "3e0f909319678260db1014c32b31fd4f7e9b30dcd15d9040f64e44df396f3bdd",
         "ms": 1404,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -2297,7 +2555,9 @@
         "clip": "733e5b0352b57d1f4df65fa247b8f5a9bdc415e45cc580467a96912cc9667b1f",
         "ms": 842,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "a32903c1cb0777ee52775c2396801e2fa0e592dd71404bfed8be8ea79cc3bdf8",
@@ -2323,7 +2583,9 @@
         "clip": "0c0a9637f0617f4dfe5d26881db8abed4905a92adae147d61423cb616229ded6",
         "ms": 962,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "d891c1840317084d1e817a652c8847f49316d001acaa2389226301be8928067e",
@@ -2333,7 +2595,9 @@
         "clip": "04449e76a5231f42876fb29f57cfe002ef9d542ca13e0b8f5b3a4c6f3860d837",
         "ms": 1233,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -2356,7 +2620,9 @@
         "ms": 1460,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "3eeffe24fccf6461db197e06038db9b84e41215c1b2eaf552536600ede9d3118",
@@ -2367,7 +2633,9 @@
         "ms": 2080,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "f8768e0aa2899a79525c75aa22ecebb42d0d6785b8ea7bf10b5b2ac296dcfeee",
@@ -2394,7 +2662,9 @@
         "ms": 2044,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "7a2969d972517ac5936df1b5622e24a3e8636d5c0186054ae4baafe96c7281ef",
@@ -2420,7 +2690,9 @@
         "clip": "1702b66b7b17ccbc5cb745e8cc5ad6ac1d6220eb89bc3b4c18f90bc3e332144c",
         "ms": 2256,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "43c310161eb9bdea27113f0503ebf5c06a8a80a68eaf07232db17da9bdaf653a",
@@ -2430,7 +2702,9 @@
         "clip": "e0cbb1599f035762597be53c9b3e3a82dae476d4b83bd5740cc0daa41935be8d",
         "ms": 701,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "18e6ffcaa57d90e5d4b2839847d27c68a586e989f866141030e78050133659e1",
@@ -2440,7 +2714,9 @@
         "clip": "a0464c8e66c280b7d288959d50a7a01b8337afddc8b548e232aaa38727bf3b51",
         "ms": 597,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -2470,7 +2746,9 @@
         "clip": "d99da00b70d790d05183ad9c266ce7fbfee0bd6463a266a6c3bdf3199e3fa004",
         "ms": 545,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "9005a47afa8d17d7516571dbf19ce7858f9dd44a758f7dacdd136d103c34961e",
@@ -2480,7 +2758,9 @@
         "clip": "62eb43b5246cfda9cef77ebb26210d83308f7a1ee4ac46c2ea6d814567436d5d",
         "ms": 1372,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -2502,7 +2782,9 @@
         "clip": "93cae0a44af6a1272c02c571cfa6de2450348002c404bb3035a1b1522a05c3e7",
         "ms": 866,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "986ba55c6179a8f3523afbe845037d18e0df521122f93d25aa6d2c49bbc7ad5e",
@@ -2528,7 +2810,9 @@
         "clip": "24bc9e7b6b842313e58c52a749a8dde9bfcf90fa1219f6c4ae9ae003adedb04e",
         "ms": 1552,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "1eb2e4b80631649d8b7566b07781d40d86cfa46b89c5b8fd6bb8192d90c3b0fd",
@@ -2554,7 +2838,9 @@
         "clip": "68ac993bbb446b4d8b9320c6d78439b9f58fd855d154b5d5f7ff1974050b0e70",
         "ms": 1208,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "1120d08173a69b425c75cfc41eed2776f9c9a4e0f5719386a733739d2f960cf7",
@@ -2580,7 +2866,9 @@
         "clip": "04b27b47fb480fa09625abc12cf2e88d352f4d2dd837ca1375f2f4a4016b26fd",
         "ms": 1217,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "2ede518e43347fad4204eafb134d43d37fb6f91d3e171617caacf84ab1eecede",
@@ -2607,7 +2895,9 @@
         "ms": 3607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2618,7 +2908,9 @@
         "ms": 3907,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "bbf2b6ef269d6739fb4d4072b8753a4cebbc07027850aa8e64fa0d56a6afbb01",
@@ -2629,7 +2921,9 @@
         "ms": 3207,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   }

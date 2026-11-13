@@ -81,7 +81,9 @@
         "clip": "1d13cd771ce149214442a29834265664fd0e84227d41c73221f1556420900397",
         "ms": 830,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "0cff00aac14e36fa150b611458e0210334552ac5b47a7059ead030886e80eedd",
@@ -179,7 +181,9 @@
         "clip": "b34936c289a202817c77dfe0cb935a1127ab1c3134383e9c02f94950c7636d57",
         "ms": 785,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "fd243e82abd3bd72652261038523a0e5078a1ba3400466c0f5169df92b614791",
@@ -214,7 +218,10 @@
         "ms": 1738,
         "by": "bracken_swiftmile",
         "figure": "cast/bracken_swiftmile",
-        "name": "Bracken Swiftmile"
+        "names": [
+          "Bracken Swiftmile",
+          "Bracken"
+        ]
       },
       {
         "clip": "a8a8d5a368a370e1783b91425dfe80b449cf11e539a9366a005e80a426febf3e",
@@ -233,7 +240,10 @@
         "ms": 957,
         "by": "bracken_swiftmile",
         "figure": "cast/bracken_swiftmile",
-        "name": "Bracken Swiftmile"
+        "names": [
+          "Bracken Swiftmile",
+          "Bracken"
+        ]
       },
       {
         "clip": "ee675db61a6091778678c67b1ba46f59189237bfc1770950d92e1349d6f73c17",
@@ -268,7 +278,10 @@
         "ms": 2961,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -279,7 +292,10 @@
         "ms": 2652,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       }
     ]
   },
@@ -310,7 +326,10 @@
         "ms": 615,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       }
     ]
   },
@@ -373,7 +392,10 @@
         "ms": 2155,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "c2deda1feda8c3e111d26cb9ec978fa7d8768acd864d6c42734b3f3dbfdb52fb",
@@ -384,7 +406,10 @@
         "ms": 1948,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "4c697bf4c6251be68d32e282f450f1a461a1587719635534aec735c5886e4a0f",
@@ -571,7 +596,9 @@
         "ms": 1216,
         "by": "granny_ash",
         "figure": "cast/granny_ash",
-        "name": "Granny Ash"
+        "names": [
+          "Granny Ash"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -582,7 +609,9 @@
         "ms": 1616,
         "by": "granny_ash",
         "figure": "cast/granny_ash",
-        "name": "Granny Ash"
+        "names": [
+          "Granny Ash"
+        ]
       }
     ]
   },
@@ -596,7 +625,9 @@
         "clip": "3f44768937cecc5b9fc87fad1b6723a0a613bd3ef92d8aeadd3434ce29d36782",
         "ms": 1503,
         "by": "marker_movers",
-        "name": "Marker Movers"
+        "names": [
+          "Marker Movers"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -606,7 +637,9 @@
         "clip": "cdd0d1deb0266e11bb281a44dd33cf23421cc8ab0d525a1210fd6cd6966cbfc1",
         "ms": 2164,
         "by": "marker_movers",
-        "name": "Marker Movers"
+        "names": [
+          "Marker Movers"
+        ]
       }
     ]
   },
@@ -869,7 +902,10 @@
         "ms": 579,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       },
       {
         "clip": "a2d4301fcf0f0cae5fb9a9665568aef80102b0d03cbe879ecff3f1ebf4eecb20",
@@ -888,7 +924,10 @@
         "ms": 1618,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -939,7 +978,9 @@
         "ms": 1732,
         "by": "brassbuckle_scout",
         "figure": "cast/brassbuckle_scout",
-        "name": "Brassbuckle scout"
+        "names": [
+          "Brassbuckle scout"
+        ]
       },
       {
         "clip": "bb07f4b3cb4aa581a837cc6f3c59ac13232c81a6e3918f2bcc68c7af46c9b5d0",
@@ -950,7 +991,9 @@
         "ms": 2360,
         "by": "brassbuckle_scout",
         "figure": "cast/brassbuckle_scout",
-        "name": "Brassbuckle scout"
+        "names": [
+          "Brassbuckle scout"
+        ]
       },
       {
         "clip": "148c6c1317bc68e9e38c2462e74ba09d0d0f9e6f22c633d895cac5f94224b8d1",
@@ -964,7 +1007,9 @@
         "clip": "eb00bb6eeb536582df2b529c90212af67736bbc8e19402e8c0280d4e9a6b0cdc",
         "ms": 1386,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b49a520d863b0eeae0b061398c7d43aae303de02a7a8793c8508bd00735fc9f7",
@@ -974,7 +1019,9 @@
         "clip": "0ebb869f1491c81b9587eeb97f24254dead3fc571d5cf3f5d012c85e6f4c3e08",
         "ms": 1804,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "ee47bf001ba85ac7fce67c8940e97fcc4b77db1627758f4e875d2b54aff6e61b",
@@ -985,7 +1032,9 @@
         "ms": 1625,
         "by": "brassbuckle_recordkeeper",
         "figure": "cast/brassbuckle_recordkeeper",
-        "name": "Brassbuckle recordkeeper"
+        "names": [
+          "Brassbuckle recordkeeper"
+        ]
       },
       {
         "clip": "d90b25befc4f0b5c718d6b8f96af27eac54b27b3b6151b3eb3e0f142b813e286",
@@ -1007,7 +1056,9 @@
         "clip": "f4a156acaf6a0be26229c994dd089a3b478c4776c504af9996fd6ca60c09e69f",
         "ms": 1575,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "13d19a259451c7d764ddcab0f0495d38f49785116255f715051b2d60ca61b780",
@@ -1017,7 +1068,9 @@
         "clip": "de7ac99a5840645235212d04210f1186d57a5b9e6ef1e5f9d7e4643c8132e0a1",
         "ms": 1887,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "3fca2ef839cef013debcfbf58dd289c2de15cc36e14fe91bb9733eef4b762a7c",
@@ -1036,7 +1089,10 @@
         "ms": 2952,
         "by": "cart_driver",
         "figure": "entities/burrowfolk",
-        "name": "Cart Driver"
+        "names": [
+          "Cart Driver",
+          "Cart driver"
+        ]
       },
       {
         "clip": "d1b3e5a403421acf87a22921a3ac70896606c89308469c7c2541a0d5c8c9966e",
@@ -1054,7 +1110,9 @@
         "clip": "04698950dccc86dcaa843a4b8d81c3b29d9efe270a7975c4fc2cab650e2c9333",
         "ms": 1471,
         "by": "manticore_cubs",
-        "name": "Manticore Cubs"
+        "names": [
+          "Manticore Cubs"
+        ]
       },
       {
         "clip": "9d870c47ca4e088a315e52bfedcc4c064158f44c390411bc4de32fc6fc916aa2",
@@ -1068,7 +1126,9 @@
         "clip": "7bdcdc0a688183636d6707a69a7447643a0816f5025d7a2587aa0edd4e5352ce",
         "ms": 2032,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "c23a9923f116c40effe8ba13aefd16ee0267306e01169bb96ffa79b21c6c22ba",
@@ -1078,7 +1138,9 @@
         "clip": "ec4b069cd73cdb1a92ffa35514bee5c9c086693ff15d0b873344184133a964e3",
         "ms": 1344,
         "by": "manticore_cubs",
-        "name": "Manticore Cubs"
+        "names": [
+          "Manticore Cubs"
+        ]
       },
       {
         "clip": "07f1cc59e272b1a0880deb18b800b6ffe74fc527479f1f175c849144a14309d7",
@@ -1088,7 +1150,9 @@
         "clip": "d85b70eb331431c934466f9947a3b4102a04b0ece94cb93418eeb71c48e95b26",
         "ms": 2759,
         "by": "manticore_cubs",
-        "name": "Manticore Cubs"
+        "names": [
+          "Manticore Cubs"
+        ]
       },
       {
         "clip": "20b5aa9cb4b243f5d166f45da2d4f8c7fc71a6ecf500d257ea74266c446fd366",
@@ -1106,7 +1170,9 @@
         "clip": "1c9525b40c4bb5ed7a0b96e6c6de50b604822332c810c9f3dff5f802381d789c",
         "ms": 1083,
         "by": "manticore_cubs",
-        "name": "Manticore Cubs"
+        "names": [
+          "Manticore Cubs"
+        ]
       },
       {
         "clip": "7fa8407c4e840ba5eb1636fa1642e75993ff2948fc4e50e4bee45591fddc06da",
@@ -1173,7 +1239,9 @@
         "ms": 3107,
         "by": "granny_ash",
         "figure": "cast/granny_ash",
-        "name": "Granny Ash"
+        "names": [
+          "Granny Ash"
+        ]
       },
       {
         "clip": "0255e2f6ae8cfa41e7a169fd2eb5f381f6e30b5099d667c97ed75db0fb327123",
@@ -1200,7 +1268,9 @@
         "ms": 1822,
         "by": "granny_ash",
         "figure": "cast/granny_ash",
-        "name": "Granny Ash"
+        "names": [
+          "Granny Ash"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1211,7 +1281,9 @@
         "ms": 2167,
         "by": "granny_ash",
         "figure": "cast/granny_ash",
-        "name": "Granny Ash"
+        "names": [
+          "Granny Ash"
+        ]
       }
     ]
   },
@@ -1226,7 +1298,10 @@
         "ms": 2287,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "6d4b2cd71c73763ffb8dbd43a00b03fadbf79c2b4d2f632df859ea93c73cadf2",
@@ -1269,7 +1344,10 @@
         "ms": 1171,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1311,7 +1389,9 @@
         "clip": "61707e24760bfdf03632e462e1693ba5a1da472769346b24bec30643792b40dd",
         "ms": 1040,
         "by": "marker_movers",
-        "name": "Marker Movers"
+        "names": [
+          "Marker Movers"
+        ]
       },
       {
         "clip": "7e0f35c0e9eaeeb8068df7df6e57a6194cfa34070a173241ac38eb5c5b2476f7",
@@ -1325,7 +1405,9 @@
         "clip": "e26dba959ea1aed2c859dea52eecea9e5f6f632044b57b14c5cbcb95c5901028",
         "ms": 1773,
         "by": "marker_movers",
-        "name": "Marker Movers"
+        "names": [
+          "Marker Movers"
+        ]
       },
       {
         "clip": "a1ee36a9d467b8fef6593fcf9e317375217883014cf95a2f204a702e871f2826",
@@ -1356,7 +1438,10 @@
         "ms": 3507,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "f3d8cedd191aead440aff1343d44ae4704fcd98435c38af35e612abd0a6e5c31",
@@ -1367,7 +1452,10 @@
         "ms": 8507,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       }
     ]
   },
@@ -1390,7 +1478,10 @@
         "ms": 1677,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1401,7 +1492,10 @@
         "ms": 3507,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       }
     ]
   },
@@ -1415,7 +1509,9 @@
         "clip": "68ac92db4018ddab82bde043c1d440fc98259df6cae60ecba4183951b1678399",
         "ms": 982,
         "by": "manticore_cubs",
-        "name": "Manticore Cubs"
+        "names": [
+          "Manticore Cubs"
+        ]
       },
       {
         "clip": "758b24aa4e80a9b155101c83b060e8e4fb638f2cd555046ae56e16d8b23122fc",
@@ -1426,7 +1522,10 @@
         "ms": 2235,
         "by": "sefa_tallgrass",
         "figure": "cast/elder_sefa",
-        "name": "Sefa Tallgrass"
+        "names": [
+          "Sefa Tallgrass",
+          "Elder Sefa"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1453,7 +1552,10 @@
         "ms": 2265,
         "by": "bracken_swiftmile",
         "figure": "cast/bracken_swiftmile",
-        "name": "Bracken Swiftmile"
+        "names": [
+          "Bracken Swiftmile",
+          "Bracken"
+        ]
       },
       {
         "clip": "ec965a0ddbe8d4203223ff2d317250a4251cab72c72479730502684a4cf6fa7c",
@@ -1464,7 +1566,10 @@
         "ms": 4707,
         "by": "bracken_swiftmile",
         "figure": "cast/bracken_swiftmile",
-        "name": "Bracken Swiftmile"
+        "names": [
+          "Bracken Swiftmile",
+          "Bracken"
+        ]
       }
     ]
   },
@@ -1483,7 +1588,10 @@
         "ms": 1638,
         "by": "bracken_swiftmile",
         "figure": "cast/bracken_swiftmile",
-        "name": "Bracken Swiftmile"
+        "names": [
+          "Bracken Swiftmile",
+          "Bracken"
+        ]
       },
       {
         "clip": "cd89566ea5df5a8e3bda209be672ec7ee54df0ea7fee47c14aadaaa324ff8053",
@@ -1494,7 +1602,10 @@
         "ms": 6307,
         "by": "bracken_swiftmile",
         "figure": "cast/bracken_swiftmile",
-        "name": "Bracken Swiftmile"
+        "names": [
+          "Bracken Swiftmile",
+          "Bracken"
+        ]
       },
       {
         "clip": "9e4260fb92ec3262b0e68c0c2469741c1d293b2d300cf1989d2705c3ff1dbf6e",
@@ -1545,7 +1656,10 @@
         "ms": 2491,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       },
       {
         "clip": "03eef72327917173a19946de5aeb657be78561a3f7db1373fcd0af88fb3c8011",
@@ -1556,7 +1670,10 @@
         "ms": 1160,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       }
     ]
   },
@@ -1571,7 +1688,10 @@
         "ms": 3707,
         "by": "road_warden",
         "figure": "cast/road_warden",
-        "name": "Road Warden"
+        "names": [
+          "Road Warden",
+          "Road-Warden"
+        ]
       },
       {
         "clip": "9a7ad42b8838ea8138e55dcbe75c414023a76c1102824a9e31fd1039cf132605",

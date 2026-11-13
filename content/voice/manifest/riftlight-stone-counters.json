@@ -26,7 +26,9 @@
         "ms": 2485,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "5cad87a1405ac4d75d7bb929015c9cfea6c2606008f7ae187f960f91275e25a2",
@@ -37,7 +39,9 @@
         "ms": 7307,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "d0b4114cbd823565d284b761d4977ecf8e2deb2ea4297d655d1b538e989c713b",
@@ -48,7 +52,9 @@
         "ms": 9407,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -63,7 +69,9 @@
         "ms": 1082,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -74,7 +82,9 @@
         "ms": 3907,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -89,7 +99,9 @@
         "ms": 2774,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "1337eb7256cf818405e1006f80955241f390afb9fef2c394873d672d5db272d2",
@@ -108,7 +120,9 @@
         "ms": 926,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
@@ -119,7 +133,9 @@
         "ms": 4107,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "ff500417b766163d985074d84893fc303da0f7599a6eb6e9f69a6ea15e769fd0",
@@ -138,7 +154,9 @@
         "ms": 2351,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
@@ -181,7 +199,9 @@
         "ms": 3807,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "ce8fc916df3eec1311e6aff19449f6f93663afcf2c8c6b461ba21bebab41cd7a",
@@ -200,7 +220,9 @@
         "ms": 1160,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "4221ece6116ce89b4855fd883822f426ff73aa80a291ee8d4a9929080b69faed",
@@ -219,7 +241,9 @@
         "ms": 685,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -230,7 +254,9 @@
         "ms": 1674,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -261,7 +287,9 @@
         "ms": 2439,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -276,7 +304,9 @@
         "ms": 1986,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "fb3ff4dcd6d2961864aa1f098b5f4ecf909eed9824aeff3be3513fea9de77ce4",
@@ -287,7 +317,9 @@
         "ms": 1711,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -310,7 +342,9 @@
         "ms": 1712,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "710eb0f8901339c571875ba79b5c4aa173837315977eda8ce474b9d672855eae",
@@ -321,7 +355,9 @@
         "ms": 1389,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -360,7 +396,9 @@
         "ms": 1299,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "23e45d245159944dac89c4ca4e2d03945a2499a3acc76d5a1fe4b9cbca6a37a9",
@@ -403,7 +441,9 @@
         "ms": 886,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "659660cfb7333da4c4edddf567b8490a463cb61863de5d4ab0b1568875269db4",
@@ -454,7 +494,9 @@
         "ms": 2001,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "109c8370449ff9e0cecbbb162633d6172418cd37bcf1c05e572281d269e525fd",
@@ -473,7 +515,9 @@
         "ms": 2436,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a466431db651b8bfb34a6535e59a5175eee0d07809ced300599b5d73200015db",
@@ -484,7 +528,9 @@
         "ms": 2408,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -507,7 +553,9 @@
         "ms": 2007,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "edf5cf90669ed5ce45a2195445acecbfc18f5593b849a8256ccc3deaa644e37b",
@@ -550,7 +598,9 @@
         "ms": 2923,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -609,7 +659,9 @@
         "ms": 1417,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "85b0dd121aea603230dfe641fd946a853f776bd20b8d69d7bdcde0813041eab8",
@@ -636,7 +688,9 @@
         "ms": 1174,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "c25c8d2b597c38acfed8ff3e3b96716cde91fb2c4b5545ff7e4fefe261eac8c3",
@@ -683,7 +737,9 @@
         "ms": 781,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
@@ -694,7 +750,9 @@
         "ms": 2978,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "bfe6ae19ea6387bb605b713da657c9c2f03cee67492ba52c1d650aa40fa52dbc",
@@ -713,7 +771,9 @@
         "ms": 766,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -724,7 +784,9 @@
         "ms": 1231,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -747,7 +809,9 @@
         "ms": 639,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "baa74226cf0f8aee0308baa91696d4751099d55400352deaaa13dff7eff3af2c",
@@ -758,7 +822,9 @@
         "ms": 2351,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -773,7 +839,9 @@
         "ms": 1458,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "98d79bc19c68a53fe151910d1750a58833f88186a73e3afb537e092988ace0bd",
@@ -792,7 +860,9 @@
         "ms": 1010,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "0de95c0611d66d7c52854c80cc68e02ec3267da8e3eb0cdc91c3ca30dc997b5e",
@@ -811,7 +881,9 @@
         "ms": 2090,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "63dbaede23548f3e03ce7be1b1fce38f57e1849d2ab3e9e869c47fb2c06b83f9",
@@ -842,7 +914,9 @@
         "ms": 1594,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "a41f7bfad16dec7c4fb2460afd3f13d2c124175a8ed124c4c736b27cd43a7ce9",
@@ -853,14 +927,18 @@
         "ms": 4507,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "0dc447f020c873a1c8449529078403dc7e11db6691d4113d3f382e0d39389064",
         "ms": 1700,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -871,7 +949,9 @@
         "ms": 5107,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "e9ac3a0e8c27215e61be4b1f9e27b2a927a11e90be49366ae014629b2c2dde48",
@@ -890,7 +970,9 @@
         "ms": 1924,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "fd2602b50b8431da974f85cf94448e6fef29275e687fcd991db61239d7523574",
@@ -901,7 +983,9 @@
         "ms": 2639,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -916,7 +1000,9 @@
         "ms": 4108,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "b2249fdd0769356acf594fabbebf478e19aaf5b1a423cef15e258c0b9b4f1c6b",
@@ -927,7 +1013,9 @@
         "ms": 4307,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -942,7 +1030,9 @@
         "ms": 2322,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -953,7 +1043,9 @@
         "ms": 2721,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "a5cbf5b69ba869c452f13f59b774796d842b30f1489aba8a3303b2ba3010adc2",
@@ -964,7 +1056,9 @@
         "ms": 5507,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -979,7 +1073,9 @@
         "ms": 2106,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "fdecda78e437da271666fbab183e9c83aabe131acd379da4c02ef788e2ad9b25",
@@ -990,7 +1086,9 @@
         "ms": 1635,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -1005,7 +1103,9 @@
         "ms": 2608,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "fdecda78e437da271666fbab183e9c83aabe131acd379da4c02ef788e2ad9b25",
@@ -1016,7 +1116,9 @@
         "ms": 2292,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -1031,7 +1133,9 @@
         "ms": 1924,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "052f7b00ef0f96d0ef4cca77bc5acf90e9e25a513fa3465d9f18d36406eae297",
@@ -1050,7 +1154,9 @@
         "ms": 1888,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "17527e7cf7a4678213651666312b5c5958aa529f456fa47933fc4fbaa1ba808d",
@@ -1069,7 +1175,9 @@
         "ms": 5707,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "24a5c54b9a6c908836f4d290b609daec6f2e2a32d60fa0cbe4266cf13c332466",
@@ -1088,7 +1196,9 @@
         "ms": 5707,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "73d8f86a3a9a66da864c4b89a26f2534ad3076a879884b1ca40a2cca83af9142",
@@ -1107,7 +1217,9 @@
         "ms": 5707,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "73d8f86a3a9a66da864c4b89a26f2534ad3076a879884b1ca40a2cca83af9142",
@@ -1126,7 +1238,9 @@
         "ms": 5207,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "b1a8c364a8e582a143550c05548235e021347319a459577b8812ee2a73ff0d76",
@@ -1161,7 +1275,9 @@
         "ms": 722,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "9cac8e483f4909d025847d4e1f303c94db7cb3afbbacd7e4c8ff349dad135f32",
@@ -1196,7 +1312,9 @@
         "ms": 1646,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "34458a5d51e1e312f2678d98ac7a3356a41d2f1b8c3481c16542cc8fd7d719ba",
@@ -1207,7 +1325,9 @@
         "ms": 1524,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -1222,7 +1342,9 @@
         "ms": 766,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "899c9f57519c0e9fe833d47cae64bf3ea08d41894bb83318d7d80fbbf6a60ae7",
@@ -1233,7 +1355,9 @@
         "ms": 2596,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "ea681cc5ed8e3c5cfe8d9e3bb9111f7031c65a79dcdc5113b5840ee03677603a",
@@ -1244,7 +1368,9 @@
         "ms": 2519,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "4fe0baa37abd90589b28a4880863c1fb0dcb728ee02d6a66272b964d84c8c0f0",
@@ -1263,7 +1389,9 @@
         "ms": 3607,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ec533979a1d336e4250ca3c4668db53ecedd730e03c422c086af6342f3c548da",
@@ -1274,7 +1402,9 @@
         "ms": 2161,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "d386b616cd52e59d770da06d17a58b046f807cd001177e7a6247fb14d856da70",
@@ -1285,7 +1415,9 @@
         "ms": 3207,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -1296,7 +1428,9 @@
         "ms": 4007,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1311,7 +1445,9 @@
         "ms": 3607,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "f0f572117f188877080736af4f8421e60e62efff43f604966525526c973ba9ea",
@@ -1322,7 +1458,9 @@
         "ms": 2963,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "fdfe8f3cef2d3d0e09cf5dbc96acc7f626c9d59a35cb4452e7c2fcdc3e55f2eb",
@@ -1341,14 +1479,18 @@
         "ms": 2606,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "94b078fa60ef4e9faf31a1e86adda63338fc41bdb0d5b111707abf151850347d",
         "ms": 3507,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "25f86bab70ff83c5f7b528e912491939a181e053c37e577a428ac1fe33f8b06f",
@@ -1359,7 +1501,9 @@
         "ms": 1757,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1374,7 +1518,9 @@
         "ms": 1826,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "e0e5e310f097d39e0d60dfca35179f8dd3340ba017755ddfe726578338fcb95f",
@@ -1385,7 +1531,9 @@
         "ms": 5707,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "4509519aa6a4c31c0049d1f9780f4afe6e87a3daa86f17f8f3a413b84d846a48",
@@ -1404,7 +1552,9 @@
         "ms": 814,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "4748907ffe6102d36e630566ea1e4ffb33447b1adaefca1fbcca07a3efc29704",
@@ -1415,7 +1565,9 @@
         "ms": 2944,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "d1ebe1e3fda782a3b7157cc5b157d7958a273a24432f539c735abeb882d8f3b3",
@@ -1430,7 +1582,9 @@
         "ms": 1183,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "b1793ebe37f30562206d6ffa6345667e0757062107287614d4d6bd9905e17eda",
@@ -1457,7 +1611,9 @@
         "ms": 814,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "4748907ffe6102d36e630566ea1e4ffb33447b1adaefca1fbcca07a3efc29704",
@@ -1468,7 +1624,9 @@
         "ms": 1524,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "2bc726c566b27b7d6bf18e9cd1c529a12531048963711dc0b604dbb8dfdd4370",
@@ -1495,7 +1653,9 @@
         "ms": 2530,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "13a6c6366f958141bad1abae9f8f3be5f27956d9f09ea0ff85ff78c2300d4676",
@@ -1534,7 +1694,9 @@
         "ms": 2600,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
@@ -1545,7 +1707,9 @@
         "ms": 2751,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "372493858551c7ecac1363e0d039214085820f706db9f95edbb6f01caac7a283",
@@ -1560,7 +1724,9 @@
         "ms": 465,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "710eb0f8901339c571875ba79b5c4aa173837315977eda8ce474b9d672855eae",
@@ -1571,7 +1737,9 @@
         "ms": 1847,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -1582,7 +1750,9 @@
         "ms": 1325,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1593,7 +1763,9 @@
         "ms": 6108,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "fea833cc732c3a93f87465eccbca7326e10a334f7652ccf62140b3a659683418",
@@ -1604,7 +1776,9 @@
         "ms": 3407,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "3215b715470c48ce96e46ab9265bc0fb7f846ac4dc455d247b4d4fa8d4bb9e07",
@@ -1623,7 +1797,9 @@
         "ms": 2089,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "e808eabcfff617636853a76007bd65e261376d067a6c61113b4a89620c2248cb",
@@ -1634,7 +1810,9 @@
         "ms": 2881,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1649,7 +1827,9 @@
         "ms": 2844,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "036fa789bebba06f20ba72383f6c483a643d98037cbc15fc5a838f29d0e7e0bd",
@@ -1668,7 +1848,9 @@
         "ms": 4307,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1707,7 +1889,9 @@
         "ms": 1675,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "408429e03420f09be2c967811f663d8bd26abba808132853989864cd7d01dec8",
@@ -1726,7 +1910,9 @@
         "ms": 995,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "a57a9ae4168dac04d816ca1bf4e9f3863d272a290dcec1bb08207591a6cc328a",
@@ -1745,7 +1931,9 @@
         "ms": 1519,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "47df0e0b3cccb341094e090dca9d510dfe1a09085ebcfea072f5ce824b9914ff",
@@ -1756,7 +1944,9 @@
         "ms": 3507,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       }
     ]
   },
@@ -1787,7 +1977,9 @@
         "ms": 959,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eda9c368e8228862b2fddf4320c08dd18412410bd4ece6f754ee8113cf9bdde2",
@@ -1806,7 +1998,9 @@
         "ms": 2079,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       }
     ]
   },
@@ -1829,7 +2023,9 @@
         "ms": 1519,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "47df0e0b3cccb341094e090dca9d510dfe1a09085ebcfea072f5ce824b9914ff",
@@ -1840,7 +2036,9 @@
         "ms": 3507,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       }
     ]
   },
@@ -1871,7 +2069,9 @@
         "ms": 959,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "31cbf65e29ea5261a31d18206e186ed678b56f473e6b85e425b559b5245eb06b",
@@ -1890,7 +2090,9 @@
         "ms": 2079,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       }
     ]
   },
@@ -1913,7 +2115,9 @@
         "ms": 3108,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "38fe49909f3668e040b36c060ecec44aae6c0a4f24b64c6c55f7fcc7156a97eb",
@@ -1924,7 +2128,9 @@
         "ms": 915,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a77dcf096e208910a1bdac8497723353e894ed7f64a29b0afb21cecdcf180c1a",
@@ -1943,14 +2149,18 @@
         "ms": 4507,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "c57e97bfa5a238e147d35f11c92ba44e75a8aad46955bf388329c134fb37456e",
         "ms": 1082,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "c4944f8f545b889e62215d53ee283074d17c28aa95fb81b75aeecd03d8e2fbb7",
@@ -1969,7 +2179,9 @@
         "ms": 1719,
         "by": "farmer_gourd",
         "figure": "cast/adult_dragonling",
-        "name": "Farmer Gourd"
+        "names": [
+          "Farmer Gourd"
+        ]
       },
       {
         "clip": "23e45d245159944dac89c4ca4e2d03945a2499a3acc76d5a1fe4b9cbca6a37a9",
@@ -2004,7 +2216,9 @@
         "ms": 1245,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "1bcaca0d7b55a8102d837ea73e59f6a3ddc4f3109a9df5e7cf7cae1aaaff791b",
@@ -2015,7 +2229,9 @@
         "ms": 3507,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "771f4e90c881b35a8a3f95b79fe6da8c60241a6316e9839e6856f89415804325",
@@ -2038,7 +2254,9 @@
         "ms": 2817,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       },
       {
         "clip": "f5459399e7f54cee470a92ad6332f31eb64199b5439e8260c74c874cab7c5d55",
@@ -2049,7 +2267,9 @@
         "ms": 1006,
         "by": "tally",
         "figure": "cast/dragonling_stone_keeper",
-        "name": "Tally"
+        "names": [
+          "Tally"
+        ]
       }
     ]
   },
@@ -2064,7 +2284,9 @@
         "ms": 5307,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "dd58a88ef43ee0d2b9d6a5fbdec4c0ce7150964fea091577b02785bf469b187d",
@@ -2075,7 +2297,9 @@
         "ms": 2013,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -2086,7 +2310,9 @@
         "ms": 4307,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "7be7fc960d59979addc4281341cc72a1e0d4884f468d5bedbe37f0847571a2d6",
@@ -2105,7 +2331,9 @@
         "ms": 2395,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "18303239b38a0f480af97a4ef8096bdc92ac7473fce7e45dbebd28cb592f8837",

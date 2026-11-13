@@ -26,14 +26,18 @@
         "ms": 2378,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "c03cba9a675e3bd735957ca8fb8751170a6886d1fb494c69381298d65a1d61ec",
         "ms": 2251,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -44,7 +48,9 @@
         "ms": 11707,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -107,7 +113,9 @@
         "ms": 3407,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -126,7 +134,9 @@
         "ms": 902,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -149,7 +159,9 @@
         "ms": 1496,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "95546619aaff744b98c0acc26b807e8ac206ae2edbe02fed1d11bfac2ad73f77",
@@ -160,7 +172,9 @@
         "ms": 13307,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -175,7 +189,9 @@
         "ms": 1368,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -218,7 +234,9 @@
         "ms": 1454,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "6adc9ce13c047b3ce4c1f56600725e2f8588bca9657f74a4f1f0ca87030b6805",
@@ -261,7 +279,9 @@
         "ms": 1857,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -304,7 +324,9 @@
         "ms": 2223,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "8233b5631d05e661be4a511ecdaa4bb1230e12a535625861cf2438eeee25aec7",
@@ -355,7 +377,9 @@
         "ms": 1871,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -386,7 +410,9 @@
         "ms": 3707,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "07608802eddf2fd79a1e964597025bdc27942a3743155a8957b40da593fdf05b",
@@ -461,7 +487,9 @@
         "ms": 2018,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a880976354f73c2a25d520ea728197d23ef0dbb799506b70e8fec4ad5a13588d",
@@ -504,7 +532,9 @@
         "ms": 2159,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -563,7 +593,9 @@
         "ms": 1238,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -590,7 +622,9 @@
         "ms": 893,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "277a3fb2d991e38e9a955c4bef58f7ca271102d836698817b86be24c75309b03",
@@ -633,7 +667,9 @@
         "ms": 1590,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "49ca3987572b65e51dffaa49f2bf233361f041238dcb83d04399ae257ce909a9",
@@ -708,7 +744,9 @@
         "ms": 953,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "078176e1bb604d04c96e8c95bdda42d45c7164bd0a36a30636e2fd67938efca5",
@@ -751,7 +789,9 @@
         "ms": 860,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -762,7 +802,9 @@
         "ms": 2561,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -777,7 +819,9 @@
         "ms": 860,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -788,7 +832,9 @@
         "ms": 2561,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -803,7 +849,9 @@
         "ms": 1120,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "4324903bc81afbd9c5c81c2696efa8467a80d7c60364ebaad72a9c9f71bb57f1",
@@ -818,7 +866,9 @@
         "ms": 2770,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "8233b5631d05e661be4a511ecdaa4bb1230e12a535625861cf2438eeee25aec7",
@@ -829,7 +879,9 @@
         "ms": 1566,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "7f15ca2dd5ca08579c5fb502b638f789df860234d6da4f088cb28a6dd0ae1ba6",
@@ -848,7 +900,9 @@
         "ms": 1092,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -887,7 +941,9 @@
         "ms": 1333,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "d4a4c06eb968da5fc8b830e9147f70badb695298c9a38b3efbf59a5896e3ced8",
@@ -914,7 +970,9 @@
         "ms": 4107,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "f447113f66cd5dfdd29cb3273ae88df2b89d448a35d39cce1d607597f1acd030",
@@ -925,7 +983,9 @@
         "ms": 6507,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -948,7 +1008,9 @@
         "ms": 3107,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -959,7 +1021,9 @@
         "ms": 1991,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "28050a72e9b76b2535ee90c0b50140ada5e1453b11f126ba6e3dd46f69454903",
@@ -989,7 +1053,9 @@
         "clip": "7f6c70ee0d0425db5b89e9c016ee8ee62e0a460edcb0500f884f72e3a24aca69",
         "ms": 3507,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "e523b6c597221a33667fdc13aa2c4f1ea51dc51f602e5d6ee33ed2a87513834f",
@@ -1008,7 +1074,9 @@
         "ms": 1975,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1027,7 +1095,9 @@
         "ms": 1363,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "fdf1b3eba2798fb0c7cd3c3870800ec1f5521a4465cc683c986f868f76e74ac3",
@@ -1073,7 +1143,9 @@
         "clip": "285766abf743fce50174969d527a850e81f40b0d4a72112175a57356c268cb11",
         "ms": 552,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "db28183a79384f82e31b1355807c2405511644c95ba4d9eb7b3062800b7fb4d7",
@@ -1100,7 +1172,9 @@
         "ms": 1579,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1119,7 +1193,9 @@
         "ms": 1353,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "c6692c6db3b59512cadc9a578f1d32a26899a5fdb0172ea71922fa6ad899b37d",
@@ -1146,7 +1222,9 @@
         "ms": 1908,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "ff1955fdd5339668832d649e33bf9c0fea4846fa0c3826319bbc5385c6e555e9",
@@ -1173,7 +1251,9 @@
         "ms": 856,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1200,7 +1280,9 @@
         "ms": 5007,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a215d97bc5db39996386ab9ab24f2c818cd606681dbae1d4ff18ffe5be06b1ce",
@@ -1219,7 +1301,9 @@
         "ms": 4107,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1234,7 +1318,9 @@
         "ms": 1182,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a963ca948c305f51ed5b18f04b24840238ef32f92c2bc08def89d1aae9738052",
@@ -1245,7 +1331,9 @@
         "ms": 4007,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1260,7 +1348,9 @@
         "ms": 3427,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1271,7 +1361,9 @@
         "ms": 8207,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "36fb3066af166aa5c7cad4443d10f7fd0dbeb9be7e31c9d1b95ed476d052a5b2",
@@ -1282,7 +1374,9 @@
         "ms": 4807,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1297,7 +1391,9 @@
         "ms": 1311,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1308,7 +1404,9 @@
         "ms": 1309,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1323,7 +1421,9 @@
         "ms": 1766,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -1334,7 +1434,9 @@
         "ms": 1927,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "56942f2f26a889987b7d666ab3c6bcd9cae8645e1865b3ff53d106962c239445",
@@ -1353,7 +1455,9 @@
         "ms": 8407,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "251c4c39e508ae98a5be9b480f8ed0b3a7e7c8b135fbd75a8b2e0712cf8bd1ca",
@@ -1364,7 +1468,9 @@
         "ms": 12807,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -1383,7 +1489,9 @@
         "ms": 1567,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "4bb6c3e90ed1ca33b72bef87bd879333053d2eb488b4392d03446bc06d5b3bdf",
@@ -1394,14 +1502,18 @@
         "ms": 2451,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "cac0394751c540d4499e9a3854cc1d5abc0e22fec2794c5efa1ee96b7760488a",
         "ms": 2142,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1420,7 +1532,9 @@
         "ms": 2250,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1431,7 +1545,9 @@
         "ms": 6207,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1454,7 +1570,9 @@
         "ms": 1547,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1465,7 +1583,9 @@
         "ms": 3607,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1476,7 +1596,9 @@
         "ms": 1464,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "25150ee9fb7139b3ff1c8744bdaa3ba0d87f4dab83097b3ae46b8d5ada93fbf3",
@@ -1487,7 +1609,9 @@
         "ms": 1666,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1502,7 +1626,9 @@
         "ms": 1962,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1517,7 +1643,9 @@
         "ms": 1168,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -1528,7 +1656,9 @@
         "ms": 4207,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "80351985ae6832c8ae3b56e546e0ba23fd7725bf8d83b5cf20806213ef8a8849",
@@ -1539,7 +1669,9 @@
         "ms": 3607,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1550,7 +1682,9 @@
         "ms": 1783,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       }
     ]
   },
@@ -1565,7 +1699,9 @@
         "ms": 2754,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1580,7 +1716,9 @@
         "ms": 1663,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1619,7 +1757,9 @@
         "ms": 1960,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1630,7 +1770,9 @@
         "ms": 3307,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1653,7 +1795,9 @@
         "ms": 856,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1680,7 +1824,9 @@
         "ms": 1461,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "ac4783e875551528b6a78499a0fb0b42706afd4f77a309dec0ec3891f11996d8",
@@ -1691,7 +1837,9 @@
         "ms": 4207,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1706,7 +1854,9 @@
         "ms": 2469,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1717,7 +1867,9 @@
         "ms": 2445,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "1ef6db25ce9f98583142a573d12ea1f744161b5a15ae85fdf40ad3b7d943d632",
@@ -1736,7 +1888,9 @@
         "ms": 2436,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       },
       {
         "clip": "2fd8e610f279d80babc523f7270ea3cb7e32bc5128016acc7cd80a48803aa61d",
@@ -1747,7 +1901,9 @@
         "ms": 2257,
         "by": "route_worker_yeti",
         "figure": "cast/route_worker_yeti",
-        "name": "Hummock"
+        "names": [
+          "Hummock"
+        ]
       }
     ]
   },
@@ -1762,7 +1918,9 @@
         "ms": 1799,
         "by": "grandma_drift",
         "figure": "cast/yeti_watcher",
-        "name": "Grandma Drift"
+        "names": [
+          "Grandma Drift"
+        ]
       },
       {
         "clip": "4c8f470a0c952b6bf0bc1f15b54451e01649927bd3b8a3d347a6f691a82ce8bb",

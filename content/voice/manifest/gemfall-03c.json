@@ -26,7 +26,9 @@
         "ms": 1211,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "11deb55730a42dcdaa5a129bdc67f30c9c50016922b6b656ef0f3e014ec7bae1",
@@ -37,7 +39,9 @@
         "ms": 2146,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -52,7 +56,9 @@
         "ms": 3707,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -63,7 +69,9 @@
         "ms": 1502,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -254,7 +262,9 @@
         "ms": 1375,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       },
       {
         "clip": "d9b86169a58bf5560f6debc7010dde3b466d649a2b54a33befa5e40ae8d96506",
@@ -265,7 +275,9 @@
         "ms": 1985,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       }
     ]
   },
@@ -304,7 +316,10 @@
         "ms": 4007,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "9470630f04cfa663ea44fb637d91998147375224ec6e4194a4fbdd7270741bae",
@@ -315,7 +330,10 @@
         "ms": 3807,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       }
     ]
   },
@@ -338,7 +356,10 @@
         "ms": 4107,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "9470630f04cfa663ea44fb637d91998147375224ec6e4194a4fbdd7270741bae",
@@ -349,7 +370,10 @@
         "ms": 3707,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "445074cf1254e00caba25206d889aae681b5077626649aa2c72efde5d14f55aa",
@@ -423,7 +447,9 @@
         "clip": "a786157ed984d1a0a939744638f4e608ad2a029452fb4ac7264dae75dad12abd",
         "ms": 2379,
         "by": "troupe_leader",
-        "name": "Troupe Leader"
+        "names": [
+          "Troupe Leader"
+        ]
       }
     ]
   },
@@ -462,7 +488,9 @@
         "ms": 1529,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -513,7 +541,10 @@
         "ms": 4507,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "01c62429be46c69d4f03ccfed1b181c47cb92b605661c6574eddc846844e3c25",
@@ -532,7 +563,9 @@
         "ms": 1950,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       },
       {
         "clip": "32497f5c62dc63e3307b0e3ee2b2fba827995167201970dc94e1bed53da89f69",
@@ -559,7 +592,9 @@
         "ms": 1846,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -570,7 +605,9 @@
         "ms": 1140,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       },
       {
         "clip": "9f53cec67e1cbbad67651bddbe52dc6f66a9d623266277b746f901d20319ce04",
@@ -589,7 +626,9 @@
         "ms": 1882,
         "by": "littlest_bracken",
         "figure": "cast/littlest_bracken",
-        "name": "Littlest Bracken"
+        "names": [
+          "Littlest Bracken"
+        ]
       },
       {
         "clip": "bf577ee15bf7f5322276c59bb4d6686a1fda187d9562c5f808559fcef520a605",
@@ -872,7 +911,9 @@
         "ms": 838,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       },
       {
         "clip": "43eb8543bc4c326d85a0559a551451466a4a4629fbfbc18e4e605f7881b15acd",
@@ -891,7 +932,9 @@
         "ms": 1149,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       }
     ]
   },
@@ -1002,7 +1045,9 @@
         "ms": 1162,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "490aa2732b9f0fd35d349045b1cb8999b80de339a7a9e4fe5fa7fa7f035b50a5",
@@ -1021,7 +1066,9 @@
         "ms": 1162,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1088,7 +1135,10 @@
         "ms": 4607,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       }
     ]
   },
@@ -1134,7 +1184,9 @@
         "clip": "add9f0253d2a2ca97f2179577668d0c9d68a60d68198072bc8ecd08a9dc6f27d",
         "ms": 1915,
         "by": "troupe_leader",
-        "name": "Troupe Leader"
+        "names": [
+          "Troupe Leader"
+        ]
       },
       {
         "clip": "e79671a26ece15aa3b2ea01a040f6f1acad0c82a7cd23a7a2190986c883da4d1",
@@ -1160,7 +1212,9 @@
         "clip": "4a8b7db63a830a6f77a0aad60ff9e73f90ba767192c84b229cc2c655d61f1f18",
         "ms": 3307,
         "by": "troupe_leader",
-        "name": "Troupe Leader"
+        "names": [
+          "Troupe Leader"
+        ]
       },
       {
         "clip": "9858892e285788568cd52e7556d7200ba2cb965749ddbc0323265daa0f54750d",
@@ -1178,7 +1232,9 @@
         "clip": "ebb33ca11306572795ac86ad8daf9c0e59e04d1d939df5c314ad46d01fbbd7f2",
         "ms": 2032,
         "by": "troupe_leader",
-        "name": "Troupe Leader"
+        "names": [
+          "Troupe Leader"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1221,7 +1277,10 @@
         "ms": 4307,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "3b1b38ee15e0d3df2a14684b1fbf4cc7ae662c7c906670c776a8b4ff52fc7ed2",
@@ -1248,7 +1307,10 @@
         "ms": 4507,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "215d4e27214aab73e7d04cb1171f506f595dfdfc14fdd92bd6e1ec36a4951197",
@@ -1263,7 +1325,10 @@
         "ms": 3807,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "831756136c67360cc5fa09f114fb98ad594b027f9cc9d028a4ade6aac2573c3b",
@@ -1354,7 +1419,9 @@
         "ms": 1235,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       }
     ]
   },
@@ -1369,7 +1436,9 @@
         "ms": 1451,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       },
       {
         "clip": "e40bfb247d4ebfb3798b169e39c1f8d54b5d6e2ac2e435ed753fbed235456279",
@@ -1388,7 +1457,9 @@
         "ms": 1254,
         "by": "burdock",
         "figure": "cast/burdock",
-        "name": "Burdock"
+        "names": [
+          "Burdock"
+        ]
       },
       {
         "clip": "c407bd55fe2812933fbc358ae39a51edc03d3ddf3a7c0a7502c7861bd137e079",
@@ -1438,7 +1509,9 @@
         "clip": "bb23c7204be5f8244048f37422b9ef064237b3792cebf659ebde8a8ef7fefc16",
         "ms": 1608,
         "by": "red_scarves",
-        "name": "Red Scarves"
+        "names": [
+          "Red Scarves"
+        ]
       },
       {
         "clip": "22ebeceb2cff789234a5ce82cd1bf9274c0b57a7e97afc3b85e24aa3f2fb5fbd",
@@ -1457,7 +1530,10 @@
         "ms": 3607,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "33af5fde0f245b0897a973275ea6ec1fe05081e2d5ce52189977920681e20de5",
@@ -1475,7 +1551,9 @@
         "clip": "b8dc83db0f0c2dbb466eaee3829e82e0436388cfe08bcbe4704e0dafd644cbe5",
         "ms": 2788,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "5aa1376f6c9d6f6e01d67c45c5215e1f8f2b7767966e5fdeb114003b625352e7",
@@ -1494,7 +1572,9 @@
         "ms": 3607,
         "by": "tamsin",
         "figure": "cast/tamsin",
-        "name": "Tamsin Three-Cards"
+        "names": [
+          "Tamsin Three-Cards"
+        ]
       },
       {
         "clip": "3df8c13b613fa16651198f6968e266379ef64429a98443be3337e3692b373b2e",
@@ -1513,7 +1593,10 @@
         "ms": 4407,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "43d2b509ba6e4490367ca69219cfc2525e9452dc22ce655a4acab689d0c4313f",
@@ -1532,7 +1615,9 @@
         "ms": 2262,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       },
       {
         "clip": "f5920ad86c92db60bdf54863fcd593a4ccb37f5d9fbf48e54d0c81e7462a584c",
@@ -1551,7 +1636,9 @@
         "ms": 1993,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       }
     ]
   },
@@ -1574,7 +1661,9 @@
         "ms": 1162,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "7c8c4676587c13fe0ab30af02b8ff9d95ab4eb048245ed9924697c9b49ec3489",
@@ -1589,7 +1678,9 @@
         "ms": 1581,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "61d6dc057127c2d6fcd33717e29cdf5a5fb494a426c8765d9efb07bcb19c7291",
@@ -1600,7 +1691,9 @@
         "ms": 1678,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "1563eeb06e2e91bd15279de7625a410c064460ef181485b06b4fe93e2bee78ad",
@@ -1619,7 +1712,9 @@
         "ms": 1166,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "7e12313d3c613a927875db0944101ef8a1aec45f86ebe84b29845b227fca7a77",
@@ -1638,7 +1733,10 @@
         "ms": 4107,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "e21762caa2e0bc9ea15c50bfb6785e3fcf206e83be523b1421fe031ce85989b0",
@@ -1665,7 +1763,10 @@
         "ms": 2704,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "054b75e8032f190833897d739ebdce47efc7104c0714db7e47eda7bd9750de5a",
@@ -1676,7 +1777,10 @@
         "ms": 4107,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       }
     ]
   },
@@ -1702,7 +1806,9 @@
         "clip": "bf3cc1edb7c26dc8a20f834c0d2890e96de18b160347283c52668285e7ff8407",
         "ms": 1542,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "d0d6a1440660563393653228af1f2f8ccefdbb9b9dc0a5d4a31c80f88c4f9f92",
@@ -1712,7 +1818,9 @@
         "clip": "7397e8923fca63a81e4526a2b7d13e49c73009a207a931a1177eaaba0e39a73e",
         "ms": 841,
         "by": "red_scarves",
-        "name": "Red Scarves"
+        "names": [
+          "Red Scarves"
+        ]
       },
       {
         "clip": "9ca62688c6742774f511790da9c427763968a245f5383dacc80c5fa4c8f4b087",
@@ -1731,7 +1839,9 @@
         "ms": 3907,
         "by": "tamsin",
         "figure": "cast/tamsin",
-        "name": "Tamsin Three-Cards"
+        "names": [
+          "Tamsin Three-Cards"
+        ]
       },
       {
         "clip": "b7d5722ec63c49a34b584ee60f5d610a734a3321fa6ce5f15385727b628f8986",
@@ -1750,7 +1860,9 @@
         "ms": 2460,
         "by": "tamsin",
         "figure": "cast/tamsin",
-        "name": "Tamsin Three-Cards"
+        "names": [
+          "Tamsin Three-Cards"
+        ]
       },
       {
         "clip": "862426bc84f76c7a967ea504cc4d921b158ad3225e143f7e5d96792157d43801",
@@ -1769,7 +1881,9 @@
         "ms": 1496,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "117ef82b420844ad4e1c95cc584b0157f6958e8fd963d586183b6c75e23c004f",
@@ -1788,7 +1902,9 @@
         "ms": 2346,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "38e86ff30be615592a47ee2f87723270a5c1e2a36cdc9fe4a46316322751b3f6",
@@ -1807,7 +1923,9 @@
         "ms": 789,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "40438e8988c78135ca05d3d4f2085cf2eb56571ded3cbaa57de55764753fe9dd",
@@ -1818,7 +1936,9 @@
         "ms": 2054,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -1833,7 +1953,9 @@
         "ms": 2143,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "2a4d73a3659949ce2e3353539cb8c8c86a334e31ca56644782d1846bd8344017",
@@ -1852,7 +1974,9 @@
         "ms": 2399,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "d5f15be3f2a3968402bdc36095e700b39784fe29ccbbc6cddf5efb08ad9b1c02",

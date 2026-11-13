@@ -234,7 +234,10 @@
         "ms": 3907,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "706b5d3ebdf7ccd639adea5628aad92db42e3370687585c30758e7cbbd445d33",
@@ -253,7 +256,10 @@
         "ms": 1736,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       }
     ]
   },
@@ -268,7 +274,9 @@
         "ms": 5307,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "8457fbc9a5a1fa885af63cb60d6e85a6391cf49d967de5dd020cbf49a418de6a",
@@ -431,7 +439,9 @@
         "ms": 1148,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -450,7 +460,9 @@
         "ms": 2658,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -461,7 +473,9 @@
         "ms": 3507,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       }
     ]
   },
@@ -571,7 +585,9 @@
         "clip": "5ede2e74ea6b9caf5ab5d7aee224c4dd334048f854239f9bf71ab61140d888b7",
         "ms": 1923,
         "by": "boggart",
-        "name": "Boggart"
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "2b674c62d74fb6cee429d18d1b75cac75ce324134559ec5d43b248a14695a6a0",
@@ -590,7 +606,9 @@
         "ms": 1863,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -601,7 +619,9 @@
         "ms": 1209,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       }
     ]
   },
@@ -616,7 +636,9 @@
         "ms": 629,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "f8dfd99898e28aac6ef928e0b936b71f5a5941fd9d2e78a7c5989d9f3cf963d2",
@@ -627,7 +649,9 @@
         "ms": 1073,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       }
     ]
   },
@@ -638,7 +662,9 @@
         "ms": 5127,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "743be09c496f54e288260b8057aa5a62dcd6b852bfc4190739ea9c657448f800",
@@ -665,7 +691,9 @@
         "ms": 3207,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "5a3ea69f3b96708ade5a37bb0067f2b737801bbc294a231cd8c4205396823602",
@@ -692,7 +720,9 @@
         "ms": 910,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "ca389f6e2bcda1f0298ecb2db9487bc49b54902a658be38663b144e033191af0",
@@ -727,7 +757,9 @@
         "ms": 670,
         "by": "postmaster_quill",
         "figure": "cast/postmaster_quill",
-        "name": "Postmaster Quill"
+        "names": [
+          "Postmaster Quill"
+        ]
       },
       {
         "clip": "f08abc4e8fe9200529b064c4439c8f0433c17bb4ddd600a2b9a29ebc33c8763d",
@@ -738,7 +770,9 @@
         "ms": 1687,
         "by": "postmaster_quill",
         "figure": "cast/postmaster_quill",
-        "name": "Postmaster Quill"
+        "names": [
+          "Postmaster Quill"
+        ]
       }
     ]
   },
@@ -761,7 +795,9 @@
         "ms": 1908,
         "by": "courier_griffin",
         "figure": "cast/courier_griffin",
-        "name": "Courier Griffin"
+        "names": [
+          "Courier Griffin"
+        ]
       },
       {
         "clip": "17abdea42aef3165c2f59ae2e5a5cc1ef6b30298734007a60415882cce68576d",
@@ -772,7 +808,9 @@
         "ms": 879,
         "by": "courier_griffin",
         "figure": "cast/courier_griffin",
-        "name": "Courier Griffin"
+        "names": [
+          "Courier Griffin"
+        ]
       }
     ]
   },
@@ -851,7 +889,9 @@
         "ms": 2499,
         "by": "courier_griffin",
         "figure": "cast/courier_griffin",
-        "name": "Courier Griffin"
+        "names": [
+          "Courier Griffin"
+        ]
       },
       {
         "clip": "9a677925410c628e1ca66c6d40098b0190416ce5d8f0dfd138401af6cc1e4f02",
@@ -862,7 +902,9 @@
         "ms": 1074,
         "by": "courier_griffin",
         "figure": "cast/courier_griffin",
-        "name": "Courier Griffin"
+        "names": [
+          "Courier Griffin"
+        ]
       }
     ]
   },
@@ -885,7 +927,9 @@
         "ms": 563,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "7ef16fafeadf506bc8daaf9b5592d9ef179b57b0923a859341f71041ef0a70de",
@@ -904,7 +948,9 @@
         "ms": 537,
         "by": "innkeeper_flint",
         "figure": "cast/innkeeper_flint",
-        "name": "Innkeeper Flint"
+        "names": [
+          "Innkeeper Flint"
+        ]
       },
       {
         "clip": "6192cbe65cd59a289dad245ce64a385f2685df410bccefc2eda39dd3e81ca999",
@@ -923,7 +969,9 @@
         "ms": 1437,
         "by": "innkeeper_flint",
         "figure": "cast/innkeeper_flint",
-        "name": "Innkeeper Flint"
+        "names": [
+          "Innkeeper Flint"
+        ]
       },
       {
         "clip": "4b902f0f7603507dd6fa679905cd49fe24511d874a36e62583b1f870880f7364",
@@ -950,7 +998,9 @@
         "ms": 1526,
         "by": "selkie_grandmother",
         "figure": "cast/selkie_grandmother",
-        "name": "Selkie Grandmother"
+        "names": [
+          "Selkie Grandmother"
+        ]
       },
       {
         "clip": "62b8f1b3d205ccf7c056e6f80fe1304e83a2f4fd602715c84e2d12320e99ccac",
@@ -993,7 +1043,9 @@
         "ms": 1647,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "8803a1c241f4c5c8ce8d9a8b74de601688d54aa7ac8f4ad0d84bbb39a181c223",
@@ -1012,7 +1064,9 @@
         "ms": 7207,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "3b95afa4366297deeac4aa9670af9ad4302ae194766cb950dfb3eab7fb8e1a60",
@@ -1031,7 +1085,9 @@
         "ms": 3307,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "1d45b3463a9cef235abb710181ef48fad2b736d0b1d69dbc20967b78a8a2e75f",
@@ -1042,7 +1098,9 @@
         "ms": 1040,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       }
     ]
   },
@@ -1065,7 +1123,9 @@
         "ms": 1085,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "28c77c6cb8ac9f01212265347c05485e25bcba82f82b6faa98faf804f902892b",
@@ -1076,7 +1136,9 @@
         "ms": 4107,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       }
     ]
   },
@@ -1091,7 +1153,9 @@
         "ms": 1185,
         "by": "lighthouse_keeper",
         "figure": "entities/merfolk",
-        "name": "Lighthouse Keeper"
+        "names": [
+          "Lighthouse Keeper"
+        ]
       },
       {
         "clip": "605799cacce610a51c623d2088af20730693e92e4d888de60a84a7875c0a82d4",
@@ -1158,7 +1222,9 @@
         "ms": 1450,
         "by": "tobble",
         "figure": "cast/tobble",
-        "name": "Tobble Reedpipe"
+        "names": [
+          "Tobble Reedpipe"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1169,7 +1235,9 @@
         "ms": 1983,
         "by": "tobble",
         "figure": "cast/tobble",
-        "name": "Tobble Reedpipe"
+        "names": [
+          "Tobble Reedpipe"
+        ]
       },
       {
         "clip": "751b1fe52bb792d4736dec7fb9be9fa79f070e988f8bdcfae6d4a0c16c395fcd",
@@ -1195,7 +1263,9 @@
         "clip": "da1d9096bcc058cb233496750c9cc0afc67720601aa6a1a2be2a715a258de758",
         "ms": 2240,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "cc5cfc0c96f583138fb094f38567d04054c33c4ca39e134c78491bb348df36cb",
@@ -1214,7 +1284,9 @@
         "ms": 5007,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "11c7ea1c5a241634607f9d9bb31425f4bc5dee7fdebbd7b28d20babf3e1bd727",
@@ -1233,7 +1305,9 @@
         "ms": 1616,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "1bd8174e710378d606ad55b09cc8c1cb7ae03e20e96fd21692a2e5f51e1f56c5",
@@ -1252,7 +1326,9 @@
         "ms": 3507,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "876065e31c9326261a6f0de289b108d93efaa3f99117fe526b9bb04966d0a825",
@@ -1279,7 +1355,9 @@
         "ms": 1802,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "83b51f4644ad1033eabe94c3e318ec9365ae378ccc3befba2f92c76d24007344",
@@ -1290,7 +1368,9 @@
         "ms": 1851,
         "by": "mortar",
         "figure": "cast/mortar",
-        "name": "Mortar"
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "e154d330765c88e8e33ddc3b283f814dd63ad2b5a0fb65e0526437100a33e673",
@@ -1317,7 +1397,9 @@
         "ms": 1724,
         "by": "selkie_grandmother",
         "figure": "cast/selkie_grandmother",
-        "name": "Selkie Grandmother"
+        "names": [
+          "Selkie Grandmother"
+        ]
       },
       {
         "clip": "c59ccd46d264ff5b2f1bd94cf3338ca652fcc5ffa70d7b5e487b58451360a241",
@@ -1328,7 +1410,9 @@
         "ms": 3107,
         "by": "selkie_grandmother",
         "figure": "cast/selkie_grandmother",
-        "name": "Selkie Grandmother"
+        "names": [
+          "Selkie Grandmother"
+        ]
       }
     ]
   },
@@ -1351,7 +1435,9 @@
         "ms": 1329,
         "by": "selkie_grandmother",
         "figure": "cast/selkie_grandmother",
-        "name": "Selkie Grandmother"
+        "names": [
+          "Selkie Grandmother"
+        ]
       },
       {
         "clip": "2885a78e737e4c73662296522805484dc6d451d35a21b6502d081f1dae4c56f8",
@@ -1386,7 +1472,9 @@
         "ms": 1934,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "f8dfd99898e28aac6ef928e0b936b71f5a5941fd9d2e78a7c5989d9f3cf963d2",
@@ -1413,7 +1501,10 @@
         "ms": 1943,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -1424,7 +1515,10 @@
         "ms": 967,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "d75eddaa87e51b80db9fa6bf57d1575efcf2a99c458002e763ef54e509d0c998",
@@ -1443,7 +1537,10 @@
         "ms": 4907,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       }
     ]
   },
@@ -1490,7 +1587,9 @@
         "ms": 1420,
         "by": "old_wick",
         "figure": "cast/old_wick",
-        "name": "Old Wick"
+        "names": [
+          "Old Wick"
+        ]
       }
     ]
   },
@@ -1505,7 +1604,9 @@
         "ms": 1836,
         "by": "orange_captain",
         "figure": "entities/yeti",
-        "name": "Orange Captain"
+        "names": [
+          "Orange Captain"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1516,7 +1617,9 @@
         "ms": 2268,
         "by": "orange_captain",
         "figure": "entities/yeti",
-        "name": "Orange Captain"
+        "names": [
+          "Orange Captain"
+        ]
       }
     ]
   },
@@ -1547,7 +1650,9 @@
         "ms": 3107,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1558,7 +1663,9 @@
         "ms": 2704,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       }
     ]
   },
@@ -1581,7 +1688,9 @@
         "ms": 3107,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "b19b2c1cc957039ae6389fca63f47d1ecea700326a38b1504fdd0023654fffd3",
@@ -1592,7 +1701,9 @@
         "ms": 1063,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       }
     ]
   },
@@ -1607,7 +1718,9 @@
         "ms": 754,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "ff43c1380ede21f863ab72ac38928c4ff93603639be3d46c8d7280d95c23ed9a",
@@ -1626,7 +1739,9 @@
         "ms": 2044,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "b19b2c1cc957039ae6389fca63f47d1ecea700326a38b1504fdd0023654fffd3",
@@ -1637,7 +1752,9 @@
         "ms": 2285,
         "by": "mrs_tuft",
         "figure": "cast/mrs_tuft",
-        "name": "Mrs. Tuft"
+        "names": [
+          "Mrs. Tuft"
+        ]
       }
     ]
   },
@@ -1684,7 +1801,10 @@
         "ms": 1696,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1695,7 +1815,10 @@
         "ms": 2287,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "b14c7ba0c676d3895259aec4b44a9e16ba804df00e66b8f55f50ba46059de87e",
@@ -1714,7 +1837,10 @@
         "ms": 5107,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1725,7 +1851,10 @@
         "ms": 4407,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "f922af3b2cf6f05dc27978385295540774e4b7329070a480103772b3c9e32d40",
@@ -1736,7 +1865,10 @@
         "ms": 1279,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       }
     ]
   },
@@ -1751,7 +1883,10 @@
         "ms": 4907,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "ed2a26939a26a0c9b2c7a6b332e8471899b19f627ab26c86d5b5a16fe8ed2f82",
@@ -1778,7 +1913,10 @@
         "ms": 1465,
         "by": "tidewell",
         "figure": "cast/tidewell",
-        "name": "Professor Marrow Tidewell"
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "018820b2e417cecc7702f5f8115690b1c5fff989478073dbc27d26e893a380c6",
@@ -1797,7 +1935,9 @@
         "ms": 4107,
         "by": "fishmonger",
         "figure": "cast/fishmonger",
-        "name": "Fishmonger"
+        "names": [
+          "Fishmonger"
+        ]
       }
     ]
   },
@@ -1808,7 +1948,9 @@
         "ms": 1120,
         "by": "hesper",
         "figure": "cast/hesper",
-        "name": "Hesper Longstride"
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "bebe5a4754f00b2c7a50d42374713b6d7299d97b02ce66b1dddaee4d2eff2f04",

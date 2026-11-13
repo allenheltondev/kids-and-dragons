@@ -185,7 +185,7 @@ export function clipOf(segment: DesiredSegment, ms: number): ManifestClip {
     ms,
     by,
     ...(segment.figure === undefined ? {} : { figure: segment.figure }),
-    ...(segment.name === undefined ? {} : { name: segment.name }),
+    ...(segment.names === undefined ? {} : { names: segment.names }),
   };
 }
 
@@ -193,7 +193,7 @@ export function clipOf(segment: DesiredSegment, ms: number): ManifestClip {
 export function sameSpeakers(clips: readonly ManifestClip[], line: DesiredLine): boolean {
   return sameClips(clips, line) && clips.every((clip, i) => {
     const want = clipOf(line.segments[i]!, clip.ms);
-    return clip.by === want.by && clip.figure === want.figure && clip.name === want.name;
+    return clip.by === want.by && clip.figure === want.figure && (clip.names ?? []).join("\u0000") === (want.names ?? []).join("\u0000");
   });
 }
 

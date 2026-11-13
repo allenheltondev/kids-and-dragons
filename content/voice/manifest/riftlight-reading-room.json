@@ -26,7 +26,9 @@
         "ms": 1269,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -37,7 +39,9 @@
         "ms": 11907,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -52,7 +56,9 @@
         "ms": 8807,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "d9e80aca1228fe87a7bf37b7cbaaa4d9694bac77792c2d31b4cf1fd261c3fa34",
@@ -71,7 +77,9 @@
         "ms": 1386,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "8d0ce563f49c03408bfd9f0024c683126189e39d183c8121775b492f116b2bbb",
@@ -82,7 +90,9 @@
         "ms": 3107,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "d09b2835eb2d1fafed71c24fcdbd7267f328e63e56cc9adf981d3c6601d3431a",
@@ -109,7 +119,9 @@
         "ms": 1419,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "9dec571fbc94f295abfea0e70b8fc6be4cbe12f01d0243905345274d277f21ab",
@@ -128,7 +140,9 @@
         "ms": 940,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "04b1a88be6ae10ce8ac5e5fc43efd1c7dac356b0517ce494ae47269d1afd39a5",
@@ -155,7 +169,9 @@
         "ms": 874,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "0d93e5d168506176f405514475c09ae7393fcdb352107aeb06cff4d585a86efd",
@@ -198,7 +214,9 @@
         "ms": 1710,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "bc4ccdee965915034265f2d3ed2d8f2a74bf3abf1339e15b74b73a46c8ad48ef",
@@ -209,7 +227,9 @@
         "ms": 2930,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -264,7 +284,9 @@
         "ms": 1419,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -287,7 +309,9 @@
         "ms": 2043,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "4748907ffe6102d36e630566ea1e4ffb33447b1adaefca1fbcca07a3efc29704",
@@ -330,7 +354,9 @@
         "ms": 1953,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -341,7 +367,9 @@
         "ms": 1556,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -396,7 +424,9 @@
         "ms": 1686,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -407,7 +437,9 @@
         "ms": 1886,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -430,7 +462,9 @@
         "ms": 1290,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -441,7 +475,9 @@
         "ms": 3807,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -600,7 +636,9 @@
         "ms": 2608,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -611,7 +649,9 @@
         "ms": 2312,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -674,7 +714,9 @@
         "ms": 5307,
         "by": "yeti_builders",
         "figure": "entities/yeti",
-        "name": "Yeti builders"
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "20ff63261552762539d7a0c8232aa96c255df74243e009f9eeafaa3b65e28521",
@@ -685,7 +727,9 @@
         "ms": 1823,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "5dea0308b3c715fed17e1f8145adf7e60e5503921b57fb617682e1f2eda0ef9d",
@@ -728,7 +772,9 @@
         "ms": 3107,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "0cfa71988c7d225cd482f308963b0560d27d45d7355a7d17b82f42dc0e317ae9",
@@ -747,7 +793,9 @@
         "ms": 1796,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "f10cf6faa9e05dfe219071231f601f77be907c021c42230ae1962f9139ab37d5",
@@ -766,7 +814,9 @@
         "ms": 1714,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -789,7 +839,9 @@
         "ms": 1344,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "43d1fb8558638fbf4f3c254b4008f219ac0248c6f05e1cc5240a1047364c4ce0",
@@ -808,7 +860,9 @@
         "ms": 3207,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "897f213a59676d1c19159a10b71bdf83cd7cc0ba86a23b03c36570d02a06af81",
@@ -827,7 +881,9 @@
         "ms": 925,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "133b54aafad31500790bdb439e5dfb2ef2113748be155d82aab1e222eea92a28",
@@ -846,7 +902,9 @@
         "ms": 3307,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -869,7 +927,9 @@
         "ms": 4207,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -884,7 +944,9 @@
         "ms": 4907,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -898,7 +960,9 @@
         "clip": "4afacf6cfcffb01c8b2b57acd8a41ff8a7b2264c38e78cf15da6a1c9631e2a0a",
         "ms": 1131,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "3b8bdb60e0b4796ec455a0c967606fa940325e5170d96402f0e5bc72980fe722",
@@ -909,7 +973,9 @@
         "ms": 2324,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -924,7 +990,9 @@
         "ms": 1800,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -939,7 +1007,9 @@
         "ms": 2960,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "8d0ce563f49c03408bfd9f0024c683126189e39d183c8121775b492f116b2bbb",
@@ -950,7 +1020,9 @@
         "ms": 2698,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "e707893c107effeac7dd3cfe25e8b136d2847fda2aca4c0f9ef8459983812d54",
@@ -961,7 +1033,9 @@
         "ms": 767,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -972,7 +1046,9 @@
         "ms": 1263,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "e06d2b02d4fe0a7756a97fe69e19215717949776003d7d1c27b2b0f2a95cd684",
@@ -991,7 +1067,9 @@
         "ms": 1289,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "ab21424a3a73dca1c1f6c1d6b99bf6299c56a55e35254f007dd02a951f7ca36c",
@@ -1010,7 +1088,9 @@
         "ms": 1154,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1021,7 +1101,9 @@
         "ms": 1464,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -1036,7 +1118,9 @@
         "ms": 3327,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1047,7 +1131,9 @@
         "ms": 8707,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "7e6fd73bcabbdf6999f9dfbb36e924c31976e71d2d4a3e817ffd03ed3546a84c",
@@ -1066,7 +1152,9 @@
         "ms": 1982,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "4e2a2c362827f77ef1cf2e7487086c75f0aa17996e2cb43429d50bf1a3b95c9d",
@@ -1109,7 +1197,9 @@
         "ms": 4407,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1120,7 +1210,9 @@
         "ms": 2733,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1135,7 +1227,9 @@
         "ms": 5108,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "d66490b4fc257ff69a3fbb0b5f7342d232f1ec890dd223b0790ef36ccb8242f2",
@@ -1146,7 +1240,9 @@
         "ms": 7708,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1169,7 +1265,9 @@
         "ms": 1504,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "7cbb67dd209fe9117199bf10b6ccce6a148da53bbd586dc150d18bcfef2e45cc",
@@ -1188,7 +1286,9 @@
         "ms": 2704,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1203,7 +1303,9 @@
         "ms": 4407,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "9b0ececeb5c77ee24cfd4f488f0df01d2418f20657bfc61894172a54ece4717f",
@@ -1214,7 +1316,9 @@
         "ms": 1883,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "4e2a2c362827f77ef1cf2e7487086c75f0aa17996e2cb43429d50bf1a3b95c9d",
@@ -1233,7 +1337,9 @@
         "ms": 6307,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1248,7 +1354,9 @@
         "ms": 6807,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1263,7 +1371,9 @@
         "ms": 6407,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "f3571792cc07c5a277944f67e512b3c57ce762a87777dcc8414a1766b6d9e4dd",
@@ -1274,7 +1384,9 @@
         "ms": 702,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "b277dc7449b48cbf48bae848e7edf2435b1bcc195f27640d87d3f422c532936f",
@@ -1301,7 +1413,9 @@
         "ms": 3005,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "05bef86a9349821d401190d60167bb0dd3cffb297757ead4b516b86fd9415c8f",
@@ -1320,7 +1434,9 @@
         "ms": 1355,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "809ed8e36c4ade080bd2e420795cf9b9ca1bbd71ee8f0aca100260297575a10d",
@@ -1371,7 +1487,9 @@
         "ms": 2774,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "7333f6aa6a0c77893f2e6e740d0fb0f574658b9fbb785c9be8a25c613436a6b5",
@@ -1390,7 +1508,9 @@
         "ms": 1433,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1401,7 +1521,9 @@
         "ms": 5607,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1424,7 +1546,9 @@
         "ms": 2481,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "6e22eb08c803c3b69f32c1a7a796b3e1054709b633eff9faa8017829edce5831",
@@ -1443,7 +1567,9 @@
         "ms": 921,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "70ad04646206346016e7ab7450333081ab4a911560ef55214f475b36c5ea7695",
@@ -1454,7 +1580,9 @@
         "ms": 1680,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -1469,7 +1597,9 @@
         "ms": 806,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1480,7 +1610,9 @@
         "ms": 1464,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1503,7 +1635,9 @@
         "ms": 1246,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1514,7 +1648,9 @@
         "ms": 2340,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "6050c5d10bc033481485ec2dd2de3a7fab0eecba7e9777f23e1fc521b1ec75ac",
@@ -1525,7 +1661,9 @@
         "ms": 5307,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "af3340b8798082098aa49b9778ebc58bc39278e053620ef60bfb179ddff4ff83",
@@ -1544,7 +1682,9 @@
         "ms": 1614,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -1555,7 +1695,9 @@
         "ms": 4308,
         "by": "elder_murmur",
         "figure": "cast/yeti_elder",
-        "name": "Elder Murmur"
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "4c25a741ceb3307c92636294584145389a284f92ae6c1a31071b4a7b08ab7a27",
@@ -1566,7 +1708,9 @@
         "ms": 7407,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -1581,7 +1725,9 @@
         "ms": 3607,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "714a39c544568271a5daf404ecb3c1d2e2d372326d95a963351f2f20d0a35be0",
@@ -1600,7 +1746,9 @@
         "ms": 2195,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1611,7 +1759,9 @@
         "ms": 4007,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "7f762097a2e9be45e3262f703b521f8502cd9b17e870834e97d8f72cfa0c3014",
@@ -1622,7 +1772,9 @@
         "ms": 2080,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -1637,7 +1789,9 @@
         "ms": 4807,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "56d855ed97a37441e792db956469b9c205640c2733837fbc119de7ba38670256",
@@ -1712,7 +1866,9 @@
         "ms": 722,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "262969c147a80f4de437a9eba01cbf9a7ed5e916e2681e80243f6d40c08e101c",
@@ -1763,7 +1919,9 @@
         "ms": 722,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "dba8fbee141138f7f93a889b3f6b8d2b7db55a46f4a0f5d7e40b23448b59ad1e",
@@ -1798,7 +1956,9 @@
         "ms": 1098,
         "by": "flurry",
         "figure": "cast/younger_keeper",
-        "name": "Flurry"
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "57916d02e43913254d632ee0bbbd270b15e1a803d8b6f896379cca94e5f40a97",
@@ -1840,7 +2000,9 @@
         "clip": "9d883cdcc3d0ce9c91586b86c9f850c9bf2f72623780554e2016e3f2bf4412b9",
         "ms": 608,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "9c8d8af4d7a4f1894b88bf8b16adbe47adc6ccdddc80b445c21386052a184579",

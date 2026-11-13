@@ -313,13 +313,13 @@ ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stag
 
 ### Manifest and lock (in git)
 
-- `content/voice/manifest/<chapterId>.json`: address (+ token value) → `{ clip, ms, by?, figure?, name? }`.
+- `content/voice/manifest/<chapterId>.json`: address (+ token value) → `{ clip, ms, by?, figure?, names? }`.
   This is what the client loads, about 50–100 KB per chapter. A cast member's clip says who
-  speaks it: `by`, their id on the cast sheet, and their `figure` and `name` there when the sheet
-  gives them (the narrator's clips carry none of these). None is in the clip key, so a figure or
-  name changed on the cast sheet is written into the manifests by `voice:verify -- --fix` with
-  nothing rendered, and `voice:verify` fails a mark that disagrees with the script and sheet (see
-  Linking).
+  speaks it: `by`, their id on the cast sheet, their `figure` there, and `names`, the sheet's
+  `name` then its `aliases` (the narrator's clips carry none of these). None is in the clip key,
+  so a figure, name or alias changed on the cast sheet is written into the manifests by
+  `voice:verify -- --fix` with nothing rendered, and `voice:verify` fails a mark that disagrees
+  with the script and sheet (see Linking).
 - `content/voice/voice.lock.json`: approvals. An approved take is pinned to its clip key and
   source hash. If someone regenerates and gets a worse take, the approved one stays until a new
   one is approved. `voice:status` shows "approved", "rendered, awaiting review" and "never
@@ -378,15 +378,19 @@ kept audio without asking the provider again.
   word, is highlighted as it's read. That's a real reading aid for this age, and a stretch goal,
   not phase-one.
 - **Speaker → face (built, the cast pulse):** while a cast member's recorded clip is heard, whoever
-  stands in the scene with that clip's `figure`, or under its `name` (a chapter may paint someone
-  differently from the sheet: bramblewood-01 stands Pib as `entities/pib`), swells gently about
-  their feet in a slow beat (`world/cast-pulse.ts`): one figure, a whole group of it, or an
-  ensemble's members. The engine says when each clip begins to be heard (`VoiceChannel.play`'s
+  stands in the scene as that clip's speaker swells gently about their feet in a slow beat
+  (`world/cast-pulse.ts`): one figure, a whole group of it, or an ensemble's members. A figure the
+  chapter names is the speaker only under one of the clip's `names` (case, punctuation and a
+  plural aside), whatever it is painted with: several people share a painting (Tansy and the faun
+  prospector are both `entities/faun`), and a chapter may paint someone differently from the
+  sheet (bramblewood-01 stands Pib as `entities/pib`). Only an unnamed figure, or a speaker the
+  sheet gives no name, is matched by `figure`. The engine says when each clip begins to be heard (`VoiceChannel.play`'s
   `onClip`, on the audio clock), the clip speaker reports who says it (`onCast`), and the stage
   follows it (`read-aloud.ts` `watchSpeakingCast`). The narrator, the device voice and anyone not
   standing in the scene pulse nobody; with reduced motion it is a steady lift. On the content as
-  of 2026-11-13, 3,243 of the 3,553 cast lines said in a scene with somebody on the stage find
-  their speaker there; most of the rest are the party speaking together, which pulses nobody yet.
+  of 2026-11-13, 3,244 of the 3,434 lines a cast member says in a scene with somebody on the stage
+  find them there; the rest are mostly said by someone not drawn in that scene. The party speaking
+  together pulses nobody yet.
 
 ---
 

@@ -281,7 +281,7 @@ describe("who speaks each clip, for the stage's cast pulse (#551)", () => {
   const CAST: CastSheet = {
     speakers: {
       narrator: { who: "A warm storyteller.", elevenlabs: voice("n1") },
-      pib: { who: "A bramble sprite.", name: "Pib", figure: "cast/pib", elevenlabs: voice("p1") },
+      pib: { who: "A bramble sprite.", name: "Pib", aliases: ["The sprite", "Pib"], figure: "cast/pib", elevenlabs: voice("p1") },
       echo: { who: "A voice from nowhere.", elevenlabs: voice("e1") },
     },
   };
@@ -296,9 +296,10 @@ describe("who speaks each clip, for the stage's cast pulse (#551)", () => {
   it("marks a cast member's clip with their id and figure, and leaves the narrator's unmarked", () => {
     const desired = scripted("pib");
     const fixed = fixManifest(rendered(desired), desired);
-    expect(fixed["ch/scene_a/narration"]?.[""]?.map(({ by, figure, name }) => ({ by, figure, name }))).toEqual([
-      { by: undefined, figure: undefined, name: undefined },
-      { by: "pib", figure: "cast/pib", name: "Pib" },
+    expect(fixed["ch/scene_a/narration"]?.[""]?.map(({ by, figure, names }) => ({ by, figure, names }))).toEqual([
+      { by: undefined, figure: undefined, names: undefined },
+      // The sheet's name first, then its aliases, each once.
+      { by: "pib", figure: "cast/pib", names: ["Pib", "The sprite"] },
     ]);
     expect(check(fixed, desired).failures).toEqual([]);
   });

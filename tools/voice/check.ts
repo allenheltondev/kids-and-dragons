@@ -13,7 +13,7 @@
  *  - an entry for a line the device voice must read (its script is broken or
  *    names someone who is not cast), or a script that is broken or uncast;
  *  - an entry whose clips say someone else speaks them than the script and cast
- *    sheet do (`by`, `figure`, `name`): the stage would pulse the wrong figure. `--fix`
+ *    sheet do (`by`, `figure`, `names`): the stage would pulse the wrong figure. `--fix`
  *    writes them as they are today;
  *  - a malformed entry: not a clip key, no clips, a length that is not a
  *    length, or a length no voice could say those words in;
@@ -141,7 +141,7 @@ export function checkManifests(input: ManifestInput): VoiceVerdict {
         } else if (entry.length !== line.segments.length || entry.some((clip, i) => clip.clip !== line.segments[i]?.key)) {
           failures.push({ at, message: "plays clips for words, a voice or a delivery that have since changed, so the table would hear the old line. Run `npm run voice:verify -- --fix` to drop the entry, and `voice:generate` to render the new one" });
         } else if (!sameSpeakers(entry, line)) {
-          failures.push({ at, message: "names the wrong speaker for a clip (its `by`, `figure` or `name` is not what the script and cast sheet say), so the stage would pulse the wrong figure. Run `npm run voice:verify -- --fix`" });
+          failures.push({ at, message: "names the wrong speaker for a clip (its `by`, `figure` or `names` is not what the script and cast sheet say), so the stage would pulse the wrong figure. Run `npm run voice:verify -- --fix`" });
         }
       }
     }

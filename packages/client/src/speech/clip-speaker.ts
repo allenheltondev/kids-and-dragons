@@ -84,7 +84,7 @@ export interface ClipSpeakerEnv {
   /** True while something is being said, recorded or not: the narration panel's "speaking" mark. */
   onSpeaking?: (speaking: boolean) => void;
   /**
-   * Who says the recorded clip being heard (their figure and name on the cast sheet), or null for
+   * Who says the recorded clip being heard (their figure and names on the cast sheet), or null for
    * the narrator, the device voice and silence: the stage pulses them (the cast pulse). Told only
    * when it changes.
    */
@@ -203,8 +203,8 @@ const ignore = (): void => undefined;
 
 /** Who says a clip, for the cast pulse: null for the narrator's, who has no mark. */
 function castOf(entry: ManifestClip): SpeakingCast | null {
-  if (entry.figure === undefined && entry.name === undefined) return null;
-  return { ...(entry.figure === undefined ? {} : { figure: entry.figure }), ...(entry.name === undefined ? {} : { name: entry.name }) };
+  if (entry.figure === undefined && entry.names === undefined) return null;
+  return { ...(entry.figure === undefined ? {} : { figure: entry.figure }), ...(entry.names === undefined ? {} : { names: entry.names }) };
 }
 
 export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
@@ -271,7 +271,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   }
 
   function hear(now: SpeakingCast | null): void {
-    if (now?.figure === heard?.figure && now?.name === heard?.name) return;
+    if (now?.figure === heard?.figure && now?.names?.join("\u0000") === heard?.names?.join("\u0000")) return;
     heard = now;
     env.onCast?.(now);
   }

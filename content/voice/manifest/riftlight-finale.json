@@ -162,7 +162,10 @@
         "ms": 2468,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -173,7 +176,10 @@
         "ms": 4307,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -231,7 +237,9 @@
         "clip": "3740685cdc89a9a74b5de0590277d1b04e39ab06ae878ba4a3440ba2c7e26591",
         "ms": 1519,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "7cc6074f598b9e8257cefa14ec5451ae276ce609627afed7b9b083e9a22db202",
@@ -242,7 +250,9 @@
         "ms": 1110,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -253,7 +263,9 @@
         "ms": 2787,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "1f571d6531be820ae68cf66391b8308998773f5adcc345f8078b1b20bfaf3f42",
@@ -264,7 +276,9 @@
         "ms": 1966,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "169221fa1e9084fb6cc81fdff6d0e0121c43f7cd918d4f056936ee683fbf6f48",
@@ -291,7 +305,9 @@
         "ms": 2711,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "b2f110c01be2533d860411b450baa42039250a2a64f7233385571cd6413354d2",
@@ -310,7 +326,9 @@
         "ms": 2863,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -349,7 +367,9 @@
         "ms": 2366,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "87c4c6821a972f2e16968b1f167a59cabeec6386cb8f5e855350a94dad46caa0",
@@ -376,7 +396,9 @@
         "ms": 674,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "963bb55d472f73a696c8efa332b5f5fbd083e3aa85f1f0496cabb790a51191ff",
@@ -419,7 +441,9 @@
         "ms": 1231,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "9de03d7cb474c805b937dc955e096deb215905cd8678fa80010f6d47aa6996b5",
@@ -478,7 +502,9 @@
         "ms": 2246,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -489,7 +515,9 @@
         "ms": 2766,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "539253d61836da6389a6af34459990f665c5230e7245d2070e9cbb0681470e90",
@@ -531,7 +559,9 @@
         "clip": "efd1ceec761d0a086973ab1186f29984c00873c8bd765f9525115417ba34a068",
         "ms": 513,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -541,7 +571,9 @@
         "clip": "9378f868afb2be54d3572a7b3d7c0efe1c1f51090470ce76141e8c9ad25254b3",
         "ms": 1174,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "469a11a1d2b9ea8ed7b95c96cda618c01e0109529914c6f861cc1b07736c2e7a",
@@ -556,7 +588,9 @@
         "ms": 2869,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "61c34a2b8b09140484c22ee21cb0f7d9a7d1e706ad85b9b22c9f474709a8e59d",
@@ -575,7 +609,9 @@
         "ms": 2059,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "e8517a218bb6ce78b68fd1d642bc5131ecf1fd67c7d2a0776018b2cf80fc8aee",
@@ -634,7 +670,10 @@
         "ms": 1608,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "a3b01bad3d921076fd3b2f4594148cca28d491b4abc8d7025627392d2a996ab2",
@@ -645,7 +684,10 @@
         "ms": 2871,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -660,7 +702,9 @@
         "ms": 1862,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -671,7 +715,9 @@
         "ms": 1403,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "94e8728f10e7dc2eb1483f8a5cf2de25d74f3a573383eda8f1f7bb7ae7b28ff6",
@@ -690,7 +736,9 @@
         "ms": 1300,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "c1c1db25e28fda1826163f6a4d6e10b2a96d7fac96fba7868e7aa409692d5576",
@@ -701,7 +749,9 @@
         "ms": 1336,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -712,7 +762,9 @@
         "ms": 7807,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -743,7 +795,9 @@
         "ms": 1253,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -754,7 +808,9 @@
         "ms": 2854,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -769,7 +825,9 @@
         "ms": 2065,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -780,7 +838,9 @@
         "ms": 8607,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "80a8a91c01977133720a1821fabfc6869e2d1cd1a17a63594cd6747b41d2a2da",
@@ -791,7 +851,9 @@
         "ms": 1778,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "613bbe374c934cc936f61a9aa9df5fa424f67f8b6b5a91c9f368faba4bfed7fc",
@@ -802,7 +864,9 @@
         "ms": 1279,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -817,7 +881,9 @@
         "ms": 1927,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "718ab35316e4b7020f3bb8e2c09da68bc398d0047ab8ba728f14001fe2953098",
@@ -836,7 +902,9 @@
         "ms": 1927,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "cc05e6e69b3f6742b37b13876f79f10c45f3594156b256c1ed7d4d7569ae0bdc",
@@ -855,7 +923,9 @@
         "ms": 1927,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "3ebe8aebf32a5eadf3df6a6f377543ba48eec20fbe7563ed69e1edcd3e85e737",
@@ -874,7 +944,9 @@
         "ms": 1927,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "696ae192dd5c30bcd3dc7d41a179049222bc0ab54df4e0b48aecea7d64ca45af",
@@ -893,7 +965,9 @@
         "ms": 3107,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "60f31da24edf539b14761c718b29097b81bf4e397bd3f228e35d559c276c9243",
@@ -904,7 +978,9 @@
         "ms": 1930,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "3f6789ca37a9c4fc1a97c044d95630f40f0120ddd2ebd197d826cfc3e36007de",
@@ -939,7 +1015,9 @@
         "ms": 1578,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -950,7 +1028,9 @@
         "ms": 849,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       }
     ]
   },
@@ -973,7 +1053,9 @@
         "ms": 2322,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "066a754ff57c964e3a7e00f89548e04f450940eca0bfe2416a170a0a6ca6fd1e",
@@ -992,7 +1074,9 @@
         "ms": 4007,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1003,7 +1087,9 @@
         "ms": 7007,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1018,7 +1104,9 @@
         "ms": 2104,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1029,7 +1117,9 @@
         "ms": 5107,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "1745e3ed3b30d03a8b93853d1c39ba4a57250c5c41a6afad487788eb80800e42",
@@ -1048,7 +1138,9 @@
         "ms": 1558,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "6d202c367acd7d11680eda9ceda1fa679b789fa1329150a107e9af175045d686",
@@ -1059,7 +1151,9 @@
         "ms": 1516,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "11fa75da0e146e040470b553e24f366be77010a0a34f0adbfe3e2174f25a0c4b",
@@ -1078,7 +1172,9 @@
         "ms": 2100,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
@@ -1089,7 +1185,9 @@
         "ms": 12507,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1104,7 +1202,9 @@
         "ms": 2812,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "2de3fe1a694221db50b3861bfd7c836992c52b9c8041d3c1388bc894724839d1",
@@ -1219,7 +1319,9 @@
         "ms": 1980,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "70f2be47b6771915f5af7189325169db6bfd8e21857776729830272d07903d6f",
@@ -1230,7 +1332,9 @@
         "ms": 5307,
         "by": "yeti_herder",
         "figure": "cast/yeti_herder",
-        "name": "Yeti herder"
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1245,7 +1349,9 @@
         "ms": 2856,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "1952b3cf9c95e156f0463c9ed5a8ec8b83bb40bf55599516583d4c35ca010755",
@@ -1360,7 +1466,10 @@
         "ms": 1735,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "5e120424ba4fd9938547275e713ffc94bccb535ec3db86943af54455fc7fe533",
@@ -1419,7 +1528,9 @@
         "ms": 1069,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1430,7 +1541,9 @@
         "ms": 1475,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "36b17921388a4ab747d1e535dd7eec09a40e96a49242f518c772abd0f99a67dd",
@@ -1457,7 +1570,9 @@
         "ms": 2035,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1476,7 +1591,9 @@
         "ms": 1911,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "caa1186fda8d334763fe0841a5e422d7578b6312531eadf6ee4d76dc1528370c",
@@ -1487,7 +1604,9 @@
         "ms": 1874,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1502,7 +1621,9 @@
         "ms": 2135,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1513,7 +1634,9 @@
         "ms": 1007,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1536,7 +1659,9 @@
         "ms": 1599,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1547,7 +1672,9 @@
         "ms": 2400,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1570,7 +1697,9 @@
         "ms": 1058,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1593,7 +1722,9 @@
         "ms": 2086,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "c98411358da038f802e5cec6e6980b8c28bc8e0a7154a5588dc012e25270e4c5",
@@ -1604,7 +1735,9 @@
         "ms": 6907,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "d07abfe9aebf81cd7bc9c078864e28466071f5a368cc104102e219431f5d4873",
@@ -1615,7 +1748,9 @@
         "ms": 2346,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "9e7bf320dbfaad6d103df55239c4df3c966edecf47837cc6f9c6d067879fcae3",
@@ -1626,7 +1761,9 @@
         "ms": 1441,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "33447137b39f4ed7d02f6598ded684bf6a1fb5c798a68debf6027ad7af317305",
@@ -1656,7 +1793,9 @@
         "clip": "66b20c024d9118c62745db549df9be1fd0642749609081c7aed0b4ae4879bc55",
         "ms": 996,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -1666,7 +1805,9 @@
         "clip": "cc0353bd14e04bb2628885ef70b66d74b1a41507708c1eda4c19461b331de5cc",
         "ms": 676,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "51453625d96903995f6f4c8c8c885e0d9aece2ad7ad05bead10789b418cfaafc",
@@ -1757,7 +1898,9 @@
         "ms": 1940,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1768,7 +1911,9 @@
         "ms": 3507,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1807,7 +1952,10 @@
         "ms": 801,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "3d0d51cf5bb5e477ce0812befa60a3342c3a44ed879a9a837d92632c8e6edbc7",
@@ -1866,7 +2014,9 @@
         "ms": 15107,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "38909b75eb0b2aade88986ccf50f64e2b2bb96fdfc39e6ab56e27e10924a58bf",
@@ -1885,7 +2035,9 @@
         "ms": 1165,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
@@ -1896,7 +2048,9 @@
         "ms": 4007,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "2196bb68ee300583efd9cdef4e60f15c69c6f574ed3932c98d3bbc9ffbcd57da",
@@ -1915,7 +2069,9 @@
         "ms": 6207,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
@@ -1926,7 +2082,9 @@
         "ms": 1829,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1957,7 +2115,9 @@
         "ms": 6207,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
@@ -1968,7 +2128,9 @@
         "ms": 1829,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -2015,7 +2177,9 @@
         "ms": 2035,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2050,7 +2214,9 @@
         "ms": 4607,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2061,7 +2227,9 @@
         "ms": 2085,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b4592729de0a7066b280eb469a15b9c4c70f0eaefc9960cbf3901d7c853c9d04",
@@ -2072,7 +2240,9 @@
         "ms": 987,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "e3a10a4b3933e834f1a6de0d42b6d1404fc78483e32db9db008a96f52a6d4a08",
@@ -2083,7 +2253,9 @@
         "ms": 1142,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "b39bc6a836039e2e945fe52ea9a130ecd85144b7f60ff4a318bc479f849880fb",
@@ -2110,7 +2282,9 @@
         "ms": 3807,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2121,7 +2295,9 @@
         "ms": 10607,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "cbd2c65041c9c1ac81fde493252c55082a6223df14e8d6f1c5842f1d96971380",
@@ -2132,7 +2308,9 @@
         "ms": 2529,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -2147,7 +2325,9 @@
         "ms": 2389,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2158,7 +2338,9 @@
         "ms": 4107,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -2173,7 +2355,9 @@
         "ms": 2778,
         "by": "corvane",
         "figure": "cast/deep-ice-figure",
-        "name": "Corvane"
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b96f0617caad7cb9ddd9e5b915191b2eb04b9d557b526a4788ab046071eef480",
@@ -2184,7 +2368,9 @@
         "ms": 3307,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
@@ -2195,7 +2381,9 @@
         "ms": 6707,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -2206,7 +2394,9 @@
         "ms": 2365,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "71a252f1bdb85b367144c2794665baa1454d6d293dcf7401b9acbfd3a2ea63df",
@@ -2221,7 +2411,9 @@
         "ms": 2365,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "71a252f1bdb85b367144c2794665baa1454d6d293dcf7401b9acbfd3a2ea63df",

@@ -201,7 +201,9 @@
         "clip": "a04255e740edf7735f19b62896bd4afa4aec251c6c9173d538bdc7ee27ea4782",
         "ms": 3107,
         "by": "door_voice",
-        "name": "Door Voice"
+        "names": [
+          "Door Voice"
+        ]
       },
       {
         "clip": "2b97bcd85eed664196748fd8660389b725efe9f3480e634b37099a28059e8c5b",
@@ -211,7 +213,9 @@
         "clip": "4c07a067a9394d93b1a54391015506ebadfaf910a428a7d7a0a578d73c1bd3b8",
         "ms": 1708,
         "by": "door_voice",
-        "name": "Door Voice"
+        "names": [
+          "Door Voice"
+        ]
       }
     ]
   },
@@ -226,7 +230,9 @@
         "ms": 2312,
         "by": "pib",
         "figure": "cast/pib",
-        "name": "Pib"
+        "names": [
+          "Pib"
+        ]
       },
       {
         "clip": "b9cdf16115e147c49b8555a4d8d7cd059403d5abb36ac66419f41ab3be6edec9",
@@ -237,7 +243,9 @@
         "ms": 4307,
         "by": "pib",
         "figure": "cast/pib",
-        "name": "Pib"
+        "names": [
+          "Pib"
+        ]
       }
     ]
   },
@@ -280,7 +288,9 @@
         "ms": 935,
         "by": "pib",
         "figure": "cast/pib",
-        "name": "Pib"
+        "names": [
+          "Pib"
+        ]
       },
       {
         "clip": "d80774d1149df8eb2a6412650b2d4d8bbb9c6973113a2302cf612c57b9447a5c",
@@ -291,7 +301,9 @@
         "ms": 6707,
         "by": "pib",
         "figure": "cast/pib",
-        "name": "Pib"
+        "names": [
+          "Pib"
+        ]
       },
       {
         "clip": "7c544a6819fabae753cf135c356611f6ad072533f6f10845c3affc240b203dfc",

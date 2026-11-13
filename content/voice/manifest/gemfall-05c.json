@@ -34,7 +34,9 @@
         "ms": 2436,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "8b23b47cd2c41dbd217d2ee9efeb2f6bca7a950174ac3a6ffbdde63ef0557475",
@@ -45,7 +47,9 @@
         "ms": 2499,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "a4f824d5a2c7cf72cafae7bff1629aee678bbd2974803846b0ac797a6f5c95d4",
@@ -96,7 +100,10 @@
         "ms": 2740,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "35e50671481446cb8f88abd4280d9dcae88a23ab10b2f9dfb1302e1004f16c7d",
@@ -115,7 +122,10 @@
         "ms": 4207,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -138,7 +148,9 @@
         "ms": 1990,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "21055db03f6651f2278950cabf3c407e9eea27196d7ea7faaef1e34a9c3b97b2",
@@ -149,7 +161,9 @@
         "ms": 1017,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       }
     ]
   },
@@ -164,7 +178,9 @@
         "ms": 1551,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "1cf15858b8be2bfbc1e16f9bf0cd1fcf7e952066de594be4d3a604b64cebb056",
@@ -175,7 +191,9 @@
         "ms": 1011,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       }
     ]
   },
@@ -254,7 +272,9 @@
         "ms": 1191,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "c80cf45d95e066ca20bd2f6dbb3954a82f75145c39a457973d101de6427d386e",
@@ -265,7 +285,9 @@
         "ms": 1289,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "94ee03e8b1b9123d96ee7e0d0095d38e741a676988f4712defc2f3a4386a03f9",
@@ -292,7 +314,10 @@
         "ms": 1483,
         "by": "prospector",
         "figure": "cast/rush_prospector",
-        "name": "Rush prospector"
+        "names": [
+          "Rush prospector",
+          "Prospector"
+        ]
       },
       {
         "clip": "eab41310de7b2b82d08e2c92e1d7265038e1dfbbdd6d47379db88436f8348444",
@@ -335,7 +360,10 @@
         "ms": 647,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -346,7 +374,10 @@
         "ms": 3707,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -409,7 +440,10 @@
         "ms": 677,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -420,7 +454,10 @@
         "ms": 2283,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -435,7 +472,10 @@
         "ms": 1662,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -586,7 +626,10 @@
         "ms": 1125,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "b7023a352f599bce7414bdff54aa316764ab3ba58d12a5841d4875a960155f91",
@@ -597,7 +640,10 @@
         "ms": 2237,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       }
     ]
   },
@@ -620,7 +666,9 @@
         "ms": 812,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -887,7 +935,10 @@
         "ms": 2740,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "9a4aed3bbc720d7d7b93458e424af74131e06f4cab5d958b5602d97f726bb940",
@@ -938,7 +989,10 @@
         "ms": 1483,
         "by": "prospector",
         "figure": "cast/rush_prospector",
-        "name": "Rush prospector"
+        "names": [
+          "Rush prospector",
+          "Prospector"
+        ]
       },
       {
         "clip": "6b73eddad6cce7b7b7665acc9e738ef8f8016f35a4efd86ae6869fdc5c8470f8",
@@ -965,7 +1019,9 @@
         "ms": 3707,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -996,7 +1052,10 @@
         "ms": 6407,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "5b8a07701ab0def1b9eb4aec51ed2661024c1c5e3f1b93a67ae419b45fd40617",
@@ -1023,7 +1082,10 @@
         "ms": 2581,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "795fcd1be4d634615bd2e68df56bbe8a6ba9bb5e1d38f6151347c6f1616a5001",
@@ -1034,7 +1096,10 @@
         "ms": 2641,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1049,7 +1114,9 @@
         "ms": 797,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -1064,7 +1131,9 @@
         "ms": 1946,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -1075,7 +1144,9 @@
         "ms": 4307,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       }
     ]
   },
@@ -1090,7 +1161,9 @@
         "ms": 2158,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1101,7 +1174,9 @@
         "ms": 3627,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       },
       {
         "clip": "da122b44b8ecff16b1bd2ed1d242aaf06d26ec0505bd27361fbf7f8e0de3d03a",
@@ -1120,7 +1195,9 @@
         "ms": 4927,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       },
       {
         "clip": "62874bfab8f86290a2031db1995af812b6bfb55b55b20fd54136107c3fe1f9fb",
@@ -1131,7 +1208,9 @@
         "ms": 1268,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       }
     ]
   },
@@ -1146,7 +1225,10 @@
         "ms": 3307,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1177,7 +1259,9 @@
         "ms": 2224,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "db29ea421bbd037d20faa4339a627a321e6a0a5b7883dcf76af0a3ae104173fe",
@@ -1220,7 +1304,10 @@
         "ms": 1417,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "2a5e0172dfa203a1be843368e1ffe44599f050852c9025758c963d5041b29ef5",
@@ -1231,7 +1318,10 @@
         "ms": 1200,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1254,7 +1344,10 @@
         "ms": 4207,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "a2fd8e0c2779b5caaef2a5e11fa7a7dab840112ac3eb98986885804e08d8a536",
@@ -1273,7 +1366,9 @@
         "ms": 2067,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "e5cc1de5d6b94a825454b8d3783a924aa0cb8d66e35dadf5860e5c7bc5cae32e",
@@ -1292,7 +1387,9 @@
         "ms": 3407,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "d787641037799d8f1e4cd85c65c370a8a4dab3e099883b007707f16a143f1eda",
@@ -1303,7 +1400,9 @@
         "ms": 3107,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -1318,7 +1417,9 @@
         "ms": 1661,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "eac6a538326edaa8f087f1a3ba4b7d2a37e9d4ddf44efd211bfaf00384ebaaa1",
@@ -1329,7 +1430,9 @@
         "ms": 2048,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "f1f811f3f409b6134e3f60cbcdd9d031c06de24116426990661c8ffde98b73e1",
@@ -1347,7 +1450,9 @@
         "clip": "2c4b6889889080ed26dcf0e199c95d4dbd4add89b15d66e12b91b9b0d85681f7",
         "ms": 5507,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "75c9964bc2150b41caaebc0b68cd53c99df712d7201e192e39dcc8bf2a9049c2",
@@ -1362,7 +1467,10 @@
         "ms": 1034,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "2a5e0172dfa203a1be843368e1ffe44599f050852c9025758c963d5041b29ef5",
@@ -1373,7 +1481,10 @@
         "ms": 6807,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "84764fc46383eadfecbb5ab2f53ffe1d11fc6e37a9a35a59574ec8f03b5eb212",
@@ -1392,7 +1503,10 @@
         "ms": 1213,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "8adb85dbb5408670d30becdd576ce156e3b6071e6f8881148ad45d6e53e99049",
@@ -1403,7 +1517,10 @@
         "ms": 1983,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1418,7 +1535,9 @@
         "ms": 3307,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "76c3f6e0eb19d26464919146daf521ba2829f326c3592e4faa7cd175c726524c",
@@ -1437,7 +1556,9 @@
         "ms": 2073,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "af886118e17f5cd95aa8169dec9c9f3d57902c9298986eba64e5cdb06e1e1404",
@@ -1456,7 +1577,9 @@
         "ms": 1443,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1467,7 +1590,9 @@
         "ms": 5207,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -1482,7 +1607,10 @@
         "ms": 4407,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "3994faef478a6b97fb44e372686aa9878fdebbc4d643cb4e14e4e85a32ce52f9",
@@ -1501,7 +1629,10 @@
         "ms": 2352,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "fac9e80ecc93ce3cf6c9f28dc96747923718b86422ef7f8e2fbea700c22eced8",
@@ -1512,7 +1643,10 @@
         "ms": 5107,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "022a84ba601f239d8a415637108c4d7ba4e0c295f037e508bb0101d3e2c69dd7",
@@ -1539,7 +1673,10 @@
         "ms": 1562,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
@@ -1550,7 +1687,10 @@
         "ms": 3107,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "f3f86d8f1ef6aaf60b0a61bc13189fc4c007c62ede780df5b432e6d74bb58ea6",
@@ -1569,7 +1709,10 @@
         "ms": 2253,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1580,7 +1723,10 @@
         "ms": 1537,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       }
     ]
   },
@@ -1591,7 +1737,10 @@
         "ms": 2954,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "cc158b61e6a56c9ca23236e0e7f2b9dbfd6f02a11af55e524a763d28ee9dfba8",
@@ -1602,7 +1751,10 @@
         "ms": 3507,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "444ebbb39ce3654e767d6514499a825cac8887b9586cab8c91b896e3103da66c",
@@ -1613,7 +1765,10 @@
         "ms": 3507,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       }
     ]
   },
@@ -1628,7 +1783,10 @@
         "ms": 1359,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       }
     ]
   },
@@ -1643,7 +1801,10 @@
         "ms": 1697,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1654,7 +1815,10 @@
         "ms": 1546,
         "by": "bell_code_expert",
         "figure": "cast/bell_code_expert",
-        "name": "Bell Code Expert"
+        "names": [
+          "Bell Code Expert",
+          "Bell-Code Expert"
+        ]
       },
       {
         "clip": "7973b97924e8e49a13978c55aad403137c7886b3f44e643adbab2e8a0eb10111",
@@ -1681,7 +1845,10 @@
         "ms": 2317,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1696,7 +1863,9 @@
         "ms": 2649,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "1d3d6879823ce49d950895d8c24c3ff514c3a5d1a2ab01347631043c3b6d84ec",
@@ -1715,7 +1884,9 @@
         "ms": 1570,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1726,7 +1897,9 @@
         "ms": 1884,
         "by": "perrin",
         "figure": "cast/perrin_nine_verse",
-        "name": "Perrin Nine-Verse"
+        "names": [
+          "Perrin Nine-Verse"
+        ]
       }
     ]
   },
@@ -1749,7 +1922,10 @@
         "ms": 1255,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "a7d16b811c6f5abe9520e0f724ab7229208ac8e9c50d2d44a46aa4f3b908bb16",
@@ -1760,7 +1936,10 @@
         "ms": 1323,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1791,7 +1970,10 @@
         "ms": 1855,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "617a26cd15893fc78367547f0c66a762c4750561dfb688acee763a15f41d01d5",
@@ -1818,7 +2000,9 @@
         "ms": 1242,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "85421dc1423c0ebb6fa79e922ea525da8f87b33aae1bb20d4561af1b2ce84ef9",
@@ -1832,7 +2016,9 @@
         "clip": "2c1dd6d56c5cbbbfb0713bb8f046ed99ec1247b4eba4c11342567c933245b863",
         "ms": 1146,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "3352638cc9b53e63bd743f514ed1a2fadb1044b01229ebcaaa028e0e3118e4f0",
@@ -1842,7 +2028,9 @@
         "clip": "2eb70e140ea0839ecfb75ef304e5184518d328b0015112ef2a08eeb1c39d81c7",
         "ms": 1066,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "d8364fb0a585bac92b50c0a24a9279c98770e92b157320554dc15e5d6cc7a902",
@@ -1853,7 +2041,9 @@
         "ms": 935,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "cf2395b42de977a82af7a336e4f2e206dbdb2a477159c63d40cf67af31655dd2",
@@ -1864,7 +2054,9 @@
         "ms": 2471,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "1bdee35b276f6a2ad5232f9b44296ee9fa45812bd2deaa5a557f83d1b12e4eed",
@@ -1891,7 +2083,10 @@
         "ms": 658,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "2a5e0172dfa203a1be843368e1ffe44599f050852c9025758c963d5041b29ef5",
@@ -1902,7 +2097,10 @@
         "ms": 1003,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "62c9d73926b4bba356c8c1af84baa2329c329c59c03fe468d515e1db626aca3e",
@@ -1921,7 +2119,10 @@
         "ms": 3807,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       }
     ]
   },
@@ -1936,7 +2137,10 @@
         "ms": 2669,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "3df3797e54fa99c9c25ccfcf88457936c30dfd2c17723b1eda4da3ad0bd702b2",
@@ -1963,7 +2167,9 @@
         "ms": 8508,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       }
     ]
   },
@@ -1974,7 +2180,9 @@
         "ms": 1010,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "f275191c7bf06a1551916a5da36ff59a3deb15197ee455583272aa341074e3d2",
@@ -1985,7 +2193,9 @@
         "ms": 5907,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "3a0796dd58cd25c70f2d840f58c2b8c461f873aed34f3658a74b7a25d2d7fe41",
@@ -1996,7 +2206,9 @@
         "ms": 1708,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       }
     ]
   },
@@ -2011,7 +2223,9 @@
         "ms": 1091,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "1d0ab084186cae6a262944086665354ee10d899c1f7f48ced5cd7f20ea820fe6",
@@ -2030,7 +2244,10 @@
         "ms": 1894,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "2a4d73a3659949ce2e3353539cb8c8c86a334e31ca56644782d1846bd8344017",
@@ -2041,7 +2258,10 @@
         "ms": 8107,
         "by": "great_gran_ashby",
         "figure": "cast/great_gran_ashby",
-        "name": "Great-Grandma Ashby"
+        "names": [
+          "Great-Grandma Ashby",
+          "Great Gran Ashby"
+        ]
       },
       {
         "clip": "68ea3411e4bcd40b9d354399d4580c561aa6ff8264de40c0a2648683e6fd7b6a",

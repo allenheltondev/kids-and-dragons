@@ -26,7 +26,10 @@
         "ms": 2116,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -37,7 +40,10 @@
         "ms": 2873,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -52,7 +58,9 @@
         "ms": 2521,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -63,7 +71,9 @@
         "ms": 3727,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -78,7 +88,9 @@
         "ms": 1036,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -89,7 +101,9 @@
         "ms": 1523,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "d9603401ba93fb03024e93a4e7a95bbdd2060eb390e8ccdc87dec2716cd778a4",
@@ -108,7 +122,9 @@
         "ms": 1155,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -119,7 +135,9 @@
         "ms": 4027,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "cd7594747d59ae6f40f2ed8eb78a91fb630ed444bb6c087ead655754391f25c8",
@@ -130,7 +148,9 @@
         "ms": 2002,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "e3a10a4b3933e834f1a6de0d42b6d1404fc78483e32db9db008a96f52a6d4a08",
@@ -141,7 +161,9 @@
         "ms": 5107,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       }
     ]
   },
@@ -156,7 +178,9 @@
         "ms": 3307,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "c54191d8f982fa6d329917aaadf447b07625db7c6620f421206a71939f3f3955",
@@ -210,7 +234,9 @@
         "clip": "0787c0322d08f33177fa23a0261abb097be3ecc1200f3f4d47296fc1552f48e1",
         "ms": 3307,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "448b7cf432935366bfc3f624c7980b7c0db92820b8614a9186a5084eaaf23481",
@@ -221,7 +247,9 @@
         "ms": 1073,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "d901790268b77922bad1e51d67002172bcd5051b6787f801d9ca0b76a2eba29e",
@@ -232,7 +260,9 @@
         "ms": 1588,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -287,7 +317,9 @@
         "ms": 2037,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -302,7 +334,9 @@
         "ms": 636,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -313,7 +347,9 @@
         "ms": 3307,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "d2c36deb26fea20b708443a8301ee4c05a0832536bd62954775dc5cf60964952",
@@ -348,7 +384,9 @@
         "ms": 2223,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "732edf6c52c708c3ce87c8338905831c0e407cf3e437b131dac04de93fea2c95",
@@ -367,7 +405,9 @@
         "ms": 819,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "22b1a06b05038e003cdbba930ad61f6fee01dbb6bddb08132bfa065d7e53e91f",
@@ -378,7 +418,9 @@
         "ms": 962,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       }
     ]
   },
@@ -393,7 +435,9 @@
         "ms": 756,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -404,7 +448,9 @@
         "ms": 796,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       }
     ]
   },
@@ -427,7 +473,9 @@
         "ms": 1665,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -438,7 +486,9 @@
         "ms": 1829,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "3298c0ef749dbde020fa4e3373272b8597f515226c334b76d7572ffaf227e3bc",
@@ -457,7 +507,9 @@
         "ms": 2580,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -487,7 +539,9 @@
         "clip": "7b0a721766c2bf29d25108702024eee6e3c78d050c098fbcb2eff726a9c63008",
         "ms": 1015,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "e56d130caf2fa1e8d207c6d10257c7903a4f2974ecb3483438af40a0ad01cf8c",
@@ -497,7 +551,9 @@
         "clip": "00624d97d56dbba1b9837c0e5dedd15794c8ed9e4b94dfc5dbdeb50768a9deee",
         "ms": 854,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "ea58de09221feacc6f029593889e189457abd6f15a8c44371f25a59a219632f9",
@@ -516,7 +572,9 @@
         "ms": 2128,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "5dba558e14061d4069b785bb2025c407b080781ce7cb949de063ec017108e527",
@@ -535,7 +593,9 @@
         "ms": 1852,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -546,7 +606,9 @@
         "ms": 2393,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "f0fe46b1df3336748d7f36ba655d1b4e2398202aabc8b8823bb231018e047d6b",
@@ -573,7 +635,10 @@
         "ms": 3607,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -584,7 +649,10 @@
         "ms": 2945,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "b16e9f6a989986a728e97b0adc3dcb12ef8cd2cc6c4782e992314dd34f469f15",
@@ -643,7 +711,9 @@
         "ms": 2180,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -670,7 +740,9 @@
         "ms": 1255,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "b9251e56a5c2e77076c6210660f6667af511d4e8d4a4f8a701593d2a498a0e8f",
@@ -681,14 +753,18 @@
         "ms": 1823,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "718acb50d547ee78819895a149cf6567cd36cb8142badf1f85c26a21c5a4993d",
         "ms": 796,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
@@ -699,7 +775,9 @@
         "ms": 4107,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -726,7 +804,9 @@
         "ms": 4627,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -741,7 +821,10 @@
         "ms": 1108,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -752,7 +835,10 @@
         "ms": 1195,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -767,7 +853,9 @@
         "ms": 2750,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -778,7 +866,9 @@
         "ms": 3407,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -793,7 +883,9 @@
         "ms": 1776,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -804,7 +896,9 @@
         "ms": 3207,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "cddf7b40c983268bf600c97d7fd2d1df9043296b06a978477876424e8b2ad421",
@@ -823,7 +917,9 @@
         "ms": 2763,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "5bcc0ae2d1bc297b875683f60a82c398b2f92f79198145ec4413d0ead74844cf",
@@ -842,7 +938,9 @@
         "ms": 3307,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -853,7 +951,9 @@
         "ms": 1594,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "33b48d0e07a6f978340db8c7259373c164c971ac1f9ddd71764ebddd5d7db1e4",
@@ -880,7 +980,9 @@
         "ms": 918,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -891,7 +993,9 @@
         "ms": 979,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "ebfbad22e84e46f51acd5ddced7e609347fb404a3909f15ae3d85753054c86c2",
@@ -918,7 +1022,10 @@
         "ms": 1608,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "5fe29d0284b9cab2f4ecd458ddd6775b377629aa160af183eec4ea2bb03fd5c9",
@@ -929,7 +1036,10 @@
         "ms": 1071,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -952,7 +1062,10 @@
         "ms": 2017,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "a3b01bad3d921076fd3b2f4594148cca28d491b4abc8d7025627392d2a996ab2",
@@ -963,7 +1076,10 @@
         "ms": 4407,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "02d494d03bf53a26cbc6b139964eb1198b4200e0485d454fcdbf7f93c07b11c6",
@@ -974,7 +1090,10 @@
         "ms": 1905,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "5fe29d0284b9cab2f4ecd458ddd6775b377629aa160af183eec4ea2bb03fd5c9",
@@ -985,7 +1104,10 @@
         "ms": 1841,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -1024,7 +1146,9 @@
         "ms": 1044,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1035,7 +1159,9 @@
         "ms": 3207,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "0130c6e359d5811527bf2b24216528063a67909a5c0194f94d538de31df170c6",
@@ -1046,7 +1172,9 @@
         "ms": 4107,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "8e7d2cc8b7d4b7a0f5f6a51297a0fd7a4c2e6c4bdb46c495f5dd7429933846ee",
@@ -1105,7 +1233,9 @@
         "ms": 1595,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1124,7 +1254,10 @@
         "ms": 1611,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "79534b3a0a8a902a5729c7f67ba1c1855a687cff36393bf40746b983d4fae425",
@@ -1143,7 +1276,10 @@
         "ms": 1807,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1154,7 +1290,10 @@
         "ms": 1380,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -1177,7 +1316,9 @@
         "ms": 2475,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1192,7 +1333,9 @@
         "ms": 2453,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1203,7 +1346,9 @@
         "ms": 8707,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "91164d5415471bc3604ab9d158506f1494bcf55714efa4d1f08675059f9a21d1",
@@ -1214,7 +1359,9 @@
         "ms": 4007,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1229,7 +1376,9 @@
         "ms": 1856,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "2f4c7056d2029a2d490f3ec45d660877b023341bb0fdef5e7392f97490f52a33",
@@ -1240,7 +1389,9 @@
         "ms": 3407,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1255,7 +1406,9 @@
         "ms": 3208,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1266,7 +1419,9 @@
         "ms": 5408,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "567c753f0f9f5212bf58fbe88dcbf3fa5c86d25f3bd47179a14113c8c0de7849",
@@ -1277,7 +1432,10 @@
         "ms": 1526,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1300,7 +1458,9 @@
         "ms": 2273,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "f8c88c2686be7734577b8ebbc90fa0a3fa75db7df17e7b532849e3baf733a0cd",
@@ -1327,7 +1487,9 @@
         "ms": 3307,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1338,7 +1500,9 @@
         "ms": 6007,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "d4383e98ebaec88b4c700359a2b5f34a20f703759997203b3ca69569f03f0587",
@@ -1349,7 +1513,10 @@
         "ms": 2101,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "bf7aa489a42f8e4b34f7fdd329204cddbe8da52dcd42d6331241e63d4338531f",
@@ -1368,7 +1535,9 @@
         "ms": 3507,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1379,7 +1548,9 @@
         "ms": 1352,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "e0d5a442b6c3964a898c338eb0b6baaa7c5d01a59db3c57525d990f4aef680a0",
@@ -1390,7 +1561,9 @@
         "ms": 10007,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "0d4a3ca1d5f96724f8ea9a21b531b4872e77e41df7d0513445db8a7660c02930",
@@ -1405,7 +1578,9 @@
         "ms": 1336,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "08b1344ef1faea6513656dc3409c788774886cecf80d427374641c354c680eca",
@@ -1416,7 +1591,9 @@
         "ms": 3707,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1427,7 +1604,9 @@
         "ms": 3407,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "dcaa70629e8a38a30b917373cad66611d4df68d713ee6533e7e77a87e0c1d290",
@@ -1446,7 +1625,9 @@
         "ms": 2170,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "9dac36881c2f9c77fe54fa457e2fc2be04b78f22fe1684fde441be8b5764320b",
@@ -1457,14 +1638,19 @@
         "ms": 2721,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "7c5c077482d8945b126b45e2983e075bbd77dcf871f237cc20ee69e3247025f9",
         "ms": 2828,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "015f5e3ad9cff065a92a4ecc284890102bf14a70923f1616b2781e29802eb697",
@@ -1475,7 +1661,9 @@
         "ms": 2262,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "ed487ceac146c2811cb984b7e7f120c803a4c5226e5daf653461575c6a74fb16",
@@ -1494,7 +1682,10 @@
         "ms": 3107,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1505,7 +1696,10 @@
         "ms": 6507,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "a4f0c107efa6858e767337e25ca0a10b85cce9a63378d09a7e9697f7f25978f1",
@@ -1524,7 +1718,10 @@
         "ms": 1784,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "015f5e3ad9cff065a92a4ecc284890102bf14a70923f1616b2781e29802eb697",
@@ -1535,7 +1732,10 @@
         "ms": 3607,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "26280b5aa8959ed218b029734aa8172e8b6a6b6d4521d698ad07879ab0a26171",
@@ -1570,7 +1770,9 @@
         "ms": 3207,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "3ab2bff6391e0b0a842a207df8926b767444c420ec0bba4fe96e24f0bfa34317",
@@ -1581,7 +1783,9 @@
         "ms": 4707,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "149b6057ab122b600d0bb7e494a3973355afbecbf99c1f7c74c3098a2b519c48",
@@ -1600,7 +1804,9 @@
         "ms": 3207,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "9f93df1e5a8ad60f2cfe08ad235ca37c40c2c18849c50de97cad5e93ed35301b",
@@ -1611,7 +1817,9 @@
         "ms": 2721,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1622,7 +1830,9 @@
         "ms": 2424,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "277a3fb2d991e38e9a955c4bef58f7ca271102d836698817b86be24c75309b03",
@@ -1633,7 +1843,9 @@
         "ms": 3707,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "028f3f9baf9cb5e4d74941700640d7a4df3482e35b7011889516b8f663b30874",
@@ -1644,7 +1856,9 @@
         "ms": 454,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "98c2df45494954042fe4eb60bba38b5fbe4c20f1d490fd671154c2eabdd63d13",
@@ -1666,7 +1880,9 @@
         "clip": "142e05b1d530cf3c2b4ed5de6d436d06e6f507c2d7e7ce26c0afaba503194821",
         "ms": 2081,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6b64191ed24c8e1594e9843d643382ab417a26d26a450e161b9fe9e2298615f1",
@@ -1676,7 +1892,9 @@
         "clip": "9c50aeab2016eb3b20b4e782144c588c9ed16d459675a0cfd41aff40924e2074",
         "ms": 1322,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "2e47d21118683320d86ccf62910fa22f310e242b2cd0fd9ec3d846ea450e204e",
@@ -1711,7 +1929,9 @@
         "ms": 2817,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "7bbbc734e36e28fdcd595749ca0e803e0e5b984cb3d209ce2bdf44285784adf8",
@@ -1722,7 +1942,9 @@
         "ms": 5507,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "e0e02ece7dad1cbe23904acd2b376160414052f890ebafc0a81380e8ac28bd1c",
@@ -1741,7 +1963,9 @@
         "ms": 4107,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1752,7 +1976,9 @@
         "ms": 6307,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "9f90f6fb6ea0b5298f249189a0e1b052003323518f53fce1a655a61f66b4cbea",
@@ -1763,7 +1989,9 @@
         "ms": 1517,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1778,7 +2006,9 @@
         "ms": 2377,
         "by": "bram_lock",
         "figure": "cast/bram_lock",
-        "name": "Bram Lock"
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "b4974721dcf214c53217b94bab7428559e6f07f8ff062a674c13e358c56c4d54",
@@ -1805,7 +2035,9 @@
         "ms": 1533,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
@@ -1816,7 +2048,9 @@
         "ms": 855,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1831,7 +2065,9 @@
         "ms": 1541,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "d605bd07cb22b69470ea373a2e4db3db921314529f8e154050a87ddb5a9a612f",
@@ -1842,7 +2078,9 @@
         "ms": 1525,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1857,7 +2095,9 @@
         "ms": 2364,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1872,7 +2112,9 @@
         "ms": 5207,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "4b60e6bb1fe0034cad3d72eeac4aeaa8eff2cc42af6c7aaed337609eedb59d0c",
@@ -1883,7 +2125,9 @@
         "ms": 2510,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1898,7 +2142,9 @@
         "ms": 2183,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1909,7 +2155,9 @@
         "ms": 1051,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "4489ae71d854ce43ee25446ee73a8bb2ad035920f29def747556ff6ea64b71d7",
@@ -1932,7 +2180,9 @@
         "ms": 2185,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "21c5280c9596086330ad9e0a2da005970202c754506f896bbdf3bef614239d41",
@@ -1943,7 +2193,9 @@
         "ms": 2251,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "bc909982f3986964d1cd07d2bbaafea5e367607f79b36d3328947ba6296808b8",
@@ -1954,7 +2206,9 @@
         "ms": 1937,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1969,7 +2223,9 @@
         "ms": 2263,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1980,7 +2236,9 @@
         "ms": 1992,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1995,7 +2253,9 @@
         "ms": 3307,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "61ef190034e2329fc9af094e5099f1c7f9dc9e41b4327d961caa45801a7f7241",
@@ -2014,7 +2274,9 @@
         "ms": 1691,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -2033,7 +2295,10 @@
         "ms": 1260,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2044,7 +2309,10 @@
         "ms": 1757,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -2091,7 +2359,10 @@
         "ms": 1078,
         "by": "orin_vale",
         "figure": "cast/orin_vale",
-        "name": "Master Orin Vale"
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -2122,7 +2393,9 @@
         "ms": 1261,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "906b42a4b478592fbb9a60cfe28454d85989de26452c84fb7c3c689d8e28527f",
@@ -2133,7 +2406,9 @@
         "ms": 3707,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ee1a86f21a8e97e3e1963191d4a07aaf9a405d54322cd32c6ccbab7bbd8ce03c",
@@ -2144,14 +2419,18 @@
         "ms": 845,
         "by": "olivia",
         "figure": "cast/lady_olivia",
-        "name": "Lady Olivia"
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "356ab4355e0bff56713fcebe0dcfd0279d59deed966fe18e178a81c7cda14b54",
         "ms": 709,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",

@@ -106,7 +106,9 @@
         "ms": 4607,
         "by": "road_boss",
         "figure": "cast/road_boss",
-        "name": "Road Boss"
+        "names": [
+          "Road Boss"
+        ]
       },
       {
         "clip": "5df1e64515eaee011cb26b6c3061c9e6c2b7ac5fb97ce2bf3bfddbe781496706",
@@ -237,7 +239,9 @@
         "ms": 5207,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       }
     ]
   },
@@ -248,7 +252,9 @@
         "ms": 1353,
         "by": "relay_runner",
         "figure": "cast/relay_runner",
-        "name": "Relay Runner"
+        "names": [
+          "Relay Runner"
+        ]
       },
       {
         "clip": "24bbecd18101a27d3924277a6b0746441118d690c71368311f120395e66a3237",
@@ -275,7 +281,9 @@
         "ms": 2137,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "f47721bd9bc8c20bab8a37fea3202b24ae097fc97178067edd53f51f89c54b15",
@@ -294,7 +302,9 @@
         "ms": 2127,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "d24e227bde0a25335e30185dbd6555dab88c732df91efd9467a3f8d9f8600a22",
@@ -329,7 +339,9 @@
         "ms": 2043,
         "by": "ma_ruddle",
         "figure": "cast/ma_ruddle",
-        "name": "Ma Ruddle"
+        "names": [
+          "Ma Ruddle"
+        ]
       },
       {
         "clip": "ab6d907cbe33fa2a5001c380c6412246c4bcde76bc86b45a57ef67ea874881ac",
@@ -652,7 +664,9 @@
         "ms": 1666,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "9f51271f070b1a173c28d87e4518dc1a27e2f0a957f77e14511e99b51a8bac5a",
@@ -663,7 +677,9 @@
         "ms": 2566,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       }
     ]
   },
@@ -686,7 +702,9 @@
         "ms": 1792,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "7aebcffc5364eb64fa8e8a218abb72b0ff824ff48e12b77151cf711772dec22d",
@@ -793,7 +811,9 @@
         "ms": 2242,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "dbec9bd691ce3d3d7084cbe969a2abb99f2e08f91dd7f6c002f8a95340ee17fe",
@@ -828,7 +848,9 @@
         "ms": 2690,
         "by": "road_boss",
         "figure": "cast/road_boss",
-        "name": "Road Boss"
+        "names": [
+          "Road Boss"
+        ]
       },
       {
         "clip": "079147d53020ad39d681edb44f43411c616b039a96d467c7c527c8b63ee329da",
@@ -847,7 +869,9 @@
         "ms": 1740,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "789b564f46b5f5ac686d52487cb47eb0d78ec9a6531fad93592d857e96320990",
@@ -858,7 +882,9 @@
         "ms": 1357,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       }
     ]
   },
@@ -929,7 +955,9 @@
         "ms": 2641,
         "by": "road_boss",
         "figure": "cast/road_boss",
-        "name": "Road Boss"
+        "names": [
+          "Road Boss"
+        ]
       },
       {
         "clip": "755cae4da72b40c9151c514291c617678271d313cc80af1f553882facd6fb7e6",
@@ -996,7 +1024,9 @@
         "ms": 1877,
         "by": "old_corran",
         "figure": "cast/old_corran",
-        "name": "Old Corran"
+        "names": [
+          "Old Corran"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1015,7 +1045,9 @@
         "ms": 1478,
         "by": "old_corran",
         "figure": "cast/old_corran",
-        "name": "Old Corran"
+        "names": [
+          "Old Corran"
+        ]
       }
     ]
   },
@@ -1038,7 +1070,9 @@
         "ms": 579,
         "by": "old_corran",
         "figure": "cast/old_corran",
-        "name": "Old Corran"
+        "names": [
+          "Old Corran"
+        ]
       },
       {
         "clip": "b41d37ccae6cbdd07789e820a933e6143425116364de0dff2dc7f7235db70763",
@@ -1049,7 +1083,9 @@
         "ms": 1478,
         "by": "old_corran",
         "figure": "cast/old_corran",
-        "name": "Old Corran"
+        "names": [
+          "Old Corran"
+        ]
       }
     ]
   },
@@ -1072,7 +1108,9 @@
         "ms": 1162,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "14e13f0960655d7a8a5806cf0a7546f31c6f0221460e36b310ff6cd7ea251b56",
@@ -1091,7 +1129,9 @@
         "ms": 1442,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "31f73e68b9103c47d224d92ea991e4a66e6393a6508041df1ab9da0fb518ce87",
@@ -1134,7 +1174,9 @@
         "ms": 1516,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "1e2b8d7e46628184c2bce47500356d55495fc05335864eccfaab6b5045059cda",
@@ -1153,7 +1195,9 @@
         "ms": 3107,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "72beaa0e508e79a6520fd205160b18379bd6eafb6875f36f13e11359ece33db5",
@@ -1168,7 +1212,9 @@
         "ms": 3707,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "789b564f46b5f5ac686d52487cb47eb0d78ec9a6531fad93592d857e96320990",
@@ -1179,7 +1225,9 @@
         "ms": 4307,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "7a0cbef05521b2b68b2b905b218284f153e10698b8abb7afe010fe1ef4b580a3",
@@ -1198,7 +1246,9 @@
         "ms": 3807,
         "by": "bell_courier",
         "figure": "cast/bell_courier",
-        "name": "Bell Courier"
+        "names": [
+          "Bell Courier"
+        ]
       },
       {
         "clip": "a2fb362d42961cac18d1f338b783e73b5d5eab1b712ef15d53c0ffb002e47019",
@@ -1217,7 +1267,9 @@
         "ms": 1170,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       },
       {
         "clip": "5759c05d3a0c4a3a55443763d5a82bf68e442f62cdd0a6681363ec557a018954",
@@ -1228,7 +1280,9 @@
         "ms": 1916,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       },
       {
         "clip": "7c9c4a9f793bdcc6ceb4a76b172ee7ac74a60fac13c3edb05eab806caf43941f",
@@ -1247,7 +1301,9 @@
         "ms": 2015,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1258,7 +1314,9 @@
         "ms": 1375,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       }
     ]
   },
@@ -1281,7 +1339,9 @@
         "ms": 2243,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       },
       {
         "clip": "9a5ea25b57f9e36bc5e1444619482cff5b0c9f4b27788f352aef22fa23fa51b9",
@@ -1308,7 +1368,9 @@
         "ms": 6707,
         "by": "ma_ruddle",
         "figure": "cast/ma_ruddle",
-        "name": "Ma Ruddle"
+        "names": [
+          "Ma Ruddle"
+        ]
       },
       {
         "clip": "8e2a00554eff49b40b918a7a9c686d2972e348a57c165c428efb49b1fe3a1353",
@@ -1334,7 +1396,9 @@
         "clip": "3b8a452cb9929d6834ea3a9231b212994329d33513274d7f8f6443e98ec80b51",
         "ms": 4307,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "8e297a9df9c87008e438b2465616d5d27f217472c931cda98ad9fed4901ca6de",
@@ -1353,7 +1417,10 @@
         "ms": 3907,
         "by": "lead_drover",
         "figure": "entities/centaur",
-        "name": "Lead Drover"
+        "names": [
+          "Lead Drover",
+          "Drover"
+        ]
       },
       {
         "clip": "6539506ec551cc81ef4f98dc3d1b7128cb3aba9db05ae6871783d55615b895fb",
@@ -1444,7 +1511,9 @@
         "ms": 1395,
         "by": "old_corran",
         "figure": "cast/old_corran",
-        "name": "Old Corran"
+        "names": [
+          "Old Corran"
+        ]
       },
       {
         "clip": "f7e85654ad71eb8c63837a5670b43071533d82cc6f217a50c099f3e6508e5d00",
@@ -1499,7 +1568,9 @@
         "ms": 2929,
         "by": "road_boss",
         "figure": "cast/road_boss",
-        "name": "Road Boss"
+        "names": [
+          "Road Boss"
+        ]
       },
       {
         "clip": "3436e831adfa1efd121adecf00107e8ca75e744f6877d53085577f1daa9ae3d9",
@@ -1518,7 +1589,9 @@
         "ms": 2824,
         "by": "road_boss",
         "figure": "cast/road_boss",
-        "name": "Road Boss"
+        "names": [
+          "Road Boss"
+        ]
       },
       {
         "clip": "755cae4da72b40c9151c514291c617678271d313cc80af1f553882facd6fb7e6",
@@ -1529,7 +1602,9 @@
         "ms": 2054,
         "by": "road_boss",
         "figure": "cast/road_boss",
-        "name": "Road Boss"
+        "names": [
+          "Road Boss"
+        ]
       }
     ]
   },
@@ -1551,7 +1626,9 @@
         "clip": "2541fec09d727568ec627e37d71bc4e0e375c9adbd25426f55f6d4685db4ecb8",
         "ms": 864,
         "by": "rumor_ring",
-        "name": "Rumor Ring"
+        "names": [
+          "Rumor Ring"
+        ]
       },
       {
         "clip": "17abdea42aef3165c2f59ae2e5a5cc1ef6b30298734007a60415882cce68576d",
@@ -1561,13 +1638,17 @@
         "clip": "501f4137dbc327444923010a176eb8c70082785bd01af9e3e2f8a3336ca6233c",
         "ms": 2694,
         "by": "rumor_ring",
-        "name": "Rumor Ring"
+        "names": [
+          "Rumor Ring"
+        ]
       },
       {
         "clip": "00f078a93b76283f6a7377398eb8b811519b9646d0a46a6650da9b244d3ebade",
         "ms": 1126,
         "by": "rumor_ring",
-        "name": "Rumor Ring"
+        "names": [
+          "Rumor Ring"
+        ]
       },
       {
         "clip": "0ec03106e0cb04a8dcda7844ae4c2d104d7e9d2493fe7d644e7a47d2cfd5483b",
@@ -1577,7 +1658,9 @@
         "clip": "d4576d347724bd8726c07109dec377bc313f8dcae801e08c96eaf7a96040a1f2",
         "ms": 3107,
         "by": "rumor_ring",
-        "name": "Rumor Ring"
+        "names": [
+          "Rumor Ring"
+        ]
       },
       {
         "clip": "d3a8932f21551456c2c4d11efdddaf11bd55b4920f3612648359092e51000303",
@@ -1587,7 +1670,9 @@
         "clip": "62d5879a440e4c0706c7007a18b248de7eaffe15d96489ede85ac622e6d89992",
         "ms": 948,
         "by": "rumor_ring",
-        "name": "Rumor Ring"
+        "names": [
+          "Rumor Ring"
+        ]
       }
     ]
   },
@@ -1617,7 +1702,9 @@
         "clip": "2cb35572ffeb192826537fb65fca71c83c01cf48a39502f80d211d083d1a7cda",
         "ms": 814,
         "by": "rumor_ring",
-        "name": "Rumor Ring"
+        "names": [
+          "Rumor Ring"
+        ]
       },
       {
         "clip": "e34cd3c2ec642c7a4e99138eda2d857183faf2de86685e5b17fab6e4621924dc",
@@ -1692,7 +1779,9 @@
         "ms": 1810,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       },
       {
         "clip": "6058f3d611e086e01363f5c8d61343e3ec1ada1b46d68510ebad204cd7801922",
@@ -1703,7 +1792,9 @@
         "ms": 1604,
         "by": "clerk_pennywhistle",
         "figure": "cast/clerk_pennywhistle",
-        "name": "Clerk Pennywhistle"
+        "names": [
+          "Clerk Pennywhistle"
+        ]
       },
       {
         "clip": "4a5bc844ae9f601fadfe8eafc034bd4cd06bfd0b7e788376cc6c715b3e4bd9bb",
@@ -1746,7 +1837,9 @@
         "ms": 1912,
         "by": "ma_ruddle",
         "figure": "cast/ma_ruddle",
-        "name": "Ma Ruddle"
+        "names": [
+          "Ma Ruddle"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1757,7 +1850,9 @@
         "ms": 2001,
         "by": "ma_ruddle",
         "figure": "cast/ma_ruddle",
-        "name": "Ma Ruddle"
+        "names": [
+          "Ma Ruddle"
+        ]
       }
     ]
   },
@@ -1772,7 +1867,9 @@
         "ms": 1446,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "60d5471e80e9c5c346af17318635d3fd99df6daf5fb320fb6a5faddb851a5bd4",
@@ -1791,7 +1888,9 @@
         "ms": 1781,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "60b7b29f4d24633ac12c37aaf48a2de68d284ebe98afe5bae390879ecda7381e",
@@ -1810,7 +1909,9 @@
         "ms": 740,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       },
       {
         "clip": "829af2f17a0e63a3dfb8a15ade05a592a9a4909c1f87066d1fa54dd29c1d353d",
@@ -1821,7 +1922,9 @@
         "ms": 2137,
         "by": "sergeant_holloway",
         "figure": "cast/holloway",
-        "name": "Sergeant Holloway"
+        "names": [
+          "Sergeant Holloway"
+        ]
       }
     ]
   },
@@ -1832,7 +1935,9 @@
         "ms": 2229,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "14e13f0960655d7a8a5806cf0a7546f31c6f0221460e36b310ff6cd7ea251b56",
@@ -1843,7 +1948,9 @@
         "ms": 7107,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "271e233497ebdf5330cb8438a66c9c0b1dae245dd836a762d723a3e1ba846e3d",
@@ -1865,7 +1972,9 @@
         "clip": "c6d6767a38f58d2a66b10994a4a196307533e9e39a3fc81dca13e405ec47714a",
         "ms": 611,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "c0407e275e3d3bfee122889c8b6f368c637b0fca148fd7c1db91835ec70ba30e",
@@ -1876,7 +1985,9 @@
         "ms": 1110,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "60c1ba40855622bf0ed8eb3cfc56661600f5fe7a71437ce43e422bd1c99379d6",
@@ -1890,7 +2001,9 @@
         "clip": "67960c4bd6b1cf39c2f2cf47e82f2fa690087bc5c039b3362c94e1210970882d",
         "ms": 1180,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "2ac857c626730fcc7ebfebdd603022702a1084fa85fadf29f83de247d9425d28",
@@ -1901,7 +2014,9 @@
         "ms": 1536,
         "by": "wend",
         "figure": "cast/wend",
-        "name": "Wend"
+        "names": [
+          "Wend"
+        ]
       },
       {
         "clip": "86c2ca692e1834cf693e1157b3159c8321ab4aa335e73c58fd23cc86376ee935",

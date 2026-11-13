@@ -293,7 +293,7 @@ export interface PartyScene {
    */
   setCast(members: readonly StageCastMember[]): void;
   /**
-   * Whose recorded voice is heard (their figure and name on the cast sheet), or null: the cast
+   * Whose recorded voice is heard (their figure and names on the cast sheet), or null: the cast
    * member standing in the scene as them swells gently while they speak (cast-pulse.ts).
    */
   setSpeaking(cast: SpeakingCast | null): void;

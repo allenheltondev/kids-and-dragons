@@ -26,7 +26,9 @@
         "ms": 464,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
@@ -37,7 +39,9 @@
         "ms": 1426,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ca5960f9e7750fa004e5b831bcc3c95772e1dd87b82e58eeba3c7b0df157e00c",
@@ -48,7 +52,9 @@
         "ms": 2901,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -63,7 +69,9 @@
         "ms": 1732,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "bc42f798b43f2c0756efb5761c0dc880ef8abea4892cd530269aab18297f298f",
@@ -74,7 +82,9 @@
         "ms": 1974,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "8390d31243b2f93ede5a1dac395f7cc1c4d56fcc149311b378058919dc54cf9a",
@@ -117,7 +127,9 @@
         "ms": 8107,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -148,7 +160,9 @@
         "ms": 1114,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "fb3ff4dcd6d2961864aa1f098b5f4ecf909eed9824aeff3be3513fea9de77ce4",
@@ -159,7 +173,9 @@
         "ms": 2318,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "904785aedf5578854e4cac094d8807c392d95af5cc22bfb443f2362eb77320f3",
@@ -182,7 +198,9 @@
         "ms": 1540,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "df3cede1cdc9cd212f68f9c6d64e8f95583b8cd268ba98fb353c036999b3020d",
@@ -225,7 +243,9 @@
         "ms": 5907,
         "by": "dunnick",
         "figure": "cast/master_dunnick",
-        "name": "Master Dunnick"
+        "names": [
+          "Master Dunnick"
+        ]
       },
       {
         "clip": "5795a685178f91cdb0ff78f3ad31a831a419e33d885ec03058bc4aefd2251e98",
@@ -236,7 +256,9 @@
         "ms": 1618,
         "by": "dunnick",
         "figure": "cast/master_dunnick",
-        "name": "Master Dunnick"
+        "names": [
+          "Master Dunnick"
+        ]
       }
     ]
   },
@@ -251,7 +273,9 @@
         "ms": 1640,
         "by": "dunnick",
         "figure": "cast/master_dunnick",
-        "name": "Master Dunnick"
+        "names": [
+          "Master Dunnick"
+        ]
       },
       {
         "clip": "61333aa9174798ed4affb2282fceef59efcf0a14cf943040d5959d624efcc23d",
@@ -270,7 +294,9 @@
         "ms": 1635,
         "by": "dunnick",
         "figure": "cast/master_dunnick",
-        "name": "Master Dunnick"
+        "names": [
+          "Master Dunnick"
+        ]
       },
       {
         "clip": "3d48fda9c70e4dba66629ea3008a5250b47638af64e4227bc124c5cc2752d509",
@@ -281,7 +307,9 @@
         "ms": 2120,
         "by": "dunnick",
         "figure": "cast/master_dunnick",
-        "name": "Master Dunnick"
+        "names": [
+          "Master Dunnick"
+        ]
       }
     ]
   },
@@ -296,7 +324,9 @@
         "ms": 10107,
         "by": "fenwick",
         "figure": "cast/courier_griffin",
-        "name": "Fenwick"
+        "names": [
+          "Fenwick"
+        ]
       },
       {
         "clip": "c0cabf2caf385e8713e80ab8b7fdc1c429a9ecb85c6eaa34add5d503a3ffc334",
@@ -311,7 +341,9 @@
         "ms": 2363,
         "by": "fenwick",
         "figure": "cast/courier_griffin",
-        "name": "Fenwick"
+        "names": [
+          "Fenwick"
+        ]
       },
       {
         "clip": "d7542ef0aa585a4b312e5d4e8df41917ef3a8a80fdbdaec0ca5e99f877994a35",
@@ -322,7 +354,9 @@
         "ms": 1423,
         "by": "fenwick",
         "figure": "cast/courier_griffin",
-        "name": "Fenwick"
+        "names": [
+          "Fenwick"
+        ]
       }
     ]
   },
@@ -345,7 +379,9 @@
         "ms": 13207,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -376,7 +412,9 @@
         "ms": 4007,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "2f5b04da733081667c362b0de2d564f6084c9c062c05cdecdd8940cfa60ec140",
@@ -387,7 +425,9 @@
         "ms": 4107,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -402,7 +442,9 @@
         "ms": 5607,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "4708a73086c844470090207abb157311794871931f7a001d9d70002654834b5c",
@@ -429,7 +471,9 @@
         "ms": 3108,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "d4048c9eeac85884a2bf588cb037cc9bcde85a99f2e383ab849e3ea655730f6f",
@@ -440,7 +484,9 @@
         "ms": 1819,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -451,7 +497,9 @@
         "ms": 2077,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -466,7 +514,9 @@
         "ms": 5607,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "cd8f43a056c41b51dbc07b6ae2a4c390edbd00280a33383c9feb449557f06ce1",
@@ -513,7 +563,9 @@
         "ms": 1646,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "930e99279775f33cedf8851feb76256ce8825d9cec136d02eac114c51c9efd17",
@@ -540,7 +592,9 @@
         "ms": 1166,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "f447113f66cd5dfdd29cb3273ae88df2b89d448a35d39cce1d607597f1acd030",
@@ -551,7 +605,9 @@
         "ms": 3307,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "6fadc4241cfb7b760bd9a325903ef53fca06cc78bd8751d9283156ff57866438",
@@ -562,7 +618,9 @@
         "ms": 1744,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -577,7 +635,9 @@
         "ms": 1640,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -644,7 +704,9 @@
         "ms": 1202,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
@@ -655,7 +717,9 @@
         "ms": 1356,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "9eed2a51a9437aa368ec1c186e484391310a5c04738f687f7b0a8855abdbd243",
@@ -666,7 +730,9 @@
         "ms": 1645,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -701,7 +767,9 @@
         "ms": 938,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "76e4944e949e1adba2affd88f27c8d17b1c409019af5f354b2a718ce42e7b717",
@@ -712,7 +780,9 @@
         "ms": 772,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -727,7 +797,9 @@
         "ms": 653,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "2df6eb2fb097e2e7ed9aa410aaf644bcb9c904559abc540e1482cb183b2898a7",
@@ -786,7 +858,9 @@
         "ms": 8307,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "7cfcbcd8da6ae8dc5fdccdd24c828c1b4f2965758c9dc794976d755c98593263",
@@ -805,7 +879,9 @@
         "ms": 1453,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -816,7 +892,9 @@
         "ms": 9007,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "7d65c2115f021647364c7100f407b484de6fd72c00caf23b1d7f2c3c3c4b65d7",
@@ -827,7 +905,9 @@
         "ms": 5607,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -842,7 +922,9 @@
         "ms": 1453,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -853,7 +935,9 @@
         "ms": 9007,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "7d65c2115f021647364c7100f407b484de6fd72c00caf23b1d7f2c3c3c4b65d7",
@@ -864,7 +948,9 @@
         "ms": 5607,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -903,7 +989,9 @@
         "ms": 2183,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
@@ -930,7 +1018,9 @@
         "ms": 1879,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "033dec66fa2f190699f34d4f1eced93c7e2145c87a3176e3b1455aefed9e2e7a",
@@ -949,7 +1039,9 @@
         "ms": 839,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
@@ -960,7 +1052,9 @@
         "ms": 1753,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "a0c02a1c33ff9bfc174dc648a7535ce1fe2a4cef8bd7e578d781036512ca74ff",
@@ -971,7 +1065,9 @@
         "ms": 1172,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -994,7 +1090,9 @@
         "ms": 4827,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1005,7 +1103,9 @@
         "ms": 3107,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "cc1a5b6a8a33d2013cab9af6523682e64e4909f3426782285ff93cc8ecce1166",
@@ -1016,7 +1116,9 @@
         "ms": 5007,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1031,7 +1133,9 @@
         "ms": 5807,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "365a45ec2ce2c5756e37b73975eeb4b688e2f0bd199c3a6ad962815ef2cabf6f",
@@ -1050,7 +1154,9 @@
         "ms": 5507,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1089,7 +1195,9 @@
         "ms": 1873,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "caee89a52809a3a228d5149e24f16377d07f619d46027fdd225166912977a601",
@@ -1124,7 +1232,9 @@
         "ms": 1236,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "52f65cd7256c253a66a736fa15649f1ae964f69c6da45f1804ef73d8f2e2eef1",
@@ -1143,7 +1253,9 @@
         "ms": 2365,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "7c413d38c1150a5239c9d8999d01b439788dc8b916986b411bc7239f52c0cd83",
@@ -1162,7 +1274,9 @@
         "ms": 3207,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1173,7 +1287,9 @@
         "ms": 1779,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "b6a715e578cc002172bb4d91166ed646f6fc19fab4eed5fd906c00491ed2abaf",
@@ -1192,7 +1308,9 @@
         "ms": 1725,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ec74057e02d7f722d6c2b8c186221a022b9f5fcc361700e2fcf22361353c62a2",
@@ -1203,7 +1321,9 @@
         "ms": 1822,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -1242,7 +1362,9 @@
         "ms": 1762,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -1253,7 +1375,9 @@
         "ms": 1297,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -1268,7 +1392,9 @@
         "ms": 3707,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "b1b9ba1b051fb13d4638f3861cb0597a77a7aa12f59b10abb903536a356cb13b",
@@ -1279,7 +1405,9 @@
         "ms": 4807,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "8af94cc95e05d7891c358bef591310ddc5fac1fe1c6aa7901284e620b8de8eac",
@@ -1298,7 +1426,9 @@
         "ms": 4507,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "17a62d7955ad19a266d4e808e14a1530bc07f2ae1452c604341c5089eef19fb9",
@@ -1309,7 +1439,9 @@
         "ms": 9807,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1332,7 +1464,9 @@
         "ms": 2190,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -1379,7 +1513,9 @@
         "ms": 2936,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "9d6a2705734816686c940fdd8a11a8c789722dc1fa61e7b9aea575915d090ac3",
@@ -1398,7 +1534,9 @@
         "ms": 4107,
         "by": "fenwick",
         "figure": "cast/courier_griffin",
-        "name": "Fenwick"
+        "names": [
+          "Fenwick"
+        ]
       },
       {
         "clip": "b29f9c62e2a1c686aeaaa453716be6b4862dab92e087383001b1292444ad673d",
@@ -1417,7 +1555,9 @@
         "ms": 13527,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "15fd8e00ba0a486b908793fa4a3e8ae43c072691b6bd582b6890fe82746c2c7e",
@@ -1436,7 +1576,9 @@
         "ms": 2692,
         "by": "fenwick",
         "figure": "cast/courier_griffin",
-        "name": "Fenwick"
+        "names": [
+          "Fenwick"
+        ]
       }
     ]
   },
@@ -1451,7 +1593,9 @@
         "ms": 4407,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -1466,7 +1610,9 @@
         "ms": 1073,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1477,7 +1623,9 @@
         "ms": 1042,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "7610aac255ba076ce7ed4bc729f5b9d685fe8167ec00c0a4adefdb12ac00055e",
@@ -1512,7 +1660,9 @@
         "ms": 2511,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "ad5ccfebf6d27bcc667b901bed3596198462f8f5cac4ae22d9d425af8a0f1099",
@@ -1523,7 +1673,9 @@
         "ms": 1430,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "fb3ff4dcd6d2961864aa1f098b5f4ecf909eed9824aeff3be3513fea9de77ce4",
@@ -1534,7 +1686,9 @@
         "ms": 1986,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1557,7 +1711,9 @@
         "ms": 1773,
         "by": "fenwick",
         "figure": "cast/courier_griffin",
-        "name": "Fenwick"
+        "names": [
+          "Fenwick"
+        ]
       }
     ]
   },
@@ -1572,7 +1728,9 @@
         "ms": 1158,
         "by": "seren_wisp",
         "figure": "cast/seren_wisp",
-        "name": "Seren Wisp"
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -1591,7 +1749,9 @@
         "ms": 1735,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "b2456fdf6aac6dcb040f4ac3485bb2135ed3ec014f20392e578c1bbdb9763f9f",
@@ -1610,7 +1770,9 @@
         "ms": 9107,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "34ede1d76e38bab3c733f4b8b7cdb9d8daad7dc4da556856ce23a2957f95cd12",
@@ -1621,7 +1783,9 @@
         "ms": 1576,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "6ec91abb475fe62d42d308c5d9ed203085cbef28395681445ddf5d563ba7bc8f",
@@ -1632,7 +1796,9 @@
         "ms": 2269,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -1647,7 +1813,9 @@
         "ms": 1360,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "ec66f9008f06b3812c49f9befff48f8458e1025787a5143bf093f27c71dc3ac2",
@@ -1682,7 +1850,9 @@
         "ms": 1693,
         "by": "dob",
         "figure": "cast/dob",
-        "name": "Dob"
+        "names": [
+          "Dob"
+        ]
       },
       {
         "clip": "22cc033eef48c90dbbb9918b430d2ebea68ca83b81072afebdaad2c52b918551",
@@ -1693,7 +1863,9 @@
         "ms": 2607,
         "by": "dob",
         "figure": "cast/dob",
-        "name": "Dob"
+        "names": [
+          "Dob"
+        ]
       },
       {
         "clip": "848c0f4eceabb4ed08840badecbf065c1eab661d88cdac73bc374c2a1c5afdef",
@@ -1720,7 +1892,9 @@
         "ms": 3607,
         "by": "dob",
         "figure": "cast/dob",
-        "name": "Dob"
+        "names": [
+          "Dob"
+        ]
       },
       {
         "clip": "53de289ec6fa6a5d477d407b4a34e58d6c1bb98f66276fa5aab1a58e2bb2e248",
@@ -1731,7 +1905,9 @@
         "ms": 1246,
         "by": "dob",
         "figure": "cast/dob",
-        "name": "Dob"
+        "names": [
+          "Dob"
+        ]
       },
       {
         "clip": "d914f0e96741bda8950679633c5b5944b8364564bc5da67c7e0216e584449ae5",
@@ -1742,7 +1918,9 @@
         "ms": 2607,
         "by": "dob",
         "figure": "cast/dob",
-        "name": "Dob"
+        "names": [
+          "Dob"
+        ]
       },
       {
         "clip": "e725b3f96f97b768c583dce217c29c2da161ff974b4eda08b618b96f8ff194b3",
@@ -1785,7 +1963,9 @@
         "ms": 1491,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       },
       {
         "clip": "713aee12f223c73a247600c2b1a3a98e1978dd3ba5e33377c3492494ce369d28",
@@ -1796,7 +1976,9 @@
         "ms": 1543,
         "by": "keeper_sorrel",
         "figure": "cast/kitsune_temple_keeper",
-        "name": "Keeper Sorrel"
+        "names": [
+          "Keeper Sorrel"
+        ]
       }
     ]
   },
@@ -1819,7 +2001,9 @@
         "ms": 1310,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "adb3fd43c5fad1ab90f59d3fc430c3f4ef0e5a2e95d9e1685692767b27cdd9e7",
@@ -1830,7 +2014,9 @@
         "ms": 1208,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eefb53ef1350ba97713adf063f9c2e9bfff7b029a1070e9ea37f4a9305d530cf",

@@ -14,7 +14,9 @@
         "ms": 1014,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -25,7 +27,9 @@
         "ms": 1451,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -60,7 +64,9 @@
         "ms": 2155,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -87,7 +93,9 @@
         "ms": 1123,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "607712cabe62dd7fcbf97a295d797381775ce098935489ec6a326445c9a1320b",
@@ -102,7 +110,9 @@
         "ms": 1434,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -113,7 +123,9 @@
         "ms": 1179,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -136,7 +148,9 @@
         "ms": 794,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -147,7 +161,9 @@
         "ms": 1761,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "f986445ca44abda05f82bb0a655d827660d45b2e385fa7b85f1093b8c3c64c78",
@@ -162,7 +178,9 @@
         "ms": 831,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "5fb0994688c6a9eab9c81b68e00437846ed5aafc31ef544a7d353c930991fa86",
@@ -173,7 +191,9 @@
         "ms": 2152,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -196,7 +216,9 @@
         "ms": 4307,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "2bf6adf0059124377d0f32f29447a1eb06bdd191a100633ee51f22a1275a89e3",
@@ -223,7 +245,9 @@
         "ms": 2997,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -238,7 +262,9 @@
         "ms": 3607,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -253,7 +279,9 @@
         "ms": 1501,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "e867701225b69cc199ca2d1ba2f9ee714b7177f05794628a3d47d2d407280e02",
@@ -264,7 +292,9 @@
         "ms": 3207,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -275,7 +305,9 @@
         "ms": 644,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -286,7 +318,9 @@
         "ms": 1995,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -321,7 +355,9 @@
         "ms": 657,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -364,7 +400,9 @@
         "ms": 804,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "0e91a9d55e29706513b75d812f0f15589748e28dcf3b98bafd36eb6d7f905707",
@@ -379,7 +417,9 @@
         "ms": 1975,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "57ace7d4e5e6785fee196062a47ba0019f82d03f0c946007a2e4ea67854bf7ce",
@@ -390,7 +430,9 @@
         "ms": 2166,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -437,7 +479,9 @@
         "ms": 891,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -448,7 +492,9 @@
         "ms": 1529,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "a080626f61a1a59a0748400c4c5817b8ec20f0ff3778f47491b7ca28fdef4519",
@@ -467,7 +513,9 @@
         "ms": 1088,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "d5ee8d9ee6fae39081e802ebeceba27798e446a0339670c76e4c3ee3aaff3f7e",
@@ -478,7 +526,9 @@
         "ms": 1117,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -493,7 +543,9 @@
         "ms": 1448,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "d5ee8d9ee6fae39081e802ebeceba27798e446a0339670c76e4c3ee3aaff3f7e",
@@ -504,7 +556,9 @@
         "ms": 1849,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -527,7 +581,9 @@
         "ms": 1341,
         "by": "dock_workers",
         "figure": "cast/dock_worker",
-        "name": "Dock workers"
+        "names": [
+          "Dock workers"
+        ]
       },
       {
         "clip": "a712778dffff6b440073991ab17b9e75505c4af7accb397f2736b087bc6d3a4a",
@@ -542,7 +598,9 @@
         "ms": 993,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "a84ecc87c629640dff518e1e11733e8a052fa846427707730f23e490f7ae99f4",
@@ -553,7 +611,9 @@
         "ms": 1767,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -584,7 +644,9 @@
         "ms": 956,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "3612ec7d15d17f4d19e90e629248890c6e76fe14c028004a647f748a5ebbf401",
@@ -603,7 +665,9 @@
         "ms": 642,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "82bd892f6110c5d5a41c04d867c99ee2fdd25ff8c00e73963e99da40075382a7",
@@ -614,7 +678,9 @@
         "ms": 1753,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "90c558235c25166e37832772e20195350a804462729f39bab75f1caf4d18d34f",
@@ -633,7 +699,9 @@
         "ms": 3907,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "970cd3968b608b643fcea0c50a1758a06aeb4df39a4629474709f502ab04edbb",
@@ -644,7 +712,9 @@
         "ms": 4407,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -667,7 +737,9 @@
         "ms": 3707,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "076cd0bee33a2a2c7797459a07d8a5662dea2cd11f2da05f15ddc9004285e65e",
@@ -678,7 +750,9 @@
         "ms": 2142,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -693,7 +767,9 @@
         "ms": 1854,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "9417734175ba4848bbaeffb71316b8c553faa58c6f760001f84595f840f68261",
@@ -704,7 +780,9 @@
         "ms": 2483,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "4ec6f50c4ba96e185b72432b157e48ae497188a8b110016e7d9fc06dbc06eb00",
@@ -715,7 +793,9 @@
         "ms": 1601,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -730,7 +810,9 @@
         "ms": 2804,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "dca09f654996a68475314fc262501dca9158fb0e4ace36519caf56da2f1aa14f",
@@ -741,7 +823,9 @@
         "ms": 3107,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       }
     ]
   },
@@ -752,7 +836,9 @@
         "ms": 774,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "0afb9d132fc09224a8bdacf8bdc66a1f33268443f043e54228d53b64780adf1e",
@@ -763,7 +849,9 @@
         "ms": 2493,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       }
     ]
   },
@@ -786,7 +874,9 @@
         "ms": 2240,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -797,7 +887,9 @@
         "ms": 2038,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "3f549b2b7048670604b2d04ab766a3dc156166e629dcae9e727a7b51d64db6ce",
@@ -816,7 +908,9 @@
         "ms": 1430,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "7fddeed0dd23c68e3f694170c8c5800252a027fe6aa82a7654e8b7e9c46e0ead",
@@ -827,7 +921,9 @@
         "ms": 1729,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "b78eea428b74a79e5078638d55985ef5cac7d5c91aa50ef7df406362a1d184b1",
@@ -838,7 +934,9 @@
         "ms": 3808,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "dd2704c970f92a280fd350f9f6ece1746d4ed93410a202e669bbe12de47dddc8",
@@ -857,7 +955,9 @@
         "ms": 713,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "e13853249949f2beb315852f1e6274b8091e0418d08570af56d4c626ddbac633",
@@ -868,7 +968,9 @@
         "ms": 1088,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "efb9cf17bad01b11ab46e6aa6bf45f0270efff9355e1eeb386bf87dd3f27deb4",
@@ -899,7 +1001,9 @@
         "ms": 1112,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "a59215c3dc44a4e2ca1ae5f784a5dc48e7bc8cbc161941a6c4c9aa46e3361cbb",
@@ -910,7 +1014,9 @@
         "ms": 1696,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -929,7 +1035,9 @@
         "ms": 1136,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "e13853249949f2beb315852f1e6274b8091e0418d08570af56d4c626ddbac633",
@@ -940,7 +1048,9 @@
         "ms": 2942,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -963,7 +1073,10 @@
         "ms": 2178,
         "by": "goat_kid",
         "figure": "cast/snowhorn_kid",
-        "name": "Goat kid"
+        "names": [
+          "Goat kid",
+          "Kid goat"
+        ]
       },
       {
         "clip": "a9842050eb98b0ba712d64bacf3894f015d208402c093864d46206f6457386c1",
@@ -978,7 +1091,9 @@
         "ms": 1077,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "7757b89ed3726db0aff750cdefb0e5408dda1b973ab82d37059d8b23e6ae1fa9",
@@ -989,7 +1104,9 @@
         "ms": 1741,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -1012,7 +1129,10 @@
         "ms": 2178,
         "by": "goat_kid",
         "figure": "cast/snowhorn_kid",
-        "name": "Goat kid"
+        "names": [
+          "Goat kid",
+          "Kid goat"
+        ]
       },
       {
         "clip": "a9842050eb98b0ba712d64bacf3894f015d208402c093864d46206f6457386c1",
@@ -1031,7 +1151,10 @@
         "ms": 768,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "fa9df68c8572e3b67f7ca9de1fb3ac71f966ccbcfa243d2d288a9e7dabf62ab4",
@@ -1042,7 +1165,10 @@
         "ms": 1244,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "887d095fb600f0f309d09bac37aa4bac2020af3ebb8ccccacc67260c8dd25b18",
@@ -1053,7 +1179,10 @@
         "ms": 1547,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -1064,7 +1193,10 @@
         "ms": 1603,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "fc720c001673587c746cd050dc67b1a6b0b556682105f2c4dbfb84ce6ca25220",
@@ -1083,7 +1215,10 @@
         "ms": 1222,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "e6696d45bcefe32cdf5db68a19489f2b3df0cc83a82ee150b7146c33b3523b4b",
@@ -1094,7 +1229,10 @@
         "ms": 1610,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       }
     ]
   },
@@ -1109,7 +1247,10 @@
         "ms": 1729,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "334f4a4e9de31f3f65d3209f764977d6d1e77656c61858c93b2294e1c6c67b51",
@@ -1120,7 +1261,10 @@
         "ms": 2505,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "2b97bcd85eed664196748fd8660389b725efe9f3480e634b37099a28059e8c5b",
@@ -1131,7 +1275,10 @@
         "ms": 2397,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       }
     ]
   },
@@ -1146,7 +1293,10 @@
         "ms": 422,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -1157,7 +1307,10 @@
         "ms": 6107,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "7df9beaaea850b882f41eb352bfef3975d54731097d597c1a623bf01d5f93b3f",
@@ -1172,7 +1325,10 @@
         "ms": 1227,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "d3822aad8465f7df1fa043d9e4f92382b33bf4f9481cb3bf3b8f83471568194b",
@@ -1191,7 +1347,10 @@
         "ms": 3607,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "21293c74601c5429660c67760af87063f2b739cb91f75e8de954ece501a4826a",
@@ -1214,7 +1373,9 @@
         "ms": 1410,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1225,7 +1386,9 @@
         "ms": 2607,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1248,7 +1411,9 @@
         "ms": 3227,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "ce95025ad16eb43cbc78489a76e93056cbba8c3bc422ac4eeff2482c92deee6f",
@@ -1263,7 +1428,9 @@
         "ms": 2002,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "8aa3b57564cb932c07498883adf21ee89577d742c772df69d0c43a760ad38692",
@@ -1274,7 +1441,9 @@
         "ms": 2104,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1297,7 +1466,9 @@
         "ms": 1176,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1308,7 +1479,9 @@
         "ms": 5507,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1319,7 +1492,9 @@
         "ms": 1112,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1330,7 +1505,9 @@
         "ms": 2131,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1353,7 +1530,9 @@
         "ms": 2518,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1364,7 +1543,9 @@
         "ms": 1247,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1379,7 +1560,9 @@
         "ms": 1701,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "e30f50b7e40b15dc35645f88b1d8b96a33f0fd21be63c4cf33ca75495e3ae88b",
@@ -1390,7 +1573,9 @@
         "ms": 2765,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -1405,7 +1590,9 @@
         "ms": 2142,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1416,7 +1603,9 @@
         "ms": 3607,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1427,7 +1616,9 @@
         "ms": 2020,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1446,7 +1637,9 @@
         "ms": 883,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "247d6669bd4008d267400f7c5dc5b6515a32a21f4a24a95596a7246deb0b05dc",
@@ -1457,7 +1650,9 @@
         "ms": 2105,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1480,7 +1675,10 @@
         "ms": 768,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "9f0ccb89c96d77461061f2117cc6bf50f041a1547c649914bb14f3efea7a22ce",
@@ -1499,7 +1697,9 @@
         "ms": 2785,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "d69dc700919f81131869f70f76f571353806d093c1721e14009ebfc9c2ba81ca",
@@ -1518,7 +1718,9 @@
         "ms": 1549,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -1529,7 +1731,9 @@
         "ms": 6107,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -1544,7 +1748,10 @@
         "ms": 1023,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "17ca99e4c2376b09cccaa35c175373925a5ae2b8fc57ba5213ffe007e3ec6fd6",
@@ -1563,7 +1770,9 @@
         "ms": 670,
         "by": "noodle_seller",
         "figure": "cast/soup_woman",
-        "name": "Noodle seller"
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "056b49ed637be3221b43d2cadcb2a5bede7a123ff413a17d9c1167fc93b956f4",
@@ -1582,7 +1791,9 @@
         "ms": 802,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "0d772d22cea4a3adc77290f6f1bed97781b17e0e428567db4948278f7cb1ce9c",
@@ -1605,7 +1816,9 @@
         "ms": 2931,
         "by": "fish_seller",
         "figure": "cast/fishmonger",
-        "name": "Fish seller"
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "17c41ff840cd19e1230d7eed75b2f0d8b3e27b223271b1047b01495812651566",
@@ -1628,7 +1841,9 @@
         "ms": 1093,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "e49768bab79549c97694f595ab29f26b09eb05be85d48a74e9a90da07b5add11",
@@ -1647,7 +1862,9 @@
         "ms": 3207,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -1662,7 +1879,9 @@
         "ms": 695,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "d5ee8d9ee6fae39081e802ebeceba27798e446a0339670c76e4c3ee3aaff3f7e",
@@ -1673,7 +1892,9 @@
         "ms": 2858,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -1688,7 +1909,9 @@
         "ms": 830,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "34026e5a0598fff8b5a775593b3fdfaaae68ab17baa4e04c353b722ad8652faa",
@@ -1699,7 +1922,9 @@
         "ms": 3607,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1721,7 +1946,9 @@
         "clip": "b6f90c3c5905ecc825a6e40e33e06e4502ae72f7be6328788296a72399c8eb96",
         "ms": 869,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6d0b2386283ecf9da7ac8af1e563a874627930cdc1e4f0297756e5355b1a99ab",
@@ -1739,7 +1966,9 @@
         "clip": "b8afe13294b4a2a4f2f3fca79a184c84d59abc8f41ed5a8fe97cbd1dd23ffa70",
         "ms": 672,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "3a5db3d08c729a6afe6513453e5673a15f0f378ad5124669364e71e5aa218094",
@@ -1789,7 +2018,9 @@
         "clip": "b3f044815d3e0626032c98629061c1a2d036954edc95cde5dd9baab13c60a9fd",
         "ms": 988,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "9f32f0da99139f5f3c78303f5d1fed6397dab5dea45d95d4cbf1d593c2dc59c1",
@@ -1799,7 +2030,9 @@
         "clip": "fd76ac8d3910c9b6d9e9ec0afecfa772a516a43e1da1e896fba7e4c1041910cb",
         "ms": 1152,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -1830,7 +2063,9 @@
         "ms": 1296,
         "by": "the_crows",
         "figure": "entities/rookery_crows",
-        "name": "The crows"
+        "names": [
+          "The crows"
+        ]
       },
       {
         "clip": "6797ceac11e29605a4a29abaf534b4e9a1dd811f8937238d73782f19ffb5b6c4",
@@ -1841,7 +2076,9 @@
         "ms": 4907,
         "by": "the_crows",
         "figure": "entities/rookery_crows",
-        "name": "The crows"
+        "names": [
+          "The crows"
+        ]
       }
     ]
   },
@@ -1856,7 +2093,9 @@
         "ms": 1166,
         "by": "the_crows",
         "figure": "entities/rookery_crows",
-        "name": "The crows"
+        "names": [
+          "The crows"
+        ]
       },
       {
         "clip": "7aa84e484f829e596ead4da4b20c28d7024c41e9fd97c05260747944e1806e24",
@@ -1867,7 +2106,9 @@
         "ms": 4107,
         "by": "the_crows",
         "figure": "entities/rookery_crows",
-        "name": "The crows"
+        "names": [
+          "The crows"
+        ]
       }
     ]
   },
@@ -1898,7 +2139,9 @@
         "ms": 1850,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1909,7 +2152,9 @@
         "ms": 3107,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1936,7 +2181,9 @@
         "ms": 1257,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1947,7 +2194,9 @@
         "ms": 3707,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1966,7 +2215,9 @@
         "ms": 1096,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c0b864d7e9bdd9f74f3ae8c52b9c70902670c64cb0c59237cf9c15989896a7c9",
@@ -1977,7 +2228,9 @@
         "ms": 2171,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -2000,7 +2253,9 @@
         "ms": 1854,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -2011,7 +2266,9 @@
         "ms": 977,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "1ce5caaa9c8c643a5f066a8d1e86d484519b3793d92b6b47a01a72db8a954dc5",
@@ -2022,7 +2279,9 @@
         "ms": 1601,
         "by": "barge_pilot",
         "figure": "entities/frogfolk",
-        "name": "Barge pilot"
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -2045,7 +2304,9 @@
         "ms": 7007,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "f5b59804e304b20ef1c1d2cdd482308096222bfc6ddfb3983d59ec7cc3e07708",
@@ -2056,7 +2317,9 @@
         "ms": 4407,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "624a8b6a311e67612cc3ebe299164373b6305e8eefac32e279ab0ca67351bff0",
@@ -2067,7 +2330,9 @@
         "ms": 5407,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -2082,7 +2347,9 @@
         "ms": 4207,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "d9d63964e84cbbe5cf4f064ce7ccf4ff4fbf7caa2ba9064c698d936357b4bdc5",
@@ -2101,7 +2368,9 @@
         "ms": 2307,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "eb12db2776c4c051f750a0dd1ab97a2c2e78fdf414685b46f2b32d7c4a7ae5cc",
@@ -2112,7 +2381,9 @@
         "ms": 2937,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "87d359038ba126d5d6472a7968ed69243516b4d33e5d405168289b66b3b0b611",
@@ -2131,7 +2402,9 @@
         "ms": 8808,
         "by": "thimble",
         "figure": "cast/captain_thimble",
-        "name": "Captain Thimble"
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "87d359038ba126d5d6472a7968ed69243516b4d33e5d405168289b66b3b0b611",
@@ -2146,7 +2419,9 @@
         "ms": 728,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -2157,7 +2432,9 @@
         "ms": 1573,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -2192,7 +2469,9 @@
         "ms": 1053,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -2243,7 +2522,9 @@
         "ms": 725,
         "by": "dock_worker",
         "figure": "cast/dock_worker",
-        "name": "Dock worker"
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "08f5b66c19c1e2ae2417fbb43a11ba43e02553189492491299ef5f3aa8455403",
@@ -2262,7 +2543,10 @@
         "ms": 422,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "953275dd9b7c75dc273ef260bac440aefb5b2e56f80cd5573725165d3aa0785b",
@@ -2273,7 +2557,10 @@
         "ms": 2306,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       }
     ]
   },
@@ -2296,7 +2583,10 @@
         "ms": 2576,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "e1cc5291065723db0f2c1e6a66a668080f053bd1be7b29b9da2138aa731ab4d5",
@@ -2307,7 +2597,10 @@
         "ms": 2519,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "1e63a9af2cc6b9a67b3b5829b720d2b1ee829fdb46a425c2ec0e0a8a5ddbb730",
@@ -2318,7 +2611,10 @@
         "ms": 1963,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "987a30ea0695da8754dc229995eb7ece023fa045f152f2e307c3736501a6a5fa",
@@ -2337,7 +2633,10 @@
         "ms": 1967,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "fefb211b2d83afa8c1f825b51fd073ba263d8c18b27a4a2a5a62dc3d8918fcab",
@@ -2348,7 +2647,10 @@
         "ms": 1085,
         "by": "the_gull",
         "figure": "entities/quay_gull",
-        "name": "The gull"
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "6ab65a17a0d3d7d3368a831957de2b6c210069e7f57b107a9476da20078e50fe",
@@ -2366,7 +2668,9 @@
         "clip": "c3ebcdee7d64827e4478eddc5b695ae41d8648871664f51fc7649015d188eca5",
         "ms": 695,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "0350ee094c945b6651961de69e728a5deaf05e8c8a7d8ae4155ec80725fd0169",
@@ -2377,7 +2681,10 @@
         "ms": 1595,
         "by": "goat_kid",
         "figure": "cast/snowhorn_kid",
-        "name": "Goat kid"
+        "names": [
+          "Goat kid",
+          "Kid goat"
+        ]
       }
     ]
   },

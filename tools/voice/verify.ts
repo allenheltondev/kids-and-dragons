@@ -16,7 +16,7 @@
  * `--fix` changes no clip and calls nothing: it takes out manifest entries whose
  * clips say words, a voice or a delivery that have since changed, so those lines
  * fall back to the device voice until `voice:generate` renders them again, and
- * writes who speaks each clip (`by`, `figure`, `name`: the cast pulse) as the
+ * writes who speaks each clip (`by`, `figure`, `names`: the cast pulse) as the
  * script and cast sheet say today.
  */
 

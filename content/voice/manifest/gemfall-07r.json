@@ -82,7 +82,9 @@
         "ms": 3507,
         "by": "caravan_master",
         "figure": "cast/caravan_master",
-        "name": "Caravan Master"
+        "names": [
+          "Caravan Master"
+        ]
       }
     ]
   },
@@ -137,7 +139,9 @@
         "ms": 1339,
         "by": "odo",
         "figure": "cast/odo",
-        "name": "Odo"
+        "names": [
+          "Odo"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -148,7 +152,9 @@
         "ms": 695,
         "by": "odo",
         "figure": "cast/odo",
-        "name": "Odo"
+        "names": [
+          "Odo"
+        ]
       }
     ]
   },
@@ -339,7 +345,11 @@
         "ms": 813,
         "by": "posy",
         "figure": "cast/corbin_carrying_posy",
-        "name": "Corbin and Posy"
+        "names": [
+          "Corbin and Posy",
+          "Corbin",
+          "Posy"
+        ]
       },
       {
         "clip": "76bcccbb89a58ad6eb07a585e35e2f3576fd5a117d5c0a533d59d8f893995e62",
@@ -358,7 +368,11 @@
         "ms": 1378,
         "by": "posy",
         "figure": "cast/corbin_carrying_posy",
-        "name": "Corbin and Posy"
+        "names": [
+          "Corbin and Posy",
+          "Corbin",
+          "Posy"
+        ]
       },
       {
         "clip": "8c29767b366cf74e8785b198938e9c282bb94917a4e7ceee4f7f289f2130af14",
@@ -385,7 +399,9 @@
         "ms": 1621,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -396,7 +412,9 @@
         "ms": 1652,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "815d3e1ea077242de61fe3edc97f6c3ca6a17e6267b0d5386846cd47832534ef",
@@ -415,7 +433,9 @@
         "ms": 2958,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "46158268197f506c9f2a122665a24b52bafccd839091e41f51bffb6e70e88df1",
@@ -658,7 +678,9 @@
         "ms": 1343,
         "by": "caravan_master",
         "figure": "cast/caravan_master",
-        "name": "Caravan Master"
+        "names": [
+          "Caravan Master"
+        ]
       },
       {
         "clip": "a75f5967986a808d447ba764ebe55e1a89823635ecb825e7baec17931a83f28a",
@@ -684,7 +706,9 @@
         "clip": "850bc3650ad1942d99394d8567455608bb5b344ef87340da5e6703b89ff5d0ed",
         "ms": 1090,
         "by": "warden_sergeant",
-        "name": "Warden Sergeant"
+        "names": [
+          "Warden Sergeant"
+        ]
       },
       {
         "clip": "fb042f58c82c6ab36647e6c9632e51415d50057c390cc49f57139b22d0f27af5",
@@ -694,7 +718,9 @@
         "clip": "fdbaeb7dfae11e5dfb467245a8806b2e60108d4f98aedb0cfd9a9ee25f2ef0cd",
         "ms": 2847,
         "by": "warden_sergeant",
-        "name": "Warden Sergeant"
+        "names": [
+          "Warden Sergeant"
+        ]
       }
     ]
   },
@@ -708,7 +734,9 @@
         "clip": "5c43af14c58ad6445fe7f324c0a60f6940562560e5c4c250ccfdc94d7ba5deb4",
         "ms": 1360,
         "by": "warden_sergeant",
-        "name": "Warden Sergeant"
+        "names": [
+          "Warden Sergeant"
+        ]
       },
       {
         "clip": "c75c9a596c4a5be4c18ffdbef1c2be6894b2292ae556ab8ab0f8154813812dc4",
@@ -767,7 +795,9 @@
         "ms": 1191,
         "by": "caravan_master",
         "figure": "cast/caravan_master",
-        "name": "Caravan Master"
+        "names": [
+          "Caravan Master"
+        ]
       },
       {
         "clip": "3d6faf667c80034e62d74aa43c6e6d22f97e70a869a28833b862ca8e5aeaed71",
@@ -778,7 +808,9 @@
         "ms": 2536,
         "by": "caravan_master",
         "figure": "cast/caravan_master",
-        "name": "Caravan Master"
+        "names": [
+          "Caravan Master"
+        ]
       }
     ]
   },
@@ -856,7 +888,9 @@
         "clip": "c17312de308865ff2823e404e510b0898671334fa4dd8137842c8844eebb20dd",
         "ms": 1125,
         "by": "boggart",
-        "name": "Boggart"
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "25a4ed5ff9617dccf9b30c7f5c353b3353915a56bd46e93582eeefc7d6e9bcf3",
@@ -866,7 +900,9 @@
         "clip": "f126b4f24093c827343d46cbde06269c77270c4497cefc3f063c7809693e538f",
         "ms": 4807,
         "by": "boggart",
-        "name": "Boggart"
+        "names": [
+          "Boggart"
+        ]
       }
     ]
   },
@@ -880,7 +916,9 @@
         "clip": "078bd743e704dbdeadca26fde5901a3742c823bd96c76a87eb1eae9ab8d4be2e",
         "ms": 1144,
         "by": "boggart",
-        "name": "Boggart"
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "7f6215c281b52ac73113ecfb3f51db0cbba3039afce834e0fd834b428eff8d39",
@@ -894,7 +932,9 @@
         "clip": "dd029e9f0e87dcef887a1dfeb2cb3c306c50b28f2d77c3503d34cfa394fdf670",
         "ms": 990,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5e2637b175e6ea70d4073d16f543dbf19167d86c384e0eb72c00c9ba8417644",
@@ -904,7 +944,9 @@
         "clip": "382c90c101f2eb1d7740179f877c586ca655dd5ff53849dc8e39da25316f32ed",
         "ms": 1462,
         "by": "boggart",
-        "name": "Boggart"
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "b5b3e51fdb6edf3b92efa26ed96f1fbe27f5bce3edc09bed91cfecacf8750086",
@@ -947,7 +989,9 @@
         "ms": 2251,
         "by": "odo",
         "figure": "cast/odo",
-        "name": "Odo"
+        "names": [
+          "Odo"
+        ]
       },
       {
         "clip": "e545ec3ebad662a88c14008a70accc30106100880e0fcacb2841d0cc6d1e3bc5",
@@ -966,7 +1010,11 @@
         "ms": 5007,
         "by": "posy",
         "figure": "cast/corbin_carrying_posy",
-        "name": "Corbin and Posy"
+        "names": [
+          "Corbin and Posy",
+          "Corbin",
+          "Posy"
+        ]
       },
       {
         "clip": "04f5a8479e38b94540e2a9f9c0c68765d1ee505b355d8df82bb5865bd05edb1d",
@@ -1013,7 +1061,10 @@
         "ms": 1084,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "52cbbb047dd6552edaa5544bb0acffe1fed837099abbb99d61a0efca77632a6e",
@@ -1032,7 +1083,10 @@
         "ms": 5207,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "a8397351b44b26fa3b34d0e9e4456c6bcedbbd553f4728942101d7179b0b95c4",
@@ -1051,7 +1105,10 @@
         "ms": 3907,
         "by": "coralie_fenn",
         "figure": "cast/coralie_fenn",
-        "name": "Madame Coralie Fenn"
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "fb8e1426b308b6e4356224a3d8f57ede26b67a849038d69b690ae57797b3783f",
@@ -1118,7 +1175,9 @@
         "ms": 1883,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1129,7 +1188,9 @@
         "ms": 4708,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -1144,7 +1205,9 @@
         "ms": 1493,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "8424aafc02a38f8d12d8083575933fe51f029fee1cfd9b1105c8a1257e008512",
@@ -1163,7 +1226,9 @@
         "ms": 1631,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1174,7 +1239,9 @@
         "ms": 1269,
         "by": "mother_thrum",
         "figure": "cast/mother_thrum",
-        "name": "Mother Thrum"
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -1189,7 +1256,9 @@
         "ms": 1334,
         "by": "odo",
         "figure": "cast/odo",
-        "name": "Odo"
+        "names": [
+          "Odo"
+        ]
       },
       {
         "clip": "d4d85e765984efa3f8cd0ea4715f4686b8d133b4e35295f681ce20b90cce9459",
@@ -1208,7 +1277,9 @@
         "ms": 3107,
         "by": "odo",
         "figure": "cast/odo",
-        "name": "Odo"
+        "names": [
+          "Odo"
+        ]
       }
     ]
   },
@@ -1231,7 +1302,9 @@
         "ms": 1128,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "5cf3d87c9954ab746471ea838ae5728b0c9cab2c5eadcc8226af922a115d01d5",
@@ -1250,7 +1323,9 @@
         "ms": 1198,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "707f749ad14a9456edc4775f851bc67afc7fe15d5530a1df3bb2e578c5bf63a3",
@@ -1261,7 +1336,9 @@
         "ms": 1915,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -1276,7 +1353,9 @@
         "ms": 1063,
         "by": "grandmother",
         "figure": "cast/dragonling_grandmother",
-        "name": "Grandmother"
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "c4e83c8fae242cc1f7c755b8224c7a8dbeac1308c411fa8aa4ffdc8c63057406",
@@ -1302,7 +1381,9 @@
         "clip": "b020a9c10b50eed4c12e3ca09c756bc5bebaf042fc0f4baaac9ed4dafc3e392d",
         "ms": 1292,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "c220c57fc4c8860d08cc4681bbb55038681112c893cf3933f2f8e27ab78d3442",
@@ -1312,7 +1393,9 @@
         "clip": "61c53420c2330ca96031538c045a898973a27e2d5e9c6c9b622a2a1d7711596d",
         "ms": 3907,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "aedae1261548cd3b6002bc0a4c27f71fbfb842d934038939775770cba9f297ba",
@@ -1347,7 +1430,9 @@
         "ms": 2732,
         "by": "hessa",
         "figure": "cast/hessa_wren",
-        "name": "Hessa Wren"
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "986f119821f9eb96b836905e84b7b1a888d7c1ec366e13928a8dae968ee1e02c",
@@ -1381,7 +1466,9 @@
         "clip": "2fd5db369c72b6f5b2fda310374fddf0a1eaea4f68642f1ecd6586b2fba9bd33",
         "ms": 1106,
         "by": "warden_sergeant",
-        "name": "Warden Sergeant"
+        "names": [
+          "Warden Sergeant"
+        ]
       },
       {
         "clip": "cb8510706308fc2b5d97ce886c4c56db03114020dfb27215041e1a84ea3a8fe4",
@@ -1424,7 +1511,10 @@
         "ms": 1981,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "a9e9de43fd04d02c5b4211fa4b4361d49c67283d24ea81401ea2e2c4c29eb267",
@@ -1491,7 +1581,9 @@
         "ms": 2257,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1502,7 +1594,9 @@
         "ms": 3607,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -1517,7 +1611,9 @@
         "ms": 4808,
         "by": "old_ossley",
         "figure": "cast/old_ossley",
-        "name": "Old Ossley"
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -1532,7 +1628,11 @@
         "ms": 1695,
         "by": "posy",
         "figure": "cast/corbin_carrying_posy",
-        "name": "Corbin and Posy"
+        "names": [
+          "Corbin and Posy",
+          "Corbin",
+          "Posy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1543,7 +1643,11 @@
         "ms": 1999,
         "by": "posy",
         "figure": "cast/corbin_carrying_posy",
-        "name": "Corbin and Posy"
+        "names": [
+          "Corbin and Posy",
+          "Corbin",
+          "Posy"
+        ]
       },
       {
         "clip": "6635a36863143868cc06c2e0bfd03c61501ca07c525f1ef0e73590b693621a18",
@@ -1570,7 +1674,11 @@
         "ms": 2437,
         "by": "posy",
         "figure": "cast/corbin_carrying_posy",
-        "name": "Corbin and Posy"
+        "names": [
+          "Corbin and Posy",
+          "Corbin",
+          "Posy"
+        ]
       },
       {
         "clip": "0479ca50e7654ad03861fbb48806e78faf510859028c51ba7c6fcd8d01a9f49c",
@@ -1652,7 +1760,9 @@
         "clip": "0519e0b5a31bfd1b2adc9a5d08e60e3af97fec4d484ea3d76df904d75d596ced",
         "ms": 2483,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "50659bbe16d2373e9fe1ba76263845df9398c1191b8a893465ebc0129badaf1c",
@@ -1690,7 +1800,9 @@
         "clip": "41f079051ce163b5e5ca7eb516d465a586eb496cdf90e5e1dce0c4a3fea714cc",
         "ms": 1399,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "9d2a10e7e092a1d1b99fc33940053f7b55c2535f6eabcc88264914c54b808bb7",

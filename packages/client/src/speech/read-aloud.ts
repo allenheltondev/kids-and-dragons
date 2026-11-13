@@ -123,7 +123,7 @@ export function useSpeaking(): boolean {
 
 /**
  * Calls `listener` with the cast member whose recorded voice this device is playing (their figure
- * and name on the cast sheet), or null, now and whenever it changes. For the stage, which draws
+ * and names on the cast sheet), or null, now and whenever it changes. For the stage, which draws
  * outside React. Returns the way to stop listening.
  */
 export function watchSpeakingCast(listener: (cast: SpeakingCast | null) => void): () => void {

@@ -3,31 +3,59 @@ import { stageCast } from "./cast";
 import { PULSE_BASE, PULSE_BEAT, PULSE_HOP, PULSE_STILL, pulseHop, pulseScale, speaksFor } from "./cast-pulse";
 
 describe("who pulses when a recorded clip is heard (#551)", () => {
-  it("is the cast member standing with the speaker's figure, and nobody else", () => {
-    const keys = stageCast([{ figure: "cast/pib", name: "Pib" }, { figure: "entities/faun", name: "Tansy" }]).map((m) => m.key);
-    expect(keys.filter((key) => speaksFor(key, { figure: "cast/pib", name: "Pib" }))).toEqual(["cast/pib|Pib"]);
-    expect(keys.filter((key) => speaksFor(key, { figure: "entities/faun", name: "Tansy" }))).toEqual(["entities/faun|Tansy"]);
+  const keysOf = (...members: { figure: string; name?: string; count?: number }[]): string[] => stageCast(members).map((m) => m.key);
+
+  it("is the cast member standing as the speaker, and nobody else", () => {
+    const keys = keysOf({ figure: "cast/pib", name: "Pib" }, { figure: "entities/faun", name: "Tansy" });
+    expect(keys.filter((key) => speaksFor(key, { figure: "cast/pib", names: ["Pib"] }))).toEqual(["cast/pib|Pib"]);
+    expect(keys.filter((key) => speaksFor(key, { figure: "entities/faun", names: ["Tansy"] }))).toEqual(["entities/faun|Tansy"]);
   });
 
-  it("is found by name when the chapter draws them with another painting than the cast sheet's", () => {
+  it("is found by name when the chapter paints them differently from the cast sheet", () => {
     // bramblewood-01 stands Pib as entities/pib; the cast sheet paints them cast/pib.
-    const keys = stageCast([{ figure: "entities/pib", name: "Pib" }]).map((m) => m.key);
-    expect(keys.filter((key) => speaksFor(key, { figure: "cast/pib", name: "pib" }))).toEqual(["entities/pib|Pib"]);
+    expect(keysOf({ figure: "entities/pib", name: "Pib" }).filter((key) => speaksFor(key, { figure: "cast/pib", names: ["pib"] }))).toEqual(["entities/pib|Pib"]);
+  });
+
+  it("is found under an alias the cast sheet records, and a plural or an apostrophe changes nothing", () => {
+    const soup = { figure: "cast/soup_woman", names: ["Soup Woman", "Marigold"] };
+    expect(keysOf({ figure: "cast/soup_woman", name: "Marigold" }).filter((key) => speaksFor(key, soup))).toHaveLength(1);
+    expect(keysOf({ figure: "cast/dock_worker", name: "Dock workers", count: 2 }).filter((key) => speaksFor(key, { figure: "cast/dock_worker", names: ["Dock worker"] }))).toHaveLength(2);
+    expect(keysOf({ figure: "cast/gullets_cousin", name: "Gullets Cousins" }).filter((key) => speaksFor(key, { figure: "cast/gullets_cousin", names: ["Gullet's Cousins"] }))).toHaveLength(1);
+  });
+
+  it("is never another named person painted alike (#778 review)", () => {
+    // The cast sheet paints Tansy, the faun prospector and others all as entities/faun.
+    const prospector = { figure: "entities/faun", names: ["Faun prospector"] };
+    expect(speaksFor("entities/faun|Tansy", prospector)).toBe(false);
+    // Both on stage: only the one who is speaking.
+    const both = keysOf({ figure: "entities/faun", name: "Tansy" }, { figure: "entities/faun", name: "Faun prospector" });
+    expect(both.filter((key) => speaksFor(key, prospector))).toEqual(["entities/faun|Faun prospector"]);
+    expect(both.filter((key) => speaksFor(key, { figure: "entities/faun", names: ["Tansy"] }))).toEqual(["entities/faun|Tansy"]);
+    // Gullet is not Gullet's cousins, though one name begins the other.
+    expect(speaksFor("cast/gullet|Gullet", { figure: "cast/gullets_cousin", names: ["Gullet's Cousins"] })).toBe(false);
+  });
+
+  it("is nobody when the speaker is off the stage and someone painted alike stands there", () => {
+    // The tired carter speaks from off stage; only Tansy, another faun, is standing there.
+    expect(keysOf({ figure: "entities/faun", name: "Tansy" }).some((key) => speaksFor(key, { figure: "entities/faun", names: ["Tired carter"] }))).toBe(false);
+  });
+
+  it("matches by painting only where a side has no name: an unnamed figure, or a speaker the sheet does not name", () => {
+    expect(keysOf({ figure: "entities/faun" }).filter((key) => speaksFor(key, { figure: "entities/faun", names: ["Faun prospector"] }))).toHaveLength(1);
+    expect(keysOf({ figure: "entities/faun", name: "Tansy" }).filter((key) => speaksFor(key, { figure: "entities/faun" }))).toHaveLength(1);
   });
 
   it("is a whole group, and every member of an ensemble, when they speak together", () => {
-    const sheep = stageCast([{ figure: "entities/sheeple", count: 3 }]).map((m) => m.key);
-    expect(sheep.filter((key) => speaksFor(key, { figure: "entities/sheeple" }))).toHaveLength(3);
-    const guards = stageCast([{ figure: "entities/skywardens", name: "Skywardens" }]).map((m) => m.key);
-    expect(guards.filter((key) => speaksFor(key, { figure: "entities/skywardens", name: "Skywardens" }))).toHaveLength(3);
+    expect(keysOf({ figure: "entities/sheeple", count: 3 }).filter((key) => speaksFor(key, { figure: "entities/sheeple" }))).toHaveLength(3);
+    expect(keysOf({ figure: "entities/skywardens", name: "Skywardens" }).filter((key) => speaksFor(key, { figure: "entities/skywardens", names: ["Skywardens"] }))).toHaveLength(3);
   });
 
-  it("is nobody for the narrator, a speaker off the stage, or a figure or name that only begins the same", () => {
-    const keys = stageCast([{ figure: "cast/pib", name: "Pib" }]).map((m) => m.key);
+  it("is nobody for the narrator, an empty mark, or a figure or name that only begins the same", () => {
+    const keys = keysOf({ figure: "cast/pib", name: "Pib" });
     expect(keys.some((key) => speaksFor(key, null))).toBe(false);
-    expect(keys.some((key) => speaksFor(key, { figure: "", name: "" }))).toBe(false);
-    expect(keys.some((key) => speaksFor(key, { figure: "cast/tansy", name: "Tansy" }))).toBe(false);
-    expect(keys.some((key) => speaksFor(key, { figure: "cast/pi", name: "Pi" }))).toBe(false);
+    expect(keys.some((key) => speaksFor(key, { figure: "", names: [] }))).toBe(false);
+    expect(keys.some((key) => speaksFor(key, { figure: "cast/tansy", names: ["Tansy"] }))).toBe(false);
+    expect(keys.some((key) => speaksFor(key, { figure: "cast/pi", names: ["Pi"] }))).toBe(false);
   });
 });
 

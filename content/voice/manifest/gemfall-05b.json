@@ -34,7 +34,9 @@
         "ms": 1616,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -45,7 +47,9 @@
         "ms": 3507,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -60,7 +64,9 @@
         "ms": 969,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "11f17b7db186da99e320f7d052b501bf49ffaf47ba8bbc80dc70ebc9c7979ff0",
@@ -79,7 +85,9 @@
         "ms": 2730,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -190,7 +198,10 @@
         "ms": 3507,
         "by": "flood_warden",
         "figure": "cast/flood_warden",
-        "name": "Flood Warden"
+        "names": [
+          "Flood Warden",
+          "Flood-Warden"
+        ]
       },
       {
         "clip": "efeb0c18be27c983ff273cd2de718c2260999a5209ea89ec7ff677e1ba139deb",
@@ -209,7 +220,10 @@
         "ms": 1204,
         "by": "flood_warden",
         "figure": "cast/flood_warden",
-        "name": "Flood Warden"
+        "names": [
+          "Flood Warden",
+          "Flood-Warden"
+        ]
       },
       {
         "clip": "1aeb1d159b4a8d62ca7c207b6b963a350f3cb76538d694f627c2cb16c367c0cf",
@@ -236,7 +250,9 @@
         "ms": 2250,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       },
       {
         "clip": "d7de727d4b47184c1a5e445dd1e682a5cdf19d6ca48a159c968a348000525b58",
@@ -255,7 +271,9 @@
         "ms": 1588,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       },
       {
         "clip": "d9f05c8f69b3aa0423dfb45077a0e866a60e343339bf594342734a4bd4fb9227",
@@ -282,7 +300,10 @@
         "ms": 2223,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -293,7 +314,10 @@
         "ms": 1370,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       }
     ]
   },
@@ -308,7 +332,10 @@
         "ms": 1468,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -319,7 +346,10 @@
         "ms": 1701,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       }
     ]
   },
@@ -350,7 +380,9 @@
         "ms": 5807,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -401,7 +433,9 @@
         "ms": 1898,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "9924ba5620f347e9cff8b804897f2bdaa510b8c4e02e2b610157fb2e58b17dde",
@@ -436,7 +470,10 @@
         "ms": 2387,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "c5d90a902fc58547674f81b4638831f6527b44332fbdce452f1aa6b878abfe2f",
@@ -447,7 +484,10 @@
         "ms": 9907,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "8045bf998468a6a44692a6590d06ddfce065db62053596be6ed0ee0d4d7df8ae",
@@ -458,7 +498,10 @@
         "ms": 3507,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "2d3143b93c7d47437fcb4cef96d1337d469d39f02757c31998be3823862867bb",
@@ -473,7 +516,10 @@
         "ms": 3808,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "9693af2619b25d01f8cced4d7367802fe7205256eb1927c53055687d9a64aa63",
@@ -484,7 +530,10 @@
         "ms": 2440,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "8045bf998468a6a44692a6590d06ddfce065db62053596be6ed0ee0d4d7df8ae",
@@ -495,7 +544,10 @@
         "ms": 2348,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       }
     ]
   },
@@ -506,7 +558,10 @@
         "ms": 2669,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "75e61be5375a17797b808a2fe5b030c8b0f34fdf01f88626f15f6ce0a38642f8",
@@ -517,7 +572,10 @@
         "ms": 3408,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "8045bf998468a6a44692a6590d06ddfce065db62053596be6ed0ee0d4d7df8ae",
@@ -528,7 +586,10 @@
         "ms": 2929,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       }
     ]
   },
@@ -539,7 +600,10 @@
         "ms": 1222,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "c5d90a902fc58547674f81b4638831f6527b44332fbdce452f1aa6b878abfe2f",
@@ -550,7 +614,10 @@
         "ms": 3407,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "8045bf998468a6a44692a6590d06ddfce065db62053596be6ed0ee0d4d7df8ae",
@@ -561,7 +628,10 @@
         "ms": 1022,
         "by": "eldest",
         "figure": "cast/mosshome_eldest",
-        "name": "The Eldest"
+        "names": [
+          "The Eldest",
+          "Eldest"
+        ]
       },
       {
         "clip": "c1e97d1111381a8ea3bd3f141cd4e6602224b06d709549fa06870761f96b877e",
@@ -724,7 +794,10 @@
         "ms": 1023,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -735,7 +808,10 @@
         "ms": 2077,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       }
     ]
   },
@@ -870,7 +946,10 @@
         "ms": 869,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "bfadd5d610e82dcd9806d5268d7412054b988be02064e1f56b52ce1544390295",
@@ -977,7 +1056,9 @@
         "ms": 1884,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "ce5d0e997f576cee528be26e6d8670188222b297889e70caa381747f318ec25b",
@@ -1012,7 +1093,9 @@
         "ms": 2559,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1023,7 +1106,9 @@
         "ms": 2044,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       },
       {
         "clip": "779d0516a757ceae80bbd2576d45ec850ceac2b4c7f2a480e9595b90ea2c6c3e",
@@ -1034,7 +1119,9 @@
         "ms": 1654,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       }
     ]
   },
@@ -1048,7 +1135,9 @@
         "clip": "7d16aad66e6b415d12722eb52d80a030109e441462be3f6123ae067a93096ceb",
         "ms": 4307,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "f809725327837071f7f4b7e3631452159a1395815ec202c797e97752464196ca",
@@ -1059,7 +1148,9 @@
         "ms": 1502,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       },
       {
         "clip": "70db53572167c898cc830204dcb0936e84c0eab4c16e0cabb8ee5a8c0e557aa6",
@@ -1078,7 +1169,9 @@
         "ms": 4007,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       },
       {
         "clip": "85bd6484488534d20c507fb3bd6e6ed0542c9437099d92be1f0c7c69e57e3a50",
@@ -1089,7 +1182,9 @@
         "ms": 4607,
         "by": "young_gatherer",
         "figure": "cast/young_gatherer",
-        "name": "Young Gatherer"
+        "names": [
+          "Young Gatherer"
+        ]
       }
     ]
   },
@@ -1136,7 +1231,10 @@
         "ms": 7307,
         "by": "flood_warden",
         "figure": "cast/flood_warden",
-        "name": "Flood Warden"
+        "names": [
+          "Flood Warden",
+          "Flood-Warden"
+        ]
       },
       {
         "clip": "8c68bc4a2b5e182c43080db8ab843ce8b1ca4385a6566ec4b89a200a157c0bdf",
@@ -1159,7 +1257,10 @@
         "ms": 1427,
         "by": "flood_warden",
         "figure": "cast/flood_warden",
-        "name": "Flood Warden"
+        "names": [
+          "Flood Warden",
+          "Flood-Warden"
+        ]
       },
       {
         "clip": "c68e8580e23a66b95808ce5b12fbd8adbb5937af233773355c308dc6aa51e8ba",
@@ -1170,7 +1271,10 @@
         "ms": 3607,
         "by": "flood_warden",
         "figure": "cast/flood_warden",
-        "name": "Flood Warden"
+        "names": [
+          "Flood Warden",
+          "Flood-Warden"
+        ]
       },
       {
         "clip": "42c3e0fe0433388176e386cbfcc246bff41d0afd675b99701a45209f82e1b763",
@@ -1181,7 +1285,10 @@
         "ms": 1331,
         "by": "flood_warden",
         "figure": "cast/flood_warden",
-        "name": "Flood Warden"
+        "names": [
+          "Flood Warden",
+          "Flood-Warden"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1224,7 +1331,10 @@
         "ms": 3407,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       },
       {
         "clip": "64bf25e26432072fd1e927e11ca8e77cc66f88d5bb3920b9f9552c926b9acbe8",
@@ -1243,7 +1353,10 @@
         "ms": 1274,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1278,7 +1391,10 @@
         "ms": 1855,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1289,7 +1405,10 @@
         "ms": 2044,
         "by": "path_keeper",
         "figure": "cast/path_keeper",
-        "name": "Path Keeper"
+        "names": [
+          "Path Keeper",
+          "Path-Keeper"
+        ]
       }
     ]
   },
@@ -1304,7 +1423,9 @@
         "ms": 2093,
         "by": "oldest_archivist",
         "figure": "cast/oldest_archivist",
-        "name": "Oldest Archivist"
+        "names": [
+          "Oldest Archivist"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1315,7 +1436,9 @@
         "ms": 4508,
         "by": "oldest_archivist",
         "figure": "cast/oldest_archivist",
-        "name": "Oldest Archivist"
+        "names": [
+          "Oldest Archivist"
+        ]
       }
     ]
   },
@@ -1330,7 +1453,9 @@
         "ms": 2057,
         "by": "oldest_archivist",
         "figure": "cast/oldest_archivist",
-        "name": "Oldest Archivist"
+        "names": [
+          "Oldest Archivist"
+        ]
       },
       {
         "clip": "e78a3954b945c88b37f524ddfca0ddfe4dc2501a85e82159add3a1c72393d40f",
@@ -1365,7 +1490,10 @@
         "ms": 2055,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "5f2044e5f25510f5f1290cf512fe03ee597658753ae66d5d313d738a61d8818f",
@@ -1384,7 +1512,9 @@
         "ms": 3807,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -1399,7 +1529,9 @@
         "ms": 838,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "6af35e846f3d73e2be19a88fd120982dcb0d2a4da0f91b5b7162b9f98c17d227",
@@ -1410,7 +1542,9 @@
         "ms": 2390,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "5016f7a3c94f840e07f3d2cba941cdc7954f2051ab82e166ea700fb4111d327b",
@@ -1429,7 +1563,9 @@
         "ms": 3307,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "cdc8b3662c582c8516e760a6bf3f02da941df9fe916ba71a6f9a1501419483e7",
@@ -1440,7 +1576,9 @@
         "ms": 1319,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -1455,7 +1593,9 @@
         "ms": 1690,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "1d67a41144103ccf06583c8ff8d24318cddb9267a0b3e3eac76ec26b62dda39c",
@@ -1466,7 +1606,9 @@
         "ms": 2202,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -1505,7 +1647,9 @@
         "ms": 1528,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "17d48525f2b5eb4607cbf198882d442cc146d6bfff4c4d04e6bbc5bfeb385c4c",
@@ -1516,7 +1660,9 @@
         "ms": 2986,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -1531,7 +1677,9 @@
         "ms": 1839,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1542,7 +1690,9 @@
         "ms": 1585,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       }
     ]
   },
@@ -1557,7 +1707,9 @@
         "ms": 1796,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "dfb3fb8e95b7f4a2732b142490fb4a4101cc93aadde90287ea8744ac5e0f737f",
@@ -1576,7 +1728,10 @@
         "ms": 2231,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "fc363f13bf48fe32c7c1ec4186ade299e5249bfc5ec49fa62f1a59296b36bc08",
@@ -1595,7 +1750,10 @@
         "ms": 1371,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "7d21df38cc9967d36a1f5f090ff258d380103331ee0d25c05f34c9f8b1b1ccdc",
@@ -1610,7 +1768,10 @@
         "ms": 809,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "c44ad12e297f7d1245244b3240108339bbc26beb1a1f6e0b325b81ba511c771b",
@@ -1621,7 +1782,10 @@
         "ms": 2024,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "fdc38f848e89c4c2a1b157ebdfc7b1418cb5f69631f5b004e4348f2b32325e61",
@@ -1632,7 +1796,10 @@
         "ms": 1581,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "dd73b5e8dc794e1a035331394fa16c97c323065f85c3a35de8d8af25f72385f4",
@@ -1643,7 +1810,10 @@
         "ms": 1542,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       }
     ]
   },
@@ -1658,7 +1828,10 @@
         "ms": 1559,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "eb12db2776c4c051f750a0dd1ab97a2c2e78fdf414685b46f2b32d7c4a7ae5cc",
@@ -1673,7 +1846,10 @@
         "ms": 1013,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "d86c547cb0795370bc69401ed3f07c40b3dc8f8a1e3267c186099cf769fc07bc",
@@ -1684,7 +1860,10 @@
         "ms": 1304,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1695,7 +1874,10 @@
         "ms": 1780,
         "by": "runner",
         "figure": "cast/mosshome_runner",
-        "name": "MossHome Runner"
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       }
     ]
   },
@@ -1710,7 +1892,10 @@
         "ms": 3307,
         "by": "soup_woman",
         "figure": "cast/soup_woman",
-        "name": "Soup Woman"
+        "names": [
+          "Soup Woman",
+          "Marigold"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1721,7 +1906,10 @@
         "ms": 1740,
         "by": "soup_woman",
         "figure": "cast/soup_woman",
-        "name": "Soup Woman"
+        "names": [
+          "Soup Woman",
+          "Marigold"
+        ]
       },
       {
         "clip": "44a91942452ac452e1b59bb9f86e00c91745a03715b0c3816ec561fd59b4281b",
@@ -1740,7 +1928,10 @@
         "ms": 1987,
         "by": "soup_woman",
         "figure": "cast/soup_woman",
-        "name": "Soup Woman"
+        "names": [
+          "Soup Woman",
+          "Marigold"
+        ]
       },
       {
         "clip": "6abb72e77e9dc202dcb98ea93cf5d8a73b822384c8652896b8b063af6d28f93a",
@@ -1754,7 +1945,9 @@
         "clip": "67960c4bd6b1cf39c2f2cf47e82f2fa690087bc5c039b3362c94e1210970882d",
         "ms": 1180,
         "by": "party",
-        "name": "The party"
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6e2f96ec3bb6bf3dbb9a25e92ae5a7eb3b1c05a2285edd57726ba885377b2e1d",
@@ -1765,7 +1958,10 @@
         "ms": 1291,
         "by": "soup_woman",
         "figure": "cast/soup_woman",
-        "name": "Soup Woman"
+        "names": [
+          "Soup Woman",
+          "Marigold"
+        ]
       },
       {
         "clip": "37b56f585fe1807613aab9009daac607a95e2ca4a12ad3f74d39fcf980d8bf15",
@@ -1808,7 +2004,9 @@
         "ms": 2709,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "9b4107efe9b8074b0d434cd2780bf2b76db4c0877cbfbf7eb5b2566cd06abcdc",
@@ -1823,7 +2021,9 @@
         "ms": 830,
         "by": "archivist",
         "figure": "cast/mosshome_archivist",
-        "name": "Archivist"
+        "names": [
+          "Archivist"
+        ]
       },
       {
         "clip": "99f2584be277e08e9a4ac85dabe718f9882030667f3975444c0dfedace0cbd8f",

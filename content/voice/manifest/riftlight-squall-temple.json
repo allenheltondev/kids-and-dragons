@@ -26,7 +26,9 @@
         "ms": 751,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "42046d64772c3d5bbe456bdfe41b0c0d94464a2988cc9d9a525835458b39c816",
@@ -61,7 +63,9 @@
         "ms": 1047,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "42046d64772c3d5bbe456bdfe41b0c0d94464a2988cc9d9a525835458b39c816",
@@ -96,7 +100,9 @@
         "ms": 2454,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "078176e1bb604d04c96e8c95bdda42d45c7164bd0a36a30636e2fd67938efca5",
@@ -107,7 +113,9 @@
         "ms": 7407,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -118,7 +126,9 @@
         "ms": 3507,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -129,7 +139,9 @@
         "ms": 4107,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -140,7 +152,9 @@
         "ms": 4907,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -155,7 +169,9 @@
         "ms": 1771,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -502,7 +518,9 @@
         "ms": 658,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -513,7 +531,9 @@
         "ms": 2891,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -576,7 +596,9 @@
         "ms": 1186,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -587,7 +609,9 @@
         "ms": 865,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "22311840819fabe5d5d879167bc6c76343f30bc2b197bd2dbcb73d38f911c526",
@@ -614,7 +638,9 @@
         "ms": 2739,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "3135cfe2a085d0b0897ebaedfb79c8c2f0251685f3be0a22a1409204ea377cda",
@@ -633,7 +659,9 @@
         "ms": 4107,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -652,7 +680,9 @@
         "ms": 2408,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -663,7 +693,9 @@
         "ms": 1227,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a3a025bcb220f04de8f0fed16ed949d6d6cc3db6d14b61c62dbbf966e2828054",
@@ -690,7 +722,9 @@
         "ms": 1531,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "55941a3ea977a8b669daeb5380d8fb4a5e5b6aea806b0ad2cc1f0a8542c4e855",
@@ -709,7 +743,9 @@
         "ms": 2821,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       },
       {
         "clip": "679bbe28451f19596bb4cf98242e1606d4fac5c58a71480bf59321a3aab30003",
@@ -720,7 +756,9 @@
         "ms": 3907,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       },
       {
         "clip": "7f4501a4af0103815d593d9135a3332ff5c9aec007680868811cf22b126c5a96",
@@ -819,7 +857,9 @@
         "ms": 2452,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -830,7 +870,9 @@
         "ms": 1588,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -893,7 +935,9 @@
         "ms": 9307,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "f11a31a857155b568aaac51a5f91586f7427c7ac6a047828817cfcc3586c616a",
@@ -908,7 +952,9 @@
         "ms": 4407,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -919,7 +965,9 @@
         "ms": 2437,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -930,7 +978,9 @@
         "ms": 3907,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -969,7 +1019,9 @@
         "ms": 2595,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "b1b9ba1b051fb13d4638f3861cb0597a77a7aa12f59b10abb903536a356cb13b",
@@ -980,7 +1032,9 @@
         "ms": 1589,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -995,7 +1049,9 @@
         "ms": 1010,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "1f4e3b840c7ea5a35e6aa00259116c392cc61a014905ed4d05f1c429cc0be2d4",
@@ -1006,7 +1062,9 @@
         "ms": 3107,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -1021,7 +1079,9 @@
         "ms": 1866,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1040,7 +1100,9 @@
         "ms": 1608,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "07d37892665a0f94f7b0d988f5b128899d672f83982438e3264cf9de37087e44",
@@ -1051,7 +1113,9 @@
         "ms": 1255,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "8aaca8123f9ee950e4898fcbf193eea09910c96fcbf87d52180a70289568579c",
@@ -1102,7 +1166,9 @@
         "ms": 2302,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1113,7 +1179,9 @@
         "ms": 2466,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1128,7 +1196,9 @@
         "ms": 1917,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "e48c7dc600bb3f3af279c949a3aabfe56e0bbdcce19e933cc3b9f53fb65393cb",
@@ -1139,7 +1209,9 @@
         "ms": 2608,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "6106fe6b5f51e9ab3cefb58bc6f3e305eca90509be4871d887ae5fb6805afa6e",
@@ -1158,7 +1230,9 @@
         "ms": 2207,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "d901790268b77922bad1e51d67002172bcd5051b6787f801d9ca0b76a2eba29e",
@@ -1169,7 +1243,9 @@
         "ms": 2758,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "ccfdb3cf659c0628c656d1829d755016859e4b5bba447c6ca4864835ed776e64",
@@ -1188,7 +1264,9 @@
         "ms": 1251,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "e1c5a41be35d8a2d753e545bf1fd4bd7bf705415a910e733c30f6ea89e1caaf2",
@@ -1199,7 +1277,9 @@
         "ms": 2870,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "c2ddab2d2b8147a66ec890fa5f3337c1623e53848223fdc966d4ee2ea161b3a1",
@@ -1218,7 +1298,9 @@
         "ms": 708,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1229,7 +1311,9 @@
         "ms": 2267,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "adf399e51ae0b95bf071e85f7b7508783efd56c526b1d878ed88afed97f19452",
@@ -1248,7 +1332,9 @@
         "ms": 1628,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "9e7bf320dbfaad6d103df55239c4df3c966edecf47837cc6f9c6d067879fcae3",
@@ -1259,7 +1345,9 @@
         "ms": 3807,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "62c083f25e669e148f6d0eb79d96176c8fae73b445f02b1adb155dd090bd82a5",
@@ -1278,7 +1366,9 @@
         "ms": 1195,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "2a8d540e14548fd1df03e15947d1d93e658e8d4622f1718697f40179b7294108",
@@ -1289,7 +1379,9 @@
         "ms": 2069,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "c1ffdff55904d56d1cae7ed7a47215e6e1eb310914b8598aa08a89afe60a69cc",
@@ -1316,7 +1408,9 @@
         "ms": 1275,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1327,7 +1421,9 @@
         "ms": 1966,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "b86c1cf812191a7502f3f92fb3fd8692de4cc9514cb7ca93c3d2608ffe3a3dc7",
@@ -1362,7 +1458,9 @@
         "ms": 3307,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "5d821a24f806e6c207ef5b001e3b38749a9c6d28697fc1acbd8f2764895a97a4",
@@ -1373,7 +1471,9 @@
         "ms": 15207,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -1384,7 +1484,9 @@
         "ms": 1172,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "48130d69244716e9ea94e27cb7326dc5dff7bbfb2e51cf393ebf75ccc7fd3762",
@@ -1395,7 +1497,9 @@
         "ms": 1192,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1406,7 +1510,9 @@
         "ms": 819,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -1417,7 +1523,9 @@
         "ms": 1839,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1448,7 +1556,9 @@
         "ms": 3207,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -1479,7 +1589,9 @@
         "ms": 953,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "ec7df90f3cd61dc9bed31de328fdfc4b68bd17d82f57706fe1b2ea7712836462",
@@ -1506,7 +1618,9 @@
         "ms": 2163,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1517,7 +1631,9 @@
         "ms": 1610,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "33db7a9a6016776004c06ee7f1597c2d2b6d3897d6c300711e14535d2239d5ce",
@@ -1536,7 +1652,9 @@
         "ms": 1758,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "03d9b08f02fefc0eece44a3d54b0e61c03a1c38901f6471a86b389e282331183",
@@ -1555,7 +1673,9 @@
         "ms": 874,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       },
       {
         "clip": "c8983d0c98859b0326cb342424da657c9176d5f30a02ee831ce6136bc145e64f",
@@ -1566,7 +1686,9 @@
         "ms": 1222,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       }
     ]
   },
@@ -1589,7 +1711,9 @@
         "ms": 4107,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       }
     ]
   },
@@ -1604,7 +1728,9 @@
         "ms": 1960,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "e4f11c3fa1192d438955f840a9bed528b428b96b48f1a48b428d65b077288408",
@@ -1615,7 +1741,9 @@
         "ms": 2074,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "c5f6aa7fa3cc060cfe4d1b189ae161416238534298feab08f155fb73e593f49b",
@@ -1626,7 +1754,9 @@
         "ms": 915,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "3ecaac123ef8d628d9adab981a1ca1cf95c58e74345a43d2a8a7d200a33a9903",
@@ -1637,7 +1767,9 @@
         "ms": 3607,
         "by": "pip_thistledown",
         "figure": "cast/pip_thistledown",
-        "name": "Pip Thistledown"
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "a5fa3ff02356cf9f243d984a9b29171551631e0bd87b8dbb78d75d22a992c08a",
@@ -1688,7 +1820,9 @@
         "ms": 1046,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -1699,7 +1833,9 @@
         "ms": 1517,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       }
     ]
   },
@@ -1714,7 +1850,9 @@
         "ms": 712,
         "by": "tumble",
         "figure": "cast/courier_griffin",
-        "name": "Tumble"
+        "names": [
+          "Tumble"
+        ]
       },
       {
         "clip": "5c89e3bc343cb9e610009e8938c36495a6d0314e146da29afcba5ef8cee890c6",
@@ -1733,7 +1871,9 @@
         "ms": 2607,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1744,7 +1884,9 @@
         "ms": 10307,
         "by": "keeper_clove",
         "figure": "cast/new_island_keeper",
-        "name": "Keeper Clove"
+        "names": [
+          "Keeper Clove"
+        ]
       },
       {
         "clip": "a7f5dbace748d90a41d48a67bb7ab8b1f8e02526de626432c835f93bbe17f22d",
