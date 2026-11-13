@@ -284,9 +284,39 @@ describe("recovering heroes a phone lost", () => {
     await store.getState().choosePlayer("p_2");
 
     expect(api.adoptDevice).toHaveBeenCalledWith("id_tok", "h_1", "p_2");
-    expect(loadIdentity(storage).deviceToken).toBe("dev_new");
+    // Who the phone is, whole: the next join reads all of it, not only the token.
+    expect(loadIdentity(storage)).toEqual({
+      householdId: "h_1",
+      playerId: "p_2",
+      displayName: "Ada",
+      deviceToken: "dev_new",
+    });
     expect(loadAccount(storage)?.householdId).toBe("h_1");
     expect(store.getState().step).toBe("kept");
+  });
+
+  it("leaves the guest household its token fell into behind, and takes the account's", async () => {
+    const { store, storage } = setup({
+      api: {
+        linkAccount: vi.fn(async () => ({ ...LINKED, claimed: false, deviceBound: false })),
+        // The server binds the kid it was asked for.
+        adoptDevice: vi.fn(async (_token: string, _household: string, playerId: string) => ({
+          deviceToken: "dev_new",
+          playerId,
+        })),
+      },
+    });
+    saveIdentity({ householdId: "h_guest", playerId: "p_guest", displayName: "Player", deviceToken: "dev_guest" }, storage);
+
+    await signIn(store, "recover");
+    await store.getState().choosePlayer("p_1");
+
+    expect(loadIdentity(storage)).toEqual({
+      householdId: "h_1",
+      playerId: "p_1",
+      displayName: "Allen",
+      deviceToken: "dev_new",
+    });
   });
 
   it("is the old sign-in that trusts a bound phone when pressed as plain restore", async () => {

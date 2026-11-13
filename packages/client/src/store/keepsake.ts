@@ -521,7 +521,22 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         const result = await deps.api.adoptDevice(tokens.idToken, account.householdId, playerId);
         // This is the write that makes the phone *be* that player from now on.
         const identity = loadIdentity(deps.storage);
-        saveIdentity(asPlayerIdentity(identity, result.deviceToken), deps.storage);
+        const picked = get().players.find((p) => p.id === playerId);
+        /*
+         * Who this phone is, not only which token it holds: the next join reads
+         * the household, the player and the name from here, and a phone that came
+         * from another household (a guest game its expired token fell into) or
+         * from another kid in this one would otherwise keep saying so.
+         */
+        saveIdentity(
+          {
+            ...asPlayerIdentity(identity, result.deviceToken),
+            householdId: account.householdId,
+            playerId: result.playerId,
+            displayName: picked?.displayName ?? identity.displayName,
+          },
+          deps.storage,
+        );
         // Only now is this phone somebody in the household — record the account.
         saveAccount(account, deps.storage);
         pendingAccount = null;
