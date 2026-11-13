@@ -1,8 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, DynamoDBDocumentClient, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import type { TimingMark } from "@kad/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { DynamoTimingStore, MemoryTimingStore, TIMING_RETENTION_DAYS, timingPk, timingSk } from "./timing-store.ts";
+import { DynamoTimingStore, EXCLUSIONS_PK, MemoryTimingStore, TIMING_RETENTION_DAYS, timingPk, timingSk } from "./timing-store.ts";
 
 const mark = (runId: string, seq: number, chapterId = "c1"): TimingMark => ({
   runId,
@@ -23,6 +23,17 @@ describe("MemoryTimingStore", () => {
     expect((await store.runMarks("c1", "A")).map((m) => m.seq)).toEqual([1, 3]);
     expect((await store.chapterMarks("c1")).map((m) => `${m.runId}${String(m.seq)}`).sort()).toEqual(["A1", "A3", "B2"]);
     expect(await store.allMarks()).toHaveLength(4);
+  });
+
+  it("keeps an operator's exclusions apart from the marks, one per sitting", async () => {
+    const store = new MemoryTimingStore();
+    await store.put(mark("A", 1));
+    await store.exclude({ sittingId: "A:1", reason: "a test", by: "ops", at: "2026-11-13T00:00:00.000Z" });
+    await store.exclude({ sittingId: "A:1", reason: "a developer's test", by: "ops", at: "2026-11-13T00:00:00.000Z" });
+    expect((await store.exclusions()).map((e) => e.reason)).toEqual(["a developer's test"]);
+    expect(await store.allMarks()).toHaveLength(1);
+    expect(await store.include("A:1")).toBe(true);
+    expect(await store.include("A:1")).toBe(false);
   });
 });
 
@@ -68,5 +79,24 @@ describe("DynamoTimingStore", () => {
     const store = new DynamoTimingStore({ tableName: "t", client });
     expect((await store.allMarks()).map((m) => m.runId)).toEqual(["A", "B"]);
     expect(send.mock.calls[0]?.[0]).toBeInstanceOf(ScanCommand);
+  });
+
+  it("skips the exclusion rows a scan of the whole table meets", async () => {
+    send.mockResolvedValueOnce({ Items: [{ mark: mark("A", 1) }, {}] });
+    const store = new DynamoTimingStore({ tableName: "t", client });
+    expect(await store.allMarks()).toEqual([mark("A", 1)]);
+  });
+
+  it("writes an exclusion under OPS#, expiring with the marks, and removes it", async () => {
+    send.mockResolvedValueOnce({}).mockResolvedValueOnce({ Items: [{ exclusion: { sittingId: "A:1" } }] }).mockResolvedValueOnce({ Attributes: { PK: EXCLUSIONS_PK } }).mockResolvedValueOnce({});
+    const store = new DynamoTimingStore({ tableName: "t", client, now: () => 1_000_000_000_000 });
+    const exclusion = { sittingId: "A:1", reason: "demo", by: "ops", at: "2026-11-13T00:00:00.000Z" };
+    await store.exclude(exclusion);
+    expect(send.mock.calls[0]?.[0].input).toMatchObject({ Item: { PK: "OPS#exclusions", SK: "A:1", ttl: 1_000_000_000 + TIMING_RETENTION_DAYS * 86_400, exclusion } });
+    expect(await store.exclusions()).toEqual([{ sittingId: "A:1" }]);
+    expect(send.mock.calls[1]?.[0].input.ExpressionAttributeValues).toEqual({ ":pk": "OPS#exclusions" });
+    expect(await store.include("A:1")).toBe(true);
+    expect(send.mock.calls[2]?.[0]).toBeInstanceOf(DeleteCommand);
+    expect(await store.include("A:1")).toBe(false);
   });
 });

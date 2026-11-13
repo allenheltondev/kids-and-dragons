@@ -4,14 +4,17 @@
  * event to a web Request and the Response back; everything else is in
  * ../mcp/handler.ts.
  *
- * Its role reaches the keys table and the asset store, and nothing that holds a
- * family's data (infra/template.yaml, McpFunction).
+ * Its role reaches the keys table, the asset store and the session-timing table
+ * (read, and exclusions only), and nothing that holds a family's data
+ * (infra/template.yaml, McpFunction).
  */
 
 import type { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from "aws-lambda";
 import { DynamoKeyStore } from "../mcp/dynamo-keys.ts";
+import { readChapterIndex } from "../mcp/chapter-index.ts";
 import { mcpEndpoint, type McpEndpoint } from "../mcp/handler.ts";
 import { S3UploadSigner } from "../mcp/uploads.ts";
+import { DynamoTimingStore } from "../store/timing-store.ts";
 
 let endpoint: McpEndpoint | null = null;
 
@@ -19,6 +22,9 @@ function live(): McpEndpoint {
   endpoint ??= mcpEndpoint({
     keys: new DynamoKeyStore(required("MCP_KEYS_TABLE")),
     signer: new S3UploadSigner(required("ASSET_STORE_BUCKET")),
+    ...(process.env.TIMING_TABLE_NAME ? { timing: new DynamoTimingStore({ tableName: process.env.TIMING_TABLE_NAME }) } : {}),
+    // Written beside the bundle by infra/build.mjs. Absent, the timing tools fall back to the latest played revision.
+    chapterIndex: readChapterIndex(new URL("./chapter-index.json", import.meta.url)),
     allowedOriginHosts: (process.env.MCP_ALLOWED_ORIGIN_HOSTS ?? "").split(",").map((h) => h.trim()).filter(Boolean),
   });
   return endpoint;

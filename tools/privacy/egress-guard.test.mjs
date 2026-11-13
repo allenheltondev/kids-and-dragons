@@ -101,7 +101,7 @@ describe("hosts the shipped code may reach (#525)", () => {
       "AWS's own APIs from the sweepers (aws-json.ts, #524): Cognito AdminDeleteUser with a grown-up's sign-in id, and CloudWatch Logs stream listing and deletes; no player data",
     "${entry.address}": "the dev server printing its LAN address (dev-server.ts)",
     "${inboundHost}":
-      "the MCP request's own Host header, rebuilding the inbound URL for the MCP SDK (lambda/mcp.ts); never fetched. The function's only outbound calls are DynamoDB (its keys table) and S3 (the asset store), with no player data (docs/mcp-server.md)",
+      "the MCP request's own Host header, rebuilding the inbound URL for the MCP SDK (lambda/mcp.ts); never fetched. The function's only outbound calls are DynamoDB (its keys table and the session-timing table, which holds no household, player or name) and S3 (the asset store), with no player data (docs/mcp-server.md)",
   };
 
   it("shipped source reaches only the reviewed hosts", () => {

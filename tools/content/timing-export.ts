@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Pull observed session timing from a deployed stack:
- * `npm run timing:export -- --stage prod [--chapter ID] [--region R] [--table T] [--out FILE] [--csv]`
+ * `npm run timing:export -- --stage prod [--chapter ID] [--since ISO] [--region R] [--table T] [--out FILE] [--csv]`
  *
  * Uses the caller's AWS credentials (the CLI's profile or environment) and
  * reads the stack's own timing table, `kad-timing-<stage>`, never the game's.
@@ -9,6 +9,8 @@
  * of the timing table, which holds only telemetry and expires after 180 days.
  * Writes the report as JSON (stdout, or `--out`) in the shape
  * `npm run content:timing -- <file>` reads; `--csv` writes one row per sitting.
+ * Sittings an operator excluded (the MCP server's `timing_exclude`) are left
+ * out, and listed; `--since` keeps only sittings begun at or after a time.
  * Read-only. The rows hold no household, player or name. See
  * docs/session-timing.md.
  */
@@ -26,7 +28,7 @@ const flag = (name: string): string | undefined => {
 const stage = flag("stage");
 const table = flag("table") ?? (stage ? `kad-timing-${stage}` : undefined);
 if (!table) {
-  console.error("usage: npm run timing:export -- --stage <dev|staging|prod> [--chapter ID] [--region R] [--table T] [--out FILE] [--csv]");
+  console.error("usage: npm run timing:export -- --stage <dev|staging|prod> [--chapter ID] [--since ISO] [--region R] [--table T] [--out FILE] [--csv]");
   process.exit(2);
 }
 const region = flag("region") ?? process.env.AWS_REGION ?? process.env.AWS_DEFAULT_REGION;
@@ -34,14 +36,15 @@ if (region) process.env.AWS_REGION = region;
 
 const store = new DynamoTimingStore({ tableName: table });
 const chapter = flag("chapter");
-const marks = chapter ? await store.chapterMarks(chapter) : await store.allMarks();
-const report = timingReportFromMarks(marks, Date.now(), null);
+const since = flag("since");
+const [marks, exclusions] = await Promise.all([chapter ? store.chapterMarks(chapter) : store.allMarks(), store.exclusions()]);
+const report = timingReportFromMarks(marks, Date.now(), null, { exclusions, ...(since ? { since } : {}) });
 
 const text = args.includes("--csv") ? timingCsv(report.sittings) : `${JSON.stringify(report, null, 2)}\n`;
 const out = flag("out");
 if (out) {
   fs.writeFileSync(out, text);
-  console.error(`${table}: ${String(marks.length)} marks, ${String(report.sittings.length)} sittings -> ${out}`);
+  console.error(`${table}: ${String(marks.length)} marks, ${String(report.sittings.length)} sittings, ${String(report.excluded?.length ?? 0)} excluded -> ${out}`);
 } else {
   await new Promise<void>((done) => process.stdout.write(text, () => done()));
 }

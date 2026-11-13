@@ -14,7 +14,10 @@ import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 import type { Area, Scope, VerifiedKey } from "./keys.ts";
 import { READ, guarded } from "./shared.ts";
+import type { TimingReader } from "../store/timing-store.ts";
+import type { ChapterIndex } from "./chapter-index.ts";
 import { registerAssetTools } from "./tools/assets.ts";
+import { registerTimingTools } from "./tools/timing.ts";
 import type { UploadSigner } from "./uploads.ts";
 
 export const SERVER_INFO = { name: "kids-and-dragons", version: "1.0.0" };
@@ -26,11 +29,18 @@ export interface ToolRegistrar {
 
 export interface ServerDeps {
   signer: UploadSigner;
+  /** The session-timing table, for the operator's timing tools. Absent: they are not offered. */
+  timing?: TimingReader;
+  /** The chapters as built (mcp/chapter-index.ts): current revisions, plans, campaign order. */
+  chapterIndex?: ChapterIndex | null;
+  now?: () => number;
 }
 
 const INSTRUCTIONS =
   "Operate Kids & Dragons. Asset tools add art and audio to the content-addressed asset store: " +
-  "npm run assets:push in the repo calls request_uploads and uploads for you. whoami says what this key may do.";
+  "npm run assets:push in the repo calls request_uploads and uploads for you. Timing tools (operator) say how long real " +
+  "family tables take over chapters, mini-games and fights against the 30-minute budget: start with timing_overview, then " +
+  "timing_findings for what to act on. whoami says what this key may do.";
 
 export function buildServer(key: VerifiedKey, deps: ServerDeps): McpServer {
   const server = new McpServer(SERVER_INFO, { instructions: `${INSTRUCTIONS} This key may: ${key.scopes.join(", ") || "nothing"}.` });
@@ -49,9 +59,10 @@ export function buildServer(key: VerifiedKey, deps: ServerDeps): McpServer {
   );
 
   registerAssetTools(scoped(server, "assets", key.scopes), { signer: deps.signer, key });
-  // Operator tools (area "operator") register here once they are chosen. Anything
-  // returning a household's data needs the privacy review in #525 first: what a
-  // tool returns goes into a model's context.
+  // Operator tools. Session timing holds no household, player or name (docs/session-timing.md),
+  // so it needs no household-data review. Anything returning a household's data needs the
+  // privacy review in #525 first: what a tool returns goes into a model's context.
+  if (deps.timing) registerTimingTools(scoped(server, "operator", key.scopes), { reader: deps.timing, key, now: deps.now ?? Date.now, index: deps.chapterIndex ?? null });
   return server;
 }
 
