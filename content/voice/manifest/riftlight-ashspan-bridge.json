@@ -23,7 +23,12 @@
       },
       {
         "clip": "6550f78ca402938f0a4dfa7ff604164871cb268002cc187296d837e5f754c943",
-        "ms": 1477
+        "ms": 1477,
+        "by": "nettle",
+        "figure": "cast/professor_nettle",
+        "names": [
+          "Professor Nettle"
+        ]
       },
       {
         "clip": "6b91ecee44c5c241b7ada8339291b3a337c90d68d8180a218baf910a1ffda99d",
@@ -39,7 +44,12 @@
       },
       {
         "clip": "c243208156ea19127f54cb69908eb375eb2dc21592d92b8a5d41334ad205e94a",
-        "ms": 2557
+        "ms": 2557,
+        "by": "nettle",
+        "figure": "cast/professor_nettle",
+        "names": [
+          "Professor Nettle"
+        ]
       },
       {
         "clip": "098abce61bc6cf30c62239e1468b3e711cb9c86377dc02b49398925b05fac1c0",
@@ -55,7 +65,12 @@
       },
       {
         "clip": "eeea260035f772bafe0ff58811d02db7bbdc38b00903f1433f408ad483d90168",
-        "ms": 832
+        "ms": 832,
+        "by": "nettle",
+        "figure": "cast/professor_nettle",
+        "names": [
+          "Professor Nettle"
+        ]
       },
       {
         "clip": "6b91ecee44c5c241b7ada8339291b3a337c90d68d8180a218baf910a1ffda99d",
@@ -63,7 +78,12 @@
       },
       {
         "clip": "5acf8367f054803d3df63ab04d436b9c5a3c4c67a59ebf4c9e19ceec02bf38e3",
-        "ms": 2128
+        "ms": 2128,
+        "by": "nettle",
+        "figure": "cast/professor_nettle",
+        "names": [
+          "Professor Nettle"
+        ]
       }
     ]
   },
@@ -83,7 +103,12 @@
       },
       {
         "clip": "c9cae726bbc6c4fbe77c8f9093b9857ca0699956597656c91bddffa434def836",
-        "ms": 2897
+        "ms": 2897,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "49e99a941e3e79b05146b0caaf59d803363090616ebdc7901c66272e98f96ad6",
@@ -99,7 +124,12 @@
       },
       {
         "clip": "9c9b32d2efaf76b747b6c9f076af3732f5f9cfca1281da3d625e0de9aab95fcd",
-        "ms": 3607
+        "ms": 3607,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "a020554b3af1575a2214de06cf42b62a5daf19d8ac6c6f432a69f6eb7eacc8fd",
@@ -115,7 +145,12 @@
       },
       {
         "clip": "d565229a2e681b0e17c39e765d09808dbf06a8892bfe65036e710e055215ede3",
-        "ms": 1901
+        "ms": 1901,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "9fa80a37bce34493219a36a30f21e8768e742cd98bcfc0b54b85f85d6912fcad",
@@ -131,7 +166,12 @@
       },
       {
         "clip": "548bbea1e1b2126b019d20df5603f4bbb9a977bd0d02a702b973d4e34d1c94db",
-        "ms": 1363
+        "ms": 1363,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "88a4cc0fe4302d4d9d815fd50887e39e43b4288773040ace01292e1a5f937a40",
@@ -139,7 +179,12 @@
       },
       {
         "clip": "24ed8c0f0ccc92a3db87ae86049cbab00decf1d691e5f9871cd99daaba778d67",
-        "ms": 1989
+        "ms": 1989,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "c6b855377b150bb72f7f212749e69db13153e33ae3e06af5c0e27791a7f43dd0",
@@ -163,7 +208,12 @@
       },
       {
         "clip": "1c2563c699c5f5dada6d1d201085e12f0a234c65259f63b641d7662fb976c1c7",
-        "ms": 2369
+        "ms": 2369,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
@@ -171,7 +221,12 @@
       },
       {
         "clip": "894fda4f6d59b26134f9e06ffdb98424a7ba52e529045f7ee3b00bb959ad2156",
-        "ms": 3807
+        "ms": 3807,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -183,7 +238,12 @@
       },
       {
         "clip": "5b4d6a71f97037fa8034f52f1e1c9c42c058d036db3255390392eeb12f98214a",
-        "ms": 2069
+        "ms": 2069,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "28c77c6cb8ac9f01212265347c05485e25bcba82f82b6faa98faf804f902892b",
@@ -191,7 +251,12 @@
       },
       {
         "clip": "d3e733b0e3b6a25d7a4af875bcf6f3f0af2f5746b85dc39c1a05f252921fcc07",
-        "ms": 2158
+        "ms": 2158,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "d4ee296073bde59496e3f206e2c746c6ed5bfcc6220ec91b7325392222a797a5",
@@ -199,7 +264,11 @@
       },
       {
         "clip": "81a8519da4cc2e676d0d1c7f9d839c7b934ecb82c2917be07e93fccdb7a1469d",
-        "ms": 3607
+        "ms": 3607,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6fbee000479b0d033fde2d97e825f8d16ec72780e23ab3e30d616150256ab06f",
@@ -207,7 +276,12 @@
       },
       {
         "clip": "361cf605941a4783a8bf2caed0f7b7916b7cc6b0b20fb4234ecb13cf41a9ae6f",
-        "ms": 2207
+        "ms": 2207,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -219,7 +293,12 @@
       },
       {
         "clip": "fc84dae88bc177d80e52f9c1a651e3b01ec18ed489581a71899b944e6211028e",
-        "ms": 3807
+        "ms": 3807,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "af47602b50124ed3ce2104d6ff5039b556e2597b5ae2f7d6e8fdaacbb768d294",
@@ -235,7 +314,12 @@
       },
       {
         "clip": "86476f554edfa41cf8a83ac69f25a2918030e194f1930a5651a383dd647f4d92",
-        "ms": 2512
+        "ms": 2512,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "462e15ab2fb6563497f2867b7fb6a909571d035aade4b14e5abd0ccf3e74e8cb",
@@ -251,7 +335,12 @@
       },
       {
         "clip": "8b420d1df7aa15e61433d5b6a2d5c7aae493562aa401dca07ac79b89c77e2f87",
-        "ms": 1836
+        "ms": 1836,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       }
     ]
   },
@@ -263,7 +352,12 @@
       },
       {
         "clip": "eed5b3e6920800b4a21e3ae781955b2904967b1de63ef1f874d150b48dc6d9f3",
-        "ms": 3107
+        "ms": 3107,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       }
     ]
   },
@@ -291,7 +385,12 @@
       },
       {
         "clip": "9a848e09517ba8d73a91a2b4f87e8e77269d7dde4e78bcc5efbaa5fb587a1b16",
-        "ms": 4507
+        "ms": 4507,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       }
     ]
   },
@@ -303,7 +402,12 @@
       },
       {
         "clip": "d57b9fea593b27577ad0066621355180392f402e59dc613b4c60565a79efe23f",
-        "ms": 1898
+        "ms": 1898,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "f31bb535819281b2d99c54ed7a8464262b619cbbf1d478408f250ed8e71cb22d",
@@ -311,7 +415,12 @@
       },
       {
         "clip": "f3c0e181b6842bcf83b43f1d7652a6ccc522aeac8161378da3aaf1610af38038",
-        "ms": 2019
+        "ms": 2019,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "caa5706e0c36bff4257ffeb664794e263a4d30fb6ca14b89e0b92fe841b4956f",
@@ -327,7 +436,12 @@
       },
       {
         "clip": "c5de20776dc5ec2099d8f73a20d1f6e2c6eaeed9bd362ad785b8160bfdb70c05",
-        "ms": 780
+        "ms": 780,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "692f6abe6eee2699af05df8bbee4da20fb1cb7159745be98defc4aa8ce10f995",
@@ -335,7 +449,12 @@
       },
       {
         "clip": "0574ba9d70abf2603cbc78b67977840d98d6b1351de97153545902f493c93023",
-        "ms": 2605
+        "ms": 2605,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "478fbdc2ed9b930e4fcaa04bc47163d37490126a23a4eb5f5ee8aedb53811d34",
@@ -347,7 +466,11 @@
     "": [
       {
         "clip": "686c16d4116a22bb3945531138de97872ce34048383e9a2a2820eb1bc8c0a4fc",
-        "ms": 411
+        "ms": 411,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -355,7 +478,12 @@
       },
       {
         "clip": "b95a73a202cccb16229a4b70e0fc2dc9a6ba814fc6ee8d7e88c00f4bed1edd2a",
-        "ms": 394
+        "ms": 394,
+        "by": "ducklings",
+        "figure": "entities/duckling",
+        "names": [
+          "Ducklings"
+        ]
       },
       {
         "clip": "e01d8c7d5b79fc198b6f24be8f8f3d818edca698d05a90f1681c5c22da08c069",
@@ -379,7 +507,12 @@
       },
       {
         "clip": "97eb5df0e9fd48ddcf1ce0449848a5f474dbf2d7a30fdd62b8e674f2e87e4cfa",
-        "ms": 1028
+        "ms": 1028,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "7a730ee59521c6beed558211d8db0c80da524c6e036c87cf04c8a63f203ee19b",
@@ -387,7 +520,12 @@
       },
       {
         "clip": "c3becc8201ad9ab4d12546db04c103b6ce0974aa053c6da1d1db29e09da58efc",
-        "ms": 2478
+        "ms": 2478,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "3ccd0eb8855e63efcb597dc693cf955982f6f3e31e525f56bc17bafa7ca8217f",
@@ -419,7 +557,12 @@
       },
       {
         "clip": "cc7c9b7c3a2f478a39e249322568266319a3a3694f3228245c828427e529348b",
-        "ms": 1428
+        "ms": 1428,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "ddf2a81e8d025209c400c70663f71b77cc4aefe3634b97c8254d1bac982a0da0",
@@ -427,7 +570,12 @@
       },
       {
         "clip": "0f4e46d859ccbf4671155a316e4206268680da55a599c5015a4eb31fff2fa20e",
-        "ms": 1260
+        "ms": 1260,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       }
     ]
   },
@@ -447,7 +595,12 @@
       },
       {
         "clip": "2d85d5fe98bbcb45803ba7d0c1ebd27e77eba81f5293b4943fe641a6f2ddb97a",
-        "ms": 1736
+        "ms": 1736,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -455,7 +608,12 @@
       },
       {
         "clip": "23e0ba44a300c897c0ca9011240cb6bab96d37d49a9f3c485f52cbe9db214c6d",
-        "ms": 3807
+        "ms": 3807,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "1de8cdbc1a742ad8de412c93780ddb229773a938e4fa5646745b4769bfe0ece7",
@@ -479,7 +637,12 @@
       },
       {
         "clip": "c4ba95d755788f04c87c77b49d5dab576c692f4c7588ed2bea973e12b19dc8e2",
-        "ms": 1292
+        "ms": 1292,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "5bcb74ce8b500fe4100573c9a3fb1b3ec0c46622d624108e00048475cddeb5f8",
@@ -487,7 +650,12 @@
       },
       {
         "clip": "25770af587a00e856b182a280363ada0918c98616bc7be2be9154651282716e3",
-        "ms": 2322
+        "ms": 2322,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "83e542d5c92efa85ffab4e3e3575cd80b346f48ae42818e4f5a9ec4932cfedf2",
@@ -543,7 +711,12 @@
       },
       {
         "clip": "fd95df41687f7f131a0090a29baaa95ef96e4f17b477dc90e15c30424475f9cf",
-        "ms": 2757
+        "ms": 2757,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "55ca6b463cf6018f1c12f835a1e609c17403cca8f671724de3deeb590ab12160",
@@ -559,7 +732,12 @@
       },
       {
         "clip": "921f5d1969317941918c4683040faf0d200eeeacdb411955bc7e84ba7578aeca",
-        "ms": 1102
+        "ms": 1102,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "e754d3a5c707bb16839447aaae4de5ccf197e7c4ba3c28a78dd8646744f455f8",
@@ -567,7 +745,12 @@
       },
       {
         "clip": "aa330b49961ba13430f0b8c18af0eb5b5929e35173989a89a8467c5c703689d9",
-        "ms": 1500
+        "ms": 1500,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       }
     ]
   },
@@ -579,7 +762,12 @@
       },
       {
         "clip": "fddf7ff48e5c1081840e0e37fcc67c20d50f174941004f6b5e75587c958b1d3f",
-        "ms": 753
+        "ms": 753,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "b829908118137ee3b34d7b184a664237412404080720147bca179547dc17fd9d",
@@ -587,11 +775,21 @@
       },
       {
         "clip": "2d895c94c8dbf9a3f5cbd5fb22eaa5f3242dfcd3a65805ce3b7fb1d83de3a910",
-        "ms": 7907
+        "ms": 7907,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "4a85dd213f3654d5ff9d544fbf36ebd8b632c3768407c0700304cd8aeedd07b5",
-        "ms": 2294
+        "ms": 2294,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "ddf2a81e8d025209c400c70663f71b77cc4aefe3634b97c8254d1bac982a0da0",
@@ -607,7 +805,12 @@
       },
       {
         "clip": "07c3574e2c97cad7d15cd7b46162a46a69c00ab82cacdea81eed7c99e9b1bf11",
-        "ms": 5707
+        "ms": 5707,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "85e2ee9d3af930c8d63bc1dcbd5098b365a30eebb992fcdadd6fcc4431cc53b8",
@@ -615,7 +818,12 @@
       },
       {
         "clip": "ccb166ad3c8c30d4c0574afa79d5f29b3f76d7a0501de8f28e9bb691ede7237c",
-        "ms": 1309
+        "ms": 1309,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "5004cfa247d2047e42b8115fda2571fa192c5c922098dfbf50f6fe910fd21e9b",
@@ -623,7 +831,12 @@
       },
       {
         "clip": "56b073891787102c8b7f9ce98f80801db6d9a72eab1d72d9b8b701a7ecff618b",
-        "ms": 1592
+        "ms": 1592,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -631,7 +844,12 @@
       },
       {
         "clip": "7aa45241c72e1a175205c33e939e2d2b5841b92bf342903aec6365e3fdc7d607",
-        "ms": 3407
+        "ms": 3407,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -651,7 +869,12 @@
       },
       {
         "clip": "c0b130d3a1731c19504efc6c9ab18ad447aa220f3f7105db5fd391169fb43d4b",
-        "ms": 1009
+        "ms": 1009,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "7a730ee59521c6beed558211d8db0c80da524c6e036c87cf04c8a63f203ee19b",
@@ -659,7 +882,12 @@
       },
       {
         "clip": "7cb326ab3e732b304353cd46d38c264ef3e52c63d8bf74b5554e5b1058cbb697",
-        "ms": 2868
+        "ms": 2868,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "72bc580e8173e8398d41df84ad9007cf719c4f44ec8041c7703ba17e069c36c2",
@@ -695,7 +923,12 @@
     "": [
       {
         "clip": "497d494de55cd4101498ec4f31939ab08a7dbd14074b487ebeeb2335d703c95d",
-        "ms": 1234
+        "ms": 1234,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "a0b2038b686c6c2ed1e986a3a0320ea537009ba842ce7f25c83ee59fb3cee590",
@@ -703,7 +936,12 @@
       },
       {
         "clip": "e492e8973090cab2a605d3411e589873c426a1767066c7ed4550b433e3f88687",
-        "ms": 2893
+        "ms": 2893,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "5c1673b9dceb86a81651e2d1409a6956e9bc96ddb2220e3147ca0618dd68d280",
@@ -711,7 +949,12 @@
       },
       {
         "clip": "9e762ad1671511bde22958558b9a0374a3a8790ed0445b02f9646dc52b401d5e",
-        "ms": 1595
+        "ms": 1595,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "908ace55037b9a543c0345b230a67757674a12b13afd6d7c5f0ee8947f59f433",
@@ -735,7 +978,12 @@
       },
       {
         "clip": "d45bea450ab7ad880a83acad1da17133d8abe63734f242869fbc7ec862f9655c",
-        "ms": 2552
+        "ms": 2552,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "d9e7beabd20726de4c9cafa7e3350f69816e72f5e4babbc909997504ef139e57",
@@ -751,7 +999,12 @@
       },
       {
         "clip": "e391a83bc3e26fb1c43a597c9ba081f0bc3ac00c553584e373fa6f3da6179426",
-        "ms": 1623
+        "ms": 1623,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       }
     ]
   },
@@ -763,7 +1016,12 @@
       },
       {
         "clip": "a25cdbd480c2240f37a6462b7e875d1105506a2eb5fc3ef2dcf536b8e1157f03",
-        "ms": 1670
+        "ms": 1670,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "37584b4de2424250eecb6e2bbcc131fae4cb3d47382e9b0d4360a41c665bfb74",
@@ -771,7 +1029,12 @@
       },
       {
         "clip": "7c97fa69cfe1fc6459e476f03d231594e353e7e38e0207c8b84e2dd6861886fa",
-        "ms": 1310
+        "ms": 1310,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "f739cb8f19c6dbcc1310e05d9d8374cf0fecf19b9792278c177ed62efa6ab682",
@@ -779,7 +1042,12 @@
       },
       {
         "clip": "1fdaeed98fa572bdfa5483aed79a2dd42924b7df43d396671f518882f1818d37",
-        "ms": 3307
+        "ms": 3307,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       }
     ]
   },
@@ -791,7 +1059,12 @@
       },
       {
         "clip": "cc7c9b7c3a2f478a39e249322568266319a3a3694f3228245c828427e529348b",
-        "ms": 1428
+        "ms": 1428,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "ddf2a81e8d025209c400c70663f71b77cc4aefe3634b97c8254d1bac982a0da0",
@@ -799,7 +1072,12 @@
       },
       {
         "clip": "4d266d7bb4e52bb38e0fa6d5119493ef146885bfe9d3f6bac93e0fefa67ec434",
-        "ms": 3407
+        "ms": 3407,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "3327b89ed0ccdc1888ab13536741128dcf4f730c99bab1e64c35c73756038421",
@@ -811,7 +1089,12 @@
     "": [
       {
         "clip": "d3acf664d02d939bab2a9c0ca23648d8b819824589c3c489b5446e3e28aafa80",
-        "ms": 1718
+        "ms": 1718,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       },
       {
         "clip": "319b70522473b3648e8d43493b1ecce80c0090d977803dd8da113d270c218ab6",
@@ -819,7 +1102,12 @@
       },
       {
         "clip": "def5b0b21bdec5a7bb5af65c908e431397d277c2730d1719762eb27d64378d0a",
-        "ms": 1647
+        "ms": 1647,
+        "by": "tilly",
+        "figure": "cast/tilly",
+        "names": [
+          "Tilly"
+        ]
       }
     ]
   },
@@ -827,7 +1115,12 @@
     "": [
       {
         "clip": "8ec07ae0de985fcdcad3d3cd62caa591167ecabffd02948e778998bab533c91d",
-        "ms": 651
+        "ms": 651,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "98d80c0b01510227da3cf9747c0d6509407173caa25a4ec28e68f8d12af12b5f",
@@ -875,7 +1168,12 @@
       },
       {
         "clip": "556cc2db2947c3f1eb8cc3fe3a8f918a39376a3eed5c6bb93c0927b0f21fe4b5",
-        "ms": 2715
+        "ms": 2715,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "fca0d69bff74d6f0314fbb564ad0b33554594410a89af9f9a9eb37eac11a3024",
@@ -891,7 +1189,12 @@
       },
       {
         "clip": "58c67ec7e1c5ef264e434241650e57d9d7d08641bd375e269b16de4638450ef7",
-        "ms": 1865
+        "ms": 1865,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "f31bb535819281b2d99c54ed7a8464262b619cbbf1d478408f250ed8e71cb22d",
@@ -899,7 +1202,12 @@
       },
       {
         "clip": "fb9fb8417ad791ece54d0d75b29b56c7f464c995c3449d76d6896fac6bed6ee1",
-        "ms": 1085
+        "ms": 1085,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "57aac2fb0724e5ba3a2d4c7c486ce871105bf27042c83ea5ca160e61c970973a",
@@ -907,7 +1215,12 @@
       },
       {
         "clip": "ef4189d7c79e81b1fa9fd71311f527949951839c5902e3d58accc0a9a18736c6",
-        "ms": 2232
+        "ms": 2232,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -915,7 +1228,12 @@
       },
       {
         "clip": "6668f1453988399a1d457a611271445430cdc170502f6677d1b7edda3697d6ac",
-        "ms": 2297
+        "ms": 2297,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "617d0df3084ca8406be7cdb3cb06e5b17701e957ea01af8e1ecdc5008df1f060",
@@ -931,7 +1249,12 @@
       },
       {
         "clip": "274ad8e230aa929992a9cd16e35b051b1379e9146ab4b9765422a4994976b254",
-        "ms": 2644
+        "ms": 2644,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "2d91b8c25a7498408211bc900c7da9f41db632b3b73fb6e69f3e5f09403754e7",
@@ -951,7 +1274,12 @@
     "": [
       {
         "clip": "7141a076a45d2280dd82084942d846c91c78221ee8a1d2745fb746e50e5b8e3e",
-        "ms": 1154
+        "ms": 1154,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "dec1d8f10e9840fe5608dd9bd48ab563fd95f459482a4206e835ec62e504a4b8",
@@ -959,7 +1287,12 @@
       },
       {
         "clip": "782d358621523a64fe6bbbe4378339d2fd177c6c9e353f6b56d13cf3f06c579f",
-        "ms": 822
+        "ms": 822,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "4d9480d335420bba78bff3508d88a49a3d019f09240d391fde0dee5677e6e860",
@@ -967,7 +1300,12 @@
       },
       {
         "clip": "3c504c1e419a1ab1397717863eda76bb8638239be58c5aff39dea31460650fd2",
-        "ms": 2710
+        "ms": 2710,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -995,7 +1333,12 @@
       },
       {
         "clip": "e23b23bd7d2269de1ed1c1a9f26dd8299ffc580891fb3834a4a244fd751b820d",
-        "ms": 994
+        "ms": 994,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1011,7 +1354,12 @@
       },
       {
         "clip": "faa307679b7faac38b055859b14cced4c9fc79e672d3dd6e9d19d34f69423f99",
-        "ms": 1222
+        "ms": 1222,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -1039,7 +1387,12 @@
       },
       {
         "clip": "355e8a66791c3478462bb837cbabed26e78a9b94171219f91c478e6050c1588f",
-        "ms": 1197
+        "ms": 1197,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "61a7afcf0b70b6d89e836f8ee62bcf68354ba500dc96296398b0e2d1844a21d5",
@@ -1055,7 +1408,12 @@
       },
       {
         "clip": "d42fd6c83c10760d9bcea76742baa1d1de9b72aac6bb23c8a6626a3daab49d2f",
-        "ms": 1026
+        "ms": 1026,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "f31bb535819281b2d99c54ed7a8464262b619cbbf1d478408f250ed8e71cb22d",
@@ -1063,7 +1421,12 @@
       },
       {
         "clip": "0966f00a138c21de873697ee0e2625592b9a0189d8a3b19811cccba95b779440",
-        "ms": 759
+        "ms": 759,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "61075989997062afbff90179a48bb670e04f8de413f1c84cd139465bef5e1840",
@@ -1071,7 +1434,12 @@
       },
       {
         "clip": "8dc32ba95a1542752acb44f39d9a49944e912944fbcf63c379f0f6aaa7df0ce5",
-        "ms": 2610
+        "ms": 2610,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -1083,7 +1451,12 @@
       },
       {
         "clip": "14063886ac667728f20da921a69196f7cbec84f8aff1e1cc653ac8c591290ac1",
-        "ms": 2547
+        "ms": 2547,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1091,7 +1464,12 @@
       },
       {
         "clip": "d2aa1045aee84af58ef39d53a0c50d1b65506ba8a8ce4cd4df7a0e80caf700f6",
-        "ms": 5907
+        "ms": 5907,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "0e16967bbdc46a252c81b4e7ffeb8a10c5e0703b0f381306d1b92f3d6ce2f593",
@@ -1099,7 +1477,12 @@
       },
       {
         "clip": "f531cad90a7ed622334a3584040babdc0d3a2359ba8d902d1f553966ff33b61d",
-        "ms": 1341
+        "ms": 1341,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "309af2ba35d69d91ae487c82ddc0d068d9bc5614e53da253ffa2a2114ca9066e",
@@ -1107,7 +1490,12 @@
       },
       {
         "clip": "cf3dd861acc5edddec7020f77def1a10588c01cc17841e85ae477aaa5c56cf9c",
-        "ms": 2768
+        "ms": 2768,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "c58e32de33458b0984e94461ca823e3b488638c7e504c1f71ad75eeded66ac1e",
@@ -1131,7 +1519,12 @@
       },
       {
         "clip": "c8bef1e79879db6c7d56802b66c8031a7c0e57dae80cb1926b97b4f81df49bb0",
-        "ms": 1316
+        "ms": 1316,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "f095950e906e19a8422fa11f198e3aebc7d059fa8a0b626e2795486a44173ffa",
@@ -1147,7 +1540,12 @@
       },
       {
         "clip": "cdb86ce4a5d2b99be49704e33bce70fd49be1e587ffc468e7ac59cf7d586bb3d",
-        "ms": 1105
+        "ms": 1105,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "91b78fbffea1df755e5baff056df71a0016de07c2bfea745951d4016b8983c82",
@@ -1171,7 +1569,12 @@
       },
       {
         "clip": "47433d2081bee4399a445f0ba6f6720718296ee8c1d3f78db6f19be3d6680f24",
-        "ms": 2332
+        "ms": 2332,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "f31bb535819281b2d99c54ed7a8464262b619cbbf1d478408f250ed8e71cb22d",
@@ -1179,7 +1582,12 @@
       },
       {
         "clip": "6144f878a26defc2faadeba6ec88e569a676c1a81f084accc17339665ba32b1a",
-        "ms": 1657
+        "ms": 1657,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "f43fc6d012b3f0f09329b5b9619331aad6031d652d1c795bff4aacac4304321e",
@@ -1211,7 +1619,12 @@
       },
       {
         "clip": "314afecddee596a77b6135bebe63dfc5316cf21c4b8ded714d023dd0a791a84d",
-        "ms": 1435
+        "ms": 1435,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1227,7 +1640,12 @@
       },
       {
         "clip": "1f63be204c06b45250281fe216acebe625c802ab62bc89dfa083cb169d80d4ea",
-        "ms": 1476
+        "ms": 1476,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "1d01258d7d810dd5ad06cf02a9dafe2afd106ad02de268d59d1b703a4c20e9eb",
@@ -1243,7 +1661,12 @@
       },
       {
         "clip": "2b69472ec386ba20cc5defc5ce9fdceb7936e604fe7a46555eb02bcdfa21094b",
-        "ms": 1069
+        "ms": 1069,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       }
     ]
   },
@@ -1271,7 +1694,12 @@
       },
       {
         "clip": "f5cf719a0fd7a7f8d523c82c4b2f82eba6a9c071cd34f7367d6e6621b35deb23",
-        "ms": 2768
+        "ms": 2768,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
@@ -1279,7 +1707,12 @@
       },
       {
         "clip": "8bad89974d53fa78aa50d5644934eaea8f20a573cb8aa3c2d4ddecb93731c291",
-        "ms": 8107
+        "ms": 8107,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -1291,7 +1724,12 @@
       },
       {
         "clip": "0c9e6b2e1a6b22ce916c6e84fec21b2394df8ff1dfe66f68259d4aeb62bab044",
-        "ms": 2164
+        "ms": 2164,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },
@@ -1343,7 +1781,12 @@
       },
       {
         "clip": "3ae155f67b497e37c4455c341c63e90f3adfadfd670320ba2c50ea86a4bff84d",
-        "ms": 3107
+        "ms": 3107,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "f7be5216ddaec33fa27f16ba94686ebbe43694176cf76724baec92b1dfc6cd88",
@@ -1383,7 +1826,12 @@
       },
       {
         "clip": "b003bd27891162f1cfc07eb713183285fd5c9dd68bd3a84e9264f46fa028a8a3",
-        "ms": 2988
+        "ms": 2988,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       }
     ]
   },
@@ -1411,7 +1859,12 @@
       },
       {
         "clip": "9355081e463c7b2f3813dfce4a9687c8db074cf9c5e38e726e4d2980e1a68824",
-        "ms": 2684
+        "ms": 2684,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "f31bb535819281b2d99c54ed7a8464262b619cbbf1d478408f250ed8e71cb22d",
@@ -1419,7 +1872,12 @@
       },
       {
         "clip": "492ae44bcfe4ed659e9d1317dfecac04dd88b7d7af549c30aa0a50bd4dcee9eb",
-        "ms": 3807
+        "ms": 3807,
+        "by": "bryn",
+        "figure": "cast/bryn",
+        "names": [
+          "Bryn"
+        ]
       },
       {
         "clip": "a5bb6925446e8d7f526224498caccf435d6f39207e27efc25014666d79bbe532",
@@ -1427,7 +1885,12 @@
       },
       {
         "clip": "a9538cffac82e5cb7f931fdca16a5bee41e8b7d999b7bc2302f88a04edba4b44",
-        "ms": 2683
+        "ms": 2683,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1483,7 +1946,12 @@
       },
       {
         "clip": "ff528a5bce768a7804c49cd0ea2cc5c1683623a2a02ed17d648395dbe1c22dc4",
-        "ms": 1059
+        "ms": 1059,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
@@ -1491,7 +1959,12 @@
       },
       {
         "clip": "d18be0a2b62b7f01330ffeb912782dc9e8794fded54b7c3600582d0d7ab3efb3",
-        "ms": 1838
+        "ms": 1838,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       }
     ]
   },

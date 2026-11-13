@@ -23,6 +23,11 @@ export interface CastSpeaker {
   elevenlabs?: { voiceId?: string; name?: string; approved?: boolean };
   accent?: string;
   direction?: string;
+  /** Their painting (`cast/pib`, `entities/faun`): the figure the stage pulses while they speak. */
+  figure?: string;
+  /** What they are called, and what else the content calls them (`aliases`): the stage pulses a named figure only under one of these. */
+  name?: string;
+  aliases?: string[];
   [field: string]: unknown;
 }
 
@@ -45,6 +50,9 @@ export const ELEVENLABS: Provider = { provider: "elevenlabs", model: "eleven_v4"
 export interface DesiredSegment {
   key: string;
   by: string;
+  /** The speaker's figure on the cast sheet, and their name and aliases there, if any. Not in the key: the stage reads them, the provider never does. */
+  figure?: string;
+  names?: string[];
   /** What is sent to the provider. */
   text: string;
   delivery?: string;
@@ -119,7 +127,16 @@ export function desiredClips(lines: readonly ClassifiedLine[], options: DesireOp
     if (spoken === "") return null;
     const meaning = delivery === undefined ? undefined : options.deliveries?.[delivery] ?? delivery;
     const key = clipKey({ ...provider, voice, ...(meaning !== undefined ? { delivery: stableStringify(meaning) } : {}), text: spoken });
-    return { key, by, text: spoken, ...(delivery ? { delivery } : {}) };
+    const { figure, name, aliases } = options.cast.speakers[baseSpeaker(by)] ?? {};
+    const names = [...new Set([name, ...(Array.isArray(aliases) ? aliases : [])].filter((n): n is string => typeof n === "string" && n !== ""))];
+    return {
+      key,
+      by,
+      text: spoken,
+      ...(delivery ? { delivery } : {}),
+      ...(typeof figure === "string" && figure !== "" ? { figure } : {}),
+      ...(names.length > 0 ? { names } : {}),
+    };
   };
 
   for (const line of lines) {

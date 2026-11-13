@@ -55,7 +55,12 @@
       },
       {
         "clip": "83795c16e55ab5279542ce41ba527a4a379a5ef507b626537bcf420d6ab80972",
-        "ms": 1983
+        "ms": 1983,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "7d2d339b00c0f6cf89fff9e3745ca4f4123ae31adfebdd20a5358a80392907cb",
@@ -223,7 +228,12 @@
       },
       {
         "clip": "0f9232c986291c263f31edc7d400243cf73bc3a97d9eaf410d4c9e3d3adac391",
-        "ms": 1353
+        "ms": 1353,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "7d2d339b00c0f6cf89fff9e3745ca4f4123ae31adfebdd20a5358a80392907cb",
@@ -231,7 +241,12 @@
       },
       {
         "clip": "23db6ffb18d900e915d9e66367795c58fd3171ea110b107b63036817c5a4c748",
-        "ms": 1376
+        "ms": 1376,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "4e6f2a07a4a3fc109bc432ec3571e1efa748f09bc6c4187c387341c574fa437c",
@@ -271,7 +286,12 @@
       },
       {
         "clip": "38e1d4ba3e62c260644fe4607fd7ddb208a357243e7c665d9e398bfcb765f350",
-        "ms": 2497
+        "ms": 2497,
+        "by": "grandmother",
+        "figure": "cast/dragonling_grandmother",
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -347,7 +367,12 @@
       },
       {
         "clip": "69ebf229c0ac9f723c8b3acc216a5f90b5599bb2649b85d6c6cc10c7f575fe3c",
-        "ms": 1902
+        "ms": 1902,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "7d2d339b00c0f6cf89fff9e3745ca4f4123ae31adfebdd20a5358a80392907cb",
@@ -355,7 +380,12 @@
       },
       {
         "clip": "d01fc60483e3df4b6018bda202cbbddf35dbf3c53014faf11467b4dfbc3aa872",
-        "ms": 1140
+        "ms": 1140,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "7b5da6ad3cfb753defecf7780e1a2a7d9c15a4e63f222f3b9d34029e3cf79ebf",
@@ -615,7 +645,12 @@
       },
       {
         "clip": "284017da5817983025c0132c2e4ac9d81330e28ebf29bdba8f7fe6d343a552b2",
-        "ms": 1254
+        "ms": 1254,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -623,7 +658,12 @@
       },
       {
         "clip": "ff8b280724cc319c5eba7b58eb71f134eb1f260575205ab53328d5363f272b9d",
-        "ms": 4407
+        "ms": 4407,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       }
     ]
   },
@@ -635,7 +675,12 @@
       },
       {
         "clip": "be227e51c95dfe4cdcd13be7e15ef014c6506b75495e92dff40cade18b47c511",
-        "ms": 918
+        "ms": 918,
+        "by": "masked_choir_singer",
+        "figure": "cast/masked_choir_singer",
+        "names": [
+          "Masked choir singer"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -659,7 +704,12 @@
       },
       {
         "clip": "d8f685ef85ed7a5000fedebc288e8438ee22d7cd4f751641b43f7aa5d4400ae2",
-        "ms": 2945
+        "ms": 2945,
+        "by": "masked_choir_singer",
+        "figure": "cast/masked_choir_singer",
+        "names": [
+          "Masked choir singer"
+        ]
       }
     ]
   },
@@ -831,7 +881,12 @@
       },
       {
         "clip": "3f0285af6047d384c11ab37eb518c4ea31e05b97976dc539ace411a9e3787938",
-        "ms": 948
+        "ms": 948,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -847,7 +902,12 @@
       },
       {
         "clip": "3f0285af6047d384c11ab37eb518c4ea31e05b97976dc539ace411a9e3787938",
-        "ms": 948
+        "ms": 948,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "0c5ada953a42786f8158596402c4e34ba2e7f365f684558c79bdb1aa197cf7c6",
@@ -911,7 +971,12 @@
       },
       {
         "clip": "f3d251feeac79be62a4a49492cf7699015500ec4ecd0fb0f7a131a14f2c7a771",
-        "ms": 2251
+        "ms": 2251,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -1063,7 +1128,11 @@
       },
       {
         "clip": "d3efbd25fb24d8fb54726490258eef527ab506b529d056cbfb94c66ff45150a0",
-        "ms": 1874
+        "ms": 1874,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -1071,7 +1140,11 @@
       },
       {
         "clip": "e6cecd6f9700bbdc4e589d53ec4b868e4ffd2ce7d0bd1694f8a66a1e7c2a5580",
-        "ms": 1194
+        "ms": 1194,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "4c7b9bb0e64d0cf1b79fb2f28fbc20a7060fc796e49b6ba1c964870145b34e37",
@@ -1095,7 +1168,11 @@
       },
       {
         "clip": "c17312de308865ff2823e404e510b0898671334fa4dd8137842c8844eebb20dd",
-        "ms": 1125
+        "ms": 1125,
+        "by": "boggart",
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "25a4ed5ff9617dccf9b30c7f5c353b3353915a56bd46e93582eeefc7d6e9bcf3",
@@ -1103,7 +1180,11 @@
       },
       {
         "clip": "296dd8d51726ff3eb53abd2244967c6d63941683738e02b15e10ed55b15c3ec3",
-        "ms": 5507
+        "ms": 5507,
+        "by": "boggart",
+        "names": [
+          "Boggart"
+        ]
       }
     ]
   },
@@ -1115,7 +1196,11 @@
       },
       {
         "clip": "efe91ec25a9d9ac77af81cb6e23b6e6b3733ec8a678ac103d36c73c38ef087bc",
-        "ms": 1965
+        "ms": 1965,
+        "by": "boggart",
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "25a4ed5ff9617dccf9b30c7f5c353b3353915a56bd46e93582eeefc7d6e9bcf3",
@@ -1123,7 +1208,11 @@
       },
       {
         "clip": "f718983b589af71ad9cd0e7991d4135c607d7b2618253f2518bddc0a1862416d",
-        "ms": 1915
+        "ms": 1915,
+        "by": "boggart",
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "6d02abb545b656c42c71ebc3d6ca1f85e3a243053c7d5ce9ee395f0b9c098aac",
@@ -1139,7 +1228,11 @@
       },
       {
         "clip": "f1b4568e09cc186a23c85e12a7688a04e8fe51b6853d80eb0dfec3a437c0ba47",
-        "ms": 1230
+        "ms": 1230,
+        "by": "boggart",
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "8db988fb86d3b69535a535e9caf0a96640e6826ddc31e95d61c4b7e7b53c93ca",
@@ -1163,7 +1256,12 @@
       },
       {
         "clip": "fa7ffc9d88406ef274626ce4fc5c1eb42a89239a3b8d814ef9e525bdc5a0d25a",
-        "ms": 1469
+        "ms": 1469,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "names": [
+          "Relay Runner"
+        ]
       },
       {
         "clip": "daac0b935f20ebcd365f1da23601285213d033580d1c15627878024d44366197",
@@ -1171,7 +1269,12 @@
       },
       {
         "clip": "fe9fdcfaaf0b0967932b84ca928b1eb99a06a107b7eba3e97d56f2d6929cb65d",
-        "ms": 927
+        "ms": 927,
+        "by": "relay_runner",
+        "figure": "cast/relay_runner",
+        "names": [
+          "Relay Runner"
+        ]
       },
       {
         "clip": "837762f284021b95c25f1a1b37579842304c3a643ba6c9752317aeffa7c9591d",
@@ -1187,7 +1290,12 @@
       },
       {
         "clip": "73dcebd269230cad2d302f5eabc7c8511763881092f35d6524249deedae78a80",
-        "ms": 3907
+        "ms": 3907,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "b5364e5f28728c431820ddef9deb1e0fbf7e6f1994077de49f938f5dfb27198c",
@@ -1311,7 +1419,12 @@
       },
       {
         "clip": "4cafa9b29013842614b6387d9cfa153bac66f7811d0bdc91b89752a43b0f3c0e",
-        "ms": 1387
+        "ms": 1387,
+        "by": "hessa",
+        "figure": "cast/hessa_wren",
+        "names": [
+          "Hessa Wren"
+        ]
       },
       {
         "clip": "3d73e9fc2f591ae4a02600410e5345ae96a02ed72628b6ada086df3cffc92f4b",
@@ -1327,7 +1440,12 @@
       },
       {
         "clip": "ad5bdd48374bcee66ec35869a7136da6dcd98d73348b086446d19cca2e5f2d99",
-        "ms": 1042
+        "ms": 1042,
+        "by": "grandmother",
+        "figure": "cast/dragonling_grandmother",
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "3dc22849fcd65e6aa4abb44a69ad649f262b4f258e876cf16c729b3c89a4c2c0",
@@ -1355,7 +1473,13 @@
     "": [
       {
         "clip": "0208d5c3f843cb7c5dca448f59ee826abe0a38091ef806d116d6ea4e94237de3",
-        "ms": 4807
+        "ms": 4807,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "7f76cccfb5441df926703e6f4688e3a8260503fcc7ca7894d55d4f68e117831e",
@@ -1371,7 +1495,13 @@
       },
       {
         "clip": "e347ec72254dc25f96dcb69f932cd935fb3cf4e5c3794222ff67156ba2c479fa",
-        "ms": 5207
+        "ms": 5207,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "3bb4c54bc496857a91e55c88fb21346bddf9bc1d865b681fa72a19595960d7d8",
@@ -1387,7 +1517,13 @@
       },
       {
         "clip": "60df93d6fc23d8cd6b5c92bfd4b325e3f7c7fc0b4fe3a18a93eb14aca4dd5780",
-        "ms": 3907
+        "ms": 3907,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "fb8e1426b308b6e4356224a3d8f57ede26b67a849038d69b690ae57797b3783f",
@@ -1451,7 +1587,12 @@
       },
       {
         "clip": "31be9db69af36a5dbce6fb7eab0a5bed4ab8cbd32eb8349f0dd0020587da6add",
-        "ms": 1883
+        "ms": 1883,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1459,7 +1600,12 @@
       },
       {
         "clip": "8e37f507ddbdb11cc327fc7b2fd85ec4ad406270e4d75f85dee8081b29813a33",
-        "ms": 5107
+        "ms": 5107,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -1471,7 +1617,12 @@
       },
       {
         "clip": "cdf882cc779e576a9b530e6a8ac62145233bd296686f14f0ef64c6eda790156d",
-        "ms": 803
+        "ms": 803,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "59c9e63b16aba9d12b43e485882d6ebb1ce2d2baf568fc9bef9ed786e76bddef",
@@ -1479,7 +1630,12 @@
       },
       {
         "clip": "7bbd3e547f4c808465c3ec645548be61e3e7605acc37a46bf60fe5ddc143cda2",
-        "ms": 3607
+        "ms": 3607,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "4550b6eb852d3d49a2e52e5964cd35d8987f689d4016a3e3f3dafa1c37bdec98",
@@ -1495,7 +1651,12 @@
       },
       {
         "clip": "859d66364b71eb821f518e62c867fee0317cbe26f99943be89b386d52ff5c6cb",
-        "ms": 2371
+        "ms": 2371,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "30ff2efb79403ea8e2de7b866f8b19ebebfc3cb4131b5d6cea4dc9ce42245ea0",
@@ -1503,7 +1664,12 @@
       },
       {
         "clip": "9ddbbfb41172b6dfa07158810c3c42c9108f0f0321bf5f02933d9529ba441e27",
-        "ms": 1959
+        "ms": 1959,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       }
     ]
   },
@@ -1515,7 +1681,12 @@
       },
       {
         "clip": "26427a0e0b31b0223dbb6bd7505d2b7408e5810fea8d42a2aae1b508b1f1e12d",
-        "ms": 1921
+        "ms": 1921,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "2f15d9a99d5b199ee5635be90dfc3fdd95cc2e5215284cfe3b9fc6326145a5b8",
@@ -1523,7 +1694,12 @@
       },
       {
         "clip": "00ec6908451daae6b4adaf6c5140a52f41686c618820a7ea7774fed8a3bc1817",
-        "ms": 2411
+        "ms": 2411,
+        "by": "mother_thrum",
+        "figure": "cast/mother_thrum",
+        "names": [
+          "Mother Thrum"
+        ]
       },
       {
         "clip": "d53e45f95c06bdb3917b92214170f384bf8cd6742926bb2d2c6c24fd57ddea4c",
@@ -1547,7 +1723,12 @@
       },
       {
         "clip": "776b96fb21a88da3ee94d6f9f2636f771c6c76b68f928facc5d7f6e7da1fc857",
-        "ms": 1485
+        "ms": 1485,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "1d560354ea7b24412a47a830a0c57f9fc63b870b68eb63d33be048d4c42a07a7",
@@ -1567,7 +1748,11 @@
     "": [
       {
         "clip": "92e5a1dbaf6efb0bc07a4338a41e3efb3f04f30899f6749f3bf760fc0f2e87de",
-        "ms": 1842
+        "ms": 1842,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "c753e6adefe13078a17c069a3cc757bcf2505e6baf4ec42765715a53df564c29",
@@ -1575,7 +1760,12 @@
       },
       {
         "clip": "7e816add1b8a213d7dc2a5e20e60c4b8b0b84416c384bb84ad1c697c9d8c62a6",
-        "ms": 2651
+        "ms": 2651,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       }
     ]
   },
@@ -1587,7 +1777,13 @@
       },
       {
         "clip": "03021d0f58e74d3fdc654f536dee9581029d75d45200181be8058781daa9572a",
-        "ms": 2694
+        "ms": 2694,
+        "by": "runner",
+        "figure": "cast/mosshome_runner",
+        "names": [
+          "MossHome Runner",
+          "Runner"
+        ]
       }
     ]
   },
@@ -1599,7 +1795,12 @@
       },
       {
         "clip": "e50de71a308484109ae403cebb88ffdb70bd28ba6557f6644e02887ef4128452",
-        "ms": 1049
+        "ms": 1049,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "b1b9ba1b051fb13d4638f3861cb0597a77a7aa12f59b10abb903536a356cb13b",
@@ -1607,7 +1808,12 @@
       },
       {
         "clip": "f5c8ff818a4cb7173de200e1c4272b216fb549fe477b046e62bc807012aa924a",
-        "ms": 2789
+        "ms": 2789,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "749690f113edbf1d06eb40cf04e27930afc2a3aa4c87fa336361cacbef59e074",
@@ -1619,7 +1825,11 @@
     "": [
       {
         "clip": "a92d544f291e12970732d93e6198f6c78a9241d689f1a690a4adcd96ed3a0a5a",
-        "ms": 1546
+        "ms": 1546,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "f14c5b98c5b7e60cea44f30aea0d0f7670cd29ab90618d949381dd5c2783d1dc",
@@ -1643,7 +1853,12 @@
       },
       {
         "clip": "30353b61fa817d2a35499474aca86ce987af5f03e5835b0463c942e171c1c42e",
-        "ms": 3107
+        "ms": 3107,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "2db4302db8e793d13ccb967a76391582880bf25737bcd051b7bdf3cdf60466d1",
@@ -1659,7 +1874,12 @@
       },
       {
         "clip": "f1034b5c41ddf818c0a10c2712523cf4a0991604c497248772223110abda2431",
-        "ms": 1652
+        "ms": 1652,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1667,7 +1887,12 @@
       },
       {
         "clip": "04b16e86cfda406947297172e8d595359f8121200f78edb1d043618c6696d6c7",
-        "ms": 2248
+        "ms": 2248,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "127681096fc0f2ca9f9d0d0003be55c1d9f55da068ea744115bee9cd2d131294",
@@ -1691,7 +1916,12 @@
       },
       {
         "clip": "26ae60b6193674502be52820f707650461876df27bf1e9b371ec28813e4c35a7",
-        "ms": 1911
+        "ms": 1911,
+        "by": "grandmother",
+        "figure": "cast/dragonling_grandmother",
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "bba9cd10c4f1a51f2c793382d0678d5a9864152c55a78af8ec94afaa6349b678",
@@ -1723,7 +1953,12 @@
       },
       {
         "clip": "7735d6c40ef7d8e387abff285fd0d34ff24f0c84258e176f84eb0d6993b090a7",
-        "ms": 3907
+        "ms": 3907,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "1d1aba5e32d1de8fdc4a812b1d1d44c878bc6033303bb004021f63b1b41d7aae",
@@ -1771,7 +2006,12 @@
       },
       {
         "clip": "d620a5c776517a849ef83d189c15c07b4905bf2daa875869640ca127a200fd22",
-        "ms": 1556
+        "ms": 1556,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -1779,7 +2019,12 @@
       },
       {
         "clip": "60865d068cdd69e38160039519b7dbe6d7fc524abcbd6fedb5e071dd5cf93868",
-        "ms": 2779
+        "ms": 2779,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       }
     ]
   },
@@ -1791,7 +2036,12 @@
       },
       {
         "clip": "9fd7b8173a5ba0e67dce1f3e357338ada8504430a715f4de1eb0d3ef6e9488e8",
-        "ms": 752
+        "ms": 752,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       },
       {
         "clip": "0153ad96fb9a1b13818ac2f5c544c25ed0d3e7a69c610eb5552dedc125129273",
@@ -1799,7 +2049,12 @@
       },
       {
         "clip": "6ce09270a66d694aa8821e1168f0a36cc2efee9f9f65bfd2f3d08d71d6ea0f04",
-        "ms": 3307
+        "ms": 3307,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       },
       {
         "clip": "4550b6eb852d3d49a2e52e5964cd35d8987f689d4016a3e3f3dafa1c37bdec98",
@@ -1815,7 +2070,12 @@
       },
       {
         "clip": "ff4ee626b53fe15e17103517b588845f3b06ed8a26bf7bf3cd00c0f80c19e1ab",
-        "ms": 2038
+        "ms": 2038,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       },
       {
         "clip": "30ff2efb79403ea8e2de7b866f8b19ebebfc3cb4131b5d6cea4dc9ce42245ea0",
@@ -1823,7 +2083,12 @@
       },
       {
         "clip": "941a2bc6de6694f36663e64fff69366c79ebaae5405f7308c4e8b6a85f05db01",
-        "ms": 1701
+        "ms": 1701,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       }
     ]
   },
@@ -1835,7 +2100,12 @@
       },
       {
         "clip": "eff44e72d8d84910561de9ff06dbab047178148817b62b59a9b31934d47ac484",
-        "ms": 2106
+        "ms": 2106,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       },
       {
         "clip": "e2532581d53c8992aa000bcd24caf2892288355ceb8508840a6e02d9bf03f2ca",
@@ -1843,7 +2113,12 @@
       },
       {
         "clip": "4b108c0eddaa4a89ec5772abd53484c509a4622d3e8cd7f607f1ebe899efaa60",
-        "ms": 2138
+        "ms": 2138,
+        "by": "stall_witch",
+        "figure": "cast/stall_witch",
+        "names": [
+          "Stall Witch"
+        ]
       }
     ]
   },
@@ -1879,7 +2154,12 @@
       },
       {
         "clip": "025ab83f76be3b684c4614734eba6e1f170e7927a381934e3d5452f243abcde0",
-        "ms": 3407
+        "ms": 3407,
+        "by": "caravan_master",
+        "figure": "cast/caravan_master",
+        "names": [
+          "Caravan Master"
+        ]
       },
       {
         "clip": "2668584f1a6641d2c8a3a4e4e2ada50e637f9c3919e764c3e180561eeb6c7313",
@@ -2011,7 +2291,12 @@
       },
       {
         "clip": "0622d3ab3ab5e1e56caacb65872bb5ab4f9ba6a21bbfacfdc58e037c3ca34ffe",
-        "ms": 1096
+        "ms": 1096,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -2019,7 +2304,12 @@
       },
       {
         "clip": "c48ef7414d94a88fdc51bd7ced0a4ef76570cc503edafd9903c095428587ce75",
-        "ms": 6407
+        "ms": 6407,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "22076fe329bb9d6aecb7b37e0aac7e546827d94c56fee2c014e6ae12741cb4fc",
@@ -2035,7 +2325,12 @@
       },
       {
         "clip": "9c8e47e0f0ccdac2c93a945e3c0239700eebef3a95867be365da91ccd7c38c73",
-        "ms": 631
+        "ms": 631,
+        "by": "grandmother",
+        "figure": "cast/dragonling_grandmother",
+        "names": [
+          "Grandmother"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -2043,7 +2338,12 @@
       },
       {
         "clip": "e11bf9c513faad69507aff09b71ae1561a8281fc1f2b7624112228bd86de51c4",
-        "ms": 798
+        "ms": 798,
+        "by": "grandmother",
+        "figure": "cast/dragonling_grandmother",
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -2055,7 +2355,12 @@
       },
       {
         "clip": "ee7012ea699881d1d078e87d91613de829a3a4d7e31e99e3b33bf87878568bb9",
-        "ms": 1303
+        "ms": 1303,
+        "by": "rook",
+        "figure": "cast/rook",
+        "names": [
+          "Rook"
+        ]
       },
       {
         "clip": "6c4e6bf5669331a02d07d66db3e80f92d830f0ddbb8e123a73f57f0f01801de8",
@@ -2063,7 +2368,12 @@
       },
       {
         "clip": "ab18a9274f32435570b648710454d08823f2d81f21879d2329f2358606b6e953",
-        "ms": 1369
+        "ms": 1369,
+        "by": "linnet",
+        "figure": "cast/cadet_linnet",
+        "names": [
+          "Cadet Linnet"
+        ]
       },
       {
         "clip": "91a3c7411d38639d79e8d7a1ee76914d6fbaaacadbb8c31db7650ee564949719",
@@ -2095,7 +2405,12 @@
       },
       {
         "clip": "82aa515ae83dc911f54be7c86fa10e0992b80e4fdac4f52cd9eaf8b4cdb7f7a2",
-        "ms": 2538
+        "ms": 2538,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "ff54f0fe6a29a2e55a9f60a37be1e782bf7a6eca7862ddaedb87a5892367c607",
@@ -2103,7 +2418,12 @@
       },
       {
         "clip": "cdb22a77e009828c0d695995a1d8f1d079cdaeb1a89d4561cc253dd09fb0e649",
-        "ms": 1970
+        "ms": 1970,
+        "by": "pellam",
+        "figure": "cast/pellam",
+        "names": [
+          "Pellam"
+        ]
       },
       {
         "clip": "b2f240b42228703c730180f66991d509c3a41cb8f55e580965cd0186a66d4a01",
@@ -2227,7 +2547,12 @@
       },
       {
         "clip": "3e18fe1799a33002c655abd9c3c1ca93e1e24169a776e202b1d1be6f7f05e93f",
-        "ms": 3707
+        "ms": 3707,
+        "by": "grandmother",
+        "figure": "cast/dragonling_grandmother",
+        "names": [
+          "Grandmother"
+        ]
       }
     ]
   },
@@ -2239,7 +2564,12 @@
       },
       {
         "clip": "60faf73ffe69637c4c5ae0304175e24138d3b1301f3ef7196420c6ee1c5eea82",
-        "ms": 1769
+        "ms": 1769,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "3f7b752eb8ab4b119248a72f7cd210e442dfbcb5a40e4179e76e8bbcec4ac360",

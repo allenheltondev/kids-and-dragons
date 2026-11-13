@@ -54,7 +54,7 @@ function fakeDevice() {
 
 /** The engine's voice channel: decodes a clip's bytes into a buffer named after them, and plays on request. */
 function fakeChannel(options: { ready?: boolean; failDecode?: string; detach?: boolean } = {}) {
-  const plays: { buffers: string[]; onEnd: () => void; stopped: boolean }[] = [];
+  const plays: { buffers: string[]; onEnd: () => void; onClip: ((index: number) => void) | undefined; stopped: boolean }[] = [];
   const channel: VoiceChannel = {
     ready: () => options.ready ?? true,
     decode: (bytes) => {
@@ -65,9 +65,9 @@ function fakeChannel(options: { ready?: boolean; failDecode?: string; detach?: b
       if (name === options.failDecode) return Promise.reject(new Error("EncodingError"));
       return Promise.resolve({ duration: 0.5, name } as VoiceBuffer);
     },
-    play: (clips, onEnd) => {
+    play: (clips, onEnd, onClip) => {
       // Clips may still be on their way: each is named here as it arrives, in play order.
-      const play = { buffers: [] as string[], onEnd, stopped: false };
+      const play = { buffers: [] as string[], onEnd, onClip, stopped: false };
       void (async () => {
         for (const clip of clips) {
           try {
@@ -119,6 +119,8 @@ function setup(
   const { channel, plays } = fakeChannel(channelOptions);
   const net = fakeFetch(routes);
   const speaking: boolean[] = [];
+  const figures: (string | null)[] = [];
+  const names: (string | null)[] = [];
   let current: VoiceChannel | null = channel;
   const speaker = createClipSpeaker({
     device: device.device,
@@ -126,8 +128,12 @@ function setup(
     fetch: net.fetch,
     saveData: () => saveData,
     onSpeaking: (on) => speaking.push(on),
+    onCast: (who) => {
+      figures.push(who?.figure ?? null);
+      names.push(who?.names?.join("/") ?? null);
+    },
   });
-  return { speaker, device, plays, net, speaking, unplug: () => void (current = null) };
+  return { speaker, device, plays, net, speaking, figures, names, unplug: () => void (current = null) };
 }
 
 /** Lets every resolved promise in the chain run. */
@@ -1044,5 +1050,42 @@ describe("decoding ahead: the first clip of each line one step ahead", () => {
     const keys = firstClipsAhead({ next }, [many]);
     expect(keys).toHaveLength(HELD_DECODES);
     expect(keys[0]).toBe("0".padStart(64, "0"));
+  });
+});
+
+describe("who is heard, for the stage's cast pulse (#551)", () => {
+  const SAID: VoiceManifest = {
+    "ch/s1/narration": { "": [{ clip: A, ms: 1000 }, { clip: B, ms: 500, by: "pib", figure: "cast/pib", names: ["Pib"] }, { clip: C, ms: 800, by: "echo", names: ["Echo", "The echo"] }] },
+  };
+  const LINE: NarrationPart[] = [{ address: "ch/s1/narration", line: "Pib waves." }];
+  const routes = (): Record<string, Route> => ({ [manifestPath("ch")]: json(SAID), [clipPath(A)]: bytes(A), [clipPath(B)]: bytes(B), [clipPath(C)]: bytes(C) });
+
+  it("names whoever says the clip being heard, and nobody for the narrator or the end", async () => {
+    const t = setup(routes());
+    t.speaker("Pib waves.", { source: "narration", parts: LINE });
+    await settle();
+    const play = t.plays[0]!;
+    play.onClip?.(0);
+    expect(t.figures).toEqual([]);
+    play.onClip?.(1);
+    expect(t.figures).toEqual(["cast/pib"]);
+    play.onClip?.(2);
+    expect(t.figures).toEqual(["cast/pib", null]);
+    expect(t.names).toEqual(["Pib", "Echo/The echo"]);
+    play.onClip?.(1);
+    play.onEnd();
+    expect(t.figures).toEqual(["cast/pib", null, "cast/pib", null]);
+    expect(t.names).toEqual(["Pib", "Echo/The echo", "Pib", null]);
+  });
+
+  it("lets go when the line is cut off, and ignores a clip of the line that was cut", async () => {
+    const t = setup(routes());
+    t.speaker("Pib waves.", { source: "narration", parts: LINE });
+    await settle();
+    const play = t.plays[0]!;
+    play.onClip?.(1);
+    t.speaker.cancel?.();
+    play.onClip?.(1);
+    expect(t.figures).toEqual(["cast/pib", null]);
   });
 });

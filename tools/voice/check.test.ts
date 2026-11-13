@@ -100,7 +100,7 @@ describe("a short line whose clip runs far past its words (Old Ossley's doubled 
     }));
     const letters = (text: string): number => text.replace(/[^a-z]/gi, "").length;
     const manifest: Manifest = Object.fromEntries(
-      lines.map((line, n) => [line.address, { "": [{ clip: key(n + 1), ms: n === 3 ? ms : letters(line.segments[0]!.text) * 60 }] }]),
+      lines.map((line, n) => [line.address, { "": [{ clip: key(n + 1), ms: n === 3 ? ms : letters(line.segments[0]!.text) * 60, by: "old_ossley" }] }]),
     );
     return { manifest, desired: { lines, deviceVoice: [] } };
   }
@@ -272,5 +272,52 @@ describe("the deploy's site check (#545 review)", () => {
   it("passes a site with nothing to look up", async () => {
     const { verifySite } = await import("./verify-site");
     expect((await verifySite("https://x", "/nowhere", answer(503))).code).toBe(0);
+  });
+});
+
+describe("who speaks each clip, for the stage's cast pulse (#551)", () => {
+  const SAID = 'A sprite waves an acorn. "Hello there, friends!"';
+  const voice = (voiceId: string) => ({ voiceId, approved: true });
+  const CAST: CastSheet = {
+    speakers: {
+      narrator: { who: "A warm storyteller.", elevenlabs: voice("n1") },
+      pib: { who: "A bramble sprite.", name: "Pib", aliases: ["The sprite", "Pib"], figure: "cast/pib", elevenlabs: voice("p1") },
+      echo: { who: "A voice from nowhere.", elevenlabs: voice("e1") },
+    },
+  };
+  const LINES = classify([{ address: "ch/scene_a/narration", campaign: "c", chapter: "ch", kind: "narration", text: SAID, renders: 1 }], { facetsMax: 2 });
+  const scripted = (by: string): Desired =>
+    desiredClips(LINES, {
+      cast: CAST,
+      scripts: new Map([["ch", { "ch/scene_a/narration": { source: sourceHash(SAID), lines: [{ by: "narrator", text: "A sprite waves an acorn." }, { by, text: '"Hello there, friends!"' }] } }]]),
+    });
+  const rendered = (desired: Desired): Manifest => ({ "ch/scene_a/narration": { "": desired.lines[0]!.segments.map((s) => ({ clip: s.key, ms: 2000 })) } });
+
+  it("marks a cast member's clip with their id and figure, and leaves the narrator's unmarked", () => {
+    const desired = scripted("pib");
+    const fixed = fixManifest(rendered(desired), desired);
+    expect(fixed["ch/scene_a/narration"]?.[""]?.map(({ by, figure, names }) => ({ by, figure, names }))).toEqual([
+      { by: undefined, figure: undefined, names: undefined },
+      // The sheet's name first, then its aliases, each once.
+      { by: "pib", figure: "cast/pib", names: ["Pib", "The sprite"] },
+    ]);
+    expect(check(fixed, desired).failures).toEqual([]);
+  });
+
+  it("marks a speaker the sheet gives no figure or name by id alone", () => {
+    const desired = scripted("echo");
+    expect(fixManifest(rendered(desired), desired)["ch/scene_a/narration"]?.[""]?.[1]).toEqual({ clip: desired.lines[0]!.segments[1]!.key, ms: 2000, by: "echo" });
+  });
+
+  it("fails an entry whose marks are missing or out of date, and --fix writes them without touching a clip", () => {
+    const desired = scripted("pib");
+    const unmarked = rendered(desired);
+    expect(check(unmarked, desired).failures).toEqual([expect.objectContaining({ message: expect.stringContaining("pulse the wrong figure") })]);
+    const fixed = fixManifest(unmarked, desired);
+    expect(fixed["ch/scene_a/narration"]?.[""]?.map((c) => [c.clip, c.ms])).toEqual(unmarked["ch/scene_a/narration"]?.[""]?.map((c) => [c.clip, c.ms]));
+    // A figure changed on the cast sheet moves no clip key, only the mark.
+    const moved: Manifest = { "ch/scene_a/narration": { "": fixed["ch/scene_a/narration"]![""]!.map((c) => (c.by ? { ...c, figure: "entities/faun" } : c)) } };
+    expect(check(moved, desired).failures).toEqual([expect.objectContaining({ message: expect.stringContaining("pulse the wrong figure") })]);
+    expect(fixManifest(moved, desired)).toEqual(fixed);
   });
 });

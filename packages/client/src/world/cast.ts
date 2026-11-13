@@ -125,10 +125,23 @@ export function castFor(chapter: Chapter | null, state: RunState | null): StageC
   const scene = chapter.scenes[state.sceneId];
   if (!scene || scene.type === "encounter") return [];
   return stageCast(artCast(chapter,state,scene.cast ?? [])).map(member => {
-    const figure=member.key.split("|")[0]!;
-    const url=castPoseUrl(figure,chapter,state);
+    const url=castPoseUrl(castKeyParts(member.key).figure,chapter,state);
     return url ? {...member,url,key:member.key+"@"+url} : member;
   });
+}
+
+/**
+ * The figure and nameplate a stage key was made from, whatever was added to it: `stageCast`
+ * writes `<figure>|<name>`, a group's or an ensemble's others add `#<n>`, and `castFor` adds
+ * `@<url>` for a figure drawn in a special pose. The one reader of the key's shape, beside its
+ * writers, so a new suffix is stripped here once (the cast pulse matches speakers by these).
+ */
+export function castKeyParts(key: string): { figure: string; name: string } {
+  const bar = key.indexOf("|");
+  if (bar < 0) return { figure: key, name: "" };
+  const rest = key.slice(bar + 1);
+  const at = rest.indexOf("@");
+  return { figure: key.slice(0, bar), name: (at < 0 ? rest : rest.slice(0, at)).replace(/#\d+$/, "") };
 }
 
 /**

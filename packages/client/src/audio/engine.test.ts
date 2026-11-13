@@ -8,7 +8,7 @@
  * scheduled" is the whole testable surface of an audio graph.
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createAudioEngine, type PrefStore } from "./engine";
 import { QUIET_VOLUME_SCALE, setQuiet } from "../quiet";
 import { VOICE_GAP_MS, type CueId } from "./cue";
@@ -615,6 +615,27 @@ describe("recorded voice (docs/voice-narration-plan.md §7)", () => {
     second!.onended!();
     expect(ended).toBe(1);
     expect(music.gain.value).toBeCloseTo(MUSIC);
+  });
+
+  it("says each clip's place in the line when it is heard, not when it is queued, and nothing after a stop (#551)", () => {
+    vi.useFakeTimers();
+    try {
+      const { voice } = voiced();
+      const heard: number[] = [];
+      const stop = voice.play([{ duration: 1 }, { duration: 1 }, { duration: 1 }], () => undefined, (index) => heard.push(index));
+      vi.advanceTimersByTime(100);
+      expect(heard).toEqual([0]);
+      // The second clip starts after the first and a breath, on the audio clock.
+      vi.advanceTimersByTime(1000);
+      expect(heard).toEqual([0]);
+      vi.advanceTimersByTime(VOICE_GAP_MS);
+      expect(heard).toEqual([0, 1]);
+      stop();
+      vi.advanceTimersByTime(10_000);
+      expect(heard).toEqual([0, 1]);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("restores the music when the voice is cut off, and never says it ended", () => {

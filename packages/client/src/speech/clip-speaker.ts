@@ -60,7 +60,7 @@
  * being said, resolved or queued, so it never competes with a line for the decoder.
  */
 
-import { clipPath, manifestOfAddress, manifestPath, playlistFor, type NarrationPart, type PrefetchOptions, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
+import { clipPath, manifestOfAddress, manifestPath, playlistFor, type ManifestClip, type NarrationPart, type PrefetchOptions, type SpeakingCast, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
 import { getAudioSink, VOICE_GAP_MS, type VoiceBuffer, type VoiceChannel } from "../audio/cue";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
@@ -83,6 +83,12 @@ export interface ClipSpeakerEnv {
   saveData?: () => boolean;
   /** True while something is being said, recorded or not: the narration panel's "speaking" mark. */
   onSpeaking?: (speaking: boolean) => void;
+  /**
+   * Who says the recorded clip being heard (their figure and names on the cast sheet), or null for
+   * the narrator, the device voice and silence: the stage pulses them (the cast pulse). Told only
+   * when it changes.
+   */
+  onCast?: (who: SpeakingCast | null) => void;
   /** How long a recorded line may take to arrive before the device voice reads it instead. */
   resolveMs?: number;
 }
@@ -178,6 +184,8 @@ interface Line {
   clips: Promise<VoiceBuffer>[];
   /** How long the manifest says the line runs, pauses included. */
   ms: number;
+  /** Who says each clip, in play order; null for the narrator's (ManifestClip `figure`, `name`). */
+  cast: (SpeakingCast | null)[];
   /** True once any clip of the line has failed. */
   failed(): boolean;
 }
@@ -192,6 +200,12 @@ interface Job {
 }
 
 const ignore = (): void => undefined;
+
+/** Who says a clip, for the cast pulse: null for the narrator's, who has no mark. */
+function castOf(entry: ManifestClip): SpeakingCast | null {
+  if (entry.figure === undefined && entry.names === undefined) return null;
+  return { ...(entry.figure === undefined ? {} : { figure: entry.figure }), ...(entry.names === undefined ? {} : { names: entry.names }) };
+}
 
 export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   const resolveMs = env.resolveMs ?? RESOLVE_MS;
@@ -208,6 +222,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   let stopClips: (() => void) | null = null;
   const timers = new Set<ReturnType<typeof setTimeout>>();
   let speaking = false;
+  /** Who was last told to `onCast`. */
+  let heard: SpeakingCast | null = null;
   /** Encoded clips already fetched or on their way, by clip key, least recently used first. */
   const kept = new Map<string, Promise<ArrayBuffer>>();
   /** The size of each kept clip that has arrived, and their total. */
@@ -252,6 +268,12 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     if (now === speaking) return;
     speaking = now;
     env.onSpeaking?.(now);
+  }
+
+  function hear(now: SpeakingCast | null): void {
+    if (now?.figure === heard?.figure && now?.names?.join("\u0000") === heard?.names?.join("\u0000")) return;
+    heard = now;
+    env.onCast?.(now);
   }
 
   /** Holds the next line back for VOICE_GAP_MS, so two lines never run on into each other. */
@@ -382,7 +404,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
       clips.push(buffer);
     }
     const ms = playlist.reduce((total, entry) => total + entry.ms, 0) + VOICE_GAP_MS * (playlist.length - 1);
-    return { clips, ms, failed: () => failed };
+    return { clips, ms, cast: playlist.map(castOf), failed: () => failed };
   }
 
   /** The line for `parts` once its first clip is ready, or null, never later than `resolveMs` and never rejecting. */
@@ -600,6 +622,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
         fetched();
         stopClips = null;
         recording = false;
+        hear(null);
         rest();
         mark();
         pump();
@@ -612,7 +635,9 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
         stopClips?.();
         done();
       });
-      const stop = channel.play(line.clips, done);
+      const stop = channel.play(line.clips, done, (index) => {
+        if (!over && at === generation) hear(line.cast[index] ?? null);
+      });
       if (!over) stopClips = stop;
     });
   }
@@ -642,6 +667,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     recording = false;
     resting = false;
     deviceLines = 0;
+    hear(null);
     // The lines that were playing are gone, and so is their claim on the connection.
     streaming.clear();
     try {
@@ -679,7 +705,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
 }
 
 /** The table's speaker, on this browser: the recorded voice over `SpeechSynthesis`. */
-export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Speaker {
+export function createTableSpeaker(onSpeaking: (speaking: boolean) => void, onCast?: (who: SpeakingCast | null) => void): Speaker {
   return whileSeen(createClipSpeaker({
     device: createSynthSpeaker({
       synth: window.speechSynthesis,
@@ -690,6 +716,7 @@ export function createTableSpeaker(onSpeaking: (speaking: boolean) => void): Spe
     fetch: (url, init) => fetch(url, init as RequestInit | undefined),
     saveData: () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true,
     onSpeaking,
+    ...(onCast ? { onCast } : {}),
   }));
 }
 

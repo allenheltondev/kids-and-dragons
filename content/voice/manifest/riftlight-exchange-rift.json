@@ -11,7 +11,12 @@
     "": [
       {
         "clip": "0bf5c5cad0df0694ef70c3b1158e81d38500fa96ce1ea1d1ef5ef40ad890a164",
-        "ms": 1014
+        "ms": 1014,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -19,7 +24,12 @@
       },
       {
         "clip": "d03ac647872dd8c75509cdff75547566673722708882019e1c47c0820b9064a8",
-        "ms": 1451
+        "ms": 1451,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -51,7 +61,12 @@
     "": [
       {
         "clip": "69ed86171be1b10f5c2401c492c5fb5f422b23badab8ac76803d62f819a54fe4",
-        "ms": 2155
+        "ms": 2155,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -75,7 +90,12 @@
       },
       {
         "clip": "c6f8abae7ef22518b1f54def901a1554d6a8275fdadd5ec840ecd05830632597",
-        "ms": 1123
+        "ms": 1123,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "607712cabe62dd7fcbf97a295d797381775ce098935489ec6a326445c9a1320b",
@@ -87,7 +107,12 @@
     "": [
       {
         "clip": "2d7ac1bb6c6afa7bbcbcce3838c613b81f2fb9e4895bb17118d66856771dbe02",
-        "ms": 1434
+        "ms": 1434,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -95,7 +120,12 @@
       },
       {
         "clip": "4113a802e633e4c0f834361c229d40ff5f1eb9bb2fbf5b560e96e545d9b81b9e",
-        "ms": 1179
+        "ms": 1179,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -115,7 +145,12 @@
       },
       {
         "clip": "c8e71c0817dfeaec226cdb248169d2788680f3c759589b4e0a59cef190a87230",
-        "ms": 794
+        "ms": 794,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -123,7 +158,12 @@
       },
       {
         "clip": "0724e1cad084496de52e3059abeaf54445d56e5603f000b30aae846f7164e56b",
-        "ms": 1761
+        "ms": 1761,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "f986445ca44abda05f82bb0a655d827660d45b2e385fa7b85f1093b8c3c64c78",
@@ -135,7 +175,12 @@
     "": [
       {
         "clip": "8b72330a6fb07182a692a6bd7339a5614f7a26555ce307ebbacff4dee5308f5f",
-        "ms": 831
+        "ms": 831,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "5fb0994688c6a9eab9c81b68e00437846ed5aafc31ef544a7d353c930991fa86",
@@ -143,7 +188,12 @@
       },
       {
         "clip": "e0388516c7b8bea90e2fef6abf3fbf00e6a2e5d842a286aab3b199bfa6a46309",
-        "ms": 2152
+        "ms": 2152,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -163,7 +213,12 @@
       },
       {
         "clip": "b3aeb260483d90001514cec65e5bd345c591e9dc73dfebe07e4515c039b6f51e",
-        "ms": 4307
+        "ms": 4307,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "2bf6adf0059124377d0f32f29447a1eb06bdd191a100633ee51f22a1275a89e3",
@@ -187,7 +242,12 @@
       },
       {
         "clip": "2c1ad2ec584f68c6ef8c28640d92f9b9ed12f0e4c67043efdffb71a53a6afead",
-        "ms": 2997
+        "ms": 2997,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -199,7 +259,12 @@
       },
       {
         "clip": "d8f95a322b1726ccf286f7f85d6784c92b0d213996c207c9bc9908035ac15138",
-        "ms": 3607
+        "ms": 3607,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -211,7 +276,12 @@
       },
       {
         "clip": "7e253e6b1a3de3b4116271ef681e2b58e00380aa2ee1aec621e5ea6af7353dd4",
-        "ms": 1501
+        "ms": 1501,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "e867701225b69cc199ca2d1ba2f9ee714b7177f05794628a3d47d2d407280e02",
@@ -219,7 +289,12 @@
       },
       {
         "clip": "2e7dd7b8a7e541f0de2bbd03dbb873052007e3ebc0a48e1f80b346f447707e6d",
-        "ms": 3207
+        "ms": 3207,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -227,7 +302,12 @@
     "": [
       {
         "clip": "c4be45b1dada7b7232795a6af1d4936dd74222f1e4f5b3298b2a0385db5e635f",
-        "ms": 644
+        "ms": 644,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -235,7 +315,12 @@
       },
       {
         "clip": "ddf13cd65aaf7a224cb0901e7703212dfa7101352618ebd235ab666c3753a73a",
-        "ms": 1995
+        "ms": 1995,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -267,7 +352,12 @@
     "": [
       {
         "clip": "f24ec8e17d70a0fe5a2fab5da70180691954fe3e006827dc8c779adadbd30dd1",
-        "ms": 657
+        "ms": 657,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -307,7 +397,12 @@
       },
       {
         "clip": "f49d5eaf88a6ae66cd5c92220c44e08406ed13bbb120d9aef54f704bdbb27bdf",
-        "ms": 804
+        "ms": 804,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "0e91a9d55e29706513b75d812f0f15589748e28dcf3b98bafd36eb6d7f905707",
@@ -319,7 +414,12 @@
     "": [
       {
         "clip": "d88f43dda1851979fedbd1c9712a7c812262f4e8bbbd34c7c69e64a1adfacd16",
-        "ms": 1975
+        "ms": 1975,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "57ace7d4e5e6785fee196062a47ba0019f82d03f0c946007a2e4ea67854bf7ce",
@@ -327,7 +427,12 @@
       },
       {
         "clip": "6ec3862220337ac9510a3f79ec152b67efae2999deec329bc0016a375df4972d",
-        "ms": 2166
+        "ms": 2166,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -371,7 +476,12 @@
       },
       {
         "clip": "ca8b3d0acac554dfb55449df441152f03d72ee18af09d16c139dd1ae69aec660",
-        "ms": 891
+        "ms": 891,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -379,7 +489,12 @@
       },
       {
         "clip": "ca804da4c466e93ebd437e28fd3ce168778e7e354c43741ec21a36b40ba9bcfa",
-        "ms": 1529
+        "ms": 1529,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "a080626f61a1a59a0748400c4c5817b8ec20f0ff3778f47491b7ca28fdef4519",
@@ -395,7 +510,12 @@
       },
       {
         "clip": "aa3084822e0c425f380037628c936c3dcf94729807d118ee8018f74052aa0807",
-        "ms": 1088
+        "ms": 1088,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "d5ee8d9ee6fae39081e802ebeceba27798e446a0339670c76e4c3ee3aaff3f7e",
@@ -403,7 +523,12 @@
       },
       {
         "clip": "38ae3ed70d53ad168c4937ff91c5410e6fb0f0b31c2b0cad1d9e431a43199968",
-        "ms": 1117
+        "ms": 1117,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -415,7 +540,12 @@
       },
       {
         "clip": "0b91b964db5b438b41673d642133269cdd17037d6a22cf95b87cd45439165a42",
-        "ms": 1448
+        "ms": 1448,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "d5ee8d9ee6fae39081e802ebeceba27798e446a0339670c76e4c3ee3aaff3f7e",
@@ -423,7 +553,12 @@
       },
       {
         "clip": "0f044ec00ac2ecf654dcd32dd0f5ad947d3b719e662dd16f1eac02826c6bc951",
-        "ms": 1849
+        "ms": 1849,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -443,7 +578,12 @@
       },
       {
         "clip": "754e4eb176eac609abd8966e11d3cb1f3828c6ca95c0aac471083d84ff0aa821",
-        "ms": 1341
+        "ms": 1341,
+        "by": "dock_workers",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock workers"
+        ]
       },
       {
         "clip": "a712778dffff6b440073991ab17b9e75505c4af7accb397f2736b087bc6d3a4a",
@@ -455,7 +595,12 @@
     "": [
       {
         "clip": "24baa627f289fe09322961735ce60465a4ed79751066bd4e66a9e85bff384f25",
-        "ms": 993
+        "ms": 993,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "a84ecc87c629640dff518e1e11733e8a052fa846427707730f23e490f7ae99f4",
@@ -463,7 +608,12 @@
       },
       {
         "clip": "3ee2ea09799b0e8b56a13ba857fec422ec4c3f1252f31b3d3bb0784fcc127dc2",
-        "ms": 1767
+        "ms": 1767,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -491,7 +641,12 @@
       },
       {
         "clip": "2777d401b330e7bbdeb4d0dcd452d613a6b1ec5a9abdc5c41ad5c01a293ed2dc",
-        "ms": 956
+        "ms": 956,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "3612ec7d15d17f4d19e90e629248890c6e76fe14c028004a647f748a5ebbf401",
@@ -507,7 +662,12 @@
       },
       {
         "clip": "f9ee40a9e8fef60fea835ac6a59ce134c0880caa9d486c83149cd84b652f75bc",
-        "ms": 642
+        "ms": 642,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "82bd892f6110c5d5a41c04d867c99ee2fdd25ff8c00e73963e99da40075382a7",
@@ -515,7 +675,12 @@
       },
       {
         "clip": "1929906f839a1f1d44e6fa9f837d32580c2fbc25bf02535b2925da2030ba0514",
-        "ms": 1753
+        "ms": 1753,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "90c558235c25166e37832772e20195350a804462729f39bab75f1caf4d18d34f",
@@ -531,7 +696,12 @@
       },
       {
         "clip": "816496bb8235fbf26fffcaea17870f9d3d51ed2567f3378bef1eb039d7509e9f",
-        "ms": 3907
+        "ms": 3907,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "970cd3968b608b643fcea0c50a1758a06aeb4df39a4629474709f502ab04edbb",
@@ -539,7 +709,12 @@
       },
       {
         "clip": "4c435168600ca7450d5f2cdaca7cf62fba86c3c9d256fd1ff95b758f1f21bb41",
-        "ms": 4407
+        "ms": 4407,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -559,7 +734,12 @@
       },
       {
         "clip": "4f0d27ac3c2392835de2cf924155b1cc231fc6aac23bc3589eb281bea395c6f4",
-        "ms": 3707
+        "ms": 3707,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "076cd0bee33a2a2c7797459a07d8a5662dea2cd11f2da05f15ddc9004285e65e",
@@ -567,7 +747,12 @@
       },
       {
         "clip": "f6e1b8f156bda03284cd57d3f61bf0c86e3b209d7658ed3850e86141b74d4140",
-        "ms": 2142
+        "ms": 2142,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -579,7 +764,12 @@
       },
       {
         "clip": "1fe789ba787075ec15c1c335860c681c97bf02e234129d8b1f0287f9a0207b73",
-        "ms": 1854
+        "ms": 1854,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "9417734175ba4848bbaeffb71316b8c553faa58c6f760001f84595f840f68261",
@@ -587,7 +777,12 @@
       },
       {
         "clip": "6400c9c7286de1b06acc5575e1f701c76a73aad76cfd2ae95c89c7cd091d4cad",
-        "ms": 2483
+        "ms": 2483,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "4ec6f50c4ba96e185b72432b157e48ae497188a8b110016e7d9fc06dbc06eb00",
@@ -595,7 +790,12 @@
       },
       {
         "clip": "254ed6e774c699a7d878fd13ff2f7ec3b5cfe06931c7c39fea89c4a730584aa2",
-        "ms": 1601
+        "ms": 1601,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -607,7 +807,12 @@
       },
       {
         "clip": "f9eb371b8a42af92675a88599327d246ff59a73e194aa66d7f4e8239913850bb",
-        "ms": 2804
+        "ms": 2804,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "dca09f654996a68475314fc262501dca9158fb0e4ace36519caf56da2f1aa14f",
@@ -615,7 +820,12 @@
       },
       {
         "clip": "ec844ab9abb59d6edb065d3f84b0623b978d3d068700fdf65225109e5658c8ae",
-        "ms": 3107
+        "ms": 3107,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       }
     ]
   },
@@ -623,7 +833,12 @@
     "": [
       {
         "clip": "72115b191d0deeb22d9a35acf128868bdb761cc08b916a73e8a5c00883811c8e",
-        "ms": 774
+        "ms": 774,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "0afb9d132fc09224a8bdacf8bdc66a1f33268443f043e54228d53b64780adf1e",
@@ -631,7 +846,12 @@
       },
       {
         "clip": "1e59e6501ff26c3b527e4a75ba36c5197b0fc7b0527ccc54e2ca3e2034f6dc32",
-        "ms": 2493
+        "ms": 2493,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       }
     ]
   },
@@ -651,7 +871,12 @@
       },
       {
         "clip": "ebc10f541b2c559d060601830a1d503f19d949ca05f0a56a6e42a05bddcbc0fe",
-        "ms": 2240
+        "ms": 2240,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -659,7 +884,12 @@
       },
       {
         "clip": "0ce09290e671bbae5a0ed52ca941e587f88df433e4cb0f9dcf0f46c0fc9e5a54",
-        "ms": 2038
+        "ms": 2038,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "3f549b2b7048670604b2d04ab766a3dc156166e629dcae9e727a7b51d64db6ce",
@@ -675,7 +905,12 @@
       },
       {
         "clip": "ea29230a0f599b9879b632194746caf9fca62633656a38988db9dc46d27dd6d2",
-        "ms": 1430
+        "ms": 1430,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "7fddeed0dd23c68e3f694170c8c5800252a027fe6aa82a7654e8b7e9c46e0ead",
@@ -683,7 +918,12 @@
       },
       {
         "clip": "4e91a49105a06a520863dbd83c4e3b0f5ee483f2d4237b991ff2098c5dcb278b",
-        "ms": 1729
+        "ms": 1729,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "b78eea428b74a79e5078638d55985ef5cac7d5c91aa50ef7df406362a1d184b1",
@@ -691,7 +931,12 @@
       },
       {
         "clip": "2290828c97c2d530fd1092f607774e3ee04d1e3f6ca3c6769bc2c1001a659e7e",
-        "ms": 3808
+        "ms": 3808,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "dd2704c970f92a280fd350f9f6ece1746d4ed93410a202e669bbe12de47dddc8",
@@ -707,7 +952,12 @@
       },
       {
         "clip": "9c338f21406f12aa50ff55bfbdebaab048ff92386ce5bd40963aa2a232d98f7c",
-        "ms": 713
+        "ms": 713,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "e13853249949f2beb315852f1e6274b8091e0418d08570af56d4c626ddbac633",
@@ -715,7 +965,12 @@
       },
       {
         "clip": "d036bc5ffcdec8dd9a47bd8065fc546401d4131f1cff06fe4710c9ecc5c3f849",
-        "ms": 1088
+        "ms": 1088,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "efb9cf17bad01b11ab46e6aa6bf45f0270efff9355e1eeb386bf87dd3f27deb4",
@@ -743,7 +998,12 @@
     "": [
       {
         "clip": "e3292d77c0d67529f1068c75c43eee1cbb231002c350c9084ed3ac2e142b6cc1",
-        "ms": 1112
+        "ms": 1112,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "a59215c3dc44a4e2ca1ae5f784a5dc48e7bc8cbc161941a6c4c9aa46e3361cbb",
@@ -751,7 +1011,12 @@
       },
       {
         "clip": "c984ee1c3353ac3cd50ecb02754f33d567652c2715488a8a1f5fea08d86d38bf",
-        "ms": 1696
+        "ms": 1696,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -767,7 +1032,12 @@
     "": [
       {
         "clip": "538ce334720b4c1e44660e513e376a19a5df1e19cd59747dccade36968cba0cc",
-        "ms": 1136
+        "ms": 1136,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "e13853249949f2beb315852f1e6274b8091e0418d08570af56d4c626ddbac633",
@@ -775,7 +1045,12 @@
       },
       {
         "clip": "3c8a8ee84f53aa99e14780f1d12287021e2bf3f667ac1c266a9055e060e10ed9",
-        "ms": 2942
+        "ms": 2942,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -795,7 +1070,13 @@
       },
       {
         "clip": "f6e6c340bca68ae620772c6a84c52362b36225b50705b1cc613af85f88612ab3",
-        "ms": 2178
+        "ms": 2178,
+        "by": "goat_kid",
+        "figure": "cast/snowhorn_kid",
+        "names": [
+          "Goat kid",
+          "Kid goat"
+        ]
       },
       {
         "clip": "a9842050eb98b0ba712d64bacf3894f015d208402c093864d46206f6457386c1",
@@ -807,7 +1088,12 @@
     "": [
       {
         "clip": "4409a904ab02b462ae84aeb3e995bb9998dabb3d31e94c7b6db4cd2969a837ea",
-        "ms": 1077
+        "ms": 1077,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "7757b89ed3726db0aff750cdefb0e5408dda1b973ab82d37059d8b23e6ae1fa9",
@@ -815,7 +1101,12 @@
       },
       {
         "clip": "4a2ed536e3de858d409c2d6dd665c761081c6919d1aa2837b88d2947a8fd10b3",
-        "ms": 1741
+        "ms": 1741,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -835,7 +1126,13 @@
       },
       {
         "clip": "f6e6c340bca68ae620772c6a84c52362b36225b50705b1cc613af85f88612ab3",
-        "ms": 2178
+        "ms": 2178,
+        "by": "goat_kid",
+        "figure": "cast/snowhorn_kid",
+        "names": [
+          "Goat kid",
+          "Kid goat"
+        ]
       },
       {
         "clip": "a9842050eb98b0ba712d64bacf3894f015d208402c093864d46206f6457386c1",
@@ -851,7 +1148,13 @@
       },
       {
         "clip": "cfb4f18add6e98ee3b5bff170e6b74296723116441a8fb289e967e0166d6365c",
-        "ms": 768
+        "ms": 768,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "fa9df68c8572e3b67f7ca9de1fb3ac71f966ccbcfa243d2d288a9e7dabf62ab4",
@@ -859,7 +1162,13 @@
       },
       {
         "clip": "634a26631919748deda6d16a322286121541f22f5fc265ee33377eb59d51b8a9",
-        "ms": 1244
+        "ms": 1244,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "887d095fb600f0f309d09bac37aa4bac2020af3ebb8ccccacc67260c8dd25b18",
@@ -867,7 +1176,13 @@
       },
       {
         "clip": "6a20631e904927d43b97a5c29dcbe2cc4b1f3bbb15bbaa8fbf07b87ef54e196c",
-        "ms": 1547
+        "ms": 1547,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -875,7 +1190,13 @@
       },
       {
         "clip": "d967fa9ddc3da84caacec902336f897a71e046bf7d4798ab2b49f7056eb488c0",
-        "ms": 1603
+        "ms": 1603,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "fc720c001673587c746cd050dc67b1a6b0b556682105f2c4dbfb84ce6ca25220",
@@ -891,7 +1212,13 @@
       },
       {
         "clip": "071f53ecac2691ca61be7f2ca01abc18ee2bdf712295ba7e6b9bce6bd2e573d8",
-        "ms": 1222
+        "ms": 1222,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "e6696d45bcefe32cdf5db68a19489f2b3df0cc83a82ee150b7146c33b3523b4b",
@@ -899,7 +1226,13 @@
       },
       {
         "clip": "5f60657073e1673b3609fdce638c96a56b9b016bed1f8dc8ee2c9cd39386f0d4",
-        "ms": 1610
+        "ms": 1610,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       }
     ]
   },
@@ -911,7 +1244,13 @@
       },
       {
         "clip": "2b2ab9cf6444b1adcd8770bfbe6252ba415b29f7b9a97e1cb33447f1a0f82393",
-        "ms": 1729
+        "ms": 1729,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "334f4a4e9de31f3f65d3209f764977d6d1e77656c61858c93b2294e1c6c67b51",
@@ -919,7 +1258,13 @@
       },
       {
         "clip": "c682cb3124ebf501954b9a4fd6ebf1a5748bc7c5b5fe0ae1819fd5dff9cce81b",
-        "ms": 2505
+        "ms": 2505,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "2b97bcd85eed664196748fd8660389b725efe9f3480e634b37099a28059e8c5b",
@@ -927,7 +1272,13 @@
       },
       {
         "clip": "734cc8e3d2d83fc61583fbb9df61c047cf149ef76a5b5ba8a1552c8035eeac70",
-        "ms": 2397
+        "ms": 2397,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       }
     ]
   },
@@ -939,7 +1290,13 @@
       },
       {
         "clip": "182d19125247d597974f7700f29b618184dcf754847414d319e09b7720ca2c95",
-        "ms": 422
+        "ms": 422,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "27311dc60136215fbdde25815e2bb25131ec2d2c0dfef99314a8c317df5cd706",
@@ -947,7 +1304,13 @@
       },
       {
         "clip": "66bd4eb99ad72e94f01517a2f9e4bd1b0ba2e6dc6b3882aaba2e22aad61c77cf",
-        "ms": 6107
+        "ms": 6107,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "7df9beaaea850b882f41eb352bfef3975d54731097d597c1a623bf01d5f93b3f",
@@ -959,7 +1322,13 @@
     "": [
       {
         "clip": "6f335018824cae64c2952e0143c4f5b11488962491a0354044c5dc4cbb4a78f0",
-        "ms": 1227
+        "ms": 1227,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "d3822aad8465f7df1fa043d9e4f92382b33bf4f9481cb3bf3b8f83471568194b",
@@ -975,7 +1344,13 @@
       },
       {
         "clip": "5889b2c78a330a1635a80d85f3efa30bbc0b15b213f8d647ee2d9360e69fa00a",
-        "ms": 3607
+        "ms": 3607,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "21293c74601c5429660c67760af87063f2b739cb91f75e8de954ece501a4826a",
@@ -995,7 +1370,12 @@
     "": [
       {
         "clip": "328bdeda3ecba51c933bc9d15d54170efd77ff669998d81ba6375f69bb30943a",
-        "ms": 1410
+        "ms": 1410,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1003,7 +1383,12 @@
       },
       {
         "clip": "b07fc3f13c1560adbb0932bfd56a907f4a7eae871c38fa1032230a9f105c7702",
-        "ms": 2607
+        "ms": 2607,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1023,7 +1408,12 @@
       },
       {
         "clip": "72e854794f2647597dcc5e13fbe7d3a8f08f7bb7a1fb7e80a54a8207b3fd0d67",
-        "ms": 3227
+        "ms": 3227,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "ce95025ad16eb43cbc78489a76e93056cbba8c3bc422ac4eeff2482c92deee6f",
@@ -1035,7 +1425,12 @@
     "": [
       {
         "clip": "45088d5af437eb043fa16535337336cc45e33c2088ee38c2ac2d019e57b4462c",
-        "ms": 2002
+        "ms": 2002,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "8aa3b57564cb932c07498883adf21ee89577d742c772df69d0c43a760ad38692",
@@ -1043,7 +1438,12 @@
       },
       {
         "clip": "9c316099ff1edb550bc08ab3eabfe68fee3f7d377dcac065485f6005a0e37136",
-        "ms": 2104
+        "ms": 2104,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1063,7 +1463,12 @@
       },
       {
         "clip": "9ff42088b8f68994e0a5eb83b0448159af46794767c58149fe6d617ad788f9de",
-        "ms": 1176
+        "ms": 1176,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1071,7 +1476,12 @@
       },
       {
         "clip": "03b5aceb9adfb1465e3252eb9ef83937f290cfd36a72ece740468989f14034c7",
-        "ms": 5507
+        "ms": 5507,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1079,7 +1489,12 @@
     "": [
       {
         "clip": "66cd2039d67a82d1285801125366c5e6257b45dfdbbf903a19b4ac0991f24bc4",
-        "ms": 1112
+        "ms": 1112,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1087,7 +1502,12 @@
       },
       {
         "clip": "50f58eebf58b2d3444cf840a015d15a687d18480a7746f942c4e8a4127566470",
-        "ms": 2131
+        "ms": 2131,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1107,7 +1527,12 @@
       },
       {
         "clip": "19992228f7a3c85ab2eba466801797ba8e6556c9097cfa7e1c612c258b6eb987",
-        "ms": 2518
+        "ms": 2518,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1115,7 +1540,12 @@
       },
       {
         "clip": "37bee144902a0f5779f6fe5a24770ebdc496168da3e75425781d62521e262a71",
-        "ms": 1247
+        "ms": 1247,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1127,7 +1557,12 @@
       },
       {
         "clip": "238a87e04aca7b3491e403fc8919c65548df48acd71db8cfada565436df583e8",
-        "ms": 1701
+        "ms": 1701,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "e30f50b7e40b15dc35645f88b1d8b96a33f0fd21be63c4cf33ca75495e3ae88b",
@@ -1135,7 +1570,12 @@
       },
       {
         "clip": "5dffe8ab353605c853ecdd2bc22ec6958ef9a72aa599b029d1af775d3cc81bcf",
-        "ms": 2765
+        "ms": 2765,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -1147,7 +1587,12 @@
       },
       {
         "clip": "f6e1b8f156bda03284cd57d3f61bf0c86e3b209d7658ed3850e86141b74d4140",
-        "ms": 2142
+        "ms": 2142,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1155,7 +1600,12 @@
     "": [
       {
         "clip": "17c7b82a391cb387189e4c3538a969b3811671252a020ac4144e8b6a4032aa06",
-        "ms": 3607
+        "ms": 3607,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1163,7 +1613,12 @@
       },
       {
         "clip": "efbe800986cf9e172795866c769d0969aabf985742856f99eb8e82074a004700",
-        "ms": 2020
+        "ms": 2020,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1179,7 +1634,12 @@
     "": [
       {
         "clip": "f34c32b469260ae241bc60388b3277147cea951fddf082c40b2b5197837ece41",
-        "ms": 883
+        "ms": 883,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "247d6669bd4008d267400f7c5dc5b6515a32a21f4a24a95596a7246deb0b05dc",
@@ -1187,7 +1647,12 @@
       },
       {
         "clip": "88aa672f793279dd0f3eecfb7db9c6a1c0d6a9fc59e3da64fe44bc6689446c59",
-        "ms": 2105
+        "ms": 2105,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1207,7 +1672,13 @@
       },
       {
         "clip": "cfb4f18add6e98ee3b5bff170e6b74296723116441a8fb289e967e0166d6365c",
-        "ms": 768
+        "ms": 768,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "9f0ccb89c96d77461061f2117cc6bf50f041a1547c649914bb14f3efea7a22ce",
@@ -1223,7 +1694,12 @@
       },
       {
         "clip": "c7d4fbbf67f2956e7bf26cd7cfbb55a9debe1037fbd8d85244cffac877fa4748",
-        "ms": 2785
+        "ms": 2785,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "d69dc700919f81131869f70f76f571353806d093c1721e14009ebfc9c2ba81ca",
@@ -1239,7 +1715,12 @@
       },
       {
         "clip": "068a50cc0f45036a07635c7a4f5c47c27fa1e5da30f1fc09ce737c789c4910c6",
-        "ms": 1549
+        "ms": 1549,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "84eaf06acf4b58c205f04bafd309a20a825327ba71aa7714f970aa982e87f9fb",
@@ -1247,7 +1728,12 @@
       },
       {
         "clip": "7b1d33e6578ccb39af1ba5de8ca1c6980a9dac10df61fbb6157013bb5e113abf",
-        "ms": 6107
+        "ms": 6107,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       }
     ]
   },
@@ -1259,7 +1745,13 @@
       },
       {
         "clip": "b1910fe83cb6026ff710006baab4fa07250370b79cf31199942ab50520262bf1",
-        "ms": 1023
+        "ms": 1023,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "17ca99e4c2376b09cccaa35c175373925a5ae2b8fc57ba5213ffe007e3ec6fd6",
@@ -1275,7 +1767,12 @@
       },
       {
         "clip": "948b6b7907d1334ad5c1a5f518a18b54f057467138a3fd58aba3751ff790a01c",
-        "ms": 670
+        "ms": 670,
+        "by": "noodle_seller",
+        "figure": "cast/soup_woman",
+        "names": [
+          "Noodle seller"
+        ]
       },
       {
         "clip": "056b49ed637be3221b43d2cadcb2a5bede7a123ff413a17d9c1167fc93b956f4",
@@ -1291,7 +1788,12 @@
       },
       {
         "clip": "945c2353e0e53a7b07a71de9eab93c8e20a5178bd21e4162f70503dc5b7aea75",
-        "ms": 802
+        "ms": 802,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "0d772d22cea4a3adc77290f6f1bed97781b17e0e428567db4948278f7cb1ce9c",
@@ -1311,7 +1813,12 @@
     "": [
       {
         "clip": "d5cc56d18fe393052eb6209fbfdff7f4a04e4957d22906e62583293a17d1cec4",
-        "ms": 2931
+        "ms": 2931,
+        "by": "fish_seller",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fish seller"
+        ]
       },
       {
         "clip": "17c41ff840cd19e1230d7eed75b2f0d8b3e27b223271b1047b01495812651566",
@@ -1331,7 +1838,12 @@
     "": [
       {
         "clip": "675a64fd7d48bfb5d6aee76df86541b61470d68c166217397ee6c93d3813db11",
-        "ms": 1093
+        "ms": 1093,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "e49768bab79549c97694f595ab29f26b09eb05be85d48a74e9a90da07b5add11",
@@ -1347,7 +1859,12 @@
       },
       {
         "clip": "105e51dc6a46f1736f773342aa3f92dd96338aae83095a607dfeb2d307c2b217",
-        "ms": 3207
+        "ms": 3207,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -1359,7 +1876,12 @@
       },
       {
         "clip": "311f516c8c8a812bb6ccdd4a4e5b6974f3aaba65b79c8af68e7362b12b350649",
-        "ms": 695
+        "ms": 695,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "d5ee8d9ee6fae39081e802ebeceba27798e446a0339670c76e4c3ee3aaff3f7e",
@@ -1367,7 +1889,12 @@
       },
       {
         "clip": "6dfd0ddef2ed10a447f192f20ae72ca1af1bd1ca7504bbd0bbedf86e208a2069",
-        "ms": 2858
+        "ms": 2858,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -1379,7 +1906,12 @@
       },
       {
         "clip": "a039a3c2465720ecf968f59de03030feb7f0d1e587bd15df9a1a3ed801ff6c6d",
-        "ms": 830
+        "ms": 830,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "34026e5a0598fff8b5a775593b3fdfaaae68ab17baa4e04c353b722ad8652faa",
@@ -1387,7 +1919,12 @@
       },
       {
         "clip": "e22924a8392e6f6658aa315d685f0a3c2d37e757b71515f52287ced90bbcde59",
-        "ms": 3607
+        "ms": 3607,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1407,7 +1944,11 @@
       },
       {
         "clip": "b6f90c3c5905ecc825a6e40e33e06e4502ae72f7be6328788296a72399c8eb96",
-        "ms": 869
+        "ms": 869,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "6d0b2386283ecf9da7ac8af1e563a874627930cdc1e4f0297756e5355b1a99ab",
@@ -1423,7 +1964,11 @@
       },
       {
         "clip": "b8afe13294b4a2a4f2f3fca79a184c84d59abc8f41ed5a8fe97cbd1dd23ffa70",
-        "ms": 672
+        "ms": 672,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "3a5db3d08c729a6afe6513453e5673a15f0f378ad5124669364e71e5aa218094",
@@ -1471,7 +2016,11 @@
       },
       {
         "clip": "b3f044815d3e0626032c98629061c1a2d036954edc95cde5dd9baab13c60a9fd",
-        "ms": 988
+        "ms": 988,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "9f32f0da99139f5f3c78303f5d1fed6397dab5dea45d95d4cbf1d593c2dc59c1",
@@ -1479,7 +2028,11 @@
       },
       {
         "clip": "fd76ac8d3910c9b6d9e9ec0afecfa772a516a43e1da1e896fba7e4c1041910cb",
-        "ms": 1152
+        "ms": 1152,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -1507,7 +2060,12 @@
       },
       {
         "clip": "62bbb5a3273d32be22f579e94d958f6f9f582bc3d74e80001415a777193f2d43",
-        "ms": 1296
+        "ms": 1296,
+        "by": "the_crows",
+        "figure": "entities/rookery_crows",
+        "names": [
+          "The crows"
+        ]
       },
       {
         "clip": "6797ceac11e29605a4a29abaf534b4e9a1dd811f8937238d73782f19ffb5b6c4",
@@ -1515,7 +2073,12 @@
       },
       {
         "clip": "0f9e92179539d4a27f4aecf0e2755cf006ade95edef347b7c4d5e88cf88e27c7",
-        "ms": 4907
+        "ms": 4907,
+        "by": "the_crows",
+        "figure": "entities/rookery_crows",
+        "names": [
+          "The crows"
+        ]
       }
     ]
   },
@@ -1527,7 +2090,12 @@
       },
       {
         "clip": "eda329c1e223f8dfc622a5136e79c09e9714ed0a89c8219dacb71c42bc7bcc00",
-        "ms": 1166
+        "ms": 1166,
+        "by": "the_crows",
+        "figure": "entities/rookery_crows",
+        "names": [
+          "The crows"
+        ]
       },
       {
         "clip": "7aa84e484f829e596ead4da4b20c28d7024c41e9fd97c05260747944e1806e24",
@@ -1535,7 +2103,12 @@
       },
       {
         "clip": "80c8cde4ff6f1316b4be625a605e160594c6f3f82ca7abf3d97efc9f8b15085b",
-        "ms": 4107
+        "ms": 4107,
+        "by": "the_crows",
+        "figure": "entities/rookery_crows",
+        "names": [
+          "The crows"
+        ]
       }
     ]
   },
@@ -1563,7 +2136,12 @@
       },
       {
         "clip": "f7b098829482a8e0d062d26a6c8eedce52fbb394d62d34741545bcc98900d254",
-        "ms": 1850
+        "ms": 1850,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1571,7 +2149,12 @@
       },
       {
         "clip": "0cff4028d53bfeea0a0cdcc0d3ee2b381c68cb337e79f5489badfa69cb7e01c9",
-        "ms": 3107
+        "ms": 3107,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1595,7 +2178,12 @@
     "": [
       {
         "clip": "0111ec2844ac6103ecbba467af903bd5b005f57946f61dfcf1bdbb2846570c0e",
-        "ms": 1257
+        "ms": 1257,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1603,7 +2191,12 @@
       },
       {
         "clip": "2eae2928f9630f96531eea0c55cedf09ab328135a68424a4a76b896a637eb407",
-        "ms": 3707
+        "ms": 3707,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1619,7 +2212,12 @@
     "": [
       {
         "clip": "c3bd33d158dc96a0ccf76c89a7961cd4618a5f6d4dcf3f8cb4c6d33441764c7d",
-        "ms": 1096
+        "ms": 1096,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c0b864d7e9bdd9f74f3ae8c52b9c70902670c64cb0c59237cf9c15989896a7c9",
@@ -1627,7 +2225,12 @@
       },
       {
         "clip": "b96be11b2038ef743d51413bea4c7fcc8119f3bdd34aed3d0fa525563f77d0cb",
-        "ms": 2171
+        "ms": 2171,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1647,7 +2250,12 @@
       },
       {
         "clip": "1fe789ba787075ec15c1c335860c681c97bf02e234129d8b1f0287f9a0207b73",
-        "ms": 1854
+        "ms": 1854,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "c170f38161d3b499618a05ae9d74d2ca61567c64a364992d710e45471664f21b",
@@ -1655,7 +2263,12 @@
       },
       {
         "clip": "fe48782f97f9e4d69cd53f9b82f934fd418d6f821cc820e7f4f340f86dd0db18",
-        "ms": 977
+        "ms": 977,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       },
       {
         "clip": "1ce5caaa9c8c643a5f066a8d1e86d484519b3793d92b6b47a01a72db8a954dc5",
@@ -1663,7 +2276,12 @@
       },
       {
         "clip": "254ed6e774c699a7d878fd13ff2f7ec3b5cfe06931c7c39fea89c4a730584aa2",
-        "ms": 1601
+        "ms": 1601,
+        "by": "barge_pilot",
+        "figure": "entities/frogfolk",
+        "names": [
+          "Barge pilot"
+        ]
       }
     ]
   },
@@ -1683,7 +2301,12 @@
       },
       {
         "clip": "3f4b3f2111a08dd88ae522ae8cb930e7c348b0f17ff9677931c8a02b7bf51048",
-        "ms": 7007
+        "ms": 7007,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "f5b59804e304b20ef1c1d2cdd482308096222bfc6ddfb3983d59ec7cc3e07708",
@@ -1691,7 +2314,12 @@
       },
       {
         "clip": "2f6716500592989a8a79119e8d71cb6df2d84d4dd1861b1a8ffeed354894de68",
-        "ms": 4407
+        "ms": 4407,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "624a8b6a311e67612cc3ebe299164373b6305e8eefac32e279ab0ca67351bff0",
@@ -1699,7 +2327,12 @@
       },
       {
         "clip": "7470467b9ee15a486f20d1deba1f70185a87d0f974658e1e19c2db78ea28e96b",
-        "ms": 5407
+        "ms": 5407,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       }
     ]
   },
@@ -1711,7 +2344,12 @@
       },
       {
         "clip": "3fdfabe72b2a15b8e028d654daac8d80ee16acf7e6de552722079bc07dc7b737",
-        "ms": 4207
+        "ms": 4207,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "d9d63964e84cbbe5cf4f064ce7ccf4ff4fbf7caa2ba9064c698d936357b4bdc5",
@@ -1727,7 +2365,12 @@
       },
       {
         "clip": "c4345e657c212f4ca8c12a2a5b899d06c1ea9641cb40d0be04e1ef5317aa6330",
-        "ms": 2307
+        "ms": 2307,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "eb12db2776c4c051f750a0dd1ab97a2c2e78fdf414685b46f2b32d7c4a7ae5cc",
@@ -1735,7 +2378,12 @@
       },
       {
         "clip": "09859b39b75c90a675239bd8c832fabdf85745741e73fe91f9bc65bcadd81492",
-        "ms": 2937
+        "ms": 2937,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "87d359038ba126d5d6472a7968ed69243516b4d33e5d405168289b66b3b0b611",
@@ -1751,7 +2399,12 @@
       },
       {
         "clip": "872af36bf6ce3133e4e0671b61c32f3ed0b5e61c9c8e8663ae4c2d0ad1bbae08",
-        "ms": 8808
+        "ms": 8808,
+        "by": "thimble",
+        "figure": "cast/captain_thimble",
+        "names": [
+          "Captain Thimble"
+        ]
       },
       {
         "clip": "87d359038ba126d5d6472a7968ed69243516b4d33e5d405168289b66b3b0b611",
@@ -1763,7 +2416,12 @@
     "": [
       {
         "clip": "3c94713fd436f133809bae3054acd6f5e080ae68bd0aff33fc3bfb6546e14c6e",
-        "ms": 728
+        "ms": 728,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -1771,7 +2429,12 @@
       },
       {
         "clip": "009831db71a3fb06a85c7945ee88cc04fb908586df3fbf0ee851982d0057ca22",
-        "ms": 1573
+        "ms": 1573,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       }
     ]
   },
@@ -1803,7 +2466,12 @@
     "": [
       {
         "clip": "880bef53670a4514e17df2db98d21522dbd8352cbce575718fcfa6dac9268475",
-        "ms": 1053
+        "ms": 1053,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "65cba89d22de7ae942931d7ea606b03f9106f82eb00510c3826c83188874771b",
@@ -1851,7 +2519,12 @@
       },
       {
         "clip": "4079f68c53b878a69f382880c712c2f4a0877c2ed1c5bc29790c21eed9374a2f",
-        "ms": 725
+        "ms": 725,
+        "by": "dock_worker",
+        "figure": "cast/dock_worker",
+        "names": [
+          "Dock worker"
+        ]
       },
       {
         "clip": "08f5b66c19c1e2ae2417fbb43a11ba43e02553189492491299ef5f3aa8455403",
@@ -1867,7 +2540,13 @@
       },
       {
         "clip": "182d19125247d597974f7700f29b618184dcf754847414d319e09b7720ca2c95",
-        "ms": 422
+        "ms": 422,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "953275dd9b7c75dc273ef260bac440aefb5b2e56f80cd5573725165d3aa0785b",
@@ -1875,7 +2554,13 @@
       },
       {
         "clip": "6230a99c8540cbb58247b64c899e5f6a6c42940899b7df0914a7a3d8967ef2fe",
-        "ms": 2306
+        "ms": 2306,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       }
     ]
   },
@@ -1895,7 +2580,13 @@
       },
       {
         "clip": "0154bd4d6c941de266e453ab4c5b3095137c7908606bc09b3edd6f78e2b2b83e",
-        "ms": 2576
+        "ms": 2576,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "e1cc5291065723db0f2c1e6a66a668080f053bd1be7b29b9da2138aa731ab4d5",
@@ -1903,7 +2594,13 @@
       },
       {
         "clip": "1f26b07150b62e005ed2e8d27c95b62a31441163e03d67b9b8171fc43e3fbd8d",
-        "ms": 2519
+        "ms": 2519,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "1e63a9af2cc6b9a67b3b5829b720d2b1ee829fdb46a425c2ec0e0a8a5ddbb730",
@@ -1911,7 +2608,13 @@
       },
       {
         "clip": "be15c487d904497a6b7a507c2436e479b5cf77463f5dd41fd18f70c4265c4060",
-        "ms": 1963
+        "ms": 1963,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "987a30ea0695da8754dc229995eb7ece023fa045f152f2e307c3736501a6a5fa",
@@ -1927,7 +2630,13 @@
       },
       {
         "clip": "b79d46bc1d0faf9e370a31a2fcf65470204901d9920e331a68f7cb5ceb5a395b",
-        "ms": 1967
+        "ms": 1967,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "fefb211b2d83afa8c1f825b51fd073ba263d8c18b27a4a2a5a62dc3d8918fcab",
@@ -1935,7 +2644,13 @@
       },
       {
         "clip": "fd9b05826b3864f6fb6c7a97f7a1d7f7da555150c65a2a0a92d03315e384c201",
-        "ms": 1085
+        "ms": 1085,
+        "by": "the_gull",
+        "figure": "entities/quay_gull",
+        "names": [
+          "The gull",
+          "Gull"
+        ]
       },
       {
         "clip": "6ab65a17a0d3d7d3368a831957de2b6c210069e7f57b107a9476da20078e50fe",
@@ -1951,7 +2666,11 @@
       },
       {
         "clip": "c3ebcdee7d64827e4478eddc5b695ae41d8648871664f51fc7649015d188eca5",
-        "ms": 695
+        "ms": 695,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "0350ee094c945b6651961de69e728a5deaf05e8c8a7d8ae4155ec80725fd0169",
@@ -1959,7 +2678,13 @@
       },
       {
         "clip": "313855bb862265d2c3db64ed5fee829dbe9f4da32f85e6eaf79abf5d2a0b7b33",
-        "ms": 1595
+        "ms": 1595,
+        "by": "goat_kid",
+        "figure": "cast/snowhorn_kid",
+        "names": [
+          "Goat kid",
+          "Kid goat"
+        ]
       }
     ]
   },

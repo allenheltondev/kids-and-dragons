@@ -23,7 +23,12 @@
       },
       {
         "clip": "fa370bf28713d69ab901e685fa09a85fe8a0ce8f24df143bbfe3237402b888f7",
-        "ms": 2206
+        "ms": 2206,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "eb12db2776c4c051f750a0dd1ab97a2c2e78fdf414685b46f2b32d7c4a7ae5cc",
@@ -31,7 +36,12 @@
       },
       {
         "clip": "3ec839757d4f57ca003e52e9e82c60e307437698a4d4a57cd1c859666f650832",
-        "ms": 5307
+        "ms": 5307,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "b964548a907533749d0a09ae9601caa6539aa6f49c3119c3c8bff7f19915a4e9",
@@ -39,7 +49,12 @@
       },
       {
         "clip": "12b54c91a9f4114d63b148a6424b8810401adab70fbc7a1117ec7827c37c5dfd",
-        "ms": 5907
+        "ms": 5907,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -51,7 +66,12 @@
       },
       {
         "clip": "0a682f8de42f168581fcf5129ba09c5cb6e2973566307942a9a1e2b048ff7f15",
-        "ms": 4307
+        "ms": 4307,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "b60d6999a435c831e5a707097711bbe2ea829ee0b833e19d976275b5fee90018",
@@ -59,7 +79,12 @@
       },
       {
         "clip": "7c661ead0cd49d6b466a3ec9b43cc320aef32be4db0d9299dc09d5ec82635708",
-        "ms": 8307
+        "ms": 8307,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       }
     ]
   },
@@ -71,7 +96,12 @@
       },
       {
         "clip": "fc62daa802f184400d336d8385aece704f0dbb32450f85d1d2636b71c8c03875",
-        "ms": 996
+        "ms": 996,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -79,7 +109,12 @@
       },
       {
         "clip": "55a7c401ee36424667cd87d1592f5f97a28ec468f708d540f884d51631479313",
-        "ms": 1503
+        "ms": 1503,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -115,7 +150,12 @@
       },
       {
         "clip": "ef1658ef78a2931478e422afff62858e97446b72138eebeb8c30504a73ff0c12",
-        "ms": 1536
+        "ms": 1536,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "076dfd154813af20d77c264d0f0bf065b76664105d44f7f5eaa9e661de838625",
@@ -155,7 +195,12 @@
       },
       {
         "clip": "2a773ef1566b5e2c555d1ae188b5011b8676bdaf3d96bb9ddb4fdfc6e53be368",
-        "ms": 654
+        "ms": 654,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -163,7 +208,12 @@
       },
       {
         "clip": "74cb667a7571fc9b98051a43706f215ad2f975be3dbd0c974e19fc26339bc03c",
-        "ms": 3707
+        "ms": 3707,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       }
     ]
   },
@@ -199,7 +249,12 @@
       },
       {
         "clip": "8f3bc8194747913e7aecc13029186891c187e9705e64dd1d1c1115fbcee89dda",
-        "ms": 560
+        "ms": 560,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "57916d02e43913254d632ee0bbbd270b15e1a803d8b6f896379cca94e5f40a97",
@@ -223,7 +278,12 @@
       },
       {
         "clip": "0d3472eba39f81fc1ce33f5bd81579be4114c341f94f24c7f8f098a1aa74bbc3",
-        "ms": 843
+        "ms": 843,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -231,7 +291,12 @@
       },
       {
         "clip": "1fa7f4b0d07a680eddea638060a459e29767320e4f10003bb25707cca0aac961",
-        "ms": 1508
+        "ms": 1508,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -251,7 +316,12 @@
       },
       {
         "clip": "dd5164a3a3e02d0e92e11b77268757e2103fc2e01e336423113cf41303e61a01",
-        "ms": 2325
+        "ms": 2325,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "d7125d4fe980e2d04f3b238631507d084c40690d4f901c61e031180e89f2bc7c",
@@ -263,7 +333,12 @@
     "": [
       {
         "clip": "271d8bb8c58d4e75dbd676ddcf87298b9a9d835c76e84b9825bdc688d6389e7b",
-        "ms": 1339
+        "ms": 1339,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "08ea7f5f172c7872e7a72512022db3043ea512b269b4a9c78afc1c898f9c79a6",
@@ -279,7 +354,12 @@
       },
       {
         "clip": "b334d4f3097942c6e9cb1301e56e0b58ce82853c28245ed3180bc5f4a339900b",
-        "ms": 5307
+        "ms": 5307,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "2284a12219992f94c2d8cc3f9f17c72d78452ccbe4ce361fc72346382c5ffa18",
@@ -299,7 +379,12 @@
     "": [
       {
         "clip": "62a38ed7f6601ecdae562d07489e51247302e78391730ef3b0009d74fae7c1ef",
-        "ms": 4307
+        "ms": 4307,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "f536856757893656eadb9906066d90b87b904b7834107bb1c44d7d22a3f14156",
@@ -339,7 +424,12 @@
       },
       {
         "clip": "d4d95cc955313070a0ab79b6b05c7ef96a01dd473411936be1445dbe71652f80",
-        "ms": 2077
+        "ms": 2077,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -379,7 +469,12 @@
       },
       {
         "clip": "72f9c826f756883e8a131f092f3c59830dd1e27d561254a98a041f37e7b27109",
-        "ms": 1259
+        "ms": 1259,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -387,7 +482,12 @@
       },
       {
         "clip": "02559b7c93194a47e3de2e85553c6c87b2bc84b5cd2de43e5a022bb35c8bc8a0",
-        "ms": 3907
+        "ms": 3907,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "7dbf43e5458b716693487c65ceb0bdba83fb731d60d6cfff38f2208263f90684",
@@ -459,7 +559,12 @@
       },
       {
         "clip": "cb2fc4fbceaf55b6428d745163c29354a2c61d6d604c58876b5d760820c381f5",
-        "ms": 1231
+        "ms": 1231,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -515,7 +620,12 @@
       },
       {
         "clip": "044a07aeb725e19d32b8ea68858165287402e662efcf7c93545755a906603a6d",
-        "ms": 693
+        "ms": 693,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "9dac36881c2f9c77fe54fa457e2fc2be04b78f22fe1684fde441be8b5764320b",
@@ -571,7 +681,12 @@
       },
       {
         "clip": "f9ce391aa92a137e28f9587ccab2d67e06e776c43100a1a43fcb8e94d3c6f0aa",
-        "ms": 3707
+        "ms": 3707,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "e751c6940b7381d68de88b8ac9f97c5c9bfef88d6bea74d4c2b9cd308d8dce72",
@@ -595,7 +710,12 @@
       },
       {
         "clip": "b8942ac83c1ae36355e1e67847c0d2571e0e63c37652a7d5d78220049143120e",
-        "ms": 1005
+        "ms": 1005,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -615,7 +735,12 @@
       },
       {
         "clip": "45de7dabf7344807f6bd4a347c969a3cca1137905aa625b44f85650958252a2c",
-        "ms": 2144
+        "ms": 2144,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "ab14f5f2b0ca57bb3420849193cef46e5141b56ea2011cc8964004050e3897a8",
@@ -631,7 +756,12 @@
       },
       {
         "clip": "45a7599c0e62f8f40d77c269c455334e364701e32840459845cbaafbfe4e208f",
-        "ms": 1737
+        "ms": 1737,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "ee72fdc92821f38619824c57f3116ea53c2408c754dd886a0887de638314f512",
@@ -663,7 +793,12 @@
       },
       {
         "clip": "c02746e3c7ee54a008b0ab862776ebde39c173763d8eee582d3b22ba03601625",
-        "ms": 1081
+        "ms": 1081,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "53e8b3619b712345d1cfabff491fcd6f0c8b90d6bfc8654555736be20d16d2c2",
@@ -671,7 +806,12 @@
       },
       {
         "clip": "83bab8f6dd98f43ab4937bdf21d1f65fc9fa10d1c3adb2f58536e6a4401911a5",
-        "ms": 2251
+        "ms": 2251,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       }
     ]
   },
@@ -699,7 +839,12 @@
       },
       {
         "clip": "86469529f625e411d1c4cd695f30cae9759de8b89e3717209236e8d736d97490",
-        "ms": 3107
+        "ms": 3107,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "3c4535692bb66d96c83310cdc10fecbaea5b471008ee677f52512497a4e825da",
@@ -803,7 +948,12 @@
       },
       {
         "clip": "46241164341be8fa430b70554a8d0156b82b1fcaa800b5ae48cfd72de4185d4a",
-        "ms": 2161
+        "ms": 2161,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "a466431db651b8bfb34a6535e59a5175eee0d07809ced300599b5d73200015db",
@@ -811,7 +961,12 @@
       },
       {
         "clip": "1ce55edb3929d45fd9fa2b13b28cfd91affc65f1ddfb88fdd29f482b83633691",
-        "ms": 4807
+        "ms": 4807,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "f956a7bdafb0d25464e352c504fd9921eba2ad3198dc9d2333a9a6f3abe98969",
@@ -827,7 +982,12 @@
       },
       {
         "clip": "7b7855fa11aae481b469a704c10f65889ad1f0a9153f20e235cdc1c5a8afd8e9",
-        "ms": 2553
+        "ms": 2553,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "bd0ba851a3301acacfb054c50e59d3a275a20ff25e31a05e72c277508018d8cf",
@@ -851,7 +1011,12 @@
       },
       {
         "clip": "79a265832449caee24b331f8029b16207a189ad816ff1d70a019d61b035c4505",
-        "ms": 1043
+        "ms": 1043,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "7fad997d76984cc4baafae7b8aa4b8554607bb184c125fe99ef843284df80960",
@@ -859,7 +1024,12 @@
       },
       {
         "clip": "0cb803883a25dd072262170968eba08fea3c6555fb39b264d6063f9bc613a41e",
-        "ms": 1615
+        "ms": 1615,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "afd03044605e64d21d876fc298ebef129da842baa77cb5396662819e7596d5f8",
@@ -883,7 +1053,12 @@
       },
       {
         "clip": "b37e067d12832f636c90089e470702c74f50d6a05ed3f3d750a18caaf19aad6a",
-        "ms": 1360
+        "ms": 1360,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "bea53bca908d023311dda5e3b483cd87a722248630d526bc8bddb46667968822",
@@ -891,7 +1066,12 @@
       },
       {
         "clip": "64982ac17ff9d73aad2adff849bfa4f6c304d969d50b7d8c8341824f700f027c",
-        "ms": 1859
+        "ms": 1859,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "3377874cff439d04ee10000f5b6416d636b2bbf66ea98c8c69d8a9ccadfc0f28",
@@ -899,7 +1079,12 @@
       },
       {
         "clip": "cdbea78d7185b58339b4ccd0c92d5c496d9d5ff50ee01f7842b2edef179c27f6",
-        "ms": 5207
+        "ms": 5207,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "e60b1156319bf2b026e7862616641b5ca5863d818c58e54f71c46c38dbaf1a5e",
@@ -915,7 +1100,12 @@
       },
       {
         "clip": "7ce865fa897b9353e21a53f6ea8e73301479c5730e1144214f32b077d999e7cb",
-        "ms": 2902
+        "ms": 2902,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -923,7 +1113,12 @@
       },
       {
         "clip": "124824fc36d4a50cdf88a9fde93685010ac642892e5bc2e6504314aba8a768bf",
-        "ms": 6208
+        "ms": 6208,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "c38f4811a014b3ff4d6e5af5cc1d7a433ecd5c26af3e109e8dfe35b2c9bb4d96",
@@ -931,7 +1126,12 @@
       },
       {
         "clip": "835b05c384cd7d96f1261869ddeb92a3af526dd6f7e3acc8c67e8dfcf0fdbb90",
-        "ms": 4007
+        "ms": 4007,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1007,7 +1207,12 @@
       },
       {
         "clip": "6278a2e179e19b382e8f486a8da31fde3bf9171bce60267b590cdaca93de8aa8",
-        "ms": 1701
+        "ms": 1701,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1015,7 +1220,12 @@
       },
       {
         "clip": "d36136a7f39975ef73b5219355c24f2eebd87b1d10a76879b8188927c36c7cd8",
-        "ms": 1404
+        "ms": 1404,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -1031,7 +1241,12 @@
     "": [
       {
         "clip": "95d316cacd1e4816da483c1a00deabfb8f2bedaf56bf7e79e1cca46b83723033",
-        "ms": 2166
+        "ms": 2166,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "5b2cadf589e789ba8f6a69aa8a909097897835ef05f99f621342ffd3b0cd8df4",
@@ -1039,7 +1254,12 @@
       },
       {
         "clip": "6be77eacdafbe3565bcf5429d5432bb2ea87a768b97d63402d30f7764b63411a",
-        "ms": 1788
+        "ms": 1788,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "64db3c964fd2608ee6ab6b1701827df153b1407a3af1d9a7ec9c91995a03e628",
@@ -1055,7 +1275,12 @@
       },
       {
         "clip": "374422d1e107088ada32130961d6aef848de30e21db78351d2844665209ab153",
-        "ms": 4307
+        "ms": 4307,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "81df5503f568000f88eb9b1f3f4bd0b62db5c8a14e75253d2889e733651fbab8",
@@ -1071,7 +1296,12 @@
       },
       {
         "clip": "4719f7f18074017d9f92f1ad91d08d9b16d49c3ab2b938e72d9efe819d401018",
-        "ms": 1504
+        "ms": 1504,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "96435c406e1646f98cf80d17c48577ae46ef93b2eada2cf4c3df9a4b85efc53f",
@@ -1079,7 +1309,12 @@
       },
       {
         "clip": "52472bd9d6a4d75b7c47a774b846220d3c56b97c750b35e0a5120783b81c5aa8",
-        "ms": 2324
+        "ms": 2324,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1091,7 +1326,12 @@
       },
       {
         "clip": "ff5c5b80f44323e921860b0d16b765b80b78873daa45a9be4911467ad937e32c",
-        "ms": 5207
+        "ms": 5207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "856f3314cc8675a08dc35e443f4ca6f16c5eedea955b105b54f9e322f3fc1994",
@@ -1099,7 +1339,12 @@
       },
       {
         "clip": "2417c655c0f0c402bd39f0f09bd910667874594bab471d4133eb7cc2c492a630",
-        "ms": 5307
+        "ms": 5307,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "217bc06d998f76c3faaa50f5c0fbcd4ed36952321f35333054a2f6683a6cbcf1",
@@ -1107,7 +1352,12 @@
       },
       {
         "clip": "410a63245a955c65034afee700e6ad6bbb1a5290acd64181e89d8f15fbe8a56d",
-        "ms": 5207
+        "ms": 5207,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -1147,7 +1397,12 @@
       },
       {
         "clip": "1c7e4b87a87ebdf7ff7762a3af16a82cf6c0193fa31f0339ed6d242886438a54",
-        "ms": 1786
+        "ms": 1786,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1155,7 +1410,12 @@
       },
       {
         "clip": "2ad0eba18a52a548a5e83ed5ab89bc80a7e9ef53241bbd8b8cd00e27a0ec7fd6",
-        "ms": 4707
+        "ms": 4707,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1167,7 +1427,12 @@
       },
       {
         "clip": "a743172a47b43db4f4dc3e1f0adf7a5be15851ff55b56dd013fc304b4cde289e",
-        "ms": 1161
+        "ms": 1161,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1175,7 +1440,12 @@
       },
       {
         "clip": "912ce2fbd8d9db02f3073164090462568d66261896f2c00eeed00f10bc810de1",
-        "ms": 1095
+        "ms": 1095,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1195,7 +1465,12 @@
       },
       {
         "clip": "0fdbb6e81939a9f834aed50e6baf6a4352553f8f473507705db3ac6641382ba2",
-        "ms": 1463
+        "ms": 1463,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "902193b371e3850dfca8541e0e206b14e5d3bf68a40dc9f438ddc3cd161be7e4",
@@ -1227,7 +1502,12 @@
       },
       {
         "clip": "77ab0da63a43da087fcef1b69a826a1f1e248cc8aa3387f2ac9dabf04ece43b1",
-        "ms": 902
+        "ms": 902,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1275,7 +1555,12 @@
       },
       {
         "clip": "22b7ef550fe9fcb1182ce47c0a8652cbe8cffabf8ed6010b4a25f01655f450f9",
-        "ms": 640
+        "ms": 640,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "94e5960d1a3eccff29ba1c15d8f1231d75f5d73472ff1f5956d33d9969ce654f",
@@ -1291,7 +1576,12 @@
       },
       {
         "clip": "c057f26fe5c6e18f17e2b1c7348d2a0666f463fa941ed39a241ac340a20f642d",
-        "ms": 2382
+        "ms": 2382,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "53e8b3619b712345d1cfabff491fcd6f0c8b90d6bfc8654555736be20d16d2c2",
@@ -1323,7 +1613,12 @@
       },
       {
         "clip": "e13cbd32411fa03f054c2cee1a8a04ef142159026984eef6eda8e001ece1f8bf",
-        "ms": 634
+        "ms": 634,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "2e8d1d020c82818928c5fc8802c19c27e983d5867eba6d09f2ad8c84e09f221b",
@@ -1355,7 +1650,12 @@
       },
       {
         "clip": "0a55349d377ea2ff795d4f3262fa14d7caf048f473536d5d8130e98314159721",
-        "ms": 1547
+        "ms": 1547,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "1a04af8a54e910dc341bc4acdc978292175026d67aa4a6cc780398f363822c13",
@@ -1371,7 +1671,12 @@
       },
       {
         "clip": "38960831985f7c7dc605b007b483bffbd123bbdfcec0f91802df358799747182",
-        "ms": 1914
+        "ms": 1914,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "2f06c3c16555e1fab65be8974bc4c9b7945beb04da406b96456da3ecf17a78b2",
@@ -1411,7 +1716,12 @@
       },
       {
         "clip": "6115ead55ca45dbe4b7e3f631f399457a2ef41ee697a1859940ff5fdba1ce378",
-        "ms": 1224
+        "ms": 1224,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "5b2cadf589e789ba8f6a69aa8a909097897835ef05f99f621342ffd3b0cd8df4",
@@ -1419,7 +1729,12 @@
       },
       {
         "clip": "619fe5f564dc7b0d67855eb7ba1273d8bbd0d9e8892a313f689b118b4666933c",
-        "ms": 2155
+        "ms": 2155,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "10e4f14405c38f7611177e60cb0eb0492837ebae195842933e7fa5f2a9e5862e",
@@ -1435,7 +1750,12 @@
       },
       {
         "clip": "de471fc43b8bcb23d776ef271205c264def2923d206f373ac5e98b69b6611ba1",
-        "ms": 743
+        "ms": 743,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1443,7 +1763,12 @@
       },
       {
         "clip": "e11ff7329c8b67e78f856883d1eded34ee200460b05111d671f719c05c06c1c0",
-        "ms": 1447
+        "ms": 1447,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "0afed17480f1100f20223156d1b6e7ba3a40eef86466f129b520d00d784a168b",
@@ -1451,7 +1776,12 @@
       },
       {
         "clip": "962342a8da5913ce0f101b3b613b5c5302060aaba169e06cc842667b369736aa",
-        "ms": 3307
+        "ms": 3307,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1459,7 +1789,12 @@
       },
       {
         "clip": "bc114b4cc1f7e0c9ed3623972dcbca807a0ae5fc422a1eeea3cb655dba8736fe",
-        "ms": 3307
+        "ms": 3307,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       }
     ]
   },
@@ -1471,7 +1806,12 @@
       },
       {
         "clip": "4526a20c0a3d6037c7cd806a9f30aef276e3a30356bdae54e993a293a5118e4d",
-        "ms": 898
+        "ms": 898,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "7a2284b3c1818030bfc768b8b41726bc671f7e3f7f06f75b3d89d83d27be81ea",
@@ -1487,7 +1827,12 @@
       },
       {
         "clip": "ac8fd66e0eb47d4d53b442f566eb97ce56278775d39d8f0c59c8397e5a67bf8a",
-        "ms": 761
+        "ms": 761,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "0b732925f7d5c4655f93b5b285c6a7bd9859d49e901f2eb5b4c730085745bae5",
@@ -1495,7 +1840,12 @@
       },
       {
         "clip": "b3a2f81f617d08cc2ebf37b01364b224ef5f607ea4f41cc412628fa7b24a1b97",
-        "ms": 926
+        "ms": 926,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "a75fcb29c29413a0c813f132d6b08b0124669a206c871cc1d339c610957669e5",
@@ -1519,7 +1869,12 @@
       },
       {
         "clip": "93ff52894bef4250bd750711e771a9cc764bd20463018917a4008f18f96546f8",
-        "ms": 1450
+        "ms": 1450,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1527,7 +1882,12 @@
       },
       {
         "clip": "c66902ebd8324a233235e9f88d3825eef79b0b5a8bafe7fe3ffb92638c6387ae",
-        "ms": 2175
+        "ms": 2175,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       },
       {
         "clip": "6a21233d5cb704bd808d09bd883cfdcbad70fab2aac11f97e11222f6b34a5013",
@@ -1535,7 +1895,12 @@
       },
       {
         "clip": "3781548e646dfd0b1558c56e719bf36c717eed3dcce16a17c7e80e2afa10fad7",
-        "ms": 8907
+        "ms": 8907,
+        "by": "flurry",
+        "figure": "cast/younger_keeper",
+        "names": [
+          "Flurry"
+        ]
       }
     ]
   },
@@ -1547,7 +1912,12 @@
       },
       {
         "clip": "e114b9fdb83ec99c00986ec1618b935fdc43d75861157ada8929d3737de15e1e",
-        "ms": 4007
+        "ms": 4007,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1555,7 +1925,12 @@
       },
       {
         "clip": "17d8f358df67ea643e3c15a2d1bcc669b3c274dc749c5c6f85f5d5258c6495ec",
-        "ms": 2814
+        "ms": 2814,
+        "by": "elder_murmur",
+        "figure": "cast/yeti_elder",
+        "names": [
+          "Elder Murmur"
+        ]
       },
       {
         "clip": "9c9bf1e942ba763a34cc90408d60d93778cde5cdbc56553d6e95f516f7d26344",
@@ -1571,7 +1946,12 @@
       },
       {
         "clip": "aa98f00c76fc514f880337795fb96180d1dcd7bb31303975036dec17053959bf",
-        "ms": 3507
+        "ms": 3507,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1579,7 +1959,12 @@
       },
       {
         "clip": "5b1dd1ca161e220e129aecfce5eab6e4cd9554cae61c25d59ccf4f1a2fe3faf7",
-        "ms": 7907
+        "ms": 7907,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "d200c833ca306d68c8a3e675cd616ea756ecaf4c646aef3ee7f42b5c14357afd",
@@ -1587,7 +1972,12 @@
       },
       {
         "clip": "6620bb7e4ccf873d3194f5bd46dd646119c3bff76e253504fe70d87ce8e9003b",
-        "ms": 1234
+        "ms": 1234,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       }
     ]
   },
@@ -1599,7 +1989,12 @@
       },
       {
         "clip": "21583c4ff2624280b085b067152cf82c97e725803982757646ff29c56acf6b4e",
-        "ms": 1811
+        "ms": 1811,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "3b8a9d41df0e0026f410b2f28a832e81ef2b120be63f7df6671f27ce61d80870",
@@ -1607,7 +2002,12 @@
       },
       {
         "clip": "1da43244e09181dc4c29f922dde133a918d413a7a6b3e54d7f96c340b0b0c115",
-        "ms": 4607
+        "ms": 4607,
+        "by": "yeti_builders",
+        "figure": "entities/yeti",
+        "names": [
+          "Yeti builders"
+        ]
       },
       {
         "clip": "27f084b31c576ac635598df93288d96aeabe2ba27a747abcfd39ec854fb1d575",

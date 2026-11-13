@@ -313,9 +313,13 @@ ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stag
 
 ### Manifest and lock (in git)
 
-- `content/voice/manifest/<chapterId>.json`: address (+ token value) → `{ clip, ms, words? }`.
-  This is what the client loads, about 50–100 KB per chapter. `words` holds optional word timings
-  (see Linking).
+- `content/voice/manifest/<chapterId>.json`: address (+ token value) → `{ clip, ms, by?, figure?, names? }`.
+  This is what the client loads, about 50–100 KB per chapter. A cast member's clip says who
+  speaks it: `by`, their id on the cast sheet, their `figure` there, and `names`, the sheet's
+  `name` then its `aliases` (the narrator's clips carry none of these). None is in the clip key,
+  so a figure, name or alias changed on the cast sheet is written into the manifests by
+  `voice:verify -- --fix` with nothing rendered, and `voice:verify` fails a mark that disagrees
+  with the script and sheet (see Linking).
 - `content/voice/voice.lock.json`: approvals. An approved take is pinned to its clip key and
   source hash. If someone regenerates and gets a worse take, the approved one stays until a new
   one is approved. `voice:status` shows "approved", "rendered, awaiting review" and "never
@@ -373,8 +377,20 @@ kept audio without asking the provider again.
   pass runs after rendering. This enables **following along on the TV**: the current sentence, or
   word, is highlighted as it's read. That's a real reading aid for this age, and a stretch goal,
   not phase-one.
-- **Speaker → face:** a script line `by` a cast member can pulse that member's figure on the stage
-  while they speak. It's cheap once the playlist knows who is talking.
+- **Speaker → face (built, the cast pulse):** while a cast member's recorded clip is heard, whoever
+  stands in the scene as that clip's speaker swells gently about their feet in a slow beat
+  (`world/cast-pulse.ts`): one figure, a whole group of it, or an ensemble's members. A figure the
+  chapter names is the speaker only under one of the clip's `names` (case, punctuation and a
+  plural aside), whatever it is painted with: several people share a painting (Tansy and the faun
+  prospector are both `entities/faun`), and a chapter may paint someone differently from the
+  sheet (bramblewood-01 stands Pib as `entities/pib`). Only an unnamed figure, or a speaker the
+  sheet gives no name, is matched by `figure`. The engine says when each clip begins to be heard (`VoiceChannel.play`'s
+  `onClip`, on the audio clock), the clip speaker reports who says it (`onCast`), and the stage
+  follows it (`read-aloud.ts` `watchSpeakingCast`). The narrator, the device voice and anyone not
+  standing in the scene pulse nobody; with reduced motion it is a steady lift. On the content as
+  of 2026-11-13, 3,244 of the 3,434 lines a cast member says in a scene with somebody on the stage
+  find them there; the rest are mostly said by someone not drawn in that scene. The party speaking
+  together pulses nobody yet.
 
 ---
 
@@ -436,7 +452,7 @@ kept audio without asking the provider again.
   downloading clips.
 - **A spoken-line cue:** the TV shows a small "speaking" state on the narration panel (built: a
   gold edge breathing down the plate while either voice speaks, `data-speaking`), plus the
-  cast pulse above (not yet).
+  cast pulse above (built).
 
 ---
 
@@ -564,7 +580,7 @@ Each phase ships on its own and leaves the game working.
 | 6 | **Review & lock** | `voice:review` page, approvals, `voice.lock.json` | a regenerated take never replaces an approved one silently |
 | 7 | **Dialogue pass** | `content:dialogue` report, house-rule additions to content/README and CLAUDE.md, chapter-by-chapter rewrites | the dialogue target met on the reference chapters, then campaign by campaign |
 | 8 | **Full render** | campaigns rendered and reviewed in the phase-3 order, first run capped at $85 | `voice:status` clean for a whole campaign |
-| 9 | **Stretch** | word-highlight follow-along, cast pulse, offline chapter packs, voiced choice labels on phones | — |
+| 9 | **Stretch** | cast pulse (built); offline chapter packs (built, #547). Word-highlight follow-along and voiced choice labels on phones were dropped (2026-11-13): not worth their cost for this table | — |
 
 Phases 2–3 and the dialogue writing (7) can run alongside 4–5. The writing doesn't need the
 pipeline, and rewriting before the full render (8) avoids paying to render text twice.

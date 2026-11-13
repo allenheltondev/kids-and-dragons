@@ -28,6 +28,7 @@ import { packedCampKey, packedFriends, packedKits } from "./packed-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 import { onStageCover, stageCovered } from "./stage-cover";
 import { ART_AHEAD, artAhead, scheduleArtUpkeep } from "./art-upkeep";
+import { watchSpeakingCast } from "../speech/read-aloud";
 
 /**
  * A television's browser draws on a set-top GPU with little memory to spare (#264): no
@@ -420,6 +421,9 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setCast(visibleGuestsRef.current);
   }, [chapter, guestKey, guestIndex, paging, state?.encounter]);
+
+  // Whoever is speaking a recorded line pulses while their clip is heard (cast-pulse.ts).
+  useEffect(() => (stageUp ? watchSpeakingCast((cast) => sceneRef.current?.setSpeaking(cast)) : undefined), [stageUp]);
 
   // The narration plate's height, so the story stands above it.
   useEffect(() => onStageInset((px) => sceneRef.current?.setStageInset(px)), []);

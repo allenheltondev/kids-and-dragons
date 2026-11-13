@@ -23,7 +23,12 @@
       },
       {
         "clip": "57a5aee64b21fec0428e75da3b3e9259cbf0ba6cef9a8c98f9d54497fec1f222",
-        "ms": 1094
+        "ms": 1094,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -31,7 +36,12 @@
       },
       {
         "clip": "160268cebcc89e7d3467764635bcd31042c13c3ddf6b2339a5f6b418d3f14073",
-        "ms": 5708
+        "ms": 5708,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "cf9cc82f46efb8b9226f6c4cd607aef531611b6dbbff66c840775732b44c3f20",
@@ -39,7 +49,12 @@
       },
       {
         "clip": "612f40223301c9aeac3f0bf3519bd48fcc9b8caf6376cf847c1fce5a462100f9",
-        "ms": 3907
+        "ms": 3907,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -51,7 +66,12 @@
       },
       {
         "clip": "d237555e4eb40e0eb2552a80491e677760b3e69fe530e4fa872e4cd0e52d8ed5",
-        "ms": 3907
+        "ms": 3907,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -59,7 +79,12 @@
       },
       {
         "clip": "1c53e8694481f1cea5ac77a6c955722c26c0acb5579c30e066605fa75799eba6",
-        "ms": 1604
+        "ms": 1604,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "25b270f701dc1fa27c27e0d940a6e355af5535bb2bbb29e8fcbc969003cec13a",
@@ -67,7 +92,12 @@
       },
       {
         "clip": "1c3adf4eae668c705220588eab6889ae9d91255df767951af8646621e1167438",
-        "ms": 2009
+        "ms": 2009,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -79,7 +109,12 @@
       },
       {
         "clip": "f34ff621df1da300cbdb3f1d86bd48531ebecc2e963650f8872a59c3d2d4c6f0",
-        "ms": 628
+        "ms": 628,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "c0a82dee12ae6d9dcc0f9bcab9ddc7c4f17b43bf2632f1a996bbaa61bb5c14a3",
@@ -87,7 +122,12 @@
       },
       {
         "clip": "9ca1b4d751467cbf434bfe786e31f314259a618fa6ca4ced8fd6b4fda98cb83a",
-        "ms": 2020
+        "ms": 2020,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "2d2a6a3a7b27d109e4247001223dd65504b17868fc4d851695f68553dc83205b",
@@ -103,7 +143,12 @@
       },
       {
         "clip": "3c3618e4f0a7ffa8b5d1b78f86307af2a232f3901ebf91db00e3ce131b8e4957",
-        "ms": 464
+        "ms": 464,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -111,7 +156,12 @@
       },
       {
         "clip": "60beedc49ba2a4e0a24a5d5978e8024fe8b5d6ec9cdf56ce703493f5f520fdde",
-        "ms": 1057
+        "ms": 1057,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "dcc793fe7fe5a51e348865170556e322d16881c2897cfe63e27b0bcbef5a0c57",
@@ -119,7 +169,12 @@
       },
       {
         "clip": "675d9f9d421549cd8fe4808532f9dc07497929f72283b6aafd97536d40696680",
-        "ms": 1137
+        "ms": 1137,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "20bf28756a950b61b78f88562b570e51cb39acfc953c453ea6b0d4a3ab54e4a5",
@@ -135,7 +190,12 @@
       },
       {
         "clip": "64835d2e401938c9b8885492e6f8dd1a366c09f1998ffa8c5bdf827a6fc337ee",
-        "ms": 1410
+        "ms": 1410,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
@@ -143,11 +203,21 @@
       },
       {
         "clip": "c6378d6c1c98362ab1027fe275761f861befa3f4e2da2320def37297d9a869ae",
-        "ms": 2717
+        "ms": 2717,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "71544844d9ac75dbe59a255d9a21f911e1a10ed6e1b5994e2e7ecd1348b035e9",
-        "ms": 1383
+        "ms": 1383,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -155,7 +225,12 @@
       },
       {
         "clip": "63bc7ef587ffb3ecfa2c3fbdf33d42d19fd0c31fc468221f5c6f6ad2ecce7e66",
-        "ms": 3607
+        "ms": 3607,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -187,7 +262,12 @@
       },
       {
         "clip": "1db81b610b662fa67bf316acf8f85d400f9876b1ad5ae544d2c12313f92ca6d0",
-        "ms": 621
+        "ms": 621,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -195,7 +275,12 @@
       },
       {
         "clip": "36843705d3e660da64374f2fce900663b4731fd87340be46972a978c25e3d2b3",
-        "ms": 832
+        "ms": 832,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -263,7 +348,12 @@
       },
       {
         "clip": "1db81b610b662fa67bf316acf8f85d400f9876b1ad5ae544d2c12313f92ca6d0",
-        "ms": 621
+        "ms": 621,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -271,7 +361,12 @@
       },
       {
         "clip": "36843705d3e660da64374f2fce900663b4731fd87340be46972a978c25e3d2b3",
-        "ms": 832
+        "ms": 832,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -307,7 +402,12 @@
       },
       {
         "clip": "298e2c5efcb72392c9bcf2d8d02b4c53acae43eb33453f5503058868c9364eb0",
-        "ms": 1034
+        "ms": 1034,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -315,7 +415,12 @@
       },
       {
         "clip": "01d41a41cfc41741973559fe50a359adce7ff407301343ec115525d63a89c4b2",
-        "ms": 1096
+        "ms": 1096,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -327,7 +432,12 @@
       },
       {
         "clip": "298e2c5efcb72392c9bcf2d8d02b4c53acae43eb33453f5503058868c9364eb0",
-        "ms": 1034
+        "ms": 1034,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -335,7 +445,12 @@
       },
       {
         "clip": "29eea525ab00f26b849f8613706cba8aabd7a239c357cb93497304cc0ca2bfe1",
-        "ms": 1679
+        "ms": 1679,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -355,7 +470,12 @@
       },
       {
         "clip": "089d5ae3387fc24444aa1416f498775fc9254cd62609fb7bf1b0ded9aee9e173",
-        "ms": 953
+        "ms": 953,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -455,7 +575,12 @@
       },
       {
         "clip": "caa82386ec6d859c2de328e0389cdfe723e7e079716de490cffdd85d5a12fc8c",
-        "ms": 2285
+        "ms": 2285,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -531,7 +656,12 @@
       },
       {
         "clip": "60503558e3591422ec2a436dd77783a0cefa96e6fdf70bba7ae9899c6e626db8",
-        "ms": 1114
+        "ms": 1114,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "e415218cc61c7ac3632538dee7b3fd05257e9bba1d6d5de8d37dc61bed45a06d",
@@ -699,7 +829,12 @@
       },
       {
         "clip": "1db81b610b662fa67bf316acf8f85d400f9876b1ad5ae544d2c12313f92ca6d0",
-        "ms": 621
+        "ms": 621,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -707,7 +842,12 @@
       },
       {
         "clip": "36843705d3e660da64374f2fce900663b4731fd87340be46972a978c25e3d2b3",
-        "ms": 832
+        "ms": 832,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -743,7 +883,12 @@
       },
       {
         "clip": "9115e8dee6faad1a9eaf3384b893097c0da7811f4982ed6872319b3eba368115",
-        "ms": 3407
+        "ms": 3407,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -771,7 +916,12 @@
       },
       {
         "clip": "0a0b6739057dfab6ab3a9368efb0e492dc97921ca341a494858485cc47027eeb",
-        "ms": 1635
+        "ms": 1635,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -779,7 +929,12 @@
       },
       {
         "clip": "d6e933a757fa7a143027d8b40981ec02795727788e089aaed95b82b47acfb283",
-        "ms": 3607
+        "ms": 3607,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "c5bf06fbb013839abcfe76439ecc4338191d66634ab3dcb4b236a53f4efbc480",
@@ -795,7 +950,12 @@
       },
       {
         "clip": "dd85341a9e7d62b82cd6968b13760356e6d41fcea9ad645c95d9c20910a32e78",
-        "ms": 1693
+        "ms": 1693,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
@@ -803,7 +963,12 @@
       },
       {
         "clip": "b87e5178fd9095002b15462150e1c5d6062d9caef780bc01f5ced697066b8c14",
-        "ms": 4607
+        "ms": 4607,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "8b077f23f76b7ac5523371a4c8e9cc44208f633ca999afe996e705e27f9c5951",
@@ -811,7 +976,12 @@
       },
       {
         "clip": "1bade2d818a46773a5ad25efb8f2c7c4cc677ea77bb3a2a757256219289b8e63",
-        "ms": 5307
+        "ms": 5307,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "b318a17d31546280dcd0b4d73c96dc7a04045cf5ed214ddcd5a584b3c3c6664c",
@@ -843,7 +1013,12 @@
       },
       {
         "clip": "6ff2cc9059c100e04ae190da55df5342c70270555bf6017c1f6df4f2ac5fce2b",
-        "ms": 4007
+        "ms": 4007,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "29ac771e7e2c5235bc34ba3184a706a90979925690e63c04837b4ec455c0c0e2",
@@ -859,7 +1034,12 @@
       },
       {
         "clip": "b2b7e06db4405beaeaa26556c12576fb9ac30c2494a6043c6833a5cf95edffe5",
-        "ms": 2810
+        "ms": 2810,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "d070e8b78b832b514a373989ef155e529601d8d32424862f1de2f5d1f46b32e2",
@@ -883,7 +1063,12 @@
       },
       {
         "clip": "76d55c5b703d77944b698c6d5fec713bfadf05a2bf28b2f3f0a2bf9b38e50c0b",
-        "ms": 1669
+        "ms": 1669,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "f1a45a59598d9e2d8171fae7e1c0bc70ec551456acf87fad632ab8e79865ca35",
@@ -899,7 +1084,12 @@
       },
       {
         "clip": "72ad59b7005bf075fadee2932f1b5c5d5c92e47271d5ee36888a8fb43f2f0553",
-        "ms": 2286
+        "ms": 2286,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -911,7 +1101,12 @@
       },
       {
         "clip": "0bbc8ce229dacebda4b1240e57ad65285bce7c3c49c46bd981002d67f70ea327",
-        "ms": 1031
+        "ms": 1031,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "ef74406a083e881ed44cd6f7436c750b8a4df47dfc02824161a2af27cb2d137c",
@@ -919,7 +1114,12 @@
       },
       {
         "clip": "dc60d063cf8261b1439c614ed52d14493954a47b7ff7ab9654eac020f1b1962b",
-        "ms": 3207
+        "ms": 3207,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -931,7 +1131,12 @@
       },
       {
         "clip": "3e27cf640d8e084b31b1b67dba8622c71651d9e82ad7ceeca55eaf15ce7f2b31",
-        "ms": 1402
+        "ms": 1402,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "ed9d41d1ca07ec541048b732eddb056565a443995079754ca23ed5f8e7b59e10",
@@ -947,7 +1152,12 @@
       },
       {
         "clip": "e5a9ba8729173295c7045879497d1c065d0e26325a1bd37cc100b101d19939fc",
-        "ms": 2918
+        "ms": 2918,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
@@ -955,7 +1165,12 @@
       },
       {
         "clip": "9d11cf51a2304e588d389b8d3aa76cda352597633f8ae1cfccd8300841bc60db",
-        "ms": 4207
+        "ms": 4207,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "5e03db096f55aed6b384cf78091deff98204f67fc70c9155cb93f069e8c8d2e0",
@@ -971,11 +1186,21 @@
       },
       {
         "clip": "97c49af417f3de933b89f1412279652098599a47700b0b46020275b6af799eb1",
-        "ms": 16707
+        "ms": 16707,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "798365dba9789c6baef38c4acc504aca28b2ef0199689f54677306a3d2b3d380",
-        "ms": 1509
+        "ms": 1509,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "95b7a1cade5199082794d59dea19d83d32a75ceae9d9b76967e4e20e8d388973",
@@ -991,7 +1216,12 @@
       },
       {
         "clip": "c0b0c9956d55b2a146831e1ec9f4a56ab721cc1e775af7e4064c589ea17a0d33",
-        "ms": 3407
+        "ms": 3407,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -999,7 +1229,12 @@
       },
       {
         "clip": "81e722cf3bb9e41173f5430a77ac286e7002f3925b83fd0c66b50080c829d426",
-        "ms": 7327
+        "ms": 7327,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "72134e19fae6fa194e3afc6f23169b24b252940cf356c31449d0a1584da71f23",
@@ -1007,7 +1242,12 @@
       },
       {
         "clip": "8bbeec5154aeba7ccd8729beded233b468d0f7388ba5c766db63711e8fd8bf04",
-        "ms": 3707
+        "ms": 3707,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1051,7 +1291,12 @@
       },
       {
         "clip": "e00f5d4cb71ab511c822c4d8666cc1eedee6b94b74820df88810a81a4cdb3127",
-        "ms": 1691
+        "ms": 1691,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1059,7 +1304,12 @@
       },
       {
         "clip": "066c75d87d56cd7928fcf3c84e71ab77b9a33f6145e9b115a6b499a6894ddff9",
-        "ms": 5907
+        "ms": 5907,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7fb1628c7c414049423f8a813397d76825e55094c32b0d6427b5651f3367c4a4",
@@ -1091,7 +1341,12 @@
       },
       {
         "clip": "e6badce7b8be3ce50e88ae8e732960122a5e50e9cca5da99f43abb6a1580e15e",
-        "ms": 4007
+        "ms": 4007,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "3e3aa9a08e0c712f2b19c17d5dbe2ce700486cf77e311a090d327850ddee4a3b",
@@ -1107,7 +1362,12 @@
       },
       {
         "clip": "58379ff62b0dd713c4bde18f9d878b1d72246a896c22516ea8f66ac526a2e0e9",
-        "ms": 4407
+        "ms": 4407,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "28353894163d097272b4a6ea6afc7326f354b26bdc188a2cdf74158ce830aeb0",
@@ -1123,7 +1383,12 @@
       },
       {
         "clip": "14e352660a3491ee85fb5155477376e2c09ecc59deec0e6fb84fccedabaf27c9",
-        "ms": 2461
+        "ms": 2461,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "bc92e738c4293a7a99a99506f5733222cf4de855ac5c3dbce6f0fa44fdf03fee",
@@ -1131,7 +1396,12 @@
       },
       {
         "clip": "5c479aaa560065d374d57fb214da9ae5a2478f9a1a99e1abd2435f472bc47bd0",
-        "ms": 947
+        "ms": 947,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1139,7 +1409,12 @@
       },
       {
         "clip": "4625b5e3f5e730f4fe9acd105b382c2e1026121492e48baa7e5829c438e74ce0",
-        "ms": 4307
+        "ms": 4307,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "3c1a16c88c7b282e092cd7f4168a462b3707dcbbb7dbd1440faf99fdb05c4554",
@@ -1147,7 +1422,12 @@
       },
       {
         "clip": "1c6b5aa95d912d7c61bbef14a2c59fb6f0c6aea29cbdf42617bea51c5c238bbb",
-        "ms": 1789
+        "ms": 1789,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1159,7 +1439,12 @@
       },
       {
         "clip": "7cfb4ef794afe95bd235281bae6e73fe5cc4b68616ef46c8a068056a28f1918b",
-        "ms": 2058
+        "ms": 2058,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1167,7 +1452,12 @@
       },
       {
         "clip": "619ea55d346684e21bd111a3db230b951982b64f2ebbf86bb45a0136894007c2",
-        "ms": 10707
+        "ms": 10707,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "53faa56ead01c375b73672985b6865609c59065668096422bd10102dfd378c31",
@@ -1175,7 +1465,12 @@
       },
       {
         "clip": "faef15a0b08699592e32e5dd5aca27b1a38b18c518ec76d51aeaa1ab838a0eb5",
-        "ms": 2807
+        "ms": 2807,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "227c052e3acbf7892705d04d2d450e5e3c0812cb771e448d7ad4dcf0a820147d",
@@ -1183,7 +1478,12 @@
       },
       {
         "clip": "29e418c69ce3d5b34d71ce33065b6351805953e02af7373aae50a5bda619565a",
-        "ms": 2732
+        "ms": 2732,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1191,7 +1491,12 @@
     "": [
       {
         "clip": "834cbbbcc25571225d03e29cdd59a878d1e7bfc744ec04f2cc3b99adf291448d",
-        "ms": 1316
+        "ms": 1316,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "a861cc7a4c12ea4adb522f9907684b162b28652a2123bd2f6ab5886ad0141964",
@@ -1199,7 +1504,12 @@
       },
       {
         "clip": "a7fe52e4d92848ea78d6bfb91204bf3d35d6151efea5376d7b8890c51590f62a",
-        "ms": 15707
+        "ms": 15707,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "16622db59a47249e8ebe6f3dcdc1d03553f942bb9b0082b8dd19529adeaac1a9",
@@ -1207,7 +1517,12 @@
       },
       {
         "clip": "f0ce4e4d62e315445491c903dc78880ccddacbfad0485aaa9e83f418258dae87",
-        "ms": 4407
+        "ms": 4407,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1235,7 +1550,12 @@
       },
       {
         "clip": "158b10a44b8f212693babd08a92cb55fba4cd48e119121735fb5f01c76ecac36",
-        "ms": 1749
+        "ms": 1749,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "89ab6ceb68ba9d1759465bb76494f0c6a75f7e70b7ee79ade9b6767db0994e0e",
@@ -1251,7 +1571,12 @@
       },
       {
         "clip": "5f5781e041dfe6911dceca0780792b90bab4d22ac635d89b7197ac827e838b6b",
-        "ms": 4207
+        "ms": 4207,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "415569e338df4af16e1a5290f4bddd0f366e6452dff8eecd2b34b279095c30de",
@@ -1259,7 +1584,12 @@
       },
       {
         "clip": "aa23230cf4d0b97a78ecc6774924d21382b238ceff4197e2c213f9131de91021",
-        "ms": 2867
+        "ms": 2867,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "cda459feff414b210f5bcee094c21bc9705c1269653db57b99ee8c8ae66b4c19",
@@ -1267,7 +1597,12 @@
       },
       {
         "clip": "05aba8489e509d744d428ddbc1d7ee6e1341b65c45c2bf62bab700457561656a",
-        "ms": 1932
+        "ms": 1932,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "8a02801c127a9bd062a2a3c3c0ca392e54f24a279bb7231460a70cb5d348aaf3",
@@ -1283,7 +1618,12 @@
       },
       {
         "clip": "8891b622063d304eb6afda88ae45154ccefd2878ef9c2805d6ae89f1d3246994",
-        "ms": 3807
+        "ms": 3807,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1291,7 +1631,12 @@
       },
       {
         "clip": "cecacdeda6bc17bb2c813cb257f799f8f88e131413f88e6a15aa0f47cd3107fc",
-        "ms": 2312
+        "ms": 2312,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "db395a6be09a6672647f1425ce5d9097b3401f91b79bd9ffb6d2074eda1f932a",
@@ -1307,7 +1652,12 @@
       },
       {
         "clip": "104b938736e4e3c523014f29bf007ca50e5f823670a6d03a6a15a73b7809204a",
-        "ms": 2313
+        "ms": 2313,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "0d07fd069968d4b36b2f828fc0aa558b8c14b48c59df7e9424050866411bda1f",
@@ -1315,7 +1665,12 @@
       },
       {
         "clip": "14a6274ad3dc9f4fbc08a4573cfe6cdec9c68151ce80ed009e404ed638c51848",
-        "ms": 3707
+        "ms": 3707,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1327,7 +1682,12 @@
       },
       {
         "clip": "29b3ca39f6c70c38788e4eb89a09693b37e313e7b53bd1f60ae803c7331fa350",
-        "ms": 11507
+        "ms": 11507,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1335,7 +1695,12 @@
     "": [
       {
         "clip": "c4b3a397b7843dc83c476fb571d6c2122058722ccf7785273eeab2a9a2ea1296",
-        "ms": 949
+        "ms": 949,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "4c6619fe8e590b90e5f3c035e88754ac1bfb3b82664b06a95f702068040286e8",
@@ -1343,7 +1708,12 @@
       },
       {
         "clip": "5e246df16e39d9715fdb0d06e2fafda9a3c8da1e65993957cb3945f2c68e13a0",
-        "ms": 2771
+        "ms": 2771,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "e5d572253fa0e22afa9e95b0f78c4e3bbb274cc0a227324e517ada05acf8b3df",
@@ -1431,7 +1801,12 @@
       },
       {
         "clip": "61811ca75c5dc338aa23b3b01058ed8c487d3fabc33f1cc70edb1617f6103219",
-        "ms": 1139
+        "ms": 1139,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "574118c7b257db605c70da9564d5eb4a5c58230f7acd4bb0bd617f16f567ce44",
@@ -1439,7 +1814,12 @@
       },
       {
         "clip": "30fde22b197af918ea11653d5bb13ccadb9b803086d755e314792dce4fd23a7c",
-        "ms": 1729
+        "ms": 1729,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1539,7 +1919,12 @@
       },
       {
         "clip": "3d7185b80d676aed47845f9a5666e9f4572b79ac1da9ce494e276d93fa43c0b7",
-        "ms": 1088
+        "ms": 1088,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "10b0cc1eb9b99dbfea0bfa5b01e13b9013ebfba63752daa0b7e828c39bc99abb",
@@ -1547,7 +1932,12 @@
       },
       {
         "clip": "e094b61a2dbf9e7dfe2d5065c5367913c6880791cf7dd67b8483e2711a3dd8a3",
-        "ms": 1371
+        "ms": 1371,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -1555,7 +1945,12 @@
       },
       {
         "clip": "8e1614ad6b83cab02a3cd8782da7ba68f3fd79d7f4a97e8b32afe2c7300cfbb5",
-        "ms": 3107
+        "ms": 3107,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1567,7 +1962,12 @@
       },
       {
         "clip": "e094b61a2dbf9e7dfe2d5065c5367913c6880791cf7dd67b8483e2711a3dd8a3",
-        "ms": 1371
+        "ms": 1371,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -1575,7 +1975,12 @@
       },
       {
         "clip": "8e1614ad6b83cab02a3cd8782da7ba68f3fd79d7f4a97e8b32afe2c7300cfbb5",
-        "ms": 3107
+        "ms": 3107,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1627,7 +2032,12 @@
       },
       {
         "clip": "a81246bd8b11ff11e129c3f8d90ed32343fccb8e9491c85a832b9fe9a302d5f3",
-        "ms": 1848
+        "ms": 1848,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -1635,7 +2045,12 @@
       },
       {
         "clip": "da99680dccbf684b845850cf39ed10387ccca9411d5fb9c844601ed3bb2c8a34",
-        "ms": 2722
+        "ms": 2722,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "c005c5cb47d17dde45ee3293bb908e5f7ce30a6d326f6ba697144d88b400a9e8",
@@ -1647,7 +2062,12 @@
     "": [
       {
         "clip": "9b403e7b8828bd15111e5db323482f76d70ae68cd2726ffdecc61bfab2a6772d",
-        "ms": 2628
+        "ms": 2628,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "bb0809a6ca0f8fb41b24af3e0c1dfd5f3e26b847f0a88a1d631e630a09227bd9",
@@ -1655,7 +2075,12 @@
       },
       {
         "clip": "6258c6b7ea1c6bbf277a08533f2030c3750c62720ad5a2f521dd6117ce97dacf",
-        "ms": 5707
+        "ms": 5707,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "678cb269f3f28f31a8a47162dd82a8d9a8a1a5d9a97976e68f49dfffe06989fc",
@@ -1663,7 +2088,12 @@
       },
       {
         "clip": "abdf005adaac46cdc9a98ad6860469454b3ec70afdd0c2bebf12a34ec686b46e",
-        "ms": 8807
+        "ms": 8807,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "c82303183fe44427c58f2e2fd9e6add89df840e9b38280450469196bd5450cb1",
@@ -1671,7 +2101,12 @@
       },
       {
         "clip": "abcbb03884dae123f05dd578c76613fa5c3cbca6c31345dffa277296e8e62980",
-        "ms": 1883
+        "ms": 1883,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1683,7 +2118,12 @@
       },
       {
         "clip": "a2d7e2d215e609e61f70b392818d41bb60510225076c735de3714a532ab4fea8",
-        "ms": 2471
+        "ms": 2471,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1703,7 +2143,12 @@
       },
       {
         "clip": "3bc524b0348186416c4047a5a8659847a39c38cdf3435a152325cb7d8b8f0f9c",
-        "ms": 4407
+        "ms": 4407,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1739,7 +2184,12 @@
       },
       {
         "clip": "ec1b21d9676d5b738932a9f7001cce9068df5deafa01e22249932ac293b75334",
-        "ms": 1043
+        "ms": 1043,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "7f252d79cc853af461574b5f407690afb9a3a3ec8e5b9caf6e0246d6d0fbac43",
@@ -1747,7 +2197,12 @@
       },
       {
         "clip": "1d639c98b01ee2b6e3bfa79c6c515bdae3739c57b68844cb84d69d65225dd9be",
-        "ms": 12107
+        "ms": 12107,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "2c4b05433a49945cca4cd7bab3f98d7dee6120ae245a1b50fe92b4020e6b0bc9",
@@ -1755,7 +2210,12 @@
       },
       {
         "clip": "a2cfe426c14785bd9ad9f0ae9343f7e028b46a8343baa236d7800eacd0d84e04",
-        "ms": 3307
+        "ms": 3307,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       }
     ]
   },
@@ -1767,7 +2227,12 @@
       },
       {
         "clip": "1d4c15ff2aa1accfc3bbe7c1cbf8fccb5857b32d90a002de7fac5b4a3bb18baf",
-        "ms": 4707
+        "ms": 4707,
+        "by": "keeper_juniper",
+        "figure": "cast/island_keeper",
+        "names": [
+          "Keeper Juniper"
+        ]
       },
       {
         "clip": "8c3c4a047e3fb43c6208f49cf497f729b25930cbccb930a5352a014b670dbdfd",

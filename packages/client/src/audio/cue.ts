@@ -108,9 +108,10 @@ export interface VoiceChannel {
    * is started as soon as it arrives (never before its gap is over), so the first clip of a line
    * need not wait for the rest; one that fails ends the line after what was already playing, and
    * `onEnd` is still called. Returns the way to stop early, which restores the music and never
-   * calls `onEnd`.
+   * calls `onEnd`. `onClip`, when given, is told each clip's place in the line as it begins to
+   * be heard (the stage's cast pulse follows who is speaking); never after a stop.
    */
-  play(clips: readonly VoiceClip[], onEnd: () => void): () => void;
+  play(clips: readonly VoiceClip[], onEnd: () => void, onClip?: (index: number) => void): () => void;
 }
 
 export interface AudioSink {

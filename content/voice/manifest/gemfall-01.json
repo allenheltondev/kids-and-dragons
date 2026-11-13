@@ -231,7 +231,13 @@
       },
       {
         "clip": "d07ad27149c652374a3855bad87bc043be582b0e2c5515eae75733d1f588d6f6",
-        "ms": 3907
+        "ms": 3907,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "706b5d3ebdf7ccd639adea5628aad92db42e3370687585c30758e7cbbd445d33",
@@ -247,7 +253,13 @@
       },
       {
         "clip": "6b32c8945222661b4c48b38e1b8d8de50858188c9c310a0f5f3308a44e0da5d2",
-        "ms": 1736
+        "ms": 1736,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       }
     ]
   },
@@ -259,7 +271,12 @@
       },
       {
         "clip": "8e54c9b5560ecb050345a6659b8b9b08348250bc498ef69130bda81701872413",
-        "ms": 5307
+        "ms": 5307,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "8457fbc9a5a1fa885af63cb60d6e85a6391cf49d967de5dd020cbf49a418de6a",
@@ -419,7 +436,12 @@
       },
       {
         "clip": "937127a1179c78387bb7212a04d3461496eefc57da23b1114a533a846bcfd58a",
-        "ms": 1148
+        "ms": 1148,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -435,7 +457,12 @@
       },
       {
         "clip": "3db1d750b194928149c09e0b59e2fbc03980c578a56506607f92221cd7dc7e6f",
-        "ms": 2658
+        "ms": 2658,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -443,7 +470,12 @@
       },
       {
         "clip": "c7d2e0bfdbb163add715646312b66b7f4c3c3ab6649e7460858e75c0f6be70d1",
-        "ms": 3507
+        "ms": 3507,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       }
     ]
   },
@@ -551,7 +583,11 @@
       },
       {
         "clip": "5ede2e74ea6b9caf5ab5d7aee224c4dd334048f854239f9bf71ab61140d888b7",
-        "ms": 1923
+        "ms": 1923,
+        "by": "boggart",
+        "names": [
+          "Boggart"
+        ]
       },
       {
         "clip": "2b674c62d74fb6cee429d18d1b75cac75ce324134559ec5d43b248a14695a6a0",
@@ -567,7 +603,12 @@
       },
       {
         "clip": "b7ecb8a065ec5c238d5229547fc9d5b6e5cc1db19bb56ee2e7760e470966beb7",
-        "ms": 1863
+        "ms": 1863,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -575,7 +616,12 @@
       },
       {
         "clip": "068f0565b4789ab441ea646dcd870cc79c3dbe3fed0157d033455e34eb1c172b",
-        "ms": 1209
+        "ms": 1209,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       }
     ]
   },
@@ -587,7 +633,12 @@
       },
       {
         "clip": "60f6dc6ff0efe363ad7cb84013f0ae7db97903cae3d4dc8c3dad473a4cba5ecd",
-        "ms": 629
+        "ms": 629,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "f8dfd99898e28aac6ef928e0b936b71f5a5941fd9d2e78a7c5989d9f3cf963d2",
@@ -595,7 +646,12 @@
       },
       {
         "clip": "1c9672188114d7904437ee3549894d634e180a07479ea8945f3d4d71512f1b76",
-        "ms": 1073
+        "ms": 1073,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       }
     ]
   },
@@ -603,7 +659,12 @@
     "": [
       {
         "clip": "de29a8b6aa70de6f9ed45a43f49ce0b7f304acd5cb5616f2cd934d6bba8d3182",
-        "ms": 5127
+        "ms": 5127,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "743be09c496f54e288260b8057aa5a62dcd6b852bfc4190739ea9c657448f800",
@@ -627,7 +688,12 @@
       },
       {
         "clip": "e5b030693715d290c7c064c27b225a22195cea6c5e7ce7e02f364cba6b2cf631",
-        "ms": 3207
+        "ms": 3207,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "5a3ea69f3b96708ade5a37bb0067f2b737801bbc294a231cd8c4205396823602",
@@ -651,7 +717,12 @@
       },
       {
         "clip": "c452b3a1688ee5c125c7a90cae277b38c4c4bec0bd07bb648f3b1d114a59aed1",
-        "ms": 910
+        "ms": 910,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "ca389f6e2bcda1f0298ecb2db9487bc49b54902a658be38663b144e033191af0",
@@ -683,7 +754,12 @@
       },
       {
         "clip": "e41290ade76136edd9464046a2a7bca2f995e2877b6f02bdd3b6a2687db29bc4",
-        "ms": 670
+        "ms": 670,
+        "by": "postmaster_quill",
+        "figure": "cast/postmaster_quill",
+        "names": [
+          "Postmaster Quill"
+        ]
       },
       {
         "clip": "f08abc4e8fe9200529b064c4439c8f0433c17bb4ddd600a2b9a29ebc33c8763d",
@@ -691,7 +767,12 @@
       },
       {
         "clip": "549ac7fa7d9c4d727b03086ddaa8011dc42253d042edfb36fdc117874d442158",
-        "ms": 1687
+        "ms": 1687,
+        "by": "postmaster_quill",
+        "figure": "cast/postmaster_quill",
+        "names": [
+          "Postmaster Quill"
+        ]
       }
     ]
   },
@@ -711,7 +792,12 @@
       },
       {
         "clip": "f6245191456f7a67461463fa3b410ced4313f668c325e558738efefab863da96",
-        "ms": 1908
+        "ms": 1908,
+        "by": "courier_griffin",
+        "figure": "cast/courier_griffin",
+        "names": [
+          "Courier Griffin"
+        ]
       },
       {
         "clip": "17abdea42aef3165c2f59ae2e5a5cc1ef6b30298734007a60415882cce68576d",
@@ -719,7 +805,12 @@
       },
       {
         "clip": "090d062924bd922b63b156ee1505e13899ef9e173a43a02caad4e29f8a38e509",
-        "ms": 879
+        "ms": 879,
+        "by": "courier_griffin",
+        "figure": "cast/courier_griffin",
+        "names": [
+          "Courier Griffin"
+        ]
       }
     ]
   },
@@ -795,7 +886,12 @@
       },
       {
         "clip": "03243d5d86a01f635e921d71b40a21773b72a3049f4c56cdb9c04cc475f979a1",
-        "ms": 2499
+        "ms": 2499,
+        "by": "courier_griffin",
+        "figure": "cast/courier_griffin",
+        "names": [
+          "Courier Griffin"
+        ]
       },
       {
         "clip": "9a677925410c628e1ca66c6d40098b0190416ce5d8f0dfd138401af6cc1e4f02",
@@ -803,7 +899,12 @@
       },
       {
         "clip": "67425a8d63be7434504280fff79f63ae57a44906d9458cb17f7b27aadf8d6c19",
-        "ms": 1074
+        "ms": 1074,
+        "by": "courier_griffin",
+        "figure": "cast/courier_griffin",
+        "names": [
+          "Courier Griffin"
+        ]
       }
     ]
   },
@@ -823,7 +924,12 @@
       },
       {
         "clip": "2aa5aa8ae04558326c95fc41fb575a89691df2866f1f197b8e35b4d4108c7be9",
-        "ms": 563
+        "ms": 563,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "7ef16fafeadf506bc8daaf9b5592d9ef179b57b0923a859341f71041ef0a70de",
@@ -839,7 +945,12 @@
       },
       {
         "clip": "9418249e21e915ad400e5b362659be5f4bd78150721d55741051fff8b80614fe",
-        "ms": 537
+        "ms": 537,
+        "by": "innkeeper_flint",
+        "figure": "cast/innkeeper_flint",
+        "names": [
+          "Innkeeper Flint"
+        ]
       },
       {
         "clip": "6192cbe65cd59a289dad245ce64a385f2685df410bccefc2eda39dd3e81ca999",
@@ -855,7 +966,12 @@
       },
       {
         "clip": "7dd9b615599d157033590d712b1937ea1dd6d0d65f1ffe53a722bd6a5323c261",
-        "ms": 1437
+        "ms": 1437,
+        "by": "innkeeper_flint",
+        "figure": "cast/innkeeper_flint",
+        "names": [
+          "Innkeeper Flint"
+        ]
       },
       {
         "clip": "4b902f0f7603507dd6fa679905cd49fe24511d874a36e62583b1f870880f7364",
@@ -879,7 +995,12 @@
       },
       {
         "clip": "d2f6193128ab08e5706793647c6b416c5f07b24f008268d88b3b1df6c7635eea",
-        "ms": 1526
+        "ms": 1526,
+        "by": "selkie_grandmother",
+        "figure": "cast/selkie_grandmother",
+        "names": [
+          "Selkie Grandmother"
+        ]
       },
       {
         "clip": "62b8f1b3d205ccf7c056e6f80fe1304e83a2f4fd602715c84e2d12320e99ccac",
@@ -919,7 +1040,12 @@
       },
       {
         "clip": "4803a06b1618359721fb794e3b736ff98c9fec1a7a5e7c715da444b9a371a9f5",
-        "ms": 1647
+        "ms": 1647,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "8803a1c241f4c5c8ce8d9a8b74de601688d54aa7ac8f4ad0d84bbb39a181c223",
@@ -935,7 +1061,12 @@
       },
       {
         "clip": "504daaee13dd23b49132186baf16b9a4ff99232efc65785855517939605f4ff4",
-        "ms": 7207
+        "ms": 7207,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "3b95afa4366297deeac4aa9670af9ad4302ae194766cb950dfb3eab7fb8e1a60",
@@ -951,7 +1082,12 @@
       },
       {
         "clip": "a92c121a43a7df05ad2379e13041f6c69a05a8f11ab0c21ac5ea374dbe642a04",
-        "ms": 3307
+        "ms": 3307,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "1d45b3463a9cef235abb710181ef48fad2b736d0b1d69dbc20967b78a8a2e75f",
@@ -959,7 +1095,12 @@
       },
       {
         "clip": "47497d32f2c794e04c1348e717a655a1113f1d53a410d95fec6af48b19158e31",
-        "ms": 1040
+        "ms": 1040,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       }
     ]
   },
@@ -979,7 +1120,12 @@
       },
       {
         "clip": "739eb092752019ed450d0a34c4b9709a5ee3e1d964d25b69aa53481c874e8fc7",
-        "ms": 1085
+        "ms": 1085,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "28c77c6cb8ac9f01212265347c05485e25bcba82f82b6faa98faf804f902892b",
@@ -987,7 +1133,12 @@
       },
       {
         "clip": "9d729f34182c9b0888f04e8878f6aae44838ea0869ed81839910619d3544ed4d",
-        "ms": 4107
+        "ms": 4107,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       }
     ]
   },
@@ -999,7 +1150,12 @@
       },
       {
         "clip": "90d1d99333af3b524fbd4e88686e7e092bc2b12235201b1b7e949dd083c4adff",
-        "ms": 1185
+        "ms": 1185,
+        "by": "lighthouse_keeper",
+        "figure": "entities/merfolk",
+        "names": [
+          "Lighthouse Keeper"
+        ]
       },
       {
         "clip": "605799cacce610a51c623d2088af20730693e92e4d888de60a84a7875c0a82d4",
@@ -1063,7 +1219,12 @@
       },
       {
         "clip": "ba4c332cfa3d63441ff1c4f3ee3c9a1e66a73911f834793caeaf9452fbec59d4",
-        "ms": 1450
+        "ms": 1450,
+        "by": "tobble",
+        "figure": "cast/tobble",
+        "names": [
+          "Tobble Reedpipe"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1071,7 +1232,12 @@
       },
       {
         "clip": "827e516eddeb29d5350efe524c36ccd2227d0dbbb39aa2fa6948d2c150c09c8a",
-        "ms": 1983
+        "ms": 1983,
+        "by": "tobble",
+        "figure": "cast/tobble",
+        "names": [
+          "Tobble Reedpipe"
+        ]
       },
       {
         "clip": "751b1fe52bb792d4736dec7fb9be9fa79f070e988f8bdcfae6d4a0c16c395fcd",
@@ -1095,7 +1261,11 @@
       },
       {
         "clip": "da1d9096bcc058cb233496750c9cc0afc67720601aa6a1a2be2a715a258de758",
-        "ms": 2240
+        "ms": 2240,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "cc5cfc0c96f583138fb094f38567d04054c33c4ca39e134c78491bb348df36cb",
@@ -1111,7 +1281,12 @@
       },
       {
         "clip": "e58fe0f450de3a031fd888ab7dfab48dddb9988946344cc7c840103b20cec0fc",
-        "ms": 5007
+        "ms": 5007,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "11c7ea1c5a241634607f9d9bb31425f4bc5dee7fdebbd7b28d20babf3e1bd727",
@@ -1127,7 +1302,12 @@
       },
       {
         "clip": "eee0a3453a1c61a7279c860f78bafd652e183a7c4d57df02aa50f52056d2a7c0",
-        "ms": 1616
+        "ms": 1616,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "1bd8174e710378d606ad55b09cc8c1cb7ae03e20e96fd21692a2e5f51e1f56c5",
@@ -1143,7 +1323,12 @@
       },
       {
         "clip": "b980d1d883239d14ff4af013a95c40e118df2138c3e2f03f98492bb786d86b4c",
-        "ms": 3507
+        "ms": 3507,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "876065e31c9326261a6f0de289b108d93efaa3f99117fe526b9bb04966d0a825",
@@ -1167,7 +1352,12 @@
       },
       {
         "clip": "2d89769c3b574e1c96fa1ab5a8d3aa60e97d72d2d1c71f5bf3f7b31439c2dd84",
-        "ms": 1802
+        "ms": 1802,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "83b51f4644ad1033eabe94c3e318ec9365ae378ccc3befba2f92c76d24007344",
@@ -1175,7 +1365,12 @@
       },
       {
         "clip": "9adffdbeb6c1669cc26d391608882ab16519fe927aa20f84d3d25c0763625cd5",
-        "ms": 1851
+        "ms": 1851,
+        "by": "mortar",
+        "figure": "cast/mortar",
+        "names": [
+          "Mortar"
+        ]
       },
       {
         "clip": "e154d330765c88e8e33ddc3b283f814dd63ad2b5a0fb65e0526437100a33e673",
@@ -1199,7 +1394,12 @@
       },
       {
         "clip": "2c904db0bf023d179f4bf566d0063f52e1b281c46da6e3b473727e87e4efaa35",
-        "ms": 1724
+        "ms": 1724,
+        "by": "selkie_grandmother",
+        "figure": "cast/selkie_grandmother",
+        "names": [
+          "Selkie Grandmother"
+        ]
       },
       {
         "clip": "c59ccd46d264ff5b2f1bd94cf3338ca652fcc5ffa70d7b5e487b58451360a241",
@@ -1207,7 +1407,12 @@
       },
       {
         "clip": "2ac514a440d8e9e4b64a942283eae3093c549be60dc650f491201c323b706d38",
-        "ms": 3107
+        "ms": 3107,
+        "by": "selkie_grandmother",
+        "figure": "cast/selkie_grandmother",
+        "names": [
+          "Selkie Grandmother"
+        ]
       }
     ]
   },
@@ -1227,7 +1432,12 @@
       },
       {
         "clip": "908595b1503519e481cc616c723cea140c63d7cd20682cd54cc1c51aa8054358",
-        "ms": 1329
+        "ms": 1329,
+        "by": "selkie_grandmother",
+        "figure": "cast/selkie_grandmother",
+        "names": [
+          "Selkie Grandmother"
+        ]
       },
       {
         "clip": "2885a78e737e4c73662296522805484dc6d451d35a21b6502d081f1dae4c56f8",
@@ -1259,7 +1469,12 @@
       },
       {
         "clip": "bf0b2966e85c6cf8384986eaad18b45382d709c7ed1aeb8338335e2facdc03a3",
-        "ms": 1934
+        "ms": 1934,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "f8dfd99898e28aac6ef928e0b936b71f5a5941fd9d2e78a7c5989d9f3cf963d2",
@@ -1283,7 +1498,13 @@
       },
       {
         "clip": "39569001b0503f270de22ef2a75a5833cb2487379e91aaa5bf7508bfd30ecbf3",
-        "ms": 1943
+        "ms": 1943,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "ab1deed0a6175ab9f1c105c34b9103bf3c5d36d7592c6ddf220e75638380ed09",
@@ -1291,7 +1512,13 @@
       },
       {
         "clip": "0cb6c6fd1ff565927ac293d119c2bb4ba999a8b09d4d94ca9d5fe701a3f783e5",
-        "ms": 967
+        "ms": 967,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "d75eddaa87e51b80db9fa6bf57d1575efcf2a99c458002e763ef54e509d0c998",
@@ -1307,7 +1534,13 @@
       },
       {
         "clip": "0ba8347c91f60f2a214b819c3dad9fb611a0bbcbd4226405e31aa4b500b12c8f",
-        "ms": 4907
+        "ms": 4907,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       }
     ]
   },
@@ -1351,7 +1584,12 @@
       },
       {
         "clip": "810ccaeacfb09a2e896513342a4a399261d68a6a4085f63aca612c9c70590da2",
-        "ms": 1420
+        "ms": 1420,
+        "by": "old_wick",
+        "figure": "cast/old_wick",
+        "names": [
+          "Old Wick"
+        ]
       }
     ]
   },
@@ -1363,7 +1601,12 @@
       },
       {
         "clip": "7c660c6341e354a67084322558965694eafd7ef1b5e8b688c0f7dec97ee3f737",
-        "ms": 1836
+        "ms": 1836,
+        "by": "orange_captain",
+        "figure": "entities/yeti",
+        "names": [
+          "Orange Captain"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1371,7 +1614,12 @@
       },
       {
         "clip": "ad755111ba4b83a3325f22929e8535e0eb1057181aa2aeca5cccdffd4b15c9e8",
-        "ms": 2268
+        "ms": 2268,
+        "by": "orange_captain",
+        "figure": "entities/yeti",
+        "names": [
+          "Orange Captain"
+        ]
       }
     ]
   },
@@ -1399,7 +1647,12 @@
       },
       {
         "clip": "8b528db90a90f24b2a7138fe83a0fdd44b068bdd6950943490020b18682c29ac",
-        "ms": 3107
+        "ms": 3107,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1407,7 +1660,12 @@
       },
       {
         "clip": "8e86fff7f11df7693e5245292fd03e9ef3e5aa31a9b039d77dbfbe18cf90fe30",
-        "ms": 2704
+        "ms": 2704,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       }
     ]
   },
@@ -1427,7 +1685,12 @@
       },
       {
         "clip": "ff342e63c3b4d7de6df9c94d2d1c742348c1049dbaa0516b4dab3698f1a9eeb2",
-        "ms": 3107
+        "ms": 3107,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "b19b2c1cc957039ae6389fca63f47d1ecea700326a38b1504fdd0023654fffd3",
@@ -1435,7 +1698,12 @@
       },
       {
         "clip": "9a4d83e5b68a728dec54be20bcef86ec8deea539104a611cd6eb578739d6ba32",
-        "ms": 1063
+        "ms": 1063,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       }
     ]
   },
@@ -1447,7 +1715,12 @@
       },
       {
         "clip": "a3478f93f424224f6697ac8cd46987666c14fde446f9037c5e47e20d6646d5a7",
-        "ms": 754
+        "ms": 754,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "ff43c1380ede21f863ab72ac38928c4ff93603639be3d46c8d7280d95c23ed9a",
@@ -1463,7 +1736,12 @@
       },
       {
         "clip": "735666119a4a81b03cd1eb6102db9bc2a4ce75e2d276fa6057d6c76a3bb9a5cb",
-        "ms": 2044
+        "ms": 2044,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       },
       {
         "clip": "b19b2c1cc957039ae6389fca63f47d1ecea700326a38b1504fdd0023654fffd3",
@@ -1471,7 +1749,12 @@
       },
       {
         "clip": "338c09426aba49468f32f476eb3b57f86c71b3d25180cdfc9635773ea35a8b9d",
-        "ms": 2285
+        "ms": 2285,
+        "by": "mrs_tuft",
+        "figure": "cast/mrs_tuft",
+        "names": [
+          "Mrs. Tuft"
+        ]
       }
     ]
   },
@@ -1515,7 +1798,13 @@
       },
       {
         "clip": "6db71f8dd50f13d71c3c803c81e064386fef532ed0f5fae98dcdfec74662f649",
-        "ms": 1696
+        "ms": 1696,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1523,7 +1812,13 @@
       },
       {
         "clip": "505b99d42087ec386432af7b1eae3de031f0580a5bdcdff56aae5a37af99e55d",
-        "ms": 2287
+        "ms": 2287,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "b14c7ba0c676d3895259aec4b44a9e16ba804df00e66b8f55f50ba46059de87e",
@@ -1539,7 +1834,13 @@
       },
       {
         "clip": "81ebe6f27d12dfe61a0deb187ddb61e5d5590a05076c50939be6b0f21e607d91",
-        "ms": 5107
+        "ms": 5107,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1547,7 +1848,13 @@
       },
       {
         "clip": "ccffd6a8b49200458d9ccf6d570664e817fd38bd1638e517370faccde68c7874",
-        "ms": 4407
+        "ms": 4407,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "f922af3b2cf6f05dc27978385295540774e4b7329070a480103772b3c9e32d40",
@@ -1555,7 +1862,13 @@
       },
       {
         "clip": "c5eab716b7d153a7f7f540901191304ac85d212a08aa498076695ed2d600d473",
-        "ms": 1279
+        "ms": 1279,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       }
     ]
   },
@@ -1567,7 +1880,13 @@
       },
       {
         "clip": "e27b6b4a605daff29091326a8baabbdaae0be31f9e9287949d01d761995c526e",
-        "ms": 4907
+        "ms": 4907,
+        "by": "coralie_fenn",
+        "figure": "cast/coralie_fenn",
+        "names": [
+          "Madame Coralie Fenn",
+          "Madame Fenn"
+        ]
       },
       {
         "clip": "ed2a26939a26a0c9b2c7a6b332e8471899b19f627ab26c86d5b5a16fe8ed2f82",
@@ -1591,7 +1910,13 @@
       },
       {
         "clip": "5a92f9712b5caeb23bd71c7f6d23ee4bd7b61a6242199e2c87dd2a5d4d86123e",
-        "ms": 1465
+        "ms": 1465,
+        "by": "tidewell",
+        "figure": "cast/tidewell",
+        "names": [
+          "Professor Marrow Tidewell",
+          "Professor Tidewell"
+        ]
       },
       {
         "clip": "018820b2e417cecc7702f5f8115690b1c5fff989478073dbc27d26e893a380c6",
@@ -1607,7 +1932,12 @@
       },
       {
         "clip": "63f62c27dda8dafc71905cc5f6e0b8f9e72c78758262408732aac1e412dc4b42",
-        "ms": 4107
+        "ms": 4107,
+        "by": "fishmonger",
+        "figure": "cast/fishmonger",
+        "names": [
+          "Fishmonger"
+        ]
       }
     ]
   },
@@ -1615,7 +1945,12 @@
     "": [
       {
         "clip": "e79d30dbaf3a114a5afda6a17edbac7423809cfcd5db8a7ff056550a296a7f02",
-        "ms": 1120
+        "ms": 1120,
+        "by": "hesper",
+        "figure": "cast/hesper",
+        "names": [
+          "Hesper Longstride"
+        ]
       },
       {
         "clip": "bebe5a4754f00b2c7a50d42374713b6d7299d97b02ce66b1dddaee4d2eff2f04",

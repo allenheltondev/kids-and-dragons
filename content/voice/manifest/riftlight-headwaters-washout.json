@@ -23,7 +23,12 @@
       },
       {
         "clip": "9c64c4c24f060b5a9e6927b7e02142f566d08a2583c22823dd60f45f7da30f85",
-        "ms": 775
+        "ms": 775,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -31,7 +36,12 @@
       },
       {
         "clip": "07d89dedba4ad8243aa8e39aca132de0fa00536fcdf128a2cc301041150d4bf5",
-        "ms": 2248
+        "ms": 2248,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "4ffaad6205b068cd28b9282d59af182354dde44689539d6c982c889f768eacf2",
@@ -47,7 +57,11 @@
       },
       {
         "clip": "3fd00fa68f918d2dcd42bfbe7c06dff4b7667587c5fa70da6b5a873080159df0",
-        "ms": 1024
+        "ms": 1024,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "94308cb429c452f79874ee12dba6f2cc4f678cc6efb2a38c6938205f458d50f1",
@@ -87,7 +101,12 @@
       },
       {
         "clip": "a68ab38b4b4af85d0b9edae718c61c3492a4048d64e6a69ec1456e63a28ad0ea",
-        "ms": 2377
+        "ms": 2377,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "d64a273fd647b64a676058d143f3eb68d6405c6a0d492e55363b21d5756d3e5b",
@@ -95,7 +114,12 @@
       },
       {
         "clip": "585bde7ae1547b420331db487a7aad9968660a42d47a3442df3d9e12659f96d2",
-        "ms": 960
+        "ms": 960,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -131,7 +155,12 @@
       },
       {
         "clip": "bf3c13804e3549a3f871b1c88d7f0e29d68c7bae908e8d408bda975be1006462",
-        "ms": 1224
+        "ms": 1224,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -171,7 +200,12 @@
       },
       {
         "clip": "2a4e74b6fb2df5645314f8a184b2e0440ababe068b973a1c20aaad32aa01ea2a",
-        "ms": 1705
+        "ms": 1705,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "0e1fd45d6373fc9927b6c6905ff9337cbf3c5704ff186fdf73b271b08d3c4b99",
@@ -179,7 +213,11 @@
       },
       {
         "clip": "57738c9e552919df65cd1707f9a61fe394ea55030de5b9f33b8e8a9659ad8476",
-        "ms": 679
+        "ms": 679,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "59f68050f12709824f0594e658e186de79f3ffe196567c01f25b3bc81f590cf6",
@@ -195,7 +233,11 @@
       },
       {
         "clip": "ce884b5ef7c592994a6dd7b6ff740c1234ccabf9972087224042d6dc605f30a4",
-        "ms": 881
+        "ms": 881,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "e5434a641989ae24b89a83f2fcef8ed794754d156207b5f415d3004180f298b8",
@@ -235,7 +277,11 @@
       },
       {
         "clip": "4badb033287478da5ab151a778d14fb1080815955b97ed7109735ca6c1587681",
-        "ms": 478
+        "ms": 478,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "552be5deb4ca78f26692d8d634117eb0a5907785876b848ca667e28c72bb7051",
@@ -275,7 +321,11 @@
       },
       {
         "clip": "8ceb55e771f47bc4294bd477871e759ab98af5720f8def6557cfe9bbdfc9b179",
-        "ms": 640
+        "ms": 640,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "2a8d606163dc929217b10231984c971d72c7539fb6b268a8ff0db1fee18a4634",
@@ -315,7 +365,12 @@
       },
       {
         "clip": "3a943e5d4c5c48a7c94bcf69aa8109737f956754ebdcf1e2dd8db25763bbd952",
-        "ms": 777
+        "ms": 777,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -323,7 +378,12 @@
       },
       {
         "clip": "fee760efe87244dbdd7592b81b6e4c5b402f93e4b81e7eedcac5deb3eeab09fa",
-        "ms": 1909
+        "ms": 1909,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "e6d080ae1251914cbf1fc982c813f3a4ee4aed0e2216c2f3f5001aed411570d4",
@@ -339,7 +399,12 @@
       },
       {
         "clip": "953e2b5e1eba6b73962ec3d02a155054b9f4c4887d2298b67becb1121edd72e2",
-        "ms": 1896
+        "ms": 1896,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -347,7 +412,12 @@
       },
       {
         "clip": "9078312b42583eac66e26396f2e4bf703f4fe950a74a565de420e2ffe2b5b713",
-        "ms": 1358
+        "ms": 1358,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -383,7 +453,12 @@
       },
       {
         "clip": "2a628f3b35f51b34c15d814bf462a43b021e9462927efe1d396c187e9ace32a0",
-        "ms": 1528
+        "ms": 1528,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "9ed253752d5807a64a555fb642f540e1fe38abcf5843c133d954bfa39a83db6d",
@@ -391,7 +466,12 @@
       },
       {
         "clip": "b3dc490380a706fa0fd2822002c476fed8833bb5bb468db25b003ef1fa946633",
-        "ms": 2068
+        "ms": 2068,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "e7fd156a199ecc708dedcb12895fac05ee7d8f76e0bfbfe563462e698a21bbb8",
@@ -407,7 +487,11 @@
       },
       {
         "clip": "eef3215b84fb99533bb43013df632d15ce4623ab2a2d40137e81b23f529fae3e",
-        "ms": 822
+        "ms": 822,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "466f63838b9e9a60dd92e31acd612f9c9e0883005080b325f909ba860cf69811",
@@ -415,7 +499,11 @@
       },
       {
         "clip": "3cc8382f2c92e851330b28a59a67b586ee4e383afa784aa83c828588a8f7818b",
-        "ms": 657
+        "ms": 657,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       }
     ]
   },
@@ -451,7 +539,11 @@
       },
       {
         "clip": "0a24a8814855eee01f416a2cdf8389050a1710c0ca4a539f07159fd8d985a22c",
-        "ms": 602
+        "ms": 602,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "797abc132b2259d35398cdda46170e0e2d60acc323f47d284deefb571a080d01",
@@ -491,7 +583,11 @@
       },
       {
         "clip": "d8f14338ce7e912f00f8b300c0f92af57e883ccad4c773ec58ba30abacf01e73",
-        "ms": 902
+        "ms": 902,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "a732b30e66919069631a58d3207649af6cb882ca5a6161e7350ed40cafdc7021",
@@ -531,7 +627,12 @@
       },
       {
         "clip": "67233aa1ce5859b635496fbba4319da0c8bf621a902b15cfc61b18fb298c5be7",
-        "ms": 896
+        "ms": 896,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -539,7 +640,12 @@
       },
       {
         "clip": "a064b53e2756e5c9faafaf0c345442e2eb1edda651eb8a10e3958e9a68a577fd",
-        "ms": 1364
+        "ms": 1364,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -575,7 +681,12 @@
       },
       {
         "clip": "30b0af3a8f93fc260d86e1759c9fd8a151183af5729b89a06e523e2dd5d19a5d",
-        "ms": 913
+        "ms": 913,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -583,7 +694,12 @@
       },
       {
         "clip": "0a775757b97bd26b543f185d724e5df2984268f7797590426d919438a5fd5bf6",
-        "ms": 1977
+        "ms": 1977,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -619,7 +735,12 @@
       },
       {
         "clip": "a1518c10062427f29d2f5ae6a84c6cec2d4abac143f43ab365274be2af1bd0e1",
-        "ms": 1467
+        "ms": 1467,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "1bf4b6eac8dc7b0976e294cb8428cf3f1d7fc95c2d20c34e97e7986346197257",
@@ -627,7 +748,12 @@
       },
       {
         "clip": "56223f2881246fd9dc4ac2a691973da8eaf8acee75cec16a5ede2ffd8df611fb",
-        "ms": 3107
+        "ms": 3107,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -639,7 +765,12 @@
       },
       {
         "clip": "d8ece9b9dabd38b86ed46c099f20678d20392b6ba9748b4b2f2896ae6f47be4c",
-        "ms": 1369
+        "ms": 1369,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -647,7 +778,12 @@
       },
       {
         "clip": "6b52dc22ef57b287df7820c86f29c1c070fabdc1c6c53114e7ae68677bd9d55c",
-        "ms": 4107
+        "ms": 4107,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -683,7 +819,12 @@
       },
       {
         "clip": "4863d55f64a527c986000138acb458d60c71bb630c45913ddb503cc8583abeac",
-        "ms": 2012
+        "ms": 2012,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "6a5fa897944d7bfea4ac1e80c2f3307495605eee3d3832c5ab77dde09ab04e00",
@@ -691,7 +832,12 @@
       },
       {
         "clip": "a1b182090bd976879be9f6493b3b0bbfeb6dba6fced98a98babc3f08b86937e2",
-        "ms": 1401
+        "ms": 1401,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "5c12e3ec33f423be1d1e10eb59333b68caef8797ee8996e4c65288bbdb893cd7",
@@ -707,7 +853,12 @@
       },
       {
         "clip": "c9d8b095aac437de7a730fd9d4a68cb77836966fb22233c27f5d0a71b8497d71",
-        "ms": 1615
+        "ms": 1615,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -715,7 +866,12 @@
       },
       {
         "clip": "81c8f38538e8bdc321d568445aae2c67af38ede0388c88eb91122ab2304eea9f",
-        "ms": 4107
+        "ms": 4107,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "be1bb5c8f0768d516a55a3968fb73285fb7e116bad74f6a1bc0984acf04e76dd",
@@ -731,7 +887,12 @@
       },
       {
         "clip": "9653ed2fdb5d8231cf08edd894ab7dcf252c2eccd41229033077be11921d6c51",
-        "ms": 2197
+        "ms": 2197,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "5acb62e3cdb4d5ae5736ab1d5ed6492f99ec8fba24bd578c8e63ddfdfb672976",
@@ -739,7 +900,12 @@
       },
       {
         "clip": "76b5aa53459cfdd2e74470190e6795182a4fe20356dbd89a9f062ac3263938d3",
-        "ms": 8007
+        "ms": 8007,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "a5672d3cdaa7609bad813b6702b27829ebf2d665d8e8a610dd62f7797959364c",
@@ -755,7 +921,12 @@
       },
       {
         "clip": "988064e614b275a4e84caeca48978ca2f0bcff0463ed190c1d52a89035b96b33",
-        "ms": 1384
+        "ms": 1384,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -763,7 +934,12 @@
       },
       {
         "clip": "f73c83931436bd7a97c185eb558836b6a74c98c0fde6840bb0e0e119554cc39a",
-        "ms": 2440
+        "ms": 2440,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -807,7 +983,12 @@
       },
       {
         "clip": "79accc619a7a4fc72058f127319e9252329d64d852422af49fcb0df4e8bb02e1",
-        "ms": 1373
+        "ms": 1373,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -815,7 +996,12 @@
       },
       {
         "clip": "51f88c7fe69f87c68e4324291aaa690acff5f413440ca27f5d8292ca5a9d5f82",
-        "ms": 934
+        "ms": 934,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -851,7 +1037,12 @@
       },
       {
         "clip": "62727bec11c340b4df412537edf2002f28b2b6ff2206d460cd64422ccf583aa4",
-        "ms": 678
+        "ms": 678,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -859,7 +1050,12 @@
       },
       {
         "clip": "e3e9e6ff3746e2aa4d5c3c15b6f3255a8fa799033f551f7edd9b3813e2f57a0d",
-        "ms": 1656
+        "ms": 1656,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "cc0d4e148c9343ab3f4b62229df7320822e884ff474a3a78978bd8558ce7cff4",
@@ -875,7 +1071,12 @@
       },
       {
         "clip": "19089afe68551df55516a63dd3e08d864e6e3802280a1769e710489557b35eae",
-        "ms": 1371
+        "ms": 1371,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "ebea0ff3ca80362435619789a64d076081b6397c441a481b396fa8b9555c81cc",
@@ -891,7 +1092,12 @@
       },
       {
         "clip": "93488d55e15ba48a9d9187116f019e0f2755218a9ca781418a7912947b4711af",
-        "ms": 1326
+        "ms": 1326,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "f926efadc00ce3db9d84ca94c786425c8fa616cc44918a0b5c7a66bcb884f272",
@@ -899,7 +1105,12 @@
       },
       {
         "clip": "35e1209deda7c008709123f8b04c20c9cf90897ceac7eebc39b22e8a6ebc27a4",
-        "ms": 1368
+        "ms": 1368,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -911,7 +1122,12 @@
       },
       {
         "clip": "ed742fb086d313ca2eed5ad79785f8e84dd03a89e4cb3154764548db3988f185",
-        "ms": 1932
+        "ms": 1932,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "15ac11a8202899c4f9369db5cf8147defa9237971b7ab4085c4866946df0220c",
@@ -919,7 +1135,12 @@
       },
       {
         "clip": "c6b245227f2e7708c69277437e3aa0570f90146c13e7b35b8a4b7bd159da3b56",
-        "ms": 1392
+        "ms": 1392,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "08e3c52d5f23bb70360228df04055fc9ac5501e23481609cf35fdeeff1be886e",
@@ -935,7 +1156,12 @@
       },
       {
         "clip": "ff559b60cd97aafd7ab843e1bb807c4248b17e3fab5bf777508f10a5a5ac21cb",
-        "ms": 1126
+        "ms": 1126,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -943,7 +1169,12 @@
       },
       {
         "clip": "3697d2857b8f7b571514b7a43cf76fcabf8454c3fa77892e2b63ef16abce8ef4",
-        "ms": 3207
+        "ms": 3207,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "397c6d539b2ef269b4c0af34e4c69559e772ca3abdc01b03648a3f5ea5470f0d",
@@ -959,7 +1190,12 @@
       },
       {
         "clip": "ae5782f99852c5fc2b8c4c14d9cbc97313ccae30158eb553977fd95247bbf8d0",
-        "ms": 1181
+        "ms": 1181,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "70d34936a4bf70492b14cf31b4763f122ae915a5b18a51a275cec58724385d10",
@@ -999,7 +1235,12 @@
       },
       {
         "clip": "7b89dfe8316e88562cbaaf4bd5965fabf61be27a3a1a1298fafc870cdb910809",
-        "ms": 1245
+        "ms": 1245,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1007,7 +1248,12 @@
       },
       {
         "clip": "bb072dd36b08a7fcdb20092af8618c51a2ab778f66f78217c3b629bc7f579d0f",
-        "ms": 3307
+        "ms": 3307,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1043,7 +1289,12 @@
       },
       {
         "clip": "e6c97ac75795e33e864419f3da6872d98ab5f2655db0c56a3880a22477ed0bae",
-        "ms": 731
+        "ms": 731,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "0fe77e93ecd8b605d59085dfbbfe5a7560204a204982c0e72665a384f87b727e",
@@ -1051,7 +1302,12 @@
       },
       {
         "clip": "b6f1d84fd9257b7fbfd9eb213811c1bf4b7b0046e797c7771c150d6fe43f4e80",
-        "ms": 1063
+        "ms": 1063,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1087,7 +1343,12 @@
       },
       {
         "clip": "35897ce984f4543b0ced4afd25b517720e7d07eb2153fd1acd2d8fd2d99d897a",
-        "ms": 793
+        "ms": 793,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
@@ -1095,7 +1356,12 @@
       },
       {
         "clip": "c997b42adcf979131f7b904a6494819d9fa0e56533e761c60b1bf58cc3921fb8",
-        "ms": 1346
+        "ms": 1346,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1131,7 +1397,12 @@
       },
       {
         "clip": "62e478a08b90e2e6e60517b6aa12ccc11171e3338391cb9cfcd4aa15bac285ee",
-        "ms": 2410
+        "ms": 2410,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1139,7 +1410,12 @@
       },
       {
         "clip": "fe5bdc01a15be071897cfc1b827bd250a6e5fb7f153810fbcf9d81a9da657fab",
-        "ms": 1177
+        "ms": 1177,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1175,7 +1451,12 @@
       },
       {
         "clip": "820907c0328d522ee6f4ed324b9cb2460daf08a652b88b6de881b41127ef0759",
-        "ms": 603
+        "ms": 603,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "0551b405522df1dc51630304b13c7a47a4af52a9c4b51702075e203a1266c45c",
@@ -1191,7 +1472,12 @@
       },
       {
         "clip": "1e2d8dba5c49b398724e02be9d2ecd2ce59ebc0b97520d6c0728a9dc5bdc2688",
-        "ms": 817
+        "ms": 817,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "7aea63fb8d8897aa6fd396ecff11e3dd2ddcfb1885d20b19541a5052c5aa4f8f",
@@ -1199,7 +1485,12 @@
       },
       {
         "clip": "7d4380751882ffc2faa485b2b34b311420e639cf34646bdd68015eff3142b27d",
-        "ms": 1049
+        "ms": 1049,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1235,7 +1526,12 @@
       },
       {
         "clip": "e9b994ea8b7f3b0a3e5629354f4296f5e0c6c52b2c540f9b862f7acb1a267fdb",
-        "ms": 2060
+        "ms": 2060,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "867e7dc476b1a07bcead4956fe222a91f10d31862fcff36bad68c8e054a63869",
@@ -1243,7 +1539,12 @@
       },
       {
         "clip": "e1437333df665770e0201c9a23d85a0d5bfc5dae5125690a05af07e41b39e993",
-        "ms": 1652
+        "ms": 1652,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "9b04093f33749b35b243bc982a3d792b549d0aa71d861c9c61a17f06f80c0236",
@@ -1259,7 +1560,12 @@
       },
       {
         "clip": "6d19d39e4eac343d4602973aae3014915ae01ee3571f7920e94079d881de37e4",
-        "ms": 1084
+        "ms": 1084,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "114285c2bd6497cde8214ef15e61da25e6c6c6e12e10ede4de618c956005055a",
@@ -1307,7 +1613,12 @@
       },
       {
         "clip": "f9c4226aa6d5bb6cf1b589938f30fe9f818ddee8eed459f952dde50e33f07a87",
-        "ms": 1445
+        "ms": 1445,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -1315,7 +1626,12 @@
       },
       {
         "clip": "044115f0dcde91c9d6554b297e15b09cd05ebe055fb7804d911cbd4dd237ff75",
-        "ms": 1315
+        "ms": 1315,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1351,7 +1667,12 @@
       },
       {
         "clip": "7a85ac4df42e10c7e99aa17d8f4d70cf008920f2b6d3dc2a8afb22c7f9a3c049",
-        "ms": 2117
+        "ms": 2117,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1387,7 +1708,12 @@
       },
       {
         "clip": "36c3db21a4b5703b2f93d9ddba79953d310e8f461d5f31f158c9e1cec0e5ac6a",
-        "ms": 1835
+        "ms": 1835,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "40e0014b55f8916e73acd4b730e6561adc4731f74afec9a44cfaf9b4b31a9f13",
@@ -1395,7 +1721,12 @@
       },
       {
         "clip": "dedb142250774d91620b0ff4eff97c8b7ba6f66ae1fb7a0f6907a59b585f8dbc",
-        "ms": 2015
+        "ms": 2015,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1439,7 +1770,12 @@
       },
       {
         "clip": "0dbf56897ead008dc9bd56e32099ff417619244c6c922d9db007b63f814fd6d7",
-        "ms": 1302
+        "ms": 1302,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -1447,7 +1783,12 @@
       },
       {
         "clip": "a5b00a1b7daee302bc2e9c1d742c7b09f3f74bfed399a1cf4bd05f5585a21bd5",
-        "ms": 2177
+        "ms": 2177,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "6433728927305e5a986a0811d79c406e13aef3b95eb1945bbd8b74ea39a5d0ec",
@@ -1487,7 +1828,12 @@
       },
       {
         "clip": "f787677f3694300d2e13fbc34ac2cb5fdd85de53ee2866a95278832dbabb9cff",
-        "ms": 1146
+        "ms": 1146,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1495,7 +1841,12 @@
       },
       {
         "clip": "58730a04aef9e4ca2ca8b59211fb0beb3b34c3b2d173c6eeb083526d2788b440",
-        "ms": 1193
+        "ms": 1193,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1531,7 +1882,12 @@
       },
       {
         "clip": "0b90bc92e983197279e108a1d1f57d550698ca22729cf35e1774186ffa0f2103",
-        "ms": 1419
+        "ms": 1419,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1571,7 +1927,12 @@
       },
       {
         "clip": "c180e745102e78342bf097db2fdb1ae24f283d7daaf762b4392d772ec14127d6",
-        "ms": 1634
+        "ms": 1634,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
@@ -1579,7 +1940,12 @@
       },
       {
         "clip": "9bbf26c56a111750be980714d4846c35ab51995c0e176ceacec913273ec53582",
-        "ms": 4907
+        "ms": 4907,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "aa59dea95f56ef4edef0f79e24ecf03bb9689a533d654ff99900d202434eee40",
@@ -1587,7 +1953,12 @@
       },
       {
         "clip": "28002ee4d00936d227d04ab8c225cf9a35fbace8690d356037a64a656a81a54c",
-        "ms": 6407
+        "ms": 6407,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1599,7 +1970,12 @@
       },
       {
         "clip": "c4cc9f6b7f0328a68ceffa2de4977b9faae84ceb39a0bb2b418138a37293c099",
-        "ms": 1254
+        "ms": 1254,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1607,7 +1983,12 @@
       },
       {
         "clip": "894f7dea32d759effbb40a237707ef758c3b049fd8962a65434b6564da0432fb",
-        "ms": 1218
+        "ms": 1218,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "2be7abaec45dcb8425b37b63160e0ef265c9433f3ba0ae57351f41ccb22d01a8",
@@ -1631,7 +2012,12 @@
       },
       {
         "clip": "3d94e42605d9664990e7642d4a880acc6f6d0c5b551dcd4374681ec93e59044f",
-        "ms": 1672
+        "ms": 1672,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
@@ -1639,7 +2025,12 @@
       },
       {
         "clip": "d89a2f6ae189f21d02e0be6133932ef4228b57d8849959ee834f9d31e795bca2",
-        "ms": 2292
+        "ms": 2292,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "27d54e4f297496250be8a6a04e9e8119267d5b0b7802ae46f6a216ea51343fff",
@@ -1655,7 +2046,12 @@
       },
       {
         "clip": "a8441ba20c18c65e022132b98b8d9699589f910cf5c9c6797333f134cceffb2b",
-        "ms": 1637
+        "ms": 1637,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "4e817692d07c3bad6289c21273cabc7231e35ac87d5bdc3b1e8854de5b49379f",
@@ -1695,7 +2091,12 @@
       },
       {
         "clip": "bd9181ce55a2456265a0644464ab0b09465c310f4f167a3d5a42708beab0b494",
-        "ms": 1809
+        "ms": 1809,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1703,7 +2104,12 @@
       },
       {
         "clip": "47c3b3682d39ebf118f111d296665e85dfcf4b7b7983b2c2b1259c3536372668",
-        "ms": 1443
+        "ms": 1443,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1739,7 +2145,12 @@
       },
       {
         "clip": "8b6637ee17412e4a86acb2eb25210e82d4b212e4a5d38dc09f8fa354ed24121a",
-        "ms": 811
+        "ms": 811,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1747,7 +2158,12 @@
       },
       {
         "clip": "0a567807fdc70eb67189e5bd25a6c421a9e09743a29789b17352ef52fde3087a",
-        "ms": 802
+        "ms": 802,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1783,7 +2199,12 @@
       },
       {
         "clip": "acf0ce5af1c7c9b124a44b519024a93bc9b9bf86360d4c5a95b0540d6ea92046",
-        "ms": 1926
+        "ms": 1926,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -1791,7 +2212,12 @@
       },
       {
         "clip": "b8d4c87ffecd7fa5ef42c8caedcd47bc994470e3a93ec0d720f7f2ea2fcaf06c",
-        "ms": 1809
+        "ms": 1809,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "6cb94262e02ecea6da7ca71b9ded259acb1d54a9b33f31e63439129183e03944",
@@ -1799,7 +2225,12 @@
       },
       {
         "clip": "618ee83c0d37379cdeacf4bf4d0d20b8c609bed2bceea093d257c7a06abdaa3c",
-        "ms": 5107
+        "ms": 5107,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "da55fb1594e178a897894fc1c5fd04e4e2bc188279cc03f59838847561b59661",
@@ -1815,7 +2246,12 @@
       },
       {
         "clip": "f8515ce7ffd3d91aa92d95902ca476ec9c654b01f62d727f11423e6527717544",
-        "ms": 961
+        "ms": 961,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "0fe77e93ecd8b605d59085dfbbfe5a7560204a204982c0e72665a384f87b727e",
@@ -1823,7 +2259,12 @@
       },
       {
         "clip": "47607c7618edb253f4d9fd3485f13669f0672be814580c7c761b543708bdf9fa",
-        "ms": 1505
+        "ms": 1505,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1859,7 +2300,12 @@
       },
       {
         "clip": "3cf9eccf1723efb5a4116b74a3e97d16a7de2761e25745c10790ce6d892430fe",
-        "ms": 785
+        "ms": 785,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "19810d5f46aadbd694ac2e540b18a447225316b82882e286c7691e70ce5c301e",
@@ -1899,7 +2345,12 @@
       },
       {
         "clip": "94699170fedefffe02617f7bb5ee94dba40860e592a1195e50f30230766764a1",
-        "ms": 1544
+        "ms": 1544,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "d0e0a1ab24840c1a16f9c2c8701c1250079cf90179501e1c928216568744ed9b",
@@ -1915,7 +2366,12 @@
       },
       {
         "clip": "c027a14d225d439a72205ae8ff6ca2209433c2309ff524986146299fd4fa886c",
-        "ms": 796
+        "ms": 796,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
@@ -1923,7 +2379,12 @@
       },
       {
         "clip": "093ef1289356054e019236e3011dd8b3b794e333497ec3cc2170994687aaf57d",
-        "ms": 1222
+        "ms": 1222,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "3f16ab4dc0715af7832ad687bbeaf55ebf646d5428c73ccd4f6d824368ad7d3e",
@@ -1939,7 +2400,12 @@
       },
       {
         "clip": "c180e745102e78342bf097db2fdb1ae24f283d7daaf762b4392d772ec14127d6",
-        "ms": 1634
+        "ms": 1634,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "6d722516468d27729f2f7ad54ad31310846815185dbd712cd44a5f5a08f37128",
@@ -1947,7 +2413,12 @@
       },
       {
         "clip": "a0db56f10fa59a8fb04352eef08420019ab5c904c0cba6482850b79c5b70583f",
-        "ms": 2384
+        "ms": 2384,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "70763d2b783fb2a168feaec0f73561006182b9973024255ac23ff0f34e01ce22",
@@ -1955,7 +2426,12 @@
       },
       {
         "clip": "4699fd3ad3531c182bb58679b4c1dfda7660941edb93ceadba051a9d70396849",
-        "ms": 894
+        "ms": 894,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1963,7 +2439,12 @@
       },
       {
         "clip": "fb3b6af2cc9b1cd870838bb5a376992456b4c6e7a22194fe4fa9f462861d29f8",
-        "ms": 820
+        "ms": 820,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -1975,7 +2456,12 @@
       },
       {
         "clip": "9129175892017c4ef4644ba574f13e063381320d802d1074b8387f9ddda615bb",
-        "ms": 1587
+        "ms": 1587,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1983,7 +2469,12 @@
       },
       {
         "clip": "b446a366d67977c7abba6cc364c13465aaed343e4ba647368a0a39508f67e63a",
-        "ms": 1860
+        "ms": 1860,
+        "by": "old_ossley",
+        "figure": "cast/old_ossley",
+        "names": [
+          "Old Ossley"
+        ]
       },
       {
         "clip": "23c0c120c756c0996a2f7aeb0403e21a552e2f9adcd6995f34f24156fab1530e",
@@ -1991,7 +2482,12 @@
       },
       {
         "clip": "618ee83c0d37379cdeacf4bf4d0d20b8c609bed2bceea093d257c7a06abdaa3c",
-        "ms": 5107
+        "ms": 5107,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "83b44a4e7b2da0d788faf8bd7fa06f25078df1bd00e17cd094e10f451bba6ff9",
@@ -2007,7 +2503,12 @@
       },
       {
         "clip": "4413bf9c7ea20ec6c421efc9ddb09302a69b7ff292ba41a321a275906813953c",
-        "ms": 1801
+        "ms": 1801,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -2015,7 +2516,12 @@
       },
       {
         "clip": "39fae3bf2ee66f1319e319f1371e1d78cd28e27ef6e9aae2de436d80d8c11f94",
-        "ms": 4207
+        "ms": 4207,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "ce0f275fad919fe762a33140366e70c64c20f0ffda87965a3e365ba6b088eee2",
@@ -2031,7 +2537,12 @@
       },
       {
         "clip": "96053a2c5b62c0216f2cd32d4bfbfbd40fa437a44c98c7419f9f54c72ab44352",
-        "ms": 1229
+        "ms": 1229,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "15ac11a8202899c4f9369db5cf8147defa9237971b7ab4085c4866946df0220c",
@@ -2039,7 +2550,12 @@
       },
       {
         "clip": "d320ae94ead45433cce84adf8bc1419765e90bd44e9c670e528c5fc4d767bda4",
-        "ms": 2410
+        "ms": 2410,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -2051,7 +2567,12 @@
       },
       {
         "clip": "cac7e7e0ffba2432dcf10d2ed57887069746c258c23fc4d6d6ec01d7b77d5768",
-        "ms": 1626
+        "ms": 1626,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "3ea4314cc687029010d77045db904ff2680953de8922606a3a56607a1730c69f",
@@ -2059,7 +2580,12 @@
       },
       {
         "clip": "ec1112171c4fb315b922339dab47102d42242bec2475e41bfcf1a85b4c74b850",
-        "ms": 2465
+        "ms": 2465,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "220b8c8478d0a85facca21852134adeceb49a2da0e60f913a602a3e0d4367faa",
@@ -2075,7 +2601,12 @@
       },
       {
         "clip": "5ed62a799c468c7a88965f1a40682b357668ba13ac72a927f91c972e7e181ca2",
-        "ms": 2448
+        "ms": 2448,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -2083,7 +2614,12 @@
       },
       {
         "clip": "2df272aad0ff3a3d39e58d89837ab15910c407cd20da27bfe9e1ce89eb3eedeb",
-        "ms": 1572
+        "ms": 1572,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "847969e697a8192fcd804b7770815c9d24253e423114a48d7287476880193757",
@@ -2099,7 +2635,12 @@
       },
       {
         "clip": "aa1d0dffd2078d05b3a3aadbad40f46b8ad2e0f97fc27b451f8f0e03dd92322d",
-        "ms": 1198
+        "ms": 1198,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -2107,7 +2648,12 @@
       },
       {
         "clip": "74cd85759eccdb4099c8d43de3f8fb0b35ea7b172d9331953e968b94a5f17176",
-        "ms": 1983
+        "ms": 1983,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "3fd30e7bc7c4d8ff28a0801896976d55ba095fc06dc72aa82b5a1d96407cccc9",
@@ -2123,7 +2669,11 @@
       },
       {
         "clip": "61fe0da48c724e27a2ffc11c7f30ebad2315d62a6a927b9411f485c0473805bd",
-        "ms": 2457
+        "ms": 2457,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "da1fd013408c519b55eb1bf78126a6bc6106c806f13e681f1bb40c305e6e6267",
@@ -2139,7 +2689,12 @@
       },
       {
         "clip": "49c07195ff0d6844cd6339793b208139c4dbfed1d77de02ad50bc75fb65c58f2",
-        "ms": 1694
+        "ms": 1694,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c2816b87b0c665af2870ad489c3481a13122bb5170f9781f5808e7b645b631fd",
@@ -2155,7 +2710,12 @@
       },
       {
         "clip": "bf57f7c92a70bdac6f2c385d559615cdf845dc8de3d5d6578aa308cfea00487e",
-        "ms": 662
+        "ms": 662,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -2163,7 +2723,12 @@
       },
       {
         "clip": "3ba63d6463b98c2d2dbeb3d9cf9c14ed7fb88499a4c6b2616e662c3c1cbfc8ea",
-        "ms": 5807
+        "ms": 5807,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "ef1c00908c1615aa3bb9fe0a207f22aa69b74cbaac2c08136c199a045bd1c3fd",
@@ -2179,7 +2744,12 @@
       },
       {
         "clip": "10e1fae7ab4fcf03d0ef3fddd8708c69cf44b0ab91f00ad92747432dcbc9847b",
-        "ms": 1170
+        "ms": 1170,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "fdb421068800e4dd7a19c4af0f1a2375376d2aa35b042669c3f5bbfae47d21ff",
@@ -2195,7 +2765,12 @@
       },
       {
         "clip": "115338270dd1451235a9cb5565b265479558008896448d00819b89dd6169d752",
-        "ms": 1572
+        "ms": 1572,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "3207a2a2c66ec78b641629e22bd284f2f85ce7a66c6449e505228f97bf35e46f",
@@ -2211,7 +2786,12 @@
       },
       {
         "clip": "32d7860bfe5d66ad9f71bcfa76bbc5aafa234c49f4ac2bbf608fdd7dd9789e2e",
-        "ms": 3607
+        "ms": 3607,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "4be6f6262817fdacbf177a5a9e18faf34a39b7d7d8d5b164881a84c6978454f1",
@@ -2227,7 +2807,12 @@
       },
       {
         "clip": "7675267295d008fabd590cdfa33dd7e5a1e4fa9a137a91f647ca5d241613447b",
-        "ms": 2821
+        "ms": 2821,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -2263,7 +2848,12 @@
       },
       {
         "clip": "bb51f3dd240e8e42778c82b939b51b598ec6eba9ed577b45f103311f1128d56d",
-        "ms": 859
+        "ms": 859,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "9bdfadb5003b197a291faaea47c840d644949c4dd03fea98131f466ad6c3707b",
@@ -2271,7 +2861,12 @@
       },
       {
         "clip": "800affea931cd5162ccb054fdba6bd0cf1b6b9415c09d18c4511f8b28c62204e",
-        "ms": 1797
+        "ms": 1797,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "356a66fa2bf88af9fb4750cfad71101db6e81ad7a193de3157820498df6d7b5b",
@@ -2287,7 +2882,12 @@
       },
       {
         "clip": "820907c0328d522ee6f4ed324b9cb2460daf08a652b88b6de881b41127ef0759",
-        "ms": 603
+        "ms": 603,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "98d579403c6cebdd8706394e559da515a2065b828d38139b2fc4934739a2f875",
@@ -2295,7 +2895,12 @@
       },
       {
         "clip": "feec2b01ba9b8e0af16abd3f876a029664751c347ff53f69d771ae6ffe6b3365",
-        "ms": 1260
+        "ms": 1260,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -2331,7 +2936,12 @@
       },
       {
         "clip": "0b973696cea749f2318157989eb2dbbc3785dc0d22acd6519533e17bd91de309",
-        "ms": 828
+        "ms": 828,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -2339,7 +2949,12 @@
       },
       {
         "clip": "922c55627797788d9aff074b488df682185f3ce7b6d29573c17dd5cfa3611ad0",
-        "ms": 728
+        "ms": 728,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -2375,7 +2990,12 @@
       },
       {
         "clip": "0865df39fa9bb9a598bc98287d7dca0d45d8609c6977e4e0f4333ac67220ecab",
-        "ms": 1352
+        "ms": 1352,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -2415,7 +3035,12 @@
       },
       {
         "clip": "9fc54765c170268f78396234b3d29ba410cfd3a0c05bf5f22c27e0de806a6970",
-        "ms": 1615
+        "ms": 1615,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
@@ -2423,7 +3048,12 @@
       },
       {
         "clip": "0ab99d605a4c6584207e4853c76ac921da322ea4f1cf2ae96e09789884166513",
-        "ms": 877
+        "ms": 877,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -2459,7 +3089,12 @@
       },
       {
         "clip": "5b10a595ed216f15ca0458b4d9f975496b87f3abc78ca9eef44921209dc22de3",
-        "ms": 1192
+        "ms": 1192,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "944b40be1de3afdd05f536d65bf58d083f93dd276392adf1dc65c2377cef12f9",
@@ -2467,7 +3102,12 @@
       },
       {
         "clip": "b2281fe4dab5ce3e43009f45bce6381dca5f5a236931a8f475fa178bdb90f7ec",
-        "ms": 2532
+        "ms": 2532,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "3ba9ea41572a83ec410d6d57fec9d0f86077f0cc4c00f7837bd850ccb5f83a56",
@@ -2483,7 +3123,12 @@
       },
       {
         "clip": "1499ed9965ce58786384a7c2d10ffaef5294f54166523f847d394c3d9ce6d2be",
-        "ms": 830
+        "ms": 830,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "626bd14bcab1dcd576a2493b976cb232fa73a4a44c2f43ec76536b13142c949e",
@@ -2491,7 +3136,12 @@
       },
       {
         "clip": "9c1303d03c7e6a16021870245ecc2654f66c0349101c4f99581feeb70cf946f7",
-        "ms": 3207
+        "ms": 3207,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c87fe2ea98da86dfffe8ff6fc349fb3a306891718f2659ac43356bfe28106185",
@@ -2507,7 +3157,12 @@
       },
       {
         "clip": "857fd58442ecbe89bc4cab00b882b5188d9ba96443a6222711ffd426a793569b",
-        "ms": 765
+        "ms": 765,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "775278163cc9303d90122e28b1d4d89d12c07e438aa66084f3f4b4c292312e78",
@@ -2515,7 +3170,12 @@
       },
       {
         "clip": "a4b4a82f96811dae5c44f11c17193ec1c530d832c4634cb546f119860f247315",
-        "ms": 1761
+        "ms": 1761,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       }
     ]
   },
@@ -2551,7 +3211,12 @@
       },
       {
         "clip": "6f136f9db47d04f434a760e89311a1611c2063f8ea50535f2d9c638769c58b25",
-        "ms": 1885
+        "ms": 1885,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -2591,7 +3256,12 @@
       },
       {
         "clip": "56cdfb1ce779ec59d0bca92f3896e0c651e247ae33165dcd3e7ed6575238881b",
-        "ms": 1444
+        "ms": 1444,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "a7addf2c0ce94c21421086e988d9a75bdf54b32d26d29b809b16ff7508cc4338",
@@ -2607,7 +3277,12 @@
       },
       {
         "clip": "f5615380a6d0f83e281669b64f8dbd5f6bfeae5d3cf180c2e865ef33bff955cb",
-        "ms": 790
+        "ms": 790,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c0c93b70dd53d596b4ff0396c0a714803c3189ceb09c9f0464c9c5fbf3570307",
@@ -2615,7 +3290,12 @@
       },
       {
         "clip": "e14ea389b20722df2ca46041346d62d6de7fdb31f1381422fa55aad5bc559fbb",
-        "ms": 1287
+        "ms": 1287,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "12b3452948a3591cf7519228bba8e3502a8bc38d7fca4c01f02d586c58ff5a6d",
@@ -2639,7 +3319,12 @@
       },
       {
         "clip": "820907c0328d522ee6f4ed324b9cb2460daf08a652b88b6de881b41127ef0759",
-        "ms": 603
+        "ms": 603,
+        "by": "skerry",
+        "figure": "cast/ridge_griffin",
+        "names": [
+          "Skerry"
+        ]
       },
       {
         "clip": "c9cadaeea2f4c0e0ade4581473c35e94407759e953afc133d04b6b4743404109",

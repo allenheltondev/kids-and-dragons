@@ -23,7 +23,7 @@
  */
 
 import { create } from "zustand";
-import { setSpeaker, spokenText, stopSpeaking, type SpeakOptions, type Speaker } from "@kad/shared";
+import { setSpeaker, spokenText, stopSpeaking, type SpeakingCast, type SpeakOptions, type Speaker } from "@kad/shared";
 
 export const READ_ALOUD_KEY = "kad.readaloud";
 
@@ -48,20 +48,27 @@ interface ReadAloudState {
   on: boolean;
   /** Something is being said on this device right now (the narration panel's mark). */
   speaking: boolean;
+  /** The cast member whose recorded voice is heard right now (the stage's cast pulse), or null. */
+  cast: SpeakingCast | null;
 }
 
-const useStore = create<ReadAloudState>(() => ({ on: (loadStored() ?? false) && readAloudSupported(), speaking: false }));
+const useStore = create<ReadAloudState>(() => ({ on: (loadStored() ?? false) && readAloudSupported(), speaking: false, cast: null }));
 
 let engine: Promise<Speaker> | null = null;
 
 function loadEngine(): Promise<Speaker> {
-  engine ??= import("./clip-speaker").then((module) => module.createTableSpeaker(markSpeaking));
+  engine ??= import("./clip-speaker").then((module) => module.createTableSpeaker(markSpeaking, markCast));
   return engine;
 }
 
 /** What the speaker reports as it starts and stops saying things. */
 export function markSpeaking(speaking: boolean): void {
   useStore.setState({ speaking });
+}
+
+/** Whose recorded voice is heard, as the speaker reports it. */
+export function markCast(cast: SpeakingCast | null): void {
+  useStore.setState({ cast });
 }
 
 /** Installs or removes the speaker to match the switch. Safe to call again. */
@@ -112,6 +119,18 @@ export function useReadAloud(): { supported: boolean; on: boolean; setOn: (on: b
 /** True while this device is saying something, in either voice: the narration panel's "speaking" mark. */
 export function useSpeaking(): boolean {
   return useStore((state) => state.speaking);
+}
+
+/**
+ * Calls `listener` with the cast member whose recorded voice this device is playing (their figure
+ * and names on the cast sheet), or null, now and whenever it changes. For the stage, which draws
+ * outside React. Returns the way to stop listening.
+ */
+export function watchSpeakingCast(listener: (cast: SpeakingCast | null) => void): () => void {
+  listener(useStore.getState().cast);
+  return useStore.subscribe((state, before) => {
+    if (state.cast !== before.cast) listener(state.cast);
+  });
 }
 
 /** True when this device reads aloud. For a surface that adds something only then (a speaker icon). */

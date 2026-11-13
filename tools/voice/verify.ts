@@ -11,11 +11,13 @@
  *   npm run voice:verify -- --site https://…cloudfront.net  # and the deployed site (deploy.sh)
  *   npm run voice:verify -- --stage prod                  # the stage's site, found from its stack
  *   npm run voice:verify -- --bucket NAME | --dir FOLDER  # a bucket (your AWS credentials) or a trial folder
- *   npm run voice:verify -- --fix                         # drop entries that would play the old words, then check
+ *   npm run voice:verify -- --fix                         # drop entries that would play the old words, mark who speaks, then check
  *
- * `--fix` changes no clip and calls nothing: it only takes out manifest entries
- * whose clips say words, a voice or a delivery that have since changed, so those
- * lines fall back to the device voice until `voice:generate` renders them again.
+ * `--fix` changes no clip and calls nothing: it takes out manifest entries whose
+ * clips say words, a voice or a delivery that have since changed, so those lines
+ * fall back to the device voice until `voice:generate` renders them again, and
+ * writes who speaks each clip (`by`, `figure`, `names`: the cast pulse) as the
+ * script and cast sheet say today.
  */
 
 import fs from "node:fs";
@@ -76,20 +78,22 @@ const world = loadWorld();
 const desired = new Map<string, Desired>([...world.groups.keys()].map((name) => [name, desire(world, name)]));
 
 if (values.fix) {
-  let dropped = 0;
+  let changed = 0;
   for (const [name, manifest] of world.manifests) {
     const want = desired.get(name);
     if (want === undefined) continue;
     const fixed = fixManifest(manifest, want);
+    const text = `${JSON.stringify(fixed, null, 2)}\n`;
+    if (text === `${JSON.stringify(manifest, null, 2)}\n`) continue;
+    changed += 1;
     const before = Object.values(manifest).reduce((n, v) => n + Object.keys(v).length, 0);
     const after = Object.values(fixed).reduce((n, v) => n + Object.keys(v).length, 0);
-    if (before === after) continue;
-    dropped += before - after;
-    fs.writeFileSync(path.join(MANIFEST_DIR, `${name}.json`), `${JSON.stringify(fixed, null, 2)}\n`);
+    const dropped = before - after;
+    fs.writeFileSync(path.join(MANIFEST_DIR, `${name}.json`), text);
     world.manifests.set(name, fixed);
-    console.log(`fixed  content/voice/manifest/${name}.json: dropped ${String(before - after)} entr${before - after === 1 ? "y" : "ies"} that would play the old words`);
+    console.log(`fixed  content/voice/manifest/${name}.json: ${dropped === 0 ? "who speaks each clip" : `dropped ${String(dropped)} entr${dropped === 1 ? "y" : "ies"} that would play the old words`}`);
   }
-  if (dropped === 0) console.log("fixed  nothing to drop");
+  if (changed === 0) console.log("fixed  nothing to change");
 }
 
 const verdict = checkManifests({ manifests: world.manifests, desired, lock: world.lock });

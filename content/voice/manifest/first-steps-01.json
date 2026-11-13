@@ -31,7 +31,12 @@
       },
       {
         "clip": "b2accf3ec64bae599abd227f5dab630d2e3d1759e52993187e7eea7f3a76e39d",
-        "ms": 1563
+        "ms": 1563,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "0c280eb9af4e51f5d493383975829232426b90a7f23dd7b9d97867fc498bf9c9",
@@ -79,7 +84,12 @@
       },
       {
         "clip": "b2accf3ec64bae599abd227f5dab630d2e3d1759e52993187e7eea7f3a76e39d",
-        "ms": 1563
+        "ms": 1563,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "0c280eb9af4e51f5d493383975829232426b90a7f23dd7b9d97867fc498bf9c9",
@@ -247,7 +257,12 @@
       },
       {
         "clip": "fcbb7135f5d2f867dc7a1ca186d86544f2ea57b6adfa29b69acdfae831a72608",
-        "ms": 1145
+        "ms": 1145,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "c20cd0407fbd4ee4005fb0a5da1562b1c78a07ef4d527a3aa91410273b758081",
@@ -255,7 +270,12 @@
       },
       {
         "clip": "7cf75f1c66cd5e9671b66ccff4eaee81a2cc325323b8e4fd1ecc7d2dbb4f7ab3",
-        "ms": 1518
+        "ms": 1518,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       }
     ]
   },
@@ -275,7 +295,12 @@
       },
       {
         "clip": "4a9670e5dedf5788665d5732e674fc151074112438b7a3592f69739f21160303",
-        "ms": 2230
+        "ms": 2230,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
@@ -283,7 +308,12 @@
       },
       {
         "clip": "021b3d99e18aee7fb646df180adcb8ad480620334e8155ea489895503e016067",
-        "ms": 2801
+        "ms": 2801,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "e1c92e9b28e1c33ca945b25e737351ef28a46e0a0503202cf3c2f2d31a0c6b18",
@@ -307,7 +337,12 @@
       },
       {
         "clip": "c0ebf787e1da1a4323ecb105ae18bb2bd47c3680915dc2a71fb297fdcd1a6825",
-        "ms": 1450
+        "ms": 1450,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -335,7 +370,12 @@
       },
       {
         "clip": "ce8f1476159dcf8e3d83dfbc574759be24a146cd437064b1f6023892f3862264",
-        "ms": 2064
+        "ms": 2064,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "233ac9168c00bdab0dc87cc1073733a026a60a70e6906b6a05a776b43d562a46",
@@ -343,7 +383,12 @@
       },
       {
         "clip": "a2ba3c2c2e29ccec64789630fe3aca05817ef2cf10703a8db6c3908a38b891d8",
-        "ms": 3507
+        "ms": 3507,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       }
     ]
   },
@@ -363,7 +408,12 @@
       },
       {
         "clip": "20c41a4190096941107de60186d12c7631a9bcd70fe56d73d8343a5d5e530e7f",
-        "ms": 1638
+        "ms": 1638,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "81f93d7a357eb6d5e393a84ff3be10e5e06f61e29a72bf1fffb2ddecac1e8a40",
@@ -395,7 +445,12 @@
       },
       {
         "clip": "5b4acf384256e1402eab13ff45a913c3b513ac524b2f0e21649128e07391faac",
-        "ms": 1793
+        "ms": 1793,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "6ae84319ab9eff08297bb2198aec719224029edba3b34de43a066f1f6a7eec0b",
@@ -439,7 +494,12 @@
     "": [
       {
         "clip": "485c3be2c5ee71a516a331d4a058c6de4cc49f95b11dd67805a872277a000ed4",
-        "ms": 3207
+        "ms": 3207,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "b68437f5e75a6a668d53f33b760a1fe41c0956b016a14af2265ada17cb1ffb7f",
@@ -487,7 +547,12 @@
       },
       {
         "clip": "851d508123b837a27f84931e134b3051e41b9a944bd29b7bd6030042e1fbd7f8",
-        "ms": 1066
+        "ms": 1066,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -495,7 +560,12 @@
       },
       {
         "clip": "8336c28a4cab7571c4830828161e9b6f757fb58fda2f2e7fbf2bb51a1e40a280",
-        "ms": 2211
+        "ms": 2211,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -523,7 +593,12 @@
       },
       {
         "clip": "81f5502528fbbc26156f5b818bff6c7a7350cf042d5c9f6bdf23a02e8cd57e21",
-        "ms": 2339
+        "ms": 2339,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "6943c198f316918e78fda7e68afdb8e6f0ea1b3103d7bbba1cfa2644bad42090",
@@ -547,7 +622,12 @@
       },
       {
         "clip": "008e386aee28a920339750f0b8315eaf52dfeb3e95c6f2669e893a5bf2a2bdd3",
-        "ms": 4007
+        "ms": 4007,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -555,7 +635,12 @@
       },
       {
         "clip": "31b29c70146ae2925f83dca210153c2f834fff417c56550c5bcdeae23663c1d1",
-        "ms": 2751
+        "ms": 2751,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       }
     ]
   },
@@ -575,7 +660,12 @@
       },
       {
         "clip": "a3dfd7453731f1e1de6578108a37da39debf0e7fcc58d15af6b25197d55dd062",
-        "ms": 1913
+        "ms": 1913,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "c2dedeb8f595bfd1a7eee02185ea3ef067458ff68cd700fd2e5bdf17cf07c05b",
@@ -591,7 +681,12 @@
       },
       {
         "clip": "971c7eb277620ded1e5f1e1c2f217a9a599940891b080de8e1e6f319dc8731ad",
-        "ms": 1822
+        "ms": 1822,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       }
     ]
   },
@@ -611,7 +706,12 @@
       },
       {
         "clip": "6c7e2d814b552c92163601fe1216a05c4cca6a3d7bc77d89dfec8c156ac3c956",
-        "ms": 1787
+        "ms": 1787,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -683,7 +783,12 @@
       },
       {
         "clip": "3c6d427c3129b22cfda91ba681feef0f9dad30715744055b4d3884915a7c9380",
-        "ms": 2791
+        "ms": 2791,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "8bc7e78baa69412ee2e85a354e2d8b7510411506533927f850faa75c315dde91",
@@ -707,7 +812,12 @@
       },
       {
         "clip": "ffd5aa47b1b78d236389a77941ce1fb35dee80678ae948c234877ea142b81de7",
-        "ms": 3107
+        "ms": 3107,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -735,7 +845,12 @@
       },
       {
         "clip": "d606643a8e8f0326b2ad055900517646243a100ca5d5cbeb17ad51193318d6c6",
-        "ms": 1991
+        "ms": 1991,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -743,7 +858,12 @@
       },
       {
         "clip": "642865c9f29842a0b60deaa8a98b71ce0b1a1de593f846a88b8238a69078b82b",
-        "ms": 3107
+        "ms": 3107,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       }
     ]
   },
@@ -787,7 +907,12 @@
       },
       {
         "clip": "43bb500055de92ba4f2759aa6237c5aab91ee8b455b384733036163227ef46fd",
-        "ms": 2735
+        "ms": 2735,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "536424e306762a84819d4a4073863a72b0dbbdd3af3bd1b1e31414270e8b6bd4",
@@ -795,7 +920,12 @@
       },
       {
         "clip": "4c20ac98a648c22c335673d5a4b41897b883dfba94c054661d23e7deb591dd3c",
-        "ms": 4607
+        "ms": 4607,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       }
     ]
   },
@@ -815,7 +945,12 @@
       },
       {
         "clip": "480ce5b31af10f4a835833b69a27ee96ae70719d8ce49a85554d6663ad4b4b34",
-        "ms": 1818
+        "ms": 1818,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -847,7 +982,12 @@
       },
       {
         "clip": "6706e1896de5a72535633b47a56f73fb980ce470248e20180ec2c86b78139cba",
-        "ms": 2045
+        "ms": 2045,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "70015a32e3d1da66ad6af99da0575b7ab0a08cbb5e463942fc55c84038a68d0d",
@@ -895,7 +1035,12 @@
       },
       {
         "clip": "69e20eae788b01127641d0feeda8925b9280b7771b56bee9771827300a99a5bf",
-        "ms": 1118
+        "ms": 1118,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
@@ -903,7 +1048,12 @@
       },
       {
         "clip": "0adad3e1c3053d2b9e1695416951f80112760aa9d96ea1063898d68c500dab11",
-        "ms": 1402
+        "ms": 1402,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -915,7 +1065,12 @@
       },
       {
         "clip": "7799b37fc1fd8d249e8ab6e3c99d1a91f1a753cfb8f22c45a64bc8ab1dbb3b39",
-        "ms": 1490
+        "ms": 1490,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -923,7 +1078,12 @@
       },
       {
         "clip": "6ab92eed55caaa96930157382a567b1c2009522bb286db687324efbe10809759",
-        "ms": 1675
+        "ms": 1675,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "601910753691e57948cca10cae6bc695d4915386fc2964ad4dc61d0364d2c5f3",
@@ -979,7 +1139,12 @@
       },
       {
         "clip": "6884f6467a198a21a17b7b673e7fe54ff187572a4ea32b6afde1a610b5905053",
-        "ms": 1085
+        "ms": 1085,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -987,7 +1152,12 @@
       },
       {
         "clip": "e169e0307eb8e6c2bc17adc369fb7e5d26f64c5c68c82ecb3df11b745585cd74",
-        "ms": 1751
+        "ms": 1751,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -995,7 +1165,11 @@
     "": [
       {
         "clip": "f4e034129439e1e84557ef3468cd2b8f4e24cb3ffe9c443e3c9dba0b6ae9fb3f",
-        "ms": 1054
+        "ms": 1054,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "92bbd2aaf5e67a51125a9f54b4e13debd58101f52f728334a3381b6939e521f0",
@@ -1011,7 +1185,12 @@
       },
       {
         "clip": "9509bdc9de0022c80ee564c49434f790c3f9d8c9dd9c6a510ce6f64087057743",
-        "ms": 4507
+        "ms": 4507,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "94e31344a6af468aa7bfb54c980acb30194842f62a68ab84637330a6e3c209fc",
@@ -1027,7 +1206,12 @@
       },
       {
         "clip": "77aa5d7c9c0b40ff1666a5c1b33a33d3faf812b8936dcba5d502c332755207f1",
-        "ms": 1521
+        "ms": 1521,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "a96e8458fa786a8177f9f810fbaecdaa15ac69b793fe68cc5e5eddf0018b9029",
@@ -1039,7 +1223,12 @@
     "": [
       {
         "clip": "276c33d6cfc00e72f2c761c02902eaf71f258372c8e4969c87c3bf7785d4dcf0",
-        "ms": 2136
+        "ms": 2136,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
@@ -1047,7 +1236,12 @@
       },
       {
         "clip": "acbf7c292f967732349fc852094fe36c373a23f53bca22860b0c636573fd517e",
-        "ms": 5507
+        "ms": 5507,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "a0c2baf14b77f6bab5d3c4f4fb261868660422a05fbc793e5ca4ffc14dc62741",
@@ -1079,7 +1273,12 @@
       },
       {
         "clip": "1754f1b980ec07f3188899a6a09db8299148cbbe4c702c60bb491f67ecc3ea35",
-        "ms": 4007
+        "ms": 4007,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "9f868967a5548450c65bc43b34a78dfb515e65948cbe301ce7e7c8a98ca1da52",
@@ -1091,7 +1290,12 @@
     "": [
       {
         "clip": "a90d415952b5941ba87f49178cf7926b3e50ab76ec2f1396f7c808c01def6ed1",
-        "ms": 2051
+        "ms": 2051,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "d5cccea562fe98f7f848abbb4f3fc4cdcb2b5643545f5a87e348e6a8df97bb6b",
@@ -1115,7 +1319,12 @@
       },
       {
         "clip": "d3d40a9380ea384f4d46ee1a90d1779f62d4faca0e8a98c7e932ff92d239d135",
-        "ms": 2630
+        "ms": 2630,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "47fa8d0a731a5bf9a9654a9fe70c7520e74540e89a24279a3e3da072069e0c72",
@@ -1123,7 +1332,12 @@
       },
       {
         "clip": "11ce43b1e3daf47d4c09193f414899ea8c491cc7dc429be3642339edb29c4b88",
-        "ms": 1411
+        "ms": 1411,
+        "by": "flick",
+        "figure": "entities/will_o_wisp",
+        "names": [
+          "Flick"
+        ]
       },
       {
         "clip": "44a94dffb81edafa43466e949b2c8525aa2567822cec9d083509e68ae5e03856",
@@ -1135,7 +1349,12 @@
     "": [
       {
         "clip": "930bb92b64b42666d263b1eb5aa33c1c52782ca4f6c43fe8902fafec21e2e09f",
-        "ms": 2635
+        "ms": 2635,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
@@ -1143,7 +1362,12 @@
       },
       {
         "clip": "e6a56ebe1025edeebbaca3001c93b9b4bec69d3a0f5743dfd85e98dc5db8987c",
-        "ms": 6907
+        "ms": 6907,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "cfe56c2077345c33af2344a0f6884de918504d93bc8fe6bad8c82919419fef73",
@@ -1167,7 +1391,12 @@
       },
       {
         "clip": "8cd4596358dee2954f79c373e26cbe2e28544344046cea40aee45205b7794505",
-        "ms": 1666
+        "ms": 1666,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1175,7 +1404,12 @@
       },
       {
         "clip": "2a2d362e1898d91d59ecfad42305912804462863132745aefc5a995c64a7efa4",
-        "ms": 3207
+        "ms": 3207,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -1187,7 +1421,12 @@
       },
       {
         "clip": "24a7b342a6081cbef99fdb116c3a7a6308dcf251daa38b667d230cacfb3bade5",
-        "ms": 1613
+        "ms": 1613,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1199,7 +1438,12 @@
     "": [
       {
         "clip": "1ee8ed48fb9dd62c63d8bca4f198477a119ab2f5dc5d6c77a1ba801e5803a626",
-        "ms": 1212
+        "ms": 1212,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
@@ -1207,7 +1451,12 @@
       },
       {
         "clip": "2839744c1ed3f1fba1df747091c07f76967cca1c8e76bc2f34e4ad6663655b98",
-        "ms": 7307
+        "ms": 7307,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       }
     ]
   },
@@ -1215,7 +1464,12 @@
     "": [
       {
         "clip": "274771e08e88f7b7b22d064d3c5a5c528b9fc9c7b527d4d0c35589e992a9478b",
-        "ms": 3207
+        "ms": 3207,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
@@ -1223,7 +1477,12 @@
       },
       {
         "clip": "8385373f7ee2851ff6bb99dfe06192a24d68e265cb162d09205cc76ecf228f0b",
-        "ms": 2189
+        "ms": 2189,
+        "by": "tansy",
+        "figure": "entities/faun",
+        "names": [
+          "Tansy"
+        ]
       },
       {
         "clip": "36abd0c2577bae30612ab122340ad4d2dbac607e2fd8bc1097351f9aede06928",

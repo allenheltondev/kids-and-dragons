@@ -12,6 +12,9 @@
  *    no network), and the line falls back to the device voice until re-rendered;
  *  - an entry for a line the device voice must read (its script is broken or
  *    names someone who is not cast), or a script that is broken or uncast;
+ *  - an entry whose clips say someone else speaks them than the script and cast
+ *    sheet do (`by`, `figure`, `names`): the stage would pulse the wrong figure. `--fix`
+ *    writes them as they are today;
  *  - a malformed entry: not a clip key, no clips, a length that is not a
  *    length, or a length no voice could say those words in;
  *  - a clip the manifest names that the site does not have (`checkSources`,
@@ -26,7 +29,7 @@
 
 import { isClipKey } from "../../packages/shared/src/voice-clips";
 import type { Desired } from "./desired";
-import { mergeManifest, SHORT_KEY, SHORT_KEY_LENGTH, type Lock, type Manifest } from "./manifest";
+import { mergeManifest, sameSpeakers, SHORT_KEY, SHORT_KEY_LENGTH, type Lock, type Manifest } from "./manifest";
 import type { Finding } from "./sources.ts";
 
 export { checkSources, type Finding } from "./sources.ts";
@@ -137,6 +140,8 @@ export function checkManifests(input: ManifestInput): VoiceVerdict {
           notes.push({ at, message: "is not a line the game says any more; nothing will play it (`voice:generate -- --prune` drops it)" });
         } else if (entry.length !== line.segments.length || entry.some((clip, i) => clip.clip !== line.segments[i]?.key)) {
           failures.push({ at, message: "plays clips for words, a voice or a delivery that have since changed, so the table would hear the old line. Run `npm run voice:verify -- --fix` to drop the entry, and `voice:generate` to render the new one" });
+        } else if (!sameSpeakers(entry, line)) {
+          failures.push({ at, message: "names the wrong speaker for a clip (its `by`, `figure` or `names` is not what the script and cast sheet say), so the stage would pulse the wrong figure. Run `npm run voice:verify -- --fix`" });
         }
       }
     }
@@ -221,8 +226,9 @@ export function stretchedShortClips(input: ManifestInput): Finding[] {
 
 /**
  * The manifests with every entry that would play the wrong words taken out, and
- * nothing else changed: no clip is added (that is `voice:generate`), and an
- * entry for a line the game no longer says stays until `--prune`.
+ * who speaks each clip written as the script and cast sheet say today. Nothing
+ * else changes: no clip is added (that is `voice:generate`), and an entry for a
+ * line the game no longer says stays until `--prune`.
  */
 export function fixManifest(existing: Manifest, desired: Desired): Manifest {
   return mergeManifest(existing, desired, new Map());

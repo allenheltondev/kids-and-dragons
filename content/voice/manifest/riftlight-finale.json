@@ -159,7 +159,13 @@
       },
       {
         "clip": "e17363a852c37785e1889033f3681febae7afb5fb5f4523a82d8a9733e287fda",
-        "ms": 2468
+        "ms": 2468,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -167,7 +173,13 @@
       },
       {
         "clip": "94f8b32ece5ab07a85e1613775d8b489db04f60a966ea29b2c349c7110c62698",
-        "ms": 4307
+        "ms": 4307,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -223,7 +235,11 @@
     "": [
       {
         "clip": "3740685cdc89a9a74b5de0590277d1b04e39ab06ae878ba4a3440ba2c7e26591",
-        "ms": 1519
+        "ms": 1519,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "7cc6074f598b9e8257cefa14ec5451ae276ce609627afed7b9b083e9a22db202",
@@ -231,7 +247,12 @@
       },
       {
         "clip": "106d93899f546b0b02714f1e50c61dd50fed4b816a8fafb27d249412c73de1a7",
-        "ms": 1110
+        "ms": 1110,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -239,7 +260,12 @@
       },
       {
         "clip": "b8d9b036ff8584210548ea9f2b6b248ec71465aa4641ce0185d694ba60ca9543",
-        "ms": 2787
+        "ms": 2787,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "1f571d6531be820ae68cf66391b8308998773f5adcc345f8078b1b20bfaf3f42",
@@ -247,7 +273,12 @@
       },
       {
         "clip": "45c9c9fcfd40d7ff7ad85fef778ce3c43addff75039fe617bddc66c6dd92530a",
-        "ms": 1966
+        "ms": 1966,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "169221fa1e9084fb6cc81fdff6d0e0121c43f7cd918d4f056936ee683fbf6f48",
@@ -271,7 +302,12 @@
       },
       {
         "clip": "840380758e2ab52f4f60428252dd0ca833a323369ddd7db3af9b4c0ddabc3004",
-        "ms": 2711
+        "ms": 2711,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "b2f110c01be2533d860411b450baa42039250a2a64f7233385571cd6413354d2",
@@ -287,7 +323,12 @@
       },
       {
         "clip": "1ed2d5353b78378c51634d935d1abf3de82c0ffbc7223d453a2a4945356ca616",
-        "ms": 2863
+        "ms": 2863,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -323,7 +364,12 @@
       },
       {
         "clip": "bfaa5f924a3c953867d08ddfbd8baf0f3da6eab01e3d323280a14abe91068e76",
-        "ms": 2366
+        "ms": 2366,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "87c4c6821a972f2e16968b1f167a59cabeec6386cb8f5e855350a94dad46caa0",
@@ -347,7 +393,12 @@
       },
       {
         "clip": "9edabbefb1aaf26e7a57a1d3c3341579b7f5230f03fff6681ef46f1955e1bdf9",
-        "ms": 674
+        "ms": 674,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "963bb55d472f73a696c8efa332b5f5fbd083e3aa85f1f0496cabb790a51191ff",
@@ -387,7 +438,12 @@
       },
       {
         "clip": "2fa2fbae81e565692bf112945596106e3487f20cf6d9b7daa08183c4eb84d8bb",
-        "ms": 1231
+        "ms": 1231,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "9de03d7cb474c805b937dc955e096deb215905cd8678fa80010f6d47aa6996b5",
@@ -443,7 +499,12 @@
       },
       {
         "clip": "5ef23dd65d92e9dc0ae7e2115666d8e4e9f3e2eee92da72cfe9cd0d6cb0eebeb",
-        "ms": 2246
+        "ms": 2246,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -451,7 +512,12 @@
       },
       {
         "clip": "e945133ae0bcc78196efed3d602b04425802634c40fa7585df29e8c98b72c9bd",
-        "ms": 2766
+        "ms": 2766,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "539253d61836da6389a6af34459990f665c5230e7245d2070e9cbb0681470e90",
@@ -491,7 +557,11 @@
       },
       {
         "clip": "efd1ceec761d0a086973ab1186f29984c00873c8bd765f9525115417ba34a068",
-        "ms": 513
+        "ms": 513,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -499,7 +569,11 @@
       },
       {
         "clip": "9378f868afb2be54d3572a7b3d7c0efe1c1f51090470ce76141e8c9ad25254b3",
-        "ms": 1174
+        "ms": 1174,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "469a11a1d2b9ea8ed7b95c96cda618c01e0109529914c6f861cc1b07736c2e7a",
@@ -511,7 +585,12 @@
     "": [
       {
         "clip": "6db66175476293de47cb887f9e6d74cbd45f5dbe7e19528af1b5dfe4458a3368",
-        "ms": 2869
+        "ms": 2869,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "61c34a2b8b09140484c22ee21cb0f7d9a7d1e706ad85b9b22c9f474709a8e59d",
@@ -527,7 +606,12 @@
       },
       {
         "clip": "4fb73b32d0a02dc3cf39f6c42bb75155fef759ec3446680d7f16b98ebce4410c",
-        "ms": 2059
+        "ms": 2059,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "e8517a218bb6ce78b68fd1d642bc5131ecf1fd67c7d2a0776018b2cf80fc8aee",
@@ -583,7 +667,13 @@
       },
       {
         "clip": "fb3dca50320fd42a129929135fcf5f03db1e7de8c0e30949d7140cac3a57a905",
-        "ms": 1608
+        "ms": 1608,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "a3b01bad3d921076fd3b2f4594148cca28d491b4abc8d7025627392d2a996ab2",
@@ -591,7 +681,13 @@
       },
       {
         "clip": "5b48c1e9926331d83622209f5ce8e1bdb776d79e74facab14bbdb4b0117f5ea6",
-        "ms": 2871
+        "ms": 2871,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       }
     ]
   },
@@ -603,7 +699,12 @@
       },
       {
         "clip": "aac696ded573cd6f317ddbce7ceced4a6b6aba68be48b169e52a9916d4ae13b6",
-        "ms": 1862
+        "ms": 1862,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -611,7 +712,12 @@
       },
       {
         "clip": "6b90c4c3a59a269cf3f3a5aa4b3077a5ad430819396c97a78f63ef146bf4eaf4",
-        "ms": 1403
+        "ms": 1403,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "94e8728f10e7dc2eb1483f8a5cf2de25d74f3a573383eda8f1f7bb7ae7b28ff6",
@@ -627,7 +733,12 @@
       },
       {
         "clip": "f61d003dbb22ab4a131fa7436d53a237983e2e8bf3bca479821f047f3246ced3",
-        "ms": 1300
+        "ms": 1300,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "c1c1db25e28fda1826163f6a4d6e10b2a96d7fac96fba7868e7aa409692d5576",
@@ -635,7 +746,12 @@
       },
       {
         "clip": "9e956352c1e942969ef03532d48c14d818118b2086eb078f01771aff44d98595",
-        "ms": 1336
+        "ms": 1336,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "ef619b46f3f51d388d265b212981637f1ea011f96a222ab2f61e5264508e2ebe",
@@ -643,7 +759,12 @@
       },
       {
         "clip": "debe2bc029cf0e1f215fe0747fac8f33d9e04e0452eb0334cc870506e2936278",
-        "ms": 7807
+        "ms": 7807,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -671,7 +792,12 @@
       },
       {
         "clip": "b685fcd5a0cdc9fc306c6302bcd357ab3e1bfd9259166dc1301cb484f2a49262",
-        "ms": 1253
+        "ms": 1253,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -679,7 +805,12 @@
       },
       {
         "clip": "e616ff8434e581ac9f53e4409963c121aab0969ede65a2a563824b3bdccce48f",
-        "ms": 2854
+        "ms": 2854,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -691,7 +822,12 @@
       },
       {
         "clip": "9d72a41d8eca36caf7556cde6d4a41602fa2a8aa36d25640ba95ff57668827b2",
-        "ms": 2065
+        "ms": 2065,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "dff2fdd4f89a63723485a02130789b7e4290f434a29bfc9a716190f252d3dbd9",
@@ -699,7 +835,12 @@
       },
       {
         "clip": "5eb50fe0dc6a5f9159c77fe0baa325c5c315718aabd0f455ca5d0653595b8ccb",
-        "ms": 8607
+        "ms": 8607,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "80a8a91c01977133720a1821fabfc6869e2d1cd1a17a63594cd6747b41d2a2da",
@@ -707,7 +848,12 @@
       },
       {
         "clip": "a6ba60e9a51132733444122ce2bf89c36732a3e1451f083a747632105f592a1a",
-        "ms": 1778
+        "ms": 1778,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "613bbe374c934cc936f61a9aa9df5fa424f67f8b6b5a91c9f368faba4bfed7fc",
@@ -715,7 +861,12 @@
       },
       {
         "clip": "0a4516a00f5dd1d70a5f3f27e779dce64238729e71f0af1f1759c48235c6b749",
-        "ms": 1279
+        "ms": 1279,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -727,7 +878,12 @@
       },
       {
         "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
-        "ms": 1927
+        "ms": 1927,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "718ab35316e4b7020f3bb8e2c09da68bc398d0047ab8ba728f14001fe2953098",
@@ -743,7 +899,12 @@
       },
       {
         "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
-        "ms": 1927
+        "ms": 1927,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "cc05e6e69b3f6742b37b13876f79f10c45f3594156b256c1ed7d4d7569ae0bdc",
@@ -759,7 +920,12 @@
       },
       {
         "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
-        "ms": 1927
+        "ms": 1927,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "3ebe8aebf32a5eadf3df6a6f377543ba48eec20fbe7563ed69e1edcd3e85e737",
@@ -775,7 +941,12 @@
       },
       {
         "clip": "399aa65779a1028e6cbf30568c6e54d7520af782e6c6d3edc1ed0fee9d150a19",
-        "ms": 1927
+        "ms": 1927,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "696ae192dd5c30bcd3dc7d41a179049222bc0ab54df4e0b48aecea7d64ca45af",
@@ -791,7 +962,12 @@
       },
       {
         "clip": "64fb9bf4c9deca8f0d585c093cf4a3201cd299ffd987ac78aa0bb2835f031df8",
-        "ms": 3107
+        "ms": 3107,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "60f31da24edf539b14761c718b29097b81bf4e397bd3f228e35d559c276c9243",
@@ -799,7 +975,12 @@
       },
       {
         "clip": "9fa5032357c0fe5d4a46fc2e9cb97b1908d5a5feab06273d8980495b041074b7",
-        "ms": 1930
+        "ms": 1930,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "3f6789ca37a9c4fc1a97c044d95630f40f0120ddd2ebd197d826cfc3e36007de",
@@ -831,7 +1012,12 @@
       },
       {
         "clip": "b04f095a79b710ef3697dd5c491c7a82b1631ad0ffe79b968f85d12a0d9c0d49",
-        "ms": 1578
+        "ms": 1578,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -839,7 +1025,12 @@
       },
       {
         "clip": "aff9b9b231a0384c4650eeac7b6c554639d219e5e6f1fc0191dc70404e0e9723",
-        "ms": 849
+        "ms": 849,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "names": [
+          "Bram Lock"
+        ]
       }
     ]
   },
@@ -859,7 +1050,12 @@
       },
       {
         "clip": "087c795e275e5115a5d09bbd442ded07cf1a5d3d4cea28f102f0d0998844f731",
-        "ms": 2322
+        "ms": 2322,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "066a754ff57c964e3a7e00f89548e04f450940eca0bfe2416a170a0a6ca6fd1e",
@@ -875,7 +1071,12 @@
       },
       {
         "clip": "700283d1166258d3d1caa2329a6b95d3da9c314ece62f7354242d808e5334176",
-        "ms": 4007
+        "ms": 4007,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -883,7 +1084,12 @@
       },
       {
         "clip": "f91817dfc78177c1dc2b9cb546319d78789459bd5d0f2224f305d9c26aa48c8e",
-        "ms": 7007
+        "ms": 7007,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -895,7 +1101,12 @@
       },
       {
         "clip": "96035d36b10645c89724fc6375b17f96e50a118defd39354c86b514eaaeabfa0",
-        "ms": 2104
+        "ms": 2104,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -903,7 +1114,12 @@
       },
       {
         "clip": "909e482f34f64302962f78cc30b3712386213401867e8e52cdf8d93b5e4771fa",
-        "ms": 5107
+        "ms": 5107,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "1745e3ed3b30d03a8b93853d1c39ba4a57250c5c41a6afad487788eb80800e42",
@@ -919,7 +1135,12 @@
       },
       {
         "clip": "cd8fa77b4d2236f495f44616cc58a1dacc694f472ac3882e6e1892d7b7242210",
-        "ms": 1558
+        "ms": 1558,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "6d202c367acd7d11680eda9ceda1fa679b789fa1329150a107e9af175045d686",
@@ -927,7 +1148,12 @@
       },
       {
         "clip": "86e36c15b209f03aa9953545df694e89fd99f4e5a727ec296a8566e990a16b93",
-        "ms": 1516
+        "ms": 1516,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "11fa75da0e146e040470b553e24f366be77010a0a34f0adbfe3e2174f25a0c4b",
@@ -943,7 +1169,12 @@
       },
       {
         "clip": "47e3bc64be334051360b02f69971189317fc5b49d7ee8b689a94b19edfeab273",
-        "ms": 2100
+        "ms": 2100,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
@@ -951,7 +1182,12 @@
       },
       {
         "clip": "45ae94db57107bc9d49ae1f01cc53c1da0b1629c6350cd469dfa6f0aac9a5665",
-        "ms": 12507
+        "ms": 12507,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -963,7 +1199,12 @@
       },
       {
         "clip": "61f7b34da803bf33bf4fbee987d946c0a5ad663bcf41606d573c11b29ed59da5",
-        "ms": 2812
+        "ms": 2812,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "2de3fe1a694221db50b3861bfd7c836992c52b9c8041d3c1388bc894724839d1",
@@ -1075,7 +1316,12 @@
       },
       {
         "clip": "eb779e25dec839066552398ff6fa0079b78ac16e0d5875cd41209e127fc0f5e0",
-        "ms": 1980
+        "ms": 1980,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       },
       {
         "clip": "70f2be47b6771915f5af7189325169db6bfd8e21857776729830272d07903d6f",
@@ -1083,7 +1329,12 @@
       },
       {
         "clip": "e552340bd63ece8a5d4627623c716c4bd56bec2998f4faa7d214a261f0e6ecbf",
-        "ms": 5307
+        "ms": 5307,
+        "by": "yeti_herder",
+        "figure": "cast/yeti_herder",
+        "names": [
+          "Yeti herder"
+        ]
       }
     ]
   },
@@ -1095,7 +1346,12 @@
       },
       {
         "clip": "d035953937523342061b05e33a9db655695bb828b6d9284895e17a21d82544c0",
-        "ms": 2856
+        "ms": 2856,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "1952b3cf9c95e156f0463c9ed5a8ec8b83bb40bf55599516583d4c35ca010755",
@@ -1207,7 +1463,13 @@
       },
       {
         "clip": "f35264c6e94350d7346e9b8eee2a687b05c55d2abb4c528c782b81e58af2b8b7",
-        "ms": 1735
+        "ms": 1735,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "5e120424ba4fd9938547275e713ffc94bccb535ec3db86943af54455fc7fe533",
@@ -1263,7 +1525,12 @@
       },
       {
         "clip": "06835719dd2bbde3c5ee9b92c9a04fa70917d2de6d2228ecd79e5b7a3f2f0f2c",
-        "ms": 1069
+        "ms": 1069,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1271,7 +1538,12 @@
       },
       {
         "clip": "12606b49448ed851031c3dcd74d5c726a9c4fc37b9cf2c46f26847063a3854ca",
-        "ms": 1475
+        "ms": 1475,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "36b17921388a4ab747d1e535dd7eec09a40e96a49242f518c772abd0f99a67dd",
@@ -1295,7 +1567,12 @@
       },
       {
         "clip": "10a8344a1b9f326a9ce2ea1e2d7c3668c89e9400d4b28136e0ebea26ce2eabc7",
-        "ms": 2035
+        "ms": 2035,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1311,7 +1588,12 @@
       },
       {
         "clip": "7367fa1ab69e10524799a0c853c8ef67731575d2ec52319d6c1a3e99f76badca",
-        "ms": 1911
+        "ms": 1911,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "caa1186fda8d334763fe0841a5e422d7578b6312531eadf6ee4d76dc1528370c",
@@ -1319,7 +1601,12 @@
       },
       {
         "clip": "dfb0d63e047739778af491128a8d72c0f7d44ad59f321fa65fb0eff1ab8597c3",
-        "ms": 1874
+        "ms": 1874,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1331,7 +1618,12 @@
       },
       {
         "clip": "3024c582282ea1f3c964bedaec2f38789994b4f853729d0ce926b304b17a7252",
-        "ms": 2135
+        "ms": 2135,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "a02c94a58a46d2ce5c0478a04428bd7e5badf6e98e8ffbd0c8d96944d8220ffc",
@@ -1339,7 +1631,12 @@
       },
       {
         "clip": "fbeeb54fc71bc7efb890e4ee2896dd47a0414d00088350ab51e3d9d80abd6497",
-        "ms": 1007
+        "ms": 1007,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1359,7 +1656,12 @@
       },
       {
         "clip": "364d21d0a9106eedb84a1237e994378aca16dbeed9f416e28d928a7814365941",
-        "ms": 1599
+        "ms": 1599,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "580711b405259280848ddf7e5a5b20d0799b908b0187ea123aad4af6c6c83695",
@@ -1367,7 +1669,12 @@
       },
       {
         "clip": "8275b69cb6f94d5f08bfa73ff945a621f537974e1ab65dc2feaf04e317fbfc7f",
-        "ms": 2400
+        "ms": 2400,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1387,7 +1694,12 @@
       },
       {
         "clip": "4871313ce6da2df07f4e37893e821f8fc200ec31e2225bc3f3d6b6dd7db29cff",
-        "ms": 1058
+        "ms": 1058,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       }
     ]
   },
@@ -1407,7 +1719,12 @@
       },
       {
         "clip": "88a7709230eb70c17f89beb3e64d22da263e0a7d70b2461c49277c7b07b6c8ca",
-        "ms": 2086
+        "ms": 2086,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "c98411358da038f802e5cec6e6980b8c28bc8e0a7154a5588dc012e25270e4c5",
@@ -1415,7 +1732,12 @@
       },
       {
         "clip": "29b25ebf2f54c1ec7eda9ac264e3d9ba9a51007ab6cd222ff3ecf96665daede0",
-        "ms": 6907
+        "ms": 6907,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "d07abfe9aebf81cd7bc9c078864e28466071f5a368cc104102e219431f5d4873",
@@ -1423,7 +1745,12 @@
       },
       {
         "clip": "02a58a0ea8b92ebd2f5438801e074fa9c9e91ccc25fdc69ea7438213b4e59202",
-        "ms": 2346
+        "ms": 2346,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "9e7bf320dbfaad6d103df55239c4df3c966edecf47837cc6f9c6d067879fcae3",
@@ -1431,7 +1758,12 @@
       },
       {
         "clip": "8731fc2946e364288569c3ce623d6ed1eb660ba90936dac085cec3ebc87ca547",
-        "ms": 1441
+        "ms": 1441,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "33447137b39f4ed7d02f6598ded684bf6a1fb5c798a68debf6027ad7af317305",
@@ -1459,7 +1791,11 @@
     "": [
       {
         "clip": "66b20c024d9118c62745db549df9be1fd0642749609081c7aed0b4ae4879bc55",
-        "ms": 996
+        "ms": 996,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "b5081a58d145fa70c137baf798ea20ffcb64abae9b14e06b2006fddfdde4459c",
@@ -1467,7 +1803,11 @@
       },
       {
         "clip": "cc0353bd14e04bb2628885ef70b66d74b1a41507708c1eda4c19461b331de5cc",
-        "ms": 676
+        "ms": 676,
+        "by": "party",
+        "names": [
+          "The party"
+        ]
       },
       {
         "clip": "51453625d96903995f6f4c8c8c885e0d9aece2ad7ad05bead10789b418cfaafc",
@@ -1555,7 +1895,12 @@
       },
       {
         "clip": "35ef2ff44e7e07dd8d583c56f43abbdde7079c2768d4ef142af3ae6ff041d723",
-        "ms": 1940
+        "ms": 1940,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       },
       {
         "clip": "690cbbbe1d7b4f0fd3c2db6dae143614e4bbd97b48918ee0ce60a05b73dfacbc",
@@ -1563,7 +1908,12 @@
       },
       {
         "clip": "a868e2ca6af7afc58690f9112fa12ab8410132838c0e278a84b332e8a4b6b165",
-        "ms": 3507
+        "ms": 3507,
+        "by": "pip_thistledown",
+        "figure": "cast/pip_thistledown",
+        "names": [
+          "Pip Thistledown"
+        ]
       }
     ]
   },
@@ -1599,7 +1949,13 @@
       },
       {
         "clip": "c719e28592072a951ae8ee219f1ceba6b14289da2d4c75a08a69e6fe3c70d8bf",
-        "ms": 801
+        "ms": 801,
+        "by": "orin_vale",
+        "figure": "cast/orin_vale",
+        "names": [
+          "Master Orin Vale",
+          "Orin Vale"
+        ]
       },
       {
         "clip": "3d0d51cf5bb5e477ce0812befa60a3342c3a44ed879a9a837d92632c8e6edbc7",
@@ -1655,7 +2011,12 @@
       },
       {
         "clip": "4d70a4aba405f038bf14e61d9c61f73622a39e1129fd023b5629270be27b0fcc",
-        "ms": 15107
+        "ms": 15107,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "38909b75eb0b2aade88986ccf50f64e2b2bb96fdfc39e6ab56e27e10924a58bf",
@@ -1671,7 +2032,12 @@
       },
       {
         "clip": "7578e716d6ddb68cd71a25437fca8de3e1486a1e68e602d104366581fa192869",
-        "ms": 1165
+        "ms": 1165,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
@@ -1679,7 +2045,12 @@
       },
       {
         "clip": "a875a924e52f3122697b2142fe1d0f356798f1978a9213b8ad9bc68ca76e4425",
-        "ms": 4007
+        "ms": 4007,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "2196bb68ee300583efd9cdef4e60f15c69c6f574ed3932c98d3bbc9ffbcd57da",
@@ -1695,7 +2066,12 @@
       },
       {
         "clip": "bb08d9ecc0a66c81fb7ea56ae3474363420efcd087f9713618b7090eae1ce75b",
-        "ms": 6207
+        "ms": 6207,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
@@ -1703,7 +2079,12 @@
       },
       {
         "clip": "377357c3bea3afbe5208d938034c14fb52aebaca8d16e613e47a649a592698b0",
-        "ms": 1829
+        "ms": 1829,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1731,7 +2112,12 @@
       },
       {
         "clip": "bb08d9ecc0a66c81fb7ea56ae3474363420efcd087f9713618b7090eae1ce75b",
-        "ms": 6207
+        "ms": 6207,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b1d813b8227a1b5233d096b9167832acd07286e764401777ae640b186ab3e3b9",
@@ -1739,7 +2125,12 @@
       },
       {
         "clip": "377357c3bea3afbe5208d938034c14fb52aebaca8d16e613e47a649a592698b0",
-        "ms": 1829
+        "ms": 1829,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1783,7 +2174,12 @@
       },
       {
         "clip": "10a8344a1b9f326a9ce2ea1e2d7c3668c89e9400d4b28136e0ebea26ce2eabc7",
-        "ms": 2035
+        "ms": 2035,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1815,7 +2211,12 @@
       },
       {
         "clip": "2976ad5a0e0d0015e565753c32f94f385971daec07fa9e20526b5c29884044c7",
-        "ms": 4607
+        "ms": 4607,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1823,7 +2224,12 @@
       },
       {
         "clip": "2088b1c43c5cf06ab75a699f2d1d334a8f88d40a0fd9a8a5ff2385e9e56f6740",
-        "ms": 2085
+        "ms": 2085,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b4592729de0a7066b280eb469a15b9c4c70f0eaefc9960cbf3901d7c853c9d04",
@@ -1831,7 +2237,12 @@
       },
       {
         "clip": "1b8c0aefd092b5366bf65d6347f971e4715760adc2f2063e85f94c24e0f68bde",
-        "ms": 987
+        "ms": 987,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "e3a10a4b3933e834f1a6de0d42b6d1404fc78483e32db9db008a96f52a6d4a08",
@@ -1839,7 +2250,12 @@
       },
       {
         "clip": "9841ee8f6f86dd38d10ebccbe5f95e92b54ea44c0373367af826071be1e75f92",
-        "ms": 1142
+        "ms": 1142,
+        "by": "bram_lock",
+        "figure": "cast/bram_lock",
+        "names": [
+          "Bram Lock"
+        ]
       },
       {
         "clip": "b39bc6a836039e2e945fe52ea9a130ecd85144b7f60ff4a318bc479f849880fb",
@@ -1863,7 +2279,12 @@
       },
       {
         "clip": "68b200c724e7ed4a7756d8b4d03e8db066d1f12f502e55a00842f6f386f7cccd",
-        "ms": 3807
+        "ms": 3807,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1871,7 +2292,12 @@
       },
       {
         "clip": "302428c01df13c6ac0c46f8014e066ed3274d4619399881ad772d94cf13926e0",
-        "ms": 10607
+        "ms": 10607,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "cbd2c65041c9c1ac81fde493252c55082a6223df14e8d6f1c5842f1d96971380",
@@ -1879,7 +2305,12 @@
       },
       {
         "clip": "f401988fd3c4ba93230b923db219a6051ede38b953ddcbde2f75b9830bcb8953",
-        "ms": 2529
+        "ms": 2529,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1891,7 +2322,12 @@
       },
       {
         "clip": "a63567153525e6ab5418b34fef5dfbc9ec515ef677104bde22797dce7d228bb5",
-        "ms": 2389
+        "ms": 2389,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "eb56ff007b2318a9b23c08118c790ebcd143004ab6ab065e24224645972f0b5b",
@@ -1899,7 +2335,12 @@
       },
       {
         "clip": "7b103da882441119437e7358ce6370096c7c328b0693e61a41bc6ecca71c8e47",
-        "ms": 4107
+        "ms": 4107,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       }
     ]
   },
@@ -1911,7 +2352,12 @@
       },
       {
         "clip": "a2e68fbab9f9eec3eeb99a2a24f085af72312bd53540c288b645af666ab61ea1",
-        "ms": 2778
+        "ms": 2778,
+        "by": "corvane",
+        "figure": "cast/deep-ice-figure",
+        "names": [
+          "Corvane"
+        ]
       },
       {
         "clip": "b96f0617caad7cb9ddd9e5b915191b2eb04b9d557b526a4788ab046071eef480",
@@ -1919,7 +2365,12 @@
       },
       {
         "clip": "bcb32a1d78ad5c95a6c2d1431bad1043f9c0627b9230a7b50d8df5276015facc",
-        "ms": 3307
+        "ms": 3307,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       },
       {
         "clip": "418f5a42b29e7410ac9eb8b1454b68ffa6c56f092e9a82d1dbed6316992b8ae2",
@@ -1927,7 +2378,12 @@
       },
       {
         "clip": "db32ed3cb18e4525c8807d5e8f93bbde8794d79cd5a8a105f62ce7f08ab01a8b",
-        "ms": 6707
+        "ms": 6707,
+        "by": "seren_wisp",
+        "figure": "cast/seren_wisp",
+        "names": [
+          "Seren Wisp"
+        ]
       }
     ]
   },
@@ -1935,7 +2391,12 @@
     "": [
       {
         "clip": "22fd3684ca1a2fd31bf284b4816f31a91561895fa1f7298d046b7df6efd12706",
-        "ms": 2365
+        "ms": 2365,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "71a252f1bdb85b367144c2794665baa1454d6d293dcf7401b9acbfd3a2ea63df",
@@ -1947,7 +2408,12 @@
     "": [
       {
         "clip": "22fd3684ca1a2fd31bf284b4816f31a91561895fa1f7298d046b7df6efd12706",
-        "ms": 2365
+        "ms": 2365,
+        "by": "olivia",
+        "figure": "cast/lady_olivia",
+        "names": [
+          "Lady Olivia"
+        ]
       },
       {
         "clip": "71a252f1bdb85b367144c2794665baa1454d6d293dcf7401b9acbfd3a2ea63df",
