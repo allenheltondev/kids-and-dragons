@@ -132,7 +132,8 @@ No game art or generated painting was added.
 Browser regressions drive the two new climbing games and the crossing-signal lesson
 through real phone controls. They cover poor and clean climbs, reload during recovery,
 health applied only on continuation, the short phone, TV board containment and the
-earned crossing option. Three new browser cases pass. The final focused engine/save/
+earned crossing option. Three new browser cases pass. The existing reusable-interaction browser regression
+also passes its two-phone/TV refresh, shared pulls and full meadow catalog. The final focused engine/save/
 audit group passes 52 tests. Content validation passes (218 checks, five existing
 warnings); continuity has zero new candidates. Typecheck and production build pass.
 Asset-store verification passes for all 3,740 lock entries, including the four
