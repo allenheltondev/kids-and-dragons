@@ -190,12 +190,15 @@ test("7L: four friends and the brace feedback fit the largest-text TV", async ({
     if (state.prompt?.kind !== "interaction") throw Error("Expected the brace");
     await send(state.prompt.actorId!, { action: "start", relaxed: false, rulesVersion: 2 });
     for (const seat of table.phones) await send(seat.playerId, { action: "commit", round: 0, position: .4 });
-    await expect(tv.page.locator(".skill-game")).toContainText("The weight shifts");
+    await expect(tv.page.locator(".skill-game")).toContainText("Weight shifts: pull higher");
     for (const seat of table.phones) await send(seat.playerId, { action: "commit", round: 1, position: 1 });
     await expect(tv.page.locator(".skill-game")).toContainText("A sharp jerk");
     await tv.page.evaluate(async () => { document.documentElement.dataset.text = "largest"; await document.fonts.ready; });
     await tv.page.screenshot({ path: info.outputPath("wagon-four-tv-largest.png") });
     await tvFits(tv.page);
     await expect(tv.page.locator(".skill-team li")).toHaveCount(4);
+    // System UI fonts differ across TV computers. Exercise a wider fallback too.
+    await tv.page.evaluate(() => document.documentElement.style.setProperty("--kad-font-ui", "Verdana, sans-serif"));
+    await tvFits(tv.page);
   } finally { await tv.context.close(); }
 });

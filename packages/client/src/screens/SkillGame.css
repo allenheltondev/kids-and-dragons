@@ -61,7 +61,7 @@
 .skill-strain { display: flex; align-items: center; gap: .5em; font-size: .8em; color: #ffcfb2; }
 .skill-strain meter { flex: 1; min-width: 3em; }
 .game--tv .skill-scene { min-height: clamp(9em, 18cqw, 15em); }
-.game--tv .skill-game { font-size: .85em; gap: .4em; }
+.game--tv .skill-game { font-size: .85em; gap: .3em; }
 .game--tv .skill-feedback { padding: .4em .6em; }
 .game--tv .skill-game--cooperate .skill-caption { display: none; }
 .game--tv .skill-game--balance, .game--tv .skill-game--cooperate { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
@@ -70,7 +70,7 @@
 .game--tv .game__board > .skill-game { flex: 1 1 0; min-block-size: 0; }
 .game--tv :is(.skill-game--balance, .skill-game--cooperate) > .skill-scene { align-self: stretch; min-height: 0; height: auto; }
 @container world (max-height: 26em) {
-  .game--tv .skill-game { font-size: .75em; gap: .35em; }
+  .game--tv .skill-game { font-size: .75em; }
 }
 .game--tv .skill-scene__heroes { height: 6em; }
 .game--tv .skill-scene__heroes > :is(img, .hero-sparkle-host) { max-width: 10em; }

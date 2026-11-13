@@ -86,7 +86,8 @@ The TV keeps the chapter goal visible in its folded form while a game is active.
 introductory prose and the large duplicate cue give their room to the painted board, current
 feedback and participant status. Knack/snag reminders remain. Phone controls and spoken
 introductions remain available. Short-phone and largest-TV checks include physical board
-containment, rather than relying on hidden overflow.
+containment, rather than relying on hidden overflow. The four-seat check also exercises a
+wide system-font fallback; the TV uses a compact weight cue to avoid an extra wrapped row.
 
 Engine coverage includes one, two and four heroes, actual misses, assistance, nonlethal costs,
 team compensation, correction after a slip/jerk, saved progress and original saved outcomes.
@@ -105,9 +106,9 @@ key was available for rendering replacement clips in this session.
 
 ### Review evidence
 
-- [320px table controls](https://assets.kd.readysetcloud.io/sha256/46/46798ef6ca0f3547a001b82e0ddbd64943cb4a16dc03b148a37645c13bbb336a.png)
-- [Largest-text wagon TV](https://assets.kd.readysetcloud.io/sha256/39/393bf06fccf912f0d5b346ea24a6f47cbfbc7f2901ee61d992e35df337e85ef1.png)
-- [Four heroes at largest TV text](https://assets.kd.readysetcloud.io/sha256/40/40f027709e403d4d0f8a46015420c02965b513a5e61207fef065e785009598f1.png)
+- [320px table controls](https://assets.kd.readysetcloud.io/sha256/b0/b00f3f02145ff3a5612d5d9797a17aeb2ddc754257e26b38e1f3e2aeefc1da53.png)
+- [Largest-text wagon TV](https://assets.kd.readysetcloud.io/sha256/fe/fe3337b626420be8549908b504b2ed0732505a663ec6cb715439dae0922a6122.png)
+- [Four heroes at largest TV text](https://assets.kd.readysetcloud.io/sha256/08/089b22104c7c047c7957641b0bcb6cf255e29680788bd50b100b6a3f8229948a.png)
 - [Shared-TV recovery recording](https://assets.kd.readysetcloud.io/sha256/39/39a2a14507833cee87e9a03da0ea4f8cd7d8fc74a966bdb4f6ab9c6dbd0433c7.webm):
   API-driven seats show compensation, a jerk, corrected pulls and the earned stone. The phone
   browser cases separately exercise real controls. The recording and its contact sheet were

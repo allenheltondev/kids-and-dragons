@@ -98,7 +98,9 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
         <div className="skill-ledge" aria-hidden="true">{[0, 1, 2].map(i => <span key={i} style={{ bottom: `${18 + i * 22}%` }} />)}</div>
         <div className="skill-hoist" style={{ bottom: `${20 + game.progress * 20}%` }}><span className="skill-hoist__rope" />{token()}</div>{heroes}
       </div>{progress}
-      <p className="skill-reading">{game.progress === 0 ? spec.supportLabel : game.progress === 1 ? "The weight shifts. Give more support" : "Almost there. Settle it gently"}</p>
+      <p className="skill-reading">{game.progress === 0 ? spec.supportLabel : game.progress === 1
+        ? playerId ? "The weight shifts. Give more support" : "Weight shifts: pull higher"
+        : playerId ? "Almost there. Settle it gently" : "Nearly there: ease gently"}</p>
       <div className="skill-gauge" role="img" aria-label={`Safe pull: ${Math.round((target - tolerance) * 100)} to ${Math.round((target + tolerance) * 100)} percent`}>
         <span className="skill-gauge__gold" style={{ left: `${Math.max(0, target - tolerance) * 100}%`, width: `${(Math.min(1, target + tolerance) - Math.max(0, target - tolerance)) * 100}%` }} />
         {active && playerId && <span className="skill-gauge__needle" style={{ left: `${power * 100}%` }} />}
