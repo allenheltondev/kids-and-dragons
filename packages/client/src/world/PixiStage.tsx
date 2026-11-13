@@ -41,6 +41,9 @@ export function stageBudget(tv: boolean): { antialias: boolean; maxFPS: number; 
   return tv ? { antialias: false, maxFPS: 30, gcMaxUnusedTime: 30_000, gcFrequency: 15_000 } : { antialias: true, maxFPS: 60 };
 }
 
+/** The least time between two resizes of the stage while its pane is changing size. */
+const RESIZE_GAP_MS = 80;
+
 /** The most pixels the stage draws: a 1440p frame. Past it the fill rate buys nothing painted art shows. */
 export const STAGE_MAX_PIXELS = 2560 * 1440;
 
@@ -186,6 +189,7 @@ export function PixiStage(): React.JSX.Element {
     let app: Application | null = null;
     let observer: ResizeObserver | null = null;
     let stopCoverWatch: (() => void) | null = null;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     // Local to this effect run, never the shared ref: strict mode overlaps two
     // effect instances, and a cleanup that reads `sceneRef.current` tears down
     // whichever scene happens to be there — usually the *new* one.
@@ -197,6 +201,7 @@ export function PixiStage(): React.JSX.Element {
       if (app && appRef.current === app) appRef.current = null;
       removeVisibilityListener?.();
       stopCoverWatch?.();
+      if (resizeTimer !== null) clearTimeout(resizeTimer);
       removeVisibilityListener = null;
       observer?.disconnect();
       observer = null;
@@ -336,7 +341,25 @@ export function PixiStage(): React.JSX.Element {
       };
       size();
 
-      observer = new ResizeObserver(size);
+      /*
+       * A pane that is sliding (a tablet's drawer opening beside the world) reports a new
+       * width every frame, and each one is a new framebuffer and a re-layout of the scene.
+       * The first report is taken at once and the rest at most every `RESIZE_GAP_MS`, with
+       * the last one always taken, so the slide costs three resizes rather than fifteen.
+       */
+      let sizedAt = 0;
+      const resized = (): void => {
+        if (resizeTimer !== null) return;
+        const wait = RESIZE_GAP_MS - (performance.now() - sizedAt);
+        const run = (): void => {
+          resizeTimer = null;
+          sizedAt = performance.now();
+          size();
+        };
+        if (wait <= 0) run();
+        else resizeTimer = setTimeout(run, wait);
+      };
+      observer = new ResizeObserver(resized);
       observer.observe(host);
 
       stopCoverWatch = onStageCover(syncTicker);

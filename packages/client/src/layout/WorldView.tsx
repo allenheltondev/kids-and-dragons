@@ -96,7 +96,9 @@ export function WorldView({
    */
   prefetch?: boolean;
 } = {}): React.JSX.Element {
-  const phase = useRunState()?.phase ?? "lobby";
+  // The phase alone, not the run: this surface lays out by it, and a patch that leaves it
+  // (and `fightGoal`) alone renders none of the surface's own frame again.
+  const phase = useGameStore((store) => store.state?.phase ?? "lobby");
   usePrefetchUpcoming(prefetch);
   // Read once at mount: the meter is asked for when the page is opened, and a
   // URL that changes mid-session is a route change, not a settings panel.
@@ -134,34 +136,12 @@ export function WorldView({
     return useGameStore.getState().registerPresentationPlayer(play);
   }, [gatesPresentations]);
 
-  const chapter = useChapter();
-  const state = useRunState();
-  const locationAmbience = ambienceForScene(chapter, state);
-  useEffect(() => { ambience(locationAmbience); }, [locationAmbience]);
-  useEffect(() => () => { ambience(null); }, []);
-
-  const previousAudioState = useRef<ReturnType<typeof useRunState>>(null);
-  useEffect(() => {
-    const previous = previousAudioState.current;
-    if (previous?.sceneId !== state?.sceneId || previous?.chapterId !== state?.chapterId || previous?.phase !== state?.phase) stopSceneCues();
-    for (const id of sceneCuesFor(previousAudioState.current, state)) cue(id);
-    previousAudioState.current = state;
-  }, [state]);
-
-  // A rift that opens or folds shut as its scene opens (#401). Here, not on
-  // the stage, so the room hears it on the still board too. Also run when the
-  // chapter lands: the state can name a scene before its chapter has loaded,
-  // and `riftCueFor` keeps that scene pending until it can be judged.
-  const riftCueHeard = useRef<string | null>(null);
-  useEffect(() => {
-    const next = riftCueFor(riftCueHeard.current, chapter, state);
-    riftCueHeard.current = next.heard;
-    cue(next.cue);
-  }, [chapter, state]);
-  useEffect(() => () => { stopSceneCues(); }, []);
+  // Only whether a fight with no place of its own is on: the goal card's corner.
+  const fightGoal = useGameStore((store) => store.state?.encounter != null && !store.state.encounter.environment);
 
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">
+      <WorldSounds />
       {drawn ? (
         <RendererBoundary>
           <Suspense fallback={null}>
@@ -180,7 +160,7 @@ export function WorldView({
       {isSceneLike(phase) && <NarrationPanel />}
       {/* The chapter's goal through a fight (#356), folded to a line in the top corner. Outside
           a fight it is in the narration's head; in a place that fights back it heads RiftStatus. */}
-      {isSceneLike(phase) && state?.encounter != null && !state.encounter.environment ? (
+      {isSceneLike(phase) && fightGoal ? (
         <div className="world__goal">
           <ChapterGoalCard place="world" folded />
         </div>
@@ -248,4 +228,39 @@ export function WorldView({
 
 function isSceneLike(phase: string): boolean {
   return phase === "scene" || phase === "check" || phase === "encounter";
+}
+
+/**
+ * What the room hears as the story moves: a place's ambience, a scene's cues, a rift opening.
+ * It reads the whole run on every patch (a gem picked up is a cue), which is why it is its own
+ * component drawing nothing: the surface around it then renders only when its layout changes.
+ */
+function WorldSounds(): null {
+  const chapter = useChapter();
+  const state = useRunState();
+  const locationAmbience = ambienceForScene(chapter, state);
+  useEffect(() => { ambience(locationAmbience); }, [locationAmbience]);
+  useEffect(() => () => { ambience(null); }, []);
+
+  const previousAudioState = useRef<ReturnType<typeof useRunState>>(null);
+  useEffect(() => {
+    const previous = previousAudioState.current;
+    if (previous?.sceneId !== state?.sceneId || previous?.chapterId !== state?.chapterId || previous?.phase !== state?.phase) stopSceneCues();
+    for (const id of sceneCuesFor(previousAudioState.current, state)) cue(id);
+    previousAudioState.current = state;
+  }, [state]);
+
+  // A rift that opens or folds shut as its scene opens (#401). Here, not on
+  // the stage, so the room hears it on the still board too. Also run when the
+  // chapter lands: the state can name a scene before its chapter has loaded,
+  // and `riftCueFor` keeps that scene pending until it can be judged.
+  const riftCueHeard = useRef<string | null>(null);
+  useEffect(() => {
+    const next = riftCueFor(riftCueHeard.current, chapter, state);
+    riftCueHeard.current = next.heard;
+    cue(next.cue);
+  }, [chapter, state]);
+  useEffect(() => () => { stopSceneCues(); }, []);
+
+  return null;
 }
