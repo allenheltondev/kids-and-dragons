@@ -66,6 +66,7 @@ import {
 } from "../world/camp-scene";
 import { campPanelOpen, closeCampPanel, finishKitWelcome, kitWelcomeDone, onCampPanel, openCampPanel, takeCampFocus } from "./camp-panel";
 import { LookEditor } from "./LookEditor";
+import { useOwnEdits, withOwnEdits } from "../store/own-edits";
 import "./CampPanel.css";
 
 type Dispatch = (intent: ClientIntent) => void;
@@ -272,8 +273,10 @@ function CampFriends({ state }: { state: RunState }): ReactElement | null {
 }
 
 /** One hero's kit, changed by her own player (§4.5): no limit, indoors or out. */
-export function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
+export function KitEditor({ member, kit: tableKit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
   const hero = member.character;
+  // What she tapped shows at once, over the table's view, until the table shows it too (own-edits.ts).
+  const kit = withOwnEdits(tableKit, useOwnEdits("KIT_EDIT", hero.id));
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);
   const tent = tentArt(kit.tent, style)?.id ?? null;

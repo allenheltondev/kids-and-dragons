@@ -7,6 +7,7 @@
 
 import { itemCatalog } from "@kad/shared";
 import { withItemIcons } from "../assets/item-icons";
+import { keepRenewedDeviceToken } from "../store/persistence";
 import type {
   Bestiary,
   HeroesResponse,
@@ -439,6 +440,14 @@ export async function request<T>(
     );
   }
 
+  /*
+   * A device token past halfway is renewed on whichever response its request
+   * resolved it (architecture §4.5, "The device token"). Kept here because this
+   * is the one place every response passes: a phone that drops the renewal has
+   * a token that dies 30 days after it was first issued, however often it plays.
+   */
+  const renewed = response.headers?.get?.("x-kad-device-token");
+  if (renewed) keepRenewedDeviceToken(renewed);
   onHeaders?.(response.headers);
   return body as T;
 }

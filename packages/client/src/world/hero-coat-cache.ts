@@ -31,11 +31,18 @@
 
 import type { HeroCoatRequest } from "./hero-art";
 import { defaultTintRunner, type TintImage, type TintRunner } from "./hero-coat-pass";
+import { isTvBrowser } from "../display/tv";
 
 const MIB = 1024 * 1024;
 
 /** What the cache holds before it evicts: four heroes' world figures and portraits, and the book's preview (§5.3). */
 export const COAT_CACHE_BUDGET = 48 * MIB;
+
+/**
+ * A television's bound: the shared screen shows each hero in one colour at a time and never
+ * the book's preview, and its memory is the set-top box's (art-memory.ts).
+ */
+export const COAT_CACHE_BUDGET_TV = 16 * MIB;
 
 /** A tinted painting, ready to draw. */
 export interface CoatEntry {
@@ -331,7 +338,7 @@ let shared: CoatCache | null = null;
 
 /** The page's cache, with the page's runner (a worker where it can, slices where not). */
 export function heroCoats(): CoatCache {
-  shared ??= new CoatCache({ runner: defaultTintRunner() });
+  shared ??= new CoatCache({ runner: defaultTintRunner(), budget: isTvBrowser() ? COAT_CACHE_BUDGET_TV : COAT_CACHE_BUDGET });
   return shared;
 }
 

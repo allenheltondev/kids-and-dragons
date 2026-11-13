@@ -78,6 +78,7 @@ import {
   useSharePreview,
   useSynced,
 } from "../store";
+import { isOwnEdit, ownEdits } from "../store/own-edits";
 // Path helpers only — `screens/` never drags the renderer in (art-paths.ts).
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
@@ -1083,7 +1084,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     <>
     {guideOpen ? <FieldGuide /> : null}
     {/* The camp (docs/camp.md §3; #620): open from a Camp button, gone with the downtime. */}
-    <CampPanel state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} />
+    {/* Her own kit and look show at once and are sent behind her, holding no button (own-edits.ts). */}
+    <CampPanel state={state} me={me} held={held} dispatch={(intent) => { if (isOwnEdit(intent)) ownEdits().edit(intent); else void dispatch(intent); }} />
     {replayingIntro && runCampaign ? <PrologueReplay campaign={runCampaign} onClose={closeIntro} /> : null}
     {/* `hidden`, not unmounted, while the guide is open: a half-made aim in a
         fight survives a look at the guide, like the bag. */}

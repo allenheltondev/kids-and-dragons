@@ -32,7 +32,7 @@
  * screen picks up where it was instead of replaying what it missed (§8.7).
  */
 
-import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
+import { Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
 import leafArt from "../assets/painted/leaf.webp";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
@@ -58,6 +58,7 @@ import {
 } from "./actor-art";
 import type { HeroArtSubject } from "./hero-art";
 import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
+import { holdArt, loadArt as loadStageArt } from "./art-memory";
 import {
   campRoute,
   campRoutes,
@@ -191,7 +192,7 @@ export interface CampOptions {
    * load (a stand-in until the camp art lands, #615). Absent: a plain dusk.
    */
   fallbackBackdrop?: string;
-  /** How a texture is loaded; Pixi's `Assets.load` unless a test says otherwise. */
+  /** How a texture is loaded; `loadArt` (art-memory.ts), held while the camp stands, unless a test says otherwise. */
   loadTexture?: (url: string) => Promise<Texture>;
   /**
    * Never reach past the window's top (#625): past the figures' floor the
@@ -421,7 +422,25 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const measure = campMeasure(H);
   const pxPerCm = measure.pxPerCm;
   const assetUrl = options.assetUrl ?? ((path: string) => `/assets/${path}`);
-  const load = options.loadTexture ?? ((url: string) => Assets.load<Texture>(url));
+  /*
+   * The camp's paintings stay loaded while it stands (it keeps a piece's neutral painting to
+   * go back to), and are let go of with it, for the art sweep to unload (art-memory.ts).
+   */
+  const artHolds = new Map<string, () => void>();
+  const load = options.loadTexture ?? ((url: string) => {
+    if (!artHolds.has(url)) artHolds.set(url, holdArt(url));
+    return loadStageArt(url);
+  });
+  /**
+   * A tinted canvas as a texture of the camp's own, kept out of Pixi's global cache (which
+   * would keep the canvas for the page's life) and destroyed with the camp.
+   */
+  const tintedTextures: Texture[] = [];
+  const canvasTexture = (canvas: HTMLCanvasElement): Texture => {
+    const texture = Texture.from(canvas, true);
+    tintedTextures.push(texture);
+    return texture;
+  };
   let still = options.still ?? reducedMotion();
   let seed = options.seed ?? 0;
   let destroyed = false;
@@ -707,7 +726,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function tintCloth(texture: Texture, cloth?: string, accent?: string): Texture {
     const source = texture.source?.resource as CanvasImageSource | undefined;
     const canvas = source && cloth && accent ? campKitCanvas(source, cloth, accent) : null;
-    return canvas ? Texture.from(canvas) : texture;
+    return canvas ? canvasTexture(canvas) : texture;
   }
 
   function loadPiece(entry: PieceView, path: string, cloth?: string, accent?: string): Promise<void> {
@@ -1644,7 +1663,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         if (destroyed || piece.kitRevision !== revision) return;
         const source = texture.source?.resource as CanvasImageSource | undefined;
         const canvas = source ? campKitCanvas(source, CAMP_KIT_STYLES[style].cloth, accent) : null;
-        showPieceArt(piece, canvas ? Texture.from(canvas) : texture, CAMP_KIT_STYLES[style].path);
+        showPieceArt(piece, canvas ? canvasTexture(canvas) : texture, CAMP_KIT_STYLES[style].path);
       }).catch(() => undefined);
     }
     const wanted = new Set(figures.map((f) => f.id));
@@ -2351,6 +2370,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     for (const actor of actors.values()) actor.heroArt?.();
     actors.clear();
     view.destroy({ children: true });
+    for (const texture of tintedTextures.splice(0)) texture.destroy(true);
+    for (const release of artHolds.values()) release();
+    artHolds.clear();
   }
 
   return {

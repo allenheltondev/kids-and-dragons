@@ -122,6 +122,7 @@ import { WORDS_S, createWordsTaps, type FriendTapTarget, type TapVerdict } from 
 import { friendWords } from "./camp-stand-in";
 import { WAVE_S, wavePose } from "./camp-motion";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
+import { artLoaded, holdArt, loadArt } from "./art-memory";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { INDOOR_LIGHT } from "./camp-light";
 import { createShadowLayer, groundShadow } from "./ground-shadows";
@@ -607,7 +608,13 @@ export function createScene(app: Application): PartyScene {
   let packedKits: readonly PackedKit[] = [];
   let packedSpots: PackedSpot[] = [];
   let packedSlot = 0;
-  const packedSprites = new Map<string, { sprite: Sprite; key: string }>();
+  const packedSprites = new Map<string, { sprite: Sprite; key: string; tinted?: Texture | null }>();
+  /** A packed kit's sprite, and the tinted canvas texture it alone drew, if any. */
+  const dropPackedKit = (entry: { sprite: Sprite; tinted?: Texture | null }): void => {
+    entry.sprite.destroy();
+    entry.tinted?.destroy(true);
+    entry.tinted = null;
+  };
   /** The friends out at an indoor rest, and where the last layout sat them. */
   let packedFriendList: readonly PackedFriend[] = [];
   let packedFriendSpots: (PackedSpot & { height: number })[] = [];
@@ -647,10 +654,15 @@ export function createScene(app: Application): PartyScene {
   const riftSheets = new Map<string, Promise<Texture[] | null>>();
   const riftFrames = new Map<string, Texture[]>();
 
+  /** The sheets the rift up now steps through, kept through art sweeps (art-memory.ts). */
+  let riftHolds: (() => void)[] = [];
+
   function riftSheet(effect: string): Promise<Texture[] | null> {
     const cached = riftSheets.get(effect);
-    if (cached) return cached;
-    const task = Assets.load<Texture>(riftSheetUrl(effect))
+    // A sheet swept since (art-memory.ts) is sliced again from a fresh load.
+    if (cached && (!riftFrames.has(effect) || artLoaded(riftSheetUrl(effect)))) return cached;
+    riftFrames.delete(effect);
+    const task = loadArt(riftSheetUrl(effect))
       .then((sheet) => {
         const frames = Array.from(
           { length: RIFT_SHEET.frames },
@@ -1139,7 +1151,7 @@ export function createScene(app: Application): PartyScene {
       actorsLayer.addChild(sprite);
       const entry = { sprite, key: url, loaded: false };
       packedFriendSprites.set(friend.id, entry);
-      void Assets.load<Texture>(url)
+      void loadArt(url)
         .then((texture) => {
           if (destroyed || packedFriendSprites.get(friend.id)?.sprite !== sprite) return;
           sprite.texture = texture;
@@ -1156,7 +1168,7 @@ export function createScene(app: Application): PartyScene {
     const wanted = new Map(kits.map((kit) => [kit.id, `${kit.style}:${kit.accent}`]));
     for (const [id, entry] of packedSprites) {
       if (wanted.get(id) === entry.key) continue;
-      entry.sprite.destroy();
+      dropPackedKit(entry);
       packedSprites.delete(id);
     }
     for (const kit of kits) {
@@ -1168,14 +1180,18 @@ export function createScene(app: Application): PartyScene {
       sprite.label = `packed:${kit.id}`;
       sprite.visible = false;
       actorsLayer.addChild(sprite);
-      packedSprites.set(kit.id, { sprite, key });
+      packedSprites.set(kit.id, { sprite, key, tinted: null });
       const art = CAMP_KIT_STYLES[kit.style];
-      void Assets.load<Texture>(art.path)
+      void loadArt(art.path)
         .then((texture) => {
-          if (destroyed || packedSprites.get(kit.id)?.sprite !== sprite) return;
+          const entry = packedSprites.get(kit.id);
+          if (destroyed || entry?.sprite !== sprite) return;
           const source = (texture.source as { resource?: unknown }).resource;
           const canvas = source ? campKitCanvas(source as CanvasImageSource, art.cloth, kit.accent) : null;
-          sprite.texture = canvas ? Texture.from(canvas) : texture;
+          // Its own texture, out of Pixi's global cache (which would keep the canvas for the
+          // page's life), destroyed with the sprite (`dropPackedKit`).
+          entry.tinted = canvas ? Texture.from(canvas, true) : null;
+          sprite.texture = entry.tinted ?? texture;
           sprite.visible = true;
           layoutPacked(packedSlot);
         })
@@ -1462,7 +1478,7 @@ export function createScene(app: Application): PartyScene {
     container.x = DESIGN.width + CAST_ENTRY_OFFSET;
     container.y = GROUND_Y;
     art.alpha = 0;
-    void Assets.load<Texture>(member.url)
+    void loadArt(member.url)
       .then((texture) => {
         // Still the live entry for this key, even if mid-exit: setCast can
         // call a leaving member back (A → B → A), reviving this same actor,
@@ -1839,6 +1855,9 @@ export function createScene(app: Application): PartyScene {
       riftGroup.visible = false;
       if (riftSequence.length === 0) riftGroup.removeFromParent();
       else if (!riftGroup.parent) actorsLayer.addChild(riftGroup);
+      // Every pass's sheet stays loaded while this rift is up, the ones not yet playing too.
+      for (const release of riftHolds) release();
+      riftHolds = riftSequence.map((pass) => holdArt(riftSheetUrl(pass.effect)));
       // The first pass waits for its sheet; tickRift starts it the frame it lands.
       for (const pass of riftSequence) {
         void riftSheet(pass.effect).then(() => {
@@ -2109,6 +2128,10 @@ export function createScene(app: Application): PartyScene {
         camNow = null; // the ENCOUNTER_BEGAN beat covers the cut
       }
       if (!view && wasCombat) {
+        // The board's figures, tiles and props hold a fight's worth of painted art; the
+        // next fight builds its own, so this one lets go of them now (art-memory.ts).
+        board?.destroy();
+        board = null;
         camState = createCameraState({ board: STORY_BOARD, attention });
         camNow = null;
         heldEvents = [];
@@ -2192,7 +2215,10 @@ export function createScene(app: Application): PartyScene {
     destroy() {
       destroyed = true;
       app.ticker.remove(tick);
+      for (const entry of packedSprites.values()) entry.tinted?.destroy(true);
       packedSprites.clear();
+      for (const release of riftHolds) release();
+      riftHolds = [];
       packedFriendSprites.clear();
       removeGestures();
       // Leave the stage where the next scene expects to find it — a stage
