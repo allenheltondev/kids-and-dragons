@@ -1,7 +1,7 @@
 # Final issue 494 review
 
-- [Desktop live-renderer screenshot](runtime-desktop.png)
-- [Phone tracking screenshot](runtime-phone.png)
+- [Desktop live-renderer screenshot](https://assets.kd.readysetcloud.io/sha256/b5/b57f5f508cca9fa4c6e8cfff77ab7895a8afccb8cef13df5bb3ee209c91ed420.png)
+- [Phone tracking screenshot](https://assets.kd.readysetcloud.io/sha256/07/0792b42ae0117e92a833e1247bf9acd6b4eb7283a086d7927fc8a6d8041488d6.png)
 - [Chromium results](browser-check.json)
 - [372 targeted tests](tests.log)
 - [1,344 art checks](art-verify.log)

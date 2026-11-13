@@ -14,9 +14,9 @@
     {{ range first 20 . }}
     {{ if .src }}
     <figure class="wiki-gallery__item">
-      <a href="{{ (default .src .full) | relURL }}" class="wiki-gallery__link">
+      <a href="{{ partial "asset-url.html" (default .src .full) }}" class="wiki-gallery__link">
         <img
-          src="{{ .src | relURL }}"
+          src="{{ partial "asset-url.html" .src }}"
           alt=""
           class="wiki-gallery__img"
           loading="lazy"

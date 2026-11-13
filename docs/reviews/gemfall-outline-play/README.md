@@ -56,13 +56,13 @@ There are 96 new complete-route/art/legacy cases, including solo/two/four seats,
 
 Actual TV 1920×1080 and phone 390×844 captures were inspected:
 
-- [Bridge evidence TV](interaction_survey_evidence-tv.png) / [phone](interaction_survey_evidence-phone.png): Brask, the survey environment and each hero's contribution controls.
-- [Keeper's clues TV](interaction_keeper_pages-tv.png) / [phone](interaction_keeper_pages-phone.png): the path-keeper, shared knot key and sufficient readable clues.
-- [Bell relay TV](interaction_crowd_bell_line-tv.png) / [phone](interaction_crowd_bell_line-phone.png): grandmother, portable bell, catch action and solo destination behavior.
+- [Bridge evidence TV](https://assets.kd.readysetcloud.io/sha256/c8/c866454f7f98447420199480b31526ef737d035eff1b20f9d9899b3b0cd11a21.png) / [phone](https://assets.kd.readysetcloud.io/sha256/9e/9ed0011e4e4ddff8e0c7cd53ca507c89a7b37cc146e7b182cff70f613e8cc455.png): Brask, the survey environment and each hero's contribution controls.
+- [Keeper's clues TV](https://assets.kd.readysetcloud.io/sha256/bb/bb4f7ff8f365e1055d7418a9e05df40bf7583ff28b1a0b1404995eda256abd96.png) / [phone](https://assets.kd.readysetcloud.io/sha256/a0/a092fd9440c82034a3c19c6e1559f0aaeef70a6fbe72ede538e65e095df80e18.png): the path-keeper, shared knot key and sufficient readable clues.
+- [Bell relay TV](https://assets.kd.readysetcloud.io/sha256/c4/c4be4b701ea36829da8a33f9403b8affdda1249500dcf764ccb6b6fcea6db18d.png) / [phone](https://assets.kd.readysetcloud.io/sha256/82/8259b673aaf07a785bf71d9fc0468583143afea15c8aa554aaabeae211f6d97b.png): grandmother, portable bell, catch action and solo destination behavior.
 
 The isolated preview stages one chapter at index 1 for capture; shipped campaign order is unchanged. Phone captures show actual Your turn controls, with ordinary scrolling for controls below the viewport. Normal household saves were not used.
 
-One new prop was needed: [portable hand bell](../../../assets/story-props/prop_hand_bell.webp). The old bell prop included a stone shrine and could not represent a hand-to-hand relay. Built-in image generation produced the transparent original; it was normalized to the existing 512×512 WebP prop contract, keeping alpha, registered with a gentle swing motion and used in both prepared crowd activities. Existing art covers the remaining scenes. Shared art verification passed 949 checks; the installed bell has transparent margins of at least 45 pixels.
+One new prop was needed: [portable hand bell](https://assets.kd.readysetcloud.io/sha256/3c/3cf8eb05b05ac6159d31e2c3976b195e6b56ddac314564fac5a54a04c4075d0a.webp). The old bell prop included a stone shrine and could not represent a hand-to-hand relay. Built-in image generation produced the transparent original; it was normalized to the existing 512×512 WebP prop contract, keeping alpha, registered with a gentle swing motion and used in both prepared crowd activities. Existing art covers the remaining scenes. Shared art verification passed 949 checks; the installed bell has transparent margins of at least 45 pixels.
 
 Final generation prompt (built-in image tool):
 

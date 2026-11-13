@@ -54,13 +54,13 @@ continuity and missing-crown spoilers. Inspected all icons at 128px, 48px and
 24px on light/dark backgrounds for silhouette, palette, transparency and distinct
 shapes. These are static reviews, not live gameplay captures or owner approval.
 
-![Hollow Crown backdrops](scene-review.webp)
+![Hollow Crown backdrops](https://assets.kd.readysetcloud.io/sha256/67/67a4197900170961ae3e0d1ba26e10881d42dab38231b3d92ab00f67d425ab41.webp)
 
-![Campaign covers](campaign-review.webp)
+![Campaign covers](https://assets.kd.readysetcloud.io/sha256/ae/ae3ff94c8aac48390da694227e7c810616c34ed284c3a0db67ee6f72143f439b.webp)
 
-![Icons on light at 128, 48 and 24px](icons-light.webp)
+![Icons on light at 128, 48 and 24px](https://assets.kd.readysetcloud.io/sha256/ae/aeb74ec984f9f6cabead30a561ef09b41cfa041d5e5123e2dd236f5e6cf15ea0.webp)
 
-![Icons on dark at 128, 48 and 24px](icons-dark.webp)
+![Icons on dark at 128, 48 and 24px](https://assets.kd.readysetcloud.io/sha256/0e/0ea77b56627ab9c0e74b1a1097c09b808acae6cfc9ec2fa26b5a99d38c5c7ea9.webp)
 
 ## Validation
 

@@ -6,7 +6,7 @@ The [prompt record](prompts.json) includes the accepted generation filenames, pr
 corrections and final asset paths. Raw generation copies and temporary export/review
 tooling are omitted from the delivery.
 
-![Fourteen cast figures on light and dark](cast.webp)
+![Fourteen cast figures on light and dark](https://assets.kd.readysetcloud.io/sha256/2b/2b06c99b4647dc5b7692e36c05ee5de9cf52c63e3f224c1bff76cceb325b4363.webp)
 
 ## Cast decisions and wiring
 
@@ -38,10 +38,10 @@ review fixtures, not a playthrough of the characters' authored scenes. Browser o
 now requires the TV to share the room opener's browser context. The temporary test was
 removed after the successful run.
 
-The retained [Brassbuckle TV comparison](brassbuckle_scout-tv.webp) and
-[phone capture](brassbuckle_scout-phone-after.webp) show framing at both sizes. The
-Seal-Keeper's [before](seal_keeper-phone-before.webp) and
-[after](seal_keeper-phone-after.webp) phone pages show its visible face at colossal size.
+The retained [Brassbuckle TV comparison](https://assets.kd.readysetcloud.io/sha256/de/de3681bf8e75f7381d00241730128c495f537d7e2c010daae6371a99a9a520e1.webp) and
+[phone capture](https://assets.kd.readysetcloud.io/sha256/35/35e6981229ebb3beda03600c9300e83a8c3354ea11975900ba60801e8460459b.webp) show framing at both sizes. The
+Seal-Keeper's [before](https://assets.kd.readysetcloud.io/sha256/57/578a7ed9683142268bf5dd05d85b239b8e1588233d5c95114bd4b14640cb701f.webp) and
+[after](https://assets.kd.readysetcloud.io/sha256/1d/1df95341ee710d5b5479070a09fc5295efc5377c755dc11e63d8a671991f0e61.webp) phone pages show its visible face at colossal size.
 The contact sheet above covers all 14 paintings. The full capture set remains local in
 ignored `art/review/issue-384/`; representative captures keep this record compact.
 
@@ -66,7 +66,7 @@ Counts reflect this checkout after the later Gemfall rewrites, rather than the i
 
 ## Overlays
 
-![All overlay states on bright and dark scenes, with TV and phone tokens](overlays.webp)
+![All overlay states on bright and dark scenes, with TV and phone tokens](https://assets.kd.readysetcloud.io/sha256/6d/6daa7c23e4736daea4e3c187ab3aa99e74c984c9d1ed86c07822a8c9092ce5d3.webp)
 
 Each move has two 1600×360 bands and four 192×192 tokens, declared under
 `togetherOverlays` exactly with the dimensions and state names from brief §7.3.
@@ -76,7 +76,7 @@ A prominent star and a secondary helper loop distinguish the final two states. A
 states were reviewed at actual 72 px size over bright market and dark Hollow Gate scenes.
 The empty token now has 9,396 visible pixels, compared with 256 before revision.
 
-![Tiptoe tokens before and after at actual phone size](tiptoe-phone.webp)
+![Tiptoe tokens before and after at actual phone size](https://assets.kd.readysetcloud.io/sha256/66/669c76c89349c16d4bba1df0c814f66742911d47b83874b8fad83ee29fddefda.webp)
 
 The largest band is 221,112 bytes; the largest token is 23,490 bytes.
 

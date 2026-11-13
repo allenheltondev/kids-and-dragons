@@ -5,7 +5,7 @@ The two commissioned paintings are `assets/campaigns/gemfall.webp` and
 the built-in image generator; exact prompts and encoding settings are recorded
 in [campaign-key-art-prompts.json](../../campaign-key-art-prompts.json).
 
-![Both paintings at card size, in color and with the locked filter](card-size-review.png)
+![Both paintings at card size, in color and with the locked filter](https://assets.kd.readysetcloud.io/sha256/e1/e1b979c804ffbfc4290688805ad005d3af809c5940f89858034e85f4306d0e63.png)
 
 This is an image review sheet, not a lobby screenshot. Each painting is shown
 at 400 px wide. The lower row applies `grayscale(0.85) brightness(0.55)`.

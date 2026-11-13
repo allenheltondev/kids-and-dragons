@@ -59,8 +59,8 @@ Existing environments, cast and props cover this wave: the facet table, tea tabl
 
 Actual TV 1920×1080 and phone 390×844 captures were inspected:
 
-- [Evidence timeline TV](interaction_truth_timeline-tv.png) / [phone](interaction_truth_timeline-phone.png): dated records, sufficient shared clues and readable choices.
-- [Purpose council TV](interaction_purpose_council-tv.png) / [phone](interaction_purpose_council-phone.png): each hero's contribution, tea-table setting and unscored discussion controls.
+- [Evidence timeline TV](https://assets.kd.readysetcloud.io/sha256/07/07118a0bb4dcc79101e7df8054f57ab52c3eed04e95e1d7f7694eed830d031d3.png) / [phone](https://assets.kd.readysetcloud.io/sha256/d7/d712388a4c121d465a1d6560248d4789a80fe2ab16a35e4e0b38a7ee74fe94bc.png): dated records, sufficient shared clues and readable choices.
+- [Purpose council TV](https://assets.kd.readysetcloud.io/sha256/86/8662e4f6e4f358624de0230182a6227ecca82595904f1fb024ea40702b3b59f6.png) / [phone](https://assets.kd.readysetcloud.io/sha256/ea/ea7a18da230a5a3d264f2fb73a755f73387c6df5deebd7e4e21eafac64e3557d.png): each hero's contribution, tea-table setting and unscored discussion controls.
 
 The isolated solo preview stages one chapter as index 1 for capture; shipped ordering is unchanged. Phone captures show the actual Your turn controls with normal scrolling. Ordinary household saves were not used.
 

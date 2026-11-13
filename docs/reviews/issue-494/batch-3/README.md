@@ -2,11 +2,11 @@
 
 **10 new scene paintings and 13 transparent reusable props**, plus a standalone motion review. Chapter assignments change art or cast in **87 scenes**. The earlier two deliveries remain intact.
 
-- [Scenery contact sheet](scenery-contact-sheet.jpg)
-- [Prop contact sheet](props-contact-sheet.jpg)
+- [Scenery contact sheet](https://assets.kd.readysetcloud.io/sha256/c0/c0d57a9a2ef96c755faa43baf70bc9ef9bc5991ed5ca992930f392f711a6164d.jpg)
+- [Prop contact sheet](https://assets.kd.readysetcloud.io/sha256/78/78a26711646e9af7f70ec259b621ee211df38e43e7e5481aef450113d846aadd.jpg)
 - [Offline motion preview](motion-preview.html)
-- [Desktop motion review screenshot](motion-preview-desktop.png)
-- [Phone review screenshot](motion-preview-mobile.png)
+- [Desktop motion review screenshot](https://assets.kd.readysetcloud.io/sha256/b5/b5ad2b357088a5212404434c835cdf12aeacd7dbd4f118bb96ddaea0d6eaba7d.png)
+- [Phone review screenshot](https://assets.kd.readysetcloud.io/sha256/bb/bbd3df6eebf4e2e9ba51486bb702f9b65d94875f064166c6131c5e0d7cede65b.png)
 - [Exact final prompts, source PNGs and reference inputs](sources.json)
 - [Scene assignments](scene-assignments.json)
 - [Manifest/chapter changes](chapter-changes.patch)

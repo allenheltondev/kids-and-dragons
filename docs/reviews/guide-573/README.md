@@ -2,7 +2,7 @@
 
 Issue: https://github.com/allenheltondev/kids-and-dragons/issues/573
 
-![Night-background contact sheet](contact-night.webp)
+![Night-background contact sheet](https://assets.kd.readysetcloud.io/sha256/29/298148cf3eebf7a45bdc18980b919abb50e4fe0140f4b9dd63e37c9a65634aed.webp)
 
 Reviewed the exact exported WebPs, including rightmost-40% crops at 390 × 220. Both mobile scenes retain their key objects. Transparent emblems have clear margins and read against the night background. Four selected PNG masters are retained in `art/source/guide-573/`; prompts and rebuild instructions are in the guide asset README.
 

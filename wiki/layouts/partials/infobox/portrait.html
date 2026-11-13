@@ -6,10 +6,10 @@
 {{ if and $art.path (not $art.wide) }}
 <div class="wiki-infobox__portrait">
   {{ $res := resources.Get (printf "art/%s" $art.path) }}
-  {{ $src := printf "assets/%s" $art.path | relURL }}
+  {{ $src := partial "asset-url.html" $art.path }}
   {{ with $res }}{{ if ne .MediaType.SubType "svg" }}{{ $src = (.Resize "560x webp q82").RelPermalink }}{{ end }}{{ end }}
   <img src="{{ $src }}" alt="{{ .Title }}" loading="eager" width="280" height="280"
-       class="wiki-infobox__portrait-img" data-full="{{ printf "assets/%s" $art.full | relURL }}">
+       class="wiki-infobox__portrait-img" data-full="{{ partial "asset-url.html" $art.full }}">
 </div>
 {{ else if $art.icon }}
 <div class="wiki-infobox__portrait wiki-infobox__portrait--icon">

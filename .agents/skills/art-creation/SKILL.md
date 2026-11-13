@@ -183,7 +183,13 @@ Only after the gates pass, and for character art only once the user has approved
 3. Commit together: `assets.lock.json`, `assets.small.json` when step 0 changed it, the
    prompts record, and any manifest or content change the art belongs to. Never the image file itself; `assets:verify` fails CI on a
    committed PNG, WebP, JPEG, GIF or WebM under `assets/`, `art/` or `docs/`.
-4. To show the painting in a PR: `npm run assets:url -- <path>` gives its public link.
+4. To show art, screenshots or recordings in a PR or a review document under
+   `docs/reviews/`, use `npm run assets:url -- <repo-relative path>` and paste the
+   public URL into the Markdown image or link (or HTML `src` / `href`). Store new
+   review media first with `npm run assets:push -- --issue <issue> docs/reviews/<folder>`.
+   Relative media links render only after a local pull and break on github.com;
+   use store URLs from the start. These immutable links preserve the reviewed bytes
+   even if the painting is later replaced. Keep paths in prompt/provenance records.
 5. Open the PR as "Part of #<the art issue>", and tick the items it delivers in the issue's
    checklist. The issue closes when its last item is done; a phase can be its own PR.
 

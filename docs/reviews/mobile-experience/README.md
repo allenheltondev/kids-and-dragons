@@ -44,9 +44,9 @@ The inventory-only conclusion below was incomplete. The follow-up [runtime art a
 
 ## Review images
 
-- [Small phone Field Guide](field-guide-320.png)
-- [Portrait tablet Field Guide](field-guide-768.png)
-- [Landscape tablet Field Guide](field-guide-1024.png)
+- [Small phone Field Guide](https://assets.kd.readysetcloud.io/sha256/a0/a0afb67fbb66d7d9272edbc864be9563a7c25fd1f5b371a7bdcafb3761c37c33.png)
+- [Portrait tablet Field Guide](https://assets.kd.readysetcloud.io/sha256/8a/8acf531d8e39b5915a5f1552a2f8132a668249468c58f7bf9e10e9de7d61e7cc.png)
+- [Landscape tablet Field Guide](https://assets.kd.readysetcloud.io/sha256/c2/c25d064e252546f215310eb8ff66b7afa8fffd1914a91b91696b9e4067b4f5aa.png)
 
 ## Validation results
 

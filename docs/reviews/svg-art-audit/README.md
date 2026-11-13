@@ -41,9 +41,9 @@ Riftlight's final WebP is neutral grayscale with alpha preserved, so its decorat
 
 ## Review and validation
 
-- [Class gear, choices and tray objects](contact-1.png)
-- [Statuses, keepsakes, coin and crow](contact-2.png)
-- [Inventory and Stats](contact-3.png)
+- [Class gear, choices and tray objects](https://assets.kd.readysetcloud.io/sha256/55/55414b18ec1006818f290e4209dcb882a4922c20c116b7c19caa3bdf20ae48c7.png)
+- [Statuses, keepsakes, coin and crow](https://assets.kd.readysetcloud.io/sha256/0d/0d67f8c51b78e5d5b4add68b991ce52e60e3e5917aa857a3c2a8fe6aefd52d5b.png)
+- [Inventory and Stats](https://assets.kd.readysetcloud.io/sha256/d9/d9e55d08d6fcd8f5d446baa9be9b3593fbd64c31c5c185c03321fe9802e9f5e8.png)
 - Art verifier: 1,014 checks passed.
 - Contact-sheet generator: 30 species/tier sheets generated, plus the three issue-specific sheets above. Reviewed at 128, 48 and 24px on light and dark backgrounds.
 - Targeted UI tests: 300 passed across 10 files (shared icons, class tokens/rank-up, statuses, dice, Riftlight, You/character sheets, layouts and journal).

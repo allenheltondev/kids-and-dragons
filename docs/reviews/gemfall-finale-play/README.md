@@ -71,10 +71,10 @@ No new artwork is needed. Existing seal chamber, Keeper, Voss, Pellam, humming s
 
 Actual TV 1920×1080 and phone 390×844 captures were inspected:
 
-- [Council TV](interaction_verdict_council-tv.png) / [phone](interaction_verdict_council-phone.png).
-- [Carried-facet matching TV](interaction_restore_fit-tv.png) / [phone](interaction_restore_fit-phone.png).
-- [Empty-handed brace TV](interaction_restore_brace-tv.png) / [phone](interaction_restore_brace-phone.png).
-- [Wheel latch TV](interaction_wheel_latch-tv.png) / [phone](interaction_wheel_latch-phone.png).
-- [Prepared handover TV](interaction_leash_transfer-tv.png) / [phone](interaction_leash_transfer-phone.png).
+- [Council TV](https://assets.kd.readysetcloud.io/sha256/08/08598ed7cd5b94e6fd0573eabfb50dccd38930889892ec009c9ec23a9419ad48.png) / [phone](https://assets.kd.readysetcloud.io/sha256/2d/2dc382e49f4ad308c5f3327d9048e953343bd29dbbb4e26ca1c73755022fd8ce.png).
+- [Carried-facet matching TV](https://assets.kd.readysetcloud.io/sha256/2a/2a84799a57afb1e7aaeaed7618a6461faec5b0f683b31d63d883049289ac46df.png) / [phone](https://assets.kd.readysetcloud.io/sha256/ca/ca08070f77338a8f3933be29ab865b0e49a8db944e089327ef855f174763e2b7.png).
+- [Empty-handed brace TV](https://assets.kd.readysetcloud.io/sha256/d0/d07ea95b28b9998c15e782d9914fcdd1983017f9891fed5ebbeef17efb410784.png) / [phone](https://assets.kd.readysetcloud.io/sha256/80/80236fa7d82dcb04d2c4f5f8d8e0b46f1bb04310ca30bad2ea2e3a6b60724c64.png).
+- [Wheel latch TV](https://assets.kd.readysetcloud.io/sha256/8c/8c2f0baf2b422c99d4e9e33a3726dd440cebd3b2644933fae694d3cd8c77d016.png) / [phone](https://assets.kd.readysetcloud.io/sha256/c6/c6b9dce291914fbe3d0defbb79e4b512ee1ca59be2b5c7be3f74043dcf846848.png).
+- [Prepared handover TV](https://assets.kd.readysetcloud.io/sha256/1e/1e157208f50bf815dc8ee959c954cafbe4482104cd454886f8c9498f7b77035f.png) / [phone](https://assets.kd.readysetcloud.io/sha256/0e/0e0e752a2da34b258c7926955d2ddd6419cfca2a8cdc89d2f3c9bfd8e556bbfa.png).
 
 The isolated solo preview temporarily stages chapter 08 as index 1 for capture; shipped campaign order is unchanged. Phone captures show actual Your turn controls with ordinary scrolling; longer clue controls continue below the fold. Relaxed-mode screenshots show the wider precision window. Ordinary household saves were not used.

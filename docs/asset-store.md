@@ -112,7 +112,7 @@ in the lock, merge locally.
 | **The game, in production** | Unchanged URLs: `/assets/<path>` on the site's own domain, served by CloudFront from the site bucket. `deploy.sh` pulls `assets/`, refuses to continue unless it matches the lock exactly (`assets:verify --present assets`), then syncs it as before. The client did not change. |
 | **The game, in dev** | Disk, then the store fallback above. |
 | **CI** | [`.github/actions/pull-assets`](../.github/actions/pull-assets/action.yml) in each job that reads art, cached on the lock's hash. The checks job runs `assets:verify`. |
-| **The wiki** | `wiki-deploy.yml` pulls `assets` and `art/reference` before Hugo, which mounts them and resizes from them. It also rebuilds when `assets.lock.json` changes. |
+| **The wiki** | `wiki-deploy.yml` pulls `assets` before Hugo for build-time resizing. Only thumbnails and site icons ship in Pages; full-size art and the world map use immutable store URLs from the lock and config. It rebuilds when either file changes. |
 | **Agents' sessions** | `npm run setup` pulls `assets/`: Claude Code's SessionStart hook runs it through `scripts/setup.sh`, and it is Codex's setup command on any OS. |
 | **Review docs on GitHub** | Once untracked, a relative image link in `docs/` shows only after a local pull. For a page meant to be read on GitHub, link `npm run assets:url` output instead. |
 

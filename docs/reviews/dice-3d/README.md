@@ -1,6 +1,6 @@
 # Painted 3D dice roll
 
-[Animated renderer preview](roll.gif) · [All twenty results and helper meshes](all-faces.png) · [Motion timeline](timeline.png)
+[Animated renderer preview](https://assets.kd.readysetcloud.io/sha256/64/643cf2c46f8046c92c8f5ee0bfb87e5a8ffe33cf752b9b279ee551a42616706d.gif) · [All twenty results and helper meshes](https://assets.kd.readysetcloud.io/sha256/db/db2ad301c0ccb2215b34af18d79e6094016e4f25046d1c455e67c1c05a38c970.png) · [Motion timeline](https://assets.kd.readysetcloud.io/sha256/78/78f74be685fd9125bb3f06da7c97c39ca255e7e21284fff601c166eddd1f1a18.png)
 
 The main roll now projects a real twenty-face icosahedron, with numbers painted into each face's texture. Numbers rotate, recede and disappear with their faces; there is no changing number floating over a rotating flat image. Opposite d20 faces sum to 21. Helpers use actual d4, d6, d8 and d10 meshes; the d10 is a ten-kite trapezohedron, the dual of a pentagonal antiprism.
 

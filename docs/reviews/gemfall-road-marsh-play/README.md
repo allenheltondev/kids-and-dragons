@@ -115,8 +115,8 @@ shipped order remains chapter 3.
 
 | Activity | TV | Phone controls |
 | --- | --- | --- |
-| Shared marker clues | [TV](interaction_markers-tv.png) | [phone](interaction_markers-phone.png) |
-| Testing the pretend barge | [TV](interaction_barge_audience-tv.png) | [phone](interaction_barge_audience-phone.png) |
+| Shared marker clues | [TV](https://assets.kd.readysetcloud.io/sha256/9b/9b2d0039cee67855a58497f61859dc9d9d47386ace51698b9a52c3fd94575052.png) | [phone](https://assets.kd.readysetcloud.io/sha256/05/053551ff07d746c5f2945924334d8f2885542284746b68444b52f9b51359a721.png) |
+| Testing the pretend barge | [TV](https://assets.kd.readysetcloud.io/sha256/72/7205b72741bd9f6c27ade23d7f83468384a0954266b507d39eabf08bc5c4eecd.png) | [phone](https://assets.kd.readysetcloud.io/sha256/39/39b86b2c18b22652342156dbabae54f1fd0691d9b418d6bf3559f8e095f7554b.png) |
 
 Long phone control lists scroll normally; these screenshots do not claim every
 button fits simultaneously. Unit/route tests exercise the actual authoritative

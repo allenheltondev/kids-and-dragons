@@ -17,12 +17,11 @@ module:
       target: assets
     - source: data
       target: data             # wiki-only data: art.yaml (best art per page)
-    - source: ../assets
-      target: static/assets  # mount repo assets into Hugo static
-    # The same art again, as Hugo resources, so galleries of art that has no
+    # Art is available only as Hugo resources, so galleries of art that has no
     # derived portrait.webp (the cast, the scene paintings, the gear portraits)
     # can be resized at build time instead of shipping 1MB PNGs as thumbnails.
-    # Only what a template asks for is processed.
+    # Only resized images are published. Full-size links use the public store
+    # via asset-url.html and the lock/config data below, not a static mount.
     - source: ../assets
       target: assets/art
     # The app's own painted UI: the crest, the tray objects, species and class
@@ -47,8 +46,10 @@ module:
       target: static/android-chrome-192x192.png
     - source: ../assets/brand/dragon-512.png
       target: static/android-chrome-512x512.png
-    - source: ../art/reference
-      target: static/map     # world map art served at /map/
+    - source: ../assets.lock.json
+      target: data/assetLock.json
+    - source: ../assets.config.json
+      target: data/assetConfig.json
     - source: ../canon
       target: data/canon     # canon YAML exposed as site.Data.canon.* (map pins)
     # The game's rules as data — species, classes, dice targets, the XP curve,

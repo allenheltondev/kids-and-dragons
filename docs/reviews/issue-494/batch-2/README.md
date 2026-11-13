@@ -2,8 +2,8 @@
 
 **15 new scene paintings and two figures**, integrated into the expanded opening. The approved first delivery is also present in this worktree. This batch changes art or cast in **337 scenes**; semantic comparison confirms that all other chapter data is unchanged.
 
-- [Scenery contact sheet](scenery-contact-sheet.jpg)
-- [Figure contact sheet](figure-contact-sheet.jpg)
+- [Scenery contact sheet](https://assets.kd.readysetcloud.io/sha256/fd/fd56f286813ce75db5a65152e8211ff67815a3527aa6d5f432ffe6d78a0642a7.jpg)
+- [Figure contact sheet](https://assets.kd.readysetcloud.io/sha256/33/331590f4ffce59ddda4d01c6b8288cf79708848a3b88b065d8ed9b9d6f42169c.jpg)
 - [Exact source prompts and references](sources.json)
 - [Explicit scene-to-art assignments](scene-assignments.json)
 - [Chapter, manifest and height-table changes from the start of batch 2](chapter-changes.patch)
