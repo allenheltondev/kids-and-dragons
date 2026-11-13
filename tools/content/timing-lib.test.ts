@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aggregateTimings, sittingsFromEvents, TIMING_POLICY, type TimingEvent, type TimingNote } from "@kad/shared";
+import { aggregateActivities, aggregateTimings, sittingsFromEvents, TIMING_POLICY, type TimingEvent, type TimingNote } from "@kad/shared";
 import { renderTimingReport } from "./timing-lib.ts";
 
 const T0 = Date.parse("2026-10-27T18:00:00.000Z");
@@ -49,6 +49,35 @@ describe("renderTimingReport", () => {
 
   it("says plainly when there is nothing yet", () => {
     expect(renderTimingReport(report([]), planned)).toContain("none yet");
+  });
+});
+
+describe("mini-games, fights and findings", () => {
+  /** A sitting with a memory game that takes five minutes of play and an eight-round fight. */
+  function played(runId: string) {
+    const notes: Array<[number, TimingNote]> = [
+      [0, { kind: "start", source: "family", chapterId: "riftlight-01", campaignId: "riftlight", revision: "aaaa", partySize: 2, prefaced: false, revisit: false, scene: "s1", type: "story" }],
+      [1, { kind: "step", scene: "jar", type: "interaction", game: "memory" }],
+      [2, { kind: "game", scene: "jar", phase: "play", attempt: 0 }],
+      [7, { kind: "game", scene: "jar", phase: "result", attempt: 0, outcome: "failure" }],
+      [8, { kind: "step", scene: "dragon", type: "encounter", result: "recovery" }],
+      [9, { kind: "fight", scene: "dragon", phase: "begin", round: 1, foes: 1, foeKinds: ["dragon"] }],
+      ...Array.from({ length: 7 }, (_, i): [number, TimingNote] => [10 + i, { kind: "fight", scene: "dragon", phase: "round", round: i + 2 }]),
+      [18, { kind: "step", scene: "after", type: "story", fight: { outcome: "victory", round: 8 } }],
+      [20, { kind: "end", outcome: "success", routes: [] }],
+    ];
+    return sittingsFromEvents(runId, notes.map(([min, timing], i) => ({ seq: i + 1, at: new Date(T0 + min * MIN).toISOString(), timing })), T0 + 60 * MIN);
+  }
+
+  it("prints each chapter's games and fights, the roll-up across chapters, and the findings", () => {
+    const rows = [...played("a"), ...played("b"), ...played("c")];
+    const text = renderTimingReport({ ...report(rows), activities: aggregateActivities(rows) }, planned);
+    expect(text).toMatch(/jar\s+memory\s+1\.0 \/ 5\.0 \/ 1\.0, 0 retried, 3 failed/);
+    expect(text).toMatch(/dragon\s+1\.0 \/ 9\.0, 8 rounds \(max 8\), 0 lost/);
+    expect(text).toContain("== Mini-games and fights across chapters (family) ==");
+    expect(text).toContain("[look] The fight at dragon drags");
+    expect(text).toContain("[look] The memory game at jar is hard");
+    expect(renderTimingReport({ ...report(rows), activities: aggregateActivities(rows) }, planned, { findings: 0 })).not.toContain("== Findings");
   });
 });
 

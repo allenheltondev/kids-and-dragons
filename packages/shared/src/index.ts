@@ -50,6 +50,8 @@ export * from "./chapter-goal.js";
 export * from "./choice-ahead.js";
 export * from "./chapter-preface.js";
 export * from "./session-timing.js";
+export * from "./play-timing.js";
+export * from "./timing-trends.js";
 export * from "./story-plates.js";
 export * from "./story-so-far.js";
 export * from "./narration.js";

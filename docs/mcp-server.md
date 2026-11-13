@@ -1,8 +1,9 @@
 # MCP server
 
 Kids & Dragons exposes a [Model Context Protocol](https://modelcontextprotocol.io)
-server for agents and operators. Today it hands out upload URLs for the asset
-store ([asset-store.md](./asset-store.md)); operator tools come next. It is built
+server for agents and operators. It hands out upload URLs for the asset
+store ([asset-store.md](./asset-store.md)), and tells an operator how long real
+families take over chapters, mini-games and fights ([session-timing.md](./session-timing.md)). It is built
 the way content-tracking's Booked server is (`functions/mcp/` there): spec
 revision **2026-07-28** over Streamable HTTP, served statelessly, with 2025-era
 clients (those that open with `initialize`) served through the SDK's stateless
@@ -69,6 +70,16 @@ operator's read key cannot upload.
 | `whoami` | every key | The key's label, agent, tags, scopes and expiry. |
 | `request_uploads` | `assets:write` | For up to 200 files (`path`, `sha256`, `bytes`), and optionally the art `issue` they are for: `stored` (already there), `upload` (a presigned PUT URL and the headers to send with it, valid 15 minutes), or `refused` with the reason. Each new blob is stamped with the key, the path and the issue. |
 | `check_uploads` | `assets:read` | Whether the store holds each file's bytes. For checking before committing a lock. |
+| `timing_overview` | `operator:read` | Each chapter's observed minutes per revision against the 30-minute budget and beside its planned and predicted minutes, split into story, mini-games and fights, with the sample size; every kind of mini-game, all fights and every kind of screen rolled up; current texts nobody has played yet. |
+| `timing_findings` | `operator:read` | What is worth acting on, most pressing first, each with its evidence, sample and first thing to try ([session-timing.md, "Findings"](./session-timing.md#findings)). |
+| `timing_chapter` | `operator:read` | One chapter in depth: each revision, its slowest scenes and where tables stalled, minutes by party size, its mini-games and fights (and those not yet played), where unfinished tables left, notes, findings. |
+| `timing_activities` | `operator:read` | Mini-games and fights across chapters, per scene and rolled up; filter by chapter or kind of game. |
+| `timing_trends` | `operator:read` | Sittings by week or day: begun, finished, completion rate, minutes, games, fights, stalls, party sizes. Before and after a release. |
+| `timing_compare` | `operator:read` | One revision of a chapter against another: did the edit move its minutes, completion, scenes, games and fights. |
+| `timing_campaign` | `operator:read` | A campaign's chapters in order: attempts, completion, setbacks, where tables left, observed against planned and predicted, and a rough reach by counts. |
+| `timing_sittings` | `operator:read` | The evenings behind the figures, newest first, or the excluded ones. |
+| `timing_exclude` | `operator:write` | Leave a sitting (and the attempt it belongs to) out of every figure, with a reason. |
+| `timing_include` | `operator:write` | Undo an exclusion. |
 
 Agents rarely call these by hand. `npm run assets:push` with
 `KAD_ASSET_WRITER=mcp` calls `request_uploads` itself and uploads the bytes
@@ -93,7 +104,7 @@ So an `assets:write` key lets its holder add correct blobs and nothing else. It
 cannot overwrite, delete, read household data, or file bytes under a hash they
 do not match.
 
-### Operator tools (next)
+### Operator tools
 
 They register in `server.ts` under the `operator` area. One rule decides what
 they may return: **whatever a tool returns goes into a model's context.** Tools
@@ -103,12 +114,67 @@ household's rows, names, characters or anything a child typed are a new flow of
 family data to a model vendor. Those need the review in #525 (see
 `tools/privacy/egress-guard.test.mjs`) before they merge.
 
+### Timing
+
+`tools/timing.ts`. The session-timing table holds a random run id, a chapter, a
+seq, a server time and a timing note per mark: no household, player, name or
+anything a child typed ([session-timing.md](./session-timing.md)). So the timing
+tools are about the system in aggregate. The one free text they return is the
+note an operator typed through the host controls, which that doc asks to keep
+free of names.
+
+A typical session with an `operator:read` key:
+
+1. `timing_overview` and `timing_trends`: which chapters run long or short,
+   how much of each is story, mini-games and fights, which kinds of screen are
+   slow or stall, and whether that is moving week by week. `timing_campaign`
+   for where in a campaign tables stop coming back.
+2. `timing_findings`: the ranked reading list. `act` is a sample of 8 or more;
+   `look` is preliminary.
+3. `timing_chapter` or `timing_activities` for the scene behind a finding, then
+   `npm run play:jump -- <chapter> <scene>` in the repo to see it, and an edit
+   to the chapter's JSON (or to the screen, for a finding every chapter shares).
+4. After the edit ships, the chapter has a new revision, and every tool reads
+   it apart from the old text. `timing_compare` says whether it moved;
+   `since` (ISO time) narrows any read tool to sittings begun after a deploy.
+
+**The chapter index.** The function carries no content. The build writes it
+`chapter-index.json` (`infra/chapter-index.mjs`): every chapter's current
+revision, hashed by the server's own loader exactly as sittings are stamped,
+its campaign and place in it, its planned minutes, `content:pacing`'s
+uncalibrated prediction, and its games and fights. With it, `latest` is the
+current text whenever that has been played, and `current_text` says so outright;
+without it (an old build), `latest` is the most recently played revision and
+`timing_campaign` is refused.
+
+Roll-ups (`game_kinds`, `fights`, `scene_types`) cover the same revisions as the
+rows beside them: each chapter's current text, or its latest played one. So an
+edit to a game never blends its old and new numbers. `timing_activities` with
+`all_revisions` pools every revision, and each answer says which in `rollups_cover`.
+
+With `operator:write`, `timing_exclude` takes a sitting that was not a family's
+evening out of every figure (and the export's), and `timing_include` puts it
+back. Each is logged with the key's label.
+
+Every read scans the timing table (or queries one chapter's partition when
+given `chapter`), so the function's timeout is 29 seconds, just under the HTTP
+API's.
+
+Mint an operator key the usual way:
+
+```bash
+npm run mcp:keys -- create --stage prod --label "ops timing" --scope operator:read
+```
+
 ## What it can reach
 
-The function's role reads and touches the keys table, and signs uploads under
-the asset store's `sha256/` prefix. It cannot read the game's table, the timing
-table, any SSM parameter, AppSync or Cognito. `tools/mcp/template.test.ts` fails
-if its block in `infra/template.yaml` starts naming any of them.
+The function's role reads and touches the keys table, signs uploads under the
+asset store's `sha256/` prefix, and reads the session-timing table (`Query`,
+`Scan`). It may write to the timing table only rows whose key starts `OPS#`
+(`dynamodb:LeadingKeys`), which is where exclusions live, so it can never write,
+change or delete a mark. It cannot read the game's table, any SSM parameter,
+AppSync or Cognito. `tools/mcp/template.test.ts` fails if its block in
+`infra/template.yaml` starts naming any of them, or widens its timing access.
 
 ## Connecting
 

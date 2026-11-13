@@ -6,6 +6,9 @@ import { MemoryKeyStore, bearerKey, listKeys, mintKey, revokeKey, verifyKey, Key
 import { readStamp, type BlobStamp } from "../../../shared/src/asset-store";
 import { mcpEndpoint } from "./handler";
 import { S3UploadSigner, checksumHeader, planUploads, type UploadSigner } from "./uploads";
+import { MemoryTimingStore } from "../store/timing-store";
+import type { TimingNote } from "@kad/shared";
+import type { ChapterIndex } from "./chapter-index";
 
 const VERSION = "2026-07-28";
 const SHA = "ab".repeat(32);
@@ -243,6 +246,225 @@ describe("the endpoint", () => {
   it("refuses browser origins", async () => {
     const { key } = await mintKey(keys, { label: "agent", scopes: ["assets:read"] });
     expect((await rpc(key, "tools/list", {}, { origin: "https://evil.example" })).status).toBe(403);
+  });
+});
+
+describe("the operator's timing tools", () => {
+  const T0 = Date.parse("2026-11-01T18:00:00.000Z");
+  const MIN = 60_000;
+  let keys: MemoryKeyStore;
+  let timing: MemoryTimingStore;
+  let endpoint: ReturnType<typeof mcpEndpoint>;
+
+  /** One family evening of gemfall-02: a story scene, a memory game, a fight, the end. */
+  async function evening(runId: string, startMs: number, o: { game?: number; rounds?: number; close?: boolean; revision?: string; chapter?: string } = {}) {
+    const chapterId = o.chapter ?? "gemfall-02";
+    const notes: Array<[number, TimingNote]> = [
+      [0, { kind: "start", source: "family", chapterId, campaignId: "gemfall", revision: o.revision ?? "r1", partySize: 3, prefaced: false, revisit: false, scene: "intro", type: "story" }],
+      [2, { kind: "step", scene: "jar", type: "interaction", game: "memory" }],
+      [3, { kind: "game", scene: "jar", phase: "play", attempt: 0 }],
+      [3 + (o.game ?? 2), { kind: "game", scene: "jar", phase: "result", attempt: 0, outcome: "success" }],
+    ];
+    if (o.close) notes.push([4 + (o.game ?? 2), { kind: "close" }]);
+    else {
+      let t = 4 + (o.game ?? 2);
+      notes.push([t, { kind: "step", scene: "bog", type: "encounter", result: "success" }]);
+      notes.push([++t, { kind: "fight", scene: "bog", phase: "begin", round: 1, heroes: 3, foes: 2, foeKinds: ["bogling"] }]);
+      for (let r = 2; r <= (o.rounds ?? 3); r++) notes.push([(t += 2), { kind: "fight", scene: "bog", phase: "round", round: r }]);
+      notes.push([(t += 2), { kind: "step", scene: "after", type: "story", result: "success", fight: { outcome: "victory", round: o.rounds ?? 3 } }]);
+      notes.push([t + 20, { kind: "end", outcome: "success", routes: [] }]);
+    }
+    for (const [i, [min, note]] of notes.entries()) {
+      await timing.put({ runId, chapterId, seq: i + 1, at: new Date(startMs + min * MIN).toISOString(), timing: note });
+    }
+  }
+
+  beforeEach(async () => {
+    keys = new MemoryKeyStore();
+    timing = new MemoryTimingStore();
+    endpoint = mcpEndpoint({ keys, signer: new FakeSigner(), timing, now: () => T0 + 30 * 24 * 60 * MIN });
+    for (let i = 0; i < 4; i++) await evening(`run${String(i)}`, T0 + i * 24 * 60 * MIN, { game: 5, rounds: 8 });
+    await evening("left", T0 + 5 * 24 * 60 * MIN, { close: true });
+  });
+
+  async function call(key: string, name: string, args: Record<string, unknown> = {}) {
+    const list = name === "tools/list";
+    const res = await endpoint(
+      new Request("https://kd.example/api/mcp", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          accept: "application/json, text/event-stream",
+          "mcp-protocol-version": VERSION,
+          "mcp-method": list ? "tools/list" : "tools/call",
+          ...(list ? {} : { "mcp-name": name }),
+          authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method: list ? "tools/list" : "tools/call",
+          params: {
+            ...(list ? {} : { name, arguments: args }),
+            _meta: { "io.modelcontextprotocol/protocolVersion": VERSION, "io.modelcontextprotocol/clientCapabilities": {} },
+          },
+        }),
+      }),
+    );
+    const body = (await res.json()) as {
+      result?: { structuredContent?: Record<string, unknown>; isError?: boolean; tools?: Array<{ name: string }> };
+      error?: unknown;
+    };
+    if (!body.result) throw new Error(JSON.stringify(body));
+    return body.result;
+  }
+
+  it("offers the read tools to operator:read, the exclusions to operator:write, and none to an asset key", async () => {
+    const read = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+    const write = await mintKey(keys, { label: "ops", scopes: ["operator:write"] });
+    const assets = await mintKey(keys, { label: "agent", scopes: ["assets:write"] });
+    const names = async (key: string) => (await call(key, "tools/list")).tools!.map((t) => t.name).sort();
+    const reads = ["timing_activities", "timing_campaign", "timing_chapter", "timing_compare", "timing_findings", "timing_overview", "timing_sittings", "timing_trends"];
+    expect(await names(read.key)).toEqual([...reads, "whoami"]);
+    expect(await names(write.key)).toEqual([...reads, "timing_exclude", "timing_include", "whoami"].sort());
+    expect((await names(assets.key)).filter((n) => n.startsWith("timing"))).toEqual([]);
+  });
+
+  it("answers the overview, the activities, a chapter and the findings from the timing table", async () => {
+    const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+    const overview = (await call(key, "timing_overview")).structuredContent!;
+    expect(overview).toMatchObject({ sittings: 5, excluded: 0 });
+    const [chapter] = overview.chapters as Array<Record<string, unknown>>;
+    expect(chapter).toMatchObject({ chapter: "gemfall-02", revision: "r1", latest: true, attempts: 5, completed: 4, left_unfinished: 1 });
+    expect(overview.game_kinds).toEqual([expect.objectContaining({ game: "memory", play_min: expect.objectContaining({ n: 4, median: 5 }) })]);
+    expect(overview.fights).toMatchObject({ rounds: { median: 8 } });
+
+    const acts = (await call(key, "timing_activities", { what: "fights" })).structuredContent!;
+    expect(acts.fights).toEqual([
+      expect.objectContaining({ scene: "bog", foes: 2, foe_kinds: ["bogling"], rounds: { n: 4, median: 8, max: 8 }, outcomes: expect.objectContaining({ victory: 4 }) }),
+    ]);
+    expect(acts).not.toHaveProperty("games");
+
+    const found = (await call(key, "timing_findings")).structuredContent!;
+    const kinds = (found.findings as Array<{ kind: string; scene: string | null }>).map((f) => `${f.kind}:${f.scene ?? ""}`);
+    expect(kinds).toEqual(expect.arrayContaining(["fight_long:bog", "game_long:jar"]));
+
+    const one = (await call(key, "timing_chapter", { chapter: "gemfall-02" })).structuredContent!;
+    const [rev] = one.revisions as Array<Record<string, unknown>>;
+    expect(rev).toMatchObject({ revision: "r1", left_at: [{ scene: "jar", attempts: 1 }] });
+    expect(rev!.games).toEqual([expect.objectContaining({ scene: "jar", game: "memory", unfinished_kept_out: 1 })]);
+    expect((await call(key, "timing_chapter", { chapter: "nowhere-01" })).isError).toBe(true);
+  });
+
+  describe("with the chapter index the build writes", () => {
+    const index: ChapterIndex = {
+      builtAt: "2026-11-13T00:00:00.000Z",
+      campaigns: [{ id: "gemfall", title: "Gemfall", mode: "ordered", chapters: ["gemfall-01", "gemfall-02", "gemfall-03"] }],
+      chapters: [
+        { id: "gemfall-01", title: "One", campaignId: "gemfall", position: 1, revision: "x1", estimatedMinutes: 30, predictedMinutes: { shortest: 28, typical: 33 }, scenes: 40, games: [], fights: [] },
+        {
+          id: "gemfall-02", title: "Green Roads North", campaignId: "gemfall", position: 2, revision: "r2", estimatedMinutes: 30,
+          predictedMinutes: { shortest: 37.4, typical: 40.8 }, scenes: 113,
+          games: [{ scene: "jar", game: "memory" }, { scene: "hats", game: "tracking" }],
+          fights: [{ scene: "bog", foes: 2, foeKinds: ["bogling"] }],
+        },
+        { id: "gemfall-03", title: "Three", campaignId: "gemfall", position: 3, revision: "z3", estimatedMinutes: 35, predictedMinutes: { shortest: 30, typical: 36 }, scenes: 50, games: [], fights: [] },
+      ],
+    };
+
+    beforeEach(async () => {
+      endpoint = mcpEndpoint({ keys, signer: new FakeSigner(), timing, chapterIndex: index, now: () => T0 + 30 * 24 * 60 * MIN });
+      // The edited text: three faster evenings a week later, on r2. The old text stays most played.
+      for (let i = 0; i < 3; i++) await evening(`new${String(i)}`, T0 + (7 + i) * 24 * 60 * MIN, { game: 1, rounds: 3, revision: "r2" });
+      for (let i = 0; i < 2; i++) await evening(`one${String(i)}`, T0 + (8 + i) * 24 * 60 * MIN, { revision: "x1", chapter: "gemfall-01" });
+    });
+
+    it("knows the current text, the plan and the prediction, and what nobody has played yet", async () => {
+      const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+      const overview = (await call(key, "timing_overview")).structuredContent!;
+      const rows = overview.chapters as Array<Record<string, unknown>>;
+      expect(rows.find((c) => c.chapter === "gemfall-02" && c.revision === "r2")).toMatchObject({ latest: true, current_text: true, planned_min: 30, predicted_min: { typical: 40.8 } });
+      expect(rows.find((c) => c.chapter === "gemfall-02" && c.revision === "r1")).toMatchObject({ latest: false, current_text: false });
+      expect(overview.current_text_not_yet_played).toEqual(["gemfall-03"]);
+      expect(overview.scene_types).toEqual(expect.arrayContaining([expect.objectContaining({ type: "encounter" })]));
+
+      const one = (await call(key, "timing_chapter", { chapter: "gemfall-02", revision: "r2" })).structuredContent!;
+      expect(one).toMatchObject({ current_revision: "r2", planned_min: 30 });
+      const [rev] = one.revisions as Array<Record<string, unknown>>;
+      expect(rev!.games_not_yet_seen).toEqual([{ scene: "hats", game: "tracking" }]);
+      expect(rev!.fights_not_yet_seen).toEqual([]);
+      expect(rev!.fresh_active_by_party_size).toMatchObject({ "3": { n: 3 } });
+    });
+
+    it("compares the edited text with the one before it", async () => {
+      const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+      const c = (await call(key, "timing_compare", { chapter: "gemfall-02" })).structuredContent!;
+      expect(c).toMatchObject({ before: { revision: "r1", current_text: false }, after: { revision: "r2", current_text: true }, verdict: "shorter" });
+      expect(c.games).toEqual([expect.objectContaining({ scene: "jar", before_play_min: 5, after_play_min: 1, n: [4, 3] })]);
+      expect(c.fights).toEqual([expect.objectContaining({ scene: "bog", before_rounds: 8, after_rounds: 3 })]);
+      expect((await call(key, "timing_compare", { chapter: "gemfall-01" })).isError).toBe(true);
+    });
+
+    it("rolls games and fights up over the same revisions the rows show, unless every revision is asked for", async () => {
+      const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+      // gemfall-02: four evenings on the old text (5-minute game, 8 rounds), three on the edited one (1 minute, 3 rounds).
+      const latest = (await call(key, "timing_activities", { chapter: "gemfall-02" })).structuredContent!;
+      expect(latest.rollups_cover).toMatch(/current text/);
+      expect(latest.games).toEqual([expect.objectContaining({ revision: "r2" })]);
+      expect(latest.game_kinds).toEqual([expect.objectContaining({ game: "memory", play_min: expect.objectContaining({ n: 3, median: 1 }) })]);
+      expect(latest.all_fights).toMatchObject({ sample: "n=3, preliminary", rounds: { median: 3, max: 3 } });
+
+      const every = (await call(key, "timing_activities", { chapter: "gemfall-02", all_revisions: true })).structuredContent!;
+      expect(every.rollups_cover).toMatch(/every revision/);
+      expect((every.games as Array<{ revision: string }>).map((g) => g.revision).sort()).toEqual(["r1", "r2"]);
+      expect(every.game_kinds).toEqual([expect.objectContaining({ game: "memory", play_min: expect.objectContaining({ n: 7, median: 5 }) })]);
+      expect(every.all_fights).toMatchObject({ sample: "n=7, preliminary", rounds: { median: 8, max: 8 } });
+
+      // The overview's roll-ups read each chapter at its current text too.
+      const overview = (await call(key, "timing_overview", { chapter: "gemfall-02" })).structuredContent!;
+      expect(overview.game_kinds).toEqual([expect.objectContaining({ play_min: expect.objectContaining({ n: 3 }) })]);
+    });
+
+    it("walks a campaign in order, with a rough reach by counts", async () => {
+      const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+      const list = (await call(key, "timing_campaign")).structuredContent!;
+      expect(list.campaigns).toEqual([expect.objectContaining({ campaign: "gemfall", chapters: 3, chapters_played: 2, first_chapter_fresh_attempts: 2 })]);
+      const camp = (await call(key, "timing_campaign", { campaign: "gemfall" })).structuredContent!;
+      const rows = camp.chapters as Array<Record<string, unknown>>;
+      expect(rows.map((x) => [x.chapter, x.fresh_attempts, x.reach_pct])).toEqual([["gemfall-01", 2, 100], ["gemfall-02", 8, 400], ["gemfall-03", 0, 0]]);
+      expect(rows[1]).toMatchObject({ read_revision: "r2", current_text: true, completion_pct: 88, left_most_at: [{ scene: "jar", attempts: 1 }] });
+      expect((await call(key, "timing_campaign", { campaign: "nope" })).isError).toBe(true);
+    });
+
+    it("buckets sittings by week", async () => {
+      const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+      const t = (await call(key, "timing_trends", { chapter: "gemfall-02" })).structuredContent!;
+      const periods = t.periods as Array<{ from: string; started: number; fresh_active_min: { median: number | null } }>;
+      expect(periods.reduce((n, p) => n + p.started, 0)).toBe(8);
+      expect(periods.map((p) => p.from.slice(0, 10))).toEqual(["2026-10-26", "2026-11-02", "2026-11-09"]);
+    });
+  });
+
+  it("answers without an index, and says the latest revision is a guess", async () => {
+    const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+    expect((await call(key, "timing_overview")).structuredContent!.chapter_index).toMatch(/absent/);
+    expect((await call(key, "timing_campaign")).isError).toBe(true);
+  });
+
+  it("excludes a sitting from every figure, lists it as excluded, and counts it again on include", async () => {
+    const { key } = await mintKey(keys, { label: "ops", scopes: ["operator:write"] });
+    const sittings = (await call(key, "timing_sittings", { status: "closed" })).structuredContent!;
+    expect(sittings.sittings).toEqual([expect.objectContaining({ id: "left:1", last_scene: "jar" })]);
+
+    expect((await call(key, "timing_exclude", { sitting_id: "nope:1", reason: "a test" })).isError).toBe(true);
+    const done = (await call(key, "timing_exclude", { sitting_id: "left:1", reason: "a developer test on prod", chapter: "gemfall-02" })).structuredContent!;
+    expect(done).toMatchObject({ excluded: { sittingId: "left:1", by: "ops" }, chapter: "gemfall-02" });
+    expect((await call(key, "timing_overview")).structuredContent).toMatchObject({ sittings: 4, excluded: 1 });
+    const listed = (await call(key, "timing_sittings", { excluded: true })).structuredContent!;
+    expect(listed.sittings).toEqual([expect.objectContaining({ id: "left:1", excluded: expect.objectContaining({ reason: "a developer test on prod" }) })]);
+
+    expect((await call(key, "timing_include", { sitting_id: "left:1" })).structuredContent).toMatchObject({ was_excluded: true });
+    expect((await call(key, "timing_overview")).structuredContent).toMatchObject({ sittings: 5, excluded: 0 });
   });
 });
 

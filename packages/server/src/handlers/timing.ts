@@ -22,7 +22,9 @@
  * revision, how many were seated, whether it was a revisit or a resume, the
  * scenes and when they opened, pauses, the recoveries and assisted routes
  * taken, the road flags carried, the outcome, and one short note an operator
- * typed. No names, chat, audio, household or player ids. Marks expire.
+ * typed. Inside a mini-game: start, result and retry; inside a fight: the
+ * board going up (with how many heroes and foes), each new round, and how it
+ * ended. No names, chat, audio, household or player ids. Marks expire.
  */
 
 import { createHash } from "node:crypto";
@@ -32,6 +34,8 @@ import {
   isPracticeCampaign,
   timingReportFromMarks,
   type Chapter,
+  type FightEnd,
+  type GameKind,
   type RunState,
   type Scene,
   type StepResult,
@@ -95,6 +99,55 @@ export interface StepTimingInput {
   revisit: boolean;
 }
 
+/** The mini-game a scene plays, when it is one. */
+function gameOf(chapter: Chapter, sceneId: string | null | undefined): GameKind | undefined {
+  const scene = sceneId ? chapter.scenes[sceneId] : undefined;
+  return scene?.type === "interaction" ? scene.interaction.kind : undefined;
+}
+
+/** The fight `before` was in, when this commit ended it. */
+function fightEnded(before: RunState, after: RunState): FightEnd | undefined {
+  const fight = before.encounter;
+  const ended = after.lastEncounter;
+  if (!fight || after.encounter || !ended || ended.sceneId !== before.sceneId) return undefined;
+  return { outcome: ended.outcome, round: fight.round };
+}
+
+/** A mini-game or a fight that moved inside its scene, or undefined. */
+function inSceneNote(before: RunState, after: RunState, chapter: Chapter): TimingNote | undefined {
+  const scene = after.sceneId;
+  if (!scene || scene !== before.sceneId) return undefined;
+  const was = before.prompt?.kind === "interaction" ? before.prompt : null;
+  const now = after.prompt?.kind === "interaction" ? after.prompt : null;
+  if (now && now.sceneId === scene && (!was || was.openedSeq === now.openedSeq)) {
+    if (was && now.attempt > was.attempt) return { kind: "game", scene, phase: "retry", attempt: now.attempt };
+    if (now.phase === "active" && was?.phase !== "active") {
+      return { kind: "game", scene, phase: "play", attempt: now.attempt, ...(now.relaxed ? { relaxed: true } : {}) };
+    }
+    if (now.phase === "result" && was?.phase !== "result") {
+      return { kind: "game", scene, phase: "result", attempt: now.attempt, ...(now.outcome ? { outcome: now.outcome } : {}) };
+    }
+  }
+  const fight = after.encounter;
+  if (fight && !before.encounter) {
+    const spec = chapter.scenes[scene];
+    const enemies = spec?.type === "encounter" ? spec.enemies : [];
+    return {
+      kind: "fight",
+      scene,
+      phase: "begin",
+      round: fight.round,
+      heroes: after.party.length,
+      foes: enemies.reduce((t, e) => t + e.count, 0),
+      foeKinds: [...new Set(enemies.map((e) => e.id))],
+    };
+  }
+  if (fight && before.encounter && fight.round > before.encounter.round) {
+    return { kind: "fight", scene, phase: "round", round: fight.round };
+  }
+  return undefined;
+}
+
 /**
  * The note a committed action owes, or undefined when it is not a timing
  * moment (a vote tick, a ready toggle, a tap that changed nothing the clock
@@ -106,6 +159,7 @@ export function timingNoteFor(input: StepTimingInput, deps: Pick<HandlerDeps, "t
   if (!source || !chapter || isPracticeCampaign(after.campaignId)) return undefined;
   if (input.started) {
     if (!after.sceneId || !after.sceneType) return undefined;
+    const game = gameOf(chapter, after.sceneId);
     return {
       kind: "start",
       source,
@@ -119,21 +173,33 @@ export function timingNoteFor(input: StepTimingInput, deps: Pick<HandlerDeps, "t
       revisit: input.revisit,
       scene: after.sceneId,
       type: after.sceneType,
+      ...(game ? { game } : {}),
     };
   }
   if (after.timingOff) return undefined;
+  const fight = fightEnded(before, after);
   if (input.finished) {
     const campaign = after.campaignId ? deps.content.campaign(after.campaignId) : null;
     return {
       kind: "end",
       outcome: after.chapterOutcome === "setback" ? "setback" : "success",
       routes: campaign ? carriedRouteFlags(campaign, chapter, after.flags) : [],
+      ...(fight ? { fight } : {}),
     };
   }
   if (after.sceneId && after.sceneType && after.sceneId !== before.sceneId && after.chapterId === before.chapterId) {
     const result = stepResult(chapter.scenes[before.sceneId ?? ""], after.sceneId);
-    return { kind: "step", scene: after.sceneId, type: after.sceneType, ...(result ? { result } : {}) };
+    const game = gameOf(chapter, after.sceneId);
+    return {
+      kind: "step",
+      scene: after.sceneId,
+      type: after.sceneType,
+      ...(result ? { result } : {}),
+      ...(game ? { game } : {}),
+      ...(fight ? { fight } : {}),
+    };
   }
+  if (after.chapterId === before.chapterId) return inSceneNote(before, after, chapter);
   return undefined;
 }
 
@@ -265,14 +331,19 @@ export async function resumedTimingNote(
   const marks = await timing.store.runMarks(chapter.id, stoppedRunId);
   const origin = [...marks].reverse().find((m) => m.timing.kind === "start");
   if (!origin || origin.timing.kind !== "start") return undefined;
+  // The scene picked up at, not the one the stopped evening began on.
+  const { game: _origin, fighting: _was, ...context } = origin.timing;
+  const game = gameOf(chapter, resumed.sceneId);
   return {
-    ...origin.timing,
+    ...context,
     source: timing.source,
     partySize: resumed.party.length,
     revision: chapterRevision(chapter),
     resumedFrom: `${stoppedRunId}:${origin.seq}`,
     scene: resumed.sceneId,
     type: resumed.sceneType,
+    ...(game ? { game } : {}),
+    ...(resumed.encounter ? { fighting: true as const } : {}),
   };
 }
 

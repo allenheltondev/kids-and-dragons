@@ -24,6 +24,7 @@ import { TentStandIn } from "../world/StillCamp";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
 import { DECORATION_ART, KIT_RULES, TENT_ART, kitName, tentArt } from "../world/camp-scene";
 import { castArtUrl } from "../world/art-paths";
+import { campPaint } from "../world/camp-paint";
 import "./BookKit.css";
 
 type KitChange = Omit<Extract<ClientIntent, { type: "KIT_EDIT" }>, "type" | "characterId" | "revision">;
@@ -70,6 +71,27 @@ function decorationUrl(id: string): string | null {
   return art?.path ? `/assets/${art.path}` : null;
 }
 
+/**
+ * Where a decoration's middle sits on her tent's square box, in percent of it:
+ * the tent's own spot for that slot (manifest `hangPoints`), found the way
+ * `CampTent` draws the painting (cropped to its paint, fitted and centred in
+ * the square). Null when the tent has no painting or no spot for the slot,
+ * and the stylesheet's spots stand in.
+ */
+export function hangSpot(tent: string | null, slot: number): { left: number; top: number } | null {
+  const art = tent ? TENT_ART.find((t) => t.id === tent) : undefined;
+  const point = art?.hangPoints?.[slot];
+  const paint = art ? campPaint(art.path) : null;
+  if (!point || !paint) return null;
+  const width = paint.right - paint.left;
+  const height = paint.bottom - paint.top;
+  const side = Math.max(width, height);
+  // The painting's paint is centred in the square, so the shorter side has a margin either way.
+  const left = ((side - width) / 2 + point.x / 1024 - paint.left) / side;
+  const top = ((side - height) / 2 + point.y / 1024 - paint.top) / side;
+  return { left: left * 100, top: top * 100 };
+}
+
 export function BookKit({ hero, kit, friends, edit }: { hero: ResolvedCharacter; kit: HeroKitView; friends: readonly CampFriendCard[]; edit: (change: KitChange) => void }): ReactElement {
   const [shelf, setShelf] = useState<KitShelf>(openShelf);
   const choose = (next: KitShelf): void => {
@@ -82,6 +104,10 @@ export function BookKit({ hero, kit, friends, edit }: { hero: ResolvedCharacter;
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);
   const tent = tentArt(kit.tent, style)?.id ?? null;
+  // A tent whose painting would not load shows the drawn stand-in, so its decorations take the stand-in's spots.
+  // Kept here, not in the tent, so a bounce (which redraws the stage) does not forget it.
+  const [unpainted, setUnpainted] = useState<string | null>(null);
+  const painted = tent !== null && unpainted !== tent ? tent : null;
   const slots = kit.slots.length > 0 ? kit.slots : [null, null];
   const buddy = friends.find((f) => f.id === kit.buddy) ?? null;
 
@@ -102,10 +128,17 @@ export function BookKit({ hero, kit, friends, edit }: { hero: ResolvedCharacter;
       <div className="book-kit__pitch" data-testid="book-kit-pitch" style={{ ["--kit-accent" as string]: accent }}>
         <div key={bounce} className={`book-kit__stage${bounce > 0 ? " is-bouncing" : ""}`} aria-hidden="true">
           <div className="book-kit__tent">
-            {tent ? <CampTent tent={tent} accent={accent} fallback={<TentStandIn accent={accent} decorations={0} />} /> : <TentStandIn accent={accent} decorations={0} />}
+            {tent ? (
+              <CampTent tent={tent} accent={accent} fallback={<TentStandIn accent={accent} decorations={0} />} onDrawn={(drawn) => setUnpainted(drawn ? null : tent)} />
+            ) : (
+              <TentStandIn accent={accent} decorations={0} />
+            )}
             {slots.map((slot, i) => {
               const url = slot ? decorationUrl(slot) : null;
-              return url ? <img key={i} className={`book-kit__hung book-kit__hung--${String(i)}`} src={url} alt="" /> : null;
+              if (!url) return null;
+              const spot = hangSpot(painted, i);
+              const at = spot ? { left: `${String(spot.left)}%`, top: `${String(spot.top)}%` } : undefined;
+              return <img key={i} className={`book-kit__hung book-kit__hung--${spot ? "on" : String(i)}`} data-slot={i} style={at} src={url} alt="" />;
             })}
           </div>
           <div className="book-kit__bedroll">{Object.hasOwn(CAMP_KIT_STYLES, style) ? <CampBedroll style={style} accent={accent} /> : null}</div>

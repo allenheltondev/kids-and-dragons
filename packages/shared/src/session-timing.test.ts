@@ -249,7 +249,7 @@ describe("timingCsv", () => {
   it("writes one row per sitting and neutralises a formula in a note", () => {
     const s = one(log([0, start()], [MIN, { kind: "note", text: '=HYPERLINK("x"), hi' }], [2 * MIN, { kind: "end", outcome: "success", routes: ["a", "b"] }]));
     const [head, row] = timingCsv([s]).trim().split("\n");
-    expect(head?.split(",")).toHaveLength(27);
+    expect(head?.split(",")).toHaveLength(33);
     expect(row).toContain('"\'=HYPERLINK(""x""), hi"');
     expect(row).toContain("a b");
   });

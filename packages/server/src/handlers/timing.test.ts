@@ -330,6 +330,55 @@ describe("timingNoteFor", () => {
     expect(stepResult(undefined, "x")).toBeUndefined();
   });
 
+  describe("inside a mini-game and a fight", () => {
+    const toy = {
+      ...chapter,
+      scenes: {
+        ...chapter.scenes,
+        g: { type: "interaction", interaction: { kind: "memory" }, onSuccess: { goto: "n" }, onFailure: { goto: "n" } },
+        f: { type: "encounter", enemies: [{ id: "wisp", count: 2 }, { id: "bog", count: 1 }, { id: "wisp", count: 1 }], onVictory: { goto: "n" }, onDefeat: { goto: "lost" } },
+      },
+    } as unknown as typeof chapter;
+    const note = (before: RunState, after: RunState) => timingNoteFor({ before, after, chapter: toy, started: false, finished: false, revisit: false }, deps);
+    const game = (over: Record<string, unknown>) =>
+      ({ ...base, sceneId: "g", sceneType: "interaction", prompt: { kind: "interaction", sceneId: "g", openedSeq: 7, attempt: 0, phase: "ready", relaxed: false, ...over } }) as unknown as RunState;
+    const fight = (over: Record<string, unknown> | null, rest: Record<string, unknown> = {}) =>
+      ({ ...base, phase: "encounter", sceneId: "f", sceneType: "encounter", encounter: over && { round: 1, ...over }, ...rest }) as unknown as RunState;
+
+    it("names the game a step opens", () => {
+      expect(note(base, game({}))).toEqual({ kind: "step", scene: "g", type: "interaction", game: "memory" });
+    });
+
+    it("marks start, result and retry, and nothing for a tap inside play", () => {
+      expect(note(game({}), game({ phase: "active", relaxed: true }))).toEqual({ kind: "game", scene: "g", phase: "play", attempt: 0, relaxed: true });
+      expect(note(game({ phase: "active" }), game({ phase: "active", levels: { a: 0.5 } }))).toBeUndefined();
+      expect(note(game({ phase: "active" }), game({ phase: "result", outcome: "failure" }))).toEqual({ kind: "game", scene: "g", phase: "result", attempt: 0, outcome: "failure" });
+      expect(note(game({ phase: "result", outcome: "failure" }), game({ attempt: 1 }))).toEqual({ kind: "game", scene: "g", phase: "retry", attempt: 1 });
+      // Assisted straight from the ready screen: a result with no play.
+      expect(note(game({}), game({ phase: "result", outcome: "assisted" }))).toMatchObject({ phase: "result", outcome: "assisted" });
+      // A fresh visit to the same scene is a step, never a game mark.
+      expect(note(game({ phase: "result" }), game({ openedSeq: 9 }))).toBeUndefined();
+    });
+
+    it("marks the board going up with counts, each new round, and how the fight ended", () => {
+      expect(note(fight(null), fight({}))).toEqual({ kind: "fight", scene: "f", phase: "begin", round: 1, heroes: 3, foes: 4, foeKinds: ["wisp", "bog"] });
+      expect(note(fight({ round: 1 }), fight({ round: 1, turnIndex: 2 }))).toBeUndefined();
+      expect(note(fight({ round: 1 }), fight({ round: 2 }))).toEqual({ kind: "fight", scene: "f", phase: "round", round: 2 });
+      const lost = { ...base, sceneId: "lost", sceneType: "story", encounter: null, lastEncounter: { chapterId: "gemfall-01", sceneId: "f", destination: "lost", outcome: "defeat" } } as unknown as RunState;
+      expect(note(fight({ round: 3 }), lost)).toEqual({ kind: "step", scene: "lost", type: "story", result: "recovery", fight: { outcome: "defeat", round: 3 } });
+      const won = timingNoteFor(
+        { before: fight({ round: 2 }), after: { ...lost, phase: "chapter_complete", lastEncounter: { sceneId: "f", outcome: "victory" } } as unknown as RunState, chapter: toy, started: false, finished: true, revisit: false },
+        deps,
+      );
+      expect(won).toMatchObject({ kind: "end", fight: { outcome: "victory", round: 2 } });
+    });
+
+    it("leaves a stale fight receipt alone", () => {
+      const after = { ...base, sceneId: "n", sceneType: "story", lastEncounter: { sceneId: "f", outcome: "victory" } } as unknown as RunState;
+      expect(note({ ...base, sceneId: "a", sceneType: "story" } as RunState, after)).not.toHaveProperty("fight");
+    });
+  });
+
   it("gives a chapter a new revision when its content changes", () => {
     expect(chapterRevision(chapter)).toBe(chapterRevision(chapter));
     expect(chapterRevision({ ...chapter, title: `${chapter.title}!` })).not.toBe(chapterRevision(chapter));

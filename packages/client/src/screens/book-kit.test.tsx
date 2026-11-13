@@ -10,7 +10,9 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { CampFriendCard, HeroKitView } from "@kad/shared";
 import { makeCharacter } from "../testing/fixtures";
-import { BookKit } from "./BookKit";
+import { BookKit, hangSpot } from "./BookKit";
+import { TENT_ART } from "../world/camp-scene";
+import { campPaint } from "../world/camp-paint";
 
 const hero = makeCharacter({ id: "c_1", ownerPlayerId: "p_1", name: "Moonbeam" });
 const kit = (over: Partial<HeroKitView> = {}): HeroKitView => ({ revision: 4, style: null, tent: null, color: null, slots: [null, null], unlocked: [], ...over });
@@ -77,7 +79,45 @@ describe("her kit in the book", () => {
     expect(edits.at(-1)).toEqual({ slots: [null, "deco_bunting"] });
     // And her pitch wears what hangs on it.
     view.rerender(<BookKit hero={hero} kit={kit({ slots: ["deco_bunting", null] })} friends={friends} edit={edit} />);
-    expect(view.container.querySelector(".book-kit__hung--0")?.getAttribute("src")).toMatch(/bunting/);
+    expect(view.container.querySelector('.book-kit__hung[data-slot="0"]')?.getAttribute("src")).toMatch(/bunting/);
+  });
+
+  it("hangs each decoration on its own tent's spot, never in the air beside it", () => {
+    for (const tent of TENT_ART) {
+      const view = render(<BookKit hero={hero} kit={kit({ tent: tent.id, unlocked: [tent.id], slots: ["deco_bunting", "deco_lantern"] })} friends={friends} edit={edit} />);
+      const paint = campPaint(tent.path)!;
+      const side = Math.max(paint.right - paint.left, paint.bottom - paint.top);
+      for (const slot of [0, 1]) {
+        const hung = view.container.querySelector<HTMLElement>(`.book-kit__hung[data-slot="${String(slot)}"]`)!;
+        expect(hung.className, tent.id).toContain("book-kit__hung--on");
+        // Back from the square's percent to the painting's canvas: the spot the manifest gives it.
+        const x = (parseFloat(hung.style.left) / 100) * side - (side - (paint.right - paint.left)) / 2 + paint.left;
+        const y = (parseFloat(hung.style.top) / 100) * side - (side - (paint.bottom - paint.top)) / 2 + paint.top;
+        expect([Math.round(x * 1024), Math.round(y * 1024)], `${tent.id} spot ${String(slot + 1)}`).toEqual([tent.hangPoints![slot]!.x, tent.hangPoints![slot]!.y]);
+        expect(hangSpot(tent.id, slot)!.top, tent.id).toBeGreaterThan(0);
+      }
+      view.unmount();
+    }
+  });
+
+  it("hangs them on the stand-in's spots when the tent's painting will not load, and back on the tent once it does", () => {
+    const hung = (c: HTMLElement) => [...c.querySelectorAll(".book-kit__hung")].map((el) => el.className.replace("book-kit__hung ", ""));
+    const view = render(<BookKit hero={hero} kit={kit({ tent: "quilted", slots: ["deco_bunting", "deco_lantern"] })} friends={friends} edit={edit} />);
+    expect(hung(view.container)).toEqual(["book-kit__hung--on", "book-kit__hung--on"]);
+    // The painting fails: the stand-in tent shows, and the decorations take its spots.
+    fireEvent.error(view.container.querySelector('svg[data-camp-tent="quilted"] image')!);
+    expect(view.container.querySelector('svg[data-camp-tent="quilted"]')).toBeNull();
+    expect(hung(view.container)).toEqual(["book-kit__hung--0", "book-kit__hung--1"]);
+    expect(view.container.querySelector<HTMLElement>(".book-kit__hung")!.style.left).toBe("");
+    // Another tent that does load hangs them on its own spots again.
+    view.rerender(<BookKit hero={hero} kit={kit({ tent: "rolled", slots: ["deco_bunting", "deco_lantern"] })} friends={friends} edit={edit} />);
+    fireEvent.load(view.container.querySelector('svg[data-camp-tent="rolled"] image')!);
+    expect(hung(view.container)).toEqual(["book-kit__hung--on", "book-kit__hung--on"]);
+  });
+
+  it("falls back to the stylesheet's spots where a tent gives none", () => {
+    expect(hangSpot(null, 0)).toBeNull();
+    expect(hangSpot("rolled", 2)).toBeNull();
   });
 
   it("picks her buddy, or everyone taking turns, and has no Buddy shelf for a crew with no friends", () => {
