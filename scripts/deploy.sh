@@ -344,8 +344,14 @@ aws s3 sync packages/client/dist/bundle "s3://$BUCKET/bundle" \
 # git. Short cache plus the invalidation below, so a new chapter is live in
 # seconds rather than whenever a phone decides to re-check.
 # assets/ was checked against assets.lock.json at the top of this script.
-aws s3 sync assets "s3://$BUCKET/assets" --delete --cache-control "public,max-age=300"
-aws s3 sync content "s3://$BUCKET/content" --delete --cache-control "public,max-age=60"
+#
+# That short age is the browser's (max-age). The edge keeps each file for a year
+# (s-maxage): the invalidation below is what tells it a deploy changed something,
+# so it has no reason to go back to S3 for every painting every five minutes,
+# which is what made the first request for most pictures of an evening an edge
+# miss. The service worker checks each file's fingerprint itself (sw.ts).
+aws s3 sync assets "s3://$BUCKET/assets" --delete --cache-control "public,max-age=300,s-maxage=31536000"
+aws s3 sync content "s3://$BUCKET/content" --delete --cache-control "public,max-age=60,s-maxage=31536000"
 
 # Everything else in the client build — index.html above all, which must never
 # be cached or a deploy leaves phones on the previous bundle.

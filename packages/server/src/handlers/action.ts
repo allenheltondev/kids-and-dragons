@@ -972,6 +972,15 @@ async function applyActionOnce(
     ...(lookUnlocks.length > 0 ? { lookUnlocks } : {}),
     ...(campDrops.length > 0 ? { campDrops } : {}),
   };
+  // A question this step opened for somebody (#466): the job is decided here,
+  // from the two states already in hand, and handed to the push sender, off
+  // the request path. Only the hand-over is awaited, and never for long
+  // (`DISPATCH_WAIT_MS`); nothing about presence, phones or push services is.
+  // Started beside the broadcast, not after it: the response is what frees the
+  // acting phone's button, and it has no reason to queue behind the hand-over.
+  const pushing = dispatchTurnPush({ before: state, after: next, actorId: input.playerId }, deps);
+  pushing.catch(() => undefined);
+
   try {
     await deps.channel.publish(next.roomCode, message);
   } catch (err) {
@@ -999,15 +1008,13 @@ async function applyActionOnce(
   if (renewal) await renewal;
   await recording;
 
-  // A question this step opened for somebody (#466): the job is decided here,
-  // from the two states already in hand, and handed to the push sender, off
-  // the request path. Only the hand-over is awaited, and never for long
-  // (`DISPATCH_WAIT_MS`); nothing about presence, phones or push services is.
-  await dispatchTurnPush({ before: state, after: next, actorId: input.playerId }, deps);
+  await pushing;
 
   // A stale look edit committed only the refreshed view of her look: still refused.
   if (refusal) return { ok: false, seq: nextSeq, error: refusal };
-  return { ok: true, seq: nextSeq };
+  // With the broadcast itself, so the phone that acted need not wait for the channel.
+  const { kind: _kind, ...applied } = message;
+  return { ok: true, seq: nextSeq, applied };
 }
 
 /**

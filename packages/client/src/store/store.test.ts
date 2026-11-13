@@ -1186,6 +1186,29 @@ describe("send", () => {
     }
   });
 
+  it("applies the step the response carries without waiting for the channel, and drops the channel's copy", async () => {
+    vi.useFakeTimers();
+    try {
+      const state = makeState({ seq: 7 });
+      const h = harness(state);
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.fetchState.mockClear();
+      const applied = { seq: 8, runId: state.runId, patch: [{ op: "replace" as const, path: "/seq", value: 8 }] };
+      h.api.postAction.mockResolvedValueOnce({ ok: true, seq: 8, applied });
+
+      await h.store.getState().send({ type: "READY", ready: true });
+      // Nothing has come down the channel, and the phone has already moved.
+      expect(h.store.getState().state?.seq).toBe(8);
+      h.publish(patch(8, [{ op: "replace", path: "/seq", value: 8 }]));
+      expect(h.store.getState().state?.seq).toBe(8);
+
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(h.api.fetchState).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("reports whether the server accepted the intent", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");

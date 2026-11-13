@@ -42,7 +42,7 @@ import { useChapter, useGameStore, useMe, useRunState, useSession } from "../sto
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
 // paces its damage numbers across the same hold this gate enforces.
-import { presentationDuration } from "../world/presentation";
+import { holdFor } from "../world/presentation";
 // Sound rides the same two facts the renderer already consumes: presentations
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
 import { ambience, cue, cueForPresentation, stopSceneCues } from "../audio";
@@ -128,7 +128,7 @@ export function WorldView({
       // A no-op on any device without an installed audio sink.
       cue(cueForPresentation(event.presentation));
       return new Promise((resolve) => {
-        setTimeout(resolve, presentationDuration(event.presentation));
+        setTimeout(resolve, holdFor(event.presentation, event.behind));
       });
     };
     return useGameStore.getState().registerPresentationPlayer(play);

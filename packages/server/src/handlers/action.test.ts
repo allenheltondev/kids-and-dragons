@@ -60,7 +60,7 @@ describe("applyAction — the reads a tap waits on", () => {
     expect(getPlayer).toHaveBeenCalledWith(room.player.principal.householdId, room.player.principal.playerId);
 
     releaseState();
-    expect(await acting).toEqual({ ok: true, seq: 1 });
+    expect(await acting).toMatchObject({ ok: true, seq: 1 });
     expect(getPlayer).toHaveBeenCalledTimes(1);
   });
 });
@@ -75,7 +75,7 @@ describe("applyAction — the seq gate (architecture §4.2)", () => {
       harness.deps,
     );
 
-    expect(response).toEqual({ ok: true, seq: 1 });
+    expect(response).toMatchObject({ ok: true, seq: 1 });
     const state = await harness.repo.getState(room.runId);
     expect(state?.seq).toBe(1);
     expect(state?.flags.east).toBe(true);
@@ -195,7 +195,7 @@ describe("applyAction — the question a decision answers (#413)", () => {
       },
       harness.deps,
     );
-    expect(response).toEqual({ ok: true, seq: 1 });
+    expect(response).toMatchObject({ ok: true, seq: 1 });
   });
 
   it("refuses one made on a question that has passed, even at the current seq", async () => {
@@ -237,7 +237,10 @@ describe("applyAction — patches and broadcast", () => {
         { runId: room.runId, playerId, seq: i, intent: choose(choiceId) },
         harness.deps,
       );
-      expect(response).toEqual({ ok: true, seq: i + 1 });
+      expect(response).toMatchObject({ ok: true, seq: i + 1 });
+      // The phone that acted is handed the very message the room was sent.
+      const { kind: _kind, ...sent } = room.received.at(-1) as unknown as Record<string, unknown>;
+      expect(response.applied).toEqual(sent);
     }
 
     expect(room.received.map((m) => m.seq)).toEqual([1, 2, 3]);
@@ -275,7 +278,7 @@ describe("applyAction — patches and broadcast", () => {
       { runId: room.runId, playerId, seq: 0, intent: choose("east") },
       harness.deps,
     );
-    expect(first).toEqual({ ok: true, seq: 1 });
+    expect(first).toMatchObject({ ok: true, seq: 1 });
     expect(attempts).toBe(2);
     // The retry delivered: subscribers got the patch after all.
     expect(room.received.map((m) => m.seq)).toEqual([1]);
@@ -289,7 +292,7 @@ describe("applyAction — patches and broadcast", () => {
       { runId: room.runId, playerId, seq: 1, intent: choose("shrine") },
       harness.deps,
     );
-    expect(second).toEqual({ ok: true, seq: 2 });
+    expect(second).toMatchObject({ ok: true, seq: 2 });
     expect(room.received.map((m) => m.seq)).toEqual([1]);
     const state = await harness.repo.getState(room.runId);
     expect(state?.seq).toBe(2);
@@ -338,7 +341,7 @@ describe("applyAction — patches and broadcast", () => {
       { runId: room.runId, playerId: room.player.principal.playerId, seq: 0, intent: choose("noop") },
       harness.deps,
     );
-    expect(response).toEqual({ ok: true, seq: 0 });
+    expect(response).toMatchObject({ ok: true, seq: 0 });
     expect(room.received).toHaveLength(0);
     expect((await harness.repo.getState(room.runId))?.seq).toBe(0);
   });

@@ -199,8 +199,10 @@ export class MessageSequencer {
       return;
     }
 
-    // Duplicates and replays of already-applied events are ignored outright.
-    if (message.seq <= this.lastSeq) return;
+    // Duplicates and replays of already-applied events are ignored outright; so is a second
+    // copy of the one held behind its animation right now, which is out of the buffer but
+    // not yet past the watermark and would otherwise sit in the buffer for good.
+    if (message.seq <= this.lastSeq || message.seq === this.gatedSeq) return;
 
     this.buffer.set(message.seq, message);
     if (this.buffer.size > MAX_BUFFERED) {
@@ -225,6 +227,9 @@ export class MessageSequencer {
     this.buffer.clear();
   }
 
+  /** The seq of the patch held behind its presentation, if one is. */
+  private gatedSeq: number | null = null;
+
   private drain(): void {
     if (this.draining || this.disposed || this.desynced) return;
 
@@ -238,6 +243,7 @@ export class MessageSequencer {
       if (gated) {
         // Hold the patch until the animation finishes, then keep draining.
         this.draining = true;
+        this.gatedSeq = next.seq;
         void gated.then(
           () => this.resume(next),
           () => this.resume(next), // a broken animation must never stall state
@@ -253,6 +259,7 @@ export class MessageSequencer {
 
   private resume(message: ServerMessage): void {
     this.draining = false;
+    this.gatedSeq = null;
     if (this.disposed) return;
     /*
      * The world can move while an animation plays. A reconnect or a resync can
@@ -313,7 +320,7 @@ export class MessageSequencer {
     seq: number,
   ): Promise<void> | null {
     if (!presentation) return null;
-    const event: PresentationEvent = { seq, presentation };
+    const event: PresentationEvent = { seq, presentation, ...(this.buffer.size > 0 ? { behind: this.buffer.size } : {}) };
     this.handlers.onPresentation(event);
     // ENCOUNTER_BEGAN and COMBAT_SEQUENCE can carry a chained beat that must
     // play *after* them (protocol.ts). It rides one server message, so it gets

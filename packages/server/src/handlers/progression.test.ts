@@ -990,7 +990,7 @@ describe("SPEND_STAT_POINT — authoritative run transaction", () => {
 
     const response = await spend(fixture, "might");
 
-    expect(response).toEqual({ ok: true, seq: 1 });
+    expect(response).toMatchObject({ ok: true, seq: 1 });
     const state = await fixture.harness.repo.getState(fixture.state.runId);
     const persisted = await fixture.harness.repo.getCharacter(
       fixture.householdId,
@@ -1016,7 +1016,7 @@ describe("SPEND_STAT_POINT — authoritative run transaction", () => {
     const fixture = await spendableCharacter(false);
     const beforeHeart = fixture.stored.committed.stats.heart;
 
-    expect(await spend(fixture, "heart")).toEqual({ ok: true, seq: 1 });
+    expect(await spend(fixture, "heart")).toMatchObject({ ok: true, seq: 1 });
 
     const persisted = await fixture.harness.repo.getCharacter(
       fixture.householdId,

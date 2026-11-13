@@ -31,6 +31,9 @@
 import type { CueId } from "./cue";
 import { CUE_SPECS, cueUrl, musicUrl } from "./paths";
 
+/** How many decoded music loops are kept: the one playing and the one before it (a step back). */
+export const MUSIC_KEPT = 2;
+
 export interface SampleLibrary {
   /** Notify a sustained cue once its sample is decoded. */
   wantCue?(id: CueId, ready: () => void): void;
@@ -64,6 +67,32 @@ export function createSampleLibrary(
   const settled = new Set<string>();
   const waiting = new Map<string, Set<() => void>>();
 
+  /**
+   * The loops asked for, most recent last. Only the newest `MUSIC_KEPT` stay decoded: a loop
+   * is 12 to 17 MB as samples, and a chapter that walks through five places would otherwise
+   * hold all five for as long as the page is open. One let go is fetched again (from the
+   * service worker's copy) and decoded again if the party comes back.
+   */
+  const musicAsked: string[] = [];
+  function askedMusic(url: string): void {
+    dropped.delete(url);
+    const at = musicAsked.indexOf(url);
+    if (at >= 0) musicAsked.splice(at, 1);
+    musicAsked.push(url);
+    while (musicAsked.length > MUSIC_KEPT) {
+      const old = musicAsked.shift()!;
+      // One still downloading is let go of when it lands (`load`).
+      if (!settled.has(old)) { dropped.add(old); continue; }
+      forget(old);
+    }
+  }
+  const dropped = new Set<string>();
+  function forget(url: string): void {
+    buffers.delete(url);
+    attempted.delete(url);
+    settled.delete(url);
+  }
+
   function load(url: string): void {
     if (!fetchImpl || attempted.has(url)) return;
     attempted.add(url);
@@ -82,6 +111,7 @@ export function createSampleLibrary(
         }
         waiting.delete(url);
         settled.add(url);
+        if (dropped.delete(url)) forget(url);
       })
       .catch((error: unknown) => {
         waiting.delete(url);
@@ -113,6 +143,7 @@ export function createSampleLibrary(
       return buffers.get(musicUrl(biome)) ?? null;
     },
     wantMusic(biome, ready) {
+      askedMusic(musicUrl(biome));
       want(musicUrl(biome), ready);
     },
   };

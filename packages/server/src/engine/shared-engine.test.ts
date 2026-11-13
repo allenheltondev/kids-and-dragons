@@ -396,7 +396,7 @@ describe("campaign state-transition transactions", () => {
         },
         harness.deps,
       ),
-    ).toEqual({ ok: true, seq: 1 });
+    ).toMatchObject({ ok: true, seq: 1 });
     expect(
       await applyAction(
         {
@@ -407,7 +407,7 @@ describe("campaign state-transition transactions", () => {
         },
         harness.deps,
       ),
-    ).toEqual({ ok: true, seq: 2 });
+    ).toMatchObject({ ok: true, seq: 2 });
 
     const settled = await harness.repo.getState(created.value.runId);
     const stored = await harness.repo.getCharacter(householdId, character.id);

@@ -32,6 +32,30 @@ describe("loading real audio", () => {
     expect(library.music("mosshome")).toBe(BUFFER);
     expect(fetchImpl).toHaveBeenCalledOnce();
   });
+  it("keeps only the two most recent loops decoded, and fetches one again if the party goes back", async () => {
+    const fetchImpl = vi.fn(async () => new Response(new ArrayBuffer(8), { status: 200 }));
+    const library = createSampleLibrary(fakeCtx(async () => BUFFER), { fetch: fetchImpl as unknown as typeof fetch });
+    for (const track of ["forest", "gemfall-marsh", "gemfall-citadel"]) {
+      library.wantMusic(track);
+      await settle();
+    }
+    expect(library.music("forest")).toBeNull();
+    expect(library.music("gemfall-marsh")).toBe(BUFFER);
+    expect(library.music("gemfall-citadel")).toBe(BUFFER);
+    library.wantMusic("forest");
+    await settle();
+    expect(library.music("forest")).toBe(BUFFER);
+    expect(library.music("gemfall-marsh")).toBeNull();
+    expect(fetchImpl).toHaveBeenCalledTimes(4);
+  });
+  it("lets go of a loop that was passed over while it was still downloading", async () => {
+    const fetchImpl = vi.fn(async () => new Response(new ArrayBuffer(8), { status: 200 }));
+    const library = createSampleLibrary(fakeCtx(async () => BUFFER), { fetch: fetchImpl as unknown as typeof fetch });
+    for (const track of ["forest", "gemfall-marsh", "gemfall-citadel"]) library.wantMusic(track);
+    await settle();
+    expect(library.music("forest")).toBeNull();
+    expect(library.music("gemfall-citadel")).toBe(BUFFER);
+  });
   it("serves a decoded file once it has arrived", async () => {
     const fetchImpl = vi.fn(async () => new Response(new ArrayBuffer(8), { status: 200 }));
     const library = createSampleLibrary(fakeCtx(async () => BUFFER), {

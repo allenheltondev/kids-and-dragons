@@ -31,6 +31,25 @@ export function musicUrl(biome: string): string {
   return `/assets/audio/music/${MUSIC_BY_BIOME[biome] ?? biome}.${AUDIO_EXTENSION}`;
 }
 
+/**
+ * The loop's URL when it is a track that has been recorded (`MUSIC_SPECS`), else null: what
+ * the look-ahead fetches (sw/prefetch.ts), which must not ask for a file nobody has made.
+ */
+export function recordedMusicUrl(biome: string | null | undefined): string | null {
+  if (!biome) return null;
+  return RECORDED_MUSIC.has(MUSIC_BY_BIOME[biome] ?? biome) ? musicUrl(biome) : null;
+}
+
+/**
+ * The tracks `MUSIC_SPECS` briefs, by name only (recorded-music.test.ts keeps the two the same): the
+ * briefs are paragraphs for whoever sources audio, and the game has no use for them in its
+ * bundle.
+ */
+export const RECORDED_MUSIC: ReadonlySet<string> = new Set([
+  "riftlight-finale", "riftlight-theme", "riftlight-paths", "riftlight-sky", "riftlight-coast",
+  "entry-home", "entry-lobby", "gemfall-marsh", "gemfall-citadel", "gemfall-mountain", "forest",
+]);
+
 /** Reuse approved arrangements across related places without duplicating files. */
 export const MUSIC_BY_BIOME: Record<string, string> = {
   enchanted_woods: "forest", mosshome: "forest", bramblewood: "forest",

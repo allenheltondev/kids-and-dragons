@@ -9,31 +9,70 @@
  * its backdrop already decoded: the new painting goes up whole, in the same frame as the
  * new words, instead of popping in a beat later over a stand-in.
  *
- * Never more than `ART_AHEAD` pictures (a television's three backdrops are 24 MiB decoded),
+ * Never more than `ART_AHEAD` pictures (a television's five are about 40 MiB decoded),
  * and never the whole chapter: sw/prefetch.ts already keeps the files themselves near (two
  * steps ahead, and on the television the whole chapter, in the service worker's cache),
  * which costs disk, not memory. This decodes only what one choice can reach.
  */
 
+import { edgesOf } from "@kad/shared";
 import type { Chapter, SceneId } from "@kad/shared";
 import { isTvBrowser } from "../display/tv";
-import { upcomingAssets } from "../sw/prefetch";
+import { biomeBackdropUrl, biomeTilesUrl, castArtUrl, enemyArtUrl, sceneBackdropUrl } from "./art-paths";
 import { holdArt, idleArtBudget, loadArt, sweepArt, type DrawnNode } from "./art-memory";
 
-/** How many pictures one step ahead are decoded and held: on a television, and elsewhere. */
-export const ART_AHEAD = { tv: 3, other: 6 } as const;
+/**
+ * How many pictures one step ahead are decoded and held: on a television, elsewhere on a
+ * shared screen, and in a phone's world pane (backdrops only: its figures are small and its
+ * memory is the player's).
+ */
+export const ART_AHEAD = { tv: 5, other: 8, phone: 2 } as const;
 
-/** How long after a scene change the sweep and the look ahead wait. */
-export const ART_UPKEEP_DELAY_MS = 2_500;
+/**
+ * How long after a scene change the sweep and the look ahead wait: long enough for the
+ * scene's own art to be first on the network and the decoder, short enough that a party
+ * tapping through one-button beats still finds the next painting ready.
+ */
+export const ART_UPKEEP_DELAY_MS = 1_200;
 
-/** The art one step ahead of `sceneId`, nearest first, at most `limit`: backdrops, and a fight's tiles and enemies. */
-export function artAhead(chapter: Chapter | null, sceneId: SceneId | null, limit: number): string[] {
-  if (!chapter || !sceneId || !chapter.scenes[sceneId] || limit <= 0) return [];
-  return upcomingAssets(chapter, sceneId, [], 1).slice(0, limit);
+/**
+ * The art one step ahead of `sceneId`, at most `limit`, in the order a scene change needs
+ * it: every choice's backdrop first (the picture that would otherwise pop in a beat late,
+ * whichever way the party votes), then who stands in those scenes, then a fight's tiles and
+ * enemies. `backdropsOnly` stops after the first group.
+ */
+export function artAhead(chapter: Chapter | null, sceneId: SceneId | null, limit: number, backdropsOnly = false): string[] {
+  const here = chapter && sceneId ? chapter.scenes[sceneId] : undefined;
+  if (!chapter || !sceneId || !here || limit <= 0) return [];
+  const backdrops = new Set<string>();
+  const cast = new Set<string>();
+  const fights = new Set<string>();
+  const seen = new Set<SceneId>([sceneId]);
+  for (const { to } of edgesOf(sceneId, here)) {
+    const scene = chapter.scenes[to];
+    if (!scene || seen.has(to)) continue;
+    seen.add(to);
+    backdrops.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
+    for (const member of ("cast" in scene ? scene.cast ?? [] : [])) {
+      const url = castArtUrl(member.figure);
+      if (url) cast.add(url);
+    }
+    if (scene.type === "encounter") {
+      fights.add(biomeTilesUrl(chapter.biome));
+      for (const enemy of scene.enemies) {
+        const art = enemy.art ?? (enemy.creature ? `enemies/${enemy.creature}` : null);
+        if (art) fights.add(enemyArtUrl(art));
+      }
+    }
+  }
+  const current = (here.art ? sceneBackdropUrl(here.art) : null) ?? biomeBackdropUrl(chapter.biome);
+  const ordered = backdropsOnly ? [...backdrops] : [...backdrops, ...cast, ...fights];
+  // The painting already up is not ahead of anything.
+  return [...new Set(ordered)].filter((url) => url !== current).slice(0, limit);
 }
 
 export interface ArtUpkeepOptions {
-  /** The art to load and hold ahead: the shared screen's `artAhead`; empty on a phone, whose world pane only sweeps. */
+  /** The art to load and hold ahead (`artAhead`); with none, the stage is only swept. */
   ahead: readonly string[];
   tv?: boolean;
   delayMs?: number;

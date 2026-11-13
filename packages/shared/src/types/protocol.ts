@@ -338,6 +338,14 @@ export interface ActionResponse {
     code: "STALE_SEQ" | "STALE_DECISION" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN" | "HERO_BUSY";
     message: string;
   };
+  /**
+   * The message this step broadcast, when it took: the same one every subscriber is sent,
+   * handed to the phone that acted so its screen moves on the answer to its own tap rather
+   * than waiting for the channel to bring it round. The copy on the channel still comes and
+   * is dropped as a duplicate (the sequencer's watermark). Absent from an older server, and
+   * the phone then waits for the channel as it always did.
+   */
+  applied?: ServerMessage;
 }
 
 // ---------------------------------------------------------------------------

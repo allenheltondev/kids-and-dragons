@@ -806,13 +806,38 @@ async function versioned(event: SwFetchEvent, request: Request, path: string, fi
     event.waitUntil(touch(key));
     return saved;
   }
-  // Past the HTTP cache, which may hold the bytes a deploy just replaced.
-  const response = await fetch(new Request(request, { cache: "no-cache" }));
-  if (swCacheable(response)) {
-    event.waitUntil(keepVersioned(cache, path, fingerprint, response.clone()).catch(() => undefined));
+  // One download however many ask: a scene drawing a painting the look-ahead is already
+  // fetching joins that fetch rather than starting the same megabyte again beside it.
+  const flying = inFlight.get(key);
+  if (flying) {
+    const shared = await flying.catch(() => null);
+    if (shared) return shared.clone();
   }
-  return response;
+  // Past the HTTP cache, which may hold the bytes a deploy just replaced.
+  const download = fetch(new Request(request, { cache: "no-cache" }));
+  inFlight.set(key, download);
+  const forget = (): void => {
+    if (inFlight.get(key) === download) inFlight.delete(key);
+  };
+  let response: Response;
+  try {
+    response = await download;
+  } catch (error) {
+    forget();
+    throw error;
+  }
+  if (swCacheable(response)) {
+    // Held until the copy is saved: from then on the cache answers.
+    event.waitUntil(keepVersioned(cache, path, fingerprint, response.clone()).catch(() => undefined).then(forget));
+  } else {
+    forget();
+  }
+  // A copy, so the one in `inFlight` is never read and can be copied again by whoever joins.
+  return response.clone();
 }
+
+/** Downloads of fingerprinted files under way, by cache key (`versioned`). */
+const inFlight = new Map<string, Promise<Response>>();
 
 async function networkFirst(request: Request, cacheName: string): Promise<Response> {
   const cache = await caches.open(cacheName);
