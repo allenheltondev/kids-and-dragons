@@ -548,6 +548,9 @@ export function storyFocusTiles(
   return [];
 }
 
+/** The lineup, for a camera target that does not ask who is in it. */
+const NO_ACTORS: readonly { characterId: string; x: number; y: number }[] = [];
+
 export function createScene(app: Application): PartyScene {
   const stage = app.stage;
 
@@ -876,7 +879,8 @@ export function createScene(app: Application): PartyScene {
 
   function applyCamera(dt: number): void {
     const inCombat = encounterView !== null;
-    camState = setFocus(camState, inCombat ? boardFocus() : storyFocusTiles(target, [...actors.values()]));
+    // Only a target that names a hero looks at the lineup, so only that one has it listed.
+    camState = setFocus(camState, inCombat ? boardFocus() : storyFocusTiles(target, target.kind === "character" ? [...actors.values()] : NO_ACTORS));
     const frame = cameraViewport();
     const cam = resolveCamera(camState, frame);
 
@@ -884,11 +888,9 @@ export function createScene(app: Application): PartyScene {
     if (camNow === null || cam.manual) {
       camNow = { x: cam.centre.x, y: cam.centre.y, scale: cam.scale };
     } else {
-      camNow = {
-        x: approach(camNow.x, cam.centre.x, CAMERA_RATE, dt),
-        y: approach(camNow.y, cam.centre.y, CAMERA_RATE, dt),
-        scale: approach(camNow.scale, cam.scale, CAMERA_RATE, dt),
-      };
+      camNow.x = approach(camNow.x, cam.centre.x, CAMERA_RATE, dt);
+      camNow.y = approach(camNow.y, cam.centre.y, CAMERA_RATE, dt);
+      camNow.scale = approach(camNow.scale, cam.scale, CAMERA_RATE, dt);
     }
 
     const layer = inCombat ? boardWrap : storyLayer;
@@ -1213,10 +1215,14 @@ export function createScene(app: Application): PartyScene {
    * over their last moment as the full camp's do, and its hop and turn where
    * it sits (camp-motion.ts `wavePose`, the full camp's) unless still.
    */
+  const packedSaid = new Map<string, ReturnType<typeof packedTaps.said>[number]>();
   function tickPackedTaps(): void {
     packedTaps.tick(elapsed);
     const still = prefersReducedMotion();
-    const said = new Map(packedTaps.said().map((s) => [s.tap.figureId.slice("friend:".length), s]));
+    // One map for the stage's life, refilled: most frames nobody is saying anything.
+    const said = packedSaid;
+    said.clear();
+    for (const s of packedTaps.said()) said.set(s.tap.figureId.slice("friend:".length), s);
     for (const [id, entry] of packedWords) {
       if (said.get(id)?.tap.words === entry.words && packedFriendShown(id)) continue;
       entry.view.destroy({ children: true });
@@ -1287,7 +1293,13 @@ export function createScene(app: Application): PartyScene {
 
     // Holds whose tail has passed. Dropped rather than kept so the frame
     // closes back onto the active actor instead of widening all round.
-    pendingFocus = pendingFocus.filter((hold) => hold.until > elapsed);
+    // In place and in order; the list is nearly always empty, and a new one
+    // each frame was garbage for nothing.
+    for (let i = 0; i < pendingFocus.length; ) {
+      const hold = pendingFocus[i];
+      if (hold && hold.until > elapsed) i += 1;
+      else pendingFocus.splice(i, 1);
+    }
 
     // Impacts whose beat has come. The queue is at most a round of events.
     for (let i = 0; i < pendingShakes.length; ) {
@@ -1399,7 +1411,8 @@ export function createScene(app: Application): PartyScene {
 
   function tickCast(dt: number): void {
     const still = prefersReducedMotion();
-    for (const member of [...castActors.values()]) {
+    // A Map may drop the entry it is on while it is being walked, so no copy is needed.
+    for (const member of castActors.values()) {
       member.presence = approach(member.presence, member.leaving ? 0 : 1, CAST_ENTER_RATE, dt);
       if (member.leaving && member.presence < 0.02) {
         member.container.destroy({ children: true });
