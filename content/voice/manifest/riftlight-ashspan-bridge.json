@@ -255,14 +255,6 @@
       }
     ]
   },
-  "riftlight-ashspan-bridge/carry_beam/interaction/cue": {
-    "": [
-      {
-        "clip": "9b70d6c330a573ff0dfb2761b9d180c0d7553a9f3fdd0b0f9aaba727dc92acb7",
-        "ms": 3707
-      }
-    ]
-  },
   "riftlight-ashspan-bridge/carry_beam/narration": {
     "": [
       {
@@ -280,14 +272,6 @@
       {
         "clip": "7742ecb40e481e07682d56fb3148235d2fb77e23c23f596bdd775516015f8025",
         "ms": 3707
-      }
-    ]
-  },
-  "riftlight-ashspan-bridge/carry_beam/onFailure/narration": {
-    "": [
-      {
-        "clip": "0cf547fa6c1c972afb6932a3cc975009ec0a5e0600e8978ebd502f05683bd7b8",
-        "ms": 5307
       }
     ]
   },

@@ -85,7 +85,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await expect(two.getByRole("button", { name: "Your turn", exact: true })).toBeHidden();
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await controls(two).getByRole("button", { name: "See what happens next" }).click();
-    await expect(world).toContainText("Hold the branch");
+    await expect(world).toContainText("Choose smooth pulls together");
     await expect(tv.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
     await expect(one.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
     // Whoever owns the beat leads the game (a game is one moment of the owner's beat, so the

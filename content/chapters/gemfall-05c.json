@@ -1942,7 +1942,7 @@
       "narration": "The grandmothers wheel their loudest hand bell down to the stones on a little cart. A wheel sticks in a rut. \"Push on the count!\" calls the bell-code expert. \"One, two, NOW!\"",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to push when the marker is in the gold, right on NOW.",
+        "cue": "Push when the marker reaches the gold, right on the count of NOW.",
         "actionLabel": "Push the cart",
         "target": 0.5,
         "width": 0.26,
@@ -1954,7 +1954,15 @@
       },
       "onFailure": {
         "goto": "scene_crowd_at_stones",
-        "narration": "The cart tips. BONG. A grandmother lifts the whole thing out of the rut with one hand and says nothing at all."
+        "narration": "The cart tips and bumps your elbows. BONG. A grandmother lifts it out of the rut with one hand. You follow, rubbing your arms.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "cast": [
         {
@@ -2936,6 +2944,36 @@
           "name": "Grandmother"
         }
       ]
+    },
+    "interaction_bell_cart": {
+      "type": "interaction",
+      "tags": [
+        "force"
+      ],
+      "narration": "The grandmothers wheel their loudest hand bell down to the stones on a little cart. A wheel sticks in a rut. \"Push on the count!\" calls the bell-code expert. \"One, two, NOW!\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap to push when the marker is in the gold, right on NOW.",
+        "actionLabel": "Push the cart",
+        "target": 0.5,
+        "width": 0.26,
+        "periodMs": 4500
+      },
+      "onSuccess": {
+        "goto": "scene_crowd_at_stones",
+        "narration": "The wheel pops out with a CLUNK, and the bell gives one happy ring. The bell-code expert rides the rest of the way on top, bossing the goats."
+      },
+      "onFailure": {
+        "goto": "scene_crowd_at_stones",
+        "narration": "The cart tips. BONG. A grandmother lifts the whole thing out of the rut with one hand and says nothing at all."
+      },
+      "cast": [
+        {
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
     }
   }
 }

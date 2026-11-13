@@ -2248,7 +2248,7 @@
       "narration": "The reeds keep swinging shut, like doors in a draft. \"Wait for it,\" Gullet hums. \"Wait. Now!\" Pole through when the gap is wide.",
       "interaction": {
         "kind": "timing",
-        "cue": "Pole through when the gap in the reeds is wide open.",
+        "cue": "Pole through when the marker reaches the widest gap in the reeds.",
         "actionLabel": "Pole through!",
         "target": 0.5,
         "width": 0.3,
@@ -2260,7 +2260,15 @@
       },
       "onFailure": {
         "goto": "scene_barge",
-        "narration": "Slap! The reeds grab your hats. Gullet gets you through on the next swing, hair full of leaves."
+        "narration": "Slap! The raft catches in the reeds, and rough stems scratch your arms. Gullet frees the pole and guides you through, hair full of leaves.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_barge",
@@ -3619,6 +3627,38 @@
           "size": "small_to_medium"
         }
       ]
+    },
+    "interaction_reed_gap": {
+      "type": "interaction",
+      "narration": "The reeds keep swinging shut, like doors in a draft. \"Wait for it,\" Gullet hums. \"Wait. Now!\" Pole through when the gap is wide.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Pole through when the gap in the reeds is wide open.",
+        "actionLabel": "Pole through!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_barge",
+        "narration": "Whoosh. The raft slides through with a hand's width to spare. Gullet pats her pole."
+      },
+      "onFailure": {
+        "goto": "scene_barge",
+        "narration": "Slap! The reeds grab your hats. Gullet gets you through on the next swing, hair full of leaves."
+      },
+      "onAssisted": {
+        "goto": "scene_barge",
+        "narration": "Gullet counts it out loud, and the raft slips right through."
+      },
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
     }
   }
 }

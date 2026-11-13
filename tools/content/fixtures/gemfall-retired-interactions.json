@@ -54,5 +54,20 @@
   "gemfall-08/interaction_verdict_council": "b55942e4f9cd4272039f06109b82932ab8ddf5d0ee4cf305ea491ecc2abf9e1f",
   "gemfall-07l/interaction_set_table": "17b186f8311393f55385ecf57a8e6c8d5fbe03275afaf0813bd9689ed21d2020",
   "gemfall-07l/interaction_box_slide": "e10d822eb7e2a1f94d4a2cbc421c411207dcc98a11f358405a81d242a48ba233",
-  "gemfall-07l/interaction_tether_team": "b97dde578d29f3a0116195b018b6217c373d7afdf0a4d0c1b9bf8558a34c3457"
+  "gemfall-07l/interaction_tether_team": "b97dde578d29f3a0116195b018b6217c373d7afdf0a4d0c1b9bf8558a34c3457",
+  "gemfall-07r/interaction_haul_team": "73ac2f30e1b984c9f4ed17f8327edd12cca11df88263226276111dbec5d1b7ff",
+  "gemfall-07r/interaction_return_handover": "15f834346216c302100507230fdf3172daf2bbedf563aa735465bcd66b4e6a00",
+  "gemfall-07r/interaction_trickle": "553a3455a13dab2809b5cb1cb5b57ddbadb5f6d5a9cb242d83f2f85aa4f5f862",
+  "gemfall-08/interaction_chimney": "3dd9cbddf07b9701d1533d062f8e1478ef5990015d5bda4433343edbe5fc34b0",
+  "gemfall-08/interaction_restore_brace": "461f0f24cda5f9b343c8ff290c9a934256e7d5ddbef97d99406e1d72f112c99d",
+  "gemfall-08/interaction_leash_transfer": "6fa39b831241a84e02f9eb93ab65a4131c5b5a04c7a1f17a03bd60dbcf388e65",
+  "gemfall-01/interaction_letters": "8594bda26c176d7ec14a4e286c593bd1434ed24107e779e54b4981d1c1df9a23",
+  "gemfall-01/interaction_newcomer_load": "128b9ff49a57b94b00ddae6e3b1cbdd4f4861c257069b218b31a2c72562be38d",
+  "gemfall-03b/interaction_reed_gap": "bd522d5728c9b615f89d4f1b0723b0cfc31018fa141f1e9b548a6b5f21959505",
+  "gemfall-04c/interaction_gate": "56906b057d39a6f776226b59723f2416371828599462a9cb7779b40ce6fb70a7",
+  "gemfall-05a/interaction_crossing_signal": "816505c418273b8f9fc4e2991452aa9bb9b8505984f7be4273cd85edc3605bcf",
+  "gemfall-05b/check_bridge_test": "a4653fab1f9dfe600707779951463bd3a73c3ce129d8285cedf77875e25f1413",
+  "gemfall-05b/interaction_stones": "b7690e6cd10e9f518dba548430b3c446dad903418e25acac7127b0bd6d3ffa06",
+  "gemfall-05c/interaction_bell_cart": "011fd2b8b041792df97da992a5ed4c156f5521c605faf75765f26be8db3bf4c2",
+  "gemfall-07h/interaction_hairpin": "00e3a1ef2f22c09c7c0c422238c5739291d67ee42688a07f2c5a370c0660fe6c"
 }

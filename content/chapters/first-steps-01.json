@@ -72,7 +72,10 @@
     },
     "check_climb": {
       "type": "check",
-      "tags": ["climb", "sneak"],
+      "tags": [
+        "climb",
+        "sneak"
+      ],
       "narration": "You grab the top rail. The gate wobbles, and it squeaks like a duck every time it moves.",
       "hint": "Time to roll! When your phone says Roll, tap it. A big number is great. A small number still keeps the story going.",
       "stat": "quick",
@@ -675,7 +678,7 @@
         },
         {
           "id": "try_team_tricks",
-          "label": "Try Tansy\u2019s team tricks",
+          "label": "Try Tansy’s team tricks",
           "icon": "star",
           "goto": "interaction_bell"
         },
@@ -889,7 +892,7 @@
     },
     "interaction_roots": {
       "type": "interaction",
-      "narration": "Bun has tucked her ribbon beneath a springy branch. “Somebody hold the branch while somebody fetches it,” says Tansy. “A sturdy prop works too.” Bun nods. She seems very pleased with this lesson.",
+      "narration": "Bun has tucked her ribbon beneath a springy branch. \"Pull the branch up together, nice and smoothly,\" says Tansy. \"Bun can fetch her own ribbon.\" Bun nods. She seems very pleased with this lesson.",
       "cast": [
         {
           "figure": "entities/faun",
@@ -903,9 +906,9 @@
       ],
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the branch while your friend fetches the ribbon.",
-        "supportLabel": "Hold the branch",
-        "actionLabel": "Fetch the ribbon"
+        "cue": "Choose smooth pulls together to lift the branch without a jerk.",
+        "supportLabel": "Pull smoothly",
+        "actionLabel": "Lift the branch"
       },
       "onSuccess": {
         "goto": "interaction_stones",
@@ -983,7 +986,7 @@
     },
     "scene_team_tricks_done": {
       "type": "story",
-      "narration": "\u201cGood aiming, good helping, good listening,\u201d says Tansy. \u201cThose are all ways to be a hero.\u201d Flick adds a very small star to her clipboard.",
+      "narration": "“Good aiming, good helping, good listening,” says Tansy. “Those are all ways to be a hero.” Flick adds a very small star to her clipboard.",
       "cast": [
         {
           "figure": "entities/faun",
@@ -1032,7 +1035,7 @@
         },
         {
           "id": "echo",
-          "label": "Echo Flick\u2019s magic",
+          "label": "Echo Flick’s magic",
           "icon": "star",
           "goto": "interaction_echo"
         },
@@ -1635,6 +1638,42 @@
           "prop_brass_cup"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_roots": {
+      "type": "interaction",
+      "narration": "Bun has tucked her ribbon beneath a springy branch. “Somebody hold the branch while somebody fetches it,” says Tansy. “A sturdy prop works too.” Bun nods. She seems very pleased with this lesson.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the branch while your friend fetches the ribbon.",
+        "supportLabel": "Hold the branch",
+        "actionLabel": "Fetch the ribbon"
+      },
+      "onSuccess": {
+        "goto": "interaction_stones",
+        "narration": "The ribbon slides free. Bun wears it on her head, where it is much harder to lose."
+      },
+      "onFailure": {
+        "goto": "interaction_stones",
+        "narration": "Tansy props the branch with her clipboard. Bun retrieves her ribbon herself."
+      },
+      "onAssisted": {
+        "goto": "interaction_stones",
+        "narration": "Together you tuck a prop beneath the branch. Out comes Bun’s ribbon."
+      },
+      "art": "scenes/first-steps/practice-meadow-picnic"
     }
   }
 }

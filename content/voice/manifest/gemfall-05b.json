@@ -95,27 +95,11 @@
       }
     ]
   },
-  "gemfall-05b/check_bridge_test/interaction/cue": {
-    "": [
-      {
-        "clip": "60275997e32de7b85ba34c3f2871aa8b3a8b7ef82829023aefb932d2945bd654",
-        "ms": 5307
-      }
-    ]
-  },
   "gemfall-05b/check_bridge_test/narration": {
     "": [
       {
         "clip": "cf734721861378b35e340cb9b182375e8f80da7cb540c6195b8dabedbde0a180",
         "ms": 8307
-      }
-    ]
-  },
-  "gemfall-05b/check_bridge_test/onFailure/narration": {
-    "": [
-      {
-        "clip": "4d10a63e0a4f470deee7db27d4bddb205a623fd3699ddc4efe47aad613d910a4",
-        "ms": 8907
       }
     ]
   },
@@ -847,27 +831,11 @@
       }
     ]
   },
-  "gemfall-05b/interaction_stones/interaction/cue": {
-    "": [
-      {
-        "clip": "c27ad23cdd7b8757cb633740ede458b50c9a02c2edd775414d2854c5dbb22ee2",
-        "ms": 3607
-      }
-    ]
-  },
   "gemfall-05b/interaction_stones/narration": {
     "": [
       {
         "clip": "c26e1e427ada0b53aa5003f56bd724b88fc66b5ab021d888cdae0d1bf95168f5",
         "ms": 9707
-      }
-    ]
-  },
-  "gemfall-05b/interaction_stones/onFailure/narration": {
-    "": [
-      {
-        "clip": "a33a5019398acb69fae4a7e9d8d54336b46fb5c52aed8c0873d9e5946699df47",
-        "ms": 6107
       }
     ]
   },

@@ -2979,7 +2979,7 @@
       "narration": "The last wagons grind around the hairpin, right across the path you need. A mule in a little straw hat watches you think. Wait for a gap, then go.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap when the gap between the wagons is wide open.",
+        "cue": "Dash when the marker reaches the open gap between wagons.",
         "actionLabel": "Dash across!",
         "target": 0.5,
         "width": 0.3,
@@ -2991,7 +2991,15 @@
       },
       "onFailure": {
         "goto": "scene_tidewell",
-        "narration": "You go a heartbeat early. A wagon rolls so close it tips the mule's hat onto your head. Nobody is hurt. You cross on the next gap."
+        "narration": "You go a heartbeat early and bump into the side of a wagon. Ouch! You wait beside the mule, then cross with bruised shoulders on the next gap.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_tidewell",
@@ -3458,6 +3466,31 @@
         }
       ],
       "art": "scenes/gemfall/tidewell-knock-rock"
+    },
+    "interaction_hairpin": {
+      "type": "interaction",
+      "narration": "The last wagons grind around the hairpin, right across the path you need. A mule in a little straw hat watches you think. Wait for a gap, then go.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when the gap between the wagons is wide open.",
+        "actionLabel": "Dash across!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3600
+      },
+      "onSuccess": {
+        "goto": "scene_tidewell",
+        "narration": "You dash through with a wagon-length to spare. The mule in the straw hat nods, as if it timed you itself."
+      },
+      "onFailure": {
+        "goto": "scene_tidewell",
+        "narration": "You go a heartbeat early. A wagon rolls so close it tips the mule's hat onto your head. Nobody is hurt. You cross on the next gap."
+      },
+      "onAssisted": {
+        "goto": "scene_tidewell",
+        "narration": "You dash through with a wagon-length to spare. The mule in the straw hat nods, as if it timed you itself."
+      },
+      "art": "scenes/gemfall/hairpin-wagons"
     }
   }
 }

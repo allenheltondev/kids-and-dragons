@@ -447,27 +447,11 @@
       }
     ]
   },
-  "gemfall-01/interaction_letters/interaction/cue": {
-    "": [
-      {
-        "clip": "357be09821d72868435fb1ef3653df416bee86845cc74f2f7047527e9abfed64",
-        "ms": 2742
-      }
-    ]
-  },
   "gemfall-01/interaction_letters/narration": {
     "": [
       {
         "clip": "e19042a159832e6c49ddc72755e0f46991a2be0d8556a982efe5b1ebc30cc7c0",
         "ms": 8107
-      }
-    ]
-  },
-  "gemfall-01/interaction_letters/onAssisted/narration": {
-    "": [
-      {
-        "clip": "9601b9521a35142d5628f2dfceaf97675efc8372d226a264fa7252240e2d7b06",
-        "ms": 4607
       }
     ]
   },
@@ -479,51 +463,11 @@
       }
     ]
   },
-  "gemfall-01/interaction_letters/onSuccess/narration": {
-    "": [
-      {
-        "clip": "db44bb4aaf751a4fbc7248a91d1677bcd566c525cef1e1b69ca32ec167ada7e9",
-        "ms": 5607
-      }
-    ]
-  },
-  "gemfall-01/interaction_newcomer_load/interaction/cue": {
-    "": [
-      {
-        "clip": "e256793fe91893fc540653ec0bd524c899b7b5b96df2eab0a3c73434eafefe2a",
-        "ms": 3407
-      }
-    ]
-  },
   "gemfall-01/interaction_newcomer_load/narration": {
     "": [
       {
         "clip": "cf35146b0fd6313c8e193c2b306a5b325735690763463dd3ab88d796cb9abc04",
         "ms": 8207
-      }
-    ]
-  },
-  "gemfall-01/interaction_newcomer_load/onAssisted/narration": {
-    "": [
-      {
-        "clip": "ab818cd04f5981f790274b8f812df35856bf92da37d4e4ace80841776aa91fa7",
-        "ms": 4807
-      }
-    ]
-  },
-  "gemfall-01/interaction_newcomer_load/onFailure/narration": {
-    "": [
-      {
-        "clip": "6023cc8f0298d1069035353a1d570bfa9649e1d76a4e566198e03f96c2901e0e",
-        "ms": 13207
-      }
-    ]
-  },
-  "gemfall-01/interaction_newcomer_load/onSuccess/narration": {
-    "": [
-      {
-        "clip": "7f5997d5af47ebb1ded02438a4afdfa1af99e2d2ca57e45370ef11609e547103",
-        "ms": 6007
       }
     ]
   },

@@ -1961,7 +1961,7 @@
       "narration": "Past the sergeant's table, a striped pole swings up and down. A patrol goat chews a ledger page. \"Cross on the lift,\" says Holloway, writing GOAT, HUNGRY.",
       "interaction": {
         "kind": "timing",
-        "cue": "Wait for the pole to swing up, then go!",
+        "cue": "Cross when the marker reaches the gold and the striped pole is raised.",
         "actionLabel": "Cross on the lift",
         "target": 0.5,
         "width": 0.3,
@@ -1973,7 +1973,15 @@
       },
       "onFailure": {
         "goto": "scene_signposts",
-        "narration": "The pole drops on your hat. Holloway writes DELAYED, POLITE. The goat eats your hat's feather."
+        "narration": "The pole drops against your shoulder. Ouch! Holloway lifts it again and writes DELAYED, BRUISED. The goat eats your hat feather.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_signposts",
@@ -2977,6 +2985,37 @@
         }
       ],
       "art": "scenes/gemfall/north-rush-road"
+    },
+    "interaction_gate": {
+      "type": "interaction",
+      "narration": "Past the sergeant's table, a striped pole swings up and down. A patrol goat chews a ledger page. \"Cross on the lift,\" says Holloway, writing GOAT, HUNGRY.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the pole to swing up, then go!",
+        "actionLabel": "Cross on the lift",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_signposts",
+        "narration": "You slip under on the lift. The goat looks impressed."
+      },
+      "onFailure": {
+        "goto": "scene_signposts",
+        "narration": "The pole drops on your hat. Holloway writes DELAYED, POLITE. The goat eats your hat's feather."
+      },
+      "onAssisted": {
+        "goto": "scene_signposts",
+        "narration": "Holloway holds the pole up and writes ESCORTED, POLITE. The goat looks disappointed."
+      },
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "art": "scenes/gemfall/warden-supply-stop"
     }
   }
 }

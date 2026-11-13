@@ -1,0 +1,218 @@
+[
+  {
+    "chapter": "gemfall-07r",
+    "scene": "interaction_haul_team",
+    "decision": "revised",
+    "reason": "Smooth shared pulls; exhausted strain costs one nonlethal HP per hero."
+  },
+  {
+    "chapter": "gemfall-07r",
+    "scene": "interaction_return_handover",
+    "decision": "revised",
+    "reason": "Smooth wagon bracing; a failed handover bruises knees but preserves the earned stone. Rope replaces the hoisted wheel."
+  },
+  {
+    "chapter": "gemfall-07r",
+    "scene": "interaction_trickle",
+    "decision": "revised",
+    "reason": "Read gaps between stones; a rough crossing stings shins for one nonlethal HP."
+  },
+  {
+    "chapter": "gemfall-08",
+    "scene": "interaction_chimney",
+    "decision": "revised",
+    "reason": "Timed climbing replaces the unsupported split-role rope promise; a rough climb scrapes knees."
+  },
+  {
+    "chapter": "gemfall-08",
+    "scene": "interaction_restore_brace",
+    "decision": "revised",
+    "reason": "Shared bracing-cord pulls; a failed brace has the same one-HP scale as the nearby hold check."
+  },
+  {
+    "chapter": "gemfall-08",
+    "scene": "interaction_leash_transfer",
+    "decision": "revised",
+    "reason": "Aim passes along the line; exhausted chances drag the party for one nonlethal HP, without closing a finale philosophy."
+  },
+  {
+    "chapter": "gemfall-08",
+    "scene": "check_hum_note",
+    "decision": "retain-gentle",
+    "reason": "A friendly reply to a sleepy creature, not a punishment gate; a squeak gets a warmer answer."
+  },
+  {
+    "chapter": "gemfall-08",
+    "scene": "check_hear_titan",
+    "decision": "retain-gentle",
+    "reason": "Listening reveals a question; the Keeper explains a missed interpretation without changing access to the finale."
+  },
+  {
+    "chapter": "gemfall-01",
+    "scene": "interaction_letters",
+    "decision": "revised",
+    "reason": "The clerk tips the crew one coin for a clean or assisted rescue; a missed rescue earns no tip."
+  },
+  {
+    "chapter": "gemfall-01",
+    "scene": "interaction_newcomer_load",
+    "decision": "revised",
+    "reason": "The family gives one thank-you coin after a clean or assisted carry; a spilled trunk spends their spare coin on string instead."
+  },
+  {
+    "chapter": "gemfall-03b",
+    "scene": "interaction_reed_gap",
+    "decision": "revised",
+    "reason": "A rough raft crossing scratches arms for one nonlethal HP; Gullet still gets the party through."
+  },
+  {
+    "chapter": "gemfall-03b",
+    "scene": "interaction_runes",
+    "decision": "retain-gentle",
+    "reason": "The protected Gate demonstrates its pattern again; this is a clue lesson, not a lock."
+  },
+  {
+    "chapter": "gemfall-03b",
+    "scene": "interaction_ribbon_duck",
+    "decision": "retain-gentle",
+    "reason": "The jingling hats and polite cousins are a short comic crossing, not another toll."
+  },
+  {
+    "chapter": "gemfall-04a",
+    "scene": "interaction_ridge_creep",
+    "decision": "retain-gentle",
+    "reason": "The hidden cubs laugh at a snapped twig; the scene introduces their playfulness."
+  },
+  {
+    "chapter": "gemfall-04a",
+    "scene": "interaction_wolf_trail",
+    "decision": "retain-gentle",
+    "reason": "A cub corrects the mistaken tracks; the essential crater clue stays available."
+  },
+  {
+    "chapter": "gemfall-04b",
+    "scene": "interaction_calf_hide",
+    "decision": "retain-gentle",
+    "reason": "The calf deliberately plays hide-and-seek; finding a frog is the joke."
+  },
+  {
+    "chapter": "gemfall-04c",
+    "scene": "check_relay",
+    "decision": "retain-gentle",
+    "reason": "Telephone-game confusion is the joke; finding Tib is not withheld after the family asks for help."
+  },
+  {
+    "chapter": "gemfall-04c",
+    "scene": "interaction_gate",
+    "decision": "revised",
+    "reason": "A mistimed crossing bruises shoulders for one nonlethal HP; the road remains open."
+  },
+  {
+    "chapter": "gemfall-04c",
+    "scene": "interaction_verses",
+    "decision": "retain-gentle",
+    "reason": "Corran is teaching the road verse and corrects it kindly."
+  },
+  {
+    "chapter": "gemfall-04c",
+    "scene": "interaction_courier_pattern",
+    "decision": "retain-gentle",
+    "reason": "The mistaken cake message is the authored comic consequence."
+  },
+  {
+    "chapter": "gemfall-05a",
+    "scene": "interaction_crossing_signal",
+    "decision": "revised",
+    "reason": "Correct or assisted flags earn a visible flag-guided choice to the existing quieter crossing check. Failure now has words and retains all ordinary crossing options."
+  },
+  {
+    "chapter": "gemfall-05a",
+    "scene": "interaction_level",
+    "decision": "retain-gentle",
+    "reason": "An engineering calibration demonstrates the uneven approach; spilled water is feedback, not injury."
+  },
+  {
+    "chapter": "gemfall-05b",
+    "scene": "check_bridge_test",
+    "decision": "revised",
+    "reason": "A lost balance jolts shoulders for one nonlethal HP; the plank and route remain usable."
+  },
+  {
+    "chapter": "gemfall-05b",
+    "scene": "interaction_stones",
+    "decision": "revised",
+    "reason": "A badly timed hop knocks shins for one nonlethal HP; recovery reaches the bank."
+  },
+  {
+    "chapter": "gemfall-05c",
+    "scene": "interaction_bell_cart",
+    "decision": "revised",
+    "reason": "A rough push bruises elbows for one nonlethal HP; the grandmother recovers the cart."
+  },
+  {
+    "chapter": "gemfall-06",
+    "scene": "interaction_moth_trail",
+    "decision": "retain-gentle",
+    "reason": "A playful moth reveals itself; its trail clue remains available."
+  },
+  {
+    "chapter": "gemfall-06",
+    "scene": "interaction_tags",
+    "decision": "retain-gentle",
+    "reason": "Pellam corrects a clerical mistake before the truth-table conversation."
+  },
+  {
+    "chapter": "gemfall-07h",
+    "scene": "interaction_hairpin",
+    "decision": "revised",
+    "reason": "A mistimed dash bruises shoulders for one nonlethal HP; the next gap gets everyone through."
+  },
+  {
+    "chapter": "gemfall-02",
+    "scene": "interaction_jackalope_hats",
+    "decision": "retain-gentle",
+    "reason": "The sneezing wrong hat and obliging leader are a deliberate joke."
+  },
+  {
+    "chapter": "riftlight-ashspan-bridge",
+    "scene": "carry_beam",
+    "decision": "revised",
+    "reason": "Shifting-load balance; a failed carry pinches fingers for one nonlethal HP, without injuring the goat."
+  },
+  {
+    "chapter": "riftlight-boundary-stone-bank",
+    "scene": "surge_check",
+    "decision": "revised",
+    "reason": "Failed relay loses the kettle and sets the existing kettle_lost consequence, including Tally's downstream response."
+  },
+  {
+    "chapter": "riftlight-frostfang-shore",
+    "scene": "ladder_hold",
+    "decision": "revised",
+    "reason": "Timed climbing replaces the nonexistent hold/climb role split. Tamsin secures the ladder; a rough climb bruises shins."
+  },
+  {
+    "chapter": "riftlight-glacier-survival",
+    "scene": "kid_burrow",
+    "decision": "retain-gentle",
+    "reason": "A rescued kid plays in the snow and sneezes; rescue is never undone by losing hide-and-seek."
+  },
+  {
+    "chapter": "riftlight-glacier-survival",
+    "scene": "shelf_cross",
+    "decision": "revised",
+    "reason": "A mistimed stream crossing bumps shins for one nonlethal HP; the herder plants the pole."
+  },
+  {
+    "chapter": "riftlight-stone-counters",
+    "scene": "turnip_relay",
+    "decision": "revised",
+    "reason": "A lost relay sends turnips into the fold, sets the existing loss flag and reaches past instead of the every-last-turnip story."
+  },
+  {
+    "chapter": "first-steps-01",
+    "scene": "interaction_roots",
+    "decision": "revised",
+    "reason": "Everyone makes smooth shared pulls; Bun fetches her own ribbon. Practice remains forgiving."
+  }
+]

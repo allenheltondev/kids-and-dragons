@@ -322,7 +322,7 @@
     },
     "ladder_hold": {
       "type": "interaction",
-      "narration": "One hero climbs. The others hold the ladder still. Looking fine and being fine are different things.",
+      "narration": "Tamsin wedges the ladder feet with stones. Gusts rock the top against the cliff. Climb three rungs in the quiet gaps. Looking fine and being fine are different things.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -331,10 +331,12 @@
       ],
       "art": "scenes/riftlight/frostfang-ladder",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the ladder steady while your friend climbs three rungs.",
-        "supportLabel": "Hold the ladder",
-        "actionLabel": "Climb three rungs"
+        "kind": "timing",
+        "cue": "Climb a rung when the marker reaches the quiet gap between gusts.",
+        "actionLabel": "Climb a rung!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
       },
       "onSuccess": {
         "goto": "river_line",
@@ -342,12 +344,23 @@
       },
       "onFailure": {
         "goto": "river_line",
-        "narration": "The ladder wiggles, but it holds. Your climber looks along the cliff, and goes quiet."
+        "narration": "A gust rocks the ladder and bumps your shins. Tamsin catches the rails. You climb the last rung slowly, sore but safely above the river line.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "river_line",
-        "narration": "You wedge a stone under the foot. No wobble. Your climber looks along the cliff, and goes quiet."
-      }
+        "narration": "Tamsin steadies the rails and calls each quiet gap. You climb three rungs and look along the cliff."
+      },
+      "tags": [
+        "climb"
+      ]
     },
     "river_line": {
       "type": "story",
@@ -2182,5 +2195,36 @@
     ],
     "reactions": {},
     "castPoses": {}
+  },
+  "resumeInteractions": {
+    "ladder_hold": {
+      "type": "interaction",
+      "narration": "One hero climbs. The others hold the ladder still. Looking fine and being fine are different things.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the ladder steady while your friend climbs three rungs.",
+        "supportLabel": "Hold the ladder",
+        "actionLabel": "Climb three rungs"
+      },
+      "onSuccess": {
+        "goto": "river_line",
+        "narration": "Not a wobble. Your climber looks along the cliff, and goes quiet."
+      },
+      "onFailure": {
+        "goto": "river_line",
+        "narration": "The ladder wiggles, but it holds. Your climber looks along the cliff, and goes quiet."
+      },
+      "onAssisted": {
+        "goto": "river_line",
+        "narration": "You wedge a stone under the foot. No wobble. Your climber looks along the cliff, and goes quiet."
+      }
+    }
   }
 }

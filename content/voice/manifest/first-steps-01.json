@@ -643,38 +643,6 @@
       }
     ]
   },
-  "first-steps-01/interaction_roots/interaction/cue": {
-    "": [
-      {
-        "clip": "69d4b2dcc243cc49f4e8b737332e0d156a9fd889cc6ed4b68b8228724ea6968a",
-        "ms": 2635
-      }
-    ]
-  },
-  "first-steps-01/interaction_roots/narration": {
-    "": [
-      {
-        "clip": "0d120ff6be5568f0c5e7e79505b3bc623ce57420dca0d5969da9402d75ddc8d6",
-        "ms": 2973
-      },
-      {
-        "clip": "e54427412cd81d540e262d464f6081bd86dc42e264f6634af36d2207e62d8726",
-        "ms": 2637
-      },
-      {
-        "clip": "338a0ff230b6d21f66c21134822c41cec126e9a6742c7f64bc102e741ec0323c",
-        "ms": 876
-      },
-      {
-        "clip": "9b8657c98cee4ae8428d9012eb422e046dd93e93e568290e0bd87d77e14cb3b2",
-        "ms": 1581
-      },
-      {
-        "clip": "05de0fb034804b9ba1d73f865c587b3e01d73e51bc8ac062585be900a87a32b1",
-        "ms": 3607
-      }
-    ]
-  },
   "first-steps-01/interaction_roots/onAssisted/narration": {
     "": [
       {

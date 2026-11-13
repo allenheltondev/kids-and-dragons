@@ -827,14 +827,6 @@
       }
     ]
   },
-  "gemfall-03b/interaction_reed_gap/interaction/cue": {
-    "": [
-      {
-        "clip": "9b5fdee9c286c8968ea40efdd6604f0ad56ac9ae4b5395446afaa4298d28d006",
-        "ms": 3107
-      }
-    ]
-  },
   "gemfall-03b/interaction_reed_gap/narration": {
     "": [
       {
@@ -864,14 +856,6 @@
       {
         "clip": "40558a27fa5cb4caa96cbd6485531ff98f27ae9e1182f6da24afa08f8d866d44",
         "ms": 3507
-      }
-    ]
-  },
-  "gemfall-03b/interaction_reed_gap/onFailure/narration": {
-    "": [
-      {
-        "clip": "13458be37c30cdb164a38d9c391573b2bc10c85c072e3ec7b6696374c4fa8e17",
-        "ms": 6607
       }
     ]
   },

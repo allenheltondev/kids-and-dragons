@@ -1467,5 +1467,19 @@
         "text": "says Pip. Something is moving the land. What is it? And can you put things right?"
       }
     ]
+  },
+  "riftlight-stone-counters/turnip_relay/onFailure/narration": {
+    "source": "sha256:a1d4a85ca03ef56d16f9f102b0de4239f908a049239931bdba8eac409dc6b272",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A sack spills beside the fold. The shimmer swallows the turnips before Pip can reach them. Farmer Gourd takes off his cap."
+      },
+      {
+        "by": "farmer_gourd",
+        "text": "\"Somebody downhill is getting turnips.\""
+      }
+    ]
   }
 }
