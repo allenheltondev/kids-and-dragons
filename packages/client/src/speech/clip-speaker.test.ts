@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clipPath, manifestPath, type NarrationPart, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
 import type { VoiceBuffer, VoiceChannel } from "../audio/cue";
 import { VOICE_GAP_MS } from "../audio/cue";
-import { createClipSpeaker, manifestOf, PREFETCH_CONCURRENCY, RESOLVE_MS, whileSeen, type FetchedLike } from "./clip-speaker";
+import { createClipSpeaker, firstClipsAhead, HELD_DECODES, manifestOf, PREFETCH_CONCURRENCY, RESOLVE_MS, whileSeen, type ClipPrefetchOptions, type FetchedLike } from "./clip-speaker";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
 const A = "a".repeat(64);
@@ -867,5 +867,182 @@ describe("prefetch: aggressive, and bounded", () => {
     await settle();
     // The goal's own clip, then the newest request's, then what was asked before it.
     expect(t.net.asked.slice(1)).toEqual([clipPath(F), clipPath(E), clipPath(A), clipPath(B), clipPath(C)]);
+  });
+});
+
+describe("decoding ahead: the first clip of each line one step ahead", () => {
+  /** The scene the party is in (s1) leads to s2; s2 is a check whose branch line is D. */
+  const NEXT = { decodeAhead: { here: "ch/s1/", next: ["ch/s2/"] } } as ClipPrefetchOptions;
+  const S2_LINE = { source: "narration" as const, parts: [{ address: "ch/s2/narration", line: "The bridge sways." }] };
+
+  /** The setup above with a channel that counts decodes by name, and a switch for whether it runs. */
+  function counted(saveData = false) {
+    let running = true;
+    const { channel, plays } = fakeChannel();
+    const decodes: string[] = [];
+    const counting: VoiceChannel = {
+      ready: () => running,
+      decode: (bytes) => {
+        decodes.push(new TextDecoder().decode(bytes));
+        return channel.decode(bytes);
+      },
+      play: channel.play,
+    };
+    const device = fakeDevice();
+    const net = fakeFetch(aheadRoutes());
+    const speaker = createClipSpeaker({ device: device.device, channel: () => counting, fetch: net.fetch, saveData: () => saveData });
+    return { speaker, plays, decodes, device, net, stopRunning: () => void (running = false), startRunning: () => void (running = true) };
+  }
+
+  it("picks the branch lines of the scene the party is in and the narration of the scenes ahead, not their variants", () => {
+    expect(firstClipsAhead({ here: "ch/s2/", next: ["ch/s3/"] }, [AHEAD])).toEqual([D, E]);
+    expect(firstClipsAhead({ next: ["ch/s1/", "ch/s2/"] }, [AHEAD])).toEqual([A, B]);
+  });
+
+  it("starts a line whose first clip was decoded ahead without decoding it again", async () => {
+    const t = counted();
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    expect(t.decodes).toEqual([B]);
+    t.speaker("The bridge sways.", S2_LINE);
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[B]]);
+    expect(t.decodes).toEqual([B]);
+  });
+
+  it("decodes only first clips: a line's later clips still decode while it plays", async () => {
+    const t = counted();
+    t.speaker.prefetch?.(["ch/s2/"], { decodeAhead: { next: ["ch/s2/"] } } as ClipPrefetchOptions);
+    await settle();
+    // s2's narration, never its variant (C), which only follows the narration in a line.
+    expect(t.decodes).toEqual([B]);
+  });
+
+  it("lets go of what it held when the scene changes, keeping what is still one step ahead", async () => {
+    const t = counted();
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    // The party is now in s2: s3 is the step ahead, and s2's own narration is no longer held.
+    t.speaker.prefetch?.(["ch/s2/", "ch/s3/"], { decodeAhead: { here: "ch/s2/", next: ["ch/s3/"] } } as ClipPrefetchOptions);
+    await settle();
+    expect(t.decodes).toEqual([B, D, E]);
+    // Kept a moment for the line the new scene says as it arrives, then gone.
+    await vi.advanceTimersByTimeAsync(RESOLVE_MS);
+    t.speaker("The bridge sways.", S2_LINE);
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[B]]);
+    expect(t.decodes).toEqual([B, D, E, B]);
+  });
+
+  it("the new scene's own line can still take the clip it held a moment ago", async () => {
+    const t = counted();
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    t.speaker.prefetch?.(["ch/s2/", "ch/s3/"], { decodeAhead: { here: "ch/s2/", next: ["ch/s3/"] } } as ClipPrefetchOptions);
+    t.speaker("The bridge sways.", S2_LINE);
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[B]]);
+    expect(t.decodes.filter((name) => name === B)).toHaveLength(1);
+  });
+
+  it("lets go of everything when the guessing ahead is retired", async () => {
+    const t = counted();
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    t.speaker.stopPrefetch?.();
+    t.speaker("The bridge sways.", S2_LINE);
+    await settle();
+    expect(t.decodes).toEqual([B, B]);
+  });
+
+  it("decodes nothing until the engine is running, and nothing is made or resumed for it", async () => {
+    const t = counted();
+    t.stopRunning();
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    expect(t.net.asked).toContain(clipPath(B));
+    expect(t.decodes).toEqual([]);
+  });
+
+  it("decodes nothing under Data Saver", async () => {
+    const t = counted(true);
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    expect(t.decodes).toEqual([]);
+  });
+
+  it("decodes nothing while the page is hidden, and lets go of what it held when hidden", async () => {
+    let state: "hidden" | "visible" = "visible";
+    const doc = new EventTarget() as unknown as Document;
+    Object.defineProperty(doc, "visibilityState", { get: () => state });
+    const win = new EventTarget() as unknown as Window;
+    const t = counted();
+    const seen = whileSeen(t.speaker, doc, win);
+    seen.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    expect(t.decodes).toEqual([B]);
+    state = "hidden";
+    doc.dispatchEvent(new Event("visibilitychange"));
+    seen.prefetch?.(["ch/s2/", "ch/s3/"], { decodeAhead: { here: "ch/s2/", next: ["ch/s3/"] } } as ClipPrefetchOptions);
+    await settle();
+    expect(t.decodes).toEqual([B]);
+    // Seen again: the line decodes its own first clip, since nothing was held for a hidden page.
+    state = "visible";
+    doc.dispatchEvent(new Event("visibilitychange"));
+    seen("The bridge sways.", S2_LINE);
+    await settle();
+    expect(t.decodes).toEqual([B, B]);
+  });
+
+  it("never decodes ahead while a line is being said, and catches up once it ends", async () => {
+    const t = counted();
+    t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
+    await settle();
+    expect(t.plays).toHaveLength(1);
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    // B's bytes are here, but the line playing has the decoder to itself.
+    expect(t.net.asked).toContain(clipPath(B));
+    expect(t.decodes).toEqual([A]);
+    t.plays[0]!.onEnd();
+    await settle();
+    expect(t.decodes).toEqual([A, B]);
+  });
+
+  it("a line asked for while its first clip is still decoding ahead starts no later, from that decode", async () => {
+    let finish: (buffer: VoiceBuffer) => void = () => undefined;
+    const decodes: string[] = [];
+    const { channel, plays } = fakeChannel();
+    const slow: VoiceChannel = {
+      ready: () => true,
+      decode: (bytes) => {
+        decodes.push(new TextDecoder().decode(bytes));
+        return new Promise((resolve) => (finish = resolve));
+      },
+      play: channel.play,
+    };
+    const device = fakeDevice();
+    const speaker = createClipSpeaker({ device: device.device, channel: () => slow, fetch: fakeFetch(aheadRoutes()).fetch });
+    speaker.prefetch?.(["ch/s1/", "ch/s2/"], NEXT);
+    await settle();
+    expect(decodes).toEqual([B]);
+    speaker("The bridge sways.", S2_LINE);
+    await settle();
+    // No second decode was queued behind the first: the line waits only on the one under way.
+    expect(decodes).toEqual([B]);
+    finish({ duration: 0.5, name: B } as unknown as VoiceBuffer);
+    await settle();
+    expect(plays.map((p) => p.buffers)).toEqual([[B]]);
+    expect(device.said).toEqual([]);
+  });
+
+  it("holds at most HELD_DECODES first clips, nearest first", () => {
+    const many: VoiceManifest = Object.fromEntries(
+      Array.from({ length: HELD_DECODES + 5 }, (_, i) => [`ch/n${i}/narration`, { "": [{ clip: String(i).padStart(64, "0"), ms: 100 }] }]),
+    );
+    const next = Array.from({ length: HELD_DECODES + 5 }, (_, i) => `ch/n${i}/`);
+    const keys = firstClipsAhead({ next }, [many]);
+    expect(keys).toHaveLength(HELD_DECODES);
+    expect(keys[0]).toBe("0".padStart(64, "0"));
   });
 });

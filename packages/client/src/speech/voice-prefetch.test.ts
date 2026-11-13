@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
-import { upcomingNarration } from "./voice-prefetch";
+import { nextNarration, upcomingNarration } from "./voice-prefetch";
 
 /** a → b → c → d, with a second road a → e that skips b. */
 const chapter = {
@@ -35,5 +35,16 @@ describe("the narration ahead", () => {
 
   it("starts at the entry for a scene the chapter does not have", () => {
     expect(upcomingNarration(chapter, "gone")[0]).toBe("ch/@plate");
+  });
+});
+
+describe("the lines decoded ahead", () => {
+  it("names the scene the party is in and the scenes one step from it, never two", () => {
+    expect(nextNarration(chapter, "a")).toEqual({ here: "ch/a/", next: ["ch/b/", "ch/e/"] });
+  });
+
+  it("before the first scene, the entry is the step ahead", () => {
+    expect(nextNarration(chapter, null)).toEqual({ next: ["ch/a/"] });
+    expect(nextNarration(chapter, "gone")).toEqual({ next: ["ch/a/"] });
   });
 });
