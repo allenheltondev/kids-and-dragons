@@ -32,7 +32,8 @@
  * plays. All or nothing still holds for everything known before the first clip sounds; a clip
  * that fails after that ends the line where it stands rather than repeating it in the device
  * voice. The URL is the hash and is served immutable for a year, so the browser's HTTP cache
- * keeps a clip too (the service worker passes `/voice/*` through to it untouched).
+ * keeps a clip too, and so does the service worker's `kad-voice-v1` cache (sw.ts `voiceClip`),
+ * which also keeps a whole chapter's clips for no signal (voice-pack.ts).
  *
  * **Prefetch** (`speaker.prefetch`): over a slow connection, a television might not have a
  * line's clips within RESOLVE_MS, and the line would be read by the device voice instead. So the

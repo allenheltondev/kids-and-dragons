@@ -350,7 +350,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // starting on its first clip with a pause between clips (the lazy read-aloud chunk), and a
 // phone keeping its renewed device token (`keepRenewedDeviceToken`, in the entry). 1814KB
 // measured against main's 1806KB. First paint 332KB, at its cap. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1816;
+// 1816 -> 1820 on 2026-11-13 for keeping a chapter's voices for no signal (#547): the lazy
+// "Keep this chapter's voices" panel and its voice-pack helpers (in the Help chunk's reach, not
+// the first paint). 1818KB measured on top of #767, 2KB over. First paint 332KB, unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1820;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

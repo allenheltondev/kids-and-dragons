@@ -40,6 +40,7 @@ import {
   SW_SHELL_KEY,
   SW_SHELL_STAGED_KEY,
   SW_SHELL_TIMEOUT_MS,
+  SW_VOICE_META_KEY,
   swAfterInstallError,
   swBudgetFor,
   swCacheable,
@@ -59,6 +60,7 @@ import {
   swStaleVersions,
   swStrategyFor,
   swVersionedKey,
+  swVoiceBudgetFor,
   swWarmList,
   type FileIndex,
   type FileMeta,
@@ -303,6 +305,9 @@ worker.addEventListener("fetch", (event) => {
     case "image":
       // Brand art from `public/` is fingerprinted too; anything else is not.
       event.respondWith(fingerprinted(event, request, "asset"));
+      return;
+    case "voice":
+      event.respondWith(voiceClip(event, request));
       return;
   }
 });
@@ -812,6 +817,78 @@ async function versioned(event: SwFetchEvent, request: Request, path: string, fi
     event.waitUntil(keepVersioned(cache, path, fingerprint, response.clone()).catch(() => undefined));
   }
   return response;
+}
+
+/**
+ * A recorded narration clip. Its URL is a hash of its sound, so a saved copy is
+ * the clip for good: served without asking the network, and a clip fetched
+ * online is saved behind the answer for the next time (or for no signal).
+ * Only a whole 200 is saved, so the 403 a missing clip gets is passed on as it
+ * is, for the clip speaker to turn into the device voice. Saving never holds up
+ * the answer, and a full disk just means the clip is not kept.
+ */
+async function voiceClip(event: SwFetchEvent, request: Request): Promise<Response> {
+  const cache = await caches.open(SW_CACHES.voice);
+  const path = new URL(request.url).pathname;
+  const saved = await cache.match(path, SAME);
+  if (saved) {
+    event.waitUntil(touchVoice(path).catch(() => undefined));
+    return saved;
+  }
+  const response = await fetch(request);
+  if (swCacheable(response)) event.waitUntil(keepVoice(cache, path, response.clone()).catch(() => undefined));
+  return response;
+}
+
+async function keepVoice(cache: Cache, path: string, response: Response): Promise<void> {
+  const bytes = await response.arrayBuffer();
+  // Re-wrapped, so the saved copy carries no transfer framing from this fetch.
+  const headers = new Headers(response.headers);
+  headers.delete("content-encoding");
+  headers.delete("content-length");
+  await put(cache, path, new Response(bytes, { status: 200, headers }));
+  (await voiceMeta())[path] = { bytes: bytes.byteLength, used: Date.now() };
+  await saveVoiceMeta();
+}
+
+async function touchVoice(path: string): Promise<void> {
+  const entry = (await voiceMeta())[path];
+  if (!entry) return;
+  entry.used = Date.now();
+  await saveVoiceMeta();
+}
+
+let voiceMetaLoad: Promise<Record<string, FileMeta>> | null = null;
+
+/** The saved clips' sizes and last use, as `filesMeta` keeps the art's. */
+function voiceMeta(): Promise<Record<string, FileMeta>> {
+  voiceMetaLoad ??= (async () => {
+    const cache = await caches.open(SW_CACHES.voice);
+    const saved = await cache.match(SW_VOICE_META_KEY, SAME);
+    return saved ? ((await saved.json()) as Record<string, FileMeta>) : {};
+  })().catch((): Record<string, FileMeta> => ({}));
+  return voiceMetaLoad;
+}
+
+let voiceSaving: Promise<void> | null = null;
+
+/**
+ * Write the clips' bookkeeping, dropping least-recently-used clips over budget
+ * first. Coalesced like `saveMeta`: a chapter's worth of clips writes once.
+ */
+function saveVoiceMeta(): Promise<void> {
+  voiceSaving ??= (async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    voiceSaving = null;
+    const cache = await caches.open(SW_CACHES.voice);
+    const current = await voiceMeta();
+    for (const key of swEvictions(current, swVoiceBudgetFor(await storageQuota()))) {
+      await cache.delete(key);
+      delete current[key];
+    }
+    await put(cache, SW_VOICE_META_KEY, new Response(JSON.stringify(current), { headers: { "content-type": "application/json" } }));
+  })();
+  return voiceSaving;
 }
 
 async function networkFirst(request: Request, cacheName: string): Promise<Response> {
