@@ -117,10 +117,11 @@ strings; narration still supports normal tokens and variants. Examples are in
 
 ## Content files
 
-When replacing a shipped activity with story or conversation, a chapter may keep
+When replacing a shipped activity with story, conversation or revised controls, a chapter may keep
 the original `interaction` scene in `resumeInteractions`, keyed by its existing
-scene ID. Fresh entry always uses `scenes`; the archive only resolves an
-interaction prompt already persisted in a save. Preserve the original controls,
+scene ID. Revised controls must have a different authored interaction spec (including its cue).
+Fresh entry always uses `scenes`; the archive resolves a persisted prompt whose saved spec
+matches the original, or whose current scene is no longer an interaction. Preserve the original controls,
 branches and effects, and keep every continuation valid. Test serialized saves,
 real controls, retry, failure and assistance before removing an activity.
 

@@ -27,11 +27,22 @@ test("shifting loads and shared effort survive mistakes, refresh, and short phon
       return await start(one.page).count() ? one.page : two.page;
     };
     let lead = await readyLead();
+    // A friend's controls must show the new round before another lift is sent.
+    // Otherwise a delayed patch can make a valid-looking tap carry the old round.
+    const roundOnBoth = async (round: number) => {
+      for (const page of [one.page, two.page]) await expect.poll(() => page.evaluate(async () => {
+        const path = "/src/store/index.ts";
+        const prompt = (await import(path)).useGameStore.getState().state?.prompt;
+        return prompt?.kind === "interaction" ? prompt.challenge?.round : undefined;
+      })).toBe(round);
+    };
     await controls(lead).getByRole("button", { name: /ready/ }).click();
     for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
     await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
+    await roundOnBoth(1);
     await expect(controls(two.page)).toContainText("The load leans away. Lift higher");
     await controls(lead).getByRole("button", { name: "Take a careful step" }).click(); // deliberately under-lift
+    await roundOnBoth(2);
     await expect(controls(one.page).getByText(/The load dips/)).toBeVisible();
     expect((await roomState<RunState>(one.page, table.code)).prompt).toMatchObject({ challenge: { progress: 1, strain: 0.3 } });
     await two.page.reload();
@@ -46,6 +57,7 @@ test("shifting loads and shared effort survive mistakes, refresh, and short phon
     await expect(controls(one.page).locator(".skill-scene__object")).toHaveJSProperty("naturalWidth", 512);
     for (const phone of [one.page, two.page]) await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
     await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
+    await roundOnBoth(3);
     for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await controls(phone).getByRole("button", { name: "Lower my side", exact: true }).click();
     await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
     await expect(controls(one.page).getByRole("button", { name: "See what happens next" })).toBeVisible();

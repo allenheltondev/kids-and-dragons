@@ -51,5 +51,8 @@
   "gemfall-07r/interaction_shelter_stack": "67b35219ed9f1510943b9e70909a68d82ceb7cfafaa97cd8646046583371a654",
   "gemfall-08/interaction_climb_warmup": "3b711f1364347f03ef1b4f8853697aeb9f8531399856b755bb5d18689add70db",
   "gemfall-08/interaction_bundles": "d8b6956fa7a3315ccea806700e1661b29bdae7455d524ab1ac30d0df521f2881",
-  "gemfall-08/interaction_verdict_council": "b55942e4f9cd4272039f06109b82932ab8ddf5d0ee4cf305ea491ecc2abf9e1f"
+  "gemfall-08/interaction_verdict_council": "b55942e4f9cd4272039f06109b82932ab8ddf5d0ee4cf305ea491ecc2abf9e1f",
+  "gemfall-07l/interaction_set_table": "17b186f8311393f55385ecf57a8e6c8d5fbe03275afaf0813bd9689ed21d2020",
+  "gemfall-07l/interaction_box_slide": "e10d822eb7e2a1f94d4a2cbc421c411207dcc98a11f358405a81d242a48ba233",
+  "gemfall-07l/interaction_tether_team": "b97dde578d29f3a0116195b018b6217c373d7afdf0a4d0c1b9bf8558a34c3457"
 }

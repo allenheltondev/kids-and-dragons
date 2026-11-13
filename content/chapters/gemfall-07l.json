@@ -2396,10 +2396,10 @@
     },
     "interaction_set_table": {
       "type": "interaction",
-      "narration": "In the middle of the Pinch lie an old door and two barrels of different heights. \"A table,\" says Pellam, tapping it with his pencil. \"Level, please. I will be measuring.\"",
+      "narration": "In the middle of the Pinch lie an old door and two barrels of different heights. \"A table,\" says Pellam, tapping it with his pencil. \"Level, please. I will be measuring.\" Lift or lower your side before each step. If the door tips too far, it will land on your toes.",
       "interaction": {
         "kind": "balance",
-        "cue": "Everyone lift or lower your side until the door is flat, then carry it onto the barrels.",
+        "cue": "Adjust your lift to the gold before each careful step. The door shifts as you carry it.",
         "actionLabel": "Carry the door",
         "objectLabel": "An old door"
       },
@@ -2409,7 +2409,15 @@
       },
       "onFailure": {
         "goto": "choice_the_rule",
-        "narration": "The door slides off with a thump. \"Almost level,\" says Pellam kindly. \"Nobody will notice.\" Everybody notices."
+        "narration": "The door slips onto your boots. Ow. Pellam lifts the edge while you pull your sore toes free, then wedges a flat stone under the short barrel. His pencil finally stays put.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "choice_the_rule",
@@ -2529,10 +2537,10 @@
     },
     "interaction_box_slide": {
       "type": "interaction",
-      "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of boxes start sliding down the bend. Both sides yelp. Time your dash.",
+      "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of boxes start sliding down the bend. Both sides yelp. Read the gap before dashing through. A bad dash means bruised knees before you can help at the wagon.",
       "interaction": {
         "kind": "timing",
-        "cue": "Dash across when the sliding boxes pause.",
+        "cue": "Dash through the gold opening. A near miss leaves room to recover; rough dashes cost footing.",
         "actionLabel": "Dash!",
         "target": 0.5,
         "width": 0.35,
@@ -2544,7 +2552,15 @@
       },
       "onFailure": {
         "goto": "scene_box_crawlers",
-        "narration": "A box bumps you into the heather, unhurt. The last stack thuds against a rock, and the top box bursts open. Something inside clicks."
+        "narration": "A box bumps you into the heather. You climb out with bruised knees. The last stack thuds against a rock, and the top box bursts open. Something inside clicks.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "scene_box_crawlers",
@@ -2955,11 +2971,11 @@
     },
     "interaction_tether_team": {
       "type": "interaction",
-      "narration": "A warden blocks the wheel. A singer steadies the side. Brace together while you quiet the stone.",
+      "narration": "A warden fits a wheel block. A singer holds a steady note. Take the brace rope together and choose a smooth pull in the gold. If one friend pulls too gently, another can make up the difference. Sharp jerks strain the brace. If it gives way, the masks will take the wagon.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Brace together while the stone is held for one breath.",
-        "actionLabel": "Hold together",
+        "cue": "Choose smooth pulls in the gold. Read the changing weight before each effort.",
+        "actionLabel": "Pull smoothly",
         "supportLabel": "Brace the wagon"
       },
       "onSuccess": {
@@ -2967,8 +2983,8 @@
         "narration": "The wagon stands steady. You hold the hum for one breath, then let it go."
       },
       "onFailure": {
-        "goto": "scene_tether_holds",
-        "narration": "The helpers set another wheel block. Together you finish the test."
+        "goto": "scene_tether_slips",
+        "narration": "A sharp jerk tips the wheel block. The rope goes slack, and the hum jumps free. You step back as the wagon rolls toward the masks."
       },
       "onAssisted": {
         "goto": "scene_tether_holds",
@@ -3148,8 +3164,7 @@
       },
       "interaction_tether_team": {
         "props": [
-          "prop_wagon_wheels",
-          "prop_humming_stone"
+          "rope-loop"
         ]
       }
     },
@@ -3399,6 +3414,83 @@
           "name": "Hessa Wren"
         }
       ]
+    },
+    "interaction_set_table": {
+      "type": "interaction",
+      "narration": "In the middle of the Pinch lie an old door and two barrels of different heights. \"A table,\" says Pellam, tapping it with his pencil. \"Level, please. I will be measuring.\"",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the door is flat, then carry it onto the barrels.",
+        "actionLabel": "Carry the door",
+        "objectLabel": "An old door"
+      },
+      "onSuccess": {
+        "goto": "choice_the_rule",
+        "narration": "The door settles, almost flat. Pellam's pencil rolls only a little. \"Acceptable,\" he says, which from Pellam is a cheer."
+      },
+      "onFailure": {
+        "goto": "choice_the_rule",
+        "narration": "The door slides off with a thump. \"Almost level,\" says Pellam kindly. \"Nobody will notice.\" Everybody notices."
+      },
+      "onAssisted": {
+        "goto": "choice_the_rule",
+        "narration": "Pellam props one corner with his boot. The door settles onto the barrels, almost flat. \"Acceptable,\" he says."
+      },
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "art": "scenes/gemfall/pinch-door-table"
+    },
+    "interaction_box_slide": {
+      "type": "interaction",
+      "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of boxes start sliding down the bend. Both sides yelp. Time your dash.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Dash across when the sliding boxes pause.",
+        "actionLabel": "Dash!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_box_crawlers",
+        "narration": "You dart through the gap. The last stack thuds against a rock, and the top box bursts open. Something inside clicks."
+      },
+      "onFailure": {
+        "goto": "scene_box_crawlers",
+        "narration": "A box bumps you into the heather, unhurt. The last stack thuds against a rock, and the top box bursts open. Something inside clicks."
+      },
+      "onAssisted": {
+        "goto": "scene_box_crawlers",
+        "narration": "A warden and a mask haul you clear together. The top box bursts open. Something inside clicks."
+      },
+      "art": "scenes/gemfall/box-stack-slide"
+    },
+    "interaction_tether_team": {
+      "type": "interaction",
+      "narration": "A warden blocks the wheel. A singer steadies the side. Brace together while you quiet the stone.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace together while the stone is held for one breath.",
+        "actionLabel": "Hold together",
+        "supportLabel": "Brace the wagon"
+      },
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "The wagon stands steady. You hold the hum for one breath, then let it go."
+      },
+      "onFailure": {
+        "goto": "scene_tether_holds",
+        "narration": "The helpers set another wheel block. Together you finish the test."
+      },
+      "onAssisted": {
+        "goto": "scene_tether_holds",
+        "narration": "Both helpers brace with you. The hum rests for one breath."
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin"
     }
   }
 }

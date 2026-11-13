@@ -247,17 +247,21 @@ describe("the shape screen", () => {
 
   it("judges a game by the results the engine can produce, not its unreachable onFailure", () => {
     const kind = (k, onSuccess, onFailure, onAssisted) => ({ ...game(onSuccess, onFailure), interaction: { kind: k }, ...(onAssisted ? { onAssisted } : {}) });
-    // A balance game cannot fail, so a different onFailure is dead, and the game is still inert.
+    // Current balance controls can fail through strain: its failure is a real stake.
     const balance = kind("balance", { goto: "a" }, { goto: "b", effects: [{ type: "damage", amount: 1 }] });
-    expect(isInert(balance)).toBe(true);
-    expect(hasDeadFailure(balance)).toBe(true);
+    expect(isInert(balance)).toBe(false);
+    expect(hasDeadFailure(balance)).toBe(false);
+    expect(isInert(kind("cooperate", { goto: "a" }, { goto: "b" }))).toBe(false);
+    const play = kind("play", { goto: "a" }, { goto: "b" });
+    expect(isInert(play)).toBe(true);
+    expect(hasDeadFailure(play)).toBe(true);
     // Its assisted result is producible, so a different one gives it a stake.
     expect(isInert(kind("relay", { goto: "a" }, { goto: "a" }, { goto: "b" }))).toBe(false);
     // A timing game can fail, so the same branches are a real stake and nothing is dead.
     const timing = kind("timing", { goto: "a" }, { goto: "b" });
     expect(isInert(timing)).toBe(false);
     expect(hasDeadFailure(timing)).toBe(false);
-    expect([...FAILABLE_KINDS].sort()).toEqual(["memory", "precision", "relay", "sequence", "timing", "tracking"]);
+    expect([...FAILABLE_KINDS].sort()).toEqual(["balance", "cooperate", "memory", "precision", "relay", "sequence", "timing", "tracking"]);
   });
 
   it("reads the real chapters the same way (PR #606 review samples)", () => {

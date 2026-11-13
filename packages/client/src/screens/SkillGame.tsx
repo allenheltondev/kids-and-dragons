@@ -98,14 +98,16 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
         <div className="skill-ledge" aria-hidden="true">{[0, 1, 2].map(i => <span key={i} style={{ bottom: `${18 + i * 22}%` }} />)}</div>
         <div className="skill-hoist" style={{ bottom: `${20 + game.progress * 20}%` }}><span className="skill-hoist__rope" />{token()}</div>{heroes}
       </div>{progress}
-      <p className="skill-reading">{game.progress === 0 ? spec.supportLabel : game.progress === 1 ? "The weight shifts. Give more support" : "Almost there. Settle it gently"}</p>
+      <p className="skill-reading">{game.progress === 0 ? spec.supportLabel : game.progress === 1
+        ? playerId ? "The weight shifts. Give more support" : "Weight shifts: pull higher"
+        : playerId ? "Almost there. Settle it gently" : "Nearly there: ease gently"}</p>
       <div className="skill-gauge" role="img" aria-label={`Safe pull: ${Math.round((target - tolerance) * 100)} to ${Math.round((target + tolerance) * 100)} percent`}>
         <span className="skill-gauge__gold" style={{ left: `${Math.max(0, target - tolerance) * 100}%`, width: `${(Math.min(1, target + tolerance) - Math.max(0, target - tolerance)) * 100}%` }} />
         {active && playerId && <span className="skill-gauge__needle" style={{ left: `${power * 100}%` }} />}
         {connected.map(member => game.pulls[member.playerId] !== undefined && <span className="skill-gauge__pull" key={member.playerId} style={{ left: `${game.pulls[member.playerId]! * 100}%` }} title={member.character.name}>●</span>)}
       </div>
       <p className="skill-caption">A friend's pull moves the gold. Help make up the difference, gently.</p>
-      <ul className="skill-team">{connected.map(member => <li key={member.playerId}>{member.character.name}: {game.pulls[member.playerId] === undefined ? "reading the rope" : "pull ready"}</li>)}</ul>
+      <ul className="skill-team">{connected.map(member => <li key={member.playerId}>{member.character.name}: {game.pulls[member.playerId] === undefined ? (playerId ? "reading the rope" : "choosing") : (playerId ? "pull ready" : "pull set")}</li>)}</ul>
       {active && playerId && send && <>
         {!still && <div className="skill-rope-drag" aria-hidden="true" data-ready={committed}
           onPointerDown={event => { if (busy || committed || event.button !== 0) return; event.currentTarget.setPointerCapture(event.pointerId); gesture.current = { id: event.pointerId, y: event.clientY, height: event.currentTarget.clientHeight }; updatePower(0); }}

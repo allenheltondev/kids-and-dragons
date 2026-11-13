@@ -11,7 +11,8 @@ const root = path.resolve(import.meta.dirname, "../..");
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const chapters = read<{ chapters: string[] }>("content/campaigns/gemfall.json").chapters
   .map(id => read<Chapter>(`content/chapters/${id}.json`));
-// Hashes taken from the shipped scenes on dabee9d8, before the pacing changes.
+// Original hashes from dabee9d8; the three revised 7L activities are archived
+// from 554cc0cc. Existing archive hashes are never retaken.
 const contracts = read<Record<string, string>>("tools/content/fixtures/gemfall-retired-interactions.json");
 const retired = chapters.flatMap(chapter => Object.entries(chapter.resumeInteractions ?? {})
   .map(([id, scene]) => ({ chapter, id, scene })));
@@ -31,7 +32,7 @@ it.each(SIZES)("saved retired activities still finish, retry and accept help at 
     const opened = saved(open(before, id, size));
     const success = solve(chapter, opened);
     const helped = act(chapter, saved(opened), { action: "assist" }, promptOf(opened).playerIds.at(-1)!);
-    const missed = miss(chapter, saved(opened));
+    const missed = miss(chapter, saved(opened), true);
     for (const result of [success, helped, ...(missed ? [missed] : [])]) {
       const actor = promptOf(result).resolvedActorId ?? promptOf(result).actorId;
       const actual = landed(chapter, saved(result), actor);
@@ -46,7 +47,11 @@ it.each(SIZES)("saved retired activities still finish, retry and accept help at 
     retry = saved(retry);
     expect(promptOf(retry).attempt).toBe(promptOf(opened).attempt + 1);
     expect(promptOf(solve(chapter, retry)).outcome).toBe("success");
-    expect(open(chapter, id, size).prompt?.kind).toBe("choice");
+    const fresh = open(chapter, id, size).prompt;
+    if (chapter.scenes[id]!.type === "interaction") {
+      expect(fresh).toMatchObject({ kind: "interaction", spec: chapter.scenes[id]!.interaction });
+      expect(fresh?.kind === "interaction" && fresh.spec).not.toEqual(scene.interaction);
+    } else expect(fresh?.kind).toBe("choice");
   }
 }, 60_000);
 
@@ -75,6 +80,9 @@ it("rejects archives without a replacement scene or a valid continuation", () =>
   const broken = structuredClone(chapter);
   broken.resumeInteractions![id]!.onSuccess.goto = "missing_scene";
   expect(validateChapter(broken).some(issue => issue.code === "BAD_INTERACTION")).toBe(true);
+  const ambiguous = structuredClone(chapter);
+  ambiguous.scenes[id] = structuredClone(ambiguous.resumeInteractions![id]!);
+  expect(validateChapter(ambiguous).some(issue => issue.code === "BAD_INTERACTION")).toBe(true);
 });
 
 const councils = new Set([

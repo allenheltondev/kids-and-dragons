@@ -13,9 +13,10 @@ const sizes = [1, 2, 4];
 // This scripted route profile misses precision/timing/sequence/memory/tracking.
 // Relay failures are exercised for every scene in gemfall-interactions.test.ts;
 // these routes keep their relay preparation so their authored choice scripts remain valid.
-// Cooperation, balance and play have no failing player action.
+// These profiles preserve teamwork preparation; explicit v2 teamwork misses
+// are exercised separately. Free play has no failing player action.
 const outcomes = ["success", "miss-supported", "assisted"] as const;
-type Outcome = typeof outcomes[number];
+type Outcome = typeof outcomes[number] | "miss-teamwork";
 const offered = (s: RunState, id: string) => s.prompt?.kind === "choice" && s.prompt.options.some(o => o.id === id);
 
 function initial(chapter: Chapter, size: number, flags: Record<string, boolean> = {}, species: SpeciesId = "manticore", cls: ClassId = "duskrunner") {
@@ -51,8 +52,8 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
       if (playOutcome === "assisted") {
         result = act(chapter, state, { action: "assist" }, promptOf(state).playerIds.at(-1)!);
         expect(promptOf(result).outcome).toBe("assisted");
-      } else if (playOutcome === "miss-supported") {
-        let missed = promptOf(state).spec.kind === "relay" ? null : miss(chapter, state);
+      } else if (playOutcome === "miss-supported" || playOutcome === "miss-teamwork") {
+        let missed = promptOf(state).spec.kind === "relay" ? null : miss(chapter, state, playOutcome === "miss-teamwork");
         const spec = promptOf(state).spec;
         // Reversing a palindromic memory answer (wait/walk/wait) is still
         // correct. Make a genuinely wrong, valid-length answer in that case.
@@ -140,6 +141,14 @@ it.each(sizes.flatMap(size=>["no_shouting","masks_up","bring_one"].map(rule=>({s
  for(const r of ["no_shouting","masks_up","bring_one"])expect(offered(visit,"rule_"+r)).toBe(r===rule);
  expect(trace.has("interaction_tether_team")).toBe(true);expect(trace.has("check_hold")).toBe(false);expect(state.flags.tether_tested).toBe(true);
  expect(state.flags.clock_steady).toBe(true);
+});
+it.each(sizes)("Tether %i: a rough shared brace continues the chapter late without an unearned stone", size => {
+ const {state,trace,interactionOutcomes}=walk(tether,size,tetherPicks,"success",20,false,{},"manticore","duskrunner",false,{interaction_tether_team:"miss-teamwork"});
+ expect(interactionOutcomes.get("interaction_tether_team")).toBe("failure");
+ expect(trace.has("scene_tether_slips")).toBe(true);expect(trace.has("scene_tether_holds")).toBe(false);
+ expect(state.flags.clock_late).toBe(true);expect(state.flags.clock_steady).not.toBe(true);
+ expect(state.party.some(p=>p.character.questItems.includes("facet_caravan"))).toBe(false);
+ expect(state.flags.climbed_the_mountain).toBe(true);
 });
 it.each(sizes.flatMap(size=>outcomes.flatMap(outcome=>["practiced","ledger","chord"].map(tool=>({size,outcome,tool})))))
  ("Tether $size / $outcome / $tool actually plays the selected instrument",({size,outcome,tool})=>{
