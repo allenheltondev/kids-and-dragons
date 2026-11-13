@@ -76,8 +76,18 @@ const FrameMeter = lazyChunk(() => import("../world/FrameMeter"), (module) => mo
 export function WorldView({
   gatesPresentations = true,
   prefetch = true,
+  drawn = true,
 }: {
   gatesPresentations?: boolean;
+  /**
+   * Whether the world has been on screen yet. A party phone keeps it mounted
+   * behind her controls (for the beats it must hear), but the painted stage
+   * (all of pixi.js, a WebGL context and every camp texture) and the lobby's
+   * board are only built once she first opens it: most phones in a lobby
+   * never do, and building them cost a slow phone seconds of its start.
+   * Once drawn, they stay, as before.
+   */
+  drawn?: boolean;
   /**
    * Whether this world is on screen, so worth fetching the scenes ahead for
    * (sw/prefetch.ts). A layout that keeps the world mounted behind a phone's
@@ -152,19 +162,21 @@ export function WorldView({
 
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">
-      <RendererBoundary>
-        <Suspense fallback={null}>
-          <PixiStage />
-        </Suspense>
-      </RendererBoundary>
+      {drawn ? (
+        <RendererBoundary>
+          <Suspense fallback={null}>
+            <PixiStage />
+          </Suspense>
+        </RendererBoundary>
+      ) : null}
 
       {/* The preview is a view of *this device's* draft, so it belongs on
           screen only while this device is still choosing. Once your character
           exists you want the lobby — the party filling up, and who the room is
           still waiting on. Keying it off the phase alone would leave everyone
           who finished first staring at "pick a species". */}
-      {creating ? <CreationPreview /> : null}
-      {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
+      {creating && drawn ? <CreationPreview /> : null}
+      {!creating && drawn && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
       {/* The chapter's goal through a fight (#356), folded to a line in the top corner. Outside
           a fight it is in the narration's head; in a place that fights back it heads RiftStatus. */}

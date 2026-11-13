@@ -305,59 +305,78 @@ describe("a change that does not land (#645)", () => {
   const nudge = (harness: TestHarness, t: Table) => () =>
     mutateCamp(t.householdId, null, (c) => ({ ...c, dashCash: c.dashCash + 1 }), harness.deps);
 
-  it("CAMP_PLACE beaten to its seq by READY moves no piece and spends no change", async () => {
+  it("CAMP_PLACE beaten to its seq by READY is applied once, on the step after it", async () => {
     const { harness, t } = await lobby();
     const s = await t.state();
-    const before = await readCamp(t.householdId, null, harness.deps);
     const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
-    const lost = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: place(s, "awning", "shop_striped_awning") }, raced.deps);
-    expect(lost).toMatchObject({ ok: false, seq: s.seq + 1, error: { code: "STALE_SEQ" } });
-    expect(await readCamp(t.householdId, null, harness.deps)).toEqual(before);
-    const after = await t.state();
-    expect(after.seq).toBe(s.seq + 1);
-    expect(after.party.find((m) => m.playerId === "p_2")?.ready).toBe(true);
-    expect(after.campMoment).toEqual(s.campMoment);
-    expect(after.camp?.placed).toEqual({});
-    // Her one change this moment is still hers to make.
-    await t.send("p_1", place(after, "awning", "shop_striped_awning"));
+    // Its guard is its moment, not the run's seq: read afresh, it lands after the READY.
+    const landed = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: place(s, "awning", "shop_striped_awning") }, raced.deps);
+    expect(landed).toMatchObject({ ok: true, seq: s.seq + 2 });
+    expect(raced.commits()).toBe(2);
     expect((await readCamp(t.householdId, null, harness.deps)).placed).toEqual({ awning: "shop_striped_awning" });
-    expect((await t.state()).campMoment?.changes["p_1"]).toHaveLength(1);
-  });
-
-  it("CAMP_UNDO beaten to its seq by READY leaves the piece up and the change counted", async () => {
-    const { harness, t } = await lobby();
-    await t.send("p_1", place(await t.state(), "awning", "shop_striped_awning"));
-    const s = await t.state();
-    const before = await readCamp(t.householdId, null, harness.deps);
-    expect(before.placed).toEqual({ awning: "shop_striped_awning" });
-    const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
-    const lost = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: undo(s) }, raced.deps);
-    expect(lost).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
-    expect(await readCamp(t.householdId, null, harness.deps)).toEqual(before);
     const after = await t.state();
-    expect(after.seq).toBe(s.seq + 1);
-    expect(after.campMoment).toEqual(s.campMoment);
+    expect(after.party.find((m) => m.playerId === "p_2")?.ready).toBe(true);
+    expect(after.camp?.placed).toEqual({ awning: "shop_striped_awning" });
+    // Her one change this moment, spent once.
     expect(after.campMoment?.changes["p_1"]).toHaveLength(1);
   });
 
-  it("KIT_EDIT beaten to its seq by READY leaves her row and the table's kit as they were", async () => {
+  it("CAMP_UNDO beaten to its seq by READY is applied once, on the step after it", async () => {
+    const { harness, t } = await lobby();
+    await t.send("p_1", place(await t.state(), "awning", "shop_striped_awning"));
+    const s = await t.state();
+    expect((await readCamp(t.householdId, null, harness.deps)).placed).toEqual({ awning: "shop_striped_awning" });
+    const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
+    const landed = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: undo(s) }, raced.deps);
+    expect(landed).toMatchObject({ ok: true, seq: s.seq + 2 });
+    expect((await readCamp(t.householdId, null, harness.deps)).placed).toEqual({});
+    const after = await t.state();
+    expect(after.party.find((m) => m.playerId === "p_2")?.ready).toBe(true);
+    expect(after.campMoment?.changes["p_1"] ?? []).toHaveLength(0);
+  });
+
+  it("KIT_EDIT beaten to its seq by READY is applied on the step after it, once", async () => {
     const { harness, t, heroes } = await lobby();
     const s = await t.state();
     const row = await harness.repo.getCharacter(t.householdId, heroes.p1);
     expect(row?.kit).toMatchObject({ revision: 0, style: null });
     const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
-    const lost = await applyAction(
+    // Her own kit: the revision it names is what makes it stale, never the run's seq, so a
+    // step landing first sends nobody round again. It is read afresh and lands after it.
+    const landed = await applyAction(
       { runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "quilted" } },
       raced.deps,
     );
-    expect(lost).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
-    expect(await harness.repo.getCharacter(t.householdId, heroes.p1)).toEqual(row);
+    expect(landed).toMatchObject({ ok: true, seq: s.seq + 2 });
+    expect(raced.commits()).toBe(2);
     const after = await t.state();
-    expect(after.seq).toBe(s.seq + 1);
-    expect(after.kits?.[heroes.p1]).toMatchObject({ revision: 0, style: null });
-    expect(after.campMoment).toEqual(s.campMoment);
-    // The edit itself was fine: sent again, on the revision it showed, it lands.
-    await t.send("p_1", { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "quilted" });
+    expect(after.seq).toBe(s.seq + 2);
+    expect(after.party.find((m) => m.playerId === "p_2")?.ready).toBe(true);
+    expect(after.kits?.[heroes.p1]).toMatchObject({ revision: 1, style: "quilted" });
+    expect((await harness.repo.getCharacter(t.householdId, heroes.p1))?.kit).toMatchObject({ revision: 1, style: "quilted" });
+  });
+
+  it("KIT_EDIT and LOOK_EDIT made on an older seq still land: their revision is their guard", async () => {
+    const { harness, t, heroes } = await lobby();
+    const s = await t.state();
+    await t.send("p_2", { type: "READY", ready: true });
+    const kit = await applyAction(
+      { runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "quilted" } },
+      harness.deps,
+    );
+    expect(kit).toMatchObject({ ok: true, seq: s.seq + 2 });
+    const look = await applyAction(
+      { runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "LOOK_EDIT", characterId: heroes.p1, revision: 0, title: "the_bold" } },
+      harness.deps,
+    );
+    expect(look).toMatchObject({ ok: true, seq: s.seq + 3 });
+    // A stale revision is still refused, whatever seq it came with.
+    const stale = await applyAction(
+      { runId: t.runId, playerId: "p_1", seq: s.seq + 3, intent: { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "patched" } },
+      harness.deps,
+    );
+    expect(stale.ok).toBe(false);
+    expect(stale.error?.code).not.toBe("STALE_SEQ");
     expect((await t.state()).kits?.[heroes.p1]).toMatchObject({ revision: 1, style: "quilted" });
   });
 
