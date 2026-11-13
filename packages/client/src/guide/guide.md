@@ -19,7 +19,7 @@ Kids & Dragons is a story game for kids about eight. You read the story off a bi
 
 > No TV? Pick **Phone Mode** instead. Everyone plays on phones, and each phone shows the story too.
 
-> Without an account, heroes are kept for a week after you last play. To keep them for good, a grown-up taps **Grown-ups: sign in, or move a hero to another device** at the bottom of the start screen, then **Sign in or create an account**. There is no password, only a code by email.
+> Without an account, heroes are kept for a week after you last play. To keep them for good, a grown-up taps **Accounts and devices** at the bottom of the start screen, then **Sign in or create an account**. There is no password, only a code by email.
 >
 > That same link is where every grown-up errand lives: signing in, a tablet the kids share, a group, and moving a hero to a new device. Nobody needs it to play.
 

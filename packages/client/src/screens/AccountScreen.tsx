@@ -116,7 +116,7 @@ export function AccountScreen(): ReactElement {
                     ? {
                         note: (
                           <>
-                            In {browser}, open Kids &amp; Dragons and tap <b>Move a hero to another device</b>. Then tap{" "}
+                            In {browser}, open Kids &amp; Dragons and tap <b>Accounts and devices</b>. Then tap{" "}
                             <b>Play as me on another device</b>, and type the letters it shows here.
                           </>
                         ),

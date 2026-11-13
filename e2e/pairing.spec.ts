@@ -54,7 +54,7 @@ test.describe("pairing a new device", () => {
     const fresh = await client(browser);
     await fresh.goto("/");
     await expect(fresh.getByRole("button", { name: /open your book/i })).toHaveCount(0);
-    await fresh.getByRole("button", { name: /move a hero to another device/i }).click(TAP);
+    await fresh.getByRole("button", { name: /accounts and devices/i }).click(TAP);
     await expect(fresh).toHaveURL(/\/account$/);
     await fresh.getByRole("button", { name: /bring my hero to this device/i }).click(TAP);
     await fresh.getByLabel("Your code").fill(shown);

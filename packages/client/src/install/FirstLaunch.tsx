@@ -43,7 +43,7 @@ export function FirstLaunchChoice({ browser, onFresh }: { browser: string; onFre
         Start fresh
       </Button>
       <p className="home__hint kad-muted">
-        To get a code, open Kids &amp; Dragons in {browser} and tap <b>Move a hero to another device</b>. Then tap{" "}
+        To get a code, open Kids &amp; Dragons in {browser} and tap <b>Accounts and devices</b>. Then tap{" "}
         <b>Play as me on another device</b>.
       </p>
     </section>

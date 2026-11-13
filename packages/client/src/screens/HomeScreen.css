@@ -437,6 +437,11 @@
   text-align: end;
 }
 
+/* A lone link, bottom right, where the pair it replaced had its second one. */
+.home__guide--end {
+  justify-content: flex-end;
+}
+
 /* A living-room screen has room beside the welcome, not just below it. */
 @media (min-width: 1000px) and (orientation: landscape) {
   .home--personal .home__inner {

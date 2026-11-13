@@ -53,7 +53,7 @@ test.describe("the adventure book", () => {
     await phone.goto("/");
     // Hosting is a grown-up's panel of its own: the book and the guide link
     // step aside for it, as joining does.
-    const guideLink = phone.getByRole("button", { name: /move a hero to another device/i });
+    const guideLink = phone.getByRole("button", { name: /accounts and devices/i });
     await expect(phone.getByRole("button", { name: BOOK })).toBeVisible(TAP);
     await expect(guideLink).toBeVisible();
     await phone.getByRole("button", { name: /host a game/i }).click();
