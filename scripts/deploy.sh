@@ -350,8 +350,64 @@ aws s3 sync packages/client/dist/bundle "s3://$BUCKET/bundle" \
 # so it has no reason to go back to S3 for every painting every five minutes,
 # which is what made the first request for most pictures of an evening an edge
 # miss. The service worker checks each file's fingerprint itself (sw.ts).
-aws s3 sync assets "s3://$BUCKET/assets" --delete --cache-control "public,max-age=300,s-maxage=31536000"
-aws s3 sync content "s3://$BUCKET/content" --delete --cache-control "public,max-age=60,s-maxage=31536000"
+ASSETS_CACHE="public,max-age=300,s-maxage=31536000"
+CONTENT_CACHE="public,max-age=60,s-maxage=31536000"
+aws s3 sync assets "s3://$BUCKET/assets" --delete --cache-control "$ASSETS_CACHE"
+aws s3 sync content "s3://$BUCKET/content" --delete --cache-control "$CONTENT_CACHE"
+
+# `sync` sets that header only on what it uploads, and it uploads only what is
+# missing or changed: every painting and chapter already in the bucket keeps
+# the header it went up with. So when the header a prefix should have is not
+# the one this bucket was last given, each object under it is copied onto
+# itself with the new one (tools/deploy/cache-migration.ts). Once: the header
+# is then written to a marker in the bucket, and a deploy that finds it there
+# copies nothing. A different header later is a different marker, and migrates
+# again. Never fatal: the site is already up, a failed copy leaves an object on
+# its old header and the marker unwritten, and the next deploy tries again.
+#
+# A copy that replaces metadata keeps only what it names. `sync` gave these
+# objects a Content-Type and a Cache-Control and nothing else, so each
+# extension is copied with the Content-Type one of its objects has now.
+migrate_cache_control() {
+  local prefix="$1" wanted="$2"
+  local marker=".deploy/cache-control/$prefix"
+  local have
+  have="$(aws s3 cp "s3://$BUCKET/$marker" - 2>/dev/null || true)"
+  if [ "$have" = "$wanted" ]; then
+    return 0
+  fi
+  say "Giving $prefix/ its new Cache-Control ($wanted)"
+  local kinds
+  if ! kinds="$(aws s3api list-objects-v2 --bucket "$BUCKET" --prefix "$prefix/" --output json \
+        | node tools/deploy/cache-migration.ts)"; then
+    echo "warning: could not list $prefix/; its objects keep their old Cache-Control until the next deploy" >&2
+    return 0
+  fi
+  local failed=0 extension sample type
+  while IFS=$'\t' read -r extension sample; do
+    sample="${sample%$'\r'}"
+    [ -n "$extension" ] && [ -n "$sample" ] || continue
+    type="$(aws s3api head-object --bucket "$BUCKET" --key "$sample" --query ContentType --output text 2>/dev/null || true)"
+    if [ -z "$type" ] || [ "$type" = "None" ]; then
+      echo "warning: no Content-Type on $sample; .$extension files under $prefix/ keep their old Cache-Control" >&2
+      failed=1
+      continue
+    fi
+    if ! aws s3 cp "s3://$BUCKET/$prefix/" "s3://$BUCKET/$prefix/" --recursive \
+          --exclude "*" --include "*.$extension" \
+          --metadata-directive REPLACE --content-type "$type" --cache-control "$wanted" \
+          --only-show-errors; then
+      echo "warning: could not rewrite the .$extension files under $prefix/" >&2
+      failed=1
+    fi
+  done <<< "$kinds"
+  if [ "$failed" = "0" ]; then
+    printf '%s' "$wanted" | aws s3 cp - "s3://$BUCKET/$marker" --content-type "text/plain" --cache-control "no-cache" >/dev/null \
+      || echo "warning: could not write $marker; the next deploy will rewrite $prefix/ again" >&2
+  fi
+}
+migrate_cache_control assets "$ASSETS_CACHE"
+migrate_cache_control content "$CONTENT_CACHE"
 
 # Everything else in the client build — index.html above all, which must never
 # be cached or a deploy leaves phones on the previous bundle.
