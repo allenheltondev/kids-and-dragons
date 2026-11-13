@@ -13,6 +13,7 @@
  * Each follows what casts it (`sync`, every frame).
  */
 
+import { isTvBrowser } from "../display/tv";
 import { BlurFilter, Container, Filter, GlProgram, Graphics, Sprite, defaultFilterVert, type Texture } from "pixi.js";
 import { ANCHOR_X, ANCHOR_Y } from "./art-paths";
 import type { CampLight } from "./camp-light";
@@ -131,7 +132,12 @@ export function createShadowLayer(light: CampLight, label = "camp-shadows"): Sha
   const layer = new Container();
   layer.label = label;
   const fill = shadeFill(light.shade);
-  const blur = new BlurFilter({ strength: light.blur, quality: 2 });
+  // The layer spans the whole camp and is filtered every frame the figures breathe. On a
+  // television it is drawn at half size with one blur pass: a shadow is soft by nature, and
+  // a set-top GPU otherwise spends more on it than on the camp it lies under.
+  const tv = isTvBrowser();
+  const blur = new BlurFilter({ strength: light.blur, quality: tv ? 1 : 2, resolution: tv ? 0.5 : 1 });
+  if (tv) fill.resolution = 0.5;
   layer.filters = [fill, blur];
   layer.alpha = light.depth;
   const casts = new Map<Container, { owner: Container; holder: Container }>();

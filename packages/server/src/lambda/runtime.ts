@@ -51,9 +51,8 @@ export function runtime(): Promise<HandlerDeps> {
 async function build(): Promise<HandlerDeps> {
   const region = requiredEnv("AWS_REGION");
   const repo = new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") });
-  const shared = await loadSharedRuntime();
-  const loaded = await content();
-  const push = await pushFromEnv();
+  // Side by side: none needs another's answer, and a cold container is a family waiting.
+  const [shared, loaded, push] = await Promise.all([loadSharedRuntime(), content(), pushFromEnv()]);
   // Session timing (#511): its own table, on unless the stack says off. No table named, nothing kept.
   const timingTable = process.env.KAD_TIMING === "off" ? undefined : process.env.TIMING_TABLE_NAME;
 

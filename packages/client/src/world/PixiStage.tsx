@@ -26,6 +26,7 @@ import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-s
 import { campLayoutFor, indoorRest } from "./lobby-camp";
 import { packedCampKey, packedFriends, packedKits } from "./packed-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
+import { onStageCover, stageCovered } from "./stage-cover";
 import { ART_AHEAD, artAhead, scheduleArtUpkeep } from "./art-upkeep";
 
 /**
@@ -35,7 +36,30 @@ import { ART_AHEAD, artAhead, scheduleArtUpkeep } from "./art-upkeep";
  * has drawn for half a minute let go of the GPU sooner than Pixi's minute.
  */
 export function stageBudget(tv: boolean): { antialias: boolean; maxFPS: number; gcMaxUnusedTime?: number; gcFrequency?: number } {
-  return tv ? { antialias: false, maxFPS: 30, gcMaxUnusedTime: 30_000, gcFrequency: 15_000 } : { antialias: true, maxFPS: 0 };
+  // Sixty elsewhere, never the screen's own rate: a 120Hz phone or tablet drawing painted
+  // art twice as often shows nothing more and runs hot.
+  return tv ? { antialias: false, maxFPS: 30, gcMaxUnusedTime: 30_000, gcFrequency: 15_000 } : { antialias: true, maxFPS: 60 };
+}
+
+/** The least time between two resizes of the stage while its pane is changing size. */
+const RESIZE_GAP_MS = 80;
+
+/** The most pixels the stage draws: a 1440p frame. Past it the fill rate buys nothing painted art shows. */
+export const STAGE_MAX_PIXELS = 2560 * 1440;
+
+/**
+ * The renderer's pixels per CSS pixel: the screen's own ratio up to 2 (1 on a television),
+ * then lowered until the frame fits `STAGE_MAX_PIXELS`. A laptop or mini-PC on the end of an
+ * HDMI cable is not a television by name, and a 4K panel at ratio 2 is 8.3 million pixels
+ * a frame with multisampling on: this is what keeps that display inside a budget.
+ */
+export function stageResolution(tv: boolean, width: number, height: number, ratio: number = globalThis.devicePixelRatio || 1): number {
+  if (tv) return 1;
+  const wanted = Math.min(Math.max(ratio, 1), 2);
+  const pixels = Math.max(1, width) * Math.max(1, height);
+  const fits = Math.sqrt(STAGE_MAX_PIXELS / pixels);
+  // Never under 1, and in quarter steps so a drag of the window is not a resolution change a pixel.
+  return Math.max(1, Math.min(wanted, Math.floor(fits * 4) / 4));
 }
 
 /**
@@ -164,6 +188,8 @@ export function PixiStage(): React.JSX.Element {
     let cancelled = false;
     let app: Application | null = null;
     let observer: ResizeObserver | null = null;
+    let stopCoverWatch: (() => void) | null = null;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     // Local to this effect run, never the shared ref: strict mode overlaps two
     // effect instances, and a cleanup that reads `sceneRef.current` tears down
     // whichever scene happens to be there — usually the *new* one.
@@ -174,6 +200,8 @@ export function PixiStage(): React.JSX.Element {
     const dispose = () => {
       if (app && appRef.current === app) appRef.current = null;
       removeVisibilityListener?.();
+      stopCoverWatch?.();
+      if (resizeTimer !== null) clearTimeout(resizeTimer);
       removeVisibilityListener = null;
       observer?.disconnect();
       observer = null;
@@ -215,7 +243,7 @@ export function PixiStage(): React.JSX.Element {
          * viewport, which is a 3840x2160 framebuffer with antialiasing on a set-top GPU, and
          * the board is painted art rather than hairlines, so it loses little at 1.
          */
-        resolution: tv ? 1 : Math.min(globalThis.devicePixelRatio || 1, 2),
+        resolution: stageResolution(tv, host.clientWidth, host.clientHeight),
         autoDensity: true,
         resizeTo: undefined,
         width: Math.max(1, host.clientWidth),
@@ -283,7 +311,7 @@ export function PixiStage(): React.JSX.Element {
       const syncTicker = () => {
         const hidden = typeof document !== "undefined" && document.hidden;
         const sized = host.clientWidth > 0 && host.clientHeight > 0;
-        if (hidden || !sized) {
+        if (hidden || !sized || stageCovered()) {
           instance.ticker.stop();
         } else if (!instance.ticker.started) {
           // Seen again (the world pane shown, a tablet turned sideways, the screen back on): a
@@ -306,16 +334,35 @@ export function PixiStage(): React.JSX.Element {
           return;
         }
         setPaneWidth(width);
-        instance.renderer.resize(width, height);
+        instance.renderer.resize(width, height, stageResolution(tv, width, height));
         scene?.resize(width, height);
         lobbyCamp?.resize(width, height);
         syncTicker();
       };
       size();
 
-      observer = new ResizeObserver(size);
+      /*
+       * A pane that is sliding (a tablet's drawer opening beside the world) reports a new
+       * width every frame, and each one is a new framebuffer and a re-layout of the scene.
+       * The first report is taken at once and the rest at most every `RESIZE_GAP_MS`, with
+       * the last one always taken, so the slide costs three resizes rather than fifteen.
+       */
+      let sizedAt = 0;
+      const resized = (): void => {
+        if (resizeTimer !== null) return;
+        const wait = RESIZE_GAP_MS - (performance.now() - sizedAt);
+        const run = (): void => {
+          resizeTimer = null;
+          sizedAt = performance.now();
+          size();
+        };
+        if (wait <= 0) run();
+        else resizeTimer = setTimeout(run, wait);
+      };
+      observer = new ResizeObserver(resized);
       observer.observe(host);
 
+      stopCoverWatch = onStageCover(syncTicker);
       if (typeof document !== "undefined") {
         document.addEventListener("visibilitychange", syncTicker);
         removeVisibilityListener = () => {
@@ -357,7 +404,7 @@ export function PixiStage(): React.JSX.Element {
     const app = appRef.current;
     if (!stageUp || !app) return;
     const tv = isTvBrowser();
-    const ahead = display ? artAhead(chapter, upkeepScene, tv ? ART_AHEAD.tv : ART_AHEAD.other) : [];
+    const ahead = display ? artAhead(chapter, upkeepScene, tv ? ART_AHEAD.tv : ART_AHEAD.other) : artAhead(chapter, upkeepScene, ART_AHEAD.phone, true);
     return scheduleArtUpkeep(app.stage, { ahead, tv });
   }, [stageUp, upkeepKey, upkeepScene, chapter, display]);
 

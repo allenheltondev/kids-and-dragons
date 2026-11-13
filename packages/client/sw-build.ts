@@ -29,6 +29,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { transformSync } from "esbuild";
 import type { Plugin } from "vite";
+import { smallArtReady } from "./small-art-build.ts";
 
 const here = fileURLToPath(new URL(".", import.meta.url));
 
@@ -106,9 +107,11 @@ export interface WorkerInputs {
   build?: string;
   /** Defaults to the art manifest's (`coatMaskPaintings()`). */
   coatMasks?: readonly string[];
+  /** Whether phones may ask for half-size art. Defaults to `smallArtReady()`. */
+  smallArt?: boolean;
 }
 
-export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, build = buildId(), coatMasks = coatMaskPaintings() }: WorkerInputs): string {
+export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, build = buildId(), coatMasks = coatMaskPaintings(), smallArt = smallArtReady() }: WorkerInputs): string {
   const sources = WORKER_SOURCES.map((file) => readFileSync(`${here}${file}`, "utf8").replace(IMPORT, "").replace(EXPORT, ""));
   // Types stripped and comments dropped, nothing else: no bundling, no
   // module wrapper, so the lists prepended below stay plain globals.
@@ -121,6 +124,7 @@ export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, b
     `const __KAD_FILE_INDEX__ = ${JSON.stringify(fileIndexUrl)};`,
     `const __KAD_BUILD__ = ${JSON.stringify(build)};`,
     `const __KAD_COAT_MASKS__ = ${JSON.stringify([...coatMasks].sort())};`,
+    `const __KAD_SMALL_ART__ = ${JSON.stringify(smallArt)};`,
     outputText,
   ].join("\n");
 }

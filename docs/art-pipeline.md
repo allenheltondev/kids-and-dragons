@@ -66,3 +66,27 @@ family, and 1024 x 1024 RGBA piece and moving-part cutouts standing on (512, 900
 art is owed in `art:inventory`, never a placeholder file. Conventions, including the proposed
 Phase 2 hero-colored kit layers, are in `docs/briefs/camp.md`; prompts in
 `docs/camp-art-prompts.json`.
+
+## Half-size copies for phones
+
+A backdrop is painted 1920 x 1080 and a figure 1024 x 1024, for a television. A phone's world
+pane shows the backdrop about 800 pixels wide and a figure a few hundred, so each scene and
+biome backdrop, and each entity and cast figure, has a half-size WebP beside it:
+`bg.webp` → `bg@0.5x.webp`, `assembled.png` → `assembled@0.5x.webp`. A phone asks for the copy
+(`packages/client/src/world/art-paths.ts`, `fitArt`); a tablet, a laptop and a television ask
+for the painting. The name is Pixi's own convention for a half-resolution texture, so a sprite
+made from a copy has the painting's size and nothing that places it changes.
+
+Not copied: hero paintings (a hero's coat is tinted from her painting and its mask pixel for
+pixel), tile sheets and effect sheets (cut up by pixel), and anything already small.
+
+- `npm run art:small` makes every copy that is missing or whose painting changed, and records
+  the painting each was made from in `assets.small.json`. It needs the paintings on disk
+  (`npm run assets:pull`) and Pillow.
+- Then `npm run assets:push`, and commit `assets.lock.json` and `assets.small.json` together.
+- `npm run art:small -- --check` lists what is owed and writes nothing.
+
+A build turns small art on only when every copy is in the lock and was made from the painting
+the lock holds now (`packages/client/small-art-build.ts`). So a repaint that skipped
+`art:small` never leaves a phone on the old picture: `tools/art/small-art.test.ts` fails in
+that PR, and a build made anyway serves every device the paintings themselves.

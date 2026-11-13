@@ -77,6 +77,12 @@ export interface Arrival {
 export interface PresentationEvent {
   seq: number;
   presentation: Presentation;
+  /**
+   * How many later messages were already waiting behind this one when it was played: the
+   * screen is catching up, and a hold that is only a transition gives way (presentation.ts
+   * `holdFor`).
+   */
+  behind?: number;
 }
 
 export interface ProgressionEvent {

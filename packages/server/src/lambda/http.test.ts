@@ -1328,7 +1328,7 @@ describe("POST /api/action", () => {
     );
 
     expect(result.statusCode).toBe(200);
-    expect(bodyOf(result)).toEqual({ ok: true, seq: room.seq + 1 });
+    expect(bodyOf(result)).toMatchObject({ ok: true, seq: room.seq + 1 });
     expect((await harness.repo.getState(room.runId))?.seq).toBe(room.seq + 1);
   });
 

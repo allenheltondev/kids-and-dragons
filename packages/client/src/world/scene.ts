@@ -790,6 +790,8 @@ export function createScene(app: Application): PartyScene {
    */
   const stepVeil = new Graphics();
   stepVeil.alpha = 0;
+  // Hidden, not just clear: Pixi blends an alpha-0 fill over the whole pane every frame.
+  stepVeil.visible = false;
   stage.addChild(stepVeil);
   let stepAge = -1;
   let stepMs = 0;
@@ -805,6 +807,7 @@ export function createScene(app: Application): PartyScene {
    */
   const victoryGlow = new Graphics();
   victoryGlow.alpha = 0;
+  victoryGlow.visible = false;
   stage.addChild(victoryGlow);
   let victoryAge = -1;
   /** The bloom's brightness for the bloom now playing: dimmer in a quiet room. */
@@ -1315,7 +1318,9 @@ export function createScene(app: Application): PartyScene {
       if (victoryAge >= VICTORY_MS) {
         victoryAge = -1;
         victoryGlow.alpha = 0;
+        victoryGlow.visible = false;
       } else {
+        victoryGlow.visible = true;
         const t = victoryAge / VICTORY_MS;
         victoryGlow.alpha = victoryPeak * (t < 0.2 ? t / 0.2 : 1 - (t - 0.2) / 0.8);
       }
@@ -1329,9 +1334,12 @@ export function createScene(app: Application): PartyScene {
       if (stepAge >= stepMs + SCENE_STEP_TAIL_MS) {
         stepAge = -1;
         stepVeil.alpha = 0;
+        stepVeil.visible = false;
       } else if (stepAge < stepMs) {
+        stepVeil.visible = true;
         stepVeil.alpha = STEP_DEPTH * (stepAge / stepMs);
       } else {
+        stepVeil.visible = true;
         stepVeil.alpha = STEP_DEPTH * (1 - (stepAge - stepMs) / SCENE_STEP_TAIL_MS);
       }
     }

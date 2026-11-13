@@ -27,6 +27,7 @@ import {
   wearsLook,
 } from "../world/art-paths";
 import { coatMaskPaintings, coatMaskUrl } from "../world/coat-masks";
+import { recordedMusicUrl } from "../audio/paths";
 import { warm } from "./warm";
 
 
@@ -69,6 +70,10 @@ export function upcomingAssets(
       const scene = chapter.scenes[id];
       if (!scene) continue;
       urls.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
+      // Its music too (the bytes only): a scene that changes the track otherwise starts
+      // silent and finds its music a download later.
+      const track = recordedMusicUrl(scene.music ?? chapter.music ?? chapter.biome);
+      if (track) urls.add(track);
       if (scene.type === "encounter") {
         urls.add(biomeTilesUrl(chapter.biome));
         for (const enemy of scene.enemies) if (enemy.art) urls.add(enemyArtUrl(enemy.art));

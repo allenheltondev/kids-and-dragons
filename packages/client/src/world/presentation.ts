@@ -85,3 +85,18 @@ export function presentationDuration(presentation: Presentation): number {
   }
   return PRESENTATION_MS[presentation.kind] ?? 0;
 }
+
+/** Holds that are only a transition: nothing is revealed by them, so nothing is spoiled by skipping one. */
+const TRANSITIONS: ReadonlySet<Presentation["kind"]> = new Set(["SCENE_ENTER", "CHOICE_MADE"]);
+
+/**
+ * How long the patch is held behind `presentation`, given how many later messages are
+ * already waiting (`behind`). Holds queue: three quick taps were three holds end to end, and
+ * the screen fell further behind the phones with each. A screen that is behind lets a
+ * transition's hold go; a roll or a fight's beat keeps its time, because its hold is what
+ * keeps the outcome hidden until the dice have landed.
+ */
+export function holdFor(presentation: Presentation, behind = 0): number {
+  if (behind > 0 && TRANSITIONS.has(presentation.kind)) return 0;
+  return presentationDuration(presentation);
+}

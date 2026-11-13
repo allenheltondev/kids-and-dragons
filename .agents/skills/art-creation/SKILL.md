@@ -147,6 +147,14 @@ commit the file with its prompts record, as before, and skip the store steps bel
 
 Only after the gates pass, and for character art only once the user has approved it:
 
+0. **A scene or biome backdrop, or an entity or cast figure: make its half-size copy first.**
+   `npm run art:small` writes `<name>@0.5x.webp` beside each such painting that is new or
+   repainted (a phone draws the copy, not the painting) and records it in `assets.small.json`
+   ([docs/art-pipeline.md](../../../docs/art-pipeline.md#half-size-copies-for-phones)). It
+   needs all the lock's art on disk (`npm run assets:pull`). The copy sits in the folder you
+   worked in, so the push below takes it with the painting. Nothing else gets a copy: not
+   hero paintings, plates, camp art, props, icons or sheets. `npm run art:small -- --check`
+   says whether anything is owed; skip this and `tools/art/small-art.test.ts` fails the PR.
 1. `npm run assets:push -- --issue <the art issue> <the folder you worked in> art/source/originals/<the issue>`
    uploads the new bytes to the asset store, stamps each with the issue and the uploading key,
    and records them in `assets.lock.json` ([docs/asset-store.md](../../../docs/asset-store.md)).
@@ -162,8 +170,8 @@ Only after the gates pass, and for character art only once the user has approved
    `tools/art/manifest-order.ts`) are kept in order, so that two art branches add on
    different lines and merge: put a new entry in its place, or add it anywhere and run
    `npm run art:sort`. `art:verify` fails on a list out of order.
-3. Commit together: `assets.lock.json`, the prompts record, and any manifest or content
-   change the art belongs to. Never the image file itself; `assets:verify` fails CI on a
+3. Commit together: `assets.lock.json`, `assets.small.json` when step 0 changed it, the
+   prompts record, and any manifest or content change the art belongs to. Never the image file itself; `assets:verify` fails CI on a
    committed PNG, WebP, JPEG, GIF or WebM under `assets/`, `art/` or `docs/`.
 4. To show the painting in a PR: `npm run assets:url -- <path>` gives its public link.
 5. Open the PR as "Part of #<the art issue>", and tick the items it delivers in the issue's
@@ -171,10 +179,12 @@ Only after the gates pass, and for character art only once the user has approved
 
 ## Replacing and retiring
 
-- **A repaint** is the same steps at the same path. `push` records the new bytes; the old
+- **A repaint** is the same steps at the same path, step 0 included: a copy made from the old
+  painting is stale, and `art:small` makes it again. `push` records the new bytes; the old
   ones stay in the store, so the previous commit still shows the previous painting.
-- **Retiring art**: remove it from the manifest and content first, delete the file, then
-  `npm run assets:push -- --prune <its folder>` to drop it from the lock.
+- **Retiring art**: remove it from the manifest and content first, delete the file and its
+  `@0.5x.webp` copy if it has one, then `npm run assets:push -- --prune <its folder>` to drop
+  them from the lock, and `npm run art:small` to drop the copy from `assets.small.json`.
 
 ## Do not
 

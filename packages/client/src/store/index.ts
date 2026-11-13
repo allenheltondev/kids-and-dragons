@@ -1383,6 +1383,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
              * into a resync instead of a mystery.
              */
             expectBroadcast(response.seq);
+            /*
+             * The step itself, when the server sent it with the answer: applied now,
+             * through the same sequencer as the channel's copy (which is then a
+             * duplicate and dropped), so this phone shows the result of its own tap a
+             * round trip sooner. Order and the presentation gate are the sequencer's,
+             * exactly as for a message off the channel.
+             */
+            if (response.applied) runtime.sequencer?.ingest({ kind: "patch", ...response.applied });
             return true;
           }
           set({ error: response.error?.message ?? "That isn't allowed right now." });

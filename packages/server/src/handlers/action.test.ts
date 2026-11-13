@@ -60,7 +60,7 @@ describe("applyAction — the reads a tap waits on", () => {
     expect(getPlayer).toHaveBeenCalledWith(room.player.principal.householdId, room.player.principal.playerId);
 
     releaseState();
-    expect(await acting).toEqual({ ok: true, seq: 1 });
+    expect(await acting).toMatchObject({ ok: true, seq: 1 });
     expect(getPlayer).toHaveBeenCalledTimes(1);
   });
 });
@@ -75,7 +75,7 @@ describe("applyAction — the seq gate (architecture §4.2)", () => {
       harness.deps,
     );
 
-    expect(response).toEqual({ ok: true, seq: 1 });
+    expect(response).toMatchObject({ ok: true, seq: 1 });
     const state = await harness.repo.getState(room.runId);
     expect(state?.seq).toBe(1);
     expect(state?.flags.east).toBe(true);
@@ -195,7 +195,62 @@ describe("applyAction — the question a decision answers (#413)", () => {
       },
       harness.deps,
     );
-    expect(response).toEqual({ ok: true, seq: 1 });
+    expect(response).toMatchObject({ ok: true, seq: 1 });
+  });
+
+  it("takes a tap from a phone that is behind when the question it answers is still open", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const playerId = room.player.principal.playerId;
+    const before = await harness.repo.getState(room.runId);
+    if (!before) throw new Error("setup failed");
+    // The run moved a step without the question changing (a friend's vote does this): the
+    // stored state is one seq on, and this phone has not heard.
+    const realGetState = harness.repo.getState.bind(harness.repo);
+    await harness.repo.commit({ runId: room.runId, expectedSeq: 0, state: { ...before, seq: 1 }, event: { runId: room.runId, seq: 1, at: before.updatedAt, patch: [{ op: "replace", path: "/seq", value: 1 }] } } as never);
+    const now = await realGetState(room.runId);
+    expect(now?.seq).toBe(1);
+
+    const response = await applyAction(
+      { runId: room.runId, playerId, seq: 0, intent: choose("east"), context: decisionContext(before) },
+      harness.deps,
+    );
+    expect(response).toMatchObject({ ok: true, seq: 2 });
+  });
+
+  it("still refuses a behind tap that names no question, and one from ahead that does", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const playerId = room.player.principal.playerId;
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("setup failed");
+
+    const ahead = await applyAction(
+      { runId: room.runId, playerId, seq: 7, intent: choose("east"), context: decisionContext(state) },
+      harness.deps,
+    );
+    expect(ahead.error?.code).toBe("STALE_SEQ");
+  });
+
+  it("applies a stamped decision again when a friend's tap beat it to the seq", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("setup failed");
+    // The first commit loses the race; the second lands.
+    const commit = harness.repo.commit.bind(harness.repo);
+    let lost = false;
+    harness.repo.commit = async (...args: Parameters<typeof commit>) => {
+      if (!lost) { lost = true; return false; }
+      return commit(...args);
+    };
+
+    const response = await applyAction(
+      { runId: room.runId, playerId: room.player.principal.playerId, seq: 0, intent: choose("east"), context: decisionContext(state) },
+      harness.deps,
+    );
+    expect(response).toMatchObject({ ok: true, seq: 1 });
+    expect(room.received).toHaveLength(1);
   });
 
   it("refuses one made on a question that has passed, even at the current seq", async () => {
@@ -237,7 +292,10 @@ describe("applyAction — patches and broadcast", () => {
         { runId: room.runId, playerId, seq: i, intent: choose(choiceId) },
         harness.deps,
       );
-      expect(response).toEqual({ ok: true, seq: i + 1 });
+      expect(response).toMatchObject({ ok: true, seq: i + 1 });
+      // The phone that acted is handed the very message the room was sent.
+      const { kind: _kind, ...sent } = room.received.at(-1) as unknown as Record<string, unknown>;
+      expect(response.applied).toEqual(sent);
     }
 
     expect(room.received.map((m) => m.seq)).toEqual([1, 2, 3]);
@@ -275,7 +333,7 @@ describe("applyAction — patches and broadcast", () => {
       { runId: room.runId, playerId, seq: 0, intent: choose("east") },
       harness.deps,
     );
-    expect(first).toEqual({ ok: true, seq: 1 });
+    expect(first).toMatchObject({ ok: true, seq: 1 });
     expect(attempts).toBe(2);
     // The retry delivered: subscribers got the patch after all.
     expect(room.received.map((m) => m.seq)).toEqual([1]);
@@ -289,7 +347,7 @@ describe("applyAction — patches and broadcast", () => {
       { runId: room.runId, playerId, seq: 1, intent: choose("shrine") },
       harness.deps,
     );
-    expect(second).toEqual({ ok: true, seq: 2 });
+    expect(second).toMatchObject({ ok: true, seq: 2 });
     expect(room.received.map((m) => m.seq)).toEqual([1]);
     const state = await harness.repo.getState(room.runId);
     expect(state?.seq).toBe(2);
@@ -338,7 +396,7 @@ describe("applyAction — patches and broadcast", () => {
       { runId: room.runId, playerId: room.player.principal.playerId, seq: 0, intent: choose("noop") },
       harness.deps,
     );
-    expect(response).toEqual({ ok: true, seq: 0 });
+    expect(response).toMatchObject({ ok: true, seq: 0 });
     expect(room.received).toHaveLength(0);
     expect((await harness.repo.getState(room.runId))?.seq).toBe(0);
   });

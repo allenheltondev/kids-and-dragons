@@ -353,7 +353,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1816 -> 1820 on 2026-11-13 for keeping a chapter's voices for no signal (#547): the lazy
 // "Keep this chapter's voices" panel and its voice-pack helpers (in the Help chunk's reach, not
 // the first paint). 1818KB measured on top of #767, 2KB over. First paint 332KB, unchanged. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1820;
+// 1820 -> 1823 on 2026-11-13 for the smoothness pass, on top of #765: the acting phone applying
+// the step its own response carries and the sequencer dropping a held patch's second copy (the
+// entry), the decode-ahead ordered by backdrop, cast and fight with the music of scenes ahead,
+// the stage asleep under a plate reel, its pixel cap, two music loops kept (the stage and audio
+// chunks), and the half-size art rule. 1821KB measured against main's 1818KB. First paint
+// 332KB, unchanged. 2KB of slack.
+const TOTAL_BUDGET_KB = 1823;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

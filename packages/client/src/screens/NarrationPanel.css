@@ -316,18 +316,30 @@
 
 /*
  * Being read aloud (docs/voice-narration-plan.md §7): a soft gold edge down the plate's side,
- * breathing while the voice speaks. A shadow, not a box, so the fit (fit-plate.ts) never moves.
+ * breathing while the voice speaks. A strip laid over the plate, not a box, so the fit
+ * (fit-plate.ts) never moves; and its own layer fading, not a shadow re-drawn, so the plate
+ * (up to half the television) is not repainted every frame for as long as the voice speaks.
  */
 .narration__plate[data-speaking] {
-  box-shadow: inset 0.3em 0 0 0 rgb(245 200 108 / 60%);
+  position: relative;
+}
+.narration__plate[data-speaking]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 0.3em;
+  background: rgb(245 200 108);
+  opacity: 0.6;
+  pointer-events: none;
   animation: narration-speaking 1.6s ease-in-out infinite alternate;
 }
 @keyframes narration-speaking {
-  from { box-shadow: inset 0.3em 0 0 0 rgb(245 200 108 / 30%); }
-  to { box-shadow: inset 0.3em 0 0 0 rgb(245 200 108 / 75%); }
+  from { opacity: 0.3; }
+  to { opacity: 0.75; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .narration__plate[data-speaking] {
+  .narration__plate[data-speaking]::before {
     animation: none;
   }
 }

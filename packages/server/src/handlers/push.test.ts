@@ -368,7 +368,7 @@ describe("an action that opens a question for somebody", () => {
     harness.deps.push = { publicKey: "BPublicKey", dispatch: async (job) => void jobs.push(job) };
     const presence = vi.spyOn(harness.repo, "getPresence");
     const phones = vi.spyOn(harness.repo, "listPushSubscriptions");
-    expect(await ask()).toEqual({ ok: true, seq: seq + 1 });
+    expect(await ask()).toMatchObject({ ok: true, seq: seq + 1 });
     expect(jobs).toEqual([{ kind: "turn", runId, roomCode: code, seq: seq + 1, candidates: ["p_2"], actorId: "p_1", at: harness.clock.now() }]);
     expect(presence).not.toHaveBeenCalled();
     expect(phones).not.toHaveBeenCalled();
@@ -380,7 +380,7 @@ describe("an action that opens a question for somebody", () => {
     harness.deps.push = { publicKey: "BPublicKey", dispatch: () => new Promise<void>(() => undefined) };
     const started = Date.now();
     const outcome = await settledWithin(ask(), PATIENCE_MS);
-    expect(outcome).toEqual({ value: { ok: true, seq: seq + 1 } });
+    expect(outcome).toMatchObject({ value: { ok: true, seq: seq + 1 } });
     expect(Date.now() - started).toBeLessThan(PATIENCE_MS);
     expect(warn).toHaveBeenCalledWith(expect.stringMatching(/moved on/));
     warn.mockRestore();
@@ -390,7 +390,7 @@ describe("an action that opens a question for somebody", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const { harness, runId, seq, ask } = await room();
     harness.deps.push = { publicKey: "BPublicKey", dispatch: () => Promise.reject(new Error("throttled")) };
-    expect(await ask()).toEqual({ ok: true, seq: seq + 1 });
+    expect(await ask()).toMatchObject({ ok: true, seq: seq + 1 });
     expect((await harness.repo.getState(runId))?.prompt?.kind).toBe("choice");
     expect(warn).toHaveBeenCalledWith(expect.stringMatching(/could not be handed over/), expect.any(Error));
     warn.mockRestore();
@@ -418,7 +418,7 @@ describe("an action that opens a question for somebody", () => {
   it("with pushes off, hands over nothing", async () => {
     const { harness, seq, ask } = await room();
     expect(harness.deps.push).toBeUndefined();
-    expect(await ask()).toEqual({ ok: true, seq: seq + 1 });
+    expect(await ask()).toMatchObject({ ok: true, seq: seq + 1 });
   });
 
   it("never waits on a dispatch longer than it is told to", async () => {

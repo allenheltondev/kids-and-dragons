@@ -27,6 +27,7 @@
  * mode (the shared screen is told from a phone by having no player).
  */
 
+import { coverStage } from "../world/stage-cover";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
@@ -133,6 +134,10 @@ function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () 
     stopSpeaking();
     finish();
   }, [finish]);
+
+  // The reel is opaque and over everything: the stage under it stops drawing until it ends.
+  const showing = frames !== null;
+  useEffect(() => (showing ? coverStage() : undefined), [showing]);
 
   // The recordings for every plate, asked for now: the later plates are on screen for several
   // seconds each, and the first is spoken the moment its painting lands.

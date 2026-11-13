@@ -355,6 +355,26 @@ describe("MessageSequencer", () => {
       expect(sequencer.seq).toBe(2);
     });
 
+    it("drops a second copy of the patch it is holding behind an animation", async () => {
+      let release = (): void => {};
+      const gate = () => new Promise<void>((resolve) => (release = resolve));
+      const { sequencer, presentations } = harness({ gate });
+      sequencer.reset(makeState({ seq: 1, narration: "one" }), 1);
+
+      // Once with the tap's own response, once off the channel.
+      sequencer.ingest(patch(2, "two", roll));
+      sequencer.ingest(patch(2, "two", roll));
+      release();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(presentations).toHaveLength(1);
+      expect(sequencer.seq).toBe(2);
+      // And the next one is not stuck behind a stale copy.
+      sequencer.ingest(patch(3, "three"));
+      expect(sequencer.state?.narration).toBe("three");
+    });
+
     it("discards a gated patch that a snapshot has already superseded", async () => {
       let release = (): void => {};
       const gate = () => new Promise<void>((resolve) => (release = resolve));

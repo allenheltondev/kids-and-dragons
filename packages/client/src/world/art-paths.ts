@@ -26,6 +26,62 @@ export const CAMP_ART = {
   flame: "/assets/camp/frames/stage1/campfire-flame.png",
 } as const;
 
+/*
+ * ---------------------------------------------------------------------------
+ * SMALL ART, FOR A PHONE
+ *
+ * A backdrop is painted 1920 x 1080 and a figure 1024 x 1024, for a television. A phone's
+ * world pane draws the backdrop some 800 pixels wide and a figure a few hundred, from the
+ * same files: four times the download and four times the decoded memory it can show. So each
+ * of those paintings has a half-size copy beside it (`npm run art:small` makes them, and
+ * tools/art/small-art.test.ts keeps one for every painting the rule below names), and a phone
+ * asks for that instead.
+ *
+ * The copy's name ends `@0.5x.webp`, which is Pixi's own convention: a texture loaded from
+ * it reports the full painting's width and height at half the pixels, so nothing that places
+ * or sizes a sprite knows the difference. A DOM `<img>` is sized by its box either way.
+ *
+ * Here, and pure, because the service worker concatenates this file: the chapter it warms
+ * overnight (sw/chapter-art.ts) must be the files this device will draw, and a worker has a
+ * user agent but no screen.
+ */
+
+/**
+ * Whether this build has every half-size copy, current (small-art-build.ts): set for the
+ * page by vite.config.ts and for the worker by sw-build.ts, and not at all in a test or a
+ * tool, where every URL is the painting's own.
+ */
+declare const __KAD_SMALL_ART__: boolean | undefined;
+
+/** The paintings that have a half-size copy: scene and biome backdrops, and the figures of everyone who is not a hero. */
+const SMALL_ART = /^\/assets\/(?:(?:scenes\/[^/@]+\/[^/@]+|biomes\/[^/@]+\/bg)\.webp|(?:entities|cast)\/[^/@]+\/assembled\.png)$/;
+
+/** What a half-size copy's name ends with, in place of its painting's extension. */
+export const SMALL_ART_SUFFIX = "@0.5x.webp";
+
+/** A painting's half-size copy, or null when it is not one that has one. */
+export function smallArtUrl(url: string): string | null {
+  return SMALL_ART.test(url) ? url.replace(/\.(?:png|webp)$/, SMALL_ART_SUFFIX) : null;
+}
+
+/**
+ * Whether this device is a phone, by the one thing a page and a worker both know: browsers
+ * on a phone say `Mobile` (Android) or `iPhone`; a tablet, a laptop and a television do not.
+ * A wrong guess costs a soft picture on a big screen or a heavy one on a small one, never
+ * a missing one.
+ */
+export function wantsSmallArt(
+  agent: string | undefined = typeof navigator === "undefined" ? undefined : navigator.userAgent,
+  ready: boolean = typeof __KAD_SMALL_ART__ !== "undefined" && __KAD_SMALL_ART__ === true,
+): boolean {
+  return ready && agent !== undefined && /\bMobile\b|iPhone/.test(agent) && !/\biPad\b|\bTV\b|Tizen|Web0S|SMART-TV/i.test(agent);
+}
+
+/** `url`, or its half-size copy on a phone. */
+export function fitArt(url: string, small: boolean = wantsSmallArt()): string {
+  return (small ? smallArtUrl(url) : null) ?? url;
+}
+
 /**
  * The tier every character starts at (content/rules.json → tierLevels, level 1).
  * It is what creation has to draw: the draft has no level yet, and the hero the
@@ -176,20 +232,20 @@ export function coatMaskFor(paintingUrl: string, masked: ReadonlySet<string> | r
  * not a directory — strip it if present, trust the rest.
  */
 export function enemyArtUrl(artId: string): string {
-  if (artId.startsWith("cast/")) return `/assets/${artId}/assembled.png`;
+  if (artId.startsWith("cast/")) return fitArt(`/assets/${artId}/assembled.png`);
   const id = artId.startsWith("enemies/") ? artId.slice("enemies/".length) : artId;
-  return `/assets/entities/${id}/assembled.png`;
+  return fitArt(`/assets/entities/${id}/assembled.png`);
 }
 
 /** The 1920×1080 backdrop for a biome (asset-brief §4.5). */
 export function biomeBackdropUrl(biome: string): string {
-  return `/assets/biomes/${biome}/bg.webp`;
+  return fitArt(`/assets/biomes/${biome}/bg.webp`);
 }
 
 /** Scene illustrations or a story-only biome background, without changing combat terrain. */
 export function sceneBackdropUrl(art: string): string | null {
   return /^(?:scenes\/[a-z0-9_-]+\/[a-z0-9_-]+|biomes\/[a-z0-9_]+\/bg)$/.test(art)
-    ? `/assets/${art}.webp` : null;
+    ? fitArt(`/assets/${art}.webp`) : null;
 }
 
 /** Authored backdrops follow the scene; combat terrain is a separate tile layer. */
@@ -220,5 +276,6 @@ export function castArtUrl(figure: string): string | null {
  const match=/^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure);
  if(!match)return null;
  const [,kind,id]=match;
- return kind==="characters" ? "/assets/characters/"+id+"/fledgling/assembled.png" : "/assets/"+kind+"/"+id+"/assembled.png";
+ // A hero's painting stays whole on every device: her coat is tinted from it and its mask, pixel for pixel.
+ return kind==="characters" ? "/assets/characters/"+id+"/fledgling/assembled.png" : fitArt("/assets/"+kind+"/"+id+"/assembled.png");
 }

@@ -27,7 +27,7 @@ import { usePresenceBeat } from "./sync/presence-beat";
 import { HomeScreen } from "./screens/HomeScreen";
 import { ArrivalNotices } from "./screens/ArrivalNotices";
 import { navigate, routeCode, useRoute } from "./router";
-import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
+import { useGameStore, useLayoutMode, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 import { BackButton } from "./ui/BackButton";
 
@@ -141,15 +141,25 @@ export function App(): React.JSX.Element {
   const attach = useGameStore((store) => store.attach);
   const loadContent = useGameStore((store) => store.loadContent);
   const mode = useLayoutMode();
-  const state = useRunState();
+  /*
+   * The few things the shell needs from the run, each by itself: a patch that changes none of
+   * them (a vote, a hit, a step in a fight) no longer renders the shell and everything under
+   * it that asked for nothing, which on a television's processor is most of a tap's cost.
+   */
+  const phase = useGameStore((store) => store.state?.phase);
+  const runId = useGameStore((store) => store.state?.runId);
+  const ready = useGameStore((store) => !!store.state?.party.length && store.state.party.every((member) => member.ready));
+  const roomQuiet = useGameStore((store) => store.state?.quiet === true);
+  const closed = useGameStore((store) => store.state?.closed === true);
+  const removed = useGameStore((store) => !!store.session?.playerId && store.state?.removed?.includes(store.session.playerId) === true);
   const chapter = useChapter();
+  const sceneTrack = useGameStore((store) => musicForScene(chapter, store.state));
   const me = useMe();
   const home = !routeCode(route) || !session;
   const enabled = home || route.name === "tv" || mode === "travel";
-  const inEntry = state?.phase === "lobby" || state?.phase === "creation";
+  const inEntry = phase === "lobby" || phase === "creation";
   const creating = inEntry && me === null && route.name !== "tv";
-  const ready = !!state?.party.length && state.party.every((member) => member.ready);
-  const soundtrack = home || creating ? "entry-home" : inEntry ? "entry-lobby" : musicForScene(chapter, state);
+  const soundtrack = home || creating ? "entry-home" : inEntry ? "entry-lobby" : sceneTrack;
   const tv = route.name === "tv";
   const dock = useDisplayDock(tv);
 
@@ -184,7 +194,6 @@ export function App(): React.JSX.Element {
   }, [remote]);
 
   // The host's quiet mode (#260) reaches every device in the room as run state.
-  const roomQuiet = state?.quiet === true;
   useEffect(() => {
     setQuiet(roomQuiet);
     return () => setQuiet(false);
@@ -227,7 +236,7 @@ export function App(): React.JSX.Element {
             along under a finger already on its way to them. Hold sound's place until the engine lands. */}
         <ChunkBoundary quiet>
           <Suspense fallback={enabled ? <span className="kad-corner__slot" aria-hidden="true" /> : null}>
-            <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+            <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : runId ?? ""} ready={!home && inEntry && ready} />
           </Suspense>
         </ChunkBoundary>
         {/* The shared screen's own controls (#257), in the row with the device's rather than
@@ -355,11 +364,11 @@ export function App(): React.JSX.Element {
 
     // Taken out of the game by whoever opened the room (#267). The server
     // already refuses this phone everything; this is what it says about it.
-    if (session.playerId && state?.removed?.includes(session.playerId)) {
+    if (removed) {
       return <RemovedScreen />;
     }
     // Closed by whoever opened it (#263): over for every screen, the TV too.
-    if (state?.closed) return <ClosedScreen />;
+    if (closed) return <ClosedScreen />;
 
     return (
       <ChunkBoundary message="The game couldn’t load.">

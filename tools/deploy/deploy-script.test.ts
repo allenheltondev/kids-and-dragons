@@ -53,6 +53,23 @@ describe("deploy.sh and the stack it changes", () => {
   });
 });
 
+describe("deploy.sh and the Cache-Control of what is already in the bucket", () => {
+  it("syncs art and content with one header each, and migrates what sync left behind to the same one", () => {
+    expect(at('aws s3 sync assets "s3://$BUCKET/assets" --delete --cache-control "$ASSETS_CACHE"')).toBeGreaterThan(at("ASSETS_CACHE="));
+    expect(at('migrate_cache_control assets "$ASSETS_CACHE"')).toBeGreaterThan(at("aws s3 sync content"));
+    expect(at('migrate_cache_control content "$CONTENT_CACHE"')).toBeGreaterThan(at("aws s3 sync content"));
+  });
+
+  it("migrates before the invalidation, so the edge refills with the new header", () => {
+    expect(at('migrate_cache_control content "$CONTENT_CACHE"')).toBeLessThan(at("aws cloudfront create-invalidation"));
+  });
+
+  it("replaces metadata with the Content-Type the bucket already has, and only when the marker says it has not", () => {
+    expect(at("--metadata-directive REPLACE --content-type \"$type\" --cache-control \"$wanted\"")).toBeGreaterThan(at("head-object"));
+    expect(at('if [ "$have" = "$wanted" ]; then')).toBeLessThan(at("--metadata-directive REPLACE"));
+  });
+});
+
 describe("deploy.sh and the bundle a phone may still be using", () => {
   const commands = code.replace(/\\\n\s*/g, " ").split("\n");
 

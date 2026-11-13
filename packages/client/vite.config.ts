@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { buildId, serviceWorker } from "./sw-build";
 import { pixiWebglOnly } from "./pixi-webgl-only";
+import { smallArtReady } from "./small-art-build";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
@@ -19,6 +20,8 @@ export default defineConfig({
   // Which build a crash report came from (#317): the commit CI built, else "dev".
   define: {
     "import.meta.env.VITE_KAD_BUILD": JSON.stringify(buildId()),
+    // Whether phones may ask for half-size art: only when every copy is in the lock and current.
+    __KAD_SMALL_ART__: JSON.stringify(smallArtReady()),
   },
   // The service worker (src/sw/) is emitted as `/sw.js` by its own plugin:
   // a fixed URL and a single classic script, which a Vite entry is not.
