@@ -30,7 +30,7 @@ describe("the recover button", () => {
 
     await user.click(await screen.findByRole("button", { name: "Get my heroes back" }));
 
-    expect(useKeepsakeStore.getState().open).toHaveBeenCalledWith("restore", "home");
+    expect(useKeepsakeStore.getState().open).toHaveBeenCalledWith("recover", "home");
   });
 
   it("is there even while the phone still says it is signed in", async () => {

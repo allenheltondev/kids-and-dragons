@@ -160,7 +160,8 @@ export function AccountScreen(): ReactElement {
            * new player in a new guest household, and the old heroes are still in the
            * account's own. Always drawn where sign-in is available, whatever this phone
            * thinks it is signed in as: the one way back that never reads local state.
-           * It is the sign-in's `restore` ending, which lists the account's kids and
+           * It is the sign-in's `recover` ending: it always lists the account's kids,
+           * even when the server says this phone already plays in the household, and
            * binds this phone to the one picked.
            */}
           {signInAvailable ? (
@@ -173,7 +174,7 @@ export function AccountScreen(): ReactElement {
                 Sign in with the email your heroes were saved under, then pick who this phone is. Everything they earned
                 comes back with them.
               </p>
-              <Button variant="secondary" block icon={<Icon name="envelope" />} onClick={() => openKeepsake("restore", "home")}>
+              <Button variant="secondary" block icon={<Icon name="envelope" />} onClick={() => openKeepsake("recover", "home")}>
                 Get my heroes back
               </Button>
             </section>
