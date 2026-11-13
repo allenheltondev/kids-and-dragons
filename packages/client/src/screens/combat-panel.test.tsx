@@ -24,6 +24,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useState } from "react";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
@@ -42,6 +43,7 @@ import {
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { CombatControls } from "./CombatPanel";
+import * as combatFeedback from "./use-combat-feedback";
 import { describeBeats, needsLine, rollWords } from "./fight-log";
 
 const RULES: RulesContent = makeRules();
@@ -1542,5 +1544,36 @@ describe("enlarged map lifecycle", () => {
     act(() => useGameStore.setState({ state }));
     expect(document.querySelector(".combat__board .combat__grid")).not.toBeNull();
     expect(document.querySelector(".combat__map-scroll .combat__grid")).toBeNull();
+  });
+});
+
+describe("which patches draw the controls again", () => {
+  it("is not drawn for a patch that leaves the fight and the party alone, nor because the panel around it was", () => {
+    // Asked once each time the controls are drawn, and by nothing else.
+    const drawn = vi.spyOn(combatFeedback, "useCombatFeedback");
+    let redrawAround: () => void = () => undefined;
+    // Stands in for PlayerPanel, which is drawn again for every patch.
+    function Around(): React.JSX.Element {
+      const [, setTick] = useState(0);
+      redrawAround = () => setTick((tick) => tick + 1);
+      return <CombatControls />;
+    }
+    mount();
+    cleanup();
+    render(<Around />);
+    expect(screen.getByRole("grid", { name: "The battle grid" })).toBeTruthy();
+    const before = drawn.mock.calls.length;
+    expect(before).toBeGreaterThan(0);
+
+    const current = useGameStore.getState().state!;
+    act(() => useGameStore.setState({ state: { ...current, seq: current.seq + 1, flags: { met_pellam: true }, xpEarned: 2 } }));
+    act(() => redrawAround());
+    expect(drawn.mock.calls.length).toBe(before);
+
+    // The fight moves on: a new encounter is a reason.
+    const next = useGameStore.getState().state!;
+    act(() => useGameStore.setState({ state: { ...next, seq: next.seq + 1, encounter: { ...next.encounter!, stepsLeft: 1 } } }));
+    expect(drawn.mock.calls.length).toBeGreaterThan(before);
+    drawn.mockRestore();
   });
 });

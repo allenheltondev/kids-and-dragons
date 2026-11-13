@@ -473,9 +473,16 @@ export function PixiStage(): React.JSX.Element {
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.
+  // Keyed by what `boardView` reads and no more: the fight itself, which scene it is (its art),
+  // the party, the chapter and, in a fight, who is aiming at what. A patch leaves what it did
+  // not touch as the same object, so a vote, a flag or a tick of `seq` builds no board; and
+  // outside a fight there is nothing to aim at, so a pick on a story choice builds none either.
+  const fight = state?.encounter ?? null;
+  const aims = fight === null ? null : previews;
   useEffect(() => {
     sceneRef.current?.setEncounter(boardView(state, party, chapter, previews));
-  }, [state, party, chapter, previews]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fight, state?.chapterId, state?.sceneId, party, chapter, aims]);
 
   /*
    * The victory beat — roadmap chapter 8, read off the state rather than

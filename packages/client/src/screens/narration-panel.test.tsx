@@ -22,6 +22,7 @@ import type { ItemCatalog, PartyMember, ResolvedCharacter, RunState, SpeakOption
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { goalParts, NarrationPanel } from "./NarrationPanel";
+import * as readAloud from "../speech/read-aloud";
 import { RANK_UP_MS } from "./RankUpMoment";
 
 const ITEMS: ItemCatalog = makeItems();
@@ -669,5 +670,36 @@ describe("the speaking mark", () => {
     expect(plate.hasAttribute("data-speaking")).toBe(true);
     act(() => markSpeaking(false));
     expect(plate.hasAttribute("data-speaking")).toBe(false);
+  });
+});
+
+describe("which patches draw the plate again", () => {
+  /** The run as the next patch leaves it: a new object, with whatever it did not touch the same. */
+  function patch(change: Partial<RunState>): void {
+    const current = useGameStore.getState().state!;
+    act(() => useGameStore.setState({ state: { ...current, seq: current.seq + 1, updatedAt: `t${String(current.seq)}`, ...change } }));
+  }
+
+  it("is not drawn for a patch that changes nothing it reads, and is for one that does", () => {
+    // Asked once each time the plate is drawn, and by nothing else on this screen.
+    const drawn = vi.spyOn(readAloud, "useSpeaking");
+    mount({ sceneType: "story" });
+    const before = drawn.mock.calls.length;
+    expect(before).toBeGreaterThan(0);
+
+    patch({});
+    patch({ flags: { met_pellam: true }, xpEarned: 3 });
+    patch({ lastRoll: null, coins: 12 });
+    expect(drawn.mock.calls.length).toBe(before);
+    expect(screen.getByText("The moss on the bank is warm.")).toBeTruthy();
+
+    patch({ narration: "A griffin lands on the mail cart." });
+    expect(drawn.mock.calls.length).toBeGreaterThan(before);
+    expect(screen.getByText("A griffin lands on the mail cart.")).toBeTruthy();
+    expect(spoken).toContain("A griffin lands on the mail cart.");
+
+    // A friend's phone drops: the party is a new list, and the plate says who stepped away.
+    patch({ party: [PARTY[0]!, { ...PARTY[1]!, connected: false }] });
+    expect(screen.getByTestId("stepped-away").textContent).toContain("Thistle");
   });
 });

@@ -1681,6 +1681,24 @@ export function useRunState(): RunState | null {
   return useGameStore((store) => store.state);
 }
 
+/**
+ * The run, for a screen that reads only some of it. A patch that leaves every field in `keys`
+ * as it was (structural sharing keeps an untouched field's identity) hands back the run this
+ * screen already holds, so the screen is not drawn again for a tick of `seq`, a flag or a
+ * friend's roll bonus. The type is the promise: a field a screen reads must be in its list,
+ * or it does not compile. What comes back is always a run that was in the store, never a copy.
+ */
+export function useRunStateFields<K extends keyof RunState>(keys: readonly K[]): Pick<RunState, K> | null {
+  const held = useRef<RunState | null>(null);
+  return useGameStore((store) => {
+    const next = store.state;
+    const last = held.current;
+    if (next !== null && last !== null && keys.every((key) => last[key] === next[key])) return last;
+    held.current = next;
+    return next;
+  });
+}
+
 export function useSession(): ClientSession | null {
   return useGameStore((store) => store.session);
 }

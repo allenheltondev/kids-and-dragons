@@ -51,7 +51,7 @@ import { PagedOptions } from "../ui/PagedOptions";
  * cards below it, held at the tallest they have been this turn.
  */
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, MouseEvent, ReactElement, ReactNode, RefObject } from "react";
 import type {
   AbilityCatalog,
@@ -63,6 +63,7 @@ import type {
   ItemDef,
   LegalAction,
   Position,
+  RunState,
 } from "@kad/shared";
 import {
   UNIVERSAL_ABILITIES,
@@ -86,7 +87,7 @@ import {
   useParty,
   usePresentation,
   useRules,
-  useRunState,
+  useRunStateFields,
   useSend,
   useSharePreview,
   useGameStore,
@@ -192,9 +193,20 @@ function turnOf(encounter: EncounterState | null): string {
   return [encounter.startedAt, currentActorId(encounter), encounter.round, encounter.turnIndex].join(":");
 }
 
-export function CombatControls(): ReactElement | null {
+/**
+ * What of the run the controls read (store `useRunStateFields`): the fight and the party. The
+ * rest is what `tablePreviews` tells one question from the next by when no fight is on.
+ */
+const FIGHT_FIELDS = ["encounter", "party", "prompt", "chapterId", "visited", "storyTurn"] as const satisfies readonly (keyof RunState)[];
+
+/*
+ * Memoised, with no props: everything it draws it reads from the store itself, so the panel
+ * around it drawing again (a hint, a trade offered, a banked point) is no reason to lay the
+ * whole grid out again.
+ */
+export const CombatControls = memo(function CombatControls(): ReactElement | null {
   const chapter = useChapter();
-  const state = useRunState();
+  const state = useRunStateFields(FIGHT_FIELDS);
   const me = useMe();
   const party = useParty();
   const rules = useRules();
@@ -955,7 +967,7 @@ export function CombatControls(): ReactElement | null {
       ) : null}
     </div>
   );
-}
+});
 
 /** Stops a tap before any button under it hears it (the pending guard). */
 /**
@@ -1293,10 +1305,11 @@ function EnemyFace({
   icon: string;
   large?: boolean;
 }): ReactElement {
-  const state = useRunState();
+  // The scene alone, which names the fight's art: one of these is drawn per monster.
+  const sceneId = useGameStore((store) => store.state?.sceneId ?? null);
   const chapter = useChapter();
   const [broken, setBroken] = useState(false);
-  const portrait = enemyPortraitUrl(chapter, state?.sceneId ?? null, combatantId);
+  const portrait = enemyPortraitUrl(chapter, sceneId, combatantId);
   if (portrait && !broken) {
     return (
       <img
@@ -1317,7 +1330,8 @@ function EnemyFace({
  * corner, so "which one is nearly done" is read off the map, not looked up.
  */
 function CellFigure({ occupant, numbed = false }: { occupant: GridOccupant; numbed?: boolean }): ReactElement {
-  const state = useRunState();
+  // The scene alone (see EnemyFace): one of these is drawn per figure on the grid.
+  const sceneId = useGameStore((store) => store.state?.sceneId ?? null);
   const party = useParty();
   const chapter = useChapter();
   const [broken, setBroken] = useState(false);
@@ -1349,7 +1363,7 @@ function CellFigure({ occupant, numbed = false }: { occupant: GridOccupant; numb
       </>
     );
   }
-  const portrait = occupant.side === "enemy" ? enemyPortraitUrl(chapter, state?.sceneId ?? null, occupant.id) : null;
+  const portrait = occupant.side === "enemy" ? enemyPortraitUrl(chapter, sceneId, occupant.id) : null;
   return (
     <>
       {portrait && !broken ? (

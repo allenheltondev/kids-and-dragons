@@ -89,6 +89,13 @@ export function readIntentPreview(raw: unknown): IntentPreview | null | undefine
 }
 
 /**
+ * What of a run `previewContext` reads. A screen that subscribes to only some of the run
+ * (the client's `useRunStateFields`) can hand this over only if its list has every one of
+ * these, so a field added here is a compile error there, not a pick that quietly goes stale.
+ */
+export type PreviewState = Pick<RunState, "encounter" | "prompt" | "chapterId" | "visited" | "storyTurn">;
+
+/**
  * Which decision a preview belongs to: one combat turn *as it stands* (a step
  * or the action moves it on), or one story question. Null when nothing on the
  * table can be previewed.
@@ -107,7 +114,7 @@ export function readIntentPreview(raw: unknown): IntentPreview | null | undefine
  *   moves on a revisit of the same scene, where option ids repeat), the
  *   scene, and the story turn marker (which moves on every resolved choice).
  */
-export function previewContext(state: RunState | null): string | null {
+export function previewContext(state: PreviewState | null): string | null {
   if (!state) return null;
   const encounter = state.encounter ?? null;
   if (encounter) {

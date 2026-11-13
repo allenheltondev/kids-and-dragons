@@ -20,6 +20,7 @@ import {
   type IntentPreview,
   type ItemCatalog,
   type Position,
+  type PreviewState,
   type RunState,
 } from "@kad/shared";
 import { combatantLabel } from "../screens/combat-grid";
@@ -37,7 +38,8 @@ export interface TablePreviews {
 const NONE: TablePreviews = { combat: null, choices: {} };
 
 export function tablePreviews(
-  state: RunState | null,
+  // Only what is read below, so a screen holding part of the run (`useRunStateFields`) is checked against it.
+  state: (PreviewState & Pick<RunState, "party">) | null,
   held: Readonly<Record<string, HeldPreview>>,
 ): TablePreviews {
   // Nobody picking is the usual case, and it needs nothing read off the state.
