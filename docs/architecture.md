@@ -733,6 +733,18 @@ signing and verification are local arithmetic — the secret is fetched once per
 container — because verification happens on every request from every phone, and
 a network round trip there would sit in front of every tap at the table.
 
+The phone keeps the fresh one: `request()` (`client/src/sync/client.ts`) hands
+every `x-kad-device-token` it sees to `keepRenewedDeviceToken`, which replaces
+the stored token only when both name the same binding (`sub`). Until that was
+there the renewal was dropped, so every phone's token died 30 days after it was
+first issued however often it played, and its next join quietly made it a new
+player in a new household, its heroes still on the server under the player it
+had been. A grown-up's sign-in record (`kad.account`) counts only for the
+household the device's own token names (`loadAccount`), so a phone that has
+become somebody elsewhere is offered sign-in again, and signing in from
+"Accounts and devices" goes back to the account's household and asks who this
+phone is (`linkAccount` `preferExisting`, then `adoptDevice`).
+
 The key is 32 random bytes the API function mints the first time it needs one,
 parked in a Parameter Store **SecureString** at `/kad/<stage>/token-signing-key`
 and encrypted under the Amazon-managed `aws/ssm` key. **This stack creates no KMS

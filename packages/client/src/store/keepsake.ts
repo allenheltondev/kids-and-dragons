@@ -342,6 +342,15 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     passkeyAdded: false,
 
     async check() {
+      // Read again on every screen that asks, outside the once-only part: a
+      // join since this store was made may have made the device somebody new,
+      // and a sign-in record for the household it left must stop saying
+      // "Signed in" (`loadAccount`). Not while a sign-in is under way, which
+      // sets `account` itself when it lands.
+      if (get().step === "closed") {
+        const account = loadAccount(deps.storage);
+        if (account?.householdId !== get().account?.householdId) set({ account });
+      }
       // Idempotent and concurrency-safe: several screens mount at once and all
       // of them want to know whether to show the offer.
       checking ??= (async () => {
