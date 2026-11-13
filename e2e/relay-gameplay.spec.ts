@@ -1,3 +1,4 @@
+import { drawnArt } from "./drawn-art";
 import { test, expect, type Page } from "@playwright/test";
 import type { InteractionPrompt, RunState } from "../packages/shared/src/index";
 import { seedTable, openPhone, openTv, onAir } from "./seed";
@@ -79,7 +80,7 @@ test("relay throws change the next flight and a dropped delivery can be saved", 
     await expect.poll(async () => (await prompt()).caughtBy).toBe(table.phones[0]!.playerId);
     expect((await prompt()).relay).toMatchObject({ chances: 2, saves: 1 });
     await expect(controls(one.page).locator('.relay-skill__grip > img')).toHaveJSProperty("naturalWidth", 512);
-    await expect(controls(one.page).locator('.relay-skill__recipient')).toHaveAttribute("src", /griffin.*assembled\.png$/);
+    await expect(controls(one.page).locator('.relay-skill__recipient')).toHaveAttribute("src", drawnArt("/assets/characters/griffin/fledgling/assembled.png"));
     const boardBox = await tv.page.locator(".game__board").boundingBox();
     const heroBox = await tv.page.locator(".relay-world__hero > img").first().boundingBox();
     expect(heroBox!.y).toBeGreaterThanOrEqual(boardBox!.y);

@@ -1,3 +1,4 @@
+import { drawnArt } from "./drawn-art";
 import { test, expect } from "@playwright/test";
 import { beginEncounter, parseBoard } from "../packages/shared/src/index";
 import { readFileSync } from "node:fs";
@@ -139,7 +140,7 @@ test("review combat decisions on phone and tablet", async ({ page }, testInfo) =
     const chapter = useGameStore.getState().chapter;
     useGameStore.setState({ chapter: { ...chapter, scenes: { ...chapter.scenes, [state.sceneId]: { type: "encounter", enemies: [{ id: "wisp", art: "cast/deep-ice-figure" }] } } }, state: { ...state, encounter: boss } });
   }, { state, boss });
-  const bossArt = page.locator('.combat__cell-art[src="/assets/cast/deep-ice-figure/assembled.png"]').first();
+  const bossArt = page.locator(`.combat__cell-art[src="${drawnArt("/assets/cast/deep-ice-figure/assembled.png")}"]`).first();
   await expect(bossArt).toBeVisible();
   await expect.poll(() => bossArt.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath("corvane.png") });
