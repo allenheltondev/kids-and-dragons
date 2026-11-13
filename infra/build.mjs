@@ -40,8 +40,9 @@ const FUNCTIONS = [
   { name: "push-sender", entry: "packages/server/src/lambda/push-sender.ts" },
   // Monthly: deletes Lambda log streams older than 30 days (#524).
   { name: "log-sweep", entry: "packages/server/src/lambda/log-sweep.ts" },
-  // The MCP server (docs/mcp-server.md): asset upload URLs, later the operator tools.
-  { name: "mcp", entry: "packages/server/src/lambda/mcp.ts" },
+  // The MCP server (docs/mcp-server.md): asset upload URLs and the operator's timing tools,
+  // which read a small index of the chapters (mcp/chapter-index.ts) rather than all of content/.
+  { name: "mcp", entry: "packages/server/src/lambda/mcp.ts", chapterIndex: true },
 ];
 
 await rm(OUT, { recursive: true, force: true });
@@ -114,6 +115,13 @@ for (const fn of FUNCTIONS) {
     // esbuild resolves `./foo.ts` and the `@kad/shared` workspace symlink on its
     // own; nothing else needs a plugin.
   });
+
+  if (fn.chapterIndex) {
+    // The MCP timing tools' view of the chapters, made by the server's own loader (infra/chapter-index.mjs).
+    const { writeChapterIndex } = await import("./chapter-index.mjs");
+    const index = await writeChapterIndex(dir, ROOT);
+    console.log(`${fn.name}: chapter index of ${String(index.chapters.length)} chapters`);
+  }
 
   if (fn.content) {
     // `KAD_CONTENT_DIR` (see paths.ts) points the loader here at runtime.

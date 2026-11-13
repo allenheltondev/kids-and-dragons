@@ -11,6 +11,11 @@
  * marks sort in order). A put is idempotent: the same run and seq is the same
  * row, so a retry writes the same thing twice and counts once.
  *
+ * Beside them, an operator's exclusions (`PK = OPS#exclusions`, `SK =
+ * <sittingId>`): sittings that are not a family's evening to count, written by
+ * the MCP server's `timing_exclude` (docs/mcp-server.md). They expire with the
+ * marks, and the MCP function's role may write only under `OPS#`.
+ *
  * Not in the game's commit. The mark is written after the step lands, so a
  * failed write loses a mark rather than failing a turn: a missing step folds
  * two scenes together, a missing start drops the sitting, a missing end reads
@@ -18,8 +23,8 @@
  */
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import type { TimingMark } from "@kad/shared";
+import { DeleteCommand, DynamoDBDocumentClient, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import type { TimingExclusion, TimingMark } from "@kad/shared";
 import { CLIENT_CONFIG } from "./dynamo-repository.ts";
 
 /** How long a mark is kept, in days. */
@@ -36,13 +41,37 @@ export interface TimingStore {
   allMarks(): Promise<TimingMark[]>;
 }
 
+/** What an operator reads and decides about the marks (the MCP tools, the export). */
+export interface TimingReader extends Pick<TimingStore, "chapterMarks" | "allMarks"> {
+  exclusions(): Promise<TimingExclusion[]>;
+  /** Idempotent: excluding again replaces the reason. */
+  exclude(exclusion: TimingExclusion): Promise<void>;
+  /** True when there was one to remove. */
+  include(sittingId: string): Promise<boolean>;
+}
+
+export const EXCLUSIONS_PK = "OPS#exclusions";
+
 export const timingPk = (chapterId: string): string => `CH#${chapterId}`;
 export const timingSk = (runId: string, seq: number): string => `${runId}#${String(seq).padStart(9, "0")}`;
 
 const bySeq = (a: TimingMark, b: TimingMark): number => a.seq - b.seq;
 
-export class MemoryTimingStore implements TimingStore {
+export class MemoryTimingStore implements TimingStore, TimingReader {
   private readonly rows = new Map<string, TimingMark>();
+  private readonly excluded = new Map<string, TimingExclusion>();
+
+  async exclusions(): Promise<TimingExclusion[]> {
+    return [...this.excluded.values()].map((e) => structuredClone(e));
+  }
+
+  async exclude(exclusion: TimingExclusion): Promise<void> {
+    this.excluded.set(exclusion.sittingId, structuredClone(exclusion));
+  }
+
+  async include(sittingId: string): Promise<boolean> {
+    return this.excluded.delete(sittingId);
+  }
 
   async put(mark: TimingMark): Promise<void> {
     this.rows.set(`${timingPk(mark.chapterId)}|${timingSk(mark.runId, mark.seq)}`, structuredClone(mark));
@@ -68,13 +97,20 @@ interface Row {
   mark: TimingMark;
 }
 
+interface ExclusionRow {
+  PK: typeof EXCLUSIONS_PK;
+  SK: string;
+  ttl: number;
+  exclusion: TimingExclusion;
+}
+
 export interface DynamoTimingStoreOptions {
   tableName: string;
   client?: DynamoDBClient;
   now?: () => number;
 }
 
-export class DynamoTimingStore implements TimingStore {
+export class DynamoTimingStore implements TimingStore, TimingReader {
   private readonly doc: DynamoDBDocumentClient;
   private readonly table: string;
   private readonly now: () => number;
@@ -113,10 +149,46 @@ export class DynamoTimingStore implements TimingStore {
         new ScanCommand({ TableName: this.table, ProjectionExpression: "#m",
           ExpressionAttributeNames: { "#m": "mark" }, ...(key ? { ExclusiveStartKey: key } : {}) }),
       );
-      out.push(...((page.Items ?? []) as Array<Pick<Row, "mark">>).map((r) => r.mark));
+      // An exclusion row has no mark: the projection gives it back empty.
+      out.push(...((page.Items ?? []) as Array<Partial<Pick<Row, "mark">>>).flatMap((r) => (r.mark ? [r.mark] : [])));
       key = page.LastEvaluatedKey;
     } while (key);
     return out;
+  }
+
+  async exclusions(): Promise<TimingExclusion[]> {
+    const out: TimingExclusion[] = [];
+    let key: Record<string, unknown> | undefined;
+    do {
+      const page = await this.doc.send(
+        new QueryCommand({
+          TableName: this.table,
+          KeyConditionExpression: "PK = :pk",
+          ExpressionAttributeValues: { ":pk": EXCLUSIONS_PK },
+          ...(key ? { ExclusiveStartKey: key } : {}),
+        }),
+      );
+      out.push(...((page.Items ?? []) as ExclusionRow[]).map((r) => r.exclusion));
+      key = page.LastEvaluatedKey;
+    } while (key);
+    return out;
+  }
+
+  async exclude(exclusion: TimingExclusion): Promise<void> {
+    const item: ExclusionRow = {
+      PK: EXCLUSIONS_PK,
+      SK: exclusion.sittingId,
+      ttl: Math.floor(this.now() / 1000) + TIMING_RETENTION_DAYS * 86_400,
+      exclusion,
+    };
+    await this.doc.send(new PutCommand({ TableName: this.table, Item: item }));
+  }
+
+  async include(sittingId: string): Promise<boolean> {
+    const out = await this.doc.send(
+      new DeleteCommand({ TableName: this.table, Key: { PK: EXCLUSIONS_PK, SK: sittingId }, ReturnValues: "ALL_OLD" }),
+    );
+    return Boolean(out.Attributes);
   }
 
   private async query(chapterId: string, prefix?: string): Promise<TimingMark[]> {
