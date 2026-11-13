@@ -405,6 +405,26 @@ describe("the operator's timing tools", () => {
       expect((await call(key, "timing_compare", { chapter: "gemfall-01" })).isError).toBe(true);
     });
 
+    it("rolls games and fights up over the same revisions the rows show, unless every revision is asked for", async () => {
+      const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
+      // gemfall-02: four evenings on the old text (5-minute game, 8 rounds), three on the edited one (1 minute, 3 rounds).
+      const latest = (await call(key, "timing_activities", { chapter: "gemfall-02" })).structuredContent!;
+      expect(latest.rollups_cover).toMatch(/current text/);
+      expect(latest.games).toEqual([expect.objectContaining({ revision: "r2" })]);
+      expect(latest.game_kinds).toEqual([expect.objectContaining({ game: "memory", play_min: expect.objectContaining({ n: 3, median: 1 }) })]);
+      expect(latest.all_fights).toMatchObject({ sample: "n=3, preliminary", rounds: { median: 3, max: 3 } });
+
+      const every = (await call(key, "timing_activities", { chapter: "gemfall-02", all_revisions: true })).structuredContent!;
+      expect(every.rollups_cover).toMatch(/every revision/);
+      expect((every.games as Array<{ revision: string }>).map((g) => g.revision).sort()).toEqual(["r1", "r2"]);
+      expect(every.game_kinds).toEqual([expect.objectContaining({ game: "memory", play_min: expect.objectContaining({ n: 7, median: 5 }) })]);
+      expect(every.all_fights).toMatchObject({ sample: "n=7, preliminary", rounds: { median: 8, max: 8 } });
+
+      // The overview's roll-ups read each chapter at its current text too.
+      const overview = (await call(key, "timing_overview", { chapter: "gemfall-02" })).structuredContent!;
+      expect(overview.game_kinds).toEqual([expect.objectContaining({ play_min: expect.objectContaining({ n: 3 }) })]);
+    });
+
     it("walks a campaign in order, with a rough reach by counts", async () => {
       const { key } = await mintKey(keys, { label: "ops read", scopes: ["operator:read"] });
       const list = (await call(key, "timing_campaign")).structuredContent!;

@@ -23,6 +23,7 @@
 
 import {
   CHAPTER_BUDGET_MINUTES,
+  aggregateActivities,
   EXCLUSION_REASON_MAX,
   FINDING_THRESHOLDS,
   TIMING_POLICY,
@@ -161,6 +162,22 @@ function fightRows(r: TimingReport, src: TimingSource, filter: (row: { chapterId
     }));
 }
 
+/**
+ * The roll-ups over the same revisions the rows beside them show. The report's
+ * own roll-ups pool every revision, so after an edit they would blend the old
+ * text with the new; unless every revision is asked for, they are made again
+ * from the sittings on each chapter's read revision.
+ */
+function rollupsAt(deps: TimingToolDeps, r: TimingReport, src: TimingSource, allRevisions: boolean) {
+  if (allRevisions) return { rollups_cover: "every revision of each chapter, pooled", ...rollups(r, src) };
+  const at = readAt(deps, r);
+  const sittings = r.sittings.filter((s) => s.source === src && at.get(`${src}\u0000${s.chapterId}`) === s.revision);
+  return {
+    rollups_cover: "each chapter's current text, or its latest played revision if that has no sittings",
+    ...rollups({ ...r, activities: aggregateActivities(sittings) }, src),
+  };
+}
+
 function rollups(r: TimingReport, src: TimingSource) {
   return {
     game_kinds: (r.activities?.gameKinds ?? [])
@@ -212,7 +229,9 @@ export function registerTimingTools(server: ToolRegistrar, deps: TimingToolDeps)
       description:
         "How long real tables take over each chapter, per content revision, against the 30-minute budget: median active minutes of completed fresh attempts, " +
         "split into story, mini-games and fights, with the sample size, plus every kind of mini-game and all fights rolled up across chapters. " +
-        "`latest` marks each chapter's most recently played revision, most likely its current text. Start here; then timing_findings for what to act on.",
+        "`latest` marks the revision each chapter is read at: its current text when that has been played, else its most recently played one. " +
+        "The roll-ups (game_kinds, fights, scene_types) cover those revisions only, so an edit never blends with the text before it; " +
+        "timing_activities with all_revisions pools every revision. Start here; then timing_findings for what to act on.",
       inputSchema: z.object({ source, since, chapter: chapter.optional() }),
       outputSchema: anyObject,
       annotations: READ,
@@ -230,7 +249,7 @@ export function registerTimingTools(server: ToolRegistrar, deps: TimingToolDeps)
         sittings: r.sittings.filter((x) => x.source === args.source).length,
         excluded: (r.excluded ?? []).length,
         chapters: chapterRows(r, args.source, deps),
-        ...rollups(r, args.source),
+        ...rollupsAt(deps, r, args.source, false),
         ...(deps.index ? { current_text_not_yet_played: unplayed } : {}),
       };
     }),
@@ -389,10 +408,11 @@ export function registerTimingTools(server: ToolRegistrar, deps: TimingToolDeps)
       const keep = (x: { chapterId: string; revision: string }) => args.all_revisions || latest.get(`${args.source}\u0000${x.chapterId}`) === x.revision;
       const games = args.what === "fights" ? [] : gameRows(r, args.source, keep).filter((g) => !args.game || g.game === args.game);
       const fights = args.what === "games" || args.game ? [] : fightRows(r, args.source, keep);
-      const roll = rollups(r, args.source);
+      const roll = rollupsAt(deps, r, args.source, args.all_revisions);
       return {
         generated_at: r.generatedAt,
         policy: POLICY,
+        rollups_cover: roll.rollups_cover,
         ...(args.what !== "fights" ? { game_kinds: roll.game_kinds.filter((k) => !args.game || k.game === args.game), games: games.slice(0, args.limit), games_total: games.length } : {}),
         ...(args.what !== "games" && !args.game ? { all_fights: roll.fights, fights: fights.slice(0, args.limit), fights_total: fights.length } : {}),
         ...(games.length === 0 && fights.length === 0

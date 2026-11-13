@@ -147,6 +147,11 @@ current text whenever that has been played, and `current_text` says so outright;
 without it (an old build), `latest` is the most recently played revision and
 `timing_campaign` is refused.
 
+Roll-ups (`game_kinds`, `fights`, `scene_types`) cover the same revisions as the
+rows beside them: each chapter's current text, or its latest played one. So an
+edit to a game never blends its old and new numbers. `timing_activities` with
+`all_revisions` pools every revision, and each answer says which in `rollups_cover`.
+
 With `operator:write`, `timing_exclude` takes a sitting that was not a family's
 evening out of every figure (and the export's), and `timing_include` puts it
 back. Each is logged with the key's label.
