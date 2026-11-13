@@ -10,7 +10,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clipPath, manifestPath, type NarrationPart, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
 import type { VoiceBuffer, VoiceChannel } from "../audio/cue";
-import { createClipSpeaker, manifestOf, RESOLVE_MS, whileSeen, type FetchedLike } from "./clip-speaker";
+import { VOICE_GAP_MS } from "../audio/cue";
+import { createClipSpeaker, manifestOf, PREFETCH_CONCURRENCY, RESOLVE_MS, whileSeen, type FetchedLike } from "./clip-speaker";
 import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
 const A = "a".repeat(64);
@@ -64,8 +65,18 @@ function fakeChannel(options: { ready?: boolean; failDecode?: string; detach?: b
       if (name === options.failDecode) return Promise.reject(new Error("EncodingError"));
       return Promise.resolve({ duration: 0.5, name } as VoiceBuffer);
     },
-    play: (buffers, onEnd) => {
-      const play = { buffers: buffers.map((b) => (b as unknown as { name: string }).name), onEnd, stopped: false };
+    play: (clips, onEnd) => {
+      // Clips may still be on their way: each is named here as it arrives, in play order.
+      const play = { buffers: [] as string[], onEnd, stopped: false };
+      void (async () => {
+        for (const clip of clips) {
+          try {
+            play.buffers.push(((await clip) as unknown as { name: string }).name);
+          } catch {
+            return;
+          }
+        }
+      })();
       plays.push(play);
       return () => {
         play.stopped = true;
@@ -226,6 +237,7 @@ describe("prefetch: the clips for lines not yet spoken", () => {
     await settle();
     t.plays[0]!.onEnd();
     t.speaker("The gate creaks.", line);
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS);
     await settle();
     expect(t.plays.map((p) => p.buffers)).toEqual([[A], [A]]);
     expect(t.device.said).toEqual([]);
@@ -237,9 +249,10 @@ describe("prefetch: the clips for lines not yet spoken", () => {
     t.speaker.prefetch?.(["ch/s3/"]);
     await settle();
     const clips = t.net.asked.filter((url) => url !== manifestPath("ch"));
-    // The background request may have started its first clip before the near one was known;
-    // after that the near scene's clip goes before any other background clip.
-    expect(clips.slice(0, 2)).toContain(clipPath(E));
+    // The background request may have filled its slots before the near one was known; after
+    // that the near scene's clip goes before any other background clip still waiting.
+    expect(clips.indexOf(clipPath(E))).toBeLessThanOrEqual(PREFETCH_CONCURRENCY);
+    expect(clips.indexOf(clipPath(E))).toBeLessThan(clips.indexOf(clipPath(D)));
     expect(clips).toHaveLength(6);
     expect(new Set(clips).size).toBe(6);
   });
@@ -295,11 +308,13 @@ describe("prefetch: the clips for lines not yet spoken", () => {
     let release: () => void = () => undefined;
     const held = new Promise<void>((resolve) => (release = resolve));
     const routes = aheadRoutes();
-    routes[clipPath(F)] = {
-      ok: true,
-      json: () => Promise.reject(new Error("not json")),
-      arrayBuffer: () => held.then(() => new TextEncoder().encode(F).buffer as ArrayBuffer),
-    };
+    for (const key of [F, B, C, D]) {
+      routes[clipPath(key)] = {
+        ok: true,
+        json: () => Promise.reject(new Error("not json")),
+        arrayBuffer: () => held.then(() => new TextEncoder().encode(key).buffer as ArrayBuffer),
+      };
+    }
     const t = setup(routes);
     // A line is playing from its own clips, and the whole chapter is queued behind it.
     t.speaker("The gate creaks.", { source: "narration", parts: [{ address: "ch/s1/narration", line: "The gate creaks." }] });
@@ -307,15 +322,16 @@ describe("prefetch: the clips for lines not yet spoken", () => {
     expect(t.plays.map((p) => p.buffers)).toEqual([[A]]);
     t.speaker.prefetch?.(["ch/"], { background: true });
     await settle();
-    // The goal's clip (first in the chapter) is on its way; the rest are queued behind it.
-    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual([clipPath(A), clipPath(F)]);
+    // The first few clips of the chapter are on their way (and held there); the rest are queued behind them.
+    const started = t.net.asked.filter((url) => url !== manifestPath("ch"));
+    expect(started).toEqual([clipPath(A), clipPath(F), clipPath(B), clipPath(C), clipPath(D)]);
     t.speaker.stopPrefetch?.();
     release();
     await settle();
     await vi.advanceTimersByTimeAsync(1000);
     await settle();
-    // Nothing more was fetched, and the playing line neither stopped nor fell back to the device voice.
-    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual([clipPath(A), clipPath(F)]);
+    // Nothing more was fetched (not s3's E), and the playing line neither stopped nor fell back to the device voice.
+    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toEqual(started);
     expect(t.plays[0]!.stopped).toBe(false);
     expect(t.device.said).toEqual([]);
     expect(t.device.cancels()).toBe(0);
@@ -480,9 +496,9 @@ describe("all or nothing: the device voice reads the whole line", () => {
     expect(u.device.texts()).toEqual([text]);
   });
 
-  it("when the clips are too slow: never later than RESOLVE_MS, and the line behind it follows", async () => {
+  it("when the first clip is too slow: never later than RESOLVE_MS, and the line behind it follows", async () => {
     const routes = allThere();
-    routes[clipPath(C)] = "hang";
+    routes[clipPath(A)] = "hang";
     const t = setup(routes);
     t.speaker(text, { parts: S1 });
     t.speaker("Hero's turn.");
@@ -506,9 +522,14 @@ describe("speak()'s queue and interrupt rules", () => {
     expect(t.plays).toEqual([]);
     t.device.finish();
     await settle();
+    // A breath between the device's line and the recording.
+    expect(t.plays).toHaveLength(0);
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS);
     expect(t.plays).toHaveLength(1);
     expect(t.device.texts()).toEqual(["Last time, you met a goat."]);
     t.plays[0]!.onEnd();
+    expect(t.device.texts()).toEqual(["Last time, you met a goat."]);
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS);
     expect(t.device.texts()).toEqual(["Last time, you met a goat.", "Tap the glowing card."]);
   });
 
@@ -593,6 +614,8 @@ describe("speak()'s queue and interrupt rules", () => {
     expect(plays).toEqual([]);
     for (const piece of pieces.slice(1)) piece.onend?.();
     await settle();
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS);
+    await settle();
     expect(plays.map((p) => p.buffers)).toEqual([[A, B, C]]);
   });
 
@@ -612,9 +635,13 @@ describe("speak()'s queue and interrupt rules", () => {
     t.speaker("The gate creaks.", { parts: S1 });
     t.speaker("Hero's turn.");
     await settle();
-    // Three clips of half a second each, then the grace.
-    await vi.advanceTimersByTimeAsync(1500 + 2000);
+    // The manifest's 2.3 s of clips and the two breaths between them, then the grace and the
+    // allowance for a clip late mid-line.
+    await vi.advanceTimersByTimeAsync(2300 + 2 * VOICE_GAP_MS + 2000 + RESOLVE_MS - 10);
+    expect(t.plays[0]!.stopped).toBe(false);
+    await vi.advanceTimersByTimeAsync(10);
     expect(t.plays[0]!.stopped).toBe(true);
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS);
     expect(t.device.texts()).toEqual(["Hero's turn."]);
   });
 });
@@ -708,5 +735,137 @@ describe("narration only while the page is seen (whileSeen)", () => {
     const { speaker, cancels } = inner();
     whileSeen(speaker, doc, win).cancel?.();
     expect(cancels()).toBe(1);
+  });
+});
+
+describe("a breath between clips, and no waiting for the whole line (playtest)", () => {
+  /** A clip whose bytes arrive only when the test says. */
+  function heldClip(key: string): { route: FetchedLike; release: () => void } {
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    return {
+      route: { ok: true, json: () => Promise.reject(new Error("not json")), arrayBuffer: () => held.then(() => new TextEncoder().encode(key).buffer as ArrayBuffer) },
+      release: () => release(),
+    };
+  }
+
+  it("starts a line on its first clip while a later one is still on its way", async () => {
+    const routes = allThere();
+    const late = heldClip(C);
+    routes[clipPath(C)] = late.route;
+    const t = setup(routes);
+    t.speaker("The gate creaks. All three of you step through.", { parts: S1 });
+    await settle();
+    expect(t.plays).toHaveLength(1);
+    expect(t.plays[0]!.buffers).toEqual([A, B]);
+    late.release();
+    await settle();
+    expect(t.plays[0]!.buffers).toEqual([A, B, C]);
+    expect(t.device.said).toEqual([]);
+  });
+
+  it("fetches a long line's clips in play order, a few ahead of the one playing", async () => {
+    const keys = ["1", "2", "3", "4", "5"].map((d) => d.repeat(64));
+    const held = keys.map(heldClip);
+    const routes: Record<string, Route> = {
+      [manifestPath("ch")]: json({ "ch/s9/narration": { "": keys.map((clip) => ({ clip, ms: 500 })) } }),
+      ...Object.fromEntries(keys.map((key, i) => [clipPath(key), held[i]!.route])),
+    };
+    const t = setup(routes);
+    t.speaker("Long.", { parts: [{ address: "ch/s9/narration", line: "Long." }] });
+    await settle();
+    expect(t.net.asked.slice(1)).toEqual(keys.slice(0, 3).map(clipPath));
+    held[0]!.release();
+    await settle();
+    expect(t.net.asked.slice(1)).toEqual(keys.slice(0, 4).map(clipPath));
+    expect(t.plays).toHaveLength(1);
+  });
+
+  it("pauses between one recorded line and the next, and not after the last", async () => {
+    const t = setup();
+    t.speaker("The gate creaks.", { parts: S1 });
+    t.speaker("One.", { parts: [{ address: "ch/s2/narration", line: "One." }] });
+    await settle();
+    expect(t.plays).toHaveLength(1);
+    t.plays[0]!.onEnd();
+    await settle();
+    expect(t.plays).toHaveLength(1);
+    // Still saying the scene: the pause between two lines is part of it.
+    expect(t.speaking).toEqual([true]);
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS - 1);
+    expect(t.plays).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1);
+    await settle();
+    expect(t.plays).toHaveLength(2);
+    t.plays[1]!.onEnd();
+    // Nothing behind it: the speaking mark goes out at once.
+    expect(t.speaking).toEqual([true, false]);
+  });
+
+  it("an interrupt during the pause drops it: the new scene's line starts at once", async () => {
+    const t = setup();
+    t.speaker("The gate creaks.", { parts: S1 });
+    t.speaker("Queued.");
+    await settle();
+    t.plays[0]!.onEnd();
+    t.speaker("A new scene.", { interrupt: true, parts: [{ address: "ch/s2/narration", line: "A new scene." }] });
+    await settle();
+    expect(t.plays.map((p) => p.buffers)).toEqual([[A, B, C], [B]]);
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS * 2);
+    expect(t.device.said).toEqual([]);
+  });
+
+  it("a stop during the pause leaves nothing to start after it", async () => {
+    const t = setup();
+    t.speaker("The gate creaks.", { parts: S1 });
+    t.speaker("Behind it.");
+    await settle();
+    t.plays[0]!.onEnd();
+    t.speaker.cancel!();
+    await vi.advanceTimersByTimeAsync(VOICE_GAP_MS * 2);
+    expect(t.device.said).toEqual([]);
+    expect(t.speaking.at(-1)).toBe(false);
+  });
+});
+
+describe("prefetch: aggressive, and bounded", () => {
+  it("fetches a few clips at once, no more", async () => {
+    const t = setup({ ...aheadRoutes(), ...Object.fromEntries([A, B, C, D, E, F].map((key) => [clipPath(key), "hang" as const])) });
+    t.speaker.prefetch?.(["ch/"], { background: true });
+    await settle();
+    expect(t.net.asked.filter((url) => url !== manifestPath("ch"))).toHaveLength(PREFETCH_CONCURRENCY);
+  });
+
+  it("fetches one at a time while a playing line still waits on its own later clips", async () => {
+    const routes = { ...aheadRoutes(), [clipPath(C)]: "hang" as const, [clipPath(D)]: "hang" as const, [clipPath(E)]: "hang" as const, [clipPath(F)]: "hang" as const };
+    const t = setup(routes);
+    t.speaker("The gate creaks. All three of you step through.", { parts: [{ address: "ch/s1/narration", line: "x" }, { address: "ch/s2/variants/0", line: "y", token: { party: "3" } }] });
+    await settle();
+    expect(t.plays).toHaveLength(1);
+    const before = t.net.asked.length;
+    t.speaker.prefetch?.(["ch/"], { background: true });
+    await settle();
+    expect(t.net.asked.length - before).toBe(1);
+  });
+
+  it("fetches the scenes in the order asked, the party's own scene first", async () => {
+    const t = setup(aheadRoutes());
+    t.speaker.prefetch?.(["ch/s3/", "ch/s1/"]);
+    await settle();
+    expect(t.net.asked.slice(1)).toEqual([clipPath(E), clipPath(A)]);
+  });
+
+  it("a new scene's request goes ahead of the guesses made from the last one", async () => {
+    const routes = { ...aheadRoutes(), ...Object.fromEntries([A, B, C, D, E, F].map((key) => [clipPath(key), "hang" as const])) };
+    const t = setup(routes);
+    // A line is waiting on its first clip, so nothing is prefetched yet.
+    t.speaker("Slow.", { parts: [{ address: "ch/@goal", line: "Slow." }] });
+    t.speaker.prefetch?.(["ch/s1/", "ch/s2/"]);
+    t.speaker.prefetch?.(["ch/s3/"]);
+    await settle();
+    await vi.advanceTimersByTimeAsync(RESOLVE_MS);
+    await settle();
+    // The goal's own clip, then the newest request's, then what was asked before it.
+    expect(t.net.asked.slice(1)).toEqual([clipPath(F), clipPath(E), clipPath(A), clipPath(B), clipPath(C)]);
   });
 });
