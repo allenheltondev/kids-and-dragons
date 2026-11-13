@@ -2751,7 +2751,7 @@
       },
       "onFailure": {
         "goto": "interaction_shelter_stack",
-        "narration": "A sack slides onto your toes. Ouch! Brindle blocks the board with her plank, and you carry the load the rest of the way with sore feet.",
+        "narration": "A sack slides onto your toes. Ouch! You wedge the plank under the board, then finish the carry with sore feet.",
         "effects": [
           {
             "type": "damage",
