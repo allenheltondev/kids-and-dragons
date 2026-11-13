@@ -85,4 +85,42 @@ test.describe("a tablet held sideways", () => {
       }).toPass({ timeout: 10_000 });
     });
   }
+
+  /*
+   * Begun upright, turned sideways: the world pane was hidden behind the controls when Begin
+   * sent the lobby's camp off, and a hidden pane's renderer sleeps, so the camp's fade never
+   * ran. Turned, the world showed the camp at full strength over the chapter's first scene,
+   * where its heroes should have been (the playtest's "missing characters"). Seen again, a fade
+   * nobody saw is over: the first frame of the world is the story.
+   */
+  test("turned sideways after Begin, the world shows the story, not the lobby's camp", async ({ browser }) => {
+    test.setTimeout(120_000);
+    const page = await (await tablet(browser, 820, 1180, "normal")).newPage();
+    await page.goto("/");
+    await page.getByRole("button", { name: /host a game/i }).click();
+    await page.getByText("Phone Mode").click();
+    await page.getByLabel("Your adventurer name").fill("Grown-up");
+    await page.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(page).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    await createCharacter(page, "unicorn", "Sparklehoof");
+    await openPlayerTask(page);
+    type Camp = { camp(): unknown; leaving(): unknown };
+    const camp = () => page.evaluate(() => {
+      const lobby = (globalThis as { __kadCamp?: () => Camp | null }).__kadCamp?.();
+      return lobby ? { up: lobby.camp() !== null, leaving: lobby.leaving() !== null } : null;
+    });
+    // Upright, the controls are in front and the world sleeps behind them, its camp pitched.
+    await expect(page.locator(".kad-travel[data-side-by-side]")).toHaveCount(0);
+    await expect.poll(camp, TAP).toEqual({ up: true, leaving: false });
+    await page.getByRole("button", { name: /begin the adventure/i }).first().click(TAP);
+    await expect(page.locator("[data-pane='player'] .choice").first()).toBeVisible(TAP);
+    // Asleep, so Begin's fade has not moved: the camp is still there, on its way out.
+    await expect.poll(camp, TAP).toEqual({ up: false, leaving: true });
+
+    await page.setViewportSize({ width: 1180, height: 820 });
+    await expect(page.locator(".kad-travel[data-side-by-side]")).toBeVisible(TAP);
+    await expect(page.locator("[data-pane='world'] .kad-stage canvas")).toBeVisible(TAP);
+    // At once, not after a two-second fade over the story.
+    await expect.poll(camp, { timeout: 500, intervals: [50] }).toEqual({ up: false, leaving: false });
+  });
 });

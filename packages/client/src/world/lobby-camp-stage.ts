@@ -103,6 +103,15 @@ export interface LobbyCamp {
   camp(): CampStage | null;
   /** A camp still fading off after Begin or Go on, or null. */
   leaving(): CampStage | null;
+  /**
+   * The stage is being seen again after a sleep (a pane hidden behind a phone's controls, a
+   * tablet turned, a locked screen: PixiStage stops the ticker then). Every fade here is driven
+   * by that ticker, so one that began while nobody could see it was frozen where it started:
+   * a camp Begin sent off stayed at full strength over the story, to play its whole fade late
+   * the moment the pane came back. A fade nobody saw has nothing to show, so it ends now: a
+   * leaving camp is dropped and a rest's camp coming up is up.
+   */
+  settle(): void;
   destroy(): void;
 }
 
@@ -287,6 +296,15 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
     showsFriend: (friendId) => shown !== null && spots.has(friendId),
     camp: () => shown,
     leaving: () => fading,
+    settle() {
+      if (destroyed) return;
+      dropFading();
+      if (shown && entering) {
+        entering = false;
+        shown.view.alpha = 1;
+        options.cover?.(true);
+      }
+    },
     destroy() {
       if (destroyed) return;
       destroyed = true;

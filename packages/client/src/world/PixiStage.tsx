@@ -26,6 +26,17 @@ import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-s
 import { campLayoutFor, indoorRest } from "./lobby-camp";
 import { packedCampKey, packedFriends, packedKits } from "./packed-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
+import { ART_AHEAD, artAhead, scheduleArtUpkeep } from "./art-upkeep";
+
+/**
+ * A television's browser draws on a set-top GPU with little memory to spare (#264): no
+ * multisampling (the board is painted art, not hairlines), thirty frames a second (every
+ * motion here is eased on elapsed time, so it only steps more coarsely), and textures nothing
+ * has drawn for half a minute let go of the GPU sooner than Pixi's minute.
+ */
+export function stageBudget(tv: boolean): { antialias: boolean; maxFPS: number; gcMaxUnusedTime?: number; gcFrequency?: number } {
+  return tv ? { antialias: false, maxFPS: 30, gcMaxUnusedTime: 30_000, gcFrequency: 15_000 } : { antialias: true, maxFPS: 0 };
+}
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -122,6 +133,9 @@ export function PixiStage(): React.JSX.Element {
   const [failed, setFailed] = useState(false);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const sceneRef = useRef<PartyScene | null>(null);
+  const appRef = useRef<Application | null>(null);
+  /** Set once the renderer is up, so the first scene's art upkeep runs too. */
+  const [stageUp, setStageUp] = useState(false);
   // The lobby's camp (#614), over the scene while the lobby is up.
   const campRef = useRef<LobbyCamp | null>(null);
   const party = useParty();
@@ -158,6 +172,7 @@ export function PixiStage(): React.JSX.Element {
     let removeVisibilityListener: (() => void) | null = null;
 
     const dispose = () => {
+      if (app && appRef.current === app) appRef.current = null;
       removeVisibilityListener?.();
       removeVisibilityListener = null;
       observer?.disconnect();
@@ -179,17 +194,20 @@ export function PixiStage(): React.JSX.Element {
       app = null;
     };
 
+    const tv = isTvBrowser();
+    const budget = stageBudget(tv);
     void (async () => {
       const instance = new Application();
       app = instance;
       await instance.init({
+        ...(budget.gcMaxUnusedTime !== undefined ? { gcMaxUnusedTime: budget.gcMaxUnusedTime, gcFrequency: budget.gcFrequency } : {}),
         // WebGL or nothing. Left alone, Pixi quietly falls back to WebGPU and
         // then to its 2D-canvas renderer, and a TV without WebGL would run the
         // whole animated scene on the CPU, which this scene (filters, masks,
         // thirty-odd sprites a frame) was never built or measured for. A
         // rejection here lands in the still board instead (RendererFallback).
         preference: ["webgl"],
-        antialias: true,
+        antialias: budget.antialias,
         backgroundAlpha: 0,
         /*
          * The TV may be a modest mini-PC; capping DPR keeps fill rate sane. A television's
@@ -197,7 +215,7 @@ export function PixiStage(): React.JSX.Element {
          * viewport, which is a 3840x2160 framebuffer with antialiasing on a set-top GPU, and
          * the board is painted art rather than hairlines, so it loses little at 1.
          */
-        resolution: isTvBrowser() ? 1 : Math.min(globalThis.devicePixelRatio || 1, 2),
+        resolution: tv ? 1 : Math.min(globalThis.devicePixelRatio || 1, 2),
         autoDensity: true,
         resizeTo: undefined,
         width: Math.max(1, host.clientWidth),
@@ -213,6 +231,9 @@ export function PixiStage(): React.JSX.Element {
       if (import.meta.env.DEV) {
         (globalThis as Record<string, unknown>).__kadScene = () => sceneRef.current;
       }
+      instance.ticker.maxFPS = budget.maxFPS;
+      appRef.current = instance;
+      setStageUp(true);
       // autoDensity owns the canvas CSS size (it keeps style px in step with
       // the renderer on every resize); we only stop it rendering inline.
       instance.canvas.style.display = "block";
@@ -265,6 +286,9 @@ export function PixiStage(): React.JSX.Element {
         if (hidden || !sized) {
           instance.ticker.stop();
         } else if (!instance.ticker.started) {
+          // Seen again (the world pane shown, a tablet turned sideways, the screen back on): a
+          // camp fade that began while it slept ends now rather than playing late over the story.
+          lobbyCamp?.settle();
           instance.ticker.start();
           // One immediate frame, so coming back is not a beat of stale canvas.
           instance.render();
@@ -319,6 +343,23 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setBiome(chapter?.biome ?? null, selectedArt);
   }, [chapter, state?.chapterId, state?.sceneId, state?.encounter, selectedArt]);
+
+  /*
+   * Between scenes, the art (world/art-upkeep.ts): a moment after each scene, fight or phase
+   * change, what the stage no longer draws is let go of, and the shared screen decodes the
+   * scenes one step ahead so the next picture goes up whole. Keyed by where the party is,
+   * never by every patch.
+   */
+  const upkeepScene = state?.chapterId === chapter?.id ? state?.sceneId ?? null : null;
+  const upkeepKey = `${state?.chapterId ?? ""}/${state?.sceneId ?? ""}/${state?.phase ?? ""}/${state?.encounter ? "fight" : ""}`;
+  const display = (session?.playerId ?? "") === "";
+  useEffect(() => {
+    const app = appRef.current;
+    if (!stageUp || !app) return;
+    const tv = isTvBrowser();
+    const ahead = display ? artAhead(chapter, upkeepScene, tv ? ART_AHEAD.tv : ART_AHEAD.other) : [];
+    return scheduleArtUpkeep(app.stage, { ahead, tv });
+  }, [stageUp, upkeepKey, upkeepScene, chapter, display]);
 
   // A rift in plain view (#401), keyed by the scene so an opening plays once.
   useEffect(() => {
