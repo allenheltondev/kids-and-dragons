@@ -85,6 +85,18 @@ export interface SessionIdentity {
   deviceId?: string;
 }
 
+/**
+ * A session token whose signature and expiry hold, with its device's
+ * revocation still being read (`sessionDeviceRevoked`). Split from
+ * `resolveSession` so a tap can start its own reads beside that one rather
+ * than after it (handlers/action.ts, `applyActionUnlessRevoked`). The session
+ * is worth nothing until `revoked` has answered false.
+ */
+export interface ClaimedSession {
+  session: SessionIdentity;
+  revoked: Promise<boolean>;
+}
+
 export interface IssueDeviceTokenInput {
   householdId: string;
   playerId: string;
@@ -155,6 +167,13 @@ export interface IdentityService {
   issueSessionToken(input: IssueSessionTokenInput): Promise<string>;
   /** `null` for an unknown, malformed or expired token, and for one whose device was revoked. */
   resolveSession(token: string): Promise<SessionIdentity | null>;
+  /**
+   * `resolveSession` in two halves: `null` for an unknown, malformed or
+   * expired token, and otherwise the session with its revocation check
+   * started but not awaited. Optional, so a stand-in identity need not have
+   * it; the caller then awaits `resolveSession` as before.
+   */
+  claimSession?(token: string): Promise<ClaimedSession | null>;
   /** Read-only, room-scoped, no player. For the TV. */
   issueViewerToken(input: IssueViewerTokenInput): Promise<string>;
   resolveViewer(token: string): Promise<ViewerIdentity | null>;
@@ -289,11 +308,16 @@ export class DevIdentity implements IdentityService {
   }
 
   async resolveSession(token: string): Promise<SessionIdentity | null> {
+    const claimed = await this.claimSession(token);
+    if (!claimed) return null;
+    return (await claimed.revoked) ? null : claimed.session;
+  }
+
+  async claimSession(token: string): Promise<ClaimedSession | null> {
     const claims = decode<SessionIdentity>(token, SESSION_PREFIX);
     if (!claims) return null;
     if (claims.expiresAt <= this.now()) return null;
-    if (await sessionDeviceRevoked(this.repo, claims.householdId, claims.deviceId)) return null;
-    return claims;
+    return { session: claims, revoked: sessionDeviceRevoked(this.repo, claims.householdId, claims.deviceId) };
   }
 
   async issueViewerToken(input: IssueViewerTokenInput): Promise<string> {

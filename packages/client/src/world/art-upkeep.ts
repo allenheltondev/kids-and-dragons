@@ -13,8 +13,18 @@
  * and never the whole chapter: sw/prefetch.ts already keeps the files themselves near (two
  * steps ahead, and on the television the whole chapter, in the service worker's cache),
  * which costs disk, not memory. This decodes only what one choice can reach.
+ *
+ * Decoded is not yet drawable: WebGL copies a texture to the GPU the first frame it is drawn,
+ * which for a backdrop is a long frame on a television's GPU, and that frame would be the
+ * scene change. So on the television each picture held ahead is also handed to the GPU as it
+ * decodes (`ArtUploadTarget`), one per frame and only while the stage is running. Pixi's own
+ * `pixi.js/prepare` does the same, but it imports the bitmap and HTML text classes, which the
+ * stage's bundle leaves out (pixi-webgl-only.ts), so this calls the one method it uses for a
+ * texture. Pixi's texture GC frees a GPU copy unused for a while (PixiStage.tsx
+ * `stageBudget`), so a long read may still upload at the change; a quick one does not.
  */
 
+import type { Texture, TextureSource } from "pixi.js";
 import { edgesOf } from "@kad/shared";
 import type { Chapter, SceneId } from "@kad/shared";
 import { isTvBrowser } from "../display/tv";
@@ -71,20 +81,87 @@ export function artAhead(chapter: Chapter | null, sceneId: SceneId | null, limit
   return [...new Set(ordered)].filter((url) => url !== current).slice(0, limit);
 }
 
+/** The part of Pixi's ticker the upload paces itself by. */
+export interface UploadTicker {
+  readonly started: boolean;
+  addOnce(fn: () => void): unknown;
+  remove(fn: () => void): unknown;
+}
+
+/** Where art held ahead is uploaded: the stage's ticker and its renderer's `texture.initSource`. */
+export interface ArtUploadTarget {
+  ticker: UploadTicker;
+  initSource(source: TextureSource): void;
+}
+
+/**
+ * Hand decoded textures to the GPU one at a time: each in the gap after a frame the stage
+ * drew, as Pixi's prepare does, so the upload never lengthens the frame itself, and none
+ * while the ticker is stopped (the pane hidden, the screen off).
+ */
+export function createArtUploader(target: ArtUploadTarget): { add(texture: Texture): void; stop(): void } {
+  const queue: Texture[] = [];
+  let armed = false;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let stopped = false;
+  const arm = (): void => {
+    if (armed || stopped || queue.length === 0) return;
+    armed = true;
+    target.ticker.addOnce(afterFrame);
+  };
+  const afterFrame = (): void => {
+    armed = false;
+    if (stopped) return;
+    timer = setTimeout(uploadOne, 0);
+  };
+  const uploadOne = (): void => {
+    timer = null;
+    if (stopped) return;
+    if (!target.ticker.started) return arm();
+    const texture = queue.shift();
+    // Unloaded by a sweep since it decoded: nothing left to upload.
+    if (texture && !texture.destroyed && texture.source && !texture.source.destroyed) {
+      try {
+        target.initSource(texture.source);
+      } catch {
+        // A lost context or a torn-down renderer: the first draw uploads it, as before.
+      }
+    }
+    arm();
+  };
+  return {
+    add(texture) {
+      if (stopped) return;
+      queue.push(texture);
+      arm();
+    },
+    stop() {
+      stopped = true;
+      queue.length = 0;
+      if (timer !== null) clearTimeout(timer);
+      if (armed) target.ticker.remove(afterFrame);
+      armed = false;
+    },
+  };
+}
+
 export interface ArtUpkeepOptions {
   /** The art to load and hold ahead (`artAhead`); with none, the stage is only swept. */
   ahead: readonly string[];
   tv?: boolean;
   delayMs?: number;
+  /** Upload what is held ahead to the GPU once decoded (the television's stage only). */
+  upload?: ArtUploadTarget;
 }
 
 /**
  * Sweep `stage` and load `ahead` after the delay; the returned function cancels whatever has
  * not started and lets go of the holds, for the next scene's upkeep to judge.
  */
-export function scheduleArtUpkeep(stage: DrawnNode, { ahead, tv = isTvBrowser(), delayMs = ART_UPKEEP_DELAY_MS }: ArtUpkeepOptions): () => void {
+export function scheduleArtUpkeep(stage: DrawnNode, { ahead, tv = isTvBrowser(), delayMs = ART_UPKEEP_DELAY_MS, upload }: ArtUpkeepOptions): () => void {
   let cancelled = false;
   let releases: (() => void)[] = [];
+  const uploader = upload ? createArtUploader(upload) : null;
   const timer = setTimeout(() => {
     if (cancelled) return;
     sweepArt(stage, idleArtBudget(tv));
@@ -93,7 +170,8 @@ export function scheduleArtUpkeep(stage: DrawnNode, { ahead, tv = isTvBrowser(),
     const queue = [...ahead];
     const lane = async (): Promise<void> => {
       for (let url = queue.shift(); url !== undefined && !cancelled; url = queue.shift()) {
-        await loadArt(url).catch(() => undefined);
+        const texture = await loadArt(url).catch(() => null);
+        if (texture && !cancelled) uploader?.add(texture);
       }
     };
     // One at a time on a television: its decoder and its network are the scene's first.
@@ -102,6 +180,7 @@ export function scheduleArtUpkeep(stage: DrawnNode, { ahead, tv = isTvBrowser(),
   return () => {
     cancelled = true;
     clearTimeout(timer);
+    uploader?.stop();
     for (const release of releases) release();
     releases = [];
   };

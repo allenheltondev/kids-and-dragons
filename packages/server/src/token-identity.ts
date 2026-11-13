@@ -44,6 +44,7 @@ import {
   hashToken,
   movedBinding,
   sessionDeviceRevoked,
+  type ClaimedSession,
   type DeviceIdentity,
   type IdentityService,
   type IssueDeviceTokenInput,
@@ -331,19 +332,28 @@ export class TokenIdentity implements IdentityService {
   }
 
   async resolveSession(token: string): Promise<SessionIdentity | null> {
+    const claimed = await this.claimSession(token);
+    if (!claimed) return null;
+    return (await claimed.revoked) ? null : claimed.session;
+  }
+
+  async claimSession(token: string): Promise<ClaimedSession | null> {
     const claims = await this.verify<SessionClaims>(token, "room");
     if (!claims) return null;
     const deviceId = typeof claims.dev === "string" ? claims.dev : undefined;
-    // The signature and the expiry are not enough, for the reason they are not
-    // for a device token: revoking the device has to end what it was handed.
-    if (await sessionDeviceRevoked(this.repo, claims.hh, deviceId)) return null;
     return {
-      runId: claims.run,
-      roomCode: claims.code,
-      householdId: claims.hh,
-      playerId: claims.sub,
-      expiresAt: claims.exp * 1000,
-      ...(deviceId !== undefined ? { deviceId } : {}),
+      session: {
+        runId: claims.run,
+        roomCode: claims.code,
+        householdId: claims.hh,
+        playerId: claims.sub,
+        expiresAt: claims.exp * 1000,
+        ...(deviceId !== undefined ? { deviceId } : {}),
+      },
+      // The signature and the expiry are not enough, for the reason they are
+      // not for a device token: revoking the device has to end what it was
+      // handed. Started here and answered by whoever holds the session.
+      revoked: sessionDeviceRevoked(this.repo, claims.hh, deviceId),
     };
   }
 

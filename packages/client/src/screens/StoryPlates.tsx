@@ -76,7 +76,12 @@ function preload(picked: StartPlates): Promise<Frame[]> {
             resolve(frame);
           };
           const timer = setTimeout(() => done(null), PLATE_LOAD_MS);
-          image.onload = () => done({ ...plate, url, address: picked.addresses?.[at] });
+          // Decoded as well as fetched, so a page turn shows the painting whole on its first
+          // frame instead of decoding a 1600-wide picture then. A decode that fails still shows it.
+          const ready = (): void => done({ ...plate, url, address: picked.addresses?.[at] });
+          image.onload = () => {
+            void (typeof image.decode === "function" ? image.decode() : Promise.resolve()).then(ready, ready);
+          };
           image.onerror = () => done(null);
           image.src = url;
         }),

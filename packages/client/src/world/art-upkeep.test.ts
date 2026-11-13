@@ -12,7 +12,7 @@ vi.mock("./art-memory", () => ({
   idleArtBudget: (tv: boolean) => (tv ? 1 : 2),
   loadArt: async (url: string) => {
     memory.loads.push(url);
-    return {};
+    return { destroyed: false, source: { url, destroyed: false } };
   },
   holdArt: (url: string) => {
     memory.holds.set(url, (memory.holds.get(url) ?? 0) + 1);
@@ -24,7 +24,25 @@ vi.mock("./art-memory", () => ({
   },
 }));
 
-import { ART_AHEAD, ART_UPKEEP_DELAY_MS, artAhead, scheduleArtUpkeep } from "./art-upkeep";
+import type { Texture, TextureSource } from "pixi.js";
+import { ART_AHEAD, ART_UPKEEP_DELAY_MS, artAhead, createArtUploader, scheduleArtUpkeep, type ArtUploadTarget } from "./art-upkeep";
+
+/** A ticker driven by hand, and every source handed to the GPU, by URL. */
+function gpu() {
+  const listeners: (() => void)[] = [];
+  const uploaded: string[] = [];
+  const ticker = {
+    started: true,
+    addOnce(fn: () => void) { listeners.push(fn); },
+    remove(fn: () => void) { const at = listeners.indexOf(fn); if (at >= 0) listeners.splice(at, 1); },
+    /** One drawn frame: the listeners waiting on it run once. */
+    frame() { for (const fn of listeners.splice(0)) fn(); },
+  };
+  const target: ArtUploadTarget = { ticker, initSource: (source: TextureSource) => void uploaded.push((source as unknown as { url: string }).url) };
+  return { ticker, target, uploaded };
+}
+
+const texture = (url: string, destroyed = false) => ({ destroyed, source: { url, destroyed } }) as unknown as Texture;
 
 /** clearing → (check_squeeze | shrine); shrine → encounter_wisps, with art on the first two. */
 function chapter(): Chapter {
@@ -105,5 +123,59 @@ describe("scheduleArtUpkeep", () => {
     await vi.advanceTimersByTimeAsync(ART_UPKEEP_DELAY_MS);
     expect(memory.sweeps).toEqual([2]);
     expect(memory.loads).toEqual([]);
+  });
+});
+
+describe("uploading what is held ahead (the television)", () => {
+  it("hands each decoded picture to the GPU after a drawn frame, one per frame", async () => {
+    const { ticker, target, uploaded } = gpu();
+    scheduleArtUpkeep({}, { ahead: ["a", "b"], tv: true, upload: target });
+    await vi.advanceTimersByTimeAsync(ART_UPKEEP_DELAY_MS);
+    expect(memory.loads).toEqual(["a", "b"]);
+    // Decoded, but nothing goes up until the stage has drawn a frame.
+    expect(uploaded).toEqual([]);
+    ticker.frame();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(uploaded).toEqual(["a"]);
+    ticker.frame();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(uploaded).toEqual(["a", "b"]);
+  });
+
+  it("uploads nothing while the ticker is stopped, and carries on once it runs", async () => {
+    const { ticker, target, uploaded } = gpu();
+    const uploader = createArtUploader(target);
+    uploader.add(texture("a"));
+    ticker.frame();
+    ticker.started = false;
+    await vi.advanceTimersByTimeAsync(0);
+    expect(uploaded).toEqual([]);
+    ticker.started = true;
+    ticker.frame();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(uploaded).toEqual(["a"]);
+  });
+
+  it("skips a picture swept since it decoded, and drops the rest when the scene changes", async () => {
+    const { ticker, target, uploaded } = gpu();
+    const uploader = createArtUploader(target);
+    uploader.add(texture("gone", true));
+    uploader.add(texture("b"));
+    uploader.add(texture("c"));
+    ticker.frame();
+    await vi.advanceTimersByTimeAsync(0);
+    ticker.frame();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(uploaded).toEqual(["b"]);
+    uploader.stop();
+    ticker.frame();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(uploaded).toEqual(["b"]);
+  });
+
+  it("is not asked for off the television: nothing is uploaded without a target", async () => {
+    scheduleArtUpkeep({}, { ahead: ["a"], tv: false });
+    await vi.advanceTimersByTimeAsync(ART_UPKEEP_DELAY_MS);
+    expect(memory.loads).toEqual(["a"]);
   });
 });

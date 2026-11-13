@@ -45,6 +45,19 @@
  * while a line the table is waiting on has no first clip yet and one at a time while a playing
  * line still fetches its own, so a prefetch can only make the line being spoken faster, never
  * slower. Data Saver turns it off; the lines themselves still play.
+ *
+ * **Decoding ahead** (`decodeAhead` on a near prefetch, voice-prefetch.ts): the bytes being here
+ * is not the whole wait, since a line's first clip must also be decoded before it sounds, and a
+ * television decodes slowly. So the **first** clip of each line the next step can say (the
+ * branch lines of the scene the party is in, and the narration of each scene one step ahead) is
+ * decoded once its bytes have arrived, and the line that says it starts from that buffer; the
+ * rest of a line still decodes while its first clip plays. At most HELD_DECODES are held, nearest
+ * first, and only for the scene that asked: a new scene lets go of all but those still one step
+ * ahead (those leaving are kept RESOLVE_MS more, so the new scene's own line, asked for at the
+ * same moment, can still take its first clip from them). Retiring the guessing ahead (a hidden
+ * page, a chapter over) lets go of every one. A decode is started only into an engine that is
+ * already running (none is made or resumed for it), one at a time, and only while nothing is
+ * being said, resolved or queued, so it never competes with a line for the decoder.
  */
 
 import { clipPath, manifestOfAddress, manifestPath, playlistFor, type NarrationPart, type PrefetchOptions, type SpeakOptions, type Speaker, type VoiceManifest } from "@kad/shared";
@@ -99,6 +112,48 @@ export const PREFETCH_CONCURRENCY = 4;
  * first clip is not starved by the rest of the line, and a long line does not decode all at once.
  */
 export const LINE_WINDOW = 3;
+/**
+ * The most first clips decoded ahead and held for the scene the party is in. A clip is about
+ * 31 KB as bytes and several hundred KB decoded, so this is a few MB at most: enough for a
+ * scene's branch lines and the narration of every scene it leads to.
+ */
+export const HELD_DECODES = 12;
+
+/**
+ * Which lines the next step can begin, for decoding their first clips ahead (voice-prefetch.ts).
+ * `here` is the scene the party is in (`<chapter>/<scene>/`): its branch lines (a check's
+ * success and failure, a fight's outcomes) open the line said on the way out. `next` are the
+ * scenes one step ahead, whose own narration opens the line said on arriving.
+ */
+export interface DecodeAhead {
+  here?: string;
+  next: readonly string[];
+}
+
+/** A near prefetch may also name the lines to decode ahead; the shared `PrefetchOptions` passes it through. */
+export interface ClipPrefetchOptions extends PrefetchOptions {
+  decodeAhead?: DecodeAhead;
+}
+
+/** The first clip of every line `ahead` names, nearest first, at most HELD_DECODES. */
+export function firstClipsAhead(ahead: DecodeAhead, manifests: readonly VoiceManifest[]): string[] {
+  const keys: string[] = [];
+  const add = (match: (address: string) => boolean): void => {
+    for (const each of manifests) {
+      for (const [address, variants] of Object.entries(each)) {
+        if (!match(address)) continue;
+        for (const clips of Object.values(variants)) {
+          const first = clips[0]?.clip;
+          if (first !== undefined && !keys.includes(first)) keys.push(first);
+        }
+      }
+    }
+  };
+  const here = ahead.here;
+  if (here !== undefined) add((address) => address.startsWith(here) && address.endsWith("/narration") && address !== `${here}narration`);
+  for (const next of ahead.next) add((address) => address === `${next}narration`);
+  return keys.slice(0, HELD_DECODES);
+}
 
 /**
  * The lines worth fetching ahead: a scene's narration (and its variants and branches), the goal
@@ -167,6 +222,17 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   let active = 0;
   /** Bumped when the guessing ahead is retired, so work that was already under way drops its result. */
   let prefetchEpoch = 0;
+  /** The first clips to decode ahead, nearest first, for the scene that last asked. */
+  let ahead: string[] = [];
+  /** First clips decoded ahead (or being decoded), by clip key, with the channel that decoded them. */
+  let held = new Map<string, { channel: VoiceChannel; buffer: Promise<VoiceBuffer> }>();
+  /** What the scene before held, kept a moment for the new scene's own line (see the header). */
+  let leaving = new Map<string, { channel: VoiceChannel; buffer: Promise<VoiceBuffer> }>();
+  let leavingTimer: ReturnType<typeof setTimeout> | null = null;
+  /** A decode ahead is under way: one at a time. */
+  let predecoding = false;
+  /** Clips that would not decode ahead, not tried again for this scene. */
+  const undecodable = new Set<string>();
 
   const after = (ms: number, fn: () => void): (() => void) => {
     const timer = setTimeout(() => {
@@ -293,16 +359,21 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     for (const [index, entry] of playlist.entries()) {
       let buffer = decoded.get(entry.clip);
       if (buffer === undefined) {
-        const ahead = clips[index - LINE_WINDOW];
-        const turn = ahead === undefined ? Promise.resolve() : ahead.then(ignore, ignore);
-        buffer = turn
-          .then(() => {
-            // A line cut off stops fetching what it no longer needs.
-            if (at !== generation) throw new Error("line dropped");
-            return bytesOf(entry.clip, false);
-          })
-          // Decoding hands the bytes over, so each decode gets its own copy of what is kept.
-          .then((encoded) => channel.decode(encoded.slice(0)));
+        const window = clips[index - LINE_WINDOW];
+        const turn = window === undefined ? Promise.resolve() : window.then(ignore, ignore);
+        const fresh = (): Promise<VoiceBuffer> =>
+          turn
+            .then(() => {
+              // A line cut off stops fetching what it no longer needs.
+              if (at !== generation) throw new Error("line dropped");
+              return bytesOf(entry.clip, false);
+            })
+            // Decoding hands the bytes over, so each decode gets its own copy of what is kept.
+            .then((encoded) => channel.decode(encoded.slice(0)));
+        // Decoded ahead (or being decoded) by this engine: start from that. One that fails is
+        // decoded afresh, as if it had never been tried.
+        const early = held.get(entry.clip) ?? leaving.get(entry.clip);
+        buffer = early !== undefined && early.channel === channel ? early.buffer.catch(fresh) : fresh();
         buffer.catch(() => {
           failed = true;
         });
@@ -353,6 +424,10 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
       const loaded = (await Promise.all(names.map(manifest))).filter((m): m is VoiceManifest => m !== null);
       // Retired while the manifest was on its way: the request is over, whatever it would have asked for.
       if (epoch !== prefetchEpoch) return;
+      // A scene's request says which lines to decode ahead; a plate's or the chapter's does not
+      // and leaves them be.
+      const decodeAhead = (opts as ClipPrefetchOptions | undefined)?.decodeAhead;
+      if (decodeAhead !== undefined && !opts?.background) hold(firstClipsAhead(decodeAhead, loaded));
       const wanted = new Set<string>();
       // In the order asked: the scene the party is in, then the nearest scenes, then the rest.
       for (const prefix of prefixes) {
@@ -382,6 +457,65 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     prefetchEpoch += 1;
     prefetchQueue.near = [];
     prefetchQueue.background = [];
+    // Nobody is looking, or the chapter is over: nothing decoded ahead is worth its memory.
+    ahead = [];
+    held = new Map();
+    leaving = new Map();
+    undecodable.clear();
+  }
+
+  /**
+   * The first clips the scene that just asked wants decoded ahead. Held ones it does not want
+   * are let go: kept RESOLVE_MS more for the line the new scene is saying, then dropped (and
+   * dropped at once by the next scene, so never more than two scenes' worth).
+   */
+  function hold(keys: readonly string[]): void {
+    const wanted = new Set(keys);
+    const going = new Map<string, { channel: VoiceChannel; buffer: Promise<VoiceBuffer> }>();
+    for (const [key, entry] of held) {
+      if (!wanted.has(key)) {
+        held.delete(key);
+        going.set(key, entry);
+      }
+    }
+    leaving = going;
+    if (leavingTimer !== null) clearTimeout(leavingTimer);
+    leavingTimer = setTimeout(() => {
+      leavingTimer = null;
+      if (leaving === going) leaving = new Map();
+    }, resolveMs);
+    ahead = [...keys];
+    undecodable.clear();
+    predecode();
+  }
+
+  /**
+   * Decodes the next first clip ahead whose bytes are here, one at a time, into the engine the
+   * speaker already has, and only while it is running and nothing is being said, resolved or
+   * queued: the line being spoken always has the decoder to itself.
+   */
+  function predecode(): void {
+    if (predecoding || ahead.length === 0) return;
+    if (urgent > 0 || streaming.size > 0 || recording || queue.length > 0) return;
+    if (env.saveData?.() === true) return;
+    const channel = env.channel();
+    if (channel === null || !channel.ready()) return;
+    const key = ahead.find((each) => !held.has(each) && !undecodable.has(each) && sizes.has(each));
+    const bytes = key === undefined ? undefined : kept.get(key);
+    if (key === undefined || bytes === undefined) return;
+    predecoding = true;
+    const buffer = bytes.then((encoded) => channel.decode(encoded.slice(0)));
+    const entry = { channel, buffer };
+    held.set(key, entry);
+    buffer
+      .then(ignore, () => {
+        if (held.get(key) === entry) held.delete(key);
+        undecodable.add(key);
+      })
+      .finally(() => {
+        predecoding = false;
+        predecode();
+      });
   }
 
   /** How many prefetches may be under way: the table's own line always goes first. */
@@ -391,8 +525,16 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     return PREFETCH_CONCURRENCY;
   }
 
-  /** Starts queued prefetches up to the slots free. Called whenever a slot may have opened. */
+  /**
+   * Starts queued prefetches up to the slots free, then a decode ahead if one may start. Called
+   * whenever a slot may have opened: a clip arrived, a line resolved or stopped fetching.
+   */
   function drain(): void {
+    fill();
+    predecode();
+  }
+
+  function fill(): void {
     while (active < prefetchSlots()) {
       const key = prefetchQueue.near.shift() ?? prefetchQueue.background.shift();
       if (key === undefined) return;
@@ -461,6 +603,8 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
         rest();
         mark();
         pump();
+        // The line is over: the decoder is free for what the next step will say.
+        predecode();
       };
       // A context the browser suspends mid-line never says the clips ended, and a clip that hangs
       // mid-line never arrives; the scene goes on anyway.

@@ -23,6 +23,8 @@ import { useEffect } from "react";
 import { edgesOf, prefetchNarration, stopPrefetchNarration } from "@kad/shared";
 import type { Chapter, SceneId } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
+// Types only: the clip speaker is the lazy read-aloud chunk, and this file is in the world's.
+import type { ClipPrefetchOptions, DecodeAhead } from "./clip-speaker";
 
 /** How many steps of the story ahead to fetch first. */
 export const VOICE_PREFETCH_DEPTH = 2;
@@ -54,6 +56,19 @@ export function upcomingNarration(chapter: Chapter, from: SceneId | null, depth 
 }
 
 /**
+ * The lines the next step can begin with, for the recorded voice to decode their first clips
+ * ahead (clip-speaker.ts `decodeAhead`): the branch lines of the scene the party is in, and the
+ * scenes one step from it (its choices, both branches of a check). Before the first scene, the
+ * entry is the step ahead.
+ */
+export function nextNarration(chapter: Chapter, from: SceneId | null): DecodeAhead {
+  const here = from !== null ? chapter.scenes[from] : undefined;
+  if (from === null || here === undefined) return { next: [`${chapter.id}/${chapter.entry}/`] };
+  const next = [...new Set(edgesOf(from, here).map((edge) => edge.to))].filter((id) => chapter.scenes[id] !== undefined);
+  return { here: `${chapter.id}/${from}/`, next: next.map((id) => `${chapter.id}/${id}/`) };
+}
+
+/**
  * Fetch the recordings for the scenes ahead of wherever the party is, as the story moves, while
  * `enabled` (a layout sets it only when the world is on screen); with `wholeChapter`, the rest
  * of the chapter as well.
@@ -70,7 +85,9 @@ export function useVoicePrefetch(enabled: boolean, wholeChapter: boolean): void 
 
   useEffect(() => {
     if (!enabled || chapter === null || chapter.id !== chapterId) return;
-    return whenSeen(() => prefetchNarration(upcomingNarration(chapter, sceneId)));
+    // The first clips of the next step's lines are decoded ahead too, on the device that speaks.
+    const opts: ClipPrefetchOptions = { decodeAhead: nextNarration(chapter, sceneId) };
+    return whenSeen(() => prefetchNarration(upcomingNarration(chapter, sceneId), opts));
   }, [enabled, chapter, chapterId, sceneId]);
 
   useEffect(() => {

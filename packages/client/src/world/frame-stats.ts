@@ -24,8 +24,18 @@
  * without a renderer — the same reasoning `camera.ts` and `shake.ts` follow.
  */
 
-/** 60fps. A frame that takes longer than this dropped one. */
+/** 60fps. A frame that takes longer than this dropped one, on a screen drawing at 60. */
 export const FRAME_BUDGET_MS = 1000 / 60;
+
+/**
+ * The frame time a screen is drawing to: `1000 / maxFPS`, so a television held to thirty
+ * frames a second (PixiStage.tsx `stageBudget`) is judged against a thirtieth of a second,
+ * not a sixtieth. Judged against a sixtieth, every one of its frames read as late, and the
+ * meter called a smooth television struggling. No cap (0) is a 60Hz screen's budget.
+ */
+export function frameBudgetMs(maxFps: number): number {
+  return maxFps > 0 ? 1000 / maxFps : FRAME_BUDGET_MS;
+}
 
 /**
  * How many frames the window holds.
@@ -54,7 +64,7 @@ export interface FrameStats {
   reset(): void;
 }
 
-export function createFrameStats(windowFrames = WINDOW_FRAMES): FrameStats {
+export function createFrameStats(windowFrames = WINDOW_FRAMES, budgetMs = FRAME_BUDGET_MS): FrameStats {
   /*
    * A ring buffer rather than an array that shifts: this runs on every frame,
    * and an allocation per frame inside the thing measuring frame cost would
@@ -83,7 +93,9 @@ export function createFrameStats(windowFrames = WINDOW_FRAMES): FrameStats {
         const ms = samples[i] ?? 0;
         total += ms;
         if (ms > worst) worst = ms;
-        if (ms > FRAME_BUDGET_MS) dropped += 1;
+        // A whole frame late, with a millisecond's grace: a capped ticker's frames land a
+        // hair either side of the budget, and those are on time.
+        if (ms > budgetMs + 1) dropped += 1;
       }
       const mean = total / count;
       return {
@@ -110,15 +122,16 @@ export function createFrameStats(windowFrames = WINDOW_FRAMES): FrameStats {
  */
 export type FrameVerdict = "smooth" | "uneven" | "struggling";
 
-export function verdictOf(reading: FrameReading): FrameVerdict {
+export function verdictOf(reading: FrameReading, budgetMs: number = FRAME_BUDGET_MS): FrameVerdict {
   // Nothing measured yet is not a complaint. A meter that opens on red is a
   // meter everybody learns to ignore before it has said anything true.
   if (reading.samples === 0) return "smooth";
   // Under a tenth of the window missing the budget is a normal browser: a GC
   // pause, a texture upload, a scene change.
   const dropRate = reading.dropped / reading.samples;
-  if (reading.fps < 45 || dropRate > 0.35) return "struggling";
-  if (dropRate > 0.1 || reading.worstMs > FRAME_BUDGET_MS * 3) return "uneven";
+  // Three quarters of the rate the screen is drawing to: 45 at 60, 22.5 on a television at 30.
+  if (reading.fps < (1000 / budgetMs) * 0.75 || dropRate > 0.35) return "struggling";
+  if (dropRate > 0.1 || reading.worstMs > budgetMs * 3) return "uneven";
   return "smooth";
 }
 

@@ -12,6 +12,7 @@ import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { useVoicePrefetch } from "./voice-prefetch";
+import type { ClipPrefetchOptions } from "./clip-speaker";
 
 let asked: [readonly string[], PrefetchOptions | undefined][] = [];
 /** Every prefetch call and every retirement, in order. */
@@ -56,13 +57,16 @@ describe("prefetching the narration ahead", () => {
     render(<World enabled display={false} />);
     expect(asked).toHaveLength(1);
     expect(asked[0]![0]).toEqual(expect.arrayContaining([`${chapter.id}/@goal`, `${chapter.id}/${chapter.entry}/`]));
-    expect(asked[0]![1]).toBeUndefined();
+    // Near, not background, and naming the step ahead whose first clips are decoded early.
+    expect(asked[0]![1]?.background).toBeFalsy();
+    expect((asked[0]![1] as ClipPrefetchOptions).decodeAhead?.next.length).toBeGreaterThan(0);
 
     const next = Object.keys(chapter.scenes).find((id) => id !== chapter.entry)!;
     act(() => useGameStore.setState({ state: makeState({ phase: "scene", chapterId: chapter.id, sceneId: next, party: [makeMember()] }) }));
     expect(asked).toHaveLength(2);
     expect(asked[1]![0]).toContain(`${chapter.id}/${next}/`);
     expect(asked[1]![0]).not.toContain(`${chapter.id}/@goal`);
+    expect((asked[1]![1] as ClipPrefetchOptions).decodeAhead?.here).toBe(`${chapter.id}/${next}/`);
   });
 
   it("takes the rest of the chapter too, in the background, on the shared screen only", () => {

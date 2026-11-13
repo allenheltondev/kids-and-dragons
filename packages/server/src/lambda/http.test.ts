@@ -1388,6 +1388,91 @@ describe("POST /api/action", () => {
     expect(result.statusCode).toBe(200);
     expect(bodyOf(result)).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
   });
+
+  it("reads the session's device beside the run's own reads, not before them", async () => {
+    // Every read is held at a gate. Were the revocation check still awaited
+    // first, only `getDevice` would have started when the gate is looked at.
+    const harness = makeHarness();
+    const room = await joined(harness);
+    let open = () => {};
+    const gate = new Promise<void>((resolve) => (open = resolve));
+    const started: string[] = [];
+    for (const name of ["getDevice", "getState", "getRun", "getPlayer"] as const) {
+      const original = (harness.repo[name] as (...args: unknown[]) => Promise<unknown>).bind(harness.repo);
+      vi.spyOn(harness.repo, name).mockImplementation((async (...args: unknown[]) => {
+        started.push(name);
+        await gate;
+        return original(...args);
+      }) as never);
+    }
+
+    const pending = respond(
+      event("POST", "/api/action", {
+        body: {
+          runId: room.runId,
+          playerId: room.player.principal.playerId,
+          seq: room.seq,
+          intent: { type: "CHOOSE", choiceId: "east" },
+        },
+        headers: { authorization: `Bearer ${room.sessionToken}` },
+      }),
+      runtimeFor(harness),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(new Set(started)).toEqual(new Set(["getDevice", "getState", "getRun", "getPlayer"]));
+
+    open();
+    const result = await pending;
+    expect(bodyOf(result)).toMatchObject({ ok: true, seq: room.seq + 1 });
+  });
+
+  it("writes nothing for a session whose device was revoked, and answers as before", async () => {
+    const harness = makeHarness();
+    const room = await joined(harness);
+    await harness.repo.revokeDevice(room.householdId, room.player.principal.deviceId);
+    const commit = vi.spyOn(harness.repo, "commit");
+
+    const result = await respond(
+      event("POST", "/api/action", {
+        body: {
+          runId: room.runId,
+          playerId: room.player.principal.playerId,
+          seq: room.seq,
+          intent: { type: "CHOOSE", choiceId: "east" },
+        },
+        headers: { authorization: `Bearer ${room.sessionToken}` },
+      }),
+      runtimeFor(harness),
+    );
+
+    // Refused as an absent session is: with no device token to fall back on, 401.
+    expect(result.statusCode).toBe(401);
+    expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN", message: "this action needs a room session token" });
+    expect(commit).not.toHaveBeenCalled();
+    expect((await harness.repo.getState(room.runId))?.seq).toBe(room.seq);
+  });
+
+  it("does not call a revoked session's other run a 403", async () => {
+    // Before the split a revoked session was no session at all, whatever run it named.
+    const harness = makeHarness();
+    const room = await joined(harness);
+    await harness.repo.revokeDevice(room.householdId, room.player.principal.deviceId);
+
+    const result = await respond(
+      event("POST", "/api/action", {
+        body: {
+          runId: "r_someone_else",
+          playerId: room.player.principal.playerId,
+          seq: room.seq,
+          intent: { type: "CHOOSE", choiceId: "east" },
+        },
+        headers: { authorization: `Bearer ${room.sessionToken}` },
+      }),
+      runtimeFor(harness),
+    );
+
+    expect(result.statusCode).toBe(401);
+  });
 });
 
 // ---------------------------------------------------------------------------

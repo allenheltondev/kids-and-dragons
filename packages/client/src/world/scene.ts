@@ -36,7 +36,7 @@
  */
 
 import { stanceIdle } from "./idle-motion";
-import { Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
+import { Application, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
 import type { CastStance, PartyMember, Position, SceneRift } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
@@ -146,8 +146,6 @@ const DESIGN = { width: 1600, height: 900 } as const;
  */
 const PACKED_WORDS_PX = 30;
 
-/** Backdrops kept decoded: the one on screen and the one before it. */
-const KEPT_BACKDROPS = 2;
 /** One camera "tile" of story space, in design units. See the header. */
 export const STORY_TILE = 100;
 const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / STORY_TILE } as const;
@@ -571,22 +569,12 @@ export function createScene(app: Application): PartyScene {
   /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
   let biomeSprite: Sprite | null = null;
-  /**
-   * Backdrops shown, oldest first, by the URL each was loaded under. A 1920x1080
-   * backdrop is about 8MB decoded, a chapter has eight to twelve, and nothing
-   * ever let go of one: a TV gained a hundred megabytes a chapter. The last two
-   * stay (stepping back to the room just left is common); older ones unload.
+  /*
+   * Backdrops are loaded through art-memory.ts like the rest of the stage's art, so the
+   * sweep that follows each scene change decides which old ones to let go of. The scene
+   * used to unload all but its last two itself, which could throw away a backdrop the
+   * look-ahead (art-upkeep.ts) was holding for the next scene and make it decode again.
    */
-  const shownBackdrops: string[] = [];
-  const keepBackdrop = (url: string) => {
-    const at = shownBackdrops.indexOf(url);
-    if (at >= 0) shownBackdrops.splice(at, 1);
-    shownBackdrops.push(url);
-    while (shownBackdrops.length > KEPT_BACKDROPS) {
-      const old = shownBackdrops.shift();
-      if (old !== undefined) void Assets.unload(old).catch(() => undefined);
-    }
-  };
 
   const actorsLayer = new Container();
   // Painter's order by zIndex, so the depth stagger in layoutActors() reads
@@ -2081,34 +2069,19 @@ export function createScene(app: Application): PartyScene {
       biomeSprite = null;
       if (wanted === null) return;
 
-      let loadedAs = wanted;
-      /*
-       * Assets.unload drops a URL from the cache at once but from the loader
-       * only after an await, and a load in between is handed the texture that
-       * unload is about to destroy. Rare (a step back onto a backdrop as it
-       * falls out of the kept two), and answered by loading it once more.
-       */
-      const load = (url: string) =>
-        Assets.load<Texture>(url).then((texture) => (texture.destroyed ? Assets.load<Texture>(url) : texture));
-      void load(wanted)
+      // loadArt also loads once more a texture a sweep destroyed between its cache hit and here.
+      void loadArt(wanted)
         .catch((error: unknown) => {
           // A missing illustration returns to the chapter's environment.
           if (destroyed || biomeId !== wanted || fallback === null || wanted === fallback) {
             throw error;
           }
-          loadedAs = fallback;
-          return load(fallback);
+          return loadArt(fallback);
         })
         .then((texture) => {
-          // The chapter may have moved on (or the stage gone) while it loaded.
-          if (destroyed || biomeId !== wanted) {
-            // Never shown, so never kept: let it go, unless it is still in use.
-            if (!destroyed && loadedAs !== biomeId && !shownBackdrops.includes(loadedAs)) {
-              void Assets.unload(loadedAs).catch(() => undefined);
-            }
-            return;
-          }
-          keepBackdrop(loadedAs);
+          // The chapter may have moved on (or the stage gone) while it loaded. What was
+          // never shown is left to the next sweep, which keeps it if the look-ahead holds it.
+          if (destroyed || biomeId !== wanted) return;
           const sprite = new Sprite(texture);
           /*
            * Cover the design rect, then centre in it. Backdrops are authored
