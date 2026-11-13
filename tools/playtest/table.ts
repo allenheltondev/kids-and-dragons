@@ -197,7 +197,7 @@ export async function openTable(options: TableOptions): Promise<Table> {
   }
   const phones: Page[] = [];
   for (const phone of seeded.phones) {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, ...motion, storageState: storage(base, {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, ...(process.env.KAD_PLAYTEST_PHONE_UA ? { userAgent: process.env.KAD_PLAYTEST_PHONE_UA } : {}), ...motion, storageState: storage(base, {
       "kad.device": { householdId: phone.householdId, playerId: phone.playerId, displayName: phone.displayName, deviceToken: phone.deviceToken },
       [`kad.session.${phone.session.roomCode}`]: { ...phone.session, savedAt: Date.now() },
     }) });
