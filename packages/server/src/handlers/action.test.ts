@@ -198,6 +198,61 @@ describe("applyAction — the question a decision answers (#413)", () => {
     expect(response).toMatchObject({ ok: true, seq: 1 });
   });
 
+  it("takes a tap from a phone that is behind when the question it answers is still open", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const playerId = room.player.principal.playerId;
+    const before = await harness.repo.getState(room.runId);
+    if (!before) throw new Error("setup failed");
+    // The run moved a step without the question changing (a friend's vote does this): the
+    // stored state is one seq on, and this phone has not heard.
+    const realGetState = harness.repo.getState.bind(harness.repo);
+    await harness.repo.commit({ runId: room.runId, expectedSeq: 0, state: { ...before, seq: 1 }, event: { runId: room.runId, seq: 1, at: before.updatedAt, patch: [{ op: "replace", path: "/seq", value: 1 }] } } as never);
+    const now = await realGetState(room.runId);
+    expect(now?.seq).toBe(1);
+
+    const response = await applyAction(
+      { runId: room.runId, playerId, seq: 0, intent: choose("east"), context: decisionContext(before) },
+      harness.deps,
+    );
+    expect(response).toMatchObject({ ok: true, seq: 2 });
+  });
+
+  it("still refuses a behind tap that names no question, and one from ahead that does", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const playerId = room.player.principal.playerId;
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("setup failed");
+
+    const ahead = await applyAction(
+      { runId: room.runId, playerId, seq: 7, intent: choose("east"), context: decisionContext(state) },
+      harness.deps,
+    );
+    expect(ahead.error?.code).toBe("STALE_SEQ");
+  });
+
+  it("applies a stamped decision again when a friend's tap beat it to the seq", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("setup failed");
+    // The first commit loses the race; the second lands.
+    const commit = harness.repo.commit.bind(harness.repo);
+    let lost = false;
+    harness.repo.commit = async (...args: Parameters<typeof commit>) => {
+      if (!lost) { lost = true; return false; }
+      return commit(...args);
+    };
+
+    const response = await applyAction(
+      { runId: room.runId, playerId: room.player.principal.playerId, seq: 0, intent: choose("east"), context: decisionContext(state) },
+      harness.deps,
+    );
+    expect(response).toMatchObject({ ok: true, seq: 1 });
+    expect(room.received).toHaveLength(1);
+  });
+
   it("refuses one made on a question that has passed, even at the current seq", async () => {
     const harness = makeHarness();
     const room = await setup(harness);

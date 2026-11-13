@@ -223,7 +223,17 @@ async function applyActionOnce(
   // means it is acting on a world that no longer exists — including the ahead
   // case, which is a client that replayed a patch twice. Both answers are the
   // same: here is the real seq, resync.
-  if (input.seq !== state.seq && !SEQ_FREE_EDITS.has(input.intent.type)) {
+  //
+  // One exception, for a phone that is only *behind* and says which question
+  // its tap answers (#413): when that question is still the one open, the tap
+  // is taken here, on the run as it is now. It is exactly what the phone would
+  // do next anyway (catch up, see the same question, send the tap again at the
+  // seq this handler names), without the two round trips in between, which at
+  // a vote, where everyone taps at once, were most of a second for whoever
+  // came second. A friend's vote leaves the question as it was; anything that
+  // changes it changes the stamp, and step 1b refuses the tap as before.
+  const sameQuestion = input.seq < state.seq && typeof input.context === "string" && input.context === decisionContext(state);
+  if (input.seq !== state.seq && !sameQuestion && !SEQ_FREE_EDITS.has(input.intent.type)) {
     logStaleSeq("seq-gate", input, state.seq);
     return {
       ok: false,
@@ -512,7 +522,8 @@ async function applyActionOnce(
       state,
       // The engine re-checks seq itself; passing it keeps that guard armed even
       // if this handler is ever bypassed.
-      { playerId: input.playerId, intent: input.intent, seq: input.seq },
+      // (A tap taken on the same question is applied at the run's own seq.)
+      { playerId: input.playerId, intent: input.intent, seq: sameQuestion ? state.seq : input.seq },
       {
         rules: deps.content.rules(),
         items: deps.content.items(),
@@ -882,6 +893,10 @@ async function applyActionOnce(
     // A camp change beaten to the seq by somebody else's step: read the run
     // again and apply it there, rather than send the phone round again.
     if (SEQ_FREE_EDITS.has(input.intent.type) && mayRetryCamp) return RETRY_CAMP;
+    // A decision that says which question it answers, beaten to the seq by a
+    // friend's tap: read the run again and take it there if the question is
+    // still open (the seq gate's exception, above), or refuse it as passed.
+    if (typeof input.context === "string" && mayRetryCamp) return RETRY_CAMP;
     logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,

@@ -350,7 +350,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // starting on its first clip with a pause between clips (the lazy read-aloud chunk), and a
 // phone keeping its renewed device token (`keepRenewedDeviceToken`, in the entry). 1814KB
 // measured against main's 1806KB. First paint 332KB, at its cap. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1816;
+// 1816 -> 1819 on 2026-11-13 for the smoothness pass: the acting phone applying the step its
+// own response carries and the sequencer dropping a held patch's second copy (the entry), the
+// decode-ahead ordered by backdrop, cast and fight with the music of scenes ahead, the stage
+// asleep under a plate reel, its pixel cap, and two music loops kept (the stage and audio
+// chunks). 1817KB measured against main's 1814KB. First paint 332KB, unchanged. 2KB of slack.
+const TOTAL_BUDGET_KB = 1819;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

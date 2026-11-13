@@ -19,6 +19,7 @@ import type { InteractionAction, InteractionPrompt, PartyMember } from "@kad/sha
 import { useSend, useRunState, useMe, useGameStore, useSynced } from "../store";
 import { clockGap } from "../store/server-clock";
 import { reducedMotion } from "../a11y/prefs";
+import { isTvBrowser } from "../display/tv";
 import { Icon } from "./icons";
 import { calloutsOfEdge } from "./matchup-copy";
 import { Button } from "../ui/Button";
@@ -31,6 +32,9 @@ import { GAME, HELPING_HAND, outcomeLine, phoneJob, tvStatus } from "./interacti
 import "./FightLog.css";
 import "./StoryInteraction.css";
 
+/** A little under two display frames at 60Hz, so every other one is taken. */
+const TV_FRAME_MS = 30;
+
 /** Frame-rate only where a marker moves; untimed play needs a slow tick for playback and lease expiry. */
 function useClock(active: boolean, everyMs?: number): number {
   const [now, setNow] = useState(Date.now());
@@ -41,7 +45,14 @@ function useClock(active: boolean, everyMs?: number): number {
       return () => clearInterval(timer);
     }
     let frame = 0;
-    const tick = () => { setNow(Date.now()); frame = requestAnimationFrame(tick); };
+    // A television only shows the marker (nobody stops it there), and each tick is a render
+    // of the whole board: thirty a second, like its stage (PixiStage.tsx `stageBudget`).
+    const gap = isTvBrowser() ? TV_FRAME_MS : 0;
+    let last = 0;
+    const tick = (at: number) => {
+      if (at - last >= gap) { last = at; setNow(Date.now()); }
+      frame = requestAnimationFrame(tick);
+    };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [active, everyMs]);
