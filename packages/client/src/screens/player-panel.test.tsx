@@ -368,6 +368,9 @@ describe("a choice", () => {
     const rest = document.querySelector(".player__camp--rest")!;
     expect(rest.querySelector('[data-testid="camp-button"]')).not.toBeNull();
     expect(rest.querySelector('[data-testid="tent-button"]')).not.toBeNull();
+    // Once: drawn in the task page that is up, not again in the sheet hidden behind it.
+    expect(document.querySelectorAll('[data-testid="camp-button"]')).toHaveLength(1);
+    expect(document.querySelectorAll('[data-testid="tent-button"]')).toHaveLength(1);
   });
 
   it("shows who voted for what, as a tick in their seat", () => {

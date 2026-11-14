@@ -937,6 +937,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Not anybody the host took out (#267): they are gone from the game, not away.
   const friends = party.filter((member) => member.playerId !== me.playerId && !(state.removed?.includes(member.playerId) ?? false));
   const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
+  // The task page and the sheet are never shown together (`hidden` below): a control both offer
+  // (Camp, the tent) is drawn in whichever is up, so a screen reader meets it once.
+  const taskUp = !sheetUp && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
    * it has one, else the chapter's biome — the same choice the stage makes.
@@ -1421,7 +1424,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             the choices and never in their way, as they are beside Ready in the lobby and under
             the chapter's rewards. In Travel Mode no TV shows the camp at all; at a TV the
             choice fills the phone, and the camp was out of reach behind it (playtest, 2026-11-14). */}
-        {atRest && myPrompt?.kind === "choice" ? (
+        {atRest && myPrompt?.kind === "choice" && taskUp ? (
           <div className="player__camp player__camp--rest">
             <CampButton state={state} block />
             <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} block />
@@ -1781,8 +1784,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             )}
             {/* Beside Ready (docs/camp.md §3): never in its way, and Begin closes it.
                 The first-session choice (§5.3) under them, so Ready stays in reach. */}
-            {inLobby ? <CampButton state={state} /> : null}
-            {inLobby ? <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
+            {inLobby && taskUp ? <CampButton state={state} /> : null}
+            {inLobby && taskUp ? <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             {inLobby ? <KitWelcome state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             <ul className="prompt__party">
               {party.map((member) => {
@@ -2436,7 +2439,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             it is the whole answer: the tap says you are ready. */}
         {/* The camp (docs/camp.md §3; #620): the Camp button, above Ready and
             never in its way. At a rest stop too. */}
-        {inLobby || atRest ? (
+        {(inLobby || atRest) && sheetUp ? (
           <div className="player__camp">
             <CampButton state={state} block />
             {/* Into her tent and out (CAMP_TENT): on the TV, with nothing to open first. */}
