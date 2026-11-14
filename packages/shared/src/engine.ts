@@ -462,9 +462,10 @@ function announceDecision(
   prompt: Prompt & { kind: "choice" },
   choice: { label: string },
   playerId: string,
+  fromRest = false,
 ): void {
   if (prompt.options.length > 1) {
-    draft.decision = { sceneId: draft.sceneId, label: choice.label, byPlayerId: playerId, vote: prompt.vote };
+    draft.decision = { sceneId: draft.sceneId, label: choice.label, byPlayerId: playerId, vote: prompt.vote, ...(fromRest ? { rest: true } : {}) };
   }
 }
 
@@ -2362,7 +2363,7 @@ function doChoose(
   const ups = landRanks(draft, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
   announceRankUps(draft, ups);
-  announceDecision(draft, prompt, choice, playerId);
+  announceDecision(draft, prompt, choice, playerId, scene.type === "rest");
   // Only one presentation rides on a transition. Finishing the chapter is a
   // bigger beat than the tap that got you there, so it wins.
   if (entered?.kind === "CHAPTER_COMPLETE") return entered;

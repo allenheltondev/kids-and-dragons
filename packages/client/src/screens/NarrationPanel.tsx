@@ -161,12 +161,14 @@ const NarrationPlate = memo(function NarrationPlate({
   const decisionLine =
     decided === null || picked === null
       ? null
-      : decided.vote
+      : decided.rest
+        ? `Everyone's ready: ${picked}`
+        : decided.vote
         ? `The party voted: ${picked}`
         : `${party.find((m) => m.playerId === decided.byPlayerId)?.character.name ?? "Someone"} chose: ${picked}`;
   // The same line as heard: who chose is on the screen, and the room hears "hero" (#552).
   const spokenDecision =
-    decided === null || picked === null ? null : decided.vote ? `The party voted: ${picked}` : `Hero chose: ${picked}`;
+    decided === null || picked === null ? null : decided.rest ? `Everyone's ready: ${picked}` : decided.vote ? `The party voted: ${picked}` : `Hero chose: ${picked}`;
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
@@ -589,7 +591,7 @@ const NarrationPlate = memo(function NarrationPlate({
           {/* What got the party here: a quiet line of record, never louder than whose turn it is. */}
           {decisionLine === null || decided === null ? null : (
             <p className="narration__decision" key={`decision:${sceneId ?? "-"}`} data-testid="decision">
-              <Icon name={decided.vote ? "vote" : "hand"} />
+              <Icon name={decided.rest ? "check" : decided.vote ? "vote" : "hand"} />
               <span>{decisionLine}</span>
             </p>
           )}

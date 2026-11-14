@@ -1565,6 +1565,29 @@ describe("a full walk of a chapter", () => {
     });
   });
 
+  it("tells a rest's way on as everyone being ready, not as a vote (RunState.decision.rest)", () => {
+    const chapter = makeChapter();
+    const camp = chapter.scenes["scene_camp"] as { choices: { id: string; label: string; icon: string; goto: string }[] };
+    camp.choices = [...camp.choices, { id: "stars", label: "Watch the stars", icon: "star", goto: "scene_ridge" }];
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const left = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: chapter.id } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+        { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "sleep" } },
+      ],
+      context,
+    ).state;
+    expect(left.sceneId).toBe("scene_ridge");
+    expect(left.decision).toMatchObject({ label: "Sleep", vote: true, rest: true });
+  });
+
   it("waits for the whole party before putting the board up", () => {
     /*
      * One phone readying is not the fight starting. This used to be the test

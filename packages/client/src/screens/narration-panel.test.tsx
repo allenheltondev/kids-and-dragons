@@ -388,6 +388,12 @@ describe("what the table picked (RunState.decision)", () => {
     expect(spoken).toContain("The party voted: Open the gate. The gate swings open.");
   });
 
+  it("tells the way on out of a rest as everyone being ready, not as a vote", () => {
+    mount({ sceneId: "camp", narration: "The gate swings open.", decision: { ...DECIDED, rest: true } });
+    expect(screen.getByTestId("decision").textContent).toBe("Everyone's ready: Open the gate.");
+    expect(spoken).toContain("Everyone's ready: Open the gate. The gate swings open.");
+  });
+
   it("names the kid who picked, when one kid chose for everyone", () => {
     mount({ sceneId: "camp", decision: { ...DECIDED, label: "Go west", vote: false } });
     expect(screen.getByTestId("decision").textContent).toBe("Thistle chose: Go west.");
