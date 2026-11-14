@@ -99,7 +99,7 @@ import {
 } from "./camp-motion";
 import { CLEARANCE, QUEUE_GAP, createWanderPlanner, queuePlaces, type QueueRow, type WanderPlace, type WanderPlanner } from "./camp-wander";
 import { stanceIdle } from "./idle-motion";
-import { DEFAULT_SIZE, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
+import { DEFAULT_SIZE, fitCanvas, NOMINAL_PAINT, paintAspect, paintedFacing, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
 import { reducedMotion } from "../a11y/prefs";
 import {
   BLEED_SOURCE,
@@ -283,7 +283,7 @@ const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
 /** A shadow on the ground, cast by the backdrop's own light (ground-shadows.ts). */
-function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = false): Container {
+function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = true): Container {
   return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY, behind });
 }
 /** How fast the camp eases to a new frame when the panels over it change height. */
@@ -733,8 +733,10 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const fitPieceShadow = (piece: PieceView, texture: Texture): void => {
     const paint = measurePaint(texture);
     const width = paint ? piece.fit.canvas * (paint.right - paint.left) : piece.heightPx;
-    // A tent's shadow lies under it, cast back from its pegs (ground-shadows.ts `behind`).
-    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY, piece.id.startsWith("tent_"));
+    // Cast back from where it stands (ground-shadows.ts `behind`). A bedroll lies flat on the
+    // ground: an outline thrown off it reads as a blanket hovering, so it keeps only its contact shade.
+    const flat = piece.id.startsWith("bedroll");
+    const shadow = campGroundShadow(light, width, piece.heightPx, flat ? undefined : texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY);
     recast(piece.shadow, shadow);
     piece.shadow = shadow;
   };
@@ -763,7 +765,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const heightPx = campHeightPx(pieceHeightCm(piece), measure);
     if (piece.id === "campfire") container.addChild(fireGlow(heightPx));
     // Until its painting loads (or if it never does), a tent's contact shade already sits inside its pegs.
-    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0, piece.id.startsWith("tent_"));
+    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0);
     castShadow(container, shadow);
     const groundCount = container.children.length;
     const pending = new Graphics()
@@ -1595,7 +1597,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actor.body.rotation = rotation + actor.carryRotation;
     actor.body.scale.y = scaleY;
     // Art is drawn facing left: scale.x 1 faces left, -1 right.
-    actor.art.scale.x = -actor.facingNow * scaleX;
+    actor.art.scale.x = -actor.facingNow * scaleX * paintedFacing(actor.def.figure);
     if (actor.leaf) {
       // Carried while it wanders, dropped once each time it settles.
       const drop = actor.walk && !still ? 0 : mosshornLeafDrop(elapsed - actor.arrivedAt, still);

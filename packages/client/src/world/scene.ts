@@ -70,7 +70,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
+import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, paintedFacing, paintedFacingOfUrl, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import { heroArtUrl } from "./hero-art";
 import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
@@ -499,6 +499,8 @@ interface CastActor extends StageFigureArt {
   phase: number;
   /** 0 silent → 1 speaking: the cast pulse (cast-pulse.ts), eased by tick(). */
   voice: number;
+  /** -1 for art painted facing right (figure-scale.ts `paintedFacing`), so it faces the party like the rest. */
+  painted: 1 | -1;
 }
 
 /**
@@ -1126,7 +1128,8 @@ export function createScene(app: Application): PartyScene {
     const own = (sprite: Sprite, low: boolean): void => {
       if (!sprite.visible || !sprite.renderable || sprite.texture.height <= 1) return;
       const side = sprite.texture.height;
-      restShadows.cast(sprite, groundShadow(INDOOR_LIGHT, sprite.texture.width * (low ? 0.6 : 0.4), side * (low ? 0.3 : 0.6), sprite.texture, { canvas: side }));
+      // A bedroll lies flat: only its contact shade, never an outline thrown off it.
+      restShadows.cast(sprite, groundShadow(INDOOR_LIGHT, sprite.texture.width * (low ? 0.6 : 0.4), side * (low ? 0.3 : 0.6), low ? undefined : sprite.texture, { canvas: side }));
     };
     for (const { sprite } of packedSprites.values()) own(sprite, true);
     for (const { sprite } of packedFriendSprites.values()) own(sprite, false);
@@ -1233,7 +1236,8 @@ export function createScene(app: Application): PartyScene {
       const since = now ? elapsed - now.since : Infinity;
       const wave = since <= WAVE_S ? wavePose(since, still) : { lift: 0, turned: false };
       const lift = wave.lift * spot.height;
-      const side = (spot.mirrored ? -1 : 1) * (wave.turned ? -1 : 1);
+      const painted = paintedFacing(packedFriendList.find((f) => f.id === spot.id)?.figure);
+      const side = (spot.mirrored ? -1 : 1) * (wave.turned ? -1 : 1) * painted;
       entry.sprite.position.set(spot.x, spot.y - lift);
       entry.sprite.scale.x = Math.abs(entry.sprite.scale.x) * side;
       if (!now) continue;
@@ -1443,7 +1447,7 @@ export function createScene(app: Application): PartyScene {
         member.art.x = idle.dx * reach;
         member.art.rotation = idle.rotation;
         const pulse = pulseScale(member.voice, elapsed, member.phase, still);
-        member.art.scale.x = pulse;
+        member.art.scale.x = pulse * member.painted;
         member.art.scale.y = (1 + idle.breath) * pulse;
         member.shadow.scale.set(shadowScale(member, idle.shadow * breathingShadowScale(idle.breath)));
         if (member.ripple) member.ripple.scale.set(rippleWidth(member) * idle.ripple / RIPPLE_UNIT);
@@ -1472,6 +1476,7 @@ export function createScene(app: Application): PartyScene {
     }
     const actor: CastActor = {
       key: member.key,
+      painted: paintedFacingOfUrl(member.url),
       container,
       art,
       label,

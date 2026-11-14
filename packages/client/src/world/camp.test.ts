@@ -75,10 +75,12 @@ it.each([false, true])("loads a seated hero's kit and retains a bedroll if the v
   expect(urls).toContain(CAMP_KIT_STYLES[campKitStyle(hero.id)].path);
   const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
   expect(bed.children.filter(c => c instanceof Sprite)).toHaveLength(1);
-  // Its shadow lies on the camp's shadow layer, under it, cast from its art.
+  // Its shadow lies on the camp's shadow layer, under it: a contact shade only, since it lies
+  // flat, and an outline thrown off it reads as a blanket hovering over the ground.
   const cast = (stage.view.getChildByLabel("camp-shadows") as Container).getChildByLabel("cast:piece:bedroll_0") as Container;
   expect(cast.children[0]!.label).toBe("camp-ground-shadow");
-  expect(cast.getChildByLabel("camp-cast-body", true)).not.toBeNull();
+  expect(cast.getChildByLabel("camp-cast-body", true)).toBeNull();
+  expect(cast.getChildByLabel("camp-ground-contact", true)).not.toBeNull();
   const count = urls.length;
   stage.setFigures([hero]);
   expect(urls).toHaveLength(count);
