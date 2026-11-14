@@ -214,6 +214,14 @@ export function playReady(prompt: InteractionPrompt, connected: readonly string[
 }
 
 export function interactionActor(prompt: InteractionPrompt, connected: readonly string[]): string | undefined {
+  if (prompt.challenge && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing")) {
+    const roster = prompt.challenge.participants ?? [...connected];
+    const start = Math.max(0, roster.indexOf(prompt.actorId));
+    for (let offset = 0; offset < roster.length; offset++) {
+      const id = roster[(start + prompt.challenge.progress + offset) % roster.length]!;
+      if (connected.includes(id)) return id;
+    }
+  }
   return connected.includes(prompt.actorId) ? prompt.actorId : connected[0];
 }
 

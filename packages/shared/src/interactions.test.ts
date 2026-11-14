@@ -580,16 +580,39 @@ describe("skill-game rules used by the current phones", () => {
     expect(act(next, balance.ctx, { action: "adjust", round: 0, direction: "down" }).error).toBeDefined();
     expect(prompt(next).levels?.p0).toBe(0.5);
   });
-  it.each(["precision", "timing"] as const)("grades %s recovery by the miss without making a clean action repeat chores", kind => {
+  it.each(["precision", "timing"] as const)("grades %s recovery and shares three stages around the party", kind => {
     const spec = { ...precision, kind };
     let { state, ctx } = start(spec);
     const near = commit(state, ctx, { position: 0.68 }); // .03 outside the gold
     const rough = commit(state, ctx, { position: 0 });
     expect(prompt(near).challenge!.strain).toBeLessThan(prompt(rough).challenge!.strain);
     state = commit(near, ctx, { position: skillAim(prompt(near)).target });
+    expect(prompt(state).phase).toBe("active");
+    expect(act(state, ctx, { action: "commit", round: prompt(state).challenge!.round, position: spec.target }).error).toBeDefined();
+    for (let progress = 1; progress < 6; progress++) {
+      state = commit(state, ctx, { position: spec.target }, `p${progress % 2}`);
+    }
     expect(prompt(state).outcome).toBe("success");
     state = commit(rough, ctx, { position: 0 });
     expect(prompt(state).outcome).toBe("failure");
+  });
+  it.each([1, 4])("gives every one of %i heroes three successful timing stages", players => {
+    let { state, ctx } = start({ ...precision, kind: "timing" }, players);
+    for (let stage = 0; stage < players * 3; stage++) {
+      expect(prompt(state).phase).toBe("active");
+      state = commit(state, ctx, { position: precision.target }, `p${stage % players}`);
+      expect(prompt(state).challenge!.progress).toBe(stage + 1);
+    }
+    expect(prompt(state).outcome).toBe("success");
+  });
+  it("skips a disconnected timing player and rejects the previous round after handoff", () => {
+    let { state, ctx } = start(precision, 4);
+    state = commit(state, ctx, { position: precision.target });
+    state.party[1]!.connected = false;
+    expect(act(state, ctx, { action: "commit", round: 0, position: precision.target }, "p2").error).toBeDefined();
+    state = commit(state, ctx, { position: precision.target }, "p2");
+    expect(prompt(state).challenge!.progress).toBe(2);
+    expect(prompt(state).phase).toBe("active");
   });
   it("runs partial sequence arrangements through a visible test without committing the branch", () => {
     let { state, ctx } = start(sequence);

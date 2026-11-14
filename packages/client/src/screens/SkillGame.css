@@ -104,3 +104,16 @@
 .skill-creation__cluster { position: relative; display: block; width: 5em; height: 4.5em; border-bottom: .2em solid #d7ba72; border-radius: 50%; background: radial-gradient(ellipse at bottom, #f6d38655, transparent 70%); }
 .skill-creation__cluster > span { position: absolute; left: calc(10% + var(--seed) * 15%); bottom: calc(.2em + var(--seed) * .25em); font-size: 1.6em; color: #f3da9b; filter: drop-shadow(0 .1em .1em #000a); }
 .skill-creation__cluster img { max-height: 1.5em; max-width: 1.5em; object-fit: contain; }
+
+/* Let the party occupy the scene rather than a miniature inset. */
+.game--tv .skill-scene { background: transparent; border: 0; border-radius: 0; }
+.game--tv .skill-aim { background: transparent; }
+.game--tv .skill-scene__heroes { height: clamp(7em, 22cqw, 12em); }
+.game--tv .skill-scene__heroes > :is(img, .hero-sparkle-host) { height: 100%; max-width: none; }
+.skill-scene--aim .skill-scene__heroes { height: 50%; pointer-events: none; }
+.game--tv .skill-game--precision > .skill-scene, .game--tv .skill-game--timing > .skill-scene { flex: 1; min-height: 0; }
+.game--tv .skill-scene--aim .skill-scene__heroes { height: 55%; }
+.skill-scene--aim .skill-opening { z-index: 1; }
+.game--phone .skill-scene__heroes > :is(img, .hero-sparkle-host) { height: 100%; }
+
+.skill-route { flex-wrap: wrap; gap: .4em; }

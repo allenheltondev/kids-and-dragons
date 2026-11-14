@@ -2,6 +2,7 @@ import { aimWidth, edgeScale, interactionActor, playbackOver, precisionSuccess, 
 
 /** A round identifies the situation being acted on, including a recovery. */
 export interface SkillChallenge {
+  participants?: string[];
   round: number;
   progress: number;
   strain: number;
@@ -11,10 +12,11 @@ export interface SkillChallenge {
   matched: number;
   excluded: string[];
 }
-export function skillStart(): SkillChallenge {
-  return { round: 0, progress: 0, strain: 0, feedback: "", pulls: {}, arrangement: [], matched: 0, excluded: [] };
+export function skillStart(participants?: readonly string[]): SkillChallenge {
+  return { participants: participants ? [...participants] : undefined, round: 0, progress: 0, strain: 0, feedback: "", pulls: {}, arrangement: [], matched: 0, excluded: [] };
 }
 export function skillSteps(prompt: InteractionPrompt): number {
+  if (prompt.spec.kind === "precision" || prompt.spec.kind === "timing") return 3 * Math.max(1, prompt.challenge?.participants?.length ?? 1);
   return prompt.spec.kind === "balance" || prompt.spec.kind === "cooperate" ? 3 : 1;
 }
 export function balanceTarget(prompt: InteractionPrompt): number {

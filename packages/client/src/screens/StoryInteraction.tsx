@@ -11,7 +11,6 @@
  * The TV remains display-only. Phones send the interaction intents; the server owns the
  * shared lift, continuous cooperation progress, outcomes and story branches.
  */
-import { GameScenery } from "./GameScenery";
 import { PaintedInteraction } from "./InteractionArt";
 import { useEffect, useRef, useState } from "react";
 import { cooperationProgress, edgePace, interactionActor, interactionStartLocal, playbackMs, speak, supportsReady } from "@kad/shared";
@@ -233,7 +232,6 @@ export function StoryInteractionWorld() {
     <GameHead prompt={prompt} />
     {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <div className="game__board">
-      <GameScenery />
       {(prompt.spec.kind === "play" || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={state.party} now={now} />}
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
       <Board prompt={prompt} party={state.party} now={now} settled={settled} />
@@ -329,7 +327,6 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
       <span className="game__job-text"><strong>{job.headline}</strong>{job.detail ? <span className="game__job-detail">{job.detail}</span> : null}</span>
     </p>
     <div className="game__board">
-      <GameScenery />
       {((prompt.spec.kind === "play" && prompt.spec.options.length > 1) || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={party} now={now} />}
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
       {prompt.phase !== "ready" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} stop={stop} settled={settled} busy={busy} onSkillAction={send} onCover={async (index) => {
