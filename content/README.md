@@ -447,9 +447,11 @@ can get or miss, so they are what the goal card gives its room to. One the story
   for the rest of the chapter. **Missed**, the summary says it is "Still out there", without
   scolding anybody.
 - **No `reveal`** is a surprise: nothing shows until it is met, and then it is a "Bonus!" moment.
-  Reveal a chance only where every party can try for it. One behind a species or class gate
-  (Bramblewood's doorway and its view from above) stays a surprise, or the screen dangles
-  something most tables cannot take.
+  Reveal a chance only where every party can try for it: `content:validate` refuses a reveal
+  scene from which only a gated choice (species, class, flag, item or `when`) leads to the flag.
+  One behind such a gate (Bramblewood's doorway and its view from above) stays a surprise, or the
+  screen dangles something most tables cannot take. At the table, a chance behind a species or
+  class gate nobody present meets reads as missed and drops off.
 - **The narration makes the offer.** The reveal scene says, in its own words, what there is to
   find; the hint only keeps it in view. And the way to it is a real choice beside the main road:
   a chance every road takes is a milestone, and one no road visibly offers is a secret.

@@ -20,18 +20,24 @@
       "id": "tib",
       "label": "Found Ma Ruddle's nephew Tib",
       "flag": "found_tib",
+      "reveal": "scene_downbound",
+      "hint": "Find Ma Ruddle's nephew Tib?",
       "xp": 8
     },
     {
       "id": "silence",
       "label": "Noticed the silence follows the stones",
       "flag": "noticed_the_silence",
+      "reveal": "scene_empty_stretch",
+      "hint": "Work out why it went so quiet?",
       "xp": 7
     },
     {
       "id": "verse",
       "label": "Sang a route-song verse at the relay",
       "flag": "sang_a_verse",
+      "reveal": "scene_relay_sing",
+      "hint": "Sing a verse at the campfire?",
       "xp": 7
     }
   ],

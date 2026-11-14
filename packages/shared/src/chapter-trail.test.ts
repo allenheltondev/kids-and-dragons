@@ -80,6 +80,35 @@ describe("chances", () => {
     expect(chanceStates(chapter(), { flags: {}, visited: ["start", "mill", "fork"], sceneId: "road" })[0]!.state).toBe("missed");
   });
 
+  describe("behind a gate", () => {
+    /** The goat is only reachable by flying over the hedge, a griffin's way. */
+    function gated(): Chapter {
+      const c = chapter();
+      const fork = c.scenes.fork as unknown as { choices: { goto: string; requiresSpecies?: string }[] };
+      fork.choices[0]!.requiresSpecies = "griffin";
+      return c;
+    }
+
+    it("counts a gated way only for a party that can take it", () => {
+      expect(scenesThatCanStillSet(gated(), "found_goat").has("mill")).toBe(true);
+      expect(scenesThatCanStillSet(gated(), "found_goat", "everyone").has("mill")).toBe(false);
+      expect(scenesThatCanStillSet(gated(), "found_goat", { species: ["griffin"], classes: [] }).has("mill")).toBe(true);
+      expect(scenesThatCanStillSet(gated(), "found_goat", { species: ["bigfoot"], classes: [] }).has("mill")).toBe(false);
+    });
+
+    it("reads as missed for a party without the species, and open for one with it", () => {
+      const at = { flags: {}, visited: ["start"], sceneId: "mill" };
+      expect(chanceStates(gated(), { ...at, party: { species: ["bigfoot"], classes: [] } })[0]!.state).toBe("missed");
+      expect(chanceStates(gated(), { ...at, party: { species: ["griffin", "bigfoot"], classes: [] } })[0]!.state).toBe("open");
+    });
+
+    it("keeps a flag or item gate open, since it may open later", () => {
+      const c = chapter();
+      (c.scenes.fork as unknown as { choices: { requiresFlag?: string }[] }).choices[0]!.requiresFlag = "befriended_miller";
+      expect(scenesThatCanStillSet(c, "found_goat", { species: [], classes: [] }).has("mill")).toBe(true);
+    });
+  });
+
   it("is met when its flag is set, revealed or a surprise", () => {
     const [goat, secret] = chanceStates(chapter(), { flags: { found_goat: true, long_road: true }, visited: ["start", "mill"], sceneId: "gate" });
     expect(goat).toMatchObject({ state: "met", revealed: true });

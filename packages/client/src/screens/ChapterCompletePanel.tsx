@@ -151,7 +151,12 @@ export function ChapterCompletePanel(): ReactElement {
   const stillOutThere = useMemo(
     () =>
       chapter && state && chapter.id === state.chapterId
-        ? chanceStates(chapter, { flags: state.flags, visited: state.visited ?? [], sceneId: state.sceneId }).filter(
+        ? chanceStates(chapter, {
+            flags: state.flags,
+            visited: state.visited ?? [],
+            sceneId: state.sceneId,
+            party: { species: state.party.map((m) => m.character.species), classes: state.party.map((m) => m.character.class) },
+          }).filter(
             (chance) => chance.revealed && chance.state !== "met",
           )
         : [],

@@ -42,18 +42,24 @@
       "id": "scholar",
       "label": "Listened to the scholar everyone laughed at",
       "flag": "listened_to_scholar",
+      "reveal": "scene_tavern",
+      "hint": "Hear the scholar out?",
       "xp": 10
     },
     {
       "id": "three_roads",
       "label": "Heard the rumors of all three roads north",
       "flag": "heard_every_road",
+      "reveal": "scene_docks",
+      "hint": "Learn all three roads north?",
       "xp": 8
     },
     {
       "id": "crew",
       "label": "Signed on as real caravan crew",
       "flag": "hired_as_crew",
+      "reveal": "scene_caravan_yard",
+      "hint": "Sign on with Hesper's caravan?",
       "xp": 7
     }
   ],

@@ -20,12 +20,16 @@
       "id": "archive",
       "label": "Read the spiral in the path archive",
       "flag": "read_archive",
+      "reveal": "scene_archive_table",
+      "hint": "Pin the moved paths in order?",
       "xp": 10
     },
     {
       "id": "trusted",
       "label": "Earned the trust of MossHome's record",
       "flag": "trusted_by_record",
+      "reveal": "scene_pile_question",
+      "hint": "Earn the archivists' trust?",
       "xp": 12
     }
   ],

@@ -14,11 +14,12 @@
  * the screens already mirror (flags, `visited`, the scene), so nothing new is sent.
  */
 
-import type { Chapter, ChapterObjective, GoalStep, SceneId } from "./types/chapter.js";
+import type { Chapter, ChapterObjective, Choice, Effect, GoalStep, SceneId } from "./types/chapter.js";
 // Value imports carry `.ts` so the content gate can load this file under plain Node.
 import { goalStepDone, goalStepFlags } from "./chapter-goal.ts";
 import type { GoalFacts } from "./chapter-goal.js";
-import { sceneEffects } from "./chapter-graph.ts";
+import { isGated } from "./chapter-graph.ts";
+import { captivesOf } from "./environment.ts";
 import { sceneExits } from "./scene-exits.ts";
 
 /**
@@ -115,21 +116,71 @@ export function chanceRevealScenes(objective: ChapterObjective): SceneId[] {
 }
 
 /**
- * The scenes from which some road can still set `flag`: every scene that can set it
- * itself (on entry, on a way out, in a fight's place), and every scene that leads to
- * one. A party standing anywhere else has missed it.
+ * Who the walk below is for, which decides which choices it may take.
+ *
+ * - `"everyone"`: only choices every party sees (no species, class, flag, item or `when`
+ *   gate). What the validator asks of a revealed chance: every table can try for it.
+ * - `{ species, classes }`: this party, at the table. A species or class gate it does not
+ *   meet is shut for good; a flag, item or `when` gate may open later, so it counts as open.
+ * - absent: every authored way, gated or not.
  */
-export function scenesThatCanStillSet(chapter: Chapter, flag: string): Set<SceneId> {
-  // The screens ask on every render; the answer only changes with the chapter.
-  let byFlag = canStillSet.get(chapter);
-  if (!byFlag) canStillSet.set(chapter, (byFlag = new Map()));
-  const known = byFlag.get(flag);
+export type ChanceParty = "everyone" | { species: readonly string[]; classes: readonly string[] };
+
+function gateOpen(choice: Choice, party: ChanceParty | undefined): boolean {
+  if (party === undefined) return true;
+  if (party === "everyone") return !isGated(choice);
+  const any = (wanted: string | readonly string[] | undefined, have: readonly string[]): boolean =>
+    wanted === undefined || [wanted].flat().some((w) => have.includes(w));
+  return any(choice.requiresSpecies, party.species) && any(choice.requiresClass, party.classes);
+}
+
+function setsFlag(effects: readonly Effect[] | undefined, flag: string): boolean {
+  return (effects ?? []).some((e) => e.type === "setFlag" && e.flag === flag && (e.value ?? true));
+}
+
+/**
+ * The scenes from which some road this party may take can still set `flag`: every scene
+ * that sets it itself (on entry, on a way out it may take, in a fight's place), and every
+ * scene that leads to one by ways it may take. A party standing anywhere else has missed it.
+ */
+export function scenesThatCanStillSet(chapter: Chapter, flag: string, party?: ChanceParty): Set<SceneId> {
+  // The screens ask on every render; the answer only changes with the chapter and the party.
+  const partyKey = party === undefined ? "*" : party === "everyone" ? "everyone" : `${[...party.species].sort().join(",")}|${[...party.classes].sort().join(",")}`;
+  let byKey = canStillSet.get(chapter);
+  if (!byKey) canStillSet.set(chapter, (byKey = new Map()));
+  const key = `${flag}\u0000${partyKey}`;
+  const known = byKey.get(key);
   if (known) return known;
-  const setters = Object.entries(chapter.scenes)
-    .filter(([, scene]) => sceneEffects(scene).some((e) => e.type === "setFlag" && e.flag === flag && (e.value ?? true)))
-    .map(([id]) => id);
-  const found = new Set(distancesTo(chapter, setters).keys());
-  byFlag.set(flag, found);
+
+  const found = new Set<SceneId>();
+  const into = new Map<SceneId, SceneId[]>();
+  for (const [id, scene] of Object.entries(chapter.scenes)) {
+    // A fight's place (captives, objectives) can set it whichever way the fight goes.
+    const inPlace =
+      scene.type === "encounter" &&
+      [scene.environment, ...(scene.environment?.variants ?? [])].some(
+        (place) => place !== undefined && [...captivesOf(place), ...(place.objectives ?? [])].some((thing) => setsFlag(thing.effects, flag)),
+      );
+    if (setsFlag(scene.onEnter, flag) || inPlace) found.add(id);
+    for (const exit of sceneExits(scene)) {
+      if (exit.via === "choice" && !gateOpen(exit.choice, party)) continue;
+      if (setsFlag(exit.effects, flag)) found.add(id);
+      if (!chapter.scenes[exit.to]) continue;
+      const list = into.get(exit.to) ?? [];
+      list.push(id);
+      into.set(exit.to, list);
+    }
+  }
+  const queue = [...found];
+  while (queue.length > 0) {
+    const id = queue.shift()!;
+    for (const from of into.get(id) ?? []) {
+      if (found.has(from)) continue;
+      found.add(from);
+      queue.push(from);
+    }
+  }
+  byKey.set(key, found);
   return found;
 }
 
@@ -149,6 +200,8 @@ export interface ChanceFacts {
   visited?: readonly SceneId[];
   /** Where the party is now, or null between scenes. */
   sceneId: SceneId | null;
+  /** Who is at the table, so a chance behind a gate they cannot open reads as missed. */
+  party?: ChanceParty;
 }
 
 export interface Chance {
@@ -166,7 +219,7 @@ export function chanceStates(chapter: Chapter, facts: ChanceFacts): Chance[] {
     const revealed = chanceRevealScenes(objective).some((id) => seen.has(id));
     if (facts.flags[objective.flag] === true) return { objective, state: "met", revealed };
     if (!revealed) return { objective, state: "hidden", revealed };
-    const still = facts.sceneId !== null && scenesThatCanStillSet(chapter, objective.flag).has(facts.sceneId);
+    const still = facts.sceneId !== null && scenesThatCanStillSet(chapter, objective.flag, facts.party).has(facts.sceneId);
     return { objective, state: still ? "open" : "missed", revealed };
   });
 }

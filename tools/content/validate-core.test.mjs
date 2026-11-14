@@ -413,8 +413,13 @@ describe("chances: bonus objectives the story reveals", () => {
     if (hint !== null) chapter.objectives[0].hint = hint;
   };
 
-  it("takes a chance revealed where it can still be taken", () => {
-    const result = withChapter(reveal("choice_point_path"));
+  it("takes a chance revealed where every party can still take it", () => {
+    const result = withChapter((chapter) => {
+      reveal("choice_point_path")(chapter);
+      // Open the griffin's look-out to every party, so the chance has an ungated way.
+      const scout = chapter.scenes.choice_point_path.choices.find((c) => c.id === "scout");
+      delete scout.requiresSpecies;
+    });
     expect(result.out).not.toContain("objective \"scouted\"");
     expect(result.code).toBe(0);
   });
@@ -422,6 +427,15 @@ describe("chances: bonus objectives the story reveals", () => {
   it("catches a reveal with no hint", () => {
     const result = withChapter(reveal("choice_point_path", null));
     expect(result.out).toContain('objective "scouted" needs both `reveal` and `hint`, or neither');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a reveal of a chance only a gated choice can take (the bigfoot's doorway)", () => {
+    const result = withChapter((chapter) => {
+      chapter.objectives[1].reveal = "scene_hedge_wall";
+      chapter.objectives[1].hint = "Make a doorway in the thorns?";
+    });
+    expect(result.out).toContain('from reveal scene "scene_hedge_wall", only a gated choice');
     expect(result.code).not.toBe(0);
   });
 

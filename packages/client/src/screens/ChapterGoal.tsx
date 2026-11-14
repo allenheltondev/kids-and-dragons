@@ -85,7 +85,10 @@ export function useChapterGoal(): GoalInPlay | null {
   const milestones = goalMilestones(chapter.goal.steps, { flags, held });
   const sceneId = state?.sceneId ?? null;
   const ended = state?.phase === "chapter_complete";
-  const chances = chanceStates(chapter, { flags, visited: state?.visited ?? [], sceneId }).filter(
+  // Who is at the table: a chance behind a species or class gate nobody here meets is missed.
+  const members = (state?.party ?? []).map((member) => member.character);
+  const party = { species: members.map((m) => m.species), classes: members.map((m) => m.class) };
+  const chances = chanceStates(chapter, { flags, visited: state?.visited ?? [], sceneId, party }).filter(
     (chance) => chance.state === "met" || (chance.state === "open" && !ended),
   );
   return {

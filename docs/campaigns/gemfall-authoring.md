@@ -317,6 +317,12 @@ the thing happens; none crosses a chapter, so the endings, roads, setbacks and r
 `gemfall-compat.test.ts` do not move. In 02 nothing new is set between the wolves and the plank
 bridge, where the pinned mid-fight save resumes.
 
+Gemfall's bonus objectives are chances ([content/README.md, "Chances"](../../content/README.md#chances-bonus-objectives-on-screen)):
+each is revealed on the scene that first offers it ("Find Ma Ruddle's nephew Tib?" on the auction
+lane), so the table sees what it may take or leave. A few stay surprises: the wolves in 02, 03c and
+07r and the Seal-Keeper in 08, which only a gated choice reaches; 04a's bend, which is the
+chapter's own question; and the stone each 07 is about, which is its climax, not a side chance.
+
 <!-- goal-table: generated from the chapter files; keep it in step with them. -->
 | Chapter | Goal | Steps (what ticks each) |
 | --- | --- | --- |

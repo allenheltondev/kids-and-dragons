@@ -20,12 +20,16 @@
       "id": "named_mimic",
       "label": "Saw through the mire mimic's act",
       "flag": "named_the_mimic",
+      "reveal": "scene_barge",
+      "hint": "See through the barge's act?",
       "xp": 10
     },
     {
       "id": "wisp_sight",
       "label": "Let a wisp show you what it remembers",
       "flag": "wisp_showed_us",
+      "reveal": "scene_wisp_lead",
+      "hint": "Let the wisp show you something?",
       "xp": 12
     }
   ],

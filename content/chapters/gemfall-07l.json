@@ -27,12 +27,16 @@
       "id": "wardens_trust",
       "label": "Kept the wardens' trust to the very end",
       "flag": "wardens_trust",
+      "reveal": "scene_ledger",
+      "hint": "Keep the wardens' trust?",
       "xp": 6
     },
     {
       "id": "choir_trust",
       "label": "Learned the choir's chord honestly",
       "flag": "choir_trust",
+      "reveal": "scene_choir",
+      "hint": "Learn the choir's chord?",
       "xp": 6
     }
   ],

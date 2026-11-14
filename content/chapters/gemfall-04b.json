@@ -20,12 +20,16 @@
       "id": "objection",
       "label": "Found out what the forest was objecting to",
       "flag": "understood_forest",
+      "reveal": "scene_attendance",
+      "hint": "Find out what the forest minds?",
       "xp": 10
     },
     {
       "id": "mended",
       "label": "Helped the unicorns mend a hurt glade",
       "flag": "helped_mend",
+      "reveal": "scene_unicorns",
+      "hint": "Help the unicorns mend the glade?",
       "xp": 12
     }
   ],

@@ -20,12 +20,16 @@
       "id": "markers",
       "label": "Put the centaur markers back up",
       "flag": "restored_markers",
+      "reveal": "choice_tolls",
+      "hint": "Fix the marker line?",
       "xp": 8
     },
     {
       "id": "fennicks",
       "label": "Helped the Bracken family get home",
       "flag": "helped_family",
+      "reveal": "choice_tolls",
+      "hint": "Help the Brackens get home?",
       "xp": 7
     },
     {

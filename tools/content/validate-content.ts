@@ -1519,6 +1519,12 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
       if (!scenes[id]) fail(`${at}/reveal`, `reveal scene "${id}" is not a scene in this chapter`);
       else if (!scenesThatCanStillSet(chapter, objective.flag).has(id)) {
         fail(`${at}/reveal`, `reveal scene "${id}" comes after every way to set "${objective.flag}"`, "Reveal a chance where the party can still take it, so it is never shown already missed.");
+      } else if (!scenesThatCanStillSet(chapter, objective.flag, "everyone").has(id)) {
+        fail(
+          `${at}/reveal`,
+          `from reveal scene "${id}", only a gated choice (species, class, flag, item or \`when\`) leads to setting "${objective.flag}"`,
+          "A revealed chance is on every table's screen, so every party needs an ungated way to it. Add one, or leave the objective unrevealed as a surprise.",
+        );
       }
     }
     if (objective.hint !== undefined && /—/.test(objective.hint)) fail(`${at}/hint`, "the hint has an em dash");
