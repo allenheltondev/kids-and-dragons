@@ -100,7 +100,7 @@ import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { CampShopVote, shopLine } from "./CampChapterEnd";
-import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
+import { CampButton, CampPanel, KitWelcome, TentButton } from "./CampPanel";
 import { campPanelOpen, onCampPanel } from "./camp-panel";
 import { ClassPlaceChoice } from "./ClassPlace";
 import {
@@ -1768,6 +1768,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             {/* Beside Ready (docs/camp.md §3): never in its way, and Begin closes it.
                 The first-session choice (§5.3) under them, so Ready stays in reach. */}
             {inLobby ? <CampButton state={state} /> : null}
+            {inLobby ? <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             {inLobby ? <KitWelcome state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             <ul className="prompt__party">
               {party.map((member) => {
@@ -2424,6 +2425,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         {inLobby || atRest ? (
           <div className="player__camp">
             <CampButton state={state} block />
+            {/* Into her tent and out (CAMP_TENT): on the TV, with nothing to open first. */}
+            <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} block />
           </div>
         ) : null}
         {inLobby ? (
