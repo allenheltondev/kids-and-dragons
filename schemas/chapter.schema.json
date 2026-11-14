@@ -912,6 +912,28 @@
         "flag": {
           "$ref": "#/$defs/flag"
         },
+        "reveal": {
+          "$comment": "Where the story first mentions it: once any of these scenes is entered, the screens show `hint` as a chance (chapter-trail.ts). Display only.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sceneId"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/sceneId"
+              }
+            }
+          ]
+        },
+        "hint": {
+          "$comment": "The chance as the screen asks it once revealed: \"Find the miller's goat?\". Required with reveal (tools/content/validate.mjs).",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
         "xp": {
           "type": "integer",
           "minimum": 1,
@@ -958,10 +980,29 @@
           "pattern": "^[a-z][a-z0-9_]*$"
         },
         "label": {
-          "$comment": "Shown beside a tick box on the TV and the phones, so it is short.",
+          "$comment": "Kept for the tools and the recap; the screens show a step only once it ticks, in its doneLabel.",
           "type": "string",
           "minLength": 1,
           "maxLength": 40
+        },
+        "doneLabel": {
+          "$comment": "What the screen says once the step ticks, in the past tense: one line, or one per watched flag (keys are the step's flags, checked by tools/content/validate.mjs).",
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            }
+          ]
         },
         "flag": {
           "oneOf": [

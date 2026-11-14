@@ -78,7 +78,7 @@ export function sceneEdges(scene: Scene): Edge[] {
 }
 
 /** Every effect a scene can fire, wherever it hangs. */
-function sceneEffects(scene: Scene): Effect[] {
+export function sceneEffects(scene: Scene): Effect[] {
   const effects: Effect[] = [...(scene.onEnter ?? [])];
   switch (scene.type) {
     case "story":

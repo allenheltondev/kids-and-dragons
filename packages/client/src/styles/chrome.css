@@ -212,6 +212,27 @@ html:not([data-contrast="high"]) .goal__step--done .goal__box {
 html:not([data-contrast="high"]) .goal__step--done .goal__box > .kad-icon {
   visibility: hidden;
 }
+/* On paper the gold is ink: the trail, a moment's tick and the chances in a deep amber. */
+html:not([data-contrast="high"]) .goal .goal__trail {
+  background: rgb(95 80 64 / 22%);
+}
+html:not([data-contrast="high"]) .goal .goal__trail-fill {
+  background: #b07a1e;
+}
+html:not([data-contrast="high"]) .goal .goal__pip--done {
+  border-color: #b07a1e;
+  background: #b07a1e;
+}
+html:not([data-contrast="high"]) .goal :is(.goal__moment-item, .goal__chance) > .kad-icon {
+  color: #b07a1e;
+}
+html:not([data-contrast="high"]) .goal .goal__chance {
+  border-color: rgb(176 122 30 / 75%);
+}
+html:not([data-contrast="high"]) .goal .goal__chance--met {
+  border-color: #b07a1e;
+  color: #5f5040;
+}
 
 /* --- The map ------------------------------------------------------------ */
 

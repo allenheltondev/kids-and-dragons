@@ -352,48 +352,108 @@ say a player's name), and the screen does.
 ## The chapter's goal
 
 Every chapter says what the party is trying to do, and the table can see it the whole time
-(#356). `goal` is one sentence in kid words and two to four steps:
+(#356). `goal` is one sentence in kid words and two to four steps, its milestones:
 
 ```json
 "goal": {
   "text": "Show you can hold the dragon's leash.",
   "steps": [
-    { "id": "ledger", "label": "Get the wardens' ledger", "flag": "got_the_ledger" },
-    { "id": "chord", "label": "Learn the choir's chord", "flag": "learned_the_chord" },
+    {
+      "id": "ledger",
+      "label": "Get the wardens' ledger",
+      "flag": ["talked_for_the_ledger", "snuck_the_ledger"],
+      "doneLabel": { "talked_for_the_ledger": "Talked our way to the ledger", "snuck_the_ledger": "Snuck the ledger out" }
+    },
+    { "id": "chord", "label": "Learn the choir's chord", "flag": "learned_the_chord", "doneLabel": "Learned the choir's chord" },
     { "id": "answer", "label": "Find a true answer", "flag": ["answered_true", "answered_kind"] }
   ]
 }
 ```
 
-- **It shows itself.** The shared screen (the TV, or a phone's World pane) draws it under the
-  chapter's name, on the sky above the figures. Nobody has to tap to see it. A player's own pane
-  leaves it off: in playtests it was a scroll nobody read mid-scene, in room the controls need.
-  In a fight the shared screen folds it to the goal and a row of pips in the top corner. On a short pane (a tablet at the largest text)
-  it keeps the pips and names only the next step. Read-aloud says the goal after the first scene's
+What each part is for, for players of about eight:
+
+- **The sentence is the why.** A kid who drifted off looks up and knows what the party is doing,
+  and a vote has something to argue about ("which way gets us the ledger?").
+- **The milestones are a trail, not a checklist.** Every road ticks every one (below), so the
+  screen does not list them ahead: that would be a list nobody can fail, and a small spoiler. It
+  shows a pip for each and a thin line for how far along the chapter the party is (the shortest
+  road left to an ending, `chapter-trail.ts`). A milestone is named only once it ticks, in its
+  `doneLabel`: one past-tense line, or one per watched flag, so the trail plays back how *this*
+  party did it. A step with several flags says the line of the first one set, in the order listed.
+  No `doneLabel` and it says its `label`.
+- **What the party can miss is the chances** (next section), not the milestones.
+
+How it shows:
+
+- **It shows itself.** The shared screen (the TV, or a phone's World pane) draws the sentence, the
+  pips and the trail under the chapter's name, on the sky above the figures. Nobody has to tap to
+  see it. On a phone it is one line, the sentence and the pips, that opens to the trail, the
+  milestones done so far by name ("Still ahead" for the rest) and the chances. In a fight it folds
+  to the sentence and the pips in the top corner. Read-aloud says the goal after the first scene's
   story; a tick is seen and chimed, never read out.
 - **A step ticks when its flag is set**, or any one of a list. It is the same machinery as a bonus
   objective: author a `setFlag` where the thing visibly happens and point the step at it. A step
   may watch an `item` instead, while anybody holds it, when the chapter already hands one over for
   the thing (07l's ledger): one of the chapter's own `props`, given with `grantQuestItem`, so it
-  cannot arrive already held or be refused at a full bag. The tick
-  gets a moment on screen (a gold box, a few sparks and a chime; under reduced motion, the gold
-  only).
+  cannot arrive already held or be refused at a full bag. The tick gets a moment on screen: its
+  `doneLabel` in gold, a few sparks and a chime (under reduced motion, the gold only).
 - **Every step is on the spine.** `content:validate` refuses a step that some path to a success
   ending can finish without ticking, naming the step and an ending that proves it. A failed roll is
   a path: word the step for what every party does ("Race for the caravan's stone") and tick it on
   both results, never for the success only some get. Set the flag on
   a scene every road walks, on each road's own result scene, or on every branch of a check or
-  fight (a failed roll still did the thing). `optional: true` lifts the rule and draws "(if you
-  can)"; use it rarely. An optional step is an extra: the goal shows done when its required steps
-  are, the pips count the extras apart, and a short pane's "Next" never names one.
+  fight (a failed roll still did the thing). To tell the ways apart, give each way its own flag and
+  its own `doneLabel` line rather than one flag for all. `optional: true` lifts the spine rule,
+  names the step ahead with "(if you can)", and counts it apart in the pips. Use it rarely: a thing
+  a party may miss is usually better as a chance.
 - **Chapter-local flags only.** A route-set member can arrive already set from an earlier chapter,
   so the validator refuses one. Never put the flag on an ending scene: the chapter is over by then.
-- **Written for scene 1.** It is on screen before anything has happened, so it names nothing the
-  party has not met on every way in, counts nothing, names no great stone and spoils nothing. One
-  sentence, at most 90 characters; labels at most 40, no full stop. US spelling, no em dashes.
+- **Written for scene 1.** The sentence is on screen before anything has happened, so it names
+  nothing the party has not met on every way in, counts nothing, names no great stone and spoils
+  nothing. One sentence, at most 90 characters; labels and done labels at most 40, no full stop.
+  US spelling, no em dashes. A `label` is never shown ahead (except an optional step's), so it
+  is for the tools and the summary; a `doneLabel` is shown once the thing has happened, so it may
+  name whoever that scene introduced.
 - **Spread the ticks.** The first a quarter of the way in, the last near the end. A step that ticks
   in scene 1 tells the table nothing.
 - Only a chapter that is nothing but its ending (a preview's pause) goes without one.
+
+## Chances: bonus objectives on screen
+
+A chapter's `objectives` (bonus XP, at most 25% of `xpAward` between them) are the things a party
+can get or miss, so they are what the goal card gives its room to. One the story mentions is a
+**chance**:
+
+```json
+"objectives": [
+  {
+    "id": "goat",
+    "label": "Found the miller's goat",
+    "reveal": "scene_mill",
+    "hint": "Find the miller's goat?",
+    "flag": "found_the_goat",
+    "xp": 10
+  }
+]
+```
+
+- **`reveal`** is the scene (or scenes) whose words mention it. Once the party has entered one,
+  the TV and the phones show the `hint` beside the goal, until it is met or no road left can set
+  its flag, when it quietly drops off. `content:validate` refuses a reveal scene the flag can no
+  longer be set from, so a chance is never shown already missed.
+- **`hint`** is what the screen asks: kid words with a question mark, at most 40 characters. The
+  `label` stays past tense: it is what the screen says once met, and on the summary.
+- **Met**, a chance gets the same moment as a milestone, with its XP, and stays on the card, gold,
+  for the rest of the chapter. **Missed**, the summary says it is "Still out there", without
+  scolding anybody.
+- **No `reveal`** is a surprise: nothing shows until it is met, and then it is a "Bonus!" moment.
+  Reveal a chance only where every party can try for it. One behind a species or class gate
+  (Bramblewood's doorway and its view from above) stays a surprise, or the screen dangles
+  something most tables cannot take.
+- **The narration makes the offer.** The reveal scene says, in its own words, what there is to
+  find; the hint only keeps it in view. And the way to it is a real choice beside the main road:
+  a chance every road takes is a milestone, and one no road visibly offers is a secret.
+- Chances pay XP and nothing else. They do not cross into later chapters.
 
 ## Interactivity
 

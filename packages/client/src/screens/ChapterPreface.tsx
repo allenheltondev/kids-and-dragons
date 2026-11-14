@@ -29,7 +29,7 @@ import type { RunState } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 import { onStageInset, stageInsetBottom } from "../world/stage-inset";
 import { useEnsureChapter } from "./content";
-import { useChapterGoal } from "./ChapterGoal";
+import { MilestoneList, milestoneRows, useChapterGoal } from "./ChapterGoal";
 import { fitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { midChapter, sceneKey } from "./presence-copy";
@@ -152,7 +152,9 @@ export function ChapterPreface(): ReactElement | null {
 
   const back = shown !== null && chapter !== null && state !== null && chapter.id === state.chapterId;
   const trail = back ? leftOffLines(chapter, state.visited ?? []) : [];
-  const words = wordCount([current?.goal.text ?? "", ...(current?.goal.steps.map((s) => s.label) ?? []), ...trail]);
+  // A milestone is named only once it ticks, as the goal card names it (ChapterGoal.tsx).
+  const stepWords = milestoneRows(current?.milestones ?? []).map((row) => row.words);
+  const words = wordCount([current?.goal.text ?? "", ...stepWords, ...trail]);
 
   // Away by itself once it has had its time.
   const shownKey = shown?.key ?? null;
@@ -199,20 +201,7 @@ export function ChapterPreface(): ReactElement | null {
                     {current.goal.text}
                   </span>
                 </p>
-                <ul className="preface__steps" data-trim="2">
-                  {current.goal.steps.map((step, i) => (
-                    <li
-                      key={step.id}
-                      className={`goal__step${current.done[i] ? " goal__step--done" : ""}`}
-                      data-done={current.done[i] ? "true" : "false"}
-                    >
-                      <span className="goal__box" role="img" aria-label={current.done[i] ? "Done" : "Not yet"}>
-                        {current.done[i] ? <Icon name="check" /> : null}
-                      </span>
-                      <span className="goal__label">{step.label}</span>
-                    </li>
-                  ))}
-                </ul>
+                <MilestoneList milestones={current.milestones} className="preface__steps" trim="2" />
               </>
             )}
             {trail.length === 0 ? null : (
