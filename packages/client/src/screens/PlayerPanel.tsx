@@ -1381,13 +1381,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 disabled={held}
                 onClick={() => void dispatch({ type: "CHOOSE", choiceId: myVote })}
               >
-                {`${atRest ? "Go on" : "Decide"} without ${awayNames(
-                  party.filter(
-                    (m) =>
-                      myPrompt.votes?.[m.playerId] === undefined &&
-                      (myPrompt.forPlayerIds.length === 0 || myPrompt.forPlayerIds.includes(m.playerId)),
-                  ),
-                )}`}
+                {(() => {
+                  const missing = awayNames(
+                    party.filter(
+                      (m) =>
+                        myPrompt.votes?.[m.playerId] === undefined &&
+                        (myPrompt.forPlayerIds.length === 0 || myPrompt.forPlayerIds.includes(m.playerId)),
+                    ),
+                  );
+                  // Each label whole, as the grown-up's guide quotes it (tools/guide/guide.test.mjs).
+                  return atRest ? `Go on without ${missing}` : `Decide without ${missing}`;
+                })()}
               </Button>
             ) : null}
 
