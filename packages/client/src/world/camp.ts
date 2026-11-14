@@ -45,7 +45,7 @@ import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend
 import { campPaint } from "./camp-paint";
 import { campAccent, campAccentPose } from "./camp-accents";
 import { campAir, campMotes, motePose } from "./camp-air";
-import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
+import { DECORATION_ART, tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
   ANCHOR_X,
@@ -402,6 +402,9 @@ interface PieceView {
   mirrored: boolean;
   kitKey?: string;
   kitRevision: number;
+  /** A tent's hung decorations (her slots, at the tent's manifest hangPoints), drawn over its painting. */
+  decorations?: Container | null;
+  decorationsKey?: string;
   neutralTexture: Texture | null;
   id: string;
   container: Container;
@@ -834,6 +837,47 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
   /** The owner each owned piece was last drawn for. */
   const lastOwners = new Map<string, CampFigure | undefined>();
+
+  /**
+   * Her decorations on her painted tent: each slot's piece, its middle on the
+   * tent's own spot for that slot (manifest `hangPoints`), the way the kit
+   * editor hangs them (BookKit.tsx `hangSpot`). Redrawn when the slots or the
+   * tent's fit change; `force` after the tent's painting (and so its fit) reloads.
+   */
+  function drawDecorations(piece: PieceView, owner: CampFigure | undefined, tent: { id: string; path: string; hangPoints?: { x: number; y: number }[] }, force = false): void {
+    if (destroyed || piece.missing) return;
+    const slots = owner?.slots ?? [];
+    const key = `${tent.id}:${slots.join(",")}:${String(piece.fit.canvas)}:${String(piece.fit.offsetY)}`;
+    if (!force && piece.decorationsKey === key) return;
+    piece.decorationsKey = key;
+    piece.decorations?.destroy({ children: true });
+    piece.decorations = null;
+    const paint = campPaint(tent.path);
+    if (!paint || !tent.hangPoints) return;
+    const layer = new Container();
+    layer.label = "camp-tent-decorations";
+    const side = Math.max(paint.right - paint.left, paint.bottom - paint.top);
+    piece.decorations = layer;
+    piece.container.addChild(layer);
+    slots.forEach((id, slot) => {
+      const point = tent.hangPoints?.[slot];
+      const art = id ? DECORATION_ART.find((d) => d.id === id) : undefined;
+      if (!point || !art?.path) return;
+      void load(assetUrl(art.path))
+        .then((texture) => {
+          if (destroyed || piece.decorations !== layer) return;
+          const sprite = new Sprite(texture);
+          sprite.anchor.set(0.5, 0.5);
+          // Small, on the tent, never the tent's size (BookKit.css: 24% of its box).
+          sprite.width = piece.fit.canvas * side * 0.24;
+          sprite.height = sprite.width;
+          sprite.x = (point.x / 1024 - ANCHOR_X) * piece.fit.canvas;
+          sprite.y = piece.fit.offsetY + (point.y / 1024 - ANCHOR_Y) * piece.fit.canvas;
+          layer.addChild(sprite);
+        })
+        .catch(() => undefined);
+    });
+  }
 
   /** A labelled stand-in for a piece whose painting is owed (camp-stand-in.ts). */
   function drawStandIn(entry: PieceView, owner: CampFigure | undefined): void {
@@ -1720,6 +1764,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         const key = `${tent.id}:${accent ?? ""}`;
         if (piece.kitKey === key) {
           drawStandIn(piece, owner);
+          drawDecorations(piece, owner, tent);
           continue;
         }
         piece.kitKey = key;
@@ -1729,7 +1774,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         piece.partSprite = null;
         const cloth = campTentCloth(tent.id);
         void loadPiece(piece, tent.path, cloth, accent).then(async () => {
-          if (destroyed || piece.kitRevision !== revision || piece.missing || !piece.part || !tent.flap) return;
+          if (destroyed || piece.kitRevision !== revision) return;
+          drawDecorations(piece, lastOwners.get(definition.id), tent, true);
+          if (piece.missing || !piece.part || !tent.flap) return;
           const texture = await load(assetUrl(tent.flap));
           if (destroyed || piece.kitRevision !== revision) return;
           piece.partSprite = new Sprite(tintCloth(texture, cloth, accent));
