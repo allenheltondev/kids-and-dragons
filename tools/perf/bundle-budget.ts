@@ -371,12 +371,15 @@ const FIRST_PAINT_BUDGET_KB = 334;
 // pages behind tabs with decoration chips, the plates waiting for the voice, a rest's way on asked
 // as "Everyone ready?", and the screens leaving out a removed player (the store, in the entry).
 // 1832KB measured against main's 1826KB. First paint 333KB against main's 332KB. 2KB of slack.
-// 1834 -> 1841 on 2026-11-14 for the goal card's trail and chances (#783): the milestones named
+// 1834 -> 1837 on 2026-11-14 for party skill turns (#779): per-hero completion and
+// reconnect accounting, fair turn rotation, and the explicit finish confirmation. The merged
+// build measures 1835KB (333KB first paint, unchanged); this leaves 2KB of total slack.
+// 1837 -> 1842 on 2026-11-14 for the goal card's trail and chances (#783): the milestones named
 // once ticked (`doneLabel`), the trail of how far along, and bonus objectives shown as chances
 // with the walk that says whether this party can still take one (shared chapter-trail.ts, in the
-// entry with the goal card), the summary's "Still out there" line, and the card's CSS. 1839KB
-// measured. First paint 333KB, unchanged. 2KB of slack.
-const TOTAL_BUDGET_KB = 1841;
+// entry with the goal card), the summary's "Still out there" line, and the card's CSS. 1840KB
+// measured on top of #779. First paint 333KB, unchanged. 2KB of slack.
+const TOTAL_BUDGET_KB = 1842;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

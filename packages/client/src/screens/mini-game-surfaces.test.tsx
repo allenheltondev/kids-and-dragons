@@ -4,30 +4,31 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import { applyIntent, createRunState, enterScene, makeRng, resolveCharacter, type ClientIntent, type EngineContext, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "@kad/shared";
 import { makeChapter, makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
+import { GameScenery } from "./GameScenery";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(2_000_000); vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
 afterEach(() => { cleanup(); useGameStore.setState(initial, true); vi.restoreAllMocks(); vi.useRealTimers(); });
 const options = [{ id: "leaf", label: "Leaf", icon: "leaf" }, { id: "star", label: "Star", icon: "star" }];
-function game(spec: InteractionSpec, props: string[] = []) {
+function game(spec: InteractionSpec, props: string[] = [], skill = false, players = 2, playerId = "p0") {
   const chapter = makeChapter();
   chapter.scenes.game = { type: "interaction", narration: "Help together", interaction: spec, onSuccess: { goto: "scene_clearing" }, onFailure: { goto: "scene_clearing" } };
   chapter.presentation = { interactions: { game: { props, ...(spec.kind === "tracking" ? { coverIcons: ["snow-mound", "relay-sack"] } : {}) } } };
   const ctx = (): EngineContext => ({ chapter, rules: makeRules(), items: makeItems(), rng: makeRng("surfaces"), now: new Date().toISOString(), householdId: "h" });
   let state = createRunState({ runId: "r", roomCode: "TEST", mode: "party", now: new Date().toISOString() });
   state.chapterId = chapter.id;
-  state.party = ["Aster", "Fern"].map((name, i) => ({ playerId: `p${i}`, character: resolveCharacter(makeCharacter({ id: `c${i}`, ownerPlayerId: `p${i}`, name }), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }));
+  state.party = ["Aster", "Fern", "Pip"].slice(0, players).map((name, i) => ({ playerId: `p${i}`, character: resolveCharacter(makeCharacter({ id: `c${i}`, ownerPlayerId: `p${i}`, name }), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }));
   state = enterScene(state, "game", ctx()).state;
   const p = state.prompt as InteractionPrompt;
-  state = applyIntent(state, { playerId: "p0", intent: { type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "start", relaxed: false } }, ctx()).state;
+  state = applyIntent(state, { playerId: "p0", intent: { type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "start", relaxed: false, ...(skill ? { rulesVersion: 2 as const } : {}) } }, ctx()).state;
   const deliver = (intent: ClientIntent, playerId = "p0") => {
     const result = applyIntent(useGameStore.getState().state!, { playerId, intent }, ctx());
     expect(result.error).toBeUndefined();
     useGameStore.setState({ state: result.state });
     return !result.error;
   };
-  useGameStore.setState({ state, chapter, synced: true, send: async (intent) => deliver(intent), session: { playerId: "p0", runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
+  useGameStore.setState({ state, chapter, synced: true, send: async (intent) => deliver(intent, playerId), session: { playerId, runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
   render(<><StoryInteractionControls /><StoryInteractionWorld /></>);
   return {
     phone: screen.getByRole("region", { name: "Interaction controls" }), tv: screen.getByRole("region", { name: "Story interaction" }),
@@ -151,13 +152,16 @@ it("rearranges sequence steps with a keyboard without removing a tile", async ()
   expect((useGameStore.getState().state!.prompt as InteractionPrompt).submittedAnswer).toEqual(["star", "leaf"]);
 });
 
-it("keeps scene scenery on both screens and removes an unavailable painting", () => {
+it("uses one world backdrop with fallback instead of paintings inside the game boards", () => {
   const { phone, tv } = game({ kind: "sequence", cue: "Order", actionLabel: "Try", options, answer: ["star", "leaf"], clues: [] });
   act(() => {
     const chapter = useGameStore.getState().chapter!;
     useGameStore.setState({ chapter: { ...chapter, scenes: { ...chapter.scenes, game: { ...chapter.scenes.game!, art: "scenes/riftlight/ashspan-broken-deck" } } } });
   });
-  for (const region of [phone, tv]) {
+  expect(tv.querySelector(".game-scenery")).toBeNull();
+  expect(phone.querySelector(".game-scenery")).toBeNull();
+  const scenery = render(<GameScenery />).container;
+  for (const region of [scenery]) {
     const image = region.querySelector(".game-scenery img")!;
     expect(image.getAttribute("src")).toBe("/assets/scenes/riftlight/ashspan-broken-deck.webp");
     fireEvent.error(image);
@@ -167,4 +171,55 @@ it("keeps scene scenery on both screens and removes an unavailable painting", ()
     expect(region.querySelector(".game-scenery")).toBeNull();
   }
   expect(within(phone).getByRole("button", { name: "Leaf" })).toBeTruthy();
+});
+
+it("hands aiming controls to the next phone after a success instead of ending the game", async () => {
+  const { phone, tv, helper } = game({ kind: "precision", cue: "Aim", actionLabel: "Throw", target: 0.5, width: 0.3, periodMs: 4000 }, ["rope-loop"], true);
+  expect(within(phone).getByRole("button", { name: "Throw" })).toBeTruthy();
+  await act(async () => {
+    const store = useGameStore.getState();
+    const prompt = store.state!.prompt as InteractionPrompt;
+    await store.send({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action: "commit", round: 0, position: 0.5 });
+  });
+  expect(within(phone).queryByRole("button", { name: "Throw" })).toBeNull();
+  expect(tv.textContent).toContain("Fern's turn");
+  expect((useGameStore.getState().state!.prompt as InteractionPrompt).phase).toBe("active");
+  await act(async () => { helper({ action: "commit", round: 1, position: 0.5 }); });
+  expect(tv.textContent).toContain("Aster's turn");
+  expect(within(phone).getByRole("button", { name: "Throw" })).toBeTruthy();
+});
+
+it("offers an explicit finish control when the last unfinished hero leaves", async () => {
+  const { phone, tv, helper } = game({ kind: "timing", cue: "Jump", actionLabel: "Jump", target: 0.5, width: 0.3, periodMs: 4000 }, [], true);
+  const commit = async () => {
+    const store = useGameStore.getState(), p = store.state!.prompt as InteractionPrompt;
+    await store.send({ type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "commit", round: p.challenge!.round, position: .5 });
+  };
+  await act(async () => {
+    for (let stage = 0; stage < 5; stage++) {
+      if (stage % 2) helper({ action: "commit", round: stage, position: .5 });
+      else await commit();
+    }
+    const state = useGameStore.getState().state!;
+    useGameStore.setState({ state: { ...state, party: state.party.map(m => m.playerId === "p1" ? { ...m, connected: false } : m) } });
+  });
+  expect(within(phone).queryByRole("button", { name: "Jump" })).toBeNull();
+  expect(tv.textContent).toContain("Tap Finish together on a phone");
+  await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Finish together" })); });
+  expect(useGameStore.getState().state!.prompt).toMatchObject({ phase: "result", outcome: "success", challenge: { progress: 5 } });
+});
+
+it("lets a non-lead phone finish with two connected heroes after the unfinished third leaves", async () => {
+  const { phone } = game({ kind: "timing", cue: "Jump", actionLabel: "Jump", target: 0.5, width: 0.3, periodMs: 4000 }, [], true, 3, "p1");
+  act(() => {
+    const state = useGameStore.getState().state!;
+    const prompt = state.prompt as InteractionPrompt;
+    useGameStore.setState({ state: { ...state,
+      party: state.party.map(m => m.playerId === "p2" ? { ...m, connected: false } : m),
+      prompt: { ...prompt, challenge: { ...prompt.challenge!, progress: 8, round: 8, completed: { p0: 3, p1: 3, p2: 2 }, nextParticipant: 2 } },
+    } });
+  });
+  await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Finish together" })); });
+  expect(useGameStore.getState().state!.prompt).toMatchObject({ phase: "result", outcome: "success", challenge: { progress: 8 } });
+  expect(within(phone).queryByRole("alert")).toBeNull();
 });
