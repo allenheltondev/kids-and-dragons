@@ -472,6 +472,14 @@
   .home--personal .home__card { gap: 0.8em; }
   .home--personal .home__code { max-inline-size: 24em; inline-size: 100%; align-self: center; }
   .home--personal .home__secondary-links { font-size: 0.9em; }
+
+  /* Its own last row under both columns, far bottom right, small and dim. */
+  .home--personal .home__guide--end {
+    grid-column: 1 / -1;
+    margin: 0;
+    opacity: 0.7;
+  }
+  .home--personal .home__guide--end .home__link { font-size: 0.8em; }
 }
 
 .home__link {

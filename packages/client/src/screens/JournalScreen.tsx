@@ -55,7 +55,6 @@ import "./shared.css";
 import "./JournalScreen.css";
 // The tray, painted as it is in the room (docs/briefs/tablet-chrome-art.md).
 import "../styles/chrome.css";
-import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 /** `story` and `me` are the hero's own, opened from the Hero page rather than from the shelf. */
 export type JournalPane = "hero" | "map" | "story" | "guide" | "me" | "camp" | "look";
@@ -272,7 +271,6 @@ export function JournalScreen(): ReactElement {
             </>
           )}
         </div>
-        <PrivacyFooter />
       </main>
     );
   }
@@ -333,7 +331,6 @@ export function JournalScreen(): ReactElement {
           </div>
         ) : null}
       </div>
-      <PrivacyFooter />
     </div>
   );
 }

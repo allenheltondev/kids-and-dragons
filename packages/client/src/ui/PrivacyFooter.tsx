@@ -1,7 +1,8 @@
 /**
  * The page footer (#523): the grown-up's guide and the quiet "Privacy" and "Terms" links, over the copyright line,
  * on every screen that is not the game itself and every place a kid can land directly: a direct room
- * link, the pre-game lobby, the adventure book, the grown-up's pages, a closed room.
+ * link, the pre-game lobby, the grown-up's pages, a closed room. The adventure book leaves it out:
+ * its tray is the navigation there, and a footer above it only gets in the way.
  *
  * Every link opens in a tab of its own, so a kid partway through naming a hero loses nothing by
  * tapping one, and neither page needs an account or a room. The guide leaves itself out of its own
