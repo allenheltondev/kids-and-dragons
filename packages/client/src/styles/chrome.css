@@ -627,3 +627,7 @@ html:not([data-contrast="high"]) .kad-surface--player {
 html:not([data-contrast="high"]) .choice:has(> .choice__icon)::after { content: none; }
 html:not([data-contrast="high"]) .choice__icon { position: relative; isolation: isolate; }
 html:not([data-contrast="high"]) .choice__icon::before { content: ""; position: absolute; inset: -27% -17%; z-index: -1; background: var(--chrome-socket) center / 100% 100% no-repeat; pointer-events: none; }
+
+/* Mini-games play directly in the world, without an opaque story card. */
+html:not([data-contrast="high"]) .narration__plate.narration__plate--game::before { content: none; }
+.narration__plate--game { background: linear-gradient(#100d2233, #100d2255); text-shadow: 0 2px 4px #000; }

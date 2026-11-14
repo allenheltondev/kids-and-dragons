@@ -6,7 +6,7 @@
  */
 
 import { expect } from "vitest";
-import { TEAM_HOLD_MS, balanceTarget, pullTarget, skillAim, relayTarget, relayHolder, applyIntent, enterScene, playbackMs } from "@kad/shared";
+import { TEAM_HOLD_MS, interactionActor, balanceTarget, pullTarget, skillAim, relayTarget, relayHolder, applyIntent, enterScene, playbackMs } from "@kad/shared";
 import type { Chapter, InteractionAction, InteractionPrompt, InteractionScene, RunState } from "@kad/shared";
 import { context, start } from "./riftlight-test-support.ts";
 
@@ -65,7 +65,7 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
       } else if (spec.kind === "cooperate") {
         for (const id of first.playerIds) state = act(chapter, state, { action: "commit", round, position: pullTarget(p) }, id);
       } else if (spec.kind === "precision" || spec.kind === "timing") {
-        state = act(chapter, state, { action: "commit", round, position: skillAim(p).target }, actor);
+        state = act(chapter, state, { action: "commit", round, position: skillAim(p).target }, interactionActor(p, state.party.filter(m => m.connected).map(m => m.playerId))!);
       } else if (spec.kind === "memory" || spec.kind === "sequence") {
         state = act(chapter, state, { action: "commit", round, answer: [...spec.answer] }, actor, wait);
       } else if (spec.kind === "tracking") {

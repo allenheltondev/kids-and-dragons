@@ -371,7 +371,10 @@ const FIRST_PAINT_BUDGET_KB = 334;
 // pages behind tabs with decoration chips, the plates waiting for the voice, a rest's way on asked
 // as "Everyone ready?", and the screens leaving out a removed player (the store, in the entry).
 // 1832KB measured against main's 1826KB. First paint 333KB against main's 332KB. 2KB of slack.
-const TOTAL_BUDGET_KB = 1834;
+// 1834 -> 1837 on 2026-11-14 for party skill turns (#779): per-hero completion and
+// reconnect accounting, fair turn rotation, and the explicit finish confirmation. The merged
+// build measures 1835KB (333KB first paint, unchanged); this leaves 2KB of total slack.
+const TOTAL_BUDGET_KB = 1837;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

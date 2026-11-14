@@ -7,7 +7,6 @@ import { propUrl } from "./InteractionArt";
 import { Button } from "../ui/Button";
 import { buzz } from "./game-feel";
 import "./RelayGame.css";
-import { RelayLandscape } from "./RelayArt";
 
 /** Give the final flight time to land before showing the reward or Continue. */
 export function useRelayArrival(prompt: InteractionPrompt | null): boolean {
@@ -65,7 +64,6 @@ export function RelayWorld({ prompt, party, object, settled = true, now = Date.n
     {prompt.relay && <RelayScore prompt={prompt} />}
     <p className="relay-world__caption" role="status">{parked ? "Waiting for a friend to reconnect" : ready ? "From hand to hand, all the way home" : prompt.phase === "result" && prompt.outcome === "failure" ? "The delivery took a tumble!" : delivered ? settled ? "Delivered together!" : "On its way home!" : caught ? `${name} has ${label}!` : `${name}, catch ${label}!`}</p>
     <div className="relay-world__stage" aria-label={`The journey of ${label}`}>
-      <RelayLandscape />
       <span className="relay-world__path" aria-hidden="true" />
       <ol className="relay-world__heroes">{order.map((id) => {
         const m = party.find((member) => member.playerId === id)!;
