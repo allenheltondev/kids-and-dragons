@@ -69,8 +69,9 @@ to tell, it shows the camp, pitched in the terrain the crew is in:
 | **Adventure book** (`/journal`, spec §2.3) | n/a | A fifth tray object, **Camp**: the crew's camp to look at and tap, online or offline, from the last copy this phone read. |
 | **In a scene, a check or a fight** | Never. The story owns the screen. | Never. |
 
-**Nothing waits on the camp.** The lobby's Begin, the rest scene's Go on and the chapter end's
-"back to the lobby" all work exactly as they do now. Begin closes any camp panel a phone has open.
+**Nothing waits on the camp.** The lobby's Begin, the rest scene's way on (a vote of everyone
+here, so one phone cannot carry the party out while another is still spending points) and the
+chapter end's "back to the lobby" all work exactly as they do now. Begin closes any camp panel a phone has open.
 Leaving the chapter's end cancels an unfinished vote without spending, and the balance waits for
 a future chapter-end shop (§6.2). This keeps the session budget untouched: the camp only fills
 time that already exists.
@@ -1049,6 +1050,14 @@ The camp should feel calm, like watching a campsite, not a busy screen:
   and after a beat walks to the tapping kid's hero, on her lane at her side, while she waits for
   it; a way still blocked after about four seconds (a lane-mate in it is nudged on) is a
   fade, out where it stands and back in beside her (§8.6, rule 3). In reduced motion the words show and nobody walks.
+- **Into her tent, and out again** (playtest, 2026-11-14). "Go in my tent" (beside the Camp
+  button, and at the top of the Camp panel) sends `CAMP_TENT`: her own player only, while the full
+  camp is up (`CampMoment.outdoor`). Unlike a tap it is state, on the moment (`CampMoment.inTent`),
+  so every screen shows it and a refreshed TV still does, and it ends with the downtime. On the TV
+  she walks home to her own tent and fades out, and a warm glow and a drowsy "z z" hang over it
+  (camp.ts `tentMarkOf`); "Come out of the tent" brings her out with a wave, as one arriving does.
+  Before the camp has tents (stage 1) the button says "Curl up in my bedroll". A phone that drops
+  shows its hero away, in her tent or not, and Begin brings everybody out to set off.
 - **Movement is the screen's own, not the game's.** The server stores where pieces and friends are
   placed (§9), never where anybody is standing. Wandering runs on each screen from a seed taken
   from the downtime moment (§12.6), so the TV and a phone looking at it mostly agree, and nothing

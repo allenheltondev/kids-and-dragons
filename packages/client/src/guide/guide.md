@@ -90,6 +90,7 @@ Phones die and kids wander off. The game keeps going.
 When a phone goes quiet, the big screen says "Rosie stepped away." (with the kid's own name), and their hero fades on the board. Nobody has to wait for them:
 
 - In a vote, a phone shows **Decide without** and the names of who is missing.
+- At a rest, where everyone says they are ready before the party goes on, a phone shows **Go on without** and those names.
 - Before a fight, a phone shows **Start without** and those names.
 - On a missing kid's turn in a fight, any phone can tap **Pass** for their turn. Their hero waits right where they were.
 

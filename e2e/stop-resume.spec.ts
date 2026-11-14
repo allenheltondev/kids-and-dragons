@@ -38,6 +38,7 @@ interface State {
   saved?: { recap: string; chapter: { title: string }; heroes: string[] };
   chapterInfo: { index: number; title: string } | null;
   party: Member[];
+  prompt?: { kind: string; options?: { label: string }[] } | null;
 }
 
 async function sessionOf(page: Page, code: string): Promise<{ playerId: string; sessionToken: string }> {
@@ -189,11 +190,18 @@ test.describe("stop anytime, pick up where you left off", () => {
     await expect(leftOff.locator(".preface__lines--trail li")).toContainText(["wall of thorns"]);
 
     // --- And the game goes on from there ---
+    // A rest's way on waits for everyone to be ready, so both phones say so: Sam's from the hero's
+    // own page (it was left on the World view above), and on the rest's own option, by its label,
+    // never a stat a hero still has to spend (the picker sits above it).
+    await sam.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "You" }).click(TAP);
     for (let attempt = 0; attempt < 8; attempt++) {
-      if ((await roomState<State>(sam, second)).sceneId !== REST_SCENE) break;
+      const now = await roomState<State>(sam, second);
+      if (now.sceneId !== REST_SCENE) break;
+      const wayOn = now.prompt?.kind === "choice" ? now.prompt.options?.[0]?.label : undefined;
       for (const page of [sam, allen]) {
         await openPlayerTask(page);
-        await page.locator(".prompt .choice").first().click({ timeout: 5_000 }).catch(() => undefined);
+        const options = page.locator(".prompt .choice");
+        await (wayOn ? options.filter({ hasText: wayOn }) : options).first().click({ timeout: 5_000 }).catch(() => undefined);
         await page.getByRole("button", { name: /do it!/i }).click({ timeout: 5_000 }).catch(() => undefined);
       }
       await sam.waitForTimeout(700);

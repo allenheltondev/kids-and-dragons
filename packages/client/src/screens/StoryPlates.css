@@ -35,12 +35,29 @@
   object-position: 50% 45%;
   opacity: 0;
   transform-origin: 50% 45%;
-  transition: opacity 900ms ease-in-out;
+  /* A page that is not up is not drawn at all once it has faded: every full-pane painting left
+     composited under the one showing cost a set-top box its frame rate (playtest, 2026-11-14). */
+  visibility: hidden;
+  transition: opacity 900ms ease-in-out, visibility 0s linear 900ms;
 }
 
 .plates__image[data-active="true"] {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 900ms ease-in-out, visibility 0s;
+  will-change: transform, opacity;
   animation: plates-drift-in var(--plate-ms, 12s) ease-out both;
+}
+
+/* A television scales a full-screen painting every frame poorly: it gets the fade without the drift. */
+.plates[data-tv="true"] .plates__image[data-active="true"] {
+  animation: none;
+  will-change: opacity;
+}
+
+/* The words over the painting: no blurred shadow re-drawn on a television, which has the dark band behind them already. */
+.plates[data-tv="true"] .plates__text {
+  text-shadow: none;
 }
 
 .plates__image[data-active="true"][data-drift="out"] {

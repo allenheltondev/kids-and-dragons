@@ -96,6 +96,7 @@ import type {
   TradeOffer,
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
+import { campMomentKind } from "./camp-edit.js";
 import type { Rng } from "./dice.js";
 import { isPracticeCampaign } from "./practice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
@@ -461,9 +462,10 @@ function announceDecision(
   prompt: Prompt & { kind: "choice" },
   choice: { label: string },
   playerId: string,
+  fromRest = false,
 ): void {
   if (prompt.options.length > 1) {
-    draft.decision = { sceneId: draft.sceneId, label: choice.label, byPlayerId: playerId, vote: prompt.vote };
+    draft.decision = { sceneId: draft.sceneId, label: choice.label, byPlayerId: playerId, vote: prompt.vote, ...(fromRest ? { rest: true } : {}) };
   }
 }
 
@@ -1070,11 +1072,13 @@ function openScenePrompt(
       // empty is an authoring bug that validateChapter reports as a DEAD_END.
       const who = party(draft);
       const options = visibleChoices(scene.choices, who);
-      const isVote = scene.type === "choice_point";
       // choice_point puts it to the party (spec §6.1). A story beat is one
       // player's call, taken in turns, so it is not a race to the first tap.
-      // Rest stays open to anyone: its way out is "move on", which is the
-      // table's call, and nobody should wait on one phone to leave camp.
+      // A rest is put to the party too: it is where stat points are spent
+      // and things traded, so one phone tapping "move on" must not carry
+      // everybody out of camp before they are done (playtest, 2026-11-14).
+      // Like any vote it waits only on the phones that are here.
+      const isVote = scene.type === "choice_point" || scene.type === "rest";
       const turn = scene.type === "story" ? storyTurnHolder(draft) : null;
       draft.prompt = {
         kind: "choice",
@@ -1678,6 +1682,10 @@ function checkIntentShape(intent: ClientIntent): void {
     case "CAMP_VOTE":
       if (!campVoteWellFormed(intent)) malformed("visit or option");
       return;
+    case "CAMP_TENT":
+      if (typeof intent.characterId !== "string" || intent.characterId.length === 0 || intent.characterId.length > 200) malformed("characterId");
+      if (typeof intent.inside !== "boolean") malformed("inside");
+      return;
     case "CAMP_PLACE":
     case "CAMP_UNDO":
     case "KIT_EDIT": {
@@ -1774,6 +1782,9 @@ function dispatch(
 
     case "READY":
       return doReady(draft, playerId, intent.ready, ctx);
+
+    case "CAMP_TENT":
+      return doCampTent(draft, playerId, intent.characterId, intent.inside);
 
     case "ENDING_READ":
       return doEndingRead(draft, playerId);
@@ -1919,6 +1930,24 @@ function doPlaytestGoto(
   forgetFight(draft);
   for (const member of draft.party) member.ready = false;
   return enterSceneDraft(draft, sceneId, ctx);
+}
+
+/**
+ * A hero into her tent, or out of it (`CAMP_TENT`): her own player only, while
+ * the full camp is up. Going in twice, or out when she is not in, changes nothing.
+ */
+function doCampTent(draft: RunState, playerId: string, characterId: string, inside: boolean): Presentation | undefined {
+  const moment = draft.campMoment;
+  if (!moment || campMomentKind(draft) === null) throw new Illegal("ILLEGAL", "there is no camp to go into a tent at");
+  if (!moment.outdoor) throw new Illegal("ILLEGAL", "the camp is packed away here: no tents are up");
+  const member = draft.party.find((m) => m.character.id === characterId);
+  if (!member) throw new Illegal("NOT_FOUND", `no hero "${characterId}" at this table`);
+  if (member.playerId !== playerId) throw new Illegal("FORBIDDEN", "only her own player sends a hero into her tent");
+  const now = moment.inTent ?? [];
+  const next = inside ? (now.includes(characterId) ? now : [...now, characterId]) : now.filter((id) => id !== characterId);
+  if (next.length === 0) delete moment.inTent;
+  else moment.inTent = next;
+  return undefined;
 }
 
 function doReady(
@@ -2319,8 +2348,8 @@ function doChoose(
   // The marker moves on before the next scene opens its prompt against it,
   // once a Story beat's owner has had the beat's last moment
   // (`spendSpotlight`). A vote is the whole party's, not a moment of anyone's
-  // beat, so it leaves the owner the spotlight (and they break its ties). A
-  // Rest's way out is open to anyone and is nobody's moment either. Nor is a
+  // beat, so it leaves the owner the spotlight (and they break its ties); a
+  // Rest's way out is the party's vote too, and nobody's moment. Nor is a
   // Story beat with only one way on: "Go on" is not a decision, and spending
   // a moment on it would leave that player nothing to decide (§6.1).
   if (!prompt.vote && prompt.forPlayerIds.length > 0 && prompt.options.length > 1) {
@@ -2334,7 +2363,7 @@ function doChoose(
   const ups = landRanks(draft, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
   announceRankUps(draft, ups);
-  announceDecision(draft, prompt, choice, playerId);
+  announceDecision(draft, prompt, choice, playerId, scene.type === "rest");
   // Only one presentation rides on a transition. Finishing the chapter is a
   // bigger beat than the tap that got you there, so it wins.
   if (entered?.kind === "CHAPTER_COMPLETE") return entered;

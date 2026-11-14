@@ -298,8 +298,9 @@ describe("two households, one chapter (#249)", () => {
     const choose = async (choiceId: string) => {
       const prompt = (await t.state()).prompt;
       if (prompt?.kind !== "choice") throw new Error("expected a choice");
-      const who = prompt.forPlayerIds[0] === t.visitor.playerId ? t.visitor : t.host;
-      expect(await t.act(who, { type: "CHOOSE", choiceId })).toMatchObject({ ok: true });
+      // A vote (a rest's way on) is everybody's; a turn-held choice is its holder's.
+      const voters = prompt.vote ? [t.host, t.visitor] : [prompt.forPlayerIds[0] === t.visitor.playerId ? t.visitor : t.host];
+      for (const who of voters) expect(await t.act(who, { type: "CHOOSE", choiceId })).toMatchObject({ ok: true });
     };
     await choose("in");
     expect((await t.state()).sceneType).toBe("rest");

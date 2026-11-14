@@ -108,6 +108,50 @@ export function CampButton({ state, block = false }: { state: RunState; block?: 
   );
 }
 
+/** Whether her camp has tents up: outdoors, from frame stage 2 (§4.5); before that, bedrolls. */
+function campHasTents(state: RunState): boolean {
+  return campStage(state) >= 2 && state.campMoment?.outdoor !== false;
+}
+
+/**
+ * Into her tent and out again (CAMP_TENT; playtest, 2026-11-14): on the TV she walks to her own
+ * tent and goes in, and a light and a drowsy "z z" show she is in there, until she comes out.
+ * Only while the full camp is up (never at an indoor rest, where the camp is packed down). One
+ * button per hero this phone plays, named when there is more than one.
+ */
+export function TentButton({ state, me, held, dispatch, block = false }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch; block?: boolean }): ReactElement | null {
+  if (campMomentKind(state) === null || !state.campMoment?.outdoor) return null;
+  const mine = state.party.filter((m) => m.playerId === me.playerId && !(state.removed?.includes(m.playerId) ?? false));
+  if (mine.length === 0) return null;
+  const tents = campHasTents(state);
+  const inTent = state.campMoment.inTent ?? [];
+  return (
+    <>
+      {mine.map((member) => {
+        const inside = inTent.includes(member.character.id);
+        const who = mine.length > 1 ? `${member.character.name}: ` : "";
+        const label = inside ? (tents ? "Come out of the tent" : "Wake up") : tents ? "Go in my tent" : "Curl up in my bedroll";
+        return (
+          <Button
+            key={member.character.id}
+            variant={inside ? "primary" : "secondary"}
+            size="md"
+            block={block}
+            className={`tent-button${inside ? " tent-button--inside" : ""}`}
+            icon={<Icon name={inside ? "forward" : "rest"} />}
+            disabled={held}
+            aria-pressed={inside}
+            onClick={() => dispatch({ type: "CAMP_TENT", characterId: member.character.id, inside: !inside })}
+            data-testid="tent-button"
+          >
+            {`${who}${label}`}
+          </Button>
+        );
+      })}
+    </>
+  );
+}
+
 /** The first-session choice (§5.3): one tap picks a style (in a color), and it can be skipped. */
 export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
   const heroId = me.character.id;
@@ -344,32 +388,33 @@ export function KitEditor({ member, kit: tableKit, held, dispatch, friends = [] 
 
       <fieldset className="camp-panel__group" data-camp-focus="decor">
         <legend>Decorations on your tent</legend>
-        <div className="camp-panel__slots">
-          {slots.map((slot, i) => (
-            <label key={i} className="camp-panel__slot">
-              <span>{`Spot ${String(i + 1)}`}</span>
-              <select
-                className="kad-focusable"
-                value={slot ?? ""}
-                disabled={held}
-                onChange={(event) => {
-                  const next = [...slots];
-                  next[i] = event.target.value === "" ? null : event.target.value;
-                  // One decoration hangs in one spot: picking it here takes it from the other.
-                  for (let j = 0; j < next.length; j++) if (j !== i && next[j] === next[i]) next[j] = null;
-                  edit({ slots: next });
-                }}
-              >
-                <option value="">Nothing</option>
-                {decorations.map((id) => (
-                  <option key={id} value={id}>
-                    {kitName(id, "decoration")}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ))}
-        </div>
+        {decorations.length === 0 ? <p className="camp-panel__note kad-muted">Decorations come from your adventures. None yet!</p> : null}
+        {decorations.length === 0 ? null : slots.map((slot, i) => (
+          <div key={i} className="camp-panel__slot" role="group" aria-label={`Spot ${String(i + 1)}`}>
+            <span className="camp-panel__slot-name">{`Spot ${String(i + 1)}`}</span>
+            <div className="camp-panel__options">
+              {[null, ...decorations].map((id) => (
+                <button
+                  key={id ?? "none"}
+                  type="button"
+                  className="camp-option camp-option--chip kad-focusable"
+                  aria-pressed={(slot ?? null) === id}
+                  disabled={held}
+                  data-decoration={id ?? ""}
+                  onClick={() => {
+                    const next = [...slots];
+                    next[i] = id;
+                    // One decoration hangs in one spot: picking it here takes it from the other.
+                    for (let j = 0; j < next.length; j++) if (j !== i && next[j] === next[i]) next[j] = null;
+                    edit({ slots: next });
+                  }}
+                >
+                  <span className="camp-option__label">{id === null ? "Nothing" : kitName(id, "decoration")}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </fieldset>
       <BuddyPicker kit={kit} friends={friends} held={held} edit={edit} hero={hero.name} />
       {hero.souvenirs.length > 0 ? (
@@ -429,6 +474,10 @@ function SharedSpots({
   const undo = undoableChange(moment, me.playerId, camp.placed);
   const hotspots = layout ? layoutHotspots(layout) : [];
   const place = (hotspot: string, piece: string | null): void => dispatch({ type: "CAMP_PLACE", moment: moment.id, hotspot, piece });
+  // A spot the crew has nothing for, and nothing on: one line between them, not a box each saying so.
+  const emptySpot = (spot: (typeof spots)[number]): boolean =>
+    !spot.pieceId && spotOptions(spot, layout!, camp).length === 0 && !beside.some((b) => b.hotspotId === spot.id);
+  const empty = spots.filter(emptySpot);
   return (
     <section className="camp-panel__section" aria-labelledby={`${base}-shared`} data-testid="camp-shared">
       {heading}
@@ -456,7 +505,7 @@ function SharedSpots({
               {`Undo my change to the ${hotspotName(hotspots.find((h) => h.id === undo.hotspot)?.kind ?? undo.hotspot).toLowerCase()}`}
             </Button>
           ) : null}
-          {spots.map((spot) => {
+          {spots.filter((spot) => !emptySpot(spot)).map((spot) => {
             const rule = hotspots.find((h) => h.id === spot.id);
             const options = spotOptions(spot, layout!, camp);
             const choices: (string | null)[] = rule?.default ? options : [null, ...options];
@@ -497,6 +546,11 @@ function SharedSpots({
               </fieldset>
             );
           })}
+          {empty.length > 0 ? (
+            <p className="camp-panel__note kad-muted" data-testid="camp-spots-empty">
+              {`Nothing to put here yet: ${empty.map((spot) => hotspotName(spot.kind)).join(", ")}. Adventures bring new things.`}
+            </p>
+          ) : null}
         </>
       )}
       {waiting.length > 0 ? (
@@ -538,26 +592,54 @@ function PackedCamp({ state }: { state: RunState }): ReactElement {
   );
 }
 
-/** The panel itself: a picture and its named controls. Open only in downtime. */
+/** The panel's pages: her own kit, her look, the crew's friends, and the crew's shared spots. */
+export type CampTab = "kit" | "look" | "friends" | "spots";
+
+/** The page last open, for this page load: a kid who was choosing a coat comes back to the coats. */
+let lastTab: CampTab = "kit";
+
+/** Back to the first page (tests; a new household on the same page load would not mind either way). */
+export function resetCampTab(): void {
+  lastTab = "kit";
+}
+
+/**
+ * The panel itself (playtest, 2026-11-14): the camp's picture held at the top, where every change
+ * shows as it is made, the tent button under it, and one page of controls at a time behind a row
+ * of tabs, rather than one long scroll of everything. Open only in downtime.
+ */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
   const chapter = useChapter();
   const kind = campMomentKind(state);
   const [active, setActive] = useState<string | null>(null);
+  const [tab, setTabState] = useState<CampTab>(lastTab);
+  const setTab = (next: CampTab): void => {
+    lastTab = next;
+    setTabState(next);
+  };
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const pageRef = useRef<HTMLDivElement | null>(null);
   const titleId = useId();
+  const tabsId = useId();
+  /** Where a piece's news asked the panel to open (`takeCampFocus`), until its page is up and it is in view. */
+  const pending = useRef<{ hero: string; part: string } | null>(null);
   // Begin, Go on, back to the lobby: the panel goes with the downtime (§3, §12.6).
   useEffect(() => {
     if (kind === null) closeCampPanel();
   }, [kind]);
   useEffect(() => {
     if (!open) return;
-    // Opened: whatever was new is seen. Opened from a piece's news ("Try it on"), at that part.
+    // Opened: whatever was new is seen. Opened from a piece's news ("Try it on"), at that part, on her kit's page.
     seeCampNews();
     const at = takeCampFocus();
+    if (at) {
+      pending.current = at;
+      setTab(at.part === "look" ? "look" : "kit");
+    }
     headingRef.current?.focus({ preventScroll: at !== null });
-    if (at) panelRef.current?.querySelector(`[data-camp-hero="${at.hero}"] [data-camp-focus="${at.part}"]`)?.scrollIntoView?.({ block: "start" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
   useEffect(() => {
     if (!open) return;
@@ -567,12 +649,38 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
+  // A new page starts at its top.
+  useEffect(() => {
+    pageRef.current?.scrollTo?.({ top: 0 });
+  }, [tab]);
+  // Then the part a piece's news named, once its page is the one showing.
+  useEffect(() => {
+    const at = pending.current;
+    if (!open || !at) return;
+    const part = panelRef.current?.querySelector(`[data-camp-hero="${at.hero}"] [data-camp-focus="${at.part}"]`);
+    if (!part) return;
+    pending.current = null;
+    part.scrollIntoView?.({ block: "start" });
+  });
   if (!open || kind === null) return null;
   // Indoors the camp is packed down to bedrolls and packs (§3.2): no campsite
   // painting, no tents and no campfire, only each hero's own kit, set down.
   const indoors = state.campMoment?.outdoor === false;
   const layout = indoors ? null : campLayoutFor(campStage(state), campFamilyFor(state, chapter));
   const mine = state.party.filter((m) => m.playerId === me.playerId);
+  const friends = state.campMoment?.friends;
+  const tabs: { id: CampTab; label: string; icon: string }[] = [
+    { id: "kit", label: mine.length > 1 ? "Our kits" : "My camp", icon: "bag" },
+    { id: "look", label: mine.length > 1 ? "Our looks" : "My look", icon: "star" },
+    ...(friends && friends.cards.length > 0 ? [{ id: "friends" as const, label: "Friends", icon: "heart" }] : []),
+    { id: "spots", label: "Camp spots", icon: "crew" },
+  ];
+  const shown: CampTab = tabs.some((t) => t.id === tab) ? tab : "kit";
+  // Tapping a spot on the picture opens its page.
+  const pickSpot = (id: string | null): void => {
+    setActive(id);
+    if (id !== null) setTab("spots");
+  };
   return (
     <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel" ref={panelRef}>
       <header className="camp-panel__head">
@@ -584,27 +692,53 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
           Done
         </Button>
       </header>
-      <div className="camp-panel__body">
-        {/* The first-session choice (§5.3), wherever the Camp button was found first. */}
-        <KitWelcome state={state} me={me} held={held} dispatch={dispatch} />
+      <div className="camp-panel__top">
         {layout ? (
           <div className="camp-panel__picture" aria-hidden="true">
-            <StillCamp layout={layout} state={state} fit="width" activeSpot={active} {...(state.campMoment?.outdoor ? { onSpot: setActive } : {})} />
+            {/* The spots' chips only on the spots' page: elsewhere the picture is just the camp. */}
+            <StillCamp layout={layout} state={state} fit="width" activeSpot={shown === "spots" ? active : null} {...(state.campMoment?.outdoor && shown === "spots" ? { onSpot: pickSpot } : {})} />
           </div>
         ) : null}
         {indoors ? <PackedCamp state={state} /> : null}
-        {mine.map((member) => {
-          const kit = state.kits?.[member.character.id];
-          return (
-            <div key={member.character.id} style={{ display: "contents" }} data-camp-hero={member.character.id}>
-              {kit ? <KitEditor member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null}
-              {/* Her look (docs/hero-looks.md §8.2; #664), in every downtime moment, as her kit. */}
-              <LookEditor member={member} held={held} dispatch={dispatch} />
-            </div>
-          );
-        })}
-        <CampFriends state={state} />
-        <SharedSpots state={state} me={me} held={held} dispatch={dispatch} active={active} setActive={setActive} />
+        <div className="camp-panel__tent">
+          <TentButton state={state} me={me} held={held} dispatch={dispatch} block />
+        </div>
+        <div className="camp-panel__tabs" role="tablist" aria-label="Camp" id={tabsId}>
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              id={`${tabsId}-${t.id}`}
+              aria-selected={shown === t.id}
+              aria-controls={`${tabsId}-page`}
+              className="camp-panel__tab kad-focusable"
+              onClick={() => setTab(t.id)}
+              data-camp-tab={t.id}
+            >
+              <Icon name={t.icon} />
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="camp-panel__body" ref={pageRef} role="tabpanel" id={`${tabsId}-page`} aria-labelledby={`${tabsId}-${shown}`}>
+        {/* The first-session choice (§5.3), wherever the Camp button was found first. */}
+        <KitWelcome state={state} me={me} held={held} dispatch={dispatch} />
+        {shown === "kit" || shown === "look"
+          ? mine.map((member) => {
+              const kit = state.kits?.[member.character.id];
+              return (
+                <div key={member.character.id} style={{ display: "contents" }} data-camp-hero={member.character.id}>
+                  {shown === "kit" && kit ? <KitEditor member={member} kit={kit} held={held} dispatch={dispatch} friends={friends?.cards ?? []} /> : null}
+                  {/* Her look (docs/hero-looks.md §8.2; #664), in every downtime moment, as her kit. */}
+                  {shown === "look" ? <LookEditor member={member} held={held} dispatch={dispatch} /> : null}
+                </div>
+              );
+            })
+          : null}
+        {shown === "friends" ? <CampFriends state={state} /> : null}
+        {shown === "spots" ? <SharedSpots state={state} me={me} held={held} dispatch={dispatch} active={active} setActive={setActive} /> : null}
       </div>
     </div>
   );

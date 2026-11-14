@@ -1727,6 +1727,32 @@ export function useParty(): PartyMember[] {
   return useGameStore((store) => store.state?.party ?? (NO_PARTY as PartyMember[]));
 }
 
+/**
+ * The party without anybody the host took out (`RunState.removed`, #267): what the screens draw.
+ * A removed player stays in `party` as away, so nothing waits on them, but they are gone from the
+ * game and are not drawn faded on the stage or named as stepped away (playtest, 2026-11-14).
+ */
+export function seatedParty(state: Pick<RunState, "party" | "removed"> | null | undefined): PartyMember[] {
+  const party = state?.party ?? (NO_PARTY as PartyMember[]);
+  const removed = state?.removed;
+  if (!removed || removed.length === 0) return party;
+  return party.filter((member) => !removed.includes(member.playerId));
+}
+
+let seatedFrom: { party: readonly PartyMember[]; removed: readonly string[] | undefined; seated: PartyMember[] } | null = null;
+
+/** `seatedParty` of the live state, the same array until the party or the removed list changes. */
+export function useSeatedParty(): PartyMember[] {
+  return useGameStore((store) => {
+    const party = store.state?.party ?? NO_PARTY;
+    const removed = store.state?.removed;
+    if (seatedFrom?.party !== party || seatedFrom.removed !== removed) {
+      seatedFrom = { party, removed, seated: seatedParty(store.state) };
+    }
+    return seatedFrom.seated;
+  });
+}
+
 /** The open prompt, already filtered to "is this for me?". */
 export function usePrompt(): Prompt | null {
   return useGameStore((store) => {

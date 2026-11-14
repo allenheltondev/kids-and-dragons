@@ -28,10 +28,11 @@ export interface CastFit {
   /** Drawn turned round. */
   mirrored?: boolean;
   /**
-   * Cast back, up the ground behind it, rather than toward the viewer: for a
-   * thing standing on a broad base (a tent on its pegs), whose shadow lies
-   * under it and reaches out past its back corner, starting at its pegs
-   * rather than hanging off its front (owner, 2026-11-06).
+   * Cast back, up the ground behind it, rather than toward the viewer: the
+   * default. A shadow thrown down the screen and pooled under the feet makes
+   * a figure look like it hovers over it (playtest, 2026-11-14); cast back,
+   * it starts at the feet and lies on the ground behind, as a tent's from its
+   * pegs (owner, 2026-11-06). `false` throws it toward the viewer.
    */
   behind?: boolean;
 }
@@ -47,10 +48,11 @@ export const BEHIND_REACH = 1.4;
 export function groundShadow(light: CampLight, width: number, height: number, texture?: Texture, fit?: CastFit): Container {
   const shadow = new Container();
   shadow.label = "camp-ground-shadow";
+  const behind = fit?.behind ?? true;
   if (texture) {
     const projection = new Container();
     // The outline's top lands `lean` across and `reach` toward the viewer (both of its height).
-    const reach = fit?.behind ? -light.reach * BEHIND_REACH : light.reach;
+    const reach = behind ? -light.reach * BEHIND_REACH : light.reach;
     projection.scale.set(1, -Math.hypot(light.lean, reach));
     projection.skew.x = Math.atan2(light.lean, reach);
     const cast = new Sprite(texture);
@@ -68,7 +70,7 @@ export function groundShadow(light: CampLight, width: number, height: number, te
   const contactRy = Math.max(height * 0.055, 6);
   const contact = new Graphics()
     // Cast back, it sits inside the footprint, its bottom edge on the pegs rather than past them.
-    .ellipse(width * 0.06 * Math.sign(light.lean), fit?.behind ? 1 - contactRy : height * 0.015, width * 0.48, contactRy)
+    .ellipse(width * 0.06 * Math.sign(light.lean), behind ? 1 - contactRy : height * 0.015, width * 0.48, contactRy)
     .fill({ color: 0xffffff });
   contact.label = "camp-ground-contact";
   shadow.addChild(contact);

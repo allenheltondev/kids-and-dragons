@@ -114,10 +114,12 @@ async function chooseUntil(
 }
 
 /**
- * Does this option's label carry one of the party's names?
+ * Does this option's visible label carry one of the party's names ("Decide without
+ * Bramble", a teammate to hand something to)? Who voted for an option is read
+ * aloud only (VoteTicks), so it is left out of the label first, and this phone's
+ * own vote is told by its check mark (`answerPrompt`).
  *
- * The question is "has somebody already voted for this", and the answer has to
- * be a **whole-word** match rather than a substring. `includes` looked
+ * The match has to be a **whole-word** match rather than a substring. `includes` looked
  * equivalent and was not: a hero called Bramble made every `Bramblewisp` in the
  * chapter read as a party member.
  *
@@ -236,10 +238,22 @@ async function answerPrompt(page: Page, heroes: readonly string[]): Promise<bool
   const options = await page.locator(".prompt button").all();
   const fresh: typeof options = [];
   for (const option of options) {
-    const label = (await option.innerText().catch(() => "")).trim();
+    // The words a kid sees: the vote ticks name who voted for screen readers only, and a rest's
+    // single way on, voted by one phone, must still be there for the others to say they are ready.
+    const label = (
+      await option
+        .evaluate((el) => {
+          const copy = el.cloneNode(true) as HTMLElement;
+          for (const hidden of copy.querySelectorAll(".kad-sr-only")) hidden.remove();
+          return copy.textContent ?? "";
+        })
+        .catch(() => "")
+    ).trim();
     if (!label) continue;
     if (/do it!|yes, do that|wait, not yet|change/i.test(label)) continue;
     if (labelNamesAHero(label, heroes)) continue;
+    // This phone's own vote: tapping it again sends the same vote and moves nothing.
+    if ((await option.locator(".choice__mark > *").count().catch(() => 0)) > 0) continue;
     fresh.push(option);
   }
   if (fresh.length === 0) return false;
