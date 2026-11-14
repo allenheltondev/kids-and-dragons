@@ -96,6 +96,7 @@ import type {
   TradeOffer,
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
+import { campMomentKind } from "./camp-edit.js";
 import type { Rng } from "./dice.js";
 import { isPracticeCampaign } from "./practice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
@@ -1680,6 +1681,10 @@ function checkIntentShape(intent: ClientIntent): void {
     case "CAMP_VOTE":
       if (!campVoteWellFormed(intent)) malformed("visit or option");
       return;
+    case "CAMP_TENT":
+      if (typeof intent.characterId !== "string" || intent.characterId.length === 0 || intent.characterId.length > 200) malformed("characterId");
+      if (typeof intent.inside !== "boolean") malformed("inside");
+      return;
     case "CAMP_PLACE":
     case "CAMP_UNDO":
     case "KIT_EDIT": {
@@ -1776,6 +1781,9 @@ function dispatch(
 
     case "READY":
       return doReady(draft, playerId, intent.ready, ctx);
+
+    case "CAMP_TENT":
+      return doCampTent(draft, playerId, intent.characterId, intent.inside);
 
     case "ENDING_READ":
       return doEndingRead(draft, playerId);
@@ -1921,6 +1929,24 @@ function doPlaytestGoto(
   forgetFight(draft);
   for (const member of draft.party) member.ready = false;
   return enterSceneDraft(draft, sceneId, ctx);
+}
+
+/**
+ * A hero into her tent, or out of it (`CAMP_TENT`): her own player only, while
+ * the full camp is up. Going in twice, or out when she is not in, changes nothing.
+ */
+function doCampTent(draft: RunState, playerId: string, characterId: string, inside: boolean): Presentation | undefined {
+  const moment = draft.campMoment;
+  if (!moment || campMomentKind(draft) === null) throw new Illegal("ILLEGAL", "there is no camp to go into a tent at");
+  if (!moment.outdoor) throw new Illegal("ILLEGAL", "the camp is packed away here: no tents are up");
+  const member = draft.party.find((m) => m.character.id === characterId);
+  if (!member) throw new Illegal("NOT_FOUND", `no hero "${characterId}" at this table`);
+  if (member.playerId !== playerId) throw new Illegal("FORBIDDEN", "only her own player sends a hero into her tent");
+  const now = moment.inTent ?? [];
+  const next = inside ? (now.includes(characterId) ? now : [...now, characterId]) : now.filter((id) => id !== characterId);
+  if (next.length === 0) delete moment.inTent;
+  else moment.inTent = next;
+  return undefined;
 }
 
 function doReady(

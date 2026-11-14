@@ -25,6 +25,7 @@ import { PLAYER_COLORS } from "./player-colors.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
+import type { Prompt as AnyPrompt } from "./types/state.js";
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { TABLE_FULL_MESSAGE } from "./seats.js";
 import type { RunState } from "./types/state.js";
@@ -1069,7 +1070,7 @@ describe("story turns (spec §6.1)", () => {
     expect(atCamp.sceneType).toBe("rest");
     expect(atCamp.prompt).toMatchObject({ kind: "choice", vote: true, forPlayerIds: ["p_1", "p_2"] });
     // One phone's tap is a vote, not the way out: camp waits for the other.
-    const choiceId = (atCamp.prompt as Prompt & { kind: "choice" }).options[0]!.id;
+    const choiceId = (atCamp.prompt as AnyPrompt & { kind: "choice" }).options[0]!.id;
     const one = applyIntent(atCamp, { playerId: "p_1", intent: { type: "CHOOSE", choiceId } }, context).state;
     expect(one.sceneId).toBe(atCamp.sceneId);
     const both = applyIntent(one, { playerId: "p_2", intent: { type: "CHOOSE", choiceId } }, context).state;
@@ -3979,5 +3980,31 @@ describe("XP for rolls that go well", () => {
       return heroTotal(fightToTheEnd(fragile, context));
     };
     expect(play(5)).toBeGreaterThan(play(0));
+  });
+});
+
+describe("going into a tent at camp (CAMP_TENT)", () => {
+  function atCamp(outdoor = true): RunState {
+    const state = seatedParty();
+    return { ...state, campMoment: { id: "m_1", kind: "lobby", outdoor, changes: {} } };
+  }
+  const tent = (state: RunState, playerId: string, inside: boolean, characterId = state.party.find((m) => m.playerId === playerId)!.character.id) =>
+    applyIntent(state, { playerId, intent: { type: "CAMP_TENT", characterId, inside } }, ctx());
+
+  it("puts her own hero in her tent and brings her out, once each however often it is tapped", () => {
+    const start = atCamp();
+    const hero = start.party[0]!.character.id;
+    const inside = tent(tent(start, "p_1", true).state, "p_1", true).state;
+    expect(inside.campMoment?.inTent).toEqual([hero]);
+    const out = tent(inside, "p_1", false).state;
+    expect(out.campMoment?.inTent).toBeUndefined();
+  });
+
+  it("is her own player's to do, only while the full camp is up", () => {
+    const start = atCamp();
+    expect(tent(start, "p_2", true, start.party[0]!.character.id).error?.code).toBe("FORBIDDEN");
+    expect(tent(atCamp(false), "p_1", true).error?.code).toBe("ILLEGAL");
+    const story = { ...start, phase: "scene" as const, sceneType: "story" as const };
+    expect(tent(story, "p_1", true).error?.code).toBe("ILLEGAL");
   });
 });

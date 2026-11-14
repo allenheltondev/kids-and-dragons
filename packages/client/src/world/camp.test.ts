@@ -382,6 +382,29 @@ describe("the camp stage", () => {
     c.destroy();
   });
 
+  it("walks a hero into her tent, out of sight with a light on, and out again with a wave", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("tent", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    let hero = c.figures().find((f) => f.id === "hero-2")!;
+    expect(hero.point).toBe("bedroll-2");
+    expect(hero.alpha).toBe(0);
+    const mark = c.view.getChildByLabel("tent-mark:hero-2", true)!;
+    expect(mark.visible).toBe(true);
+    expect(mark.alpha).toBeCloseTo(1, 2);
+    // A new reading of the figures does not bring her out.
+    c.setFigures(CREW);
+    frames(app, c, 10);
+    expect(c.figures().find((f) => f.id === "hero-2")!.alpha).toBe(0);
+    c.moment("arrive", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    hero = c.figures().find((f) => f.id === "hero-2")!;
+    expect(hero.alpha).toBeCloseTo(1, 2);
+    expect(mark.visible).toBe(false);
+    c.destroy();
+  });
+
   it("sets everyone off down the trail at once on Begin, and lets anything cut it short", () => {
     const { camp: c, app } = camp();
     frames(app, c, 2);

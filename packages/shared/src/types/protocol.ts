@@ -249,6 +249,14 @@ export type ClientIntent =
    */
   | { type: "CAMP_UNDO"; moment: string }
   /**
+   * Send a seated hero into her tent, or bring her out (playtest, 2026-11-14): on
+   * the TV she walks to her own tent and goes in, and a light in it says she is
+   * there, until she comes out. Only her own player, at a downtime moment with
+   * the full camp up (`CampMoment.outdoor`). Kept on the moment, so it ends with
+   * the downtime; nothing is stored.
+   */
+  | { type: "CAMP_TENT"; characterId: string; inside: boolean }
+  /**
    * Change a seated hero's own kit (§4.5; #620): any of her bedroll-and-pack
    * style, tent, color and decoration slots. Only her own player, at any
    * downtime moment, indoors or out, with no limit. `revision` echoes

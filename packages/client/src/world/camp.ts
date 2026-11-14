@@ -178,7 +178,7 @@ const PITCH_STAGGER_S = 0.15;
  * The moments the game already has (§8.5) that the camp acts out. `unready`
  * is a Ready taken back: out of the trailhead's line and back to wandering.
  */
-export type CampMoment = "arrive" | "ready" | "unready" | "away" | "setOff";
+export type CampMoment = "arrive" | "ready" | "unready" | "away" | "tent" | "setOff";
 
 export interface CampOptions {
   /** The downtime moment's seed (§12.6). Never the wall clock. */
@@ -232,7 +232,7 @@ export interface CampStage {
   readonly view: Container;
   setFigures(figures: readonly CampFigure[]): void;
   setSeed(seed: number): void;
-  moment(kind: "arrive" | "ready" | "unready" | "away", figureId: string): void;
+  moment(kind: "arrive" | "ready" | "unready" | "away" | "tent", figureId: string): void;
   moment(kind: "setOff"): void;
   setStill(still: boolean): void;
   resize(width: number, height: number): void;
@@ -368,6 +368,10 @@ interface Actor {
   phase: number;
   leaving: boolean;
   removing: boolean;
+  /** Gone into her tent (the "tent" moment): hidden at home until she comes out. */
+  tucked: boolean;
+  /** Over her spot while she is in her tent: a warm glow and a drowsy "z z", made the first time she goes in. */
+  tentMark: Container | null;
   airborne: boolean;
   moving: boolean;
   /** A tapped friend (#624): when it walks over, to whom, and when its tap is done (still: the words alone). */
@@ -1366,6 +1370,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       phase: ((hash(def.id) ^ seed) % 628) / 100,
       leaving: false,
       removing: false,
+      tucked: false,
+      tentMark: null,
       airborne: false,
       moving: false,
       tapWalkAt: null,
@@ -1591,6 +1597,17 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     // factor; its feet stay on the ground point, which the factor never moves.
     actor.container.scale.set(laneScale * figureScale);
     actor.container.alpha = actor.alpha;
+    if (actor.tentMark) {
+      // Shows as she goes in (her figure fades), goes as she comes out.
+      const mark = actor.tentMark;
+      mark.position.set(actor.x, actor.y);
+      mark.zIndex = actor.y + 1;
+      mark.scale.set(laneScale * figureScale);
+      mark.alpha = actor.tucked && !actor.removing ? 1 - actor.alpha : 0;
+      mark.visible = mark.alpha > 0.01;
+      const zs = mark.getChildByLabel("tent-z");
+      if (zs) zs.y = still ? 0 : Math.sin(elapsed * 1.6 + actor.phase) * actor.heightPx * 0.04;
+    }
     // Further back, hazier: as it walks between lanes too.
     if (actor.sprite) shadeAt(actor.sprite, actor.y);
     actor.body.y = -(lift + actor.carryLift + stanceLiftPx);
@@ -1659,6 +1676,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actor.heroArt?.();
         actor.words?.destroy({ children: true });
         actor.container.destroy({ children: true });
+        actor.tentMark?.destroy({ children: true });
       }
     }
 
@@ -1760,7 +1778,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         continue;
       }
       actor.removing = false;
-      if (actor.alphaTarget === 0 && !actor.leaving && !actor.teleport) actor.alphaTarget = 1;
+      if (actor.alphaTarget === 0 && !actor.leaving && !actor.teleport && !actor.tucked) actor.alphaTarget = 1;
       const urlChanged = actor.def.url !== def.url;
       const sizeChanged = actor.def.heightCm !== def.heightCm || actor.def.stance !== def.stance;
       actor.def = def;
@@ -1827,6 +1845,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     switch (kind) {
       case "arrive": {
         // Crawls out of the tent, or sits up on the bedroll: at home, and a wave.
+        actor.tucked = false;
         const home = homeOf(actor);
         const present = actor.alphaTarget > AWAY_ALPHA && !actor.leaving && !actor.teleport;
         const wave = (): void => {
@@ -1900,10 +1919,49 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         return;
       }
       case "away":
+        actor.tucked = false;
         leaveQueue(actor);
         direct(actor, homeOf(actor), { alpha: AWAY_ALPHA });
         return;
+      case "tent":
+        // Home to her own tent, and in: gone from the camp, with a light on in there.
+        actor.tucked = true;
+        leaveQueue(actor);
+        tentMarkOf(actor);
+        direct(actor, homeOf(actor), {
+          then: () => {
+            if (actor.tucked) actor.alphaTarget = 0;
+          },
+        });
+        return;
     }
+  }
+
+  /** Her tent's light and "z z" (the "tent" moment), made once and kept beside her figure. */
+  function tentMarkOf(actor: Actor): Container {
+    if (actor.tentMark) return actor.tentMark;
+    const mark = new Container();
+    mark.label = `tent-mark:${actor.def.id}`;
+    mark.alpha = 0;
+    const h = actor.heightPx;
+    const glow = new Graphics();
+    for (const [r, a] of [[0.42, 0.10], [0.3, 0.16], [0.18, 0.28]] as const) glow.ellipse(0, -h * 0.35, h * r * 1.3, h * r).fill({ color: 0xffc95c, alpha: a });
+    glow.label = "tent-glow";
+    mark.addChild(glow);
+    const zs = new Container();
+    zs.label = "tent-z";
+    for (const [i, size] of [[0, 0.06], [1, 0.08], [2, 0.1]] as const) {
+      const z = new Graphics();
+      const w = h * size;
+      z.moveTo(-w / 2, -w / 2).lineTo(w / 2, -w / 2).lineTo(-w / 2, w / 2).lineTo(w / 2, w / 2)
+        .stroke({ color: 0xffffff, width: Math.max(2, h * 0.018), cap: "round", join: "round" });
+      z.position.set(h * (0.08 + i * 0.14), -h * (0.8 + i * 0.16));
+      zs.addChild(z);
+    }
+    mark.addChild(zs);
+    actor.container.parent?.addChild(mark);
+    actor.tentMark = mark;
+    return mark;
   }
 
   /** Begin: everybody down the trail and off the edge, nearest first. */
@@ -1926,6 +1984,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       );
     queue.length = 0;
     crew.forEach((actor, rank) => {
+      // Out of her tent to go: the crew sets off together.
+      actor.tucked = false;
       if (still || actor.alpha < 0.05) {
         planner.direct(actor.def.id, exit, null, 0);
         actor.walk = null;
