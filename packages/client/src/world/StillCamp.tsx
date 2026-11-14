@@ -330,7 +330,8 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
         {figures.map((figure) => (
           <span
             key={figure.id}
-            className={`kad-static-camp__hero${figure.away ? " is-away" : ""}`}
+            className={`kad-static-camp__hero${figure.away ? " is-away" : ""}${figure.tent ? " is-in-tent" : ""}`}
+            data-in-tent={figure.tent ? "" : undefined}
             data-hero={figure.friend === undefined ? figure.id : undefined}
             data-friend={figure.friend === undefined ? undefined : figure.id}
             style={{
@@ -340,7 +341,9 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
               zIndex: Math.round(figure.y * 1000),
             }}
           >
-            {figure.hero ? <HeroImage hero={figure.hero} place="world" alt="" /> : figure.url ? <img src={figure.url} alt="" /> : null}
+            {/* In her tent: no figure, a light and a "z z" where she went in. */}
+            {figure.tent ? <span className="kad-static-camp__tent-mark" aria-hidden="true">z z</span>
+              : figure.hero ? <HeroImage hero={figure.hero} place="world" alt="" /> : figure.url ? <img src={figure.url} alt="" /> : null}
             {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
             <span className="kad-static-camp__name">{figure.friend ?? state.party.find(member => member.character.id === figure.id)?.character.name}</span>
             {figure.friend !== undefined && friendWords?.has(figure.id.slice("friend:".length)) ? (

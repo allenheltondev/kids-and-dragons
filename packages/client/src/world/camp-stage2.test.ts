@@ -223,13 +223,14 @@ describe("the crew's pieces' shadows (camp-light.ts, ground-shadows.ts)", () => 
     const contact = shadow.getChildByLabel("camp-ground-contact") as Container;
     const bounds = contact.getLocalBounds();
     expect(Math.abs((bounds.minX + bounds.maxX) / 2)).toBeLessThan((bounds.maxX - bounds.minX) * 0.1);
-    // The banner casts toward the viewer; a tent casts back from its pegs, under itself.
+    // Both cast back from where they stand, up the ground behind: a shadow thrown toward the
+    // viewer pools under the feet and reads as floating (playtest, 2026-11-14).
     const castY = (holder: Container) => {
       const projection = holder.getChildByLabel("camp-cast-body", true)!.parent!;
       projection.updateLocalTransform();
       return projection.localTransform.apply({ x: 0, y: -1 }).y;
     };
-    expect(castY(banner)).toBeGreaterThan(0);
+    expect(castY(banner)).toBeLessThan(0);
     expect(castY(shadows.getChildByLabel("cast:piece:tent_0") as Container)).toBeLessThan(0);
     camp.destroy();
   });

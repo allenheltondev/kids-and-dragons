@@ -79,6 +79,27 @@ describe("who is in camp", () => {
 });
 
 describe("the lobby's moments, from two states", () => {
+  it("into a tent and out again: in, then out with a wave; away wins over the tent", () => {
+    const tented = (...members: PartyMember[]) => (inTent: string[]): CampHero[] =>
+      campHeroes(makeState({ party: members, campMoment: { id: "m", kind: "lobby", outdoor: true, changes: {}, inTent } }));
+    const table = tented(member(1), member(2));
+    const out = table([]);
+    const inside = table(["c_1"]);
+    expect(inside[0]!.tent).toBe(true);
+    expect(campCues(out, inside)).toEqual([{ kind: "tent", id: "c_1" }]);
+    expect(campCues(inside, inside)).toEqual([]);
+    expect(campCues(inside, out)).toEqual([{ kind: "arrive", id: "c_1" }]);
+    // A screen opening onto a camp with somebody in her tent shows her in it.
+    expect(campCues(null, inside)).toEqual([{ kind: "tent", id: "c_1" }]);
+    // Her phone drops while she is in: away. Back: still in her tent.
+    const gone = tented(member(1, { connected: false }), member(2))(["c_1"]);
+    expect(campCues(inside, gone)).toEqual([{ kind: "away", id: "c_1" }]);
+    expect(campCues(gone, inside)).toEqual([{ kind: "tent", id: "c_1" }]);
+    // Ready while in her tent: she stays in, and does not line up.
+    const readyInside = tented(member(1, { ready: true }), member(2))(["c_1"]);
+    expect(campCues(inside, readyInside)).toEqual([]);
+  });
+
   it("on a first look, nobody arrives: the away are away and the ready are in line", () => {
     const now = heroes(member(1), member(2, { ready: true }), member(3, { connected: false, ready: true }));
     expect(campCues(null, now)).toEqual([

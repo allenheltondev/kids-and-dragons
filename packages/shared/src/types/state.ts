@@ -430,9 +430,11 @@ export interface RunState {
    * decided it together or one kid picked for everyone; `byPlayerId` is the
    * kid who had the final say (for a vote, the last to tip it). Absent when
    * there was nothing to decide (a "Go on" with one way on), and on a run
-   * saved before this existed.
+   * saved before this existed. `rest` marks the way on out of a rest, which
+   * waits for everybody to be ready rather than putting it to a vote, and is
+   * told that way ("Everyone's ready").
    */
-  decision?: { sceneId: SceneId | null; label: string; byPlayerId: string; vote: boolean };
+  decision?: { sceneId: SceneId | null; label: string; byPlayerId: string; vote: boolean; rest?: boolean };
   /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap of its priority-1 scenes (chapter.ts

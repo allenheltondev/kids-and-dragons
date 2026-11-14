@@ -63,6 +63,26 @@ export const NOMINAL_PAINT: PaintBox = { top: 0.078, bottom: ANCHOR_Y, left: 0.1
 /** What a figure nobody has sized is taken to be: a person, standing. */
 export const DEFAULT_SIZE = { heightCm: 160, stance: "standing" as CastStance };
 
+/**
+ * Figures painted facing right. Every stage assumes a figure is painted facing
+ * left (scale.x 1 faces left) and mirrors it to face right; a figure listed
+ * here is mirrored the other way, so it never walks backward (the duckling
+ * waddled tail first across the camp).
+ */
+const PAINTED_FACING_RIGHT: ReadonlySet<string> = new Set(["entities/duckling"]);
+
+/** The sign to multiply a figure's facing by: 1 for art painted facing left, -1 for art painted facing right. */
+export function paintedFacing(figure: string | undefined): 1 | -1 {
+  return figure !== undefined && PAINTED_FACING_RIGHT.has(figure) ? -1 : 1;
+}
+
+/** `paintedFacing` for a figure known only by its painting's URL (`.../entities/duckling/assembled.png`). */
+export function paintedFacingOfUrl(url: string | null | undefined): 1 | -1 {
+  if (!url) return 1;
+  for (const figure of PAINTED_FACING_RIGHT) if (url.includes(`/${figure}/`)) return -1;
+  return 1;
+}
+
 /** A figure's own height and stance (figure-sizes.ts), or the default. */
 export function figureSize(figure: string): { heightCm: number; stance: CastStance } {
   const known = FIGURE_SIZES[figure];

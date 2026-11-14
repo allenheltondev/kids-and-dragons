@@ -75,10 +75,12 @@ it.each([false, true])("loads a seated hero's kit and retains a bedroll if the v
   expect(urls).toContain(CAMP_KIT_STYLES[campKitStyle(hero.id)].path);
   const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
   expect(bed.children.filter(c => c instanceof Sprite)).toHaveLength(1);
-  // Its shadow lies on the camp's shadow layer, under it, cast from its art.
+  // Its shadow lies on the camp's shadow layer, under it: a contact shade only, since it lies
+  // flat, and an outline thrown off it reads as a blanket hovering over the ground.
   const cast = (stage.view.getChildByLabel("camp-shadows") as Container).getChildByLabel("cast:piece:bedroll_0") as Container;
   expect(cast.children[0]!.label).toBe("camp-ground-shadow");
-  expect(cast.getChildByLabel("camp-cast-body", true)).not.toBeNull();
+  expect(cast.getChildByLabel("camp-cast-body", true)).toBeNull();
+  expect(cast.getChildByLabel("camp-ground-contact", true)).not.toBeNull();
   const count = urls.length;
   stage.setFigures([hero]);
   expect(urls).toHaveLength(count);
@@ -377,6 +379,29 @@ describe("the camp stage", () => {
     const hero = c.figures().find((f) => f.id === "hero-2")!;
     expect(hero.point).toBe("bedroll-2");
     expect(hero.alpha).toBeCloseTo(0.5, 2);
+    c.destroy();
+  });
+
+  it("walks a hero into her tent, out of sight with a light on, and out again with a wave", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("tent", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    let hero = c.figures().find((f) => f.id === "hero-2")!;
+    expect(hero.point).toBe("bedroll-2");
+    expect(hero.alpha).toBe(0);
+    const mark = c.view.getChildByLabel("tent-mark:hero-2", true)!;
+    expect(mark.visible).toBe(true);
+    expect(mark.alpha).toBeCloseTo(1, 2);
+    // A new reading of the figures does not bring her out.
+    c.setFigures(CREW);
+    frames(app, c, 10);
+    expect(c.figures().find((f) => f.id === "hero-2")!.alpha).toBe(0);
+    c.moment("arrive", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    hero = c.figures().find((f) => f.id === "hero-2")!;
+    expect(hero.alpha).toBeCloseTo(1, 2);
+    expect(mark.visible).toBe(false);
     c.destroy();
   });
 

@@ -45,6 +45,8 @@ test("an indoor rest: a friend tapped on the phone says its words over its head 
     // The phone opens its camp from its bag (You, past the rest's choice) and says hi to Bun.
     await phone.page.getByRole("button", { name: "You", exact: true }).click(TAP);
     await phone.page.locator("[data-testid='camp-button']:visible").first().click(TAP);
+    // The panel opens on her own kit; the friends have their own page.
+    await phone.page.getByRole("tab", { name: /Friends/ }).click(TAP);
     const friends = phone.page.getByTestId("camp-friends");
     await friends.getByRole("button", { name: "Say hi to Bun" }).click(TAP);
     await expect(friends.getByRole("status")).toHaveText("Bun says hi! Look at the TV.", TAP);

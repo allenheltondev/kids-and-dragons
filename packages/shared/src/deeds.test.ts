@@ -575,7 +575,9 @@ function climb(classes: ClassId[], seed: string, limit = 80): Climb {
     const prompt = s.prompt;
     if (prompt?.kind !== "choice") throw new Error(`expected the camp's choice, got ${JSON.stringify(prompt)}`);
     const way = s.party.find((m) => wants(s, m.character.id, "class_story") && prompt.options.some((o) => o.id === `${m.character.class}_way`));
-    s = must(s, s.party[0]!.playerId, { type: "CHOOSE", choiceId: way ? `${way.character.class}_way` : "road" }, ctx);
+    // Camp's way on is the party's vote: everybody says the same.
+    const choiceId = way ? `${way.character.class}_way` : "road";
+    for (const m of prompt.vote ? s.party : s.party.slice(0, 1)) s = must(s, m.playerId, { type: "CHOOSE", choiceId }, ctx);
     note(s);
     for (const m of s.party) s = must(s, m.playerId, { type: "READY", ready: true }, ctx);
     for (let guard = 0; guard < 400 && s.encounter; guard++) s = takeTurn(s, ctx);

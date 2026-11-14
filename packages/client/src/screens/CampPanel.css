@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex: none;
   padding: calc(var(--kad-corner-bottom, 0px) + 0.5rem) 1rem 0.5rem;
   border-block-end: 1px solid var(--kad-border, rgba(190, 178, 255, 0.16));
 }
@@ -27,12 +27,80 @@
   font-size: 1.15rem;
   min-inline-size: 0;
 }
+.camp-panel__title > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .camp-panel__title:focus { outline: none; }
 .camp-panel__title:focus-visible { outline: 2px solid var(--kad-border-strong, #bdb2ff); outline-offset: 2px; }
+/*
+ * Held at the top while a page scrolls under it (playtest, 2026-11-14): the picture, where every
+ * change shows as it is made, the tent button and the tabs. The picture gives way first on a short
+ * screen, so the tabs are always in reach.
+ */
+.camp-panel__top {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 1rem 0.5rem;
+  background: var(--kad-bg-raised, #1a1730);
+  border-block-end: 1px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+  box-shadow: 0 0.4rem 0.8rem rgb(0 0 0 / 0.25);
+}
+.camp-panel__top > .camp-panel__picture {
+  max-block-size: 30vh;
+  overflow: hidden;
+}
+/* The spots' page draws a chip for each spot under the picture: room for them. */
+.camp-panel__top > .camp-panel__picture:has(.kad-static-camp__chips) {
+  max-block-size: 42vh;
+  overflow-y: auto;
+}
+.camp-panel__tent { display: flex; flex-direction: column; gap: 0.4rem; }
+.camp-panel__tent:empty { display: none; }
+.tent-button--inside { box-shadow: 0 0 0 0.2em rgb(255 211 110 / 0.35); }
+.camp-panel__tabs {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.camp-panel__tabs::-webkit-scrollbar { display: none; }
+.camp-panel__tab {
+  flex: 1 1 0;
+  min-inline-size: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  min-block-size: var(--kad-touch-min, 48px);
+  padding: 0.3rem 0.55rem;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--kad-bg, #0d0b1a);
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+/* A narrow phone keeps every tab's words and drops their pictures. */
+@media (max-width: 26rem) {
+  .camp-panel__tab > :first-child:not(:only-child) { display: none; }
+}
+.camp-panel__tab[aria-selected="true"] {
+  border-color: #ffd36e;
+  background: rgba(255, 211, 110, 0.16);
+  color: #ffe3a1;
+}
 .camp-panel__body {
   flex: 1;
   overflow-y: auto;
-  padding: 0 1rem 2rem;
+  overscroll-behavior: contain;
+  padding: 1rem 1rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -100,24 +168,37 @@
   font-size: 0.95rem;
 }
 .camp-panel__limit { border: 1px solid #ffd36e; }
+/* A card per choice: a title over its options, no outline box around a box. */
 .camp-panel__group {
   margin: 0;
-  padding: 0.6rem 0.7rem 0.7rem;
-  border: 1px solid var(--kad-border, rgba(190, 178, 255, 0.16));
-  border-radius: 0.75rem;
+  padding: 0.7rem 0.75rem 0.8rem;
+  border: 0;
+  border-radius: 0.9rem;
+  background: var(--kad-bg-raised, #1a1730);
   min-inline-size: 0;
 }
 .camp-panel__group > legend {
-  padding-inline: 0.3em;
-  font-weight: 700;
+  float: left;
+  inline-size: 100%;
+  margin-block-end: 0.5rem;
+  padding: 0;
+  font-weight: 800;
+  font-size: 1rem;
 }
+.camp-panel__group > legend + * { clear: both; }
 .camp-panel__spot.is-active { border-color: var(--kad-border-strong, #bdb2ff); }
 .camp-panel__spot.is-lit { border-color: #ffd36e; box-shadow: 0 0 0 1px #ffd36e inset; }
+/* Pictures in an even grid; words (chips, swatches) wrap as they come. */
 .camp-panel__options {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
   gap: 0.5rem;
   min-inline-size: 0;
+}
+.camp-panel__options:has(> .camp-option--chip, > .camp-option--piece),
+.camp-panel__options--swatches {
+  display: flex;
+  flex-wrap: wrap;
 }
 .camp-option {
   display: inline-flex;
@@ -178,24 +259,15 @@
   border: 2px solid rgba(0, 0, 0, 0.35);
 }
 .camp-swatch__name { font-size: 0.85rem; }
-.camp-panel__slots { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .camp-panel__slot {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  font-size: 0.9rem;
+  gap: 0.3rem;
   min-inline-size: 0;
 }
-.camp-panel__slot > select {
-  min-block-size: var(--kad-touch-min, 48px);
-  max-inline-size: 100%;
-  padding-inline: 0.5rem;
-  border-radius: 0.5rem;
-  border: 2px solid var(--kad-border, rgba(190, 178, 255, 0.16));
-  background: var(--kad-bg-raised, #1a1730);
-  color: inherit;
-  font: inherit;
-}
+.camp-panel__slot + .camp-panel__slot { margin-block-start: 0.6rem; }
+.camp-panel__slot-name { font-size: 0.85rem; font-weight: 700; opacity: 0.8; }
+.camp-option--chip { flex-direction: row; border-radius: 999px; padding-inline: 0.9rem; }
 .camp-panel__waiting h4 { margin: 0 0 0.3rem; font-size: 0.95rem; }
 .camp-panel__waiting ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
 .camp-panel__waiting li { display: flex; gap: 0.4em; align-items: center; font-size: 0.9rem; }

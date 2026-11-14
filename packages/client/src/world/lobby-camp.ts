@@ -10,6 +10,7 @@
  *   - a hero appears in `party`                      → `arrive`
  *   - their `ready` turns on, or off                 → `ready`, `unready`
  *   - their `connected` turns off (stepped away, #258) → `away`; back on → `arrive`
+ *   - they go into their tent (`CampMoment.inTent`) → `tent`; out again → `arrive`
  *   - the phase leaves the lobby for a scene (Begin) → `setOff`
  *
  * Pure and Pixi-free, like cast.ts, so the mapping is a table of tests
@@ -177,6 +178,8 @@ export interface CampHero {
   ready: boolean;
   /** Stepped away (#258): `connected` is false. */
   away: boolean;
+  /** Gone into her tent (`CampMoment.inTent`): not drawn, and her tent shows she is in it. */
+  tent?: boolean;
 }
 
 /**
@@ -189,7 +192,7 @@ export interface CampHero {
  * somebody else leaves. Past the camp's four bedrolls (a seat freed by a
  * removal and taken again) a hero takes the first bedroll nobody holds.
  */
-export function campHeroes(state: Pick<RunState, "party" | "removed" | "kits"> | null | undefined): CampHero[] {
+export function campHeroes(state: Pick<RunState, "party" | "removed" | "kits" | "campMoment"> | null | undefined): CampHero[] {
   if (!state) return [];
   const removed = new Set(state.removed ?? []);
   const seated = state.party
@@ -201,6 +204,7 @@ export function campHeroes(state: Pick<RunState, "party" | "removed" | "kits"> |
     figure: { ...heroFigure(member, state.kits?.[member.character.id]), seat: index < CAMP_SEATS ? index : spare.shift() ?? index },
     ready: member.ready,
     away: !member.connected,
+    ...(state.campMoment?.inTent?.includes(member.character.id) ? { tent: true } : {}),
   }));
 }
 
@@ -256,6 +260,8 @@ export interface StillCampFigure {
   /** The art's square canvas, as a fraction of the backdrop canvas's height. */
   size: number;
   away: boolean;
+  /** In her tent: not drawn (`CampHero.tent`). */
+  tent?: boolean;
   /** A friend's name (#624); a hero's is her party member's. */
   friend?: string;
 }
@@ -294,6 +300,7 @@ export function stillCampFigures(
       y: lane.y,
       size: heightPx / (ANCHOR_Y - NOMINAL_PAINT.top) / layout.canvas.height,
       away: hero.away,
+      ...(hero.tent ? { tent: true } : {}),
       ...(hero.figure.friend !== undefined && hero.figure.name ? { friend: hero.figure.name } : {}),
     });
   }
@@ -302,7 +309,7 @@ export function stillCampFigures(
 
 /** One thing for the camp to act out. */
 export type CampCue =
-  | { kind: "arrive" | "ready" | "unready" | "away"; id: string }
+  | { kind: "arrive" | "ready" | "unready" | "away" | "tent"; id: string }
   | { kind: "setOff" };
 
 /**
@@ -324,20 +331,33 @@ export function campCues(before: readonly CampHero[] | null, after: readonly Cam
     const id = hero.figure.id;
     const prior = was.get(id);
     if (before === null || !prior) {
-      if (before !== null && !hero.away) cues.push({ kind: "arrive", id });
+      if (before !== null && !hero.away && !hero.tent) cues.push({ kind: "arrive", id });
       if (hero.away) cues.push({ kind: "away", id });
+      else if (hero.tent) cues.push({ kind: "tent", id });
       else if (hero.ready) cues.push({ kind: "ready", id });
       continue;
     }
+    // Away wins: a phone that drops shows its hero away, in her tent or not.
     if (hero.away && !prior.away) {
       cues.push({ kind: "away", id });
       continue;
     }
     if (!hero.away && prior.away) {
+      cues.push(hero.tent ? { kind: "tent", id } : { kind: "arrive", id });
+      if (hero.ready && !hero.tent) cues.push({ kind: "ready", id });
+      continue;
+    }
+    // Into her tent: home, and in. Out of it: she crawls out and waves, as one arriving does.
+    if (!hero.away && hero.tent && !prior.tent) {
+      cues.push({ kind: "tent", id });
+      continue;
+    }
+    if (!hero.away && !hero.tent && prior.tent) {
       cues.push({ kind: "arrive", id });
       if (hero.ready) cues.push({ kind: "ready", id });
       continue;
     }
+    if (hero.tent) continue;
     if (hero.away) continue;
     if (hero.ready && !prior.ready) cues.push({ kind: "ready", id });
     if (!hero.ready && prior.ready) cues.push({ kind: "unready", id });

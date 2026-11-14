@@ -388,6 +388,12 @@ describe("what the table picked (RunState.decision)", () => {
     expect(spoken).toContain("The party voted: Open the gate. The gate swings open.");
   });
 
+  it("tells the way on out of a rest as everyone being ready, not as a vote", () => {
+    mount({ sceneId: "camp", narration: "The gate swings open.", decision: { ...DECIDED, rest: true } });
+    expect(screen.getByTestId("decision").textContent).toBe("Everyone's ready: Open the gate.");
+    expect(spoken).toContain("Everyone's ready: Open the gate. The gate swings open.");
+  });
+
   it("names the kid who picked, when one kid chose for everyone", () => {
     mount({ sceneId: "camp", decision: { ...DECIDED, label: "Go west", vote: false } });
     expect(screen.getByTestId("decision").textContent).toBe("Thistle chose: Go west.");
@@ -480,6 +486,12 @@ describe("a friend who stepped away (#258)", () => {
     cleanup();
     mount({ sceneType: "story", party: [PARTY[0]!, { ...PARTY[1]!, connected: false }] });
     expect(screen.getByTestId("stepped-away").textContent).toBe("Thistle stepped away.");
+  });
+
+  it("says nothing of a player the host took out: they left the game (#267)", () => {
+    const out = { ...PARTY[1]!, connected: false };
+    mount({ sceneType: "story", party: [PARTY[0]!, out], removed: [out.playerId] });
+    expect(screen.queryByTestId("stepped-away")).toBeNull();
   });
 });
 

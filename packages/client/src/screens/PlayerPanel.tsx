@@ -100,7 +100,7 @@ import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { CampShopVote, shopLine } from "./CampChapterEnd";
-import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
+import { CampButton, CampPanel, KitWelcome, TentButton } from "./CampPanel";
 import { campPanelOpen, onCampPanel } from "./camp-panel";
 import { ClassPlaceChoice } from "./ClassPlace";
 import {
@@ -934,8 +934,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Nothing to do and nothing asked of this phone: under TV focus, the card that says look up.
   const tvRest = focus && !focusTask && !inLobby && !peek;
   // "Look in my bag" from that card opens the bag, in a fight too, where the turn page is the board.
-  const friends = party.filter((member) => member.playerId !== me.playerId);
+  // Not anybody the host took out (#267): they are gone from the game, not away.
+  const friends = party.filter((member) => member.playerId !== me.playerId && !(state.removed?.includes(member.playerId) ?? false));
   const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
+  // The task page and the sheet are never shown together (`hidden` below): a control both offer
+  // (Camp, the tent) is drawn in whichever is up, so a screen reader meets it once.
+  const taskUp = !sheetUp && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
    * it has one, else the chapter's biome — the same choice the stage makes.
@@ -1284,13 +1288,25 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         {myPrompt !== null && myPrompt.kind === "choice" && !classPlaceWaiting ? (
           <div className="prompt">
             <h3 className="prompt__title">
-              <Icon name={myPrompt.vote ? "vote" : "hand"} />
+              <Icon name={myPrompt.vote ? (atRest ? "check" : "vote") : "hand"} />
               <span>
+                {/* A rest's way on waits for everybody (it is where points are spent), so it asks
+                    whether they are ready rather than calling it a vote. */}
                 {myPrompt.vote
-                  ? "Everyone votes"
+                  ? atRest
+                    ? "Everyone ready?"
+                    : "Everyone votes"
                   : "What do you do?"}
               </span>
             </h3>
+            {/* Ready with a point still to spend (spec §8.1): a rest is where it is spent, and the way
+                on waits for everybody, so say so before she says she is ready. A nudge, never a block. */}
+            {atRest && myPrompt.vote && pointsWaiting && spendable.length > 0 && myVote === null ? (
+              <p className="prompt__sub prompt__nudge" data-testid="points-nudge">
+                <Icon name="star" />
+                <span>{banked === 1 ? "Spend your point first! It's waiting just above." : `Spend your ${String(banked)} points first! They're waiting just above.`}</span>
+              </p>
+            ) : null}
 
             <PagedOptions className="prompt__options">
               {myPrompt.options.map((option) => {
@@ -1329,7 +1345,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                             ticks come and go, so somebody else voting cannot
                             rewrap the label you are reading. */}
                         <span className="choice__mark">
-                          {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
+                          {myVote === option.id ? <Icon name="check" label={atRest ? "You're ready" : "Your vote"} /> : null}
                         </span>
                         {myPrompt.vote ? (
                           <VoteTicks voterIds={voterIds} votedIds={votedIds} party={party} />
@@ -1365,13 +1381,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 disabled={held}
                 onClick={() => void dispatch({ type: "CHOOSE", choiceId: myVote })}
               >
-                {`Decide without ${awayNames(
-                  party.filter(
-                    (m) =>
-                      myPrompt.votes?.[m.playerId] === undefined &&
-                      (myPrompt.forPlayerIds.length === 0 || myPrompt.forPlayerIds.includes(m.playerId)),
-                  ),
-                )}`}
+                {(() => {
+                  const missing = awayNames(
+                    party.filter(
+                      (m) =>
+                        myPrompt.votes?.[m.playerId] === undefined &&
+                        (myPrompt.forPlayerIds.length === 0 || myPrompt.forPlayerIds.includes(m.playerId)),
+                    ),
+                  );
+                  // Each label whole, as the grown-up's guide quotes it (tools/guide/guide.test.mjs).
+                  return atRest ? `Go on without ${missing}` : `Decide without ${missing}`;
+                })()}
               </Button>
             ) : null}
 
@@ -1404,12 +1424,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
-        {/* Travel Mode at a rest (docs/camp.md §3; #627): no TV shows the camp, so the
-            phone's way to it is here too, under the choices and never in their way,
-            as it is beside Ready in the lobby and under the chapter's rewards. */}
-        {atRest && state.mode === "travel" && myPrompt?.kind === "choice" ? (
+        {/* At a rest (docs/camp.md §3; #627): the way to the camp, and into her tent, under
+            the choices and never in their way, as they are beside Ready in the lobby and under
+            the chapter's rewards. In Travel Mode no TV shows the camp at all; at a TV the
+            choice fills the phone, and the camp was out of reach behind it (playtest, 2026-11-14). */}
+        {atRest && myPrompt?.kind === "choice" && taskUp ? (
           <div className="player__camp player__camp--rest">
             <CampButton state={state} block />
+            <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} block />
           </div>
         ) : null}
 
@@ -1766,7 +1788,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             )}
             {/* Beside Ready (docs/camp.md §3): never in its way, and Begin closes it.
                 The first-session choice (§5.3) under them, so Ready stays in reach. */}
-            {inLobby ? <CampButton state={state} /> : null}
+            {inLobby && taskUp ? <CampButton state={state} /> : null}
+            {inLobby && taskUp ? <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             {inLobby ? <KitWelcome state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             <ul className="prompt__party">
               {party.map((member) => {
@@ -2420,9 +2443,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             it is the whole answer: the tap says you are ready. */}
         {/* The camp (docs/camp.md §3; #620): the Camp button, above Ready and
             never in its way. At a rest stop too. */}
-        {inLobby || atRest ? (
+        {(inLobby || atRest) && sheetUp ? (
           <div className="player__camp">
             <CampButton state={state} block />
+            {/* Into her tent and out (CAMP_TENT): on the TV, with nothing to open first. */}
+            <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} block />
           </div>
         ) : null}
         {inLobby ? (
