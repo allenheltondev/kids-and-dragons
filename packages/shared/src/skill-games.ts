@@ -1,8 +1,9 @@
-import { aimWidth, edgeScale, interactionActor, playbackOver, precisionSuccess, trackedCover, type InteractionAction, type InteractionPrompt } from "./interactions.js";
+import { aimWidth, edgeScale, interactionActor, skillCompletions, playbackOver, precisionSuccess, trackedCover, type InteractionAction, type InteractionPrompt } from "./interactions.js";
 
 /** A round identifies the situation being acted on, including a recovery. */
 export interface SkillChallenge {
   participants?: string[];
+  completed?: Record<string, number>;
   round: number;
   progress: number;
   strain: number;
@@ -15,8 +16,14 @@ export interface SkillChallenge {
 export function skillStart(participants?: readonly string[]): SkillChallenge {
   return { participants: participants ? [...participants] : undefined, round: 0, progress: 0, strain: 0, feedback: "", pulls: {}, arrangement: [], matched: 0, excluded: [] };
 }
-export function skillSteps(prompt: InteractionPrompt): number {
-  if (prompt.spec.kind === "precision" || prompt.spec.kind === "timing") return 3 * Math.max(1, prompt.challenge?.participants?.length ?? 1);
+export function skillSteps(prompt: InteractionPrompt, connected?: readonly string[]): number {
+  if (prompt.spec.kind === "precision" || prompt.spec.kind === "timing") {
+    const roster = prompt.challenge?.participants ?? prompt.playerIds;
+    const completed = skillCompletions(prompt);
+    // Departed heroes keep their successes, but nobody inherits their unfinished stages.
+    return (prompt.challenge?.progress ?? 0) + roster.filter(id => !connected || connected.includes(id))
+      .reduce((remaining, id) => remaining + Math.max(0, 3 - (completed[id] ?? 0)), 0);
+  }
   return prompt.spec.kind === "balance" || prompt.spec.kind === "cooperate" ? 3 : 1;
 }
 export function balanceTarget(prompt: InteractionPrompt): number {
@@ -74,7 +81,7 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
   };
   const advance = (feedback: string) => {
     game.progress++; game.strain = Math.max(0, game.strain - 0.1); game.feedback = feedback; finishRound();
-    return game.progress >= skillSteps(prompt) ? "success" as const : undefined;
+    return game.progress >= skillSteps(prompt, connected) ? "success" as const : undefined;
   };
   if (spec.kind === "balance") {
     const lift = connected.reduce((sum, id) => sum + (prompt.levels?.[id] ?? 0), 0) / Math.max(1, connected.length);
@@ -101,7 +108,12 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
     if (!unit(action.position)) throw Error("Aim inside the playfield.");
     prompt.stopPosition = action.position;
     const aim = skillAim(prompt);
-    if (precisionSuccess(aim, action.position, prompt.relaxed, edgeScale(prompt))) return advance(spec.kind === "timing" ? "Through safely!" : "Right on target!");
+    if (game.progress >= skillSteps(prompt, connected)) return "success";
+    if (precisionSuccess(aim, action.position, prompt.relaxed, edgeScale(prompt))) {
+      game.completed = { ...skillCompletions(prompt) };
+      game.completed[playerId] = (game.completed[playerId] ?? 0) + 1;
+      return advance(spec.kind === "timing" ? "Through safely!" : "Right on target!");
+    }
     const miss = Math.abs(action.position - aim.target) - aimWidth(aim, prompt) / 2;
     return stumble(Math.max(0.2, miss * 1.8), miss < 0.12 ? "Nearly! You keep your footing. Adjust and try this part again." : "A rough landing! You lose your footing. Read the opening before trying again.");
   }

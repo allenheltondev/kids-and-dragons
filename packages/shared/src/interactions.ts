@@ -213,13 +213,28 @@ export function playReady(prompt: InteractionPrompt, connected: readonly string[
     (prompt.taps ?? 0) >= (prompt.spec.stages?.length ?? 1);
 }
 
+/** Preserve older in-flight challenges that only recorded round-robin total progress. */
+export function skillCompletions(prompt: InteractionPrompt): Record<string, number> {
+  const game = prompt.challenge;
+  if (game?.completed) return game.completed;
+  const roster = game?.participants ?? prompt.playerIds;
+  const start = Math.max(0, roster.indexOf(prompt.actorId));
+  const completed: Record<string, number> = {};
+  for (let stage = 0; stage < (game?.progress ?? 0) && roster.length; stage++) {
+    const id = roster[(start + stage) % roster.length]!;
+    completed[id] = (completed[id] ?? 0) + 1;
+  }
+  return completed;
+}
+
 export function interactionActor(prompt: InteractionPrompt, connected: readonly string[]): string | undefined {
   if (prompt.challenge && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing")) {
     const roster = prompt.challenge.participants ?? [...connected];
+    const completed = skillCompletions(prompt);
     const start = Math.max(0, roster.indexOf(prompt.actorId));
     for (let offset = 0; offset < roster.length; offset++) {
       const id = roster[(start + prompt.challenge.progress + offset) % roster.length]!;
-      if (connected.includes(id)) return id;
+      if (connected.includes(id) && (completed[id] ?? 0) < 3) return id;
     }
   }
   return connected.includes(prompt.actorId) ? prompt.actorId : connected[0];
