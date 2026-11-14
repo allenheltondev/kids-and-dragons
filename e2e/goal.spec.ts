@@ -1,5 +1,7 @@
 /**
  * The chapter's goal (#356), end to end: always on the TV (a player's phone leaves it there), ticking by itself.
+ * The TV shows the sentence, a pip per milestone and the trail; a milestone is named only in its
+ * moment, as it ticks, in its `doneLabel`.
  *
  * The owner's requirement is the whole test: nobody taps or clicks to see the goal or to see
  * it change. So nothing here clicks on the TV at all (read-aloud is on there by default), and the phone is
@@ -26,6 +28,8 @@ const SHOTS = process.env.KAD_GOAL_SHOTS;
 /** Bramblewood's goal, as authored in content/chapters/bramblewood-01.json. */
 const GOAL = "Follow the humming in the wood all the way to where it comes from.";
 const STEPS = ["Get past the wall of thorns", "Find a way through the wood", "Open the door the humming is behind"];
+/** What the hedge milestone says once a party walks (not pushes) through: its `doneLabel`. */
+const HEDGE_DONE = "Got past the wall of thorns";
 
 const RECORDER = `
   window.__said = [];
@@ -63,9 +67,9 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
   throw new Error("PLAYTEST_GOTO kept losing the seq race");
 }
 
-/** Which steps a goal card shows ticked, in order. */
+/** Which milestones a goal card shows ticked, in order: its pips. */
 async function ticks(goal: ReturnType<Page["locator"]>): Promise<boolean[]> {
-  return goal.locator(".goal__step").evaluateAll((steps) => steps.map((s) => s.getAttribute("data-done") === "true"));
+  return goal.locator(".goal__pip").evaluateAll((pips) => pips.map((p) => p.classList.contains("goal__pip--done")));
 }
 
 /**
@@ -76,8 +80,8 @@ function watchMoments(): void {
   const seen: Record<string, string[]> = {};
   (window as unknown as { __moments: typeof seen }).__moments = seen;
   new MutationObserver(() => {
-    // A step's moment where the steps show; on a phone's folded line (the default), its pip's.
-    for (const step of document.querySelectorAll(".goal__step--fresh, .goal__pip--fresh")) {
+    // A tick's moment: its words in gold under the goal, and its pip.
+    for (const step of document.querySelectorAll(".goal__moment-item, .goal__pip--fresh")) {
       const card = [...(step.closest(".goal")?.classList ?? [])].find((c) => c === "goal--world" || c === "goal--phone") ?? "?";
       requestAnimationFrame(() => {
         const names = step.getAnimations({ subtree: true }).filter((a) => a instanceof CSSAnimation).map((a) => (a as CSSAnimation).animationName);
@@ -128,12 +132,13 @@ test.describe("the chapter's goal (#356)", () => {
     await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
 
-    // Scene 1: the goal is up on the TV, all of it, and nothing is ticked. A player's phone
-    // leaves it to the shared screen: the room is for the kid's own controls.
+    // Scene 1: the goal is up on the TV, its pips and its trail, and nothing is ticked or named
+    // ahead. A player's phone leaves it to the shared screen: the room is for the kid's own controls.
     const tvGoal = tv.getByTestId("chapter-goal");
     await expect(tvGoal).toBeVisible(TAP);
     await expect(tvGoal).toContainText(GOAL);
-    for (const step of STEPS) await expect(tvGoal).toContainText(step);
+    for (const step of STEPS) await expect(tvGoal).not.toContainText(step);
+    await expect(tvGoal.locator(".goal__trail")).toBeVisible();
     expect(await ticks(tvGoal)).toEqual([false, false, false]);
     await expect(kid.locator(".goal--phone")).toHaveCount(0);
     // Said once, right after the first scene's story, never again.
@@ -146,27 +151,28 @@ test.describe("the chapter's goal (#356)", () => {
     await shot(tv, "tv-scene-1");
     await shot(kid, "phone-scene-1");
 
-    // Past the hedge: the step ticks on its own, with its moment. The moment is
-    // recorded as it happens (it lasts a couple of seconds), so the test cannot miss it.
+    // Past the hedge: the milestone ticks on its own, with its moment, named for how it was done.
+    // The moment is recorded as it happens (it lasts a couple of seconds), so the test cannot miss it.
     await tv.evaluate(watchMoments);
     await jumpTo(kid, code, "scene_first_clearing");
     await expect.poll(() => ticks(tvGoal), TAP).toEqual([true, false, false]);
+    await expect(tvGoal.locator(".goal__moment")).toContainText(HEDGE_DONE);
     await shot(tv, "tv-tick");
-    // The TV pops the box, throws the sparks and washes the words gold.
+    // The TV pops the tick, throws the sparks and washes the words gold.
     await expect.poll(() => moments(tv, "goal--world"), TAP).toEqual(expect.arrayContaining(["goal-pop", "goal-spark", "goal-glow"]));
     // Seen and chimed, never read out: once the new scene's story has been said, nothing follows it.
     await expect.poll(async () => (await said(tv)).some((line) => line.includes("lantern moths")), TAP).toBe(true);
     await tv.waitForTimeout(500);
     expect((await said(tv)).filter((line) => /^Done\b/.test(line))).toEqual([]);
     // And the moment passes, leaving the tick.
-    await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0, { timeout: 5_000 });
+    await expect(tvGoal.locator(".goal__moment")).toHaveCount(0, { timeout: 5_000 });
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
 
     // A screen that loads mid-chapter shows what is done, and celebrates nothing.
     await tv.reload();
     await expect(tvGoal).toBeVisible(TAP);
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
-    await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0);
+    await expect(tvGoal.locator(".goal__moment")).toHaveCount(0);
 
     // The painted encounter gives the TV its immediate stakes instead of repeating
     // the chapter goal. The chapter's earned tick must return after the fight.
@@ -232,9 +238,9 @@ test.describe("the chapter's goal (#356)", () => {
             const y = Math.min(goal.bottom, box.bottom) - Math.max(goal.top, box.top);
             if (x > 1 && y > 1) out.push(`the goal is under ${control.className}`);
           }
-          // Whatever the size, the goal and the next thing to do are on screen.
-          const next = document.querySelector("[data-testid='chapter-goal'] .goal__step[data-next]");
-          if (!next || !next.checkVisibility()) out.push("the next step is not shown");
+          // Whatever the size, the goal and how far along it is are on screen.
+          const pips = document.querySelector("[data-testid='chapter-goal'] .goal__pips");
+          if (!pips || !pips.checkVisibility()) out.push("the goal's pips are not shown");
           return out;
         });
         problems.push(...found.map((p) => `${width}x${height}, ${text} text: ${p}`));

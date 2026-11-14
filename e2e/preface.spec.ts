@@ -187,10 +187,11 @@ test.describe("the words around a chapter (#357)", () => {
       await expect(card).toHaveAttribute("data-kind", "back");
       await expect(card).toContainText("Where you left off");
       await expect(card).toContainText(GOAL);
-      // The first step is ticked (past the hedge), the others not yet.
+      // The first milestone is ticked (past the hedge) and named; the others are counted, not named.
       await expect
         .poll(() => card.locator(".goal__step").evaluateAll((steps) => steps.map((s) => s.getAttribute("data-done"))), TAP)
-        .toEqual(["true", "false", "false"]);
+        .toEqual(["true", "false"]);
+      await expect(card.locator(".goal__step").nth(1)).toContainText("Two more to go");
       const trail = card.locator(".preface__lines--trail li");
       await expect(trail).toHaveCount(3);
       await expect(trail.nth(0)).toContainText("wall of thorns");
@@ -274,7 +275,7 @@ test.describe("the words around a chapter (#357)", () => {
       await expect(card).toContainText(GOAL);
       await expect
         .poll(() => card.locator(".goal__step").evaluateAll((steps) => steps.map((s) => s.getAttribute("data-done"))), TAP)
-        .toEqual(["true", "false", "false"]);
+        .toEqual(["true", "false"]);
       await expect(card.locator(".preface__lines--trail li").last()).toContainText("Pib");
       expect(await fitProblems(host)).toEqual([]);
       await shot(host, `resume-${at}`);
