@@ -19,7 +19,8 @@ import { useGameStore } from "../store";
 import { markStoryPlatesSeen, resetStoryPlatesSeen, STORY_PLATES_SEEN_KEY } from "../store/story-plates-seen";
 import { ChapterPreface, resetPrefaceCampaigns } from "./ChapterPreface";
 import { NarrationPanel } from "./NarrationPanel";
-import { PrologueReplay, StoryPlates, plateHoldMs } from "./StoryPlates";
+import { PLATE_AFTER_VOICE_MS, PLATE_MAX_MS, PLATE_VOICE_WAIT_MS, PrologueReplay, StoryPlates, plateHoldMs, plateMayTurn } from "./StoryPlates";
+import { markSpeaking, setReadAloud } from "../speech/read-aloud";
 
 const PLATES = [1, 2, 3].map((n) => ({ art: `plates/c/prologue-${String(n)}`, narration: `Plate ${String(n)} is a painting.` }));
 
@@ -456,3 +457,51 @@ describe("how long a plate stays up", () => {
     expect(plateHoldMs(500)).toBe(22_000);
   });
 });
+
+describe("waiting for the voice", () => {
+  const at = { holdMs: 8000, readAloud: true, speaking: false, heard: true, quietFor: 0 };
+
+  it("turns at the hold when nothing reads aloud", () => {
+    expect(plateMayTurn({ ...at, readAloud: false, speaking: true, sinceShown: 7999 })).toBe(false);
+    expect(plateMayTurn({ ...at, readAloud: false, speaking: true, sinceShown: 8000 })).toBe(true);
+  });
+
+  it("waits past the hold while the voice is still saying the plate, then a breath after it stops", () => {
+    expect(plateMayTurn({ ...at, speaking: true, quietFor: null, sinceShown: 20_000 })).toBe(false);
+    expect(plateMayTurn({ ...at, quietFor: PLATE_AFTER_VOICE_MS - 1, sinceShown: 20_000 })).toBe(false);
+    expect(plateMayTurn({ ...at, quietFor: PLATE_AFTER_VOICE_MS, sinceShown: 20_000 })).toBe(true);
+    // Done early, it still keeps the hold.
+    expect(plateMayTurn({ ...at, quietFor: 5000, sinceShown: 7000 })).toBe(false);
+  });
+
+  it("gives a voice that never starts a little while, and nothing holds a plate for ever", () => {
+    expect(plateMayTurn({ ...at, heard: false, sinceShown: 8000 + PLATE_VOICE_WAIT_MS - 1 })).toBe(false);
+    expect(plateMayTurn({ ...at, heard: false, sinceShown: 8000 + PLATE_VOICE_WAIT_MS })).toBe(true);
+    expect(plateMayTurn({ ...at, speaking: true, quietFor: null, sinceShown: PLATE_MAX_MS })).toBe(true);
+  });
+
+  it("keeps a plate up on the shared screen until its narration has been said", async () => {
+    vi.useFakeTimers();
+    seed(run("ch_1"), OPENING);
+    // A device that can read aloud, with it switched on.
+    vi.stubGlobal("speechSynthesis", { speak() {}, cancel() {}, getVoices: () => [] });
+    vi.stubGlobal("SpeechSynthesisUtterance", class {});
+    setReadAloud(true);
+    setSpeaker((text) => spoken.push(text));
+    try {
+      render(<StoryPlates />);
+      await flush();
+      act(() => markSpeaking(true));
+      // A slow voice: well past the hold, still on the first plate.
+      await act(async () => void vi.advanceTimersByTime(plateHoldMs(6) + 4000));
+      expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+      act(() => markSpeaking(false));
+      await act(async () => void vi.advanceTimersByTime(PLATE_AFTER_VOICE_MS + 300));
+      expect(screen.getByTestId("story-plates").dataset.index).toBe("1");
+    } finally {
+      act(() => markSpeaking(false));
+      setReadAloud(false);
+    }
+  });
+});
+
