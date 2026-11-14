@@ -406,6 +406,29 @@ describe("the chapter's goal on the summary (#356)", () => {
     expect(screen.getByRole("img", { name: "1 of 1 done, 0 of 3 extras" })).toBeTruthy();
     expect([...goal.querySelectorAll(".goal__step")].map((s) => s.getAttribute("data-done"))).toEqual(["false", "false", "false", "true"]);
   });
+
+  it("names a chance the story mentioned and the party let go, and keeps a surprise secret", () => {
+    const go = (to: string, effects?: unknown[]) => ({ id: `to_${to}`, label: "On", icon: "forward", goto: to, ...(effects ? { effects } : {}) });
+    const ROAD = {
+      ...TETHER,
+      entry: "s_1",
+      scenes: {
+        s_1: { type: "story", narration: "My goat ran off!", choices: [go("hedge"), go("s_end")] },
+        hedge: { type: "story", narration: "A goat!", choices: [go("s_end", [{ type: "setFlag", flag: "found_goat" }, { type: "setFlag", flag: "patted_dog" }])] },
+        s_end: { type: "story", narration: "Home.", choices: [] },
+      },
+      objectives: [
+        { id: "goat", label: "Found the miller's goat", hint: "Find the miller's goat?", reveal: "s_1", flag: "found_goat", xp: 10 },
+        { id: "dog", label: "Patted the gate dog", flag: "patted_dog", xp: 5 },
+      ],
+    } as unknown as Chapter;
+    mount({ endingRead: true, chapterOutcome: "success", flags: { faced_the_bend: true }, visited: ["s_1"] });
+    act(() => {
+      useGameStore.setState({ chapter: ROAD });
+    });
+    expect(screen.getByTestId("still-out-there").textContent).toBe("Still out there: Find the miller's goat?");
+    expect(screen.queryByText(/gate dog/)).toBeNull();
+  });
 });
 
 describe("a hero the chapter has paid before (#408)", () => {

@@ -27,6 +27,8 @@
       "id": "mask_off",
       "label": "Talked Hessa out of her mask",
       "flag": "mask_off",
+      "reveal": "scene_masks",
+      "hint": "Talk Hessa out of her mask?",
       "xp": 6
     },
     {

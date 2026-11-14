@@ -52,6 +52,7 @@ export const PRESENTATION_KEYS: ReadonlySet<string> = new Set([
   "title",
   "blurb",
   "label",
+  "doneLabel",
   "text",
   "name",
   "cue",

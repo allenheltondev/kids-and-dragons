@@ -21,18 +21,24 @@
       "id": "prospector",
       "label": "Helped somebody whose rush was over",
       "flag": "helped_a_prospector",
+      "reveal": "scene_soup_line",
+      "hint": "Help the muddy prospector?",
       "xp": 7
     },
     {
       "id": "ledger",
       "label": "Kept the clerk's ledger honest",
       "flag": "kept_the_ledger",
+      "reveal": "scene_clerk",
+      "hint": "Keep Pellam's ledger honest?",
       "xp": 7
     },
     {
       "id": "outline",
       "label": "Plotted the outline of the truth yourselves",
       "flag": "plotted_it_yourself",
+      "reveal": "scene_engineers",
+      "hint": "Plot the clues yourselves?",
       "xp": 8
     }
   ],

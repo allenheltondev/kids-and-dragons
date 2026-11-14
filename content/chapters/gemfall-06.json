@@ -16,18 +16,24 @@
       "id": "read_the_crab",
       "label": "Read the glassback crab's warning before anybody got pinched",
       "flag": "read_the_crab",
+      "reveal": "scene_crab",
+      "hint": "Read the crab's warning?",
       "xp": 10
     },
     {
       "id": "fed_the_wolves",
       "label": "Found the cold cinder wolves something to eat",
       "flag": "wolves_fed",
+      "reveal": "scene_wolves",
+      "hint": "Find the wolves something to eat?",
       "xp": 6
     },
     {
       "id": "heard_hessa",
       "label": "Listened to the soup-tent woman all the way through",
       "flag": "heard_hessa",
+      "reveal": "scene_soup_tent",
+      "hint": "Hear Hessa out?",
       "xp": 6
     }
   ],

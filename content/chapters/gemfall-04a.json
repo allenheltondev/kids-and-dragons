@@ -27,12 +27,16 @@
       "id": "question",
       "label": "Carried the troll's question east",
       "flag": "traded_the_question",
+      "reveal": "scene_riddle_account",
+      "hint": "Carry Lintel's question east?",
       "xp": 7
     },
     {
       "id": "sashes",
       "label": "Read the centaurs' sash-maps yourselves",
       "flag": "read_the_sashes",
+      "reveal": ["scene_waystation", "scene_waystation_letters_arrived"],
+      "hint": "Read the sash-maps yourselves?",
       "xp": 8
     }
   ],

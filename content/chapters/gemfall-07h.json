@@ -27,12 +27,16 @@
       "id": "gave_back",
       "label": "Gave a stone back, even though nobody made you",
       "flag": "gave_stone_back",
+      "reveal": "scene_tamsins_offer",
+      "hint": "Give a stone back?",
       "xp": 6
     },
     {
       "id": "read_crabs",
       "label": "Saw that the gem deposit was really a crab",
       "flag": "crabs_read",
+      "reveal": "scene_roadside_glitter",
+      "hint": "Read the glittering lumps?",
       "xp": 6
     }
   ],

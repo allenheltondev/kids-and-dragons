@@ -16,6 +16,8 @@
       "id": "settled_bones",
       "label": "Got the restless bones to lie back down",
       "flag": "remains_settled",
+      "reveal": ["scene_mouth", "scene_bells_first"],
+      "hint": "Help the bones lie back down?",
       "xp": 12
     },
     {

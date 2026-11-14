@@ -75,7 +75,8 @@
 }
 
 .complete__campaign-end,
-.complete__setback {
+.complete__setback,
+.complete__missed {
   display: block;
   text-align: center;
   margin: 0;
@@ -93,7 +94,8 @@
 
 .complete__campaign-end > .kad-icon,
 .complete__fight > .kad-icon,
-.complete__setback > .kad-icon {
+.complete__setback > .kad-icon,
+.complete__missed > .kad-icon {
   vertical-align: -0.15em;
   margin-inline-end: var(--space-2, 0.5em);
 }

@@ -1,5 +1,5 @@
 /*
- * ChapterGoal (#356): the goal and its steps, always on screen.
+ * ChapterGoal (#356): the goal, its trail and its chances, always on screen.
  *
  * On the shared screen it sits in the narration's head under the chapter's
  * name, on the sky, never on the plate: the plate's height is what the stage
@@ -99,6 +99,123 @@
   border-color: var(--goal-gold);
 }
 
+/* --- the trail: how far along the chapter, a thin line under the goal ------- */
+
+.goal__trail {
+  display: block;
+  position: relative;
+  inline-size: 100%;
+  min-inline-size: 8em;
+  block-size: 0.3em;
+  border-radius: 999px;
+  background: rgb(var(--goal-gold-rgb) / 22%);
+  overflow: hidden;
+}
+
+.goal__trail-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--goal-gold);
+  transition: inline-size 900ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal__trail-fill { transition: none; }
+}
+
+/* --- the moment something ticks: its words in gold, a pop and a few sparks ---- */
+
+.goal__moment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875em);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.goal__moment-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  padding: 0.1em 0.4em;
+  border-radius: 0.35em;
+  animation: goal-glow 2.4s ease-out both;
+}
+
+.goal__moment-item > .kad-icon {
+  color: var(--goal-gold);
+  animation: goal-pop 520ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+.goal__moment-xp {
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.goal__moment-item > .goal__sparks {
+  inset-inline-start: 0.9em;
+}
+
+/* --- the chances: what the story mentioned, to take or leave ---------------- */
+
+.goal__chances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 0.25em) var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.goal__chance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.1em 0.5em;
+  border: 0.08em dashed rgb(var(--goal-gold-rgb) / 70%);
+  border-radius: 999px;
+  line-height: 1.25;
+}
+
+.goal__chance > .kad-icon {
+  flex: 0 0 auto;
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  color: var(--goal-gold);
+}
+
+.goal__chance--met {
+  border-style: solid;
+  border-color: var(--goal-gold);
+  color: #b3b0bf;
+}
+
+.goal__chance--fresh {
+  animation: goal-pop 520ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal__moment-item > .kad-icon,
+  .goal__chance--fresh { animation: none; }
+}
+
+/* A phone opened: the trail, the milestones by name and the chances, under the line. */
+.goal__rest {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  padding-block-end: var(--space-2, 0.5em);
+}
+
+.goal__rest[hidden] {
+  display: none;
+}
+
 /* --- the moment a step ticks ------------------------------------------------ */
 
 .goal__step--fresh .goal__box {
@@ -178,7 +295,7 @@
 }
 
 .goal__pips {
-  display: none;
+  display: inline-flex;
   gap: 0.3em;
   margin-inline-start: var(--space-1, 0.25em);
 }
@@ -281,14 +398,6 @@
   margin-inline-start: auto;
 }
 
-.goal--phone .goal__steps {
-  padding-block-end: var(--space-2, 0.5em);
-}
-
-/* `display: flex` above would otherwise outrank the folded list's `hidden`. */
-.goal__steps[hidden] {
-  display: none;
-}
 
 /* In a fight, on its own in the top corner (WorldView); in a place that fights back it heads
    RiftStatus's column instead, which already holds that corner. */
@@ -307,19 +416,13 @@
 
 /*
  * A short pane for its text size (a 600px tablet, or a TV at the largest text): the goal, its
- * pips and the next step, so the head stays on the sky above the figures. In `em`, so a larger
+ * pips, a moment and the open chances, so the head stays on the sky above the figures. In `em`, so a larger
  * text size reaches it sooner. A television at normal text is about 31em tall.
  */
 @container world (max-height: 26em) {
-  .goal--world:not(.goal--folded) .goal__pips {
-    display: inline-flex;
-  }
-  .goal--world .goal__step:not([data-next]) {
+  .goal--world .goal__trail,
+  .goal--world .goal__chance--met {
     display: none;
-  }
-  .goal--world .goal__step[data-next] .goal__label::before {
-    content: "Next: ";
-    font-weight: 800;
   }
 }
 
@@ -339,7 +442,9 @@
     padding-block: var(--space-1, 0.25em);
   }
   .goal--world .goal__sentence,
-  .goal--world .goal__steps {
+  .goal--world .goal__trail,
+  .goal--world .goal__moment,
+  .goal--world .goal__chances {
     display: none;
   }
   .goal--world .goal__tag {

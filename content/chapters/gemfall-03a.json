@@ -21,18 +21,24 @@
       "id": "markers",
       "label": "Put the centaurs' road markers back",
       "flag": "restored_markers",
+      "reveal": "scene_east_road",
+      "hint": "Fix the road markers?",
       "xp": 8
     },
     {
       "id": "queue",
       "label": "Kept the crossing line fair",
       "flag": "kept_queue_honest",
+      "reveal": "scene_queue",
+      "hint": "Stop the brass hats cutting in?",
       "xp": 7
     },
     {
       "id": "drake_rate",
       "label": "Got a fair rate from the river drake",
       "flag": "drake_traded",
+      "reveal": "scene_drake_shelf",
+      "hint": "Get a fair rate from the drake?",
       "xp": 7
     }
   ],

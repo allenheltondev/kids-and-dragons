@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 /**
- * ChapterGoal (#356): the goal is on screen the whole chapter with nothing to tap, and a step
- * ticks the moment its flag is set. A tick seen happening gets its moment (and, on the shared
- * screen, the chime); a screen that arrives mid-chapter shows what is done without one.
+ * ChapterGoal (#356): the goal is on screen the whole chapter with nothing to tap, its milestones
+ * as pips named only once they tick, a trail for how far along, and the chances the story has
+ * mentioned. A tick seen happening gets its moment (and, on the shared screen, the chime); a
+ * screen that arrives mid-chapter shows what is done without one.
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -28,7 +29,7 @@ const CHAPTER = {
     text: "Get the cat down from the tree.",
     steps: [
       { id: "ladder", label: "Find a ladder", flag: "found_ladder" },
-      { id: "climb", label: "Climb up", flag: ["climbed_left", "climbed_right"] },
+      { id: "climb", label: "Climb up", flag: ["climbed_left", "climbed_right"], doneLabel: { climbed_left: "Climbed the left side", climbed_right: "Climbed the right side" } },
       { id: "treat", label: "Bring a treat", flag: "brought_treat", optional: true },
     ],
   },
@@ -63,7 +64,7 @@ function seed(flags: Record<string, boolean>, overrides: Partial<RunState> = {})
 }
 
 const ticked = (): boolean[] =>
-  [...document.querySelectorAll(".goal__step")].map((step) => step.getAttribute("data-done") === "true");
+  [...document.querySelectorAll(".goal__pip")].map((pip) => pip.classList.contains("goal__pip--done"));
 
 afterEach(() => {
   cleanup();
@@ -73,23 +74,30 @@ afterEach(() => {
 });
 
 describe("the chapter's goal", () => {
-  it("shows the goal and every step, with nothing to open", () => {
+  it("shows the goal, a pip for each milestone and the trail, names nothing ahead, and has nothing to open", () => {
     seed({});
     render(<ChapterGoalCard place="world" />);
     expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
-    for (const label of ["Find a ladder", "Climb up", "Bring a treat"]) expect(screen.getByText(label)).toBeTruthy();
-    expect(screen.getByText("(if you can)")).toBeTruthy();
+    for (const label of ["Find a ladder", "Climb up", "Bring a treat"]) expect(screen.queryByText(label)).toBeNull();
     expect(ticked()).toEqual([false, false, false]);
+    expect(screen.getByRole("img", { name: "0 of 2 done, 0 of 1 extras" })).toBeTruthy();
+    expect(screen.getByRole("img", { name: "Just starting" })).toBeTruthy();
     expect(document.querySelector("button")).toBeNull();
   });
 
-  it("ticks a step when its flag is set, any of a list counting, and says so in words", () => {
+  it("ticks a milestone when its flag is set, any of a list counting, and names it for how it was done", () => {
     seed({ climbed_right: true });
-    render(<ChapterGoalCard place="world" />);
+    render(<ChapterGoalCard place="phone" />);
+    act(() => screen.getByRole("button").click());
     expect(ticked()).toEqual([false, true, false]);
+    expect(screen.getByText("Climbed the right side")).toBeTruthy();
+    // What is ahead stays unnamed; an extra says what it asks.
+    expect(screen.getByText("One more to go")).toBeTruthy();
+    expect(screen.queryByText("Find a ladder")).toBeNull();
+    expect(screen.getByText("Bring a treat")).toBeTruthy();
+    expect(screen.getByText("(if you can)")).toBeTruthy();
     expect(screen.getAllByRole("img", { name: "Not yet" })).toHaveLength(2);
     expect(screen.getByRole("img", { name: "Done" })).toBeTruthy();
-    expect(document.querySelector(".goal__step[data-next]")?.textContent).toContain("Find a ladder");
   });
 
   it("gives a tick seen happening its moment and a chime, then lets it go", () => {
@@ -98,16 +106,17 @@ describe("the chapter's goal", () => {
     setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
     seed({});
     render(<ChapterGoalCard place="world" />);
-    expect(document.querySelectorAll(".goal__step--fresh")).toHaveLength(0);
+    expect(document.querySelector(".goal__moment")).toBeNull();
 
     act(() => seed({ found_ladder: true }));
     expect(ticked()).toEqual([true, false, false]);
-    expect(document.querySelectorAll(".goal__step--fresh")).toHaveLength(1);
+    expect(document.querySelector(".goal__moment")?.textContent).toContain("Find a ladder");
+    expect(document.querySelectorAll(".goal__pip--fresh")).toHaveLength(1);
     expect(document.querySelectorAll(".goal__sparks")).toHaveLength(1);
     expect(played).toEqual(["gem-pickup"]);
 
     act(() => vi.advanceTimersByTime(TICK_MOMENT_MS + 10));
-    expect(document.querySelectorAll(".goal__step--fresh")).toHaveLength(0);
+    expect(document.querySelector(".goal__moment")).toBeNull();
     expect(ticked()).toEqual([true, false, false]);
   });
 
@@ -116,9 +125,10 @@ describe("the chapter's goal", () => {
     setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
     seed({ found_ladder: true });
     render(<ChapterGoalCard place="phone" />);
-    expect(document.querySelectorAll(".goal__step--fresh")).toHaveLength(0);
+    expect(document.querySelectorAll(".goal__pip--fresh")).toHaveLength(0);
     act(() => seed({ found_ladder: true, climbed_left: true }));
-    expect(document.querySelectorAll(".goal__step--fresh")).toHaveLength(1);
+    expect(document.querySelectorAll(".goal__pip--fresh")).toHaveLength(1);
+    expect(document.querySelector(".goal__moment")?.textContent).toContain("Climbed the left side");
     expect(played).toEqual([]);
   });
 
@@ -153,14 +163,14 @@ describe("the chapter's goal", () => {
       },
     } as Chapter;
 
-    it("names the next required step, never an extra the party may be long past", () => {
-      // The ledger was missed and the party has moved on: what a short pane names is the bend.
+    it("names the extras ahead, and the required step only once it ticks", () => {
       seed({});
       useGameStore.setState({ chapter: TETHER });
-      render(<ChapterGoalCard place="world" />);
-      const next = document.querySelector(".goal__step[data-next]");
-      expect(next?.textContent).toContain("Face the stone's hum at the bend");
-      expect(document.querySelectorAll(".goal__step[data-next]")).toHaveLength(1);
+      render(<ChapterGoalCard place="phone" />);
+      act(() => screen.getByRole("button").click());
+      expect(screen.getByText("Borrow the wardens' ledger")).toBeTruthy();
+      expect(screen.queryByText("Face the stone's hum at the bend")).toBeNull();
+      expect(screen.getByText("One more to go")).toBeTruthy();
     });
 
     it("is done when the required step is, with every extra missed, and counts the extras apart", () => {
@@ -169,8 +179,6 @@ describe("the chapter's goal", () => {
       render(<ChapterGoalCard place="world" />);
       expect(document.querySelector(".goal")?.classList.contains("goal--all")).toBe(true);
       expect(screen.getByRole("img", { name: "1 of 1 done, 0 of 3 extras" })).toBeTruthy();
-      // Nothing is left to name as next.
-      expect(document.querySelector(".goal__step[data-next]")).toBeNull();
       expect(document.querySelectorAll(".goal__pip--optional")).toHaveLength(3);
     });
   });
@@ -181,6 +189,7 @@ describe("the chapter's goal", () => {
     expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
     expect(screen.getByRole("img", { name: "1 of 2 done, 0 of 1 extras" })).toBeTruthy();
     expect(document.querySelectorAll(".goal__step")).toHaveLength(0);
+    expect(document.querySelector(".goal__trail")).toBeNull();
   });
 
   describe("on a phone (playtest: the card in full took too much of the screen)", () => {
@@ -194,13 +203,11 @@ describe("the chapter's goal", () => {
       expect(screen.getByRole("img", { name: "1 of 2 done, 0 of 1 extras" })).toBeTruthy();
       expect(document.querySelector(".goal")?.classList.contains("goal--closed")).toBe(true);
       expect(toggle().getAttribute("aria-expanded")).toBe("false");
-      // The steps are there, ticked as they are, and folded away.
+      // The rest is there, ticked as it is, and folded away.
       const steps = document.getElementById(toggle().getAttribute("aria-controls") ?? "");
-      expect(steps?.classList.contains("goal__steps")).toBe(true);
+      expect(steps?.classList.contains("goal__rest")).toBe(true);
       expect(steps?.hidden).toBe(true);
       expect(ticked()).toEqual([true, false, false]);
-      expect(screen.queryByRole("img", { name: "Not yet" })).toBeNull();
-
       act(() => toggle().click());
       expect(toggle().getAttribute("aria-expanded")).toBe("true");
       expect(steps?.hidden).toBe(false);
@@ -225,7 +232,8 @@ describe("the chapter's goal", () => {
       localStorage.setItem(FOLDS_KEY, JSON.stringify({ goal: false }));
       render(<ChapterGoalCard place="world" />);
       expect(document.querySelector("button")).toBeNull();
-      expect(document.querySelector(".goal__steps")?.hasAttribute("hidden")).toBe(false);
+      expect(document.querySelector(".goal__rest")).toBeNull();
+      expect(document.querySelector(".goal__trail")).toBeTruthy();
     });
   });
 
@@ -236,6 +244,65 @@ describe("the chapter's goal", () => {
     expect(container.innerHTML).toBe("");
     act(() => useGameStore.setState({ chapter: { ...CHAPTER, goal: undefined } }));
     expect(container.innerHTML).toBe("");
+  });
+});
+
+describe("the trail and the chances", () => {
+  const go = (to: string, effects?: unknown[]) => ({ id: `to_${to}`, label: "On", icon: "forward", goto: to, ...(effects ? { effects } : {}) });
+  const ROAD = {
+    ...CHAPTER,
+    scenes: {
+      s_1: { type: "story", narration: "A road.", choices: [go("mill")] },
+      mill: { type: "story", narration: "My goat ran off!", choices: [go("fork")] },
+      fork: { type: "story", narration: "Which way?", choices: [go("hedge"), go("road")] },
+      hedge: { type: "story", narration: "A goat!", choices: [go("gate", [{ type: "setFlag", flag: "found_goat" }])] },
+      road: { type: "story", narration: "Dust.", choices: [go("gate")] },
+      gate: { type: "story", narration: "The gate.", choices: [go("end")] },
+      end: { type: "story", narration: "Home.", choices: [] },
+    },
+    objectives: [
+      { id: "goat", label: "Found the miller's goat", hint: "Find the miller's goat?", reveal: "mill", flag: "found_goat", xp: 10 },
+      { id: "secret", label: "Patted the gate dog", flag: "patted_dog", xp: 5 },
+    ],
+  } as unknown as Chapter;
+  const at = (sceneId: string, visited: string[], flags: Record<string, boolean> = {}): void => {
+    seed(flags, { sceneId, visited });
+    useGameStore.setState({ chapter: ROAD });
+  };
+
+  it("fills the trail as the party walks, and never walks it back", () => {
+    at("s_1", []);
+    render(<ChapterGoalCard place="world" />);
+    expect(screen.getByRole("img", { name: "Just starting" })).toBeTruthy();
+    act(() => at("fork", ["s_1", "mill"]));
+    expect(screen.getByRole("img", { name: "About 40% of the way" })).toBeTruthy();
+    // Back up the road (a loop, a detour): the trail keeps the furthest it showed.
+    act(() => at("mill", ["s_1", "mill", "fork"]));
+    expect(screen.getByRole("img", { name: "About 40% of the way" })).toBeTruthy();
+  });
+
+  it("shows a chance once the story mentions it, and lets it go once it is missed", () => {
+    at("s_1", []);
+    render(<ChapterGoalCard place="world" />);
+    expect(screen.queryByText("Find the miller's goat?")).toBeNull();
+    act(() => at("mill", ["s_1"]));
+    expect(screen.getByText("Find the miller's goat?")).toBeTruthy();
+    act(() => at("road", ["s_1", "mill", "fork"]));
+    expect(screen.queryByText("Find the miller's goat?")).toBeNull();
+  });
+
+  it("celebrates a chance met, and a surprise one as a bonus, with its XP", () => {
+    vi.useFakeTimers();
+    at("hedge", ["s_1", "mill", "fork"]);
+    render(<ChapterGoalCard place="world" />);
+    act(() => at("gate", ["s_1", "mill", "fork", "hedge"], { found_goat: true, patted_dog: true }));
+    const moment = document.querySelector(".goal__moment")?.textContent ?? "";
+    expect(moment).toContain("Found the miller's goat");
+    expect(moment).toContain("+10 XP");
+    expect(moment).toContain("Bonus! Patted the gate dog");
+    act(() => vi.advanceTimersByTime(TICK_MOMENT_MS + 10));
+    // Both stay, met, for the rest of the chapter.
+    expect([...document.querySelectorAll(".goal__chance")].map((c) => c.getAttribute("data-state"))).toEqual(["met", "met"]);
   });
 });
 
@@ -285,13 +352,13 @@ describe("the chapter's goal on a phone held sideways", () => {
     seed({});
     render(<PlayerShell.Provider value><ChapterGoalCard place="world" /></PlayerShell.Provider>);
     expect(screen.queryByRole("button", { name: /your goal/i })).toBeNull();
-    expect(screen.getByText("Find a ladder")).toBeTruthy();
+    expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
     turn(true);
     expect(screen.getByRole("button", { name: /your goal, 0 of 2 done/i })).toBeTruthy();
-    expect(screen.queryByText("Find a ladder")).toBeNull();
+    expect(screen.queryByText("Get the cat down from the tree.")).toBeNull();
     turn(false);
     expect(screen.queryByRole("button", { name: /your goal/i })).toBeNull();
-    expect(screen.getByText("Find a ladder")).toBeTruthy();
+    expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
   });
 
   it("gives the hero's own pane its line back", () => {
@@ -306,6 +373,6 @@ describe("the chapter's goal on a phone held sideways", () => {
     seed({});
     const { container } = render(<ChapterGoalCard place="world" />);
     expect(container.querySelector("button")).toBeNull();
-    expect(screen.getByText("Find a ladder")).toBeTruthy();
+    expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
   });
 });

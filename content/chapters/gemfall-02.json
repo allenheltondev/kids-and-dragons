@@ -17,6 +17,8 @@
       "id": "rows",
       "label": "Walked the rows instead of through them",
       "flag": "walked_the_rows",
+      "reveal": "scene_trampled_field",
+      "hint": "Walk around the pumpkin rows?",
       "xp": 8
     },
     {
@@ -29,6 +31,8 @@
       "id": "hedges",
       "label": "Were let into Bramblewood properly",
       "flag": "let_in_properly",
+      "reveal": "scene_hedge_mob",
+      "hint": "Get let in the polite way?",
       "xp": 7
     }
   ],

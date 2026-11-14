@@ -166,6 +166,10 @@ describe("Where you left off, for a screen that comes back partway", () => {
     expect(card.textContent).toContain("Get the cat down from the tree.");
     const steps = [...card.querySelectorAll(".goal__step")].map((step) => step.getAttribute("data-done"));
     expect(steps).toEqual(["true", "false"]);
+    // Named once done, never ahead.
+    expect(card.textContent).toContain("Find a ladder");
+    expect(card.textContent).toContain("One more to go");
+    expect(card.textContent).not.toContain("Climb up");
     const trail = [...card.querySelectorAll(".preface__lines--trail li")].map((li) => li.textContent);
     expect(trail).toEqual(["A cat is up a tree.", "The ladder wobbles.", "A dog barks at the ladder."]);
     // Shown, never read: the story the table is in is what the voice is for.

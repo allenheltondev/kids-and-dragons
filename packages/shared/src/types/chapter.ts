@@ -197,6 +197,20 @@ export interface ChapterObjective {
   /** Paid when this run flag is set at the moment the chapter completes. */
   flag: string;
   /**
+   * Where the story first mentions it: once the party has entered
+   * any of these scenes, the shared screen and the phones show `hint` beside
+   * the goal as a chance the party can take or leave. It drops off the screen
+   * the moment no road left can set its flag, and the completion screen says
+   * it is still out there. Absent is the old behaviour: hidden until it is
+   * met, and then a surprise. Display only; nothing here changes what pays.
+   */
+  reveal?: SceneId | SceneId[];
+  /**
+   * The chance as the screen asks it once revealed, in kid words with a
+   * question mark: "Find the miller's goat?". Required with `reveal`.
+   */
+  hint?: string;
+  /**
    * Bonus XP for the whole party. The objectives of one chapter may total no
    * more than 25% of its `xpAward` (spec §8.2) — enforced at authoring time by
    * tools/content/validate.mjs and clamped again in the engine.
@@ -228,8 +242,19 @@ export type GoalStep = GoalStepBase & (GoalStepFlag | GoalStepItem);
 
 export interface GoalStepBase {
   id: string;
-  /** A short thing to do: "Get the wardens' ledger". */
+  /**
+   * A short thing to do: "Get the wardens' ledger". Kept for the tools and the
+   * recap; the screens never show it before it ticks, so it may name what the
+   * party has not met yet only through `doneLabel`.
+   */
   label: string;
+  /**
+   * What the screen says once the step ticks, in the past tense and for how
+   * this party did it: "Talked our way past the clerk". A string for every
+   * way, or one line per watched flag (keys are the step's flags) when the
+   * step can tick more than one way. Absent: `label`.
+   */
+  doneLabel?: string | Record<string, string>;
   /**
    * A step some roads skip. Drawn as "if you can" and never held to the
    * spine. Absent is the normal case.

@@ -359,6 +359,7 @@ describe("the chapter's goal (#356)", () => {
     // refuse it either.
     const result = withChapter((chapter) => {
       chapter.goal.steps[0].flag = ["got_past_the_hedge", "crossed_the_wood"];
+      delete chapter.goal.steps[0].doneLabel;
       // The wood's own step watches that flag alone, so it is set aside: this is about the hedge step.
       chapter.goal.steps[1].optional = true;
       const rest = chapter.scenes.rest_mossbank;
@@ -371,6 +372,7 @@ describe("the chapter's goal (#356)", () => {
   it("lets an optional step sit off the spine", () => {
     const result = withChapter((chapter) => {
       chapter.goal.steps[0].flag = chapter.objectives[0].flag;
+      delete chapter.goal.steps[0].doneLabel;
       chapter.goal.steps[0].optional = true;
     });
     expect(result.out).not.toContain("is not on the spine");
@@ -394,6 +396,54 @@ describe("the chapter's goal (#356)", () => {
 
   it("catches a goal with an em dash", () => {
     expect(withChapter((chapter) => { chapter.goal.steps[1].label = "Find it \u2014 fast"; }).out).toContain("the goal has an em dash");
+    expect(withChapter((chapter) => { chapter.goal.steps[1].doneLabel = "Found it \u2014 fast"; }).out).toContain("the goal has an em dash");
+  });
+
+  it("catches a done label for a flag the step does not watch", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[0].doneLabel = { not_a_flag_here: "Did it" }; });
+    expect(result.out).toContain('"not_a_flag_here" is not one of step "hedge"\'s flags');
+    expect(result.code).not.toBe(0);
+  });
+});
+
+describe("chances: bonus objectives the story reveals", () => {
+  // Bramblewood's scouting objective is set at scene_scouted, which the fork leads to.
+  const reveal = (at, hint = "Get a look at the whole wood?") => (chapter) => {
+    chapter.objectives[0].reveal = at;
+    if (hint !== null) chapter.objectives[0].hint = hint;
+  };
+
+  it("takes a chance revealed where every party can still take it", () => {
+    const result = withChapter((chapter) => {
+      reveal("choice_point_path")(chapter);
+      // Open the griffin's look-out to every party, so the chance has an ungated way.
+      const scout = chapter.scenes.choice_point_path.choices.find((c) => c.id === "scout");
+      delete scout.requiresSpecies;
+    });
+    expect(result.out).not.toContain("objective \"scouted\"");
+    expect(result.code).toBe(0);
+  });
+
+  it("catches a reveal with no hint", () => {
+    const result = withChapter(reveal("choice_point_path", null));
+    expect(result.out).toContain('objective "scouted" needs both `reveal` and `hint`, or neither');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a reveal of a chance only a gated choice can take (the bigfoot's doorway)", () => {
+    const result = withChapter((chapter) => {
+      chapter.objectives[1].reveal = "scene_hedge_wall";
+      chapter.objectives[1].hint = "Make a doorway in the thorns?";
+    });
+    expect(result.out).toContain('from reveal scene "scene_hedge_wall", only a gated choice');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a reveal at a scene that is not there, or after every way to take it", () => {
+    expect(withChapter(reveal("scene_nowhere")).out).toContain('reveal scene "scene_nowhere" is not a scene in this chapter');
+    const late = withChapter(reveal(["choice_point_path", "check_door"]));
+    expect(late.out).toContain('reveal scene "check_door" comes after every way to set "scouted_the_path"');
+    expect(late.code).not.toBe(0);
   });
 
   it("lets a step watch one of the chapter's own quest items, and refuses any other item", () => {

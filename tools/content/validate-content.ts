@@ -39,6 +39,7 @@ import { sceneExits } from "../../packages/shared/src/scene-exits.ts";
 import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { goalStepFlags, stepsOffTheSpine } from "../../packages/shared/src/chapter-goal.ts";
+import { chanceRevealScenes, scenesThatCanStillSet } from "../../packages/shared/src/chapter-trail.ts";
 import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
 import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
@@ -1509,6 +1510,25 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
       );
     }
 
+    // A chance (chapter-trail.ts): revealed where the story mentions it, asked as its hint.
+    const reveal = chanceRevealScenes(objective);
+    if ((objective.reveal === undefined) !== (objective.hint === undefined)) {
+      fail(at, `objective "${objective.id}" needs both \`reveal\` and \`hint\`, or neither`, "The hint is what the screen asks once the reveal scene has mentioned it.");
+    }
+    for (const id of reveal) {
+      if (!scenes[id]) fail(`${at}/reveal`, `reveal scene "${id}" is not a scene in this chapter`);
+      else if (!scenesThatCanStillSet(chapter, objective.flag).has(id)) {
+        fail(`${at}/reveal`, `reveal scene "${id}" comes after every way to set "${objective.flag}"`, "Reveal a chance where the party can still take it, so it is never shown already missed.");
+      } else if (!scenesThatCanStillSet(chapter, objective.flag, "everyone").has(id)) {
+        fail(
+          `${at}/reveal`,
+          `from reveal scene "${id}", only a gated choice (species, class, flag, item or \`when\`) leads to setting "${objective.flag}"`,
+          "A revealed chance is on every table's screen, so every party needs an ungated way to it. Add one, or leave the objective unrevealed as a surprise.",
+        );
+      }
+    }
+    if (objective.hint !== undefined && /—/.test(objective.hint)) fail(`${at}/hint`, "the hint has an em dash");
+
     bonusTotal += objective.xp;
   });
 
@@ -1553,6 +1573,12 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
           fail(`${at}/item`, `item "${step.item}" is never handed over with grantQuestItem in this chapter, so this step can never tick`);
         }
       }
+      // A done label per way names the step's own flags, and only an item step's is a single string.
+      if (step.doneLabel !== undefined && typeof step.doneLabel !== "string") {
+        for (const key of Object.keys(step.doneLabel)) {
+          if (!goalStepFlags(step).includes(key)) fail(`${at}/doneLabel/${key}`, `"${key}" is not one of step "${step.id}"'s flags`);
+        }
+      }
       for (const flag of goalStepFlags(step)) {
         // Watched, never set, exactly like an objective: a step nothing ticks sits empty all evening.
         if (!flagsSet.has(flag)) {
@@ -1568,7 +1594,8 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
         }
       }
     });
-    if (/—/.test(`${goal.text} ${goal.steps.map((s) => s.label).join(" ")}`)) {
+    const doneWords = goal.steps.flatMap((s) => (s.doneLabel === undefined ? [] : typeof s.doneLabel === "string" ? [s.doneLabel] : Object.values(s.doneLabel)));
+    if (/—/.test(`${goal.text} ${goal.steps.map((s) => s.label).join(" ")} ${doneWords.join(" ")}`)) {
       fail("/goal", "the goal has an em dash", "Read aloud to an eight-year-old: a full stop or a comma instead.");
     }
     if ((goal.text.match(/[.!?](\s|$)/g) ?? []).length > 1) {

@@ -20,18 +20,24 @@
       "id": "rule",
       "label": "Got a prospector to listen to the one rule",
       "flag": "taught_the_rule",
+      "reveal": "scene_gate_town",
+      "hint": "Get the pry-bar man to listen?",
       "xp": 7
     },
     {
       "id": "crab",
       "label": "Read the glassback crab's warning",
       "flag": "read_the_crab",
+      "reveal": "scene_crab_warning",
+      "hint": "Read the crab's warning?",
       "xp": 7
     },
     {
       "id": "outline",
       "label": "Laid out the whole outline of the truth",
       "flag": "drew_the_outline",
+      "reveal": ["scene_tallies", "scene_tallies_hear_tallies", "scene_charm_rings", "scene_verses_sung"],
+      "hint": "Lay out everything you know?",
       "xp": 8
     }
   ],

@@ -44,7 +44,7 @@
 import { HeroName } from "./HeroName";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { revelationsOf, speak } from "@kad/shared";
+import { chanceStates, revelationsOf, speak } from "@kad/shared";
 import type { TierId } from "@kad/shared";
 import { useGameStore, useItems, useParty, useProgression, useRunState } from "../store";
 import type { ProgressionEvent } from "../store/contract";
@@ -144,6 +144,24 @@ export function ChapterCompletePanel(): ReactElement {
    */
   const setback = state?.chapterOutcome === "setback";
   const bonuses = state?.bonuses ?? [];
+  /*
+   * The chances the story mentioned that the party let go (chapter-trail.ts): named, not
+   * scolded, so the table knows there was more to find. A surprise nobody heard of stays a secret.
+   */
+  const stillOutThere = useMemo(
+    () =>
+      chapter && state && chapter.id === state.chapterId
+        ? chanceStates(chapter, {
+            flags: state.flags,
+            visited: state.visited ?? [],
+            sceneId: state.sceneId,
+            party: { species: state.party.map((m) => m.character.species), classes: state.party.map((m) => m.character.class) },
+          }).filter(
+            (chance) => chance.revealed && chance.state !== "met",
+          )
+        : [],
+    [chapter, state],
+  );
   const campTally = state?.campTally;
   // The chapter that ended the whole campaign gets the campaign's ending.
   const ended = state?.campaign?.ended;
@@ -296,7 +314,7 @@ export function ChapterCompletePanel(): ReactElement {
             </p>
           ))}
           {/* The goal the chapter set out with (#356), and what got ticked on the way. */}
-          <ChapterGoalCard place="world" />
+          <ChapterGoalCard place="world" recap />
           {state?.endingRead === false ? (
             <p className="complete__next kad-muted">
               <Icon name="forward" />
@@ -385,6 +403,15 @@ export function ChapterCompletePanel(): ReactElement {
             ))}
           </ul>
         </div>
+      )}
+
+      {stillOutThere.length === 0 ? null : (
+        <p className="complete__missed" data-testid="still-out-there">
+          <Icon name="star" />
+          <span>
+            Still out there: {stillOutThere.map((chance) => chance.objective.hint ?? chance.objective.label).join(" ")}
+          </span>
+        </p>
       )}
 
       {/* The camp's beat (docs/camp.md §5.2, §6.2): the chapter's Dash Cash and

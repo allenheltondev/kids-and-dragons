@@ -28,17 +28,23 @@
       {
         "id": "hedge",
         "label": "Get past the wall of thorns",
-        "flag": "got_past_the_hedge"
+        "flag": ["made_a_doorway", "got_past_the_hedge"],
+        "doneLabel": {
+          "made_a_doorway": "Pushed a doorway through the thorns",
+          "got_past_the_hedge": "Got past the wall of thorns"
+        }
       },
       {
         "id": "wood",
         "label": "Find a way through the wood",
-        "flag": "crossed_the_wood"
+        "flag": "crossed_the_wood",
+        "doneLabel": "Found a way through the wood"
       },
       {
         "id": "door",
         "label": "Open the door the humming is behind",
-        "flag": "opened_the_hill_door"
+        "flag": "opened_the_hill_door",
+        "doneLabel": "Opened the humming door"
       }
     ]
   },
