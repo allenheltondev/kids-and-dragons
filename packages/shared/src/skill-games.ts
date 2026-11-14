@@ -65,7 +65,10 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
     return;
   }
   if ((action.action !== "commit" && action.action !== "arrange") || action.round !== game.round) throw Error("That situation has moved on.");
-  if (spec.kind !== "cooperate" && playerId !== lead) throw Error("Help your friend on their phone.");
+  // Once only confirmation remains, every connected phone offers Finish together.
+  const finishing = action.action === "commit" && connected.includes(playerId) &&
+    (spec.kind === "precision" || spec.kind === "timing") && game.progress >= skillSteps(prompt, connected);
+  if (spec.kind !== "cooperate" && playerId !== lead && !finishing) throw Error("Help your friend on their phone.");
   if (action.action === "arrange") {
     if ((spec.kind !== "sequence" && spec.kind !== "memory") || !Array.isArray(action.answer) || action.answer.length > spec.answer.length ||
       !action.answer.every(id => spec.options.some(o => o.id === id)) || (spec.kind === "memory" && !playbackOver(prompt, now))) throw Error("Choose pictures after watching.");

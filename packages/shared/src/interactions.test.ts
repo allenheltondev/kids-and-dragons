@@ -648,6 +648,20 @@ describe("skill-game rules used by the current phones", () => {
     expect(prompt(state).outcome).toBe("success");
     expect(prompt(state).challenge).toMatchObject({ progress: 5, completed: { p0: 3, p1: 2 } });
   });
+  it.each(["precision", "timing"] as const)("lets either connected hero confirm a finish-ready %s game", kind => {
+    let { state, ctx } = start({ ...precision, kind }, 3);
+    expect(act(state, ctx, { action: "commit", round: 0, position: precision.target }, "p1").error).toBeDefined();
+    for (let stage = 0; stage < 8; stage++) state = commit(state, ctx, { position: precision.target }, `p${stage % 3}`);
+    state.party[2]!.connected = false;
+    expect(prompt(state).challenge!.completed).toEqual({ p0: 3, p1: 3, p2: 2 });
+    expect(act(state, ctx, { action: "commit", round: 7, position: precision.target }, "p1").error).toBeDefined();
+    expect(act(state, ctx, { action: "commit", round: 8, position: precision.target }, "p2").error).toBeDefined();
+    for (const id of ["p0", "p1"]) {
+      const finished = commit(state, ctx, { position: precision.target }, id);
+      expect(prompt(finished)).toMatchObject({ phase: "result", outcome: "success", challenge: { progress: 8, round: 8 } });
+      expect(prompt(finished).challenge!.completed).toEqual({ p0: 3, p1: 3, p2: 2 });
+    }
+  });
   it("recovers completion counts from a saved challenge created before per-hero tracking", () => {
     let { state, ctx } = start(precision, 2);
     state = commit(state, ctx, { position: precision.target });

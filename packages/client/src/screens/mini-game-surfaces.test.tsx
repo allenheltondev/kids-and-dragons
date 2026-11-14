@@ -11,14 +11,14 @@ const initial = useGameStore.getState();
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(2_000_000); vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
 afterEach(() => { cleanup(); useGameStore.setState(initial, true); vi.restoreAllMocks(); vi.useRealTimers(); });
 const options = [{ id: "leaf", label: "Leaf", icon: "leaf" }, { id: "star", label: "Star", icon: "star" }];
-function game(spec: InteractionSpec, props: string[] = [], skill = false) {
+function game(spec: InteractionSpec, props: string[] = [], skill = false, players = 2, playerId = "p0") {
   const chapter = makeChapter();
   chapter.scenes.game = { type: "interaction", narration: "Help together", interaction: spec, onSuccess: { goto: "scene_clearing" }, onFailure: { goto: "scene_clearing" } };
   chapter.presentation = { interactions: { game: { props, ...(spec.kind === "tracking" ? { coverIcons: ["snow-mound", "relay-sack"] } : {}) } } };
   const ctx = (): EngineContext => ({ chapter, rules: makeRules(), items: makeItems(), rng: makeRng("surfaces"), now: new Date().toISOString(), householdId: "h" });
   let state = createRunState({ runId: "r", roomCode: "TEST", mode: "party", now: new Date().toISOString() });
   state.chapterId = chapter.id;
-  state.party = ["Aster", "Fern"].map((name, i) => ({ playerId: `p${i}`, character: resolveCharacter(makeCharacter({ id: `c${i}`, ownerPlayerId: `p${i}`, name }), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }));
+  state.party = ["Aster", "Fern", "Pip"].slice(0, players).map((name, i) => ({ playerId: `p${i}`, character: resolveCharacter(makeCharacter({ id: `c${i}`, ownerPlayerId: `p${i}`, name }), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }));
   state = enterScene(state, "game", ctx()).state;
   const p = state.prompt as InteractionPrompt;
   state = applyIntent(state, { playerId: "p0", intent: { type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "start", relaxed: false, ...(skill ? { rulesVersion: 2 as const } : {}) } }, ctx()).state;
@@ -28,7 +28,7 @@ function game(spec: InteractionSpec, props: string[] = [], skill = false) {
     useGameStore.setState({ state: result.state });
     return !result.error;
   };
-  useGameStore.setState({ state, chapter, synced: true, send: async (intent) => deliver(intent), session: { playerId: "p0", runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
+  useGameStore.setState({ state, chapter, synced: true, send: async (intent) => deliver(intent, playerId), session: { playerId, runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
   render(<><StoryInteractionControls /><StoryInteractionWorld /></>);
   return {
     phone: screen.getByRole("region", { name: "Interaction controls" }), tv: screen.getByRole("region", { name: "Story interaction" }),
@@ -207,4 +207,19 @@ it("offers an explicit finish control when the last unfinished hero leaves", asy
   expect(tv.textContent).toContain("Tap Finish together on a phone");
   await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Finish together" })); });
   expect(useGameStore.getState().state!.prompt).toMatchObject({ phase: "result", outcome: "success", challenge: { progress: 5 } });
+});
+
+it("lets a non-lead phone finish with two connected heroes after the unfinished third leaves", async () => {
+  const { phone } = game({ kind: "timing", cue: "Jump", actionLabel: "Jump", target: 0.5, width: 0.3, periodMs: 4000 }, [], true, 3, "p1");
+  act(() => {
+    const state = useGameStore.getState().state!;
+    const prompt = state.prompt as InteractionPrompt;
+    useGameStore.setState({ state: { ...state,
+      party: state.party.map(m => m.playerId === "p2" ? { ...m, connected: false } : m),
+      prompt: { ...prompt, challenge: { ...prompt.challenge!, progress: 8, round: 8, completed: { p0: 3, p1: 3, p2: 2 }, nextParticipant: 2 } },
+    } });
+  });
+  await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Finish together" })); });
+  expect(useGameStore.getState().state!.prompt).toMatchObject({ phase: "result", outcome: "success", challenge: { progress: 8 } });
+  expect(within(phone).queryByRole("alert")).toBeNull();
 });
