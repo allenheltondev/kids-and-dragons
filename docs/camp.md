@@ -69,8 +69,9 @@ to tell, it shows the camp, pitched in the terrain the crew is in:
 | **Adventure book** (`/journal`, spec §2.3) | n/a | A fifth tray object, **Camp**: the crew's camp to look at and tap, online or offline, from the last copy this phone read. |
 | **In a scene, a check or a fight** | Never. The story owns the screen. | Never. |
 
-**Nothing waits on the camp.** The lobby's Begin, the rest scene's Go on and the chapter end's
-"back to the lobby" all work exactly as they do now. Begin closes any camp panel a phone has open.
+**Nothing waits on the camp.** The lobby's Begin, the rest scene's way on (a vote of everyone
+here, so one phone cannot carry the party out while another is still spending points) and the
+chapter end's "back to the lobby" all work exactly as they do now. Begin closes any camp panel a phone has open.
 Leaving the chapter's end cancels an unfinished vote without spending, and the balance waits for
 a future chapter-end shop (§6.2). This keeps the session budget untouched: the camp only fills
 time that already exists.

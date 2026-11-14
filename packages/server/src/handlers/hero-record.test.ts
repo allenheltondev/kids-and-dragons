@@ -141,8 +141,11 @@ async function wrenFinishesGemsAway() {
   await away.must(wren!, { type: "READY", ready: true });
   await away.must(wren!, { type: "CONTINUE_CAMPAIGN" });
   expect((await away.state()).chapterId).toBe("gems-01");
+  // A rest's way on is the party's vote: the tap that closes it is the one that finds what is there.
+  await away.must(wren!, { type: "CHOOSE", choiceId: "in" });
   await away.must(host, { type: "CHOOSE", choiceId: "in" });
   harness.clock.advance(60_000);
+  await away.must(host, { type: "CHOOSE", choiceId: "on" });
   await away.must(wren!, { type: "CHOOSE", choiceId: "on" });
   expect((await away.state()).phase).toBe("chapter_complete");
 

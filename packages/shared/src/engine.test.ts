@@ -1052,7 +1052,7 @@ describe("story turns (spec §6.1)", () => {
     expect(rotated.prompt).toMatchObject({ kind: "roll", characterId: second!.character.id });
   });
 
-  it("leaves a rest scene's way out open to anyone", () => {
+  it("puts a rest scene's way out to the whole party, so nobody is hurried out of camp", () => {
     const context = ctx({ rng: fixedRng(20) });
     const atCamp = walk(
       seatedParty(context),
@@ -1067,7 +1067,13 @@ describe("story turns (spec §6.1)", () => {
       context,
     ).state;
     expect(atCamp.sceneType).toBe("rest");
-    expect(atCamp.prompt).toMatchObject({ kind: "choice", forPlayerIds: [] });
+    expect(atCamp.prompt).toMatchObject({ kind: "choice", vote: true, forPlayerIds: ["p_1", "p_2"] });
+    // One phone's tap is a vote, not the way out: camp waits for the other.
+    const choiceId = (atCamp.prompt as Prompt & { kind: "choice" }).options[0]!.id;
+    const one = applyIntent(atCamp, { playerId: "p_1", intent: { type: "CHOOSE", choiceId } }, context).state;
+    expect(one.sceneId).toBe(atCamp.sceneId);
+    const both = applyIntent(one, { playerId: "p_2", intent: { type: "CHOOSE", choiceId } }, context).state;
+    expect(both.sceneId).not.toBe(atCamp.sceneId);
   });
 });
 
@@ -1447,7 +1453,7 @@ describe("a full walk of a chapter", () => {
 
     const atRidge = walk(
       afterFight.state,
-      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }],
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "sleep" } }],
       context,
     ).state;
     expect(atRidge.sceneId).toBe("scene_ridge");
@@ -1502,7 +1508,7 @@ describe("a full walk of a chapter", () => {
         { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
         { playerId: "p_1", intent: { type: "READY", ready: true } },
         { playerId: "p_2", intent: { type: "READY", ready: true } },
-        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "sleep" } },
         { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "low" } },
       ],
       context,
@@ -1540,7 +1546,7 @@ describe("a full walk of a chapter", () => {
         { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
         { playerId: "p_1", intent: { type: "READY", ready: true } },
         { playerId: "p_2", intent: { type: "READY", ready: true } },
-        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "sleep" } },
         { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "low" } },
       ],
       context,
@@ -2926,7 +2932,7 @@ function playToEnding(context: EngineContext): EngineResult {
       // handed out an automatic victory.
       { playerId: "p_1", intent: { type: "READY", ready: true } },
       { playerId: "p_2", intent: { type: "READY", ready: true } },
-      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "sleep" } },
       { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } },
       { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "high" } },
     ],
@@ -3677,7 +3683,7 @@ describe("a player who steps away (#258)", () => {
       ],
       context,
     ).state;
-    const atRidge = walk(atRest, [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }], context).state;
+    const atRidge = walk(atRest, [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "sleep" } }], context).state;
     const voted = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context).state;
     const prompt = voted.prompt as Extract<RunState["prompt"], { kind: "choice" }>;
     expect(voteWaitsOnlyOnAway(voted.party, prompt)).toBe(false);

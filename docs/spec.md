@@ -206,7 +206,7 @@ World  →  Campaign  →  Chapter  →  Scene
 | **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. Checks **take turns** too: whoever has rolled the fewest checks this run rolls next, and the better stat breaks a tie. An author can pin a check to the party's best in that stat (`roller: "best"`) when the story needs it, or make it a **party check** (`roller: "all"`): everyone rolls their own d20 + stat, and if half or more make it, the party does. |
 | **Encounter** | Tactical grid combat. See §7. |
 | **Choice point** | Party votes; ties broken by whoever's turn marker is active. Prevents one player steamrolling. |
-| **Rest** | Heal, spend a level-up, trade items, look at each other's characters. The natural end-of-session beat. |
+| **Rest** | Heal, spend a level-up, trade items, look at each other's characters. The natural end-of-session beat. Its way on is put to the party as a vote, so nobody is carried out of camp by one phone before they have spent their points. |
 
 ### 6.1.1 Picking the adventure
 
@@ -376,7 +376,8 @@ Dinner, a bath, a phone call: a kid leaving partway through is a normal part of 
 | The ready-up before a fight | Not waited on. If everyone else had already said ready, a ready phone taps **Start without them**. |
 | Their combat turn | Anyone at the table may tap **Pass their turn**: a pass, not their move or their action. Not skipped automatically, because a phone asleep on the sofa reads as away too, and the table can see who is really gone. |
 | A full bag's "keep it or leave it" | Anyone may **leave it**. Nobody empties a friend's bag for them. |
-| A rest, a trade on offer | Never waited on in the first place: a rest's way on is anyone's, and an offer just waits. |
+| A rest | Its way on is a vote (§6.1), so the same as a vote: their vote does not hold it up. |
+| A trade on offer | Never waited on in the first place: an offer just waits. |
 | Beginning the chapter, the chapter's end | Not waited on. The lobby's Begin needs everyone *here* ready, and the chapter's end goes back to the lobby once everyone here is done. |
 
 Their hero **follows the party**: it stays in the party, in the fight's turn order and on the board, with everything it had. The shared screen says "Rosie stepped away" in words and fades her figure, standing up, so nobody mistakes it for knocked down (§7.3). When the fight is waiting on her turn, it says that any phone can pass it.
