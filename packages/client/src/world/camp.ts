@@ -831,6 +831,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         if (destroyed || entry.path !== path || (entry.id.startsWith("tent_") && entry.kitRevision !== revision)) return;
         if (entry.sprite) entry.sprite.visible = false;
         entry.missing = true;
+        clearDecorations(entry);
         drawStandIn(entry, lastOwners.get(entry.id));
       });
   }
@@ -844,14 +845,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
    * editor hangs them (BookKit.tsx `hangSpot`). Redrawn when the slots or the
    * tent's fit change; `force` after the tent's painting (and so its fit) reloads.
    */
+  function clearDecorations(piece: PieceView): void {
+    piece.decorations?.destroy({ children: true });
+    piece.decorations = null;
+    delete piece.decorationsKey;
+  }
+
   function drawDecorations(piece: PieceView, owner: CampFigure | undefined, tent: { id: string; path: string; hangPoints?: { x: number; y: number }[] }, force = false): void {
-    if (destroyed || piece.missing) return;
+    if (destroyed) return;
+    // A tent whose painting did not load shows the stand-in, which draws its own dots: none float over it.
+    if (piece.missing) {
+      clearDecorations(piece);
+      return;
+    }
     const slots = owner?.slots ?? [];
     const key = `${tent.id}:${slots.join(",")}:${String(piece.fit.canvas)}:${String(piece.fit.offsetY)}`;
     if (!force && piece.decorationsKey === key) return;
+    clearDecorations(piece);
     piece.decorationsKey = key;
-    piece.decorations?.destroy({ children: true });
-    piece.decorations = null;
     const paint = campPaint(tent.path);
     if (!paint || !tent.hangPoints) return;
     const layer = new Container();
@@ -873,6 +884,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
           sprite.height = sprite.width;
           sprite.x = (point.x / 1024 - ANCHOR_X) * piece.fit.canvas;
           sprite.y = piece.fit.offsetY + (point.y / 1024 - ANCHOR_Y) * piece.fit.canvas;
+          // Hazed with the tent it hangs on (`fitSprite`), so one at the back of camp is not pasted on.
+          shadeAt(sprite, piece.container.y);
           layer.addChild(sprite);
         })
         .catch(() => undefined);
@@ -1769,6 +1782,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         }
         piece.kitKey = key;
         const revision = ++piece.kitRevision;
+        // The old tent's decorations go with it; the new one's are hung once its painting is in.
+        clearDecorations(piece);
         piece.heightPx = campHeightPx(tent.heightCm ?? pieceHeightCm(definition), measure);
         piece.partSprite?.destroy();
         piece.partSprite = null;

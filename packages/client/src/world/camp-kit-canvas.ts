@@ -2,26 +2,52 @@ import { campClothMatrix } from "./camp-kit-art";
 
 /** The SVG cloth tint, rasterized once for the WebGL camp's texture. */
 const cache = new WeakMap<object, Map<string, HTMLCanvasElement>>();
+/** One hidden SVG holding a color-matrix filter per accent, which the canvas draws through (`tinted`). */
+let filters: SVGSVGElement | null = null;
+const filterIds = new Map<string, string>();
+function clothFilter(accent: string): string {
+  const known = filterIds.get(accent);
+  if (known) return known;
+  const ns = "http://www.w3.org/2000/svg";
+  if (!filters || !filters.isConnected) {
+    filters = document.createElementNS(ns, "svg");
+    filters.setAttribute("width", "0");
+    filters.setAttribute("height", "0");
+    filters.setAttribute("aria-hidden", "true");
+    filters.style.position = "absolute";
+    document.body.appendChild(filters);
+    filterIds.clear();
+  }
+  const id = `kad-cloth-${String(filterIds.size)}`;
+  const filter = document.createElementNS(ns, "filter");
+  filter.setAttribute("id", id);
+  filter.setAttribute("color-interpolation-filters", "sRGB");
+  filter.setAttribute("x", "0");
+  filter.setAttribute("y", "0");
+  filter.setAttribute("width", "100%");
+  filter.setAttribute("height", "100%");
+  const matrix = document.createElementNS(ns, "feColorMatrix");
+  matrix.setAttribute("type", "matrix");
+  matrix.setAttribute("values", campClothMatrix(accent));
+  filter.appendChild(matrix);
+  filters.appendChild(filter);
+  filterIds.set(accent, id);
+  return id;
+}
+
 /**
  * The whole painting in her color: its luminance times the accent (the same
- * arithmetic as `campClothMatrix`). Where the canvas takes a filter this is a
- * grayscale, a multiply and the painting's own shape put back, all drawn
- * rather than read back a pixel at a time: a TV's slow processor spent seconds
- * on the pixel loop for every tent, flap and bedroll a color change touched.
+ * `campClothMatrix` the book's tiles tint with, as an SVG filter). Where the
+ * canvas takes a filter the browser draws it, soft edges and all, instead of
+ * reading back a pixel at a time: a TV's slow processor spent seconds on that
+ * pixel loop for every tent, flap and bedroll a color change touched.
  */
 function tinted(source: CanvasImageSource, accent: string): HTMLCanvasElement | null {
   const tint = document.createElement("canvas");
   tint.width = tint.height = 1024;
-  const hex = /^#[0-9a-f]{6}$/i.test(accent) ? accent : "#7FD4C1";
   const fast = tint.getContext("2d");
-  if (fast && "filter" in fast) {
-    fast.filter = "grayscale(1)";
-    fast.drawImage(source, 0, 0, 1024, 1024);
-    fast.filter = "none";
-    fast.globalCompositeOperation = "multiply";
-    fast.fillStyle = hex;
-    fast.fillRect(0, 0, 1024, 1024);
-    fast.globalCompositeOperation = "destination-in";
+  if (fast && "filter" in fast && typeof document.body !== "undefined") {
+    fast.filter = `url(#${clothFilter(accent)})`;
     fast.drawImage(source, 0, 0, 1024, 1024);
     return tint;
   }
