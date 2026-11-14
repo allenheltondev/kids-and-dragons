@@ -2224,3 +2224,13 @@ html:not([data-contrast="high"]) .hp-bar .sheet__hp-track {
   }
 }
 .player__camp { display: flex; flex-direction: column; gap: 0.6rem; margin-block: 0.5rem; flex: none; }
+
+/* A point still to spend while the rest asks "Everyone ready?": gold, so it is seen before Ready. */
+.prompt__nudge {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ffd36e;
+  border-radius: 0.6rem;
+  background: rgba(255, 211, 110, 0.12);
+  color: #ffe3a1;
+  opacity: 1;
+}

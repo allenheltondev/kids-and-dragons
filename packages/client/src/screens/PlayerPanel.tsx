@@ -1296,6 +1296,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   : "What do you do?"}
               </span>
             </h3>
+            {/* Ready with a point still to spend (spec §8.1): a rest is where it is spent, and the way
+                on waits for everybody, so say so before she says she is ready. A nudge, never a block. */}
+            {atRest && myPrompt.vote && pointsWaiting && spendable.length > 0 && myVote === null ? (
+              <p className="prompt__sub prompt__nudge" data-testid="points-nudge">
+                <Icon name="star" />
+                <span>{banked === 1 ? "Spend your point first! It's waiting just above." : `Spend your ${String(banked)} points first! They're waiting just above.`}</span>
+              </p>
+            ) : null}
 
             <PagedOptions className="prompt__options">
               {myPrompt.options.map((option) => {
@@ -1409,12 +1417,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
-        {/* Travel Mode at a rest (docs/camp.md §3; #627): no TV shows the camp, so the
-            phone's way to it is here too, under the choices and never in their way,
-            as it is beside Ready in the lobby and under the chapter's rewards. */}
-        {atRest && state.mode === "travel" && myPrompt?.kind === "choice" ? (
+        {/* At a rest (docs/camp.md §3; #627): the way to the camp, and into her tent, under
+            the choices and never in their way, as they are beside Ready in the lobby and under
+            the chapter's rewards. In Travel Mode no TV shows the camp at all; at a TV the
+            choice fills the phone, and the camp was out of reach behind it (playtest, 2026-11-14). */}
+        {atRest && myPrompt?.kind === "choice" ? (
           <div className="player__camp player__camp--rest">
             <CampButton state={state} block />
+            <TentButton state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} block />
           </div>
         ) : null}
 
