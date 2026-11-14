@@ -188,3 +188,23 @@ it("hands aiming controls to the next phone after a success instead of ending th
   expect(tv.textContent).toContain("Aster's turn");
   expect(within(phone).getByRole("button", { name: "Throw" })).toBeTruthy();
 });
+
+it("offers an explicit finish control when the last unfinished hero leaves", async () => {
+  const { phone, tv, helper } = game({ kind: "timing", cue: "Jump", actionLabel: "Jump", target: 0.5, width: 0.3, periodMs: 4000 }, [], true);
+  const commit = async () => {
+    const store = useGameStore.getState(), p = store.state!.prompt as InteractionPrompt;
+    await store.send({ type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "commit", round: p.challenge!.round, position: .5 });
+  };
+  await act(async () => {
+    for (let stage = 0; stage < 5; stage++) {
+      if (stage % 2) helper({ action: "commit", round: stage, position: .5 });
+      else await commit();
+    }
+    const state = useGameStore.getState().state!;
+    useGameStore.setState({ state: { ...state, party: state.party.map(m => m.playerId === "p1" ? { ...m, connected: false } : m) } });
+  });
+  expect(within(phone).queryByRole("button", { name: "Jump" })).toBeNull();
+  expect(tv.textContent).toContain("Tap Finish together on a phone");
+  await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Finish together" })); });
+  expect(useGameStore.getState().state!.prompt).toMatchObject({ phase: "result", outcome: "success", challenge: { progress: 5 } });
+});

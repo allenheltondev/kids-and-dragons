@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import type { ClientIntent, RunState } from "../packages/shared/src/index";
+import { interactionActor, type ClientIntent, type RunState } from "../packages/shared/src/index";
 import { roomState } from "./room-state";
 import { API } from "./api";
 
@@ -22,12 +22,17 @@ async function action(page: Page, code: string, intent: ClientIntent) {
   throw Error("Interaction test lost the sequence race repeatedly");
 }
 
-async function aimUntilResult(page: Page, code: string, label: string) {
-  for (let attempt = 0; attempt < 8; attempt++) {
+async function aimUntilResult(phones: Page[], code: string, label: string) {
+  const ids = await Promise.all(phones.map(page => page.evaluate(room => JSON.parse(localStorage.getItem(`kad.session.${room}`)!).playerId as string, code)));
+  const page = phones[0]!;
+  for (let attempt = 0; attempt < 24; attempt++) {
     const state = await roomState<RunState>(page, code), before = state.prompt;
     if (before?.kind !== "interaction") throw Error("Expected aiming controls");
     if (before.phase === "result") return;
-    await page.getByRole("region", { name: "Interaction controls" }).getByRole("button", { name: label, exact: true }).click();
+    const actor = interactionActor(before, state.party.filter(m => m.connected).map(m => m.playerId));
+    const actingPhone = phones[ids.indexOf(actor!)]!;
+    await actingPhone.bringToFront();
+    await actingPhone.getByRole("region", { name: "Interaction controls" }).getByRole("button", { name: label, exact: true }).click();
     // A tap starts an async request. Wait for its committed round before
     // deciding to tap again; a successful attempt removes the aiming button.
     await expect.poll(async () => {
@@ -78,7 +83,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     const world = tv.getByRole("region", { name: "Story interaction" });
     await expect(world).toContainText("seed reaches the gold");
     await controls(one).getByRole("button", { name: "We’re ready" }).click();
-    await aimUntilResult(one, code, "Toss the seed!");
+    await aimUntilResult([one, two], code, "Toss the seed!");
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await two.reload();
     // A reloaded phone opens on its turn, not on the bag with a "Your turn" button to find (#588).
@@ -104,6 +109,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     expect(shortPhoneAction!.y).toBeGreaterThanOrEqual(0);
     expect(shortPhoneAction!.y + shortPhoneAction!.height).toBeLessThanOrEqual(640);
     for (const power of [0.4, 0.7, 0.5]) for (const phone of [one, two]) {
+      await phone.bringToFront();
       const slider = controls(phone).getByRole("slider", { name: /Pull strength/ });
       await slider.scrollIntoViewIfNeeded();
       const box = (await slider.boundingBox())!;
@@ -129,6 +135,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
       const state = await roomState<RunState>(one, code);
       if (state.prompt?.kind !== "interaction") throw Error("Expected authored interaction");
       const lead = state.prompt.actorId === firstPlayerId ? one : two;
+      await lead.bringToFront();
       await relaxed(lead);
       await controls(lead).getByRole("button", { name: "We’re ready" }).click();
       if (sceneId === "interaction_cups") await controls(lead).getByRole("button", { name: "Look under: Right cup", exact: true }).click();
@@ -136,10 +143,11 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
         for (const name of ["Star", "Leaf", "Star", "Bell"]) await controls(lead).getByRole("button", { name, exact: true }).click();
         await controls(lead).getByRole("button", { name: "Send our greeting", exact: true }).click();
       }
-      if (sceneId === "interaction_sneak") await aimUntilResult(lead, code, "Tiptoe!");
+      if (sceneId === "interaction_sneak") await aimUntilResult([one, two], code, "Tiptoe!");
       if (sceneId === "interaction_balance") {
         for (const target of [0.5, 0.75, 0.25]) {
           for (const phone of [one, two]) {
+            await phone.bringToFront();
             const state = await roomState<RunState>(phone, code);
             const playerId = await phone.evaluate(room => JSON.parse(localStorage.getItem(`kad.session.${room}`)!).playerId as string, code);
             if (state.prompt?.kind !== "interaction") throw Error("Expected balance");
@@ -148,6 +156,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
           }
           const before = (await roomState<RunState>(lead, code)).prompt;
           if (before?.kind !== "interaction") throw Error("Expected a balance step");
+          await lead.bringToFront();
           await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
           for (const phone of [one, two]) await expect.poll(() => phone.evaluate(async () => {
             const path = "/src/store/index.ts";
@@ -157,6 +166,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
         }
       }
       if (sceneId === "interaction_spark") for (const [seat, phone] of [one, two].entries()) {
+        await phone.bringToFront();
         // Relaxed play removes the late deadline, but direction and strength still shape the throw.
         await expect(controls(phone).locator(".relay-skill")).toHaveAttribute("data-ready", "true");
         await controls(phone).getByRole("button", { name: "Catch the starlight", exact: true }).click();

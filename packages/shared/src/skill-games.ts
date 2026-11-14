@@ -4,6 +4,7 @@ import { aimWidth, edgeScale, interactionActor, skillCompletions, playbackOver, 
 export interface SkillChallenge {
   participants?: string[];
   completed?: Record<string, number>;
+  nextParticipant?: number;
   round: number;
   progress: number;
   strain: number;
@@ -112,6 +113,8 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
     if (precisionSuccess(aim, action.position, prompt.relaxed, edgeScale(prompt))) {
       game.completed = { ...skillCompletions(prompt) };
       game.completed[playerId] = (game.completed[playerId] ?? 0) + 1;
+      const roster = game.participants ?? prompt.playerIds;
+      game.nextParticipant = (roster.indexOf(playerId) + 1) % Math.max(1, roster.length);
       return advance(spec.kind === "timing" ? "Through safely!" : "Right on target!");
     }
     const miss = Math.abs(action.position - aim.target) - aimWidth(aim, prompt) / 2;

@@ -20,7 +20,8 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
   const ids = connected.map(m => m.playerId);
   const mine = playerId === interactionActor(prompt, ids);
   const active = prompt.phase === "active";
-  const editable = active && mine && !!send;
+  const finishReady = active && (spec.kind === "precision" || spec.kind === "timing") && game.progress >= skillSteps(prompt, ids);
+  const editable = active && !finishReady && mine && !!send;
   const still = reducedMotion();
   const [power, setPower] = useState(0.15);
   const [liftPreview, setLiftPreview] = useState<number | null>(null);
@@ -187,7 +188,9 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
     </>;
   } else return null;
   return <div className={`skill-game skill-game--${spec.kind}`} data-round={game.round}>
-    {body}
+    {finishReady ? <><p className="skill-reading">Everyone here has finished their stages!</p>
+      {playerId && send ? action("Finish together", () => void commit({ position: skillAim(prompt).target }))
+        : <p className="skill-caption">Tap Finish together on a phone.</p>}</> : body}
     {game.feedback && <p className="skill-feedback" role="status" key={game.round}>{game.feedback}</p>}
     {game.strain > 0 && <div className="skill-strain"><span>{spec.kind === "cooperate" ? "Support straining" : spec.kind === "memory" ? "Tune fading" : "Footing slipping"}</span><meter min="0" max="1" value={game.strain} aria-label="Accumulated strain" /></div>}
     {error && <p role="alert">That move did not arrive. Try once more.</p>}

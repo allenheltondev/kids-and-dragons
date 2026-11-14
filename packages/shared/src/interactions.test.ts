@@ -633,17 +633,18 @@ describe("skill-game rules used by the current phones", () => {
     state = commit(state, ctx, { position: precision.target });
     state.party[1]!.connected = true;
     expect(skillSteps(prompt(state), ["p0", "p1"])).toBe(6);
+    state = commit(state, ctx, { position: precision.target }, "p1");
     state = commit(state, ctx, { position: precision.target }); // p0 now has all three
-    for (let stage = 0; stage < 3; stage++) state = commit(state, ctx, { position: precision.target }, "p1");
+    for (let stage = 0; stage < 2; stage++) state = commit(state, ctx, { position: precision.target }, "p1");
     expect(prompt(state).outcome).toBe("success");
     expect(prompt(state).challenge!.completed).toEqual({ p0: 3, p1: 3 });
   });
-  it("finishes without another scored stage when the only unfinished hero leaves", () => {
+  it("finishes on confirmation without another scored stage when the only unfinished hero leaves", () => {
     let { state, ctx } = start(precision, 2);
     for (let stage = 0; stage < 5; stage++) state = commit(state, ctx, { position: precision.target }, `p${stage % 2}`);
     state.party[1]!.connected = false;
     expect(skillSteps(prompt(state), ["p0"])).toBe(5);
-    state = commit(state, ctx, { position: 0 });
+    state = commit(state, ctx, { position: precision.target });
     expect(prompt(state).outcome).toBe("success");
     expect(prompt(state).challenge).toMatchObject({ progress: 5, completed: { p0: 3, p1: 2 } });
   });
@@ -656,6 +657,15 @@ describe("skill-game rules used by the current phones", () => {
     state = commit(state, ctx, { position: precision.target });
     expect(prompt(state).outcome).toBe("success");
     expect(prompt(state).challenge!.progress).toBe(3);
+  });
+  it("keeps round-robin order across a disconnected seat", () => {
+    let { state, ctx } = start(precision, 4);
+    state = commit(state, ctx, { position: precision.target }, "p0");
+    state.party[1]!.connected = false;
+    for (const id of ["p2", "p3", "p0"]) {
+      state = commit(state, ctx, { position: precision.target }, id);
+    }
+    expect(prompt(state).challenge!.completed).toEqual({ p0: 2, p2: 1, p3: 1 });
   });
   it("runs partial sequence arrangements through a visible test without committing the branch", () => {
     let { state, ctx } = start(sequence);
