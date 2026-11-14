@@ -306,3 +306,95 @@ describe("the air and a tent's shadow, whatever happens (#658 review)", () => {
     camp.destroy();
   });
 });
+
+describe("a tent's hung decorations (#781)", () => {
+  const hero = (over: Partial<Parameters<ReturnType<typeof createCamp>["setFigures"]>[0][number]> = {}) =>
+    ({ id: "c_1", url: null, heightCm: 160, stance: "standing", seat: 0, accent: "#E0C470", name: "Hero 1", tent: "quilted", slots: ["deco_bunting", "deco_lantern"], ...over }) as Parameters<ReturnType<typeof createCamp>["setFigures"]>[0][number];
+  const hung = (root: Container): Container[] => {
+    const tent = root.getChildByLabel("piece:tent_0", true) as Container;
+    const layer = tent.getChildByLabel("camp-tent-decorations");
+    return layer ? (layer.children as Container[]) : [];
+  };
+  const start = (loadTexture: (url: string) => Promise<Texture>) => {
+    const camp = createCamp(fakeApp() as unknown as Application, campLayoutFor(2)!, { still: true, loadTexture });
+    camp.resize(1600, 900);
+    return camp;
+  };
+  const painted = (): Promise<Texture> => Promise.resolve(Texture.WHITE);
+
+  it("hangs each slot's piece on its own spot of the painted tent", async () => {
+    const camp = start(painted);
+    camp.setFigures([hero()]);
+    await settle();
+    const sprites = hung(camp.view);
+    expect(sprites).toHaveLength(2);
+    // quilted's spots: the first is left of the second (manifest hangPoints).
+    expect(sprites[0]!.x).toBeLessThan(sprites[1]!.x);
+    camp.destroy();
+  });
+
+  it("follows the slots as they change, and hangs nothing for an empty one", async () => {
+    const camp = start(painted);
+    camp.setFigures([hero({ slots: ["deco_bunting", null] })]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(1);
+    camp.setFigures([hero()]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(2);
+    camp.setFigures([hero({ slots: [null, null] })]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(0);
+    camp.destroy();
+  });
+
+  it("waits for a slow decoration, and a pick changed meanwhile is not hung late", async () => {
+    const waiting: ((t: Texture) => void)[] = [];
+    const camp = start((url) => (url.includes("camp/decorations/") ? new Promise<Texture>((resolve) => waiting.push(resolve)) : painted()));
+    camp.setFigures([hero({ slots: ["deco_bunting", null] })]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(0);
+    // Changed before the first painting came in: the old request's layer is gone.
+    camp.setFigures([hero({ slots: ["deco_lantern", null] })]);
+    await settle();
+    for (const resolve of waiting) resolve(Texture.WHITE);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(1);
+    camp.destroy();
+  });
+
+  it("survives a decoration whose painting will not load", async () => {
+    const camp = start((url) => (url.includes("decorations/bunting") ? Promise.reject(new Error("gone")) : painted()));
+    camp.setFigures([hero()]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(1);
+    camp.destroy();
+  });
+
+  it("takes the old tent's decorations off when the new tent's painting fails, and keeps none while it is missing", async () => {
+    const camp = start((url) => (url.includes("rolled") ? Promise.reject(new Error("gone")) : painted()));
+    camp.setFigures([hero()]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(2);
+    camp.setFigures([hero({ tent: "rolled" })]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(0);
+    // And a later slot change over the stand-in hangs nothing either.
+    camp.setFigures([hero({ tent: "rolled", slots: ["deco_bunting", null] })]);
+    await settle();
+    expect(hung(camp.view)).toHaveLength(0);
+    camp.destroy();
+  });
+
+  it("hangs them hazed with the tent, not at full brightness", async () => {
+    const camp = start(painted);
+    camp.setFigures([hero()]);
+    await settle();
+    const tent = camp.view.getChildByLabel("piece:tent_0", true) as Container;
+    const body = tent.children.find((c) => (c as Sprite).texture !== undefined && c.label !== "camp-tent-decorations" && "tint" in c) as Sprite | undefined;
+    const sprites = hung(camp.view) as Sprite[];
+    expect(body).toBeDefined();
+    expect(sprites[0]!.tint).toBe(body!.tint);
+    expect(sprites[0]!.alpha).toBe(body!.alpha);
+    camp.destroy();
+  });
+});
