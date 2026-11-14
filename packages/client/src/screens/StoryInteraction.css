@@ -907,3 +907,17 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
 .game--result .game-scenery__light { background: radial-gradient(ellipse at 50% 75%, #f5c86c60, transparent 75%); }
 .game--sequence .game-slot__edit { touch-action: none; user-select: none; -webkit-user-select: none; }
 .game-slot__edit[data-dragging="true"] { outline: 0.18em solid var(--kad-gold, #f5c86c); border-radius: 0.75em; filter: drop-shadow(0 0 0.5em #f5c86c80); }
+
+/* The shared world already owns the location painting. */
+.game--tv .game__board { background: transparent; box-shadow: none; border-radius: 0; }
+.game--tv .relay-world__stage { border: 0; box-shadow: none; border-radius: 0; }
+
+.game--phone .game__board { background: transparent; box-shadow: none; }
+.game .relay-landscape { display: none; }
+.game .relay-skill__stage, .game .relay-hands__stage { background: transparent; }
+
+/* One full-pane painting replaces the story stage for the duration of a game. */
+.world-game-scenery { position: absolute; inset: 0; isolation: isolate; pointer-events: none; }
+.world-game-scenery .game-scenery img { opacity: 1; }
+.world-game-scenery .game-scenery::after { background: linear-gradient(#100d2222, #100d2255); }
+.kad-surface--world:has(> .world-game-scenery) > :is(.kad-stage, .kad-static-stage, .kad-cast-browser) { visibility: hidden; }

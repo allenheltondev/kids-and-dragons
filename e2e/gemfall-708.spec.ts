@@ -9,6 +9,7 @@ test.use({ actionTimeout: 15_000 });
 
 const controls = (page: Page) => page.getByRole("region", { name: "Interaction controls" });
 async function task(page: Page) {
+  await page.bringToFront();
   await page.getByRole("button", { name: "You", exact: true }).click();
   const welcome = page.getByRole("button", { name: "Got it", exact: true });
   if (await welcome.isVisible()) await welcome.click();
@@ -52,7 +53,7 @@ test("7L: friends recover a slipping table and compensate their wagon pulls on p
   const state = () => roomState<RunState>(one.page, table.code);
   const progress = async () => { const p = (await state()).prompt; return p?.kind === "interaction" ? p.challenge?.progress : undefined; };
   const ready = async () => {
-    await Promise.all([one.page, two.page].map(task));
+    for (const page of [one.page, two.page]) await task(page);
     await expect.poll(async () => await controls(one.page).getByRole("button", { name: /ready/ }).count() + await controls(two.page).getByRole("button", { name: /ready/ }).count()).toBe(1);
     const lead = await controls(one.page).getByRole("button", { name: /ready/ }).count() ? one.page : two.page;
     await controls(lead).getByRole("button", { name: /ready/ }).click();

@@ -128,3 +128,5 @@
 @media (max-width: 600px) { .game--phone.game--relay .game__cue { font-size: 1.15em; } .game--phone.game--relay .game__board { padding: 0.55em; } }
 @media (prefers-reduced-motion: reduce) { .relay-landscape *, .relay-skill * { animation: none !important; transition: none !important; } }
 [data-motion="reduced"] .relay-landscape *, [data-motion="reduced"] .relay-skill * { animation: none !important; transition: none !important; }
+
+.game--tv .relay-world__hero { block-size: min(10em, 65cqh); max-inline-size: 12em; }

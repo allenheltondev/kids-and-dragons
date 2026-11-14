@@ -7,7 +7,6 @@ import { Icon } from "./icons";
 import { RelayObject, RelayScore } from "./RelayGame";
 import { buzz } from "./game-feel";
 import { propUrl } from "./InteractionArt";
-import { RelayLandscape } from "./RelayArt";
 
 const clamp = (n: number, min = 0, max = 1) => Math.max(min, Math.min(max, n));
 /** A throw's direction and distance determine the receiving phone's actual flight. */
@@ -93,7 +92,6 @@ export function RelayFlightCatcher({ prompt, playerId, object, nextName, nextMem
         // Tapping cannot silently make a perfect throw. Use the explicit aim controls with a keyboard.
         if (!caught) void catchIt();
       }}>
-      <RelayLandscape />
       <span className="relay-skill__target" data-throw={caught} style={{ left: `${caught ? 50 + target.aim * 50 : flight.landing * 100}%`, top: `${caught ? 68 - target.power * 70 : 68}%` }} aria-hidden="true">
         <span className="relay-skill__target-ring" />
         {caught && (nextMember
