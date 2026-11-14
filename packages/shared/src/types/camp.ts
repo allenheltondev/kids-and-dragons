@@ -324,6 +324,8 @@ export interface CampMoment {
   changes: Record<string, CampChange[]>;
   /** The crew's friends this moment: who is out, and the collection (§4.4, §12.5; #624). Absent with no friends. */
   friends?: CampFriendsView;
+  /** Heroes (character ids) gone into their tents this moment (`CAMP_TENT`). Absent while nobody is in. */
+  inTent?: string[];
 }
 
 /** A friend as the screens draw and name it (#624): from the catalog (`CatalogFriend`). */

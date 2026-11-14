@@ -13,7 +13,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { CampMoment, CampView, ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
-import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
+import { CampButton, CampPanel, KitWelcome, TentButton, resetCampTab } from "./CampPanel";
 import { closeCampPanel, openCampPanel } from "./camp-panel";
 import { announceKitNews, announceLookNews, clearKitNews, seeCampNews } from "../store/kit-news";
 import { kitAccent } from "@kad/shared";
@@ -53,6 +53,7 @@ const dispatch = (intent: ClientIntent): void => {
 beforeEach(() => {
   sent = [];
   globalThis.localStorage?.clear();
+  resetCampTab();
 });
 afterEach(() => {
   cleanup();
@@ -108,6 +109,11 @@ describe("the first-session choice (§5.3)", () => {
   });
 });
 
+/** One of the panel's pages: My camp, My look, Friends, Camp spots. */
+function page(name: RegExp): void {
+  fireEvent.click(screen.getByRole("tab", { name }));
+}
+
 function openPanel(state: RunState): ReturnType<typeof render> {
   const view = render(
     <>
@@ -125,11 +131,13 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
     const dialog = screen.getByRole("dialog", { name: /camp$/ });
     // Every button the kid can reach has a name.
     for (const button of within(dialog).getAllByRole("button")) expect(button.textContent?.trim() || button.getAttribute("aria-label")).toBeTruthy();
-    // Her kit: tent, bedroll and pack, color, and her decoration spots.
-    for (const name of ["Tent", "Bedroll and pack", "Color", "Decorations on your tent"]) expect(within(dialog).getByRole("group", { name })).toBeTruthy();
-    expect(within(dialog).getByRole("combobox", { name: "Spot 1" })).toBeTruthy();
-    expect(within(dialog).getByRole("combobox", { name: "Spot 2" })).toBeTruthy();
-    // Each shared spot, by name, with what it shows.
+    // One page at a time, named: her kit first.
+    expect(within(dialog).getByRole("tab", { name: /My camp/ }).getAttribute("aria-selected")).toBe("true");
+    // Her kit: tent, bedroll and pack, color, and her decoration spots, a named button for each choice.
+    for (const name of ["Tent", "Bedroll and pack", "Color", "Decorations on your tent", "Spot 1", "Spot 2"]) expect(within(dialog).getByRole("group", { name })).toBeTruthy();
+    expect(within(within(dialog).getByRole("group", { name: "Spot 1" })).getByRole("button", { name: /Nothing/ })).toBeTruthy();
+    // Each shared spot, by name, with what it shows, on its own page.
+    page(/Camp spots/);
     expect(within(dialog).getByRole("group", { name: "Cookfire: Cookfire" })).toBeTruthy();
     expect(within(dialog).getByRole("group", { name: "Awning: nothing yet" })).toBeTruthy();
     expect(within(dialog).getByRole("group", { name: "Banner pole: Crew banner" })).toBeTruthy();
@@ -144,7 +152,7 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
     const tent = screen.getByRole("group", { name: "Tent" });
     fireEvent.click(within(tent).getByRole("button", { name: /Patched tent/ }));
     fireEvent.click(within(screen.getByRole("group", { name: "Color" })).getByRole("button", { name: "Blue" }));
-    fireEvent.change(screen.getByRole("combobox", { name: "Spot 1" }), { target: { value: "deco_pinwheel" } });
+    fireEvent.click(within(screen.getByRole("group", { name: "Spot 1" })).getByRole("button", { name: /Pinwheel/ }));
     expect(sent).toEqual([
       { type: "KIT_EDIT", characterId: "c_1", revision: 4, tent: "patched" },
       { type: "KIT_EDIT", characterId: "c_1", revision: 4, color: "meadow" },
@@ -158,6 +166,7 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
 
   it("says the shared limit before the first change, then picks for a spot", () => {
     openPanel(table());
+    page(/Camp spots/);
     expect(screen.getByTestId("camp-limit-rule").textContent).toMatch(/one camp spot at each stop/);
     expect(screen.queryByTestId("camp-limit-used")).toBeNull();
     const awning = screen.getByRole("group", { name: "Awning: nothing yet" });
@@ -171,12 +180,14 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
       campMoment: moment({ changes: { p_1: [{ hotspot: "awning", before: null, after: "shop_striped_awning", counted: true }] } }),
     });
     openPanel(used);
+    page(/Camp spots/);
     expect(screen.getByTestId("camp-limit-used").textContent).toMatch(/camp change for now/);
     const lanterns = screen.getByRole("group", { name: "Lanterns: nothing yet" });
     expect((within(lanterns).getByRole("button", { name: "Lantern string" }) as HTMLButtonElement).disabled).toBe(true);
-    // Her own kit is still hers to change.
-    expect((within(screen.getByRole("group", { name: "Tent" })).getAllByRole("button")[0] as HTMLButtonElement).disabled).toBe(false);
     fireEvent.click(screen.getByRole("button", { name: "Undo my change to the awning" }));
+    // Her own kit is still hers to change.
+    page(/My camp/);
+    expect((within(screen.getByRole("group", { name: "Tent" })).getAllByRole("button")[0] as HTMLButtonElement).disabled).toBe(false);
     expect(sent).toEqual([{ type: "CAMP_UNDO", moment: "lobby|r:-:0" }]);
   });
 
@@ -192,6 +203,7 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
         }),
       }),
     );
+    page(/Camp spots/);
     expect(screen.queryByTestId("camp-undo")).toBeNull();
   });
 
@@ -203,6 +215,7 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
       campShop: { visit: "v", balance: 0, options: [], votes: {}, result: { kind: "bought", pieceId: "shop_weathervane_pole", label: "Weathervane pole" } },
     });
     openPanel(end);
+    page(/Camp spots/);
     const pole = screen.getByRole("group", { name: "Banner pole: Crew banner" });
     expect(pole.className).toContain("is-lit");
     const weathervane = within(pole).getByRole("button", { name: /Weathervane pole/ }) as HTMLButtonElement;
@@ -212,9 +225,10 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
 
   it("has no shared spots indoors, where her own kit still changes", () => {
     openPanel(table({ phase: "scene", sceneType: "rest", campMoment: moment({ id: "rest:s|x", kind: "rest", outdoor: false }) }));
+    expect(screen.getByRole("group", { name: "Tent" })).toBeTruthy();
+    page(/Camp spots/);
     expect(screen.getByTestId("camp-indoors")).toBeTruthy();
     expect(screen.queryByTestId("camp-limit-rule")).toBeNull();
-    expect(screen.getByRole("group", { name: "Tent" })).toBeTruthy();
     // Packed down (§3.2, #625): no campsite painting, tent or campfire, only each hero's bedroll and pack.
     expect(document.querySelector(".kad-static-camp")).toBeNull();
     expect(document.querySelector(".kad-static-camp__backdrop")).toBeNull();
@@ -282,6 +296,7 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
     const taps: string[] = [];
     useGameStore.setState({ tapFriend: async (id: string) => (taps.push(id), true) });
     openPanel(friendly());
+    page(/Friends/);
     const section = screen.getByTestId("camp-friends");
     // A named button for each friend out, and none for the one taking its turn later.
     expect(within(section).getAllByRole("button").map((b) => b.textContent)).toEqual(["Call Lamb over", "Call Bun over", "Call Mosshorn over", "Call Duckling over"]);
@@ -297,6 +312,7 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
     useGameStore.setState({ tapFriend: async (id: string) => (taps.push(id), true) });
     const indoor = friendly();
     openPanel({ ...indoor, phase: "scene", sceneType: "rest", sceneId: "rest_bell_house", campMoment: { ...indoor.campMoment!, id: "rest:rest_bell_house|x", kind: "rest", outdoor: false } } as RunState);
+    page(/Friends/);
     const section = screen.getByTestId("camp-friends");
     expect(within(section).getAllByRole("button").map((b) => b.textContent)).toEqual(["Say hi to Lamb", "Say hi to Bun", "Say hi to Mosshorn", "Say hi to Duckling"]);
     fireEvent.click(within(section).getByRole("button", { name: "Say hi to Bun" }));
@@ -307,6 +323,7 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
 
   it("has no friends section and no buddy picker for a crew with no friends", () => {
     openPanel(table());
+    expect(screen.queryByRole("tab", { name: /Friends/ })).toBeNull();
     expect(screen.queryByTestId("camp-friends")).toBeNull();
     expect(screen.queryByTestId("buddy-picker")).toBeNull();
   });
@@ -316,6 +333,7 @@ describe("her look at the chapter's end (docs/hero-looks.md §8.2)", () => {
   it("is in the panel, beside her kit, where what the chapter earned is first hers to try on", () => {
     openPanel(table({ phase: "chapter_complete", campMoment: moment({ id: "chapterEnd|r:c:9", kind: "chapterEnd" }) }));
     expect(screen.getByRole("group", { name: "Tent" })).toBeTruthy();
+    page(/My look/);
     expect(screen.getByTestId("look-editor")).toBeTruthy();
   });
 });
@@ -406,5 +424,45 @@ describe("New! on the Camp button", () => {
     } finally {
       Element.prototype.scrollIntoView = before;
     }
+  });
+});
+
+describe("going into her tent (playtest, 2026-11-14)", () => {
+  it("sends her hero in, and says Come out once she is in", () => {
+    const view = render(<TentButton state={table()} me={me} held={false} dispatch={dispatch} />);
+    fireEvent.click(screen.getByRole("button", { name: "Go in my tent" }));
+    expect(sent).toEqual([{ type: "CAMP_TENT", characterId: "c_1", inside: true }]);
+    view.rerender(<TentButton state={table({ campMoment: moment({ inTent: ["c_1"] }) })} me={me} held={false} dispatch={dispatch} />);
+    const out = screen.getByRole("button", { name: "Come out of the tent" });
+    expect(out.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(out);
+    expect(sent.at(-1)).toEqual({ type: "CAMP_TENT", characterId: "c_1", inside: false });
+  });
+
+  it("is a bedroll before the camp has tents, and nothing indoors or in a scene", () => {
+    const early = render(<TentButton state={table({ camp: camp({ frameStage: 1 }) })} me={me} held={false} dispatch={dispatch} />);
+    expect(screen.getByRole("button", { name: "Curl up in my bedroll" })).toBeTruthy();
+    early.unmount();
+    render(<TentButton state={table({ phase: "scene", sceneType: "rest", campMoment: moment({ id: "rest:s|x", kind: "rest", outdoor: false }) })} me={me} held={false} dispatch={dispatch} />);
+    render(<TentButton state={table({ phase: "scene", campMoment: undefined })} me={me} held={false} dispatch={dispatch} />);
+    expect(screen.queryByTestId("tent-button")).toBeNull();
+  });
+
+  it("is in the panel, over its pages", () => {
+    openPanel(table());
+    expect(within(screen.getByRole("dialog")).getByTestId("tent-button")).toBeTruthy();
+  });
+});
+
+describe("the panel's pages", () => {
+  it("keeps the page she was on, and puts the spots the crew has nothing for in one line", () => {
+    openPanel(table({ camp: camp({ owned: ["shop_striped_awning"] }) }));
+    page(/Camp spots/);
+    // Lanterns has nothing to offer and nothing on it: named in the line, not given a box.
+    expect(screen.queryByRole("group", { name: /^Lanterns/ })).toBeNull();
+    expect(screen.getByTestId("camp-spots-empty").textContent).toContain("Lanterns");
+    fireEvent.click(screen.getByRole("button", { name: "Done" }));
+    act(() => openCampPanel());
+    expect(screen.getByRole("tab", { name: /Camp spots/ }).getAttribute("aria-selected")).toBe("true");
   });
 });

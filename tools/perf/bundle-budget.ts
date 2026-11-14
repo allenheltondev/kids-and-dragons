@@ -366,7 +366,12 @@ const FIRST_PAINT_BUDGET_KB = 334;
 // 1823 -> 1826 on 2026-11-13 for the second smoothness pass: the art copy rules (the entry),
 // the memoised narration plate and combat controls, the board's nameplate fitting on change and
 // the firelight worked out once (the stage chunk). 1824KB measured, 1KB over. 2KB of slack.
-const TOTAL_BUDGET_KB = 1826;
+// 1826 -> 1834 on 2026-11-14 for the playtest notes (#780): going into a tent at camp (the
+// CAMP_TENT intent, the tent mark on the stage, its buttons), the phone's Camp panel rebuilt as
+// pages behind tabs with decoration chips, the plates waiting for the voice, a rest's way on asked
+// as "Everyone ready?", and the screens leaving out a removed player (the store, in the entry).
+// 1832KB measured against main's 1826KB. First paint 333KB against main's 332KB. 2KB of slack.
+const TOTAL_BUDGET_KB = 1834;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

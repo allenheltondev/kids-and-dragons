@@ -176,7 +176,7 @@ const RETRY_CAMP = Symbol("retry-camp");
  * now, and a commit lost to another step is applied again from a fresh read
  * (`RETRY_CAMP`), up to `CAMP_WRITE_ATTEMPTS` times.
  */
-const SEQ_FREE_EDITS: ReadonlySet<ClientIntent["type"]> = new Set(["KIT_EDIT", "LOOK_EDIT", "CAMP_PLACE", "CAMP_UNDO"]);
+const SEQ_FREE_EDITS: ReadonlySet<ClientIntent["type"]> = new Set(["KIT_EDIT", "LOOK_EDIT", "CAMP_PLACE", "CAMP_UNDO", "CAMP_TENT"]);
 
 /**
  * One intent, applied to the run (architecture §4.2). A camp change whose

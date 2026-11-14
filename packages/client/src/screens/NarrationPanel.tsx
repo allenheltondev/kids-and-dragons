@@ -102,7 +102,7 @@ export function goalParts(chapterId: string | null, text: string): NarrationPart
 const PLATE_FIELDS = [
   "runId", "phase", "chapterId", "chapterInfo", "campaign", "sceneId", "narration", "narrationParts",
   "scenePriority", "decision", "hint", "classPlace", "rankUps", "prompt", "trades", "encounter",
-  "party", "visited", "storyTurn",
+  "party", "visited", "storyTurn", "removed",
 ] as const satisfies readonly (keyof RunState)[];
 
 /**
@@ -161,12 +161,14 @@ const NarrationPlate = memo(function NarrationPlate({
   const decisionLine =
     decided === null || picked === null
       ? null
-      : decided.vote
+      : decided.rest
+        ? `Everyone's ready: ${picked}`
+        : decided.vote
         ? `The party voted: ${picked}`
         : `${party.find((m) => m.playerId === decided.byPlayerId)?.character.name ?? "Someone"} chose: ${picked}`;
   // The same line as heard: who chose is on the screen, and the room hears "hero" (#552).
   const spokenDecision =
-    decided === null || picked === null ? null : decided.vote ? `The party voted: ${picked}` : `Hero chose: ${picked}`;
+    decided === null || picked === null ? null : decided.rest ? `Everyone's ready: ${picked}` : decided.vote ? `The party voted: ${picked}` : `Hero chose: ${picked}`;
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
@@ -216,7 +218,9 @@ const NarrationPlate = memo(function NarrationPlate({
   const ownerSeat = (choices !== null && choices.length > 0 && turnPrompt) || rollOwner !== null;
 
   // Who stepped away (#258), and whether the fight is waiting on one of them.
-  const away = party.filter((m) => !m.connected);
+  // Not anybody the host took out: they left the game, they did not step away from it.
+  const removed = state?.removed;
+  const away = party.filter((m) => !m.connected && !(removed?.includes(m.playerId) ?? false));
   const awayTurnId =
     away.length > 0 && state?.encounter && combatTurnAway(state) ? currentActorId(state.encounter) : null;
   const awayHoldsTurn = (member: PartyMember): boolean => member.character.id === awayTurnId;
@@ -587,7 +591,7 @@ const NarrationPlate = memo(function NarrationPlate({
           {/* What got the party here: a quiet line of record, never louder than whose turn it is. */}
           {decisionLine === null || decided === null ? null : (
             <p className="narration__decision" key={`decision:${sceneId ?? "-"}`} data-testid="decision">
-              <Icon name={decided.vote ? "vote" : "hand"} />
+              <Icon name={decided.rest ? "check" : decided.vote ? "vote" : "hand"} />
               <span>{decisionLine}</span>
             </p>
           )}

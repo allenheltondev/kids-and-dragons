@@ -165,6 +165,20 @@
   background: radial-gradient(ellipse, rgb(247 190 103 / 12%), transparent 72%);
 }
 .kad-static-camp__hero.is-away { opacity: 0.5; }
+/* In her tent (CAMP_TENT): a warm light where she went in, and a drowsy "z z". */
+.kad-static-camp__tent-mark {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 60%;
+  display: grid;
+  place-items: start end;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9em;
+  letter-spacing: 0.1em;
+  background: radial-gradient(ellipse 60% 45% at 50% 70%, rgb(255 201 92 / 45%), transparent 70%);
+}
 .kad-static-camp__leaf {
   position: absolute;
   left: 24%;

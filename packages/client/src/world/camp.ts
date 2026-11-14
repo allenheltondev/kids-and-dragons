@@ -45,7 +45,7 @@ import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend
 import { campPaint } from "./camp-paint";
 import { campAccent, campAccentPose } from "./camp-accents";
 import { campAir, campMotes, motePose } from "./camp-air";
-import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
+import { DECORATION_ART, tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
   ANCHOR_X,
@@ -99,7 +99,7 @@ import {
 } from "./camp-motion";
 import { CLEARANCE, QUEUE_GAP, createWanderPlanner, queuePlaces, type QueueRow, type WanderPlace, type WanderPlanner } from "./camp-wander";
 import { stanceIdle } from "./idle-motion";
-import { DEFAULT_SIZE, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
+import { DEFAULT_SIZE, fitCanvas, NOMINAL_PAINT, paintAspect, paintedFacing, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
 import { reducedMotion } from "../a11y/prefs";
 import {
   BLEED_SOURCE,
@@ -178,7 +178,7 @@ const PITCH_STAGGER_S = 0.15;
  * The moments the game already has (§8.5) that the camp acts out. `unready`
  * is a Ready taken back: out of the trailhead's line and back to wandering.
  */
-export type CampMoment = "arrive" | "ready" | "unready" | "away" | "setOff";
+export type CampMoment = "arrive" | "ready" | "unready" | "away" | "tent" | "setOff";
 
 export interface CampOptions {
   /** The downtime moment's seed (§12.6). Never the wall clock. */
@@ -232,7 +232,7 @@ export interface CampStage {
   readonly view: Container;
   setFigures(figures: readonly CampFigure[]): void;
   setSeed(seed: number): void;
-  moment(kind: "arrive" | "ready" | "unready" | "away", figureId: string): void;
+  moment(kind: "arrive" | "ready" | "unready" | "away" | "tent", figureId: string): void;
   moment(kind: "setOff"): void;
   setStill(still: boolean): void;
   resize(width: number, height: number): void;
@@ -283,7 +283,7 @@ const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
 /** A shadow on the ground, cast by the backdrop's own light (ground-shadows.ts). */
-function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = false): Container {
+function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = true): Container {
   return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY, behind });
 }
 /** How fast the camp eases to a new frame when the panels over it change height. */
@@ -368,6 +368,10 @@ interface Actor {
   phase: number;
   leaving: boolean;
   removing: boolean;
+  /** Gone into her tent (the "tent" moment): hidden at home until she comes out. */
+  tucked: boolean;
+  /** Over her spot while she is in her tent: a warm glow and a drowsy "z z", made the first time she goes in. */
+  tentMark: Container | null;
   airborne: boolean;
   moving: boolean;
   /** A tapped friend (#624): when it walks over, to whom, and when its tap is done (still: the words alone). */
@@ -398,6 +402,9 @@ interface PieceView {
   mirrored: boolean;
   kitKey?: string;
   kitRevision: number;
+  /** A tent's hung decorations (her slots, at the tent's manifest hangPoints), drawn over its painting. */
+  decorations?: Container | null;
+  decorationsKey?: string;
   neutralTexture: Texture | null;
   id: string;
   container: Container;
@@ -733,8 +740,10 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const fitPieceShadow = (piece: PieceView, texture: Texture): void => {
     const paint = measurePaint(texture);
     const width = paint ? piece.fit.canvas * (paint.right - paint.left) : piece.heightPx;
-    // A tent's shadow lies under it, cast back from its pegs (ground-shadows.ts `behind`).
-    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY, piece.id.startsWith("tent_"));
+    // Cast back from where it stands (ground-shadows.ts `behind`). A bedroll lies flat on the
+    // ground: an outline thrown off it reads as a blanket hovering, so it keeps only its contact shade.
+    const flat = piece.id.startsWith("bedroll");
+    const shadow = campGroundShadow(light, width, piece.heightPx, flat ? undefined : texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY);
     recast(piece.shadow, shadow);
     piece.shadow = shadow;
   };
@@ -763,7 +772,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const heightPx = campHeightPx(pieceHeightCm(piece), measure);
     if (piece.id === "campfire") container.addChild(fireGlow(heightPx));
     // Until its painting loads (or if it never does), a tent's contact shade already sits inside its pegs.
-    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0, piece.id.startsWith("tent_"));
+    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0);
     castShadow(container, shadow);
     const groundCount = container.children.length;
     const pending = new Graphics()
@@ -822,12 +831,66 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         if (destroyed || entry.path !== path || (entry.id.startsWith("tent_") && entry.kitRevision !== revision)) return;
         if (entry.sprite) entry.sprite.visible = false;
         entry.missing = true;
+        clearDecorations(entry);
         drawStandIn(entry, lastOwners.get(entry.id));
       });
   }
 
   /** The owner each owned piece was last drawn for. */
   const lastOwners = new Map<string, CampFigure | undefined>();
+
+  /**
+   * Her decorations on her painted tent: each slot's piece, its middle on the
+   * tent's own spot for that slot (manifest `hangPoints`), the way the kit
+   * editor hangs them (BookKit.tsx `hangSpot`). Redrawn when the slots or the
+   * tent's fit change; `force` after the tent's painting (and so its fit) reloads.
+   */
+  function clearDecorations(piece: PieceView): void {
+    piece.decorations?.destroy({ children: true });
+    piece.decorations = null;
+    delete piece.decorationsKey;
+  }
+
+  function drawDecorations(piece: PieceView, owner: CampFigure | undefined, tent: { id: string; path: string; hangPoints?: { x: number; y: number }[] }, force = false): void {
+    if (destroyed) return;
+    // A tent whose painting did not load shows the stand-in, which draws its own dots: none float over it.
+    if (piece.missing) {
+      clearDecorations(piece);
+      return;
+    }
+    const slots = owner?.slots ?? [];
+    const key = `${tent.id}:${slots.join(",")}:${String(piece.fit.canvas)}:${String(piece.fit.offsetY)}`;
+    if (!force && piece.decorationsKey === key) return;
+    clearDecorations(piece);
+    piece.decorationsKey = key;
+    const paint = campPaint(tent.path);
+    if (!paint || !tent.hangPoints) return;
+    const layer = new Container();
+    layer.label = "camp-tent-decorations";
+    const side = Math.max(paint.right - paint.left, paint.bottom - paint.top);
+    piece.decorations = layer;
+    piece.container.addChild(layer);
+    slots.forEach((id, slot) => {
+      const point = tent.hangPoints?.[slot];
+      const art = id ? DECORATION_ART.find((d) => d.id === id) : undefined;
+      if (!point || !art?.path) return;
+      void load(assetUrl(art.path))
+        .then((texture) => {
+          if (destroyed || piece.decorations !== layer) return;
+          const sprite = new Sprite(texture);
+          sprite.anchor.set(0.5, 0.5);
+          // Small, on the tent, never the tent's size (BookKit.css: 24% of its box).
+          sprite.width = piece.fit.canvas * side * 0.24;
+          sprite.height = sprite.width;
+          sprite.x = (point.x / 1024 - ANCHOR_X) * piece.fit.canvas;
+          sprite.y = piece.fit.offsetY + (point.y / 1024 - ANCHOR_Y) * piece.fit.canvas;
+          // Hazed with the tent it hangs on (`fitSprite`), so one at the back of camp is not pasted on.
+          shadeAt(sprite, piece.container.y);
+          layer.addChild(sprite);
+        })
+        .catch(() => undefined);
+    });
+  }
 
   /** A labelled stand-in for a piece whose painting is owed (camp-stand-in.ts). */
   function drawStandIn(entry: PieceView, owner: CampFigure | undefined): void {
@@ -1364,6 +1427,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       phase: ((hash(def.id) ^ seed) % 628) / 100,
       leaving: false,
       removing: false,
+      tucked: false,
+      tentMark: null,
       airborne: false,
       moving: false,
       tapWalkAt: null,
@@ -1589,13 +1654,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     // factor; its feet stay on the ground point, which the factor never moves.
     actor.container.scale.set(laneScale * figureScale);
     actor.container.alpha = actor.alpha;
+    if (actor.tentMark) {
+      // Shows as she goes in (her figure fades), goes as she comes out.
+      const mark = actor.tentMark;
+      mark.position.set(actor.x, actor.y);
+      mark.zIndex = actor.y + 1;
+      mark.scale.set(laneScale * figureScale);
+      mark.alpha = actor.tucked && !actor.removing ? 1 - actor.alpha : 0;
+      mark.visible = mark.alpha > 0.01;
+      const zs = mark.getChildByLabel("tent-z");
+      if (zs) zs.y = still ? 0 : Math.sin(elapsed * 1.6 + actor.phase) * actor.heightPx * 0.04;
+    }
     // Further back, hazier: as it walks between lanes too.
     if (actor.sprite) shadeAt(actor.sprite, actor.y);
     actor.body.y = -(lift + actor.carryLift + stanceLiftPx);
     actor.body.rotation = rotation + actor.carryRotation;
     actor.body.scale.y = scaleY;
     // Art is drawn facing left: scale.x 1 faces left, -1 right.
-    actor.art.scale.x = -actor.facingNow * scaleX;
+    actor.art.scale.x = -actor.facingNow * scaleX * paintedFacing(actor.def.figure);
     if (actor.leaf) {
       // Carried while it wanders, dropped once each time it settles.
       const drop = actor.walk && !still ? 0 : mosshornLeafDrop(elapsed - actor.arrivedAt, still);
@@ -1657,6 +1733,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actor.heroArt?.();
         actor.words?.destroy({ children: true });
         actor.container.destroy({ children: true });
+        actor.tentMark?.destroy({ children: true });
       }
     }
 
@@ -1700,16 +1777,21 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         const key = `${tent.id}:${accent ?? ""}`;
         if (piece.kitKey === key) {
           drawStandIn(piece, owner);
+          drawDecorations(piece, owner, tent);
           continue;
         }
         piece.kitKey = key;
         const revision = ++piece.kitRevision;
+        // The old tent's decorations go with it; the new one's are hung once its painting is in.
+        clearDecorations(piece);
         piece.heightPx = campHeightPx(tent.heightCm ?? pieceHeightCm(definition), measure);
         piece.partSprite?.destroy();
         piece.partSprite = null;
         const cloth = campTentCloth(tent.id);
         void loadPiece(piece, tent.path, cloth, accent).then(async () => {
-          if (destroyed || piece.kitRevision !== revision || piece.missing || !piece.part || !tent.flap) return;
+          if (destroyed || piece.kitRevision !== revision) return;
+          drawDecorations(piece, lastOwners.get(definition.id), tent, true);
+          if (piece.missing || !piece.part || !tent.flap) return;
           const texture = await load(assetUrl(tent.flap));
           if (destroyed || piece.kitRevision !== revision) return;
           piece.partSprite = new Sprite(tintCloth(texture, cloth, accent));
@@ -1758,7 +1840,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         continue;
       }
       actor.removing = false;
-      if (actor.alphaTarget === 0 && !actor.leaving && !actor.teleport) actor.alphaTarget = 1;
+      if (actor.alphaTarget === 0 && !actor.leaving && !actor.teleport && !actor.tucked) actor.alphaTarget = 1;
       const urlChanged = actor.def.url !== def.url;
       const sizeChanged = actor.def.heightCm !== def.heightCm || actor.def.stance !== def.stance;
       actor.def = def;
@@ -1825,6 +1907,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     switch (kind) {
       case "arrive": {
         // Crawls out of the tent, or sits up on the bedroll: at home, and a wave.
+        actor.tucked = false;
         const home = homeOf(actor);
         const present = actor.alphaTarget > AWAY_ALPHA && !actor.leaving && !actor.teleport;
         const wave = (): void => {
@@ -1898,10 +1981,49 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         return;
       }
       case "away":
+        actor.tucked = false;
         leaveQueue(actor);
         direct(actor, homeOf(actor), { alpha: AWAY_ALPHA });
         return;
+      case "tent":
+        // Home to her own tent, and in: gone from the camp, with a light on in there.
+        actor.tucked = true;
+        leaveQueue(actor);
+        tentMarkOf(actor);
+        direct(actor, homeOf(actor), {
+          then: () => {
+            if (actor.tucked) actor.alphaTarget = 0;
+          },
+        });
+        return;
     }
+  }
+
+  /** Her tent's light and "z z" (the "tent" moment), made once and kept beside her figure. */
+  function tentMarkOf(actor: Actor): Container {
+    if (actor.tentMark) return actor.tentMark;
+    const mark = new Container();
+    mark.label = `tent-mark:${actor.def.id}`;
+    mark.alpha = 0;
+    const h = actor.heightPx;
+    const glow = new Graphics();
+    for (const [r, a] of [[0.42, 0.10], [0.3, 0.16], [0.18, 0.28]] as const) glow.ellipse(0, -h * 0.35, h * r * 1.3, h * r).fill({ color: 0xffc95c, alpha: a });
+    glow.label = "tent-glow";
+    mark.addChild(glow);
+    const zs = new Container();
+    zs.label = "tent-z";
+    for (const [i, size] of [[0, 0.06], [1, 0.08], [2, 0.1]] as const) {
+      const z = new Graphics();
+      const w = h * size;
+      z.moveTo(-w / 2, -w / 2).lineTo(w / 2, -w / 2).lineTo(-w / 2, w / 2).lineTo(w / 2, w / 2)
+        .stroke({ color: 0xffffff, width: Math.max(2, h * 0.018), cap: "round", join: "round" });
+      z.position.set(h * (0.08 + i * 0.14), -h * (0.8 + i * 0.16));
+      zs.addChild(z);
+    }
+    mark.addChild(zs);
+    actor.container.parent?.addChild(mark);
+    actor.tentMark = mark;
+    return mark;
   }
 
   /** Begin: everybody down the trail and off the edge, nearest first. */
@@ -1924,6 +2046,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       );
     queue.length = 0;
     crew.forEach((actor, rank) => {
+      // Out of her tent to go: the crew sets off together.
+      actor.tucked = false;
       if (still || actor.alpha < 0.05) {
         planner.direct(actor.def.id, exit, null, 0);
         actor.walk = null;

@@ -323,11 +323,13 @@
  * breathing while the voice speaks. A strip laid over the plate, not a box, so the fit
  * (fit-plate.ts) never moves; and its own layer fading, not a shadow re-drawn, so the plate
  * (up to half the television) is not repainted every frame for as long as the voice speaks.
+ * On `::after`: `::before` is the plate's painted frame and backdrop (styles/chrome.css), and a
+ * strip there shrank the whole backdrop to the strip's width until the voice stopped.
  */
 .narration__plate[data-speaking] {
   position: relative;
 }
-.narration__plate[data-speaking]::before {
+.narration__plate[data-speaking]::after {
   content: "";
   position: absolute;
   inset-block: 0;
@@ -343,7 +345,7 @@
   to { opacity: 0.75; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .narration__plate[data-speaking]::before {
+  .narration__plate[data-speaking]::after {
     animation: none;
   }
 }

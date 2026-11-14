@@ -59,17 +59,19 @@ describe("ground shadows", () => {
     expect(edge[0] / edge[3]).toBeCloseTo(shade[0]);
   });
 
-  it("casts a tent's shadow back from its pegs, under it, and everything else's toward the viewer", () => {
+  it("casts a shadow back from where it stands by default, and toward the viewer only when asked", () => {
     const light = campLight("open_plains");
     /** Where the top of an outline 1 tall lands, on the ground. */
-    const top = (behind: boolean) => {
-      const shadow = groundShadow(light, 40, 100, Texture.WHITE, { canvas: 120, behind });
+    const top = (behind?: boolean) => {
+      const shadow = groundShadow(light, 40, 100, Texture.WHITE, { canvas: 120, ...(behind === undefined ? {} : { behind }) });
       const projection = shadow.getChildByLabel("camp-cast-body", true)!.parent!;
       projection.updateLocalTransform();
       return projection.localTransform.apply({ x: 0, y: -1 });
     };
     const forward = top(false);
     const back = top(true);
+    // Unasked, a shadow is cast back: thrown toward the viewer it pools under the feet and the figure hovers.
+    expect(top().y).toBeCloseTo(back.y);
     // Forward: down the screen, toward the viewer. Back: up it, behind the tent.
     expect(forward.y).toBeGreaterThan(0);
     expect(back.y).toBeLessThan(0);

@@ -335,6 +335,44 @@ describe("a choice", () => {
     expect(gap.getAttribute("aria-pressed")).toBe("false");
   });
 
+  it("asks whether everyone is ready at a rest, where the way on waits for everybody", () => {
+    mount({
+      phase: "scene",
+      sceneType: "rest",
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+      ],
+      prompt: choicePrompt({ vote: true, votes: {} }),
+    });
+    expect(screen.getByText("Everyone ready?")).toBeTruthy();
+    expect(screen.queryByText("Everyone votes")).toBeNull();
+  });
+
+  it("nudges a kid with a point still to spend before she says she is ready, until she has", () => {
+    const thistle = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) });
+    mount({
+      phase: "scene",
+      sceneType: "rest",
+      party: [member({ character: character({ unspentPoints: 1 }) }), thistle],
+      prompt: choicePrompt({ vote: true, votes: {} }),
+    });
+    expect(screen.getByTestId("points-nudge").textContent).toContain("Spend your point first");
+    serverSends({ party: [member(), thistle] });
+    expect(screen.queryByTestId("points-nudge")).toBeNull();
+  });
+
+  it("keeps the Camp and tent buttons in reach under a rest's choice at a TV too", () => {
+    mount({ phase: "scene", sceneType: "rest", prompt: choicePrompt({ vote: true, votes: {} }) });
+    serverSends({ mode: "party", campMoment: { id: "rest:s_1|x", kind: "rest", outdoor: true, changes: {} } });
+    const rest = document.querySelector(".player__camp--rest")!;
+    expect(rest.querySelector('[data-testid="camp-button"]')).not.toBeNull();
+    expect(rest.querySelector('[data-testid="tent-button"]')).not.toBeNull();
+    // Once: drawn in the task page that is up, not again in the sheet hidden behind it.
+    expect(document.querySelectorAll('[data-testid="camp-button"]')).toHaveLength(1);
+    expect(document.querySelectorAll('[data-testid="tent-button"]')).toHaveLength(1);
+  });
+
   it("shows who voted for what, as a tick in their seat", () => {
     mount({
       party: [

@@ -46,4 +46,25 @@ describe("the painted chrome", () => {
       expect(selector, selector).toContain('html:not([data-contrast="high"])');
     }
   });
+
+  it("keeps each frame's ::before its own: no other stylesheet draws on it", () => {
+    // The frame is the element's `::before` (above). A rule elsewhere that puts a strip, a dot or
+    // a glow on the same `::before` replaces the frame's size with its own: the story plate's
+    // speaking edge once shrank the whole backdrop to a sliver until the voice stopped.
+    const framed = css.match(/:is\(([\s\S]*?)\)\s*\{\s*isolation: isolate/)?.[1] ?? "";
+    const classes = [...framed.replace(/:not\([^)]*\)/g, "").matchAll(/\.([a-z][\w-]*)/g)].map((m) => m[1] ?? "");
+    expect(classes).toContain("narration__plate");
+    const sheets = (readdirSync(`${here}..`, { recursive: true }) as string[])
+      .filter((file) => file.endsWith(".css") && !file.endsWith("chrome.css"));
+    for (const file of sheets) {
+      const text = readFileSync(`${here}../${file}`, "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+      for (const name of classes) {
+        const own = new RegExp(`\\.${name}(?![\\w-])(?:\\[[^\\]]*\\]|:[a-z-]+(?:\\([^)]*\\))?)*::before[^{]*\\{([^}]*)\\}`, "g");
+        for (const rule of text.matchAll(own)) {
+          // Hiding the frame where it does not belong is allowed; drawing on it is not.
+          expect(rule[1]?.trim(), `${file}: .${name}::before`).toMatch(/^display:\s*none;?$/);
+        }
+      }
+    }
+  });
 });

@@ -36,6 +36,8 @@ import { plateWordCount, prefetchNarration, prologueAddresses, speak, stopSpeaki
 import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
 import { useRunState, useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
+import { useReadAloud, useSpeaking } from "../speech/read-aloud";
+import { isTvBrowser } from "../display/tv";
 import { useEndPlates } from "./end-plates";
 import { useStartPlates } from "./start-plates";
 import "./StoryPlates.css";
@@ -49,6 +51,38 @@ export const PLATE_LOAD_MS = 6000;
  */
 export function plateHoldMs(words: number): number {
   return Math.min(22_000, Math.max(6500, 2000 + words * 420));
+}
+
+/** After the voice stops, how long the plate stays before the page turns: a breath, and the gap between the title and the plate's own words. */
+export const PLATE_AFTER_VOICE_MS = 1200;
+
+/** How long a plate waits for a voice that has not started (a recording still on its way) before it turns anyway. */
+export const PLATE_VOICE_WAIT_MS = 5000;
+
+/** The most any plate stays up by itself, whatever the voice is doing: a speaker that never says it is done cannot hold the story. */
+export const PLATE_MAX_MS = 60_000;
+
+/**
+ * When the page may turn, `sinceShown` after the plate came up: once its hold is over and, on a
+ * device reading aloud, once the voice has finished saying it (a breath after it stops). A voice
+ * that never starts is waited for a little past the hold; nothing waits past PLATE_MAX_MS.
+ */
+export function plateMayTurn(at: {
+  sinceShown: number;
+  holdMs: number;
+  readAloud: boolean;
+  speaking: boolean;
+  /** The voice has been heard on this plate. */
+  heard: boolean;
+  /** How long the voice has been quiet, or null while it speaks. */
+  quietFor: number | null;
+}): boolean {
+  if (at.sinceShown >= PLATE_MAX_MS) return true;
+  if (at.sinceShown < at.holdMs) return false;
+  if (!at.readAloud) return true;
+  if (at.speaking) return false;
+  if (!at.heard) return at.sinceShown >= at.holdMs + PLATE_VOICE_WAIT_MS;
+  return (at.quietFor ?? 0) >= PLATE_AFTER_VOICE_MS;
 }
 
 interface Frame extends StoryPlate {
@@ -191,14 +225,51 @@ function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () 
   }, [index]);
 
   // Say the plate as it comes up, and turn the page once it has been said (unless somebody went back).
+  // The hold is only the least a plate stays: on a device reading aloud the page waits for the
+  // voice to finish, since a recording (or a slow device voice) can run well past a guess made
+  // from the word count, and the table lost the end of every plate (playtest, 2026-11-14).
   const frame = frames?.[index];
+  const readAloud = useReadAloud().on;
+  const speaking = useSpeaking();
+  const readAloudRef = useRef(readAloud);
+  readAloudRef.current = readAloud;
+  const speakingRef = useRef(speaking);
+  speakingRef.current = speaking;
+  const voice = useRef<{ shownAt: number; heard: boolean; quietSince: number | null }>({ shownAt: 0, heard: false, quietSince: 0 });
+  useEffect(() => {
+    const now = Date.now();
+    if (speaking) {
+      voice.current.heard = true;
+      voice.current.quietSince = null;
+    } else if (voice.current.quietSince === null) {
+      voice.current.quietSince = now;
+    }
+  }, [speaking]);
   useEffect(() => {
     if (frames === null || frame === undefined) return;
     const text = spoken(picked, frame, index);
+    // A voice carried over from the page before (interrupted, never quiet between) counts as this page's.
+    voice.current = { shownAt: Date.now(), heard: speakingRef.current, quietSince: speakingRef.current ? null : Date.now() };
     say(picked, frame, index);
     if (held) return;
-    const timer = setTimeout(advance, plateHoldMs(plateWordCount(text)));
-    return () => clearTimeout(timer);
+    const holdMs = plateHoldMs(plateWordCount(text));
+    const timer = setInterval(() => {
+      const now = Date.now();
+      const { shownAt, heard, quietSince } = voice.current;
+      const turn = plateMayTurn({
+        sinceShown: now - shownAt,
+        holdMs,
+        readAloud: readAloudRef.current,
+        speaking: speakingRef.current,
+        heard,
+        quietFor: quietSince === null ? null : now - quietSince,
+      });
+      if (turn) {
+        clearInterval(timer);
+        advance();
+      }
+    }, 250);
+    return () => clearInterval(timer);
     // `advance` is for this very index and frames; the page turns once per plate.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frames, index, held]);
@@ -240,6 +311,7 @@ function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () 
       data-last={last}
       data-display={display}
       data-replay={onDone ? "true" : undefined}
+      data-tv={isTvBrowser() ? "true" : undefined}
       {...(onDone ? { role: "dialog", "aria-modal": true, tabIndex: -1 } : {})}
       aria-label={picked.ribbon}
       style={{ ["--plate-ms" as string]: `${String(hold)}ms` }}
