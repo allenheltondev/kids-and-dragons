@@ -1285,10 +1285,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         {myPrompt !== null && myPrompt.kind === "choice" && !classPlaceWaiting ? (
           <div className="prompt">
             <h3 className="prompt__title">
-              <Icon name={myPrompt.vote ? "vote" : "hand"} />
+              <Icon name={myPrompt.vote ? (atRest ? "check" : "vote") : "hand"} />
               <span>
+                {/* A rest's way on waits for everybody (it is where points are spent), so it asks
+                    whether they are ready rather than calling it a vote. */}
                 {myPrompt.vote
-                  ? "Everyone votes"
+                  ? atRest
+                    ? "Everyone ready?"
+                    : "Everyone votes"
                   : "What do you do?"}
               </span>
             </h3>
@@ -1330,7 +1334,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                             ticks come and go, so somebody else voting cannot
                             rewrap the label you are reading. */}
                         <span className="choice__mark">
-                          {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
+                          {myVote === option.id ? <Icon name="check" label={atRest ? "You're ready" : "Your vote"} /> : null}
                         </span>
                         {myPrompt.vote ? (
                           <VoteTicks voterIds={voterIds} votedIds={votedIds} party={party} />
@@ -1366,7 +1370,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 disabled={held}
                 onClick={() => void dispatch({ type: "CHOOSE", choiceId: myVote })}
               >
-                {`Decide without ${awayNames(
+                {`${atRest ? "Go on" : "Decide"} without ${awayNames(
                   party.filter(
                     (m) =>
                       myPrompt.votes?.[m.playerId] === undefined &&

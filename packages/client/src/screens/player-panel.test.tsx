@@ -335,6 +335,20 @@ describe("a choice", () => {
     expect(gap.getAttribute("aria-pressed")).toBe("false");
   });
 
+  it("asks whether everyone is ready at a rest, where the way on waits for everybody", () => {
+    mount({
+      phase: "scene",
+      sceneType: "rest",
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+      ],
+      prompt: choicePrompt({ vote: true, votes: {} }),
+    });
+    expect(screen.getByText("Everyone ready?")).toBeTruthy();
+    expect(screen.queryByText("Everyone votes")).toBeNull();
+  });
+
   it("shows who voted for what, as a tick in their seat", () => {
     mount({
       party: [
