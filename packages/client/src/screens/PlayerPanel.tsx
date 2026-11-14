@@ -934,7 +934,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Nothing to do and nothing asked of this phone: under TV focus, the card that says look up.
   const tvRest = focus && !focusTask && !inLobby && !peek;
   // "Look in my bag" from that card opens the bag, in a fight too, where the turn page is the board.
-  const friends = party.filter((member) => member.playerId !== me.playerId);
+  // Not anybody the host took out (#267): they are gone from the game, not away.
+  const friends = party.filter((member) => member.playerId !== me.playerId && !(state.removed?.includes(member.playerId) ?? false));
   const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when

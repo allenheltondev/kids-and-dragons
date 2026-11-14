@@ -25,7 +25,8 @@ vi.mock("./scene", () => ({
 vi.mock("../screens/content", () => ({ useEnsureChapter: vi.fn() }));
 vi.mock("../store", () => ({
   useChapter: () => null,
-  useParty: () => [],
+  useSeatedParty: () => [],
+  seatedParty: () => [],
   useRunState: () => null,
   useSession: () => null,
   usePresentation: vi.fn(),

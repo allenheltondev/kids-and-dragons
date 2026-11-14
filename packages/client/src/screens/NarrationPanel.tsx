@@ -102,7 +102,7 @@ export function goalParts(chapterId: string | null, text: string): NarrationPart
 const PLATE_FIELDS = [
   "runId", "phase", "chapterId", "chapterInfo", "campaign", "sceneId", "narration", "narrationParts",
   "scenePriority", "decision", "hint", "classPlace", "rankUps", "prompt", "trades", "encounter",
-  "party", "visited", "storyTurn",
+  "party", "visited", "storyTurn", "removed",
 ] as const satisfies readonly (keyof RunState)[];
 
 /**
@@ -216,7 +216,9 @@ const NarrationPlate = memo(function NarrationPlate({
   const ownerSeat = (choices !== null && choices.length > 0 && turnPrompt) || rollOwner !== null;
 
   // Who stepped away (#258), and whether the fight is waiting on one of them.
-  const away = party.filter((m) => !m.connected);
+  // Not anybody the host took out: they left the game, they did not step away from it.
+  const removed = state?.removed;
+  const away = party.filter((m) => !m.connected && !(removed?.includes(m.playerId) ?? false));
   const awayTurnId =
     away.length > 0 && state?.encounter && combatTurnAway(state) ? currentActorId(state.encounter) : null;
   const awayHoldsTurn = (member: PartyMember): boolean => member.character.id === awayTurnId;

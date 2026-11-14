@@ -481,6 +481,12 @@ describe("a friend who stepped away (#258)", () => {
     mount({ sceneType: "story", party: [PARTY[0]!, { ...PARTY[1]!, connected: false }] });
     expect(screen.getByTestId("stepped-away").textContent).toBe("Thistle stepped away.");
   });
+
+  it("says nothing of a player the host took out: they left the game (#267)", () => {
+    const out = { ...PARTY[1]!, connected: false };
+    mount({ sceneType: "story", party: [PARTY[0]!, out], removed: [out.playerId] });
+    expect(screen.queryByTestId("stepped-away")).toBeNull();
+  });
 });
 
 describe("the practice's hint (#255)", () => {

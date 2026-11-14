@@ -14,7 +14,7 @@ import { shakeStrengthFor } from "./shake";
 import { justWonAFight } from "./victory";
 import { cue } from "../audio/cue";
 import { isTvBrowser } from "../display/tv";
-import { useChapter, useGameStore, useParty, usePresentation, usePreviews, useRunState, useSession } from "../store";
+import { seatedParty, useChapter, useGameStore, usePresentation, usePreviews, useRunState, useSeatedParty, useSession } from "../store";
 import { boardAim, tablePreviews } from "./previews";
 import { useEnsureChapter } from "../screens/content";
 import { RendererFallback } from "./RendererFallback";
@@ -163,7 +163,8 @@ export function PixiStage(): React.JSX.Element {
   const [stageUp, setStageUp] = useState(false);
   // The lobby's camp (#614), over the scene while the lobby is up.
   const campRef = useRef<LobbyCamp | null>(null);
-  const party = useParty();
+  // A player the host took out is gone from the stage, not drawn faded as stepped away.
+  const party = useSeatedParty();
   const state = useRunState();
   const session = useSession();
   const chapter = useChapter();
@@ -279,7 +280,7 @@ export function PixiStage(): React.JSX.Element {
       // finished initialising during the lobby would otherwise show every
       // name for one frame before the effect below caught up.
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
-      scene.setParty(live.state?.party ?? []);
+      scene.setParty(seatedParty(live.state));
       scene.setBiome(live.chapter?.biome ?? null, interactionBackdrop(live.chapter,live.state) ?? sceneArtFor(live.chapter, live.state));
       scene.setRift(sceneRiftFor(live.chapter, live.state), sceneKey(live.state));
       scene.setCast(visibleGuestsRef.current);
