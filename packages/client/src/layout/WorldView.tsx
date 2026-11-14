@@ -32,6 +32,7 @@ import {
   NarrationPanel,
   TransformCutscene,
 } from "../screens";
+import { GameScenery } from "../screens/GameScenery";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { DashCashSparkle } from "../screens/CampChapterEnd";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
@@ -136,12 +137,14 @@ export function WorldView({
     return useGameStore.getState().registerPresentationPlayer(play);
   }, [gatesPresentations]);
 
+  const interaction = useGameStore(store => store.state?.prompt?.kind === "interaction");
   // Only whether a fight with no place of its own is on: the goal card's corner.
   const fightGoal = useGameStore((store) => store.state?.encounter != null && !store.state.encounter.environment);
 
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">
       <WorldSounds />
+      {interaction && <div className="world-game-scenery"><GameScenery /></div>}
       {drawn ? (
         <RendererBoundary>
           <Suspense fallback={null}>

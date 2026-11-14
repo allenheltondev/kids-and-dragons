@@ -4,7 +4,7 @@ import { resolveCharacter } from "./character.js";
 import { makeRng } from "./dice.js";
 import { makeChapter, makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
 import { relayTarget } from "./relay.js";
-import { balanceTarget, pullNeeded, pullTarget, skillAim } from "./skill-games.js";
+import { balanceTarget, pullNeeded, pullTarget, skillAim, skillSteps } from "./skill-games.js";
 import { balanceReady, interactionClues, supportsReady, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "./interactions.js";
 import { cooperationProgress, TEAM_HOLD_MS } from "./teamwork.js";
 import { sceneEdges, validateChapter } from "./chapter-graph.js";
@@ -580,16 +580,82 @@ describe("skill-game rules used by the current phones", () => {
     expect(act(next, balance.ctx, { action: "adjust", round: 0, direction: "down" }).error).toBeDefined();
     expect(prompt(next).levels?.p0).toBe(0.5);
   });
-  it.each(["precision", "timing"] as const)("grades %s recovery by the miss without making a clean action repeat chores", kind => {
+  it.each(["precision", "timing"] as const)("grades %s recovery and shares three stages around the party", kind => {
     const spec = { ...precision, kind };
     let { state, ctx } = start(spec);
     const near = commit(state, ctx, { position: 0.68 }); // .03 outside the gold
     const rough = commit(state, ctx, { position: 0 });
     expect(prompt(near).challenge!.strain).toBeLessThan(prompt(rough).challenge!.strain);
     state = commit(near, ctx, { position: skillAim(prompt(near)).target });
+    expect(prompt(state).phase).toBe("active");
+    expect(act(state, ctx, { action: "commit", round: prompt(state).challenge!.round, position: spec.target }).error).toBeDefined();
+    for (let progress = 1; progress < 6; progress++) {
+      state = commit(state, ctx, { position: spec.target }, `p${progress % 2}`);
+    }
     expect(prompt(state).outcome).toBe("success");
     state = commit(rough, ctx, { position: 0 });
     expect(prompt(state).outcome).toBe("failure");
+  });
+  it.each([1, 4])("gives every one of %i heroes three successful timing stages", players => {
+    let { state, ctx } = start({ ...precision, kind: "timing" }, players);
+    for (let stage = 0; stage < players * 3; stage++) {
+      expect(prompt(state).phase).toBe("active");
+      state = commit(state, ctx, { position: precision.target }, `p${stage % players}`);
+      expect(prompt(state).challenge!.progress).toBe(stage + 1);
+    }
+    expect(prompt(state).outcome).toBe("success");
+  });
+  it("skips a disconnected timing player and rejects the previous round after handoff", () => {
+    let { state, ctx } = start(precision, 4);
+    state = commit(state, ctx, { position: precision.target });
+    state.party[1]!.connected = false;
+    expect(act(state, ctx, { action: "commit", round: 0, position: precision.target }, "p2").error).toBeDefined();
+    state = commit(state, ctx, { position: precision.target }, "p2");
+    expect(prompt(state).challenge!.progress).toBe(2);
+    expect(prompt(state).phase).toBe("active");
+  });
+  it.each(["precision", "timing"] as const)("drops departed heroes' unfinished %s stages without losing successes", kind => {
+    let { state, ctx } = start({ ...precision, kind }, 2);
+    state = commit(state, ctx, { position: precision.target });
+    state = commit(state, ctx, { position: precision.target }, "p1");
+    state.party[1]!.connected = false;
+    expect(skillSteps(prompt(state), ["p0"])).toBe(4); // one departed success still counts
+    state = commit(state, ctx, { position: precision.target });
+    expect(prompt(state).phase).toBe("active");
+    state = commit(state, ctx, { position: precision.target });
+    expect(prompt(state).outcome).toBe("success");
+    expect(prompt(state).challenge).toMatchObject({ progress: 4, completed: { p0: 3, p1: 1 } });
+  });
+  it("restores only a returning hero's unfinished stages and skips heroes already finished", () => {
+    let { state, ctx } = start(precision, 2);
+    state = commit(state, ctx, { position: precision.target });
+    state.party[1]!.connected = false;
+    state = commit(state, ctx, { position: precision.target });
+    state.party[1]!.connected = true;
+    expect(skillSteps(prompt(state), ["p0", "p1"])).toBe(6);
+    state = commit(state, ctx, { position: precision.target }); // p0 now has all three
+    for (let stage = 0; stage < 3; stage++) state = commit(state, ctx, { position: precision.target }, "p1");
+    expect(prompt(state).outcome).toBe("success");
+    expect(prompt(state).challenge!.completed).toEqual({ p0: 3, p1: 3 });
+  });
+  it("finishes without another scored stage when the only unfinished hero leaves", () => {
+    let { state, ctx } = start(precision, 2);
+    for (let stage = 0; stage < 5; stage++) state = commit(state, ctx, { position: precision.target }, `p${stage % 2}`);
+    state.party[1]!.connected = false;
+    expect(skillSteps(prompt(state), ["p0"])).toBe(5);
+    state = commit(state, ctx, { position: 0 });
+    expect(prompt(state).outcome).toBe("success");
+    expect(prompt(state).challenge).toMatchObject({ progress: 5, completed: { p0: 3, p1: 2 } });
+  });
+  it("recovers completion counts from a saved challenge created before per-hero tracking", () => {
+    let { state, ctx } = start(precision, 2);
+    state = commit(state, ctx, { position: precision.target });
+    delete prompt(state).challenge!.completed;
+    state.party[1]!.connected = false;
+    state = commit(state, ctx, { position: precision.target });
+    state = commit(state, ctx, { position: precision.target });
+    expect(prompt(state).outcome).toBe("success");
+    expect(prompt(state).challenge!.progress).toBe(3);
   });
   it("runs partial sequence arrangements through a visible test without committing the branch", () => {
     let { state, ctx } = start(sequence);

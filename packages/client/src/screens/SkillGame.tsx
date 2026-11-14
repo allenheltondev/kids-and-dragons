@@ -45,7 +45,7 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
     ? <img className={className} style={style} src={propUrl(object)} alt="" draggable={false} onError={() => setFailed(true)} />
     : <span className={className} style={style} aria-hidden="true"><Icon name="star" /></span>;
   const heroes = <div className="skill-scene__heroes" aria-hidden="true">{connected.map(member => <HeroImage key={member.playerId} hero={member.character} place="world" alt="" />)}</div>;
-  const progress = <ol className="skill-route" aria-label={`${game.progress} of ${skillSteps(prompt)} safe stages`}>{Array.from({ length: skillSteps(prompt) }, (_, i) => <li key={i} data-done={i < game.progress} data-current={i === game.progress}><span>{i < game.progress ? "✓" : i + 1}</span></li>)}</ol>;
+  const progress = <ol className="skill-route" aria-label={`${game.progress} of ${skillSteps(prompt, ids)} safe stages`}>{Array.from({ length: skillSteps(prompt, ids) }, (_, i) => <li key={i} data-done={i < game.progress} data-current={i === game.progress}><span>{i < game.progress ? "✓" : i + 1}</span></li>)}</ol>;
   let body;
   if (spec.kind === "balance") {
     const lift = balanceLift(prompt, ids);
@@ -128,10 +128,12 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
     const stage = <div className="skill-scene skill-scene--aim" data-safe={safe} data-still={still}>
       <span className="skill-perch" style={{ left: `${(aim.target - width / 2) * 100}%`, width: `${width * 100}%` }}><span>✦</span></span>
       {token("skill-shot", { left: `${position * 100}%`, bottom: spec.kind === "precision" ? `${25 + Math.sin(position * Math.PI) * 28}%` : "32%" })}
+      {heroes}
       <span className="skill-safety-line" aria-hidden="true" />
       <strong className="skill-opening">{spec.kind === "timing" ? safe ? "OPEN — GO!" : "Watch the opening…" : safe ? "Over the perch!" : "Watch the landing…"}</strong>
     </div>;
-    body = <>{progress}{editable && !still ? <button type="button" className="skill-aim kad-focusable" aria-label={spec.actionLabel} disabled={busy}
+    const actor = connected.find(member => member.playerId === interactionActor(prompt, ids));
+    body = <><p className="skill-reading">{actor?.character.name ?? "Your party"}'s turn · {Math.min(game.progress + 1, skillSteps(prompt, ids))} / {skillSteps(prompt, ids)}</p>{progress}{editable && !still ? <button type="button" className="skill-aim kad-focusable" aria-label={spec.actionLabel} disabled={busy}
       onPointerDown={event => { if (event.button === 0) void commit({ position }); }} onClick={event => { if (event.detail === 0) void commit({ position }); }}>{stage}<span>{spec.actionLabel}</span></button> : stage}
       {editable && still && <><label className="skill-slider">Aim at the gold <input type="range" min="0" max="100" value={Math.round(power * 100)} disabled={busy} onChange={event => setPower(Number(event.target.value) / 100)} /></label>{action(spec.actionLabel, () => void commit({ position }))}</>}
       <p className="skill-caption">{spec.kind === "timing" ? "Read the opening. A near miss gives you time to recover." : "Read the arc. A near miss lets you adjust your aim."}</p>

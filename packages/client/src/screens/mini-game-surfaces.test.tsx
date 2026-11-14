@@ -4,13 +4,14 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import { applyIntent, createRunState, enterScene, makeRng, resolveCharacter, type ClientIntent, type EngineContext, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "@kad/shared";
 import { makeChapter, makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
+import { GameScenery } from "./GameScenery";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(2_000_000); vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
 afterEach(() => { cleanup(); useGameStore.setState(initial, true); vi.restoreAllMocks(); vi.useRealTimers(); });
 const options = [{ id: "leaf", label: "Leaf", icon: "leaf" }, { id: "star", label: "Star", icon: "star" }];
-function game(spec: InteractionSpec, props: string[] = []) {
+function game(spec: InteractionSpec, props: string[] = [], skill = false) {
   const chapter = makeChapter();
   chapter.scenes.game = { type: "interaction", narration: "Help together", interaction: spec, onSuccess: { goto: "scene_clearing" }, onFailure: { goto: "scene_clearing" } };
   chapter.presentation = { interactions: { game: { props, ...(spec.kind === "tracking" ? { coverIcons: ["snow-mound", "relay-sack"] } : {}) } } };
@@ -20,7 +21,7 @@ function game(spec: InteractionSpec, props: string[] = []) {
   state.party = ["Aster", "Fern"].map((name, i) => ({ playerId: `p${i}`, character: resolveCharacter(makeCharacter({ id: `c${i}`, ownerPlayerId: `p${i}`, name }), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }));
   state = enterScene(state, "game", ctx()).state;
   const p = state.prompt as InteractionPrompt;
-  state = applyIntent(state, { playerId: "p0", intent: { type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "start", relaxed: false } }, ctx()).state;
+  state = applyIntent(state, { playerId: "p0", intent: { type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt, action: "start", relaxed: false, ...(skill ? { rulesVersion: 2 as const } : {}) } }, ctx()).state;
   const deliver = (intent: ClientIntent, playerId = "p0") => {
     const result = applyIntent(useGameStore.getState().state!, { playerId, intent }, ctx());
     expect(result.error).toBeUndefined();
@@ -151,13 +152,16 @@ it("rearranges sequence steps with a keyboard without removing a tile", async ()
   expect((useGameStore.getState().state!.prompt as InteractionPrompt).submittedAnswer).toEqual(["star", "leaf"]);
 });
 
-it("keeps scene scenery on both screens and removes an unavailable painting", () => {
+it("uses one world backdrop with fallback instead of paintings inside the game boards", () => {
   const { phone, tv } = game({ kind: "sequence", cue: "Order", actionLabel: "Try", options, answer: ["star", "leaf"], clues: [] });
   act(() => {
     const chapter = useGameStore.getState().chapter!;
     useGameStore.setState({ chapter: { ...chapter, scenes: { ...chapter.scenes, game: { ...chapter.scenes.game!, art: "scenes/riftlight/ashspan-broken-deck" } } } });
   });
-  for (const region of [phone, tv]) {
+  expect(tv.querySelector(".game-scenery")).toBeNull();
+  expect(phone.querySelector(".game-scenery")).toBeNull();
+  const scenery = render(<GameScenery />).container;
+  for (const region of [scenery]) {
     const image = region.querySelector(".game-scenery img")!;
     expect(image.getAttribute("src")).toBe("/assets/scenes/riftlight/ashspan-broken-deck.webp");
     fireEvent.error(image);
@@ -167,4 +171,20 @@ it("keeps scene scenery on both screens and removes an unavailable painting", ()
     expect(region.querySelector(".game-scenery")).toBeNull();
   }
   expect(within(phone).getByRole("button", { name: "Leaf" })).toBeTruthy();
+});
+
+it("hands aiming controls to the next phone after a success instead of ending the game", async () => {
+  const { phone, tv, helper } = game({ kind: "precision", cue: "Aim", actionLabel: "Throw", target: 0.5, width: 0.3, periodMs: 4000 }, ["rope-loop"], true);
+  expect(within(phone).getByRole("button", { name: "Throw" })).toBeTruthy();
+  await act(async () => {
+    const store = useGameStore.getState();
+    const prompt = store.state!.prompt as InteractionPrompt;
+    await store.send({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action: "commit", round: 0, position: 0.5 });
+  });
+  expect(within(phone).queryByRole("button", { name: "Throw" })).toBeNull();
+  expect(tv.textContent).toContain("Fern's turn");
+  expect((useGameStore.getState().state!.prompt as InteractionPrompt).phase).toBe("active");
+  await act(async () => { helper({ action: "commit", round: 1, position: 0.5 }); });
+  expect(tv.textContent).toContain("Aster's turn");
+  expect(within(phone).getByRole("button", { name: "Throw" })).toBeTruthy();
 });

@@ -1477,7 +1477,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       ? interactionEdge(ctx.rules, { id: playerId, species: hero.species, class: hero.class }, scene.tags)
       : undefined;
     if (edge) prompt.edge = edge; else delete prompt.edge;
-    if (intent.rulesVersion === 2 && skillCanStart(prompt.spec.kind)) prompt.challenge = skillStart();
+    if (intent.rulesVersion === 2 && skillCanStart(prompt.spec.kind)) prompt.challenge = skillStart(connected);
     if (prompt.spec.kind === "relay") {
       prompt.relay = relayStart(ctx.now);
       if (prompt.relaxed) prompt.relay.flight.durationMs *= 1.5;
