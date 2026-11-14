@@ -541,11 +541,11 @@ function PersonalHome(): ReactElement {
            * depend on whether sign-in had loaded yet, and the line jumped
            * when it did.
            */}
-        </div>
-        <div className="home__host-toggle home__guide home__guide--end" hidden={hosting}>
-          <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "account" })}>
-            Accounts and devices
-          </button>
+          <div className="home__host-toggle home__guide home__guide--end" hidden={hosting}>
+            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "account" })}>
+              Accounts and devices
+            </button>
+          </div>
         </div>
       </div>
 

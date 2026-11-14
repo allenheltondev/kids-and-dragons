@@ -473,9 +473,17 @@
   .home--personal .home__code { max-inline-size: 24em; inline-size: 100%; align-self: center; }
   .home--personal .home__secondary-links { font-size: 0.9em; }
 
-  /* Its own last row under both columns, far bottom right, small and dim. */
+  /* Far bottom right of the page's content, small and dim. The markup stays
+     in the controls column (phones read it there); the grid is the
+     positioned ancestor, so the link leaves the column without moving. */
+  .home--personal .home__inner {
+    position: relative;
+    padding-block-end: 3em;
+  }
   .home--personal .home__guide--end {
-    grid-column: 1 / -1;
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-end: 0;
     margin: 0;
     opacity: 0.7;
   }
