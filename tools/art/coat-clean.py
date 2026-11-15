@@ -56,6 +56,7 @@ except ImportError:
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import coat  # noqa: E402
+from maturity_masks import clean_parts as maturity_parts  # noqa: E402
 
 SOFTEN = 0.8  # the parts' edge: a gaussian of this sigma (px) over the cleaned binary part
 
@@ -160,6 +161,17 @@ FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     "gear-portraits/thornguard/radiant/bigfoot.png": {"skin": [(190, 375, 495, 645), (225, 290, 498, 545)]},
     "gear-portraits/thornguard/mythic/bigfoot.png": {"skin": [(735, 880, 370, 470)]},
 }
+
+
+FIXES.update({
+    # #490: the adult muzzle moves between these approved paintings.
+    "characters/manticore/ascendant/assembled.png": {"nose": [(297, 338, 160, 230)]},
+    "characters/manticore/starborn/assembled.png": {"nose": [(268, 310, 120, 190)]},
+    "characters/manticore/legendary/assembled.png": {"nose": [(249, 290, 114, 188)]},
+    "character-rigs/starweaver/ascendant/manticore/assembled.png": {"nose": [(297, 338, 160, 230)]},
+    "character-rigs/starweaver/starborn/manticore/assembled.png": {"nose": [(260, 320, 110, 195)]},
+    "character-rigs/starweaver/legendary/manticore/assembled.png": {"nose": [(242, 300, 100, 195)]},
+})
 
 
 def boxes(painting: str, kind: str, shape: tuple[int, int]) -> np.ndarray | None:
@@ -1437,6 +1449,9 @@ def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.n
     wing |= ndimage.binary_propagation(wing, mask=(fade & ndimage.binary_dilation(wing, structure=disk(px(5)))) | wing)
 
     warm = (hue > 0) & (hue < 120) & (C >= 0.05)
+    if any(f"/{tier}/" in painting for tier in ("ascendant", "starborn", "legendary")):
+        # The adult dragon's warm ivory belly is scales, not orange webbing.
+        warm &= C >= 0.11
     scales = a & ~ink & ~spike & ~costume & ~wing & ~eyes & ~warm & (C < 0.09) & (L >= 0.5)
     if classed:
         # (the strongest of the mint spots on her scales, which the classed paintings paint
@@ -2274,6 +2289,7 @@ def clean(rgba: np.ndarray, draft: np.ndarray, species: str, painting: str) -> n
     # everything but the painted backdrop on a gear portrait, which is opaque.
     parts = RULES[species](Look(rgba, draft[..., 2] > 127), draft, painting)
     main, accent = parts[0], parts[1]
+    main, accent = maturity_parts(Look(rgba, draft[..., 2] > 127), main, accent, species, painting)
     # (a species may return a better figure, 0..1, as a third value: the unicorn does on her
     # gear portraits, where the draft's backdrop flood bites into her and leaves dark backdrop in)
     B = parts[2] if len(parts) > 2 else draft[..., 2].astype(float) / 255.0

@@ -30,8 +30,6 @@ transforms from one painting into the next, one hero at a time. Here is a dragon
 
 The first three transformations show growing power. Ascendant, Starborn and Legendary show
 maturity, wisdom and mastery: a settled posture, a knowing face and quieter control.
-Heroes wearing custom coat colors keep their colored Mythic painting while the new
-paintings' color masks are being finished.
 
 Past level 10 each level still gives a stat point and a little more health, and the most you can
 put into one stat creeps up a notch at levels 15, 20, 25 and 30. The levels are far apart: a hero

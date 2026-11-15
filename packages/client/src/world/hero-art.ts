@@ -86,20 +86,9 @@ export interface HeroArtSubject {
 /** The painting this hero is drawn from in `place`, as painted. */
 export function heroPaintingUrl(hero: HeroArtSubject, place: HeroArtPlace): string {
   const tier = hero.tier ?? STARTING_TIER;
-  const resolve = (at: TierId) => place === "world"
-    ? characterWorldArtUrl(hero.species, at, hero.class)
-    : characterPortraitArtUrl(hero.species, at, hero.class);
-  const painting = resolve(tier);
-  // Preserve an existing chosen color while the maturity-tier masks are pending.
-  // Once a painting's mask ships, this fallback retires automatically.
-  if (["ascendant", "starborn", "legendary"].includes(tier) && !coatMaskUrl(painting)) {
-    const paint = coatPaintOf(COATS, hero.species, hero.look);
-    if (paint && paint.kind !== "gilded") {
-      const previous = resolve("mythic");
-      if (coatMaskUrl(previous)) return previous;
-    }
-  }
-  return painting;
+  return place === "world"
+    ? characterWorldArtUrl(hero.species, tier, hero.class)
+    : characterPortraitArtUrl(hero.species, tier, hero.class);
 }
 
 /**
@@ -226,10 +215,7 @@ export function sparklePlace(i: number): { x: number; y: number } {
  */
 export function heroOfflineArt(hero: HeroArtSubject): string[] {
   const urls = new Set<string>();
-  const candidates = ["ascendant", "starborn", "legendary"].includes(hero.tier ?? "")
-    ? [hero, { ...hero, look: null }, { ...hero, tier: "mythic" as const }]
-    : [hero];
-  for (const subject of candidates.flatMap(candidate => [candidate, heroBase(candidate)])) {
+  for (const subject of [hero, heroBase(hero)]) {
     for (const place of HERO_ART_PLACES) {
       const painting = heroPaintingUrl(subject, place);
       urls.add(painting);

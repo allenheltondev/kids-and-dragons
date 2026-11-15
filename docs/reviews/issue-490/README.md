@@ -11,11 +11,25 @@ in the asset store and `docs/hero-maturity-prompts.json`.
 
 Songkeeper, Duskrunner and Thornguard intentionally use the new base figures until
 their class waves arrive. New opaque gear portraits are deferred; portrait surfaces
-use the approved Starweaver cutout where available. New coat masks are deferred,
-so heroes without custom colors draw in their approved colors. Heroes with a
-selected coat or accent temporarily keep their colored Mythic painting until the
-new painting's mask ships; the fallback retires automatically per painting. The aura decision remains open;
+use the approved Starweaver cutout where available. All 36 new paintings include
+reviewed main/accent/figure masks, so selected colors follow the hero into the new
+maturity art. The temporary colored-Mythic fallback has been removed. The aura decision remains open;
 this batch does not add an effect or alter effect behavior. Issue #490 remains open.
+
+The 36 RGB masks were reviewed channel by channel and with main-only, accent-only
+and paired color previews. The cleanup includes hand-bounded silver plumage,
+Unicorn mane and far-leg repairs, Manticore nose exclusions, and protection of
+Bigfoot's teal mantle. `docs/hero-maturity-mask-records.json` records their derivation.
+
+[All 36 custom-colored paintings on TV](https://assets.kd.readysetcloud.io/sha256/1c/1cc6e43fae7c554954fce4060e6d718505a9840f2d4ae8e85dd4bccd31c47d03.png)
+and [on a phone](https://assets.kd.readysetcloud.io/sha256/c2/c275eb7d40e952ae0b600cbc5b4f60bbba97f9bd05f3dbbc6f31507c28db58c2.png)
+were rendered through the real CharacterPortrait/tinter components without browser
+or asset errors. Regression tests protect the color regions and untinted landmarks.
+
+Final local validation: 12,334 tests passed (27 skipped), 2,107 art checks passed,
+inventory complete, asset verification clean, all 943 WebP copies current, typecheck
+and production build passed. The full Windows suite used four workers and a 120s
+per-test timeout after an earlier concurrent image-processing run hit timeouts.
 
 ## Visual review
 
