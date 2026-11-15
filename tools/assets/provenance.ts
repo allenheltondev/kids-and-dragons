@@ -16,6 +16,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { LOCK_FILE, blobKey, readStamp, type BlobStamp } from "../../packages/shared/src/asset-store.ts";
 import { git, loadConfig, loadLock } from "./lib.ts";
 
@@ -46,7 +47,7 @@ export interface Provenance {
 export async function storeStamp(storeUrl: string, key: string): Promise<BlobStamp | null> {
   const base = storeUrl.replace(/\/+$/, "");
   if (base.startsWith("file://")) {
-    const sidecar = path.join(new URL(base).pathname, `${key}.stamp.json`);
+    const sidecar = path.join(fileURLToPath(base), `${key}.stamp.json`);
     if (!fs.existsSync(sidecar)) return null;
     const meta = JSON.parse(fs.readFileSync(sidecar, "utf8")) as Record<string, string>;
     return readStamp((name) => meta[name]);
@@ -82,7 +83,7 @@ export function findPromptRecords(root: string, repoPath: string): PromptRecord[
       if (Array.isArray(node)) node.forEach(visit);
       else if (node && typeof node === "object") {
         const obj = node as Record<string, unknown>;
-        if (obj.path === repoPath || obj.path === `/${repoPath}`) found.push({ file: path.relative(root, file), entry: obj });
+        if (obj.path === repoPath || obj.path === `/${repoPath}`) found.push({ file: path.relative(root, file).split(path.sep).join("/"), entry: obj });
         Object.values(obj).forEach(visit);
       }
     };

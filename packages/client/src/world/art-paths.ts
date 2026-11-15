@@ -137,16 +137,13 @@ export function fitArt(url: string, small: boolean = wantsSmallArt(), whole: boo
 export const STARTING_TIER: TierId = "fledgling";
 
 /**
- * The tiers that have painted art, in level order. Ascendant, starborn and
- * legendary (levels 15, 20 and 30, spec §8.1) are rules before they are
- * pictures, so a hero past Mythic is drawn as Mythic until theirs is
- * commissioned: add a tier here when its art lands. Lives here, not in
+ * The tiers that have painted base art, in level order. Lives here, not in
  * @kad/shared, because the service worker concatenates this file and cannot
  * import at runtime.
  */
-const ART_TIERS: readonly TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
+const ART_TIERS: readonly TierId[] = ["fledgling", "sworn", "radiant", "mythic", "ascendant", "starborn", "legendary"];
 
-/** The tier whose art draws a hero of `tier`: itself, or Mythic, the highest painted. */
+/** The painted tier for a hero; all seven rules tiers now have base art. */
 export function artTierOf(tier: TierId): TierId {
   return ART_TIERS.includes(tier) ? tier : "mythic";
 }
@@ -165,6 +162,9 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
 const CLASS_FIGURE_VARIANTS = new Set<string>(
   [
   "starweaver/mythic",
+  "starweaver/ascendant",
+  "starweaver/starborn",
+  "starweaver/legendary",
   "songkeeper/mythic",
   "songkeeper/radiant",
   "songkeeper/sworn",
@@ -205,22 +205,23 @@ export function characterWorldArtUrl(
 }
 
 /**
- * Approved purpose-drawn class-gear variants exist for every species and geared
- * tier. They are complete opaque illustrations, not rig parts, so this path is
+ * Approved opaque class-gear portraits exist through Mythic. They are complete
+ * illustrations, not rig parts, so this path is
  * deliberately separate from `assets/gear/` and is consumed only by portrait
  * surfaces.
  *
  * Returning `null` is part of the contract: fledglings wear no class gear,
  * while every ClassId has an accepted Sworn, Radiant, and Mythic variant.
- * Callers can fall back to the species/tier art without probing a fledgling URL
- * known not to exist.
+ * Later tiers use their approved class cutout or base art without probing an
+ * opaque portrait URL that has not been delivered.
  */
 export function gearPortraitUrl(
   species: SpeciesId,
   characterClass: ClassId,
   tier: TierId,
 ): string | null {
-  if (tier === "fledgling") return null;
+  // Opaque portraits for the maturity tiers are a later delivery wave.
+  if (!["sworn", "radiant", "mythic"].includes(artTierOf(tier))) return null;
   return fitArt(`/assets/gear-portraits/${characterClass}/${artTierOf(tier)}/${species}.png`);
 }
 
@@ -232,7 +233,7 @@ export function characterPortraitArtUrl(
 ): string {
   return (
     (characterClass === undefined ? null : gearPortraitUrl(species, characterClass, tier)) ??
-    characterArtUrl(species, tier)
+    characterWorldArtUrl(species, tier, characterClass)
   );
 }
 

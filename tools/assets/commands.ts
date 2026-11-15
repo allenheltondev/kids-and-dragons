@@ -16,6 +16,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { cachedBlobPath, defaultCacheDir, ensureCached, hashBytes, writeAtomic } from "../../packages/shared/src/asset-cache.ts";
 import {
   LOCK_FILE,
@@ -420,7 +421,7 @@ export function readIgnoreBlock(root: string): string[] | null {
 /** Whether the store's public URL answers for a key. HEAD, so nothing is downloaded. */
 export async function storeHas(storeUrl: string, key: string): Promise<boolean> {
   const base = storeUrl.replace(/\/+$/, "");
-  if (base.startsWith("file://")) return fs.existsSync(path.join(new URL(base).pathname, key));
+  if (base.startsWith("file://")) return fs.existsSync(path.join(fileURLToPath(base), key));
   for (let attempt = 0; ; attempt++) {
     try {
       const res = await fetch(`${base}/${key}`, { method: "HEAD" });
