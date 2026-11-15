@@ -226,7 +226,10 @@ export function sparklePlace(i: number): { x: number; y: number } {
  */
 export function heroOfflineArt(hero: HeroArtSubject): string[] {
   const urls = new Set<string>();
-  for (const subject of [hero, heroBase(hero)]) {
+  const candidates = ["ascendant", "starborn", "legendary"].includes(hero.tier ?? "")
+    ? [hero, { ...hero, look: null }, { ...hero, tier: "mythic" as const }]
+    : [hero];
+  for (const subject of candidates.flatMap(candidate => [candidate, heroBase(candidate)])) {
     for (const place of HERO_ART_PLACES) {
       const painting = heroPaintingUrl(subject, place);
       urls.add(painting);

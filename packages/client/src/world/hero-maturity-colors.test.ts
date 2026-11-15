@@ -3,7 +3,7 @@ import type {ClassId,SpeciesId} from '@kad/shared';
 import {coats} from '../../../../content/looks.json';
 import {coatMaskPaintings,setCoatMaskPaintings} from './coat-masks';
 import {characterWorldArtUrl,characterPortraitArtUrl} from './art-paths';
-import {heroPaintingUrl,heroCoatOf} from './hero-art';
+import {heroPaintingUrl,heroCoatOf,heroOfflineArt} from './hero-art';
 
 afterEach(()=>setCoatMaskPaintings(null));
 describe('colors across maturity-tier delivery waves',()=>{
@@ -31,5 +31,14 @@ describe('colors across maturity-tier delivery waves',()=>{
   setCoatMaskPaintings([...coatMaskPaintings(),painting.slice('/assets/'.length)]);
   expect(heroPaintingUrl({...hero,look:{coat:'unicorn_sky'}},'world')).toBe(painting);
   expect(heroCoatOf({...hero,look:{coat:'unicorn_sky'}},'world')?.painting).toBe(painting);
+ });
+ it('warms both paintings so choosing or removing a color works offline',()=>{
+  const hero={species:'unicorn' as const,class:'starweaver' as const,tier:'legendary' as const};
+  for(const look of [null,{coat:'unicorn_sky'}]){
+   const files=heroOfflineArt({...hero,look});
+   expect(files).toContain(characterWorldArtUrl('unicorn','legendary','starweaver'));
+   expect(files).toContain(characterWorldArtUrl('unicorn','mythic','starweaver'));
+   expect(files).toContain(characterPortraitArtUrl('unicorn','mythic','starweaver'));
+  }
  });
 });
