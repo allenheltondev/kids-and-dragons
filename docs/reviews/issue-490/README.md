@@ -12,7 +12,9 @@ in the asset store and `docs/hero-maturity-prompts.json`.
 Songkeeper, Duskrunner and Thornguard intentionally use the new base figures until
 their class waves arrive. New opaque gear portraits are deferred; portrait surfaces
 use the approved Starweaver cutout where available. New coat masks are deferred,
-so these paintings draw in their approved colors. The aura decision remains open;
+so heroes without custom colors draw in their approved colors. Heroes with a
+selected coat or accent temporarily keep their colored Mythic painting until the
+new painting's mask ships; the fallback retires automatically per painting. The aura decision remains open;
 this batch does not add an effect or alter effect behavior. Issue #490 remains open.
 
 ## Visual review

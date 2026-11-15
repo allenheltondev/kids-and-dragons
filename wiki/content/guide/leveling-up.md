@@ -24,12 +24,14 @@ Every level gives **one stat point** to spend at the next Rest. New class moves 
 
 At levels 4, 7, 10, 15, 20 and 30, a hero grows into a new **tier**: Sworn, Radiant, Mythic,
 Ascendant, Starborn and Legendary. The screen goes dark, the party gathers around, and the hero
-transforms from one painting into the next, one hero at a time. Here is a dragonling up to Mythic:
+transforms from one painting into the next, one hero at a time. Here is a dragonling across all seven tiers:
 
 {{< tier-strip species="dragonling" >}}
 
-The three tiers past Mythic are new, and their paintings are still being made. Until they are, an
-Ascendant, Starborn or Legendary hero is drawn as their Mythic self.
+The first three transformations show growing power. Ascendant, Starborn and Legendary show
+maturity, wisdom and mastery: a settled posture, a knowing face and quieter control.
+Heroes wearing custom coat colors keep their colored Mythic painting while the new
+paintings' color masks are being finished.
 
 Past level 10 each level still gives a stat point and a little more health, and the most you can
 put into one stat creeps up a notch at levels 15, 20, 25 and 30. The levels are far apart: a hero
