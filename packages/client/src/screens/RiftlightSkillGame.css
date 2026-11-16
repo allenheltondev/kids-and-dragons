@@ -73,10 +73,10 @@
 .rift-feedback { padding: .5em .7em; border-radius: .6em; border: 1px solid #d2b681; background: #211d30e8; color: #fff1d2; font-size: .8em; }
 .rift-strain { display: flex; align-items: center; gap: .5em; font-size: .75em; }
 .rift-strain meter { flex: 1; }
-.game--tv .rift-game { flex: 1; }
+.game--tv .rift-game { flex: 1; gap: .4em; }
 .game--tv:has(.rift-game) .game__head > :is(.game__badge, .game__cue) { display: none; }
 .game--tv:has(.rift-game) .game__head:not(:has(.game__edge)) { display: none; }
-.game--tv .rift-field { flex: 1; min-height: 8em; background: transparent; border: 0; }
+.game--tv .rift-field { flex: 1; min-height: 5em; background: transparent; border: 0; }
 .game--tv .rift-hero { height: 60%; }
 .game--tv .rift-hero--thrower { height: 65%; width: 24%; }
 .game--tv .rift-read { font-size: 1.35em; }

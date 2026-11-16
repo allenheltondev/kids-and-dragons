@@ -140,7 +140,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
       {mine && active && send && <Button block disabled={busy || !carry.joined} onClick={() => commit()}>Take a careful step</Button>}
     </>;
   } else return null;
-  return <div className={`rift-game rift-game--${spec.kind}`}>
+  return <div className={`rift-game rift-game--${spec.kind}`} data-round={game.round}>
     {progress}{body}
     {game.feedback && !(spec.kind === "timing" && !active && prompt.outcome !== "failure") && <p className="rift-feedback" role="status">{game.feedback}</p>}
     {game.strain > 0 && <label className="rift-strain">{spec.kind === "precision" ? "Landing chances slipping" : "Footing slipping"}<meter aria-label="Accumulated strain" min="0" max="1" value={game.strain} /></label>}
