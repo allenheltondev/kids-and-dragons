@@ -1,6 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
 import { seedTable, openPhone, openTv, onAir } from "./seed";
-import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 import { API } from "./api";
 import { pullNeeded, pullTarget, type RunState } from "@kad/shared";
@@ -10,10 +9,12 @@ test.use({ actionTimeout: 15_000 });
 const controls = (page: Page) => page.getByRole("region", { name: "Interaction controls" });
 async function task(page: Page) {
   await page.bringToFront();
-  await page.getByRole("button", { name: "You", exact: true }).click();
   const welcome = page.getByRole("button", { name: "Got it", exact: true });
   if (await welcome.isVisible()) await welcome.click();
-  await openPlayerTask(page);
+  // New questions (and a reload into one) open the turn controls automatically.
+  // Switching to You here races that navigation after PLAYTEST_GOTO: the task
+  // entry can disappear between finding it and Playwright's actionability check.
+  await expect(controls(page)).toBeVisible();
 }
 async function setPull(page: Page, power: number) {
   const slider = controls(page).getByRole("slider", { name: "Pull strength" });
