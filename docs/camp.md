@@ -1564,3 +1564,18 @@ against the same catalog, and moves an already-hung piece without duplication. T
 no second inventory or save field. The book's "Peek inside" uses that same view and its
 existing offline queue, so a shelf choice made without a signal survives and later syncs.
 The lantern's brightness is a local play preference for the current visit.
+
+### TV customization rendering
+
+TV browsers rasterize tinted tent cloth, flaps and bedrolls at 512px instead of 1024px.
+Their authored cloth paths still use 1024px coordinates and their on-screen dimensions
+stay the same. This quarters tint pixels and texture upload bytes, including on older
+TVs that fall back to a CPU pixel loop. Other browsers retain full-size rasters.
+The camp reuses a live Pixi texture when the same cached color canvas is selected again;
+all textures it owns are still destroyed with the camp.
+
+`e2e/camp-latency.spec.ts` exercises phone picks against a separate TV browser with
+canvas filters disabled and 6x CPU throttling, checks the painted tent changes, and
+attaches request/repaint timings. These local timings do not measure the deployed API,
+Samsung hardware, or the family's network. Confirm the reported live delay on the TV
+after deployment; this optimization alone does not establish its production cause.
