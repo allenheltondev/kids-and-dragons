@@ -16,12 +16,20 @@ async function task(page: Page) {
   // entry can disappear between finding it and Playwright's actionability check.
   await expect(controls(page)).toBeVisible();
 }
+// These are separate browser contexts representing separate devices. Foreground
+// the device being operated so Chromium supplies animation frames for scrolling
+// and Playwright's stability checks, even after the TV or another phone was used.
+async function tap(page: Page, name: string | RegExp) {
+  await page.bringToFront();
+  await controls(page).getByRole("button", { name, exact: typeof name === "string" }).click();
+}
 async function setPull(page: Page, power: number) {
+  await page.bringToFront();
   const slider = controls(page).getByRole("slider", { name: "Pull strength" });
   await slider.scrollIntoViewIfNeeded();
   const box = (await slider.boundingBox())!;
   await slider.click({ position: { x: 8 + (box.width - 16) * power, y: box.height / 2 } });
-  await controls(page).getByRole("button", { name: "Set my pull", exact: true }).click();
+  await tap(page, "Set my pull");
 }
 async function jump(page: Page, sceneId: string) {
   await page.evaluate(async sceneId => {
@@ -57,17 +65,17 @@ test("7L: friends recover a slipping table and compensate their wagon pulls on p
     for (const page of [one.page, two.page]) await task(page);
     await expect.poll(async () => await controls(one.page).getByRole("button", { name: /ready/ }).count() + await controls(two.page).getByRole("button", { name: /ready/ }).count()).toBe(1);
     const lead = await controls(one.page).getByRole("button", { name: /ready/ }).count() ? one.page : two.page;
-    await controls(lead).getByRole("button", { name: /ready/ }).click();
+    await tap(lead, /ready/);
     return lead;
   };
   try {
     await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
     const hp = (await state()).party.map(p => p.hp);
     let lead = await ready();
-    for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
-    await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
+    for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await tap(phone, "Lift my side");
+    await tap(lead, "Take a careful step");
     await expect.poll(progress).toBe(1);
-    await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
+    await tap(lead, "Take a careful step");
     await expect(controls(one.page)).toContainText("The load dips");
     expect((await state()).prompt).toMatchObject({ challenge: { progress: 1, strain: .3 } });
     await two.page.reload();
@@ -79,12 +87,12 @@ test("7L: friends recover a slipping table and compensate their wagon pulls on p
     await expect(controls(one.page).locator("img.skill-scene__object")).toHaveJSProperty("naturalWidth", 512);
     await one.page.screenshot({ path: info.outputPath("table-phone-320.png") });
     await tv.page.screenshot({ path: info.outputPath("table-tv.png") });
-    for (const phone of [one.page, two.page]) await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
-    await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
+    for (const phone of [one.page, two.page]) await tap(phone, "Lift my side");
+    await tap(lead, "Take a careful step");
     await expect.poll(progress).toBe(2);
-    for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await controls(phone).getByRole("button", { name: "Lower my side", exact: true }).click();
-    await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
-    await controls(lead).getByRole("button", { name: "See what happens next" }).click();
+    for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await tap(phone, "Lower my side");
+    await tap(lead, "Take a careful step");
+    await tap(lead, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("choice_the_rule");
     expect((await state()).party.map(p => p.hp)).toEqual(hp);
 
@@ -119,7 +127,7 @@ test("7L: friends recover a slipping table and compensate their wagon pulls on p
     for (const power of [.7, .5]) {
       for (const phone of [one.page, two.page]) await setPull(phone, power);
     }
-    await controls(lead).getByRole("button", { name: "See what happens next" }).click();
+    await tap(lead, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("scene_tether_holds");
     expect((await state()).flags.clock_steady).toBe(true);
     expect((await state()).party.some(p => p.character.questItems.includes("facet_caravan"))).toBe(true);
@@ -139,21 +147,21 @@ test("7L: rough box dashes cost health and a failed wagon brace withholds the st
     await phone.page.emulateMedia({ reducedMotion: "reduce" });
     await phone.page.evaluate(() => { document.documentElement.dataset.motion = "reduced"; });
     const hp = (await state()).party[0]!.hp;
-    await controls(phone.page).getByRole("button", { name: /ready/ }).click();
+    await tap(phone.page, /ready/);
     const aim = controls(phone.page).getByRole("slider", { name: "Aim at the gold" });
     await aim.press("Home");
-    await controls(phone.page).getByRole("button", { name: "Dash!", exact: true }).click();
+    await tap(phone.page, "Dash!");
     await expect(controls(phone.page)).toContainText("A rough landing");
-    await controls(phone.page).getByRole("button", { name: "Dash!", exact: true }).click();
-    await controls(phone.page).getByRole("button", { name: "See what happens next" }).click();
+    await tap(phone.page, "Dash!");
+    await tap(phone.page, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("scene_box_crawlers");
     expect((await state()).party[0]!.hp).toBe(hp - 1);
     await jump(phone.page, "interaction_tether_team"); await task(phone.page);
-    await controls(phone.page).getByRole("button", { name: /ready/ }).click();
+    await tap(phone.page, /ready/);
     await setPull(phone.page, 1);
     await expect(controls(phone.page)).toContainText("A sharp jerk");
     await setPull(phone.page, 1);
-    await controls(phone.page).getByRole("button", { name: "See what happens next" }).click();
+    await tap(phone.page, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("scene_tether_slips");
     expect((await state()).flags.clock_late).toBe(true);
     expect((await state()).party.some(p => p.character.questItems.includes("facet_caravan"))).toBe(false);
