@@ -736,14 +736,6 @@
       }
     ]
   },
-  "riftlight-ice-shelf-traverse/drip_run/interaction/cue": {
-    "": [
-      {
-        "clip": "e937c7fc818434837c63140beb214ba01829bdddefc392e5342c25379863a378",
-        "ms": 2749
-      }
-    ]
-  },
   "riftlight-ice-shelf-traverse/drip_run/narration": {
     "": [
       {
@@ -2147,14 +2139,6 @@
         "names": [
           "Skerry"
         ]
-      }
-    ]
-  },
-  "riftlight-ice-shelf-traverse/ring_throw/interaction/cue": {
-    "": [
-      {
-        "clip": "6c52900ffc3615f86cfc4cc4b9dfdce1be47b4633dc52a249329bf2e5b817746",
-        "ms": 2085
       }
     ]
   },

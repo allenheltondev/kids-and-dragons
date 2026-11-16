@@ -1799,14 +1799,6 @@
       }
     ]
   },
-  "riftlight-reading-room/wait_knack/interaction/cue": {
-    "": [
-      {
-        "clip": "b930c3d1b9fe3cbbffaccf0afa150f9bb8b878367e212be08b59ec7b6d374113",
-        "ms": 2473
-      }
-    ]
-  },
   "riftlight-reading-room/wait_knack/narration": {
     "": [
       {
@@ -1836,14 +1828,6 @@
       {
         "clip": "79de2dffd9dba51861e3621e8f2897062b444f6b6f71f3f71a6e3e319d7e5ef7",
         "ms": 7207
-      }
-    ]
-  },
-  "riftlight-reading-room/wait_long/interaction/cue": {
-    "": [
-      {
-        "clip": "b930c3d1b9fe3cbbffaccf0afa150f9bb8b878367e212be08b59ec7b6d374113",
-        "ms": 2473
       }
     ]
   },
@@ -1889,14 +1873,6 @@
       {
         "clip": "d09af0cb56b3aea8f2255a8f8de7e543e9d4e76bf79441484eb095ead9938735",
         "ms": 6707
-      }
-    ]
-  },
-  "riftlight-reading-room/wait_slow/interaction/cue": {
-    "": [
-      {
-        "clip": "b930c3d1b9fe3cbbffaccf0afa150f9bb8b878367e212be08b59ec7b6d374113",
-        "ms": 2473
       }
     ]
   },

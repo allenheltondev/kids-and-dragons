@@ -490,7 +490,7 @@
       "narration": "Swing the loop in a slow circle and drop it over Grumble. \"There is another ring past the broken part, one called Old Clank,\" says Skerry. \"If you can catch Grumble, you can catch Clank.\"",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the loop is over the ring.",
+        "cue": "Aim the loop over the ring. Clear the edge of the shelf.",
         "actionLabel": "Throw the loop!",
         "target": 0.5,
         "width": 0.3,
@@ -1077,11 +1077,13 @@
       "narration": "The drips plink in a steady rhythm. \"Plink, plink, gap,\" Skerry whispers again. Wait for the gap, then go.",
       "interaction": {
         "kind": "timing",
-        "cue": "Wait for the gold gap, then tap to go.",
+        "cue": "Wait for a long gap between drips, then go.",
         "actionLabel": "Go through!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 3000
+        "periodMs": 3000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "gust",

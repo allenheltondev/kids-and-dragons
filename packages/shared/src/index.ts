@@ -98,5 +98,5 @@ export * from "./error-report.js";
 
 export * from "./teamwork.js";
 export * from "./skill-games.js";
-
 export * from "./camp-play.js";
+export * from "./riftlight-games.js";

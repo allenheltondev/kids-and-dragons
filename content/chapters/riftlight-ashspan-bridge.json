@@ -542,7 +542,9 @@
         "actionLabel": "Bump the dock!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "far_bank",
@@ -2698,7 +2700,8 @@
       "ferry_dock": {
         "props": [
           "ferry-boat",
-          "fight-mooring-post"
+          "fight-mooring-post",
+          "water-surge"
         ]
       },
       "carry_beam": {
@@ -2709,7 +2712,11 @@
       "duck_play": {
         "props": [
           "oat-crumbs"
-        ]
+        ],
+        "optionProps": {
+          "crumbs": "oat-crumbs",
+          "hum": "note-low"
+        }
       }
     },
     "warmUrls": [

@@ -9,7 +9,8 @@
  */
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useChapter, useRunState } from "../store";
-import { interactionAppearance } from "../world/riftlight-art";
+import { interactionAppearance, reactionFigure } from "../world/riftlight-art";
+import { castArtUrl, fitArt } from "../world/art-paths";
 import { HeroImage } from "../world/hero-art-dom";
 import { PaintedCover, PaintedGlyph, propUrl } from "./InteractionArt";
 import { aimWidth, balanceGold, balanceLift, cooperationProgress, edgeScale, playbackStepMs, balanceReady, interactionActor, interactionClues, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
@@ -20,6 +21,7 @@ import { Button } from "../ui/Button";
 import { RelayCatcher, RelayWorld, relaySeats } from "./RelayGame";
 import { RelayFlightCatcher } from "./RelayFlightGame";
 import { SkillGame } from "./SkillGame";
+import { RiftlightSkillGame } from "./RiftlightSkillGame";
 import { showing } from "./interaction-copy";
 import { buzz, litStep, padNote } from "./game-feel";
 
@@ -236,8 +238,15 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
   const lead = name(leadId ?? "");
   /** This screen builds the answer: the lead's phone. The TV and the other phones see the choices instead. */
   const building = playerId !== undefined && playerId === leadId;
-  const object = appearance?.props?.find((id) => !id.startsWith("note-"));
-  if (prompt.challenge && spec.kind !== "tracking") return <SkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} object={object} busy={busy} send={onSkillAction} />;
+  const object = appearance?.props?.find((id) => !id.startsWith("note-")) ?? appearance?.props?.[0];
+  const currentChapter = chapter?.id === state?.chapterId ? chapter : null;
+  const scene = state?.sceneId ? currentChapter?.scenes?.[state.sceneId] : undefined;
+  const cast = scene && "cast" in scene ? scene.cast : undefined;
+  const reaction = reactionFigure(state?.sceneId ?? null, prompt, still ? 0 : elapsed, currentChapter);
+  const subject = reaction ? fitArt(`/assets/cast/${reaction}/assembled.png`) : cast?.[0] ? castArtUrl(cast[0].figure) ?? undefined : undefined;
+  const creature = cast?.find(member => member.figure.startsWith("entities/"));
+  if (prompt.challenge?.version === 3 && ["precision", "timing", "balance"].includes(spec.kind)) return <RiftlightSkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} props={appearance?.props} watcher={creature ? castArtUrl(creature.figure) ?? undefined : undefined} busy={busy} send={onSkillAction} />;
+  if (prompt.challenge && spec.kind !== "tracking") return <SkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} object={object} subject={prompt.challenge.version === 3 ? subject : undefined} busy={busy} send={onSkillAction} />;
   switch (spec.kind) {
     case "precision":
       if (building && active && !still) return null;
@@ -394,10 +403,11 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
       const chosen = (id: string) => spec.options.find((o) => o.id === prompt.contributions?.[id]);
       const count = connected.filter((id) => prompt.contributions?.[id] !== undefined).length;
       return <div className="story-interaction__reactions game-play" aria-live="polite">
-        {(prompt.taps ?? 0) > 0 && <div className="skill-creation" aria-label="What we made together">{spec.options.map(option => {
+        {state?.chapterId?.startsWith("riftlight-") && subject && <img className="game-play-subject" src={subject} alt="" />}
+        {(prompt.taps ?? 0) > 0 && <div className={`skill-creation${appearance?.optionProps ? " skill-creation--painted" : ""}`} aria-label="What we made together">{spec.options.map(option => {
           const count = prompt.playCounts?.[option.id] ?? Object.values(prompt.contributions ?? {}).filter(id => id === option.id).length;
           return count > 0 ? <div key={option.id} className="skill-creation__part" style={{ "--growth": Math.min(5, count) } as CSSProperties}>
-            <span className="skill-creation__cluster" aria-hidden="true">{Array.from({ length: Math.min(5, count) }, (_, i) => <span key={i} style={{ "--seed": i } as CSSProperties}><PaintedGlyph label={option.label} /><Icon name={option.icon} /></span>)}</span>
+            {appearance?.optionProps?.[option.id] ? <Prop id={appearance.optionProps[option.id]!} className="skill-creation__painting" /> : <span className="skill-creation__cluster" aria-hidden="true">{Array.from({ length: Math.min(5, count) }, (_, i) => <span key={i} style={{ "--seed": i } as CSSProperties}><PaintedGlyph label={option.label} /><Icon name={option.icon} /></span>)}</span>}
             <strong>{option.label}</strong><small>×{count}</small>
           </div> : null;
         })}</div>}

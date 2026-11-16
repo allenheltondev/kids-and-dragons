@@ -226,14 +226,6 @@
       }
     ]
   },
-  "riftlight-exchange-rift/barge_toss/interaction/cue": {
-    "": [
-      {
-        "clip": "8260364551e7e5bff30b6499942e4fbd8a6a453348e35b46b1ec0e30420d8bc0",
-        "ms": 2500
-      }
-    ]
-  },
   "riftlight-exchange-rift/barge_toss/narration": {
     "": [
       {

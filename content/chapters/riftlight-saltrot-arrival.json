@@ -130,7 +130,11 @@
           "hatch-cover",
           "kelp-cake",
           "tidepocket-broom"
-        ]
+        ],
+        "optionProps": {
+          "cakes": "kelp-cake",
+          "sweep": "tidepocket-broom"
+        }
       },
       "tide_dash": {
         "props": [
@@ -2461,7 +2465,9 @@
         "actionLabel": "Splash across!",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "lead",

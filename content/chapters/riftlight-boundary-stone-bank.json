@@ -1045,12 +1045,14 @@
       ],
       "art": "scenes/riftlight/boundary-river-row",
       "interaction": {
-        "kind": "precision",
-        "cue": "Tie it off when the cord rises to Tally's chalk mark.",
+        "kind": "timing",
+        "cue": "Tie it off while the cord stays close to Tally’s chalk mark.",
         "actionLabel": "Tie it off!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "watch",
+        "durationMs": 250
       },
       "onSuccess": {
         "goto": "tight",

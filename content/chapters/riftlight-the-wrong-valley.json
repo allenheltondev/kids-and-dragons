@@ -65,7 +65,8 @@
       },
       "light_lantern": {
         "props": [
-          "prop_lantern"
+          "prop_lantern",
+          "wind-banner"
         ]
       },
       "stone_arrow": {
@@ -1138,7 +1139,9 @@
         "actionLabel": "Jump now!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "lantern_post",
@@ -1230,12 +1233,14 @@
       ],
       "art": "scenes/riftlight/wrong-valley",
       "interaction": {
-        "kind": "precision",
+        "kind": "timing",
         "cue": "Strike the flint when the wind dips.",
         "actionLabel": "Strike!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "wind",
+        "durationMs": 250
       },
       "onSuccess": {
         "goto": "warning_lit",

@@ -712,7 +712,9 @@
         "actionLabel": "Step on the note",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "watch",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "on_island",

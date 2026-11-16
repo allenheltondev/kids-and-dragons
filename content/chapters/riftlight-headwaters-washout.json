@@ -2606,7 +2606,9 @@
         "actionLabel": "Hop!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 3000
+        "periodMs": 3000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "floe_rest",
@@ -2708,7 +2710,7 @@
       "narration": "The knob on the ledge's tip is just out of reach. \"Toss a loop over it!\" Skerry calls. \"Like Grumble! Like Old Clank!\" Throw it as it comes by.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the loop is over the knob.",
+        "cue": "Aim the loop over the knob. Clear the edge of the bank.",
         "actionLabel": "Toss the loop!",
         "target": 0.5,
         "width": 0.3,
@@ -3073,8 +3075,13 @@
       },
       "jam_hold": {
         "props": [
-          "relay-log",
+          "rope-loop",
           "rope-taut"
+        ],
+        "coverIcons": [
+          "relay-log",
+          "relay-log",
+          "relay-log"
         ]
       },
       "knob_toss": {

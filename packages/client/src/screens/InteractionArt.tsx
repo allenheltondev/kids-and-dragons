@@ -28,7 +28,7 @@ export function PaintedGlyph({label}:{label:string}) {
 export function PaintedCover({ bells, reveal, diving=false, icon, target, raised=false }: {bells:boolean;reveal:boolean;diving?:boolean;icon?:string;target?:string;raised?:boolean}) {
  const [failed,setFailed]=useState(false);
  return <span className={"painted-cover"+(bells?" painted-cover--bell":"")} data-raised={raised} aria-hidden="true">
-  {reveal&&(icon?<span className="painted-cover__glow" />:<img className="painted-cover__peek" src={bells?propUrl("ticking-crystal"):fitArt("/assets/cast/"+(diving?"kid_burrowing":"kid_peeking")+"/assembled.png")} alt="" />)}
+  {reveal&&(icon||target?<span className="painted-cover__glow" />:<img className="painted-cover__peek" src={bells?propUrl("ticking-crystal"):fitArt("/assets/cast/"+(diving?"kid_burrowing":"kid_peeking")+"/assembled.png")} alt="" />)}
   {reveal && target && <img className="painted-cover__target" src={propUrl(target)} alt="" onError={e=>{e.currentTarget.style.visibility="hidden";}} />}
   {!failed && <img className="painted-cover__front" src={propUrl(icon ?? (bells?"wind-bells":"snow-mound"))} alt="" onError={()=>setFailed(true)} />}
   {failed && <span className="painted-cover__fallback" />}

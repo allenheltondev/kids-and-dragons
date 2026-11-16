@@ -6,12 +6,12 @@ import { HeroImage } from "../world/hero-art-dom";
 import { propUrl, PaintedGlyph } from "./InteractionArt";
 import { Icon } from "./icons";
 import { Button } from "../ui/Button";
-import { buzz, litStep } from "./game-feel";
+import { buzz, litStep, padNote } from "./game-feel";
 import "./SkillGame.css";
 
 /** The manipulated object belongs in the authored landscape. Controls stay on phones. */
-export function SkillGame({ prompt, party, now, playerId, object, busy = false, send }: {
-  prompt: InteractionPrompt; party: PartyMember[]; now: number; playerId?: string; object?: string; busy?: boolean;
+export function SkillGame({ prompt, party, now, playerId, object, subject, busy = false, send }: {
+  prompt: InteractionPrompt; party: PartyMember[]; now: number; playerId?: string; object?: string; subject?: string; busy?: boolean;
   send?: (action: InteractionAction) => Promise<boolean>;
 }) {
   const game = prompt.challenge!;
@@ -153,10 +153,11 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
       next.splice(to, 0, moved); void arrange(next);
     };
     body = <>
-      <div className="skill-mechanism" aria-label={pattern ? "The tune you are rebuilding" : "The path mechanism"}>
+      <div className={`skill-mechanism${subject ? " skill-mechanism--cast" : ""}`} aria-label={pattern ? "The pattern you are rebuilding" : "The plan you are building"}>
+        {subject && <img className="skill-subject" src={subject} alt="" />}
         {token("skill-mechanism__prop")}
         <ol className="skill-stones">{spec.answer.map((id, i) => {
-          const shown = pattern && (prompt.relaxed || still || (watching && lit === i)) ? id : answers[i];
+          const shown = pattern && watching && (still || lit === i) ? id : answers[i];
           const o = shown ? option(shown) : undefined;
           const face = <><span className="skill-stones__number">{i + 1}</span>{o ? <><PaintedGlyph label={o.label} /><Icon name={o.icon} /><span>{o.label}</span></> : <span>?</span>}{i < game.matched && <small>holds ✓</small>}</>;
           return <li key={i} data-lit={lit === i} data-held={i < game.matched}>{editable && !pattern && o ? <button type="button" className="skill-stones__edit kad-focusable" disabled={busy} aria-label={`Remove step ${i + 1}: ${o.label}`}
@@ -175,14 +176,15 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
             onClick={() => { if (suppressTileClick.current) { suppressTileClick.current = false; return; } void arrange(answers.filter((_, at) => at !== i)); }}>{face}</button> : face}</li>;
         })}</ol>
       </div>
+      {pattern && !watching && (prompt.relaxed || still) && <p className="skill-pattern-reference">Pattern to copy: {spec.answer.map(id => option(id)?.label).join(" → ")}</p>}
       {clues.length > 0 && <div className="game-clue"><strong>Your clues — read them aloud</strong><ul>{clues.map((clue, i) => <li key={i}>{clue}</li>)}</ul></div>}
-      {pattern && <p className="skill-reading">{watching ? "Watch and listen to the pattern…" : "Rebuild the tune. Your friends can help."}</p>}
-      {!pattern && !playerId && <p className="skill-caption">Share the clues. Test a few steps before crossing.</p>}
+      {pattern && <p className="skill-reading">{watching ? "Watch and listen to the pattern…" : "Rebuild the pattern. Your friends can help."}</p>}
+      {!pattern && !playerId && <p className="skill-caption">Share the clues. Put the whole plan together, then test it.</p>}
       {!pattern && editable && answers.length > 0 && <small className="skill-caption">Drag stones to rearrange. Tap to remove. Keyboard: Alt + arrow keys.</small>}
       {editable && !watching && <>
-        <div className="skill-pads">{spec.options.map(o => <button type="button" className="kad-focusable" key={o.id} disabled={busy || answers.length >= spec.answer.length} onClick={() => void arrange([...answers, o.id])}><PaintedGlyph label={o.label} /><Icon name={o.icon} /><strong>{o.label}</strong></button>)}</div>
+        <div className="skill-pads">{spec.options.map((o, index) => <button type="button" className="kad-focusable" key={o.id} disabled={busy || answers.length >= spec.answer.length} onClick={() => { padNote(index); void arrange([...answers, o.id]); }}><PaintedGlyph label={o.label} /><Icon name={o.icon} /><strong>{o.label}</strong></button>)}</div>
         <div className="skill-edit-row">{action("Change last step", () => void arrange(answers.slice(0, -1)), !answers.length, true)}
-          {!pattern && action("Test these steps", () => void commit({ answer: answers, testOnly: true }), !answers.length, true)}</div>
+          {!pattern && action("Test these steps", () => void commit({ answer: answers, testOnly: true }), game.version === 3 ? answers.length !== spec.answer.length : !answers.length, true)}</div>
         {action(spec.actionLabel, () => void commit({ answer: answers }), answers.length !== spec.answer.length)}
       </>}
     </>;

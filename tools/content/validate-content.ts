@@ -1637,6 +1637,14 @@ function checkChapter(rep: Report, f: string, chapter: Chapter, context: Chapter
         fail(`${at}/props/${index}`, `story prop "${prop}" has no image asset`, `Expected assets/story-props/${prop}.webp.`);
       }
     }
+    for (const [option, prop] of Object.entries(appearance.optionProps ?? {})) {
+      if (scene.interaction.kind !== "play" || !scene.interaction.options.some(o => o.id === option)) {
+        fail(`${at}/optionProps/${option}`, "does not name a free-play option", "Use an option id from this scene.");
+      }
+      if (!rep.storyPropIds.has(prop) || !repoAssetExists(`story-props/${prop}.webp`)) {
+        fail(`${at}/optionProps/${option}`, `unknown or missing story prop "${prop}"`, "Use a registered story prop with an image asset.");
+      }
+    }
     if (appearance.coverIcons !== undefined) {
       if (scene.interaction.kind !== "tracking") {
         fail(`${at}/coverIcons`, "coverIcons are only valid on tracking scenes", "Attach tracking cover art to a tracking interaction.");

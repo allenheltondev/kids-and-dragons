@@ -673,7 +673,9 @@
         },
         {
           "type": "findLook",
-          "looks": ["the_tracker"],
+          "looks": [
+            "the_tracker"
+          ],
           "rewardId": "riftlight-exchange-rift.tracker"
         }
       ],
@@ -2346,7 +2348,9 @@
         "actionLabel": "Carry the kid!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "wind",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "ridge_ok"
@@ -2465,7 +2469,7 @@
       ],
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the rope is over the pilot's hook.",
+        "cue": "Aim the rope over the pilot’s hook. Let the wind guide your arc.",
         "actionLabel": "Throw the rope!",
         "target": 0.5,
         "width": 0.3,
@@ -2503,7 +2507,9 @@
         "actionLabel": "Pass the sack!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "quay_rest",
@@ -2554,19 +2560,26 @@
       },
       "sack_chain": {
         "props": [
-          "relay-sack"
+          "relay-sack",
+          "water-surge"
         ]
       },
       "ridge_walk": {
         "props": [
-          "coat-kid"
+          "coat-kid",
+          "wind-banner"
         ]
       },
       "ridge_lee": {
         "props": [
           "coat-kid",
           "wind-blanket"
-        ]
+        ],
+        "optionProps": {
+          "tuck": "wind-blanket",
+          "rub": "coat-kid",
+          "hum": "note-low"
+        }
       }
     },
     "warmUrls": [

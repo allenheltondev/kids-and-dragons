@@ -1481,7 +1481,10 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       ? interactionEdge(ctx.rules, { id: playerId, species: hero.species, class: hero.class }, scene.tags)
       : undefined;
     if (edge) prompt.edge = edge; else delete prompt.edge;
-    if (intent.rulesVersion === 2 && skillCanStart(prompt.spec.kind)) prompt.challenge = skillStart(connected);
+    if ((intent.rulesVersion === 2 || intent.rulesVersion === 3) && skillCanStart(prompt.spec.kind)) {
+      prompt.challenge = skillStart(connected);
+      if (intent.rulesVersion === 3 && draft.chapterId?.startsWith("riftlight-")) prompt.challenge.version = 3;
+    }
     if (prompt.spec.kind === "relay") {
       prompt.relay = relayStart(ctx.now);
       if (prompt.relaxed) prompt.relay.flight.durationMs *= 1.5;
@@ -1505,6 +1508,14 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     if (intent.action === "complete") return undefined;
   }
   if (prompt.challenge) {
+    // A cached v2 phone understands round IDs but not the new flight/crossing rules.
+    // Negotiate one rule set for the room, preserving progress and stale-round rejection.
+    if (prompt.challenge.version === 3 && (intent.action === "commit" || intent.action === "arrange" || intent.action === "adjust") &&
+        intent.round === prompt.challenge.round && intent.rulesVersion !== 3 &&
+        (playerId === actor || prompt.spec.kind === "balance" || prompt.spec.kind === "cooperate")) {
+      delete prompt.challenge.version;
+      prompt.compatibility = "legacy-controls";
+    }
     try {
       const outcome = applySkillAction(prompt, connected, playerId, intent, ctx.now);
       if (outcome) result(outcome);

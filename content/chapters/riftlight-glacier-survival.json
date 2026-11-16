@@ -1646,11 +1646,13 @@
       "narration": "One last pole goes across the snow shelf. \"The stream pauses between gulps,\" says the herder. \"Step across when it goes quiet.\" The stream gulps. Then it goes quiet.",
       "interaction": {
         "kind": "timing",
-        "cue": "Step when the marker reaches the quiet gap between the stream's gulps.",
+        "cue": "Step in the long quiet gap between the stream’s gulps.",
         "actionLabel": "Step!",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "ledge_done",
@@ -1944,7 +1946,9 @@
         "actionLabel": "Carry the kid through",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "shelter",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "cairn",
@@ -2289,7 +2293,7 @@
     "interactions": {
       "kid_burrow": {
         "props": [
-          "snow-mound"
+          "coat-kid"
         ]
       },
       "crust_hold": {
