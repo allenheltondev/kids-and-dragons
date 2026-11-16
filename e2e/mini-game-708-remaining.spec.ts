@@ -17,8 +17,10 @@ async function boardFits(page: Page) {
   await expect.poll(() => page.locator(".game--tv .game__board").evaluate(el => {
     const board = el.getBoundingClientRect();
     const scene = el.querySelector(".skill-scene, .rift-field")!.getBoundingClientRect();
-    return el.scrollHeight <= el.clientHeight + 1 && scene.top >= board.top && scene.bottom <= board.bottom + 1;
-  })).toBe(true);
+    return { fits: el.scrollHeight <= el.clientHeight + 1 && scene.top >= board.top && scene.bottom <= board.bottom + 1,
+      scrollHeight: el.scrollHeight, clientHeight: el.clientHeight, boardTop: board.top, boardBottom: board.bottom,
+      sceneTop: scene.top, sceneBottom: scene.bottom };
+  })).toMatchObject({ fits: true });
 }
 
 for (const [chapterId, sceneId, next] of [
