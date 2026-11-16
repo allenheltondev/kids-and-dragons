@@ -23,7 +23,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
   const spec = prompt.spec;
   const members = party.filter(m => m.connected);
   const ids = members.map(m => m.playerId);
-  const actor = interactionActor(prompt, ids);
+  const actor = prompt.phase === "result" ? prompt.resolvedActorId ?? interactionActor(prompt, ids) : interactionActor(prompt, ids);
   const mine = actor === playerId;
   const active = prompt.phase === "active";
   const still = reducedMotion();
@@ -41,7 +41,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
   };
   const commit = (extra: { position?: number; angle?: number } = {}) => void post({ action: "commit", round: game.round, ...extra });
   const hero = (id: string | undefined, className: string, style?: CSSProperties) => {
-    const member = members.find(m => m.playerId === id);
+    const member = party.find(m => m.playerId === id);
     return member ? <span className={className} style={style}><HeroImage hero={member.character} place="world" alt="" /><small>{member.character.name}</small></span> : null;
   };
   const progress = <div className="rift-progress" aria-label={`${game.progress} of ${skillSteps(prompt, ids)} stages complete`}>

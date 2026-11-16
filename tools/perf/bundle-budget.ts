@@ -392,7 +392,12 @@ const FIRST_PAINT_BUDGET_KB = 336;
 // kit saves for its shelf, and schedules friends' social/music reactions through
 // existing movement. First paint remains 335KB (18 chunks); no dependency or
 // raster asset was added. Keep 2KB of total slack.
-const TOTAL_BUDGET_KB = 1869;
+// 1869 -> 1886 for the Riftlight mini-game overhaul (#788): 1883KB measured
+// both locally and in Linux CI (run 43964127080). The new throw/crossing/carry
+// boards, their shared rules, outcome rendering, and restored cast presentation
+// are an explicit feature cost, with no new dependency. The first-paint graph
+// remains 18 chunks at 336KB under its unchanged 336KB cap. Keep 3KB of slack.
+const TOTAL_BUDGET_KB = 1886;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
