@@ -233,7 +233,7 @@ export function interactionActor(prompt: InteractionPrompt, connected: readonly 
       const roster = prompt.challenge.participants ?? prompt.playerIds;
       const start = Math.max(0, roster.indexOf(prompt.actorId));
       for (let offset = 0; offset < roster.length; offset++) {
-        const id = roster[(start + prompt.challenge.progress + offset) % roster.length]!;
+        const id = roster[((prompt.challenge.nextParticipant ?? start + prompt.challenge.progress) + offset) % roster.length]!;
         if (connected.includes(id)) return id;
       }
       return connected[0];

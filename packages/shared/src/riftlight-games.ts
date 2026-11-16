@@ -1,4 +1,4 @@
-import { aimWidth, edgeScale, interactionActor, precisionSuccess, type InteractionAction, type InteractionPrompt } from "./interactions.js";
+import { aimWidth, edgeScale, interactionActor, precisionSuccess, skillCompletions, type InteractionAction, type InteractionPrompt } from "./interactions.js";
 import { skillSteps } from "./skill-games.js";
 
 const clamp = (n: number, low: number, high: number) => Math.max(low, Math.min(high, n));
@@ -117,6 +117,12 @@ export function applyRiftlightAction(prompt: InteractionPrompt, connected: reado
   game.feedback = feedback;
   game.round++;
   if (good) {
+    if (kind === "precision" || kind === "timing") {
+      game.completed = { ...skillCompletions(prompt) };
+      game.completed[playerId] = (game.completed[playerId] ?? 0) + 1;
+      const roster = game.participants ?? prompt.playerIds;
+      game.nextParticipant = (roster.indexOf(playerId) + 1) % Math.max(1, roster.length);
+    }
     game.progress++;
     game.strain = Math.max(0, game.strain - 0.15);
     return game.progress >= skillSteps(prompt, connected) ? "success" : undefined;

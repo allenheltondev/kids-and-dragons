@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyIntent, carryState, crossingOpenings, crossingSafe, crossingWindow, interactionActor, throwFlight, throwSituation,
+import { applyIntent, carryState, crossingOpenings, crossingSafe, crossingWindow, interactionActor, skillCompletions, skillSteps, throwFlight, throwSituation,
   type Chapter, type InteractionAction, type InteractionScene, type RunState } from "@kad/shared";
 import { chapters, context } from "./riftlight-test-support.ts";
 import { act, landed, open, promptOf, solve } from "./interaction-play.ts";
@@ -171,5 +171,31 @@ describe("Riftlight's revised mini-games", () => {
     expect(result.error).toBeUndefined();
     expect(promptOf(result.state)).toMatchObject({ compatibility: "legacy-controls", challenge: { progress: 1 } });
     expect(promptOf(result.state).challenge!.version).toBeUndefined();
+  });
+  it.each(["precision", "timing"] as const)("preserves actual %s stage credits and handoff through disconnect, v2 fallback, and return", kind => {
+    const chapter = chapters.get("riftlight-exchange-rift")!;
+    let state = start(chapter, kind === "precision" ? "barge_toss" : "ridge_walk", 4);
+    const [a, b, c, d] = ids(state) as [string, string, string, string];
+    state = solveRound(chapter, state);
+    state.party.find(member => member.playerId === b)!.connected = false;
+    expect(actor(state)).toBe(c);
+    state = solveRound(chapter, state);
+    expect(skillCompletions(promptOf(state))).toEqual({ [a]: 1, [c]: 1 });
+    expect(actor(state)).toBe(d);
+    state = JSON.parse(JSON.stringify(state)) as RunState;
+    const p = promptOf(state);
+    if (p.spec.kind !== kind) throw Error();
+    // A cached v2 phone submits its original marker position, without a rules version.
+    const result = applyIntent(state, { playerId: d, intent: { type: "INTERACT", openedSeq: p.openedSeq,
+      attempt: p.attempt, action: "commit", round: p.challenge!.round, position: p.spec.target } }, context(chapter));
+    expect(result.error).toBeUndefined();
+    state = result.state;
+    expect(promptOf(state).challenge!.version).toBeUndefined();
+    expect(skillCompletions(promptOf(state))).toEqual({ [a]: 1, [c]: 1, [d]: 1 });
+    expect(skillSteps(promptOf(state), ids(state))).toBe(9);
+    expect(actor(state)).toBe(a);
+    state.party.find(member => member.playerId === b)!.connected = true;
+    expect(skillSteps(promptOf(state), ids(state))).toBe(12);
+    expect(skillCompletions(promptOf(state))[b] ?? 0).toBe(0);
   });
 });

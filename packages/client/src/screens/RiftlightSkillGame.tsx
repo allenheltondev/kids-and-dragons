@@ -91,15 +91,15 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
   } else if (spec.kind === "timing") {
     const window = crossingWindow(prompt);
     const phase = active ? still ? moment : crossingPhase(prompt, now) : prompt.stopPosition ?? 0;
-    const safe = crossingSafe(prompt, phase);
+    const safe = active ? crossingSafe(prompt, phase) : prompt.outcome === "success" || prompt.outcome === "assisted";
     const openings = crossingOpenings(prompt);
     const opening = openings.find(w => phase >= w.start && phase <= w.end);
-    const open = opening !== undefined;
+    const open = active ? opening !== undefined : safe;
     const remain = opening ? Math.max(0, opening.end - phase) : 0;
     const floes = props.includes("moving-floe");
     const weather = props.find(id => ["water-surge", "icicle-drips", "wind-banner", "roof-slab", "ice-knob"].includes(id));
     body = <>
-      <p className="rift-read">{safe ? "Enough time. Go!" : open ? "Closing. Wait for the next opening." : "Watch for a long opening."}<span>{game.strain > 0 ? "Recovery: the opening is slower and wider." : "Start while there is time to finish your move."}</span></p>
+      <p className="rift-read">{!active ? prompt.outcome === "success" ? "Across safely." : prompt.outcome === "assisted" ? "A helping hand makes a way." : "Back on safe footing." : safe ? "Enough time. Go!" : open ? "Closing. Wait for the next opening." : "Watch for a long opening."}{active && <span>{game.strain > 0 ? "Recovery: the opening is slower and wider." : "Start while there is time to finish your move."}</span>}</p>
       <div className={`rift-field rift-field--crossing rift-field--${spec.setting ?? "water"}`} data-open={open} data-safe={safe} data-still={still}>
         {floes ? <><Prop id="moving-floe" className="rift-floe rift-floe--near" /><Prop id="moving-floe" className="rift-floe rift-floe--far" /></> : <><div className="rift-bank rift-bank--near" /><div className="rift-bank rift-bank--far" /></>}
         {watcher && spec.setting === "watch" && !weather ? <img className="rift-watcher" src={watcher} alt="" /> : <div className="rift-weather" aria-hidden="true">{weather ? <Prop id={weather} className="rift-weather__painting" /> : <><i /><i /><i /></>}</div>}
@@ -108,11 +108,11 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
         {hero(actor, "rift-hero rift-hero--crossing", { left: `${15 + Math.min(1, game.progress / skillSteps(prompt, ids)) * 48}%` })}
         <span className="rift-crossing-path" aria-hidden="true" />
       </div>
-      <div className="rift-time" role="img" aria-label={safe ? "Enough time to cross" : open ? "Opening is too short now" : "Wait for the opening"}>
+      {active && <><div className="rift-time" role="img" aria-label={safe ? "Enough time to cross" : open ? "Opening is too short now" : "Wait for the opening"}>
         {openings.map((w, i) => <span key={i} className="rift-time__opening" style={{ left: `${w.start * 100}%`, width: `${(w.end - w.start) * 100}%` }} />)}
         <span className="rift-time__travel" style={{ left: `${phase * 100}%`, width: `${Math.min(window.travel, 1 - phase) * 100}%` }} data-safe={safe} />
       </div>
-      <p className="rift-hint">{open ? `${Math.round(remain * window.periodMs / 100) / 10}s of opening left` : "Gold: the opening. White: the time you need to cross."}</p>
+      <p className="rift-hint">{open ? `${Math.round(remain * window.periodMs / 100) / 10}s of opening left` : "Gold: the opening. White: the time you need to cross."}</p></>}
       {mine && active && send && <>
         {still && <label className="rift-still">Choose a crossing moment<input aria-label="Crossing moment" type="range" min="0" max="100" value={Math.round(moment * 100)} disabled={busy} onChange={e => setMoment(Number(e.target.value) / 100)} /></label>}
         <Button block disabled={busy} onClick={() => commit({ position: phase })}>{spec.actionLabel}</Button>
@@ -142,7 +142,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
   } else return null;
   return <div className={`rift-game rift-game--${spec.kind}`}>
     {progress}{body}
-    {game.feedback && <p className="rift-feedback" role="status">{game.feedback}</p>}
+    {game.feedback && !(spec.kind === "timing" && !active && prompt.outcome !== "failure") && <p className="rift-feedback" role="status">{game.feedback}</p>}
     {game.strain > 0 && <label className="rift-strain">{spec.kind === "precision" ? "Landing chances slipping" : "Footing slipping"}<meter aria-label="Accumulated strain" min="0" max="1" value={game.strain} /></label>}
     {error && <p role="alert">That move did not arrive. Try again.</p>}
   </div>;
