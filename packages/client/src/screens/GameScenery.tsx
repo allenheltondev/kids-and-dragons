@@ -9,10 +9,11 @@ export function GameScenery() {
   const art = sceneArtFor(chapter?.scenes ? chapter : null, state);
   const biome = chapter?.id === state?.chapterId && chapter?.biome ? biomeBackdropUrl(chapter.biome) : null;
   const [failed, setFailed] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState<string | null>(null);
   const url = [art ? sceneBackdropUrl(art) : null, biome].find((candidate): candidate is string => !!candidate && !failed.includes(candidate));
   if (!url) return null;
-  return <div className="game-scenery" aria-hidden="true">
-    <img key={url} src={url} alt="" draggable={false} decoding="async" onError={() => setFailed(current => [...current, url])} />
+  return <div className="game-scenery" aria-hidden="true" data-loaded={loaded === url}>
+    <img key={url} src={url} alt="" draggable={false} decoding="async" onLoad={() => setLoaded(url)} onError={() => setFailed(current => [...current, url])} />
     <span className="game-scenery__light" />
   </div>;
 }

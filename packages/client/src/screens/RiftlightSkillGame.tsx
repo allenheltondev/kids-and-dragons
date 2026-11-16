@@ -124,7 +124,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
     const level = playerId ? prompt.levels?.[playerId] ?? 0 : 0;
     body = <>
       <p className="rift-read">{!active ? prompt.outcome === "success" ? "Delivered safely." : "Back on safe footing." : carry.safe ? "Level. Take a careful step." : !carry.joined ? "Everyone take an end." : carry.tilt > 0 ? "Right end dipping" : "Left end dipping"}<span>{game.progress === 0 ? "Get both ends off the ground." : game.progress === 1 ? "Higher ground under the left end." : "Higher ground under the right end."}</span></p>
-      <div className="rift-field rift-field--carry" data-still={still}>
+      <div className={`rift-field rift-field--carry${game.version === 4 ? " rift-field--cargo" : ""}`} data-still={still}>
         <div className="rift-ground" />
         <div className="rift-beam" style={{ transform: `rotate(${Math.max(-18, Math.min(18, carry.tilt * 35))}deg)` }}>
           <Prop id={props[0]} className="rift-beam__painting" />

@@ -8,6 +8,7 @@ import { useGameStore, useMyTurnKey } from "../store";
 import { forgetServerTime, noteServerTime } from "../store/server-clock";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
 import { PaintedCover } from "./InteractionArt";
+import { GameScenery } from "./GameScenery";
 import wagons from "../../../../content/chapters/gemfall-04c.json";
 import rocks from "../../../../content/chapters/gemfall-06.json";
 
@@ -41,6 +42,18 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
 }
 
 describe("Gemfall steady work", () => {
+  it("marks a game backdrop ready only after it loads and resets readiness for a fallback", () => {
+    seed();
+    useGameStore.setState({ chapter: { id: "test", biome: "sunward_fields", scenes: { test: { type: "story", narration: "Here", choices: [], art: "scenes/gemfall/exchange-docks" } } } as never });
+    const { container } = render(<GameScenery />);
+    expect(container.querySelector(".game-scenery")?.getAttribute("data-loaded")).toBe("false");
+    fireEvent.load(container.querySelector("img")!);
+    expect(container.querySelector(".game-scenery")?.getAttribute("data-loaded")).toBe("true");
+    fireEvent.error(container.querySelector("img")!);
+    expect(container.querySelector(".game-scenery")?.getAttribute("data-loaded")).toBe("false");
+    fireEvent.error(container.querySelector("img")!);
+    expect(container.querySelector(".game-scenery")).toBeNull();
+  });
   it("sends the chosen support and effort with the Gemfall rules, without a moving toss", () => {
     const send = seed(precision, { challenge: { ...skillStart(["p"]), version: 4 } });
     render(<StoryInteractionControls />);

@@ -112,3 +112,4 @@
 
 .rift-field--work .rift-timing-subject { left: 30%; width: 45%; height: 75%; bottom: 12%; }
 .rift-field--work .rift-far-prop { left: 55%; width: 35%; height: 55%; }
+.rift-field--cargo .rift-beam__painting { object-fit: contain !important; width: 50%; left: 25%; height: 3.5em; bottom: 0; }
