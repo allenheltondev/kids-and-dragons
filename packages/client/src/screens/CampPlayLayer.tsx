@@ -1,3 +1,4 @@
+import { campMusicReaction } from "../world/friend-personality";
 import { useEffect, useRef } from "react";
 import { campMomentKind, type CampPlayMessage } from "@kad/shared";
 import { useChapter, useGameStore, useRunState } from "../store";
@@ -14,6 +15,7 @@ export function CampPlayLayer(): React.JSX.Element | null {
   const plays = useGameStore(s => s.campPlays ?? EMPTY);
   const drop = useGameStore(s => s.dropCampPlay);
   const heard = useRef(new Set<number>());
+  const musicFriend = useRef({ at: -Infinity, turn: 0 });
   const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
   const downtime = state && campMomentKind(state) !== null;
   const live = plays.filter(p => downtime && p.runId === state.runId && p.momentId === state.campMoment?.id);
@@ -29,7 +31,15 @@ export function CampPlayLayer(): React.JSX.Element | null {
       if (timers.current.has(event.key)) continue;
       if (!heard.current.has(event.key)) {
         heard.current.add(event.key);
-        if (event.play.activity === "music") cue(`camp-${event.play.instrument}`);
+        if (event.play.activity === "music") {
+          cue(`camp-${event.play.instrument}`);
+          const now = performance.now();
+          if (now - musicFriend.current.at >= 4000) {
+            const reaction = campMusicReaction(state, event.play.instrument, event.heroId, musicFriend.current.turn++);
+            if (reaction) useGameStore.getState().reactFriend(reaction);
+            musicFriend.current.at = now;
+          }
+        }
         else cue("whoosh");
       }
       const timer = setTimeout(() => { drop(event.key); timers.current.delete(event.key); heard.current.delete(event.key); }, event.play.activity === "music" ? 1800 : 5000);

@@ -387,7 +387,12 @@ const FIRST_PAINT_BUDGET_KB = 336;
 // shared presentation, the camp band, treasure inspection, keyboard navigation,
 // and their styling add about 15KB, mostly in the lazy room/camp chunks. Existing
 // paintings are reused; no dependency was added. Keep 2KB of total slack.
-const TOTAL_BUDGET_KB = 1859;
+// 1859 -> 1869 on 2026-11-16 for friend personalities and tent interiors:
+// 1867KB measured. About 10KB of lazy camp code draws the personal room, reuses
+// kit saves for its shelf, and schedules friends' social/music reactions through
+// existing movement. First paint remains 335KB (18 chunks); no dependency or
+// raster asset was added. Keep 2KB of total slack.
+const TOTAL_BUDGET_KB = 1869;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

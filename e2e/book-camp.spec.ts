@@ -129,6 +129,13 @@ test.describe("the book's Camp tray", () => {
     let page = await openBook(context);
     await openCamp(page);
     await saysNothingAboutSaving(page);
+    const peek = page.getByText(`Peek inside ${HERO}'s tent`, { exact: true });
+    await peek.click(TAP);
+    const tent = page.getByRole("region", { name: `${HERO}'s tent` });
+    await tent.getByText("Choose your shelf treasure").click(TAP);
+    await tent.getByRole("button", { name: "Flower pot", exact: true }).click(TAP);
+    await expect.poll(async () => (await serverKit(phone)).slots[0], TAP).toBe("deco_flower_pot");
+    await peek.click(TAP);
     const pieces = page.getByRole("region", { name: "Our treasures" });
     await pieces.getByRole("button", { name: "Noodle awning" }).click(TAP);
     await expect(pieces.getByRole("status")).toContainText("Found at the Exchange Rift");
@@ -147,6 +154,12 @@ test.describe("the book's Camp tray", () => {
     await expect(page.getByText(/no signal/i).first()).toBeVisible(TAP);
     await openCamp(page);
     await context.setOffline(true);
+    await peek.click(TAP);
+    await expect(tent.getByRole("status")).toContainText("Flower pot");
+    await tent.getByText("Choose your shelf treasure").click(TAP);
+    await tent.getByRole("button", { name: "Pinwheel", exact: true }).click(TAP);
+    await expect(tent.getByRole("status")).toContainText("Pinwheel");
+    await peek.click(TAP);
     // The saved collection is still explorable with no network at all.
     await pieces.getByRole("button", { name: "Noodle awning" }).click(TAP);
     await expect(pieces.getByRole("status")).toContainText("Found at the Exchange Rift");
@@ -171,6 +184,7 @@ test.describe("the book's Camp tray", () => {
     await signalBack(context);
     await expect.poll(async () => (await serverKit(phone)).color, { timeout: 20_000 }).toBe("meadow");
     await expect(page.getByTestId("book-camp-note")).toHaveCount(0);
+    await expect.poll(async () => (await serverKit(phone)).slots[0], TAP).toBe("deco_pinwheel");
     await saysNothingAboutSaving(page);
     expect(await page.evaluate(() => localStorage.getItem("kad.kitQueue"))).toBeNull();
   });

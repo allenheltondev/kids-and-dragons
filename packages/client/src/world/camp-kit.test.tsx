@@ -78,3 +78,24 @@ it("isolates cloth filters between seats and falls back to the neutral painting 
   expect(view.container.querySelector('image[href="/assets/camp/frames/stage1/bedroll.png"]')).not.toBeNull();
   expect(view.container.querySelectorAll("filter")).toHaveLength(1);
 });
+
+
+it("hangs actual exterior decorations on their owner's tent, including while she is inside", () => {
+  const hero = makeMember({ character: makeCharacter({ id: "c_1", name: "Pip" }) });
+  const state = makeState({ phase: "lobby", party: [hero], camp: { revision: 1, frameStage: 2, grownBy: ["gemfall"], dashCash: 0, owned: [], placed: {}, friends: [], shopOpen: false }, kits: { c_1: { revision: 1, style: "rolled", tent: "rolled", color: null, slots: ["deco_bunting", "deco_pinwheel"], unlocked: [] } } });
+  const layout = campLayoutFor(2)!;
+  const view = render(<StillCamp layout={layout} state={state} />);
+  const tent = () => view.container.querySelector('[data-piece="tent_0"]')!;
+  expect([...tent().querySelectorAll("[data-decoration]")].map(image => image.getAttribute("data-decoration"))).toEqual(["deco_bunting", "deco_pinwheel"]);
+  const points = manifest.camp.tentStyles.find(t => t.id === "rolled")!.hangPoints;
+  for (const [slot, image] of [...tent().querySelectorAll("[data-decoration]")].entries()) {
+    expect(Number(image.getAttribute("x")) + Number(image.getAttribute("width")) / 2).toBeCloseTo(points[slot]!.x);
+    expect(Number(image.getAttribute("y")) + Number(image.getAttribute("height")) / 2).toBeCloseTo(points[slot]!.y);
+  }
+  expect(view.container.querySelector('[data-piece="tent_1"] [data-decoration]')).toBeNull();
+  view.rerender(<StillCamp layout={layout} state={{ ...state, campMoment: { id: "camp", kind: "lobby", outdoor: true, changes: {}, inTent: ["c_1"] } }} />);
+  expect(tent().querySelectorAll("[data-decoration]")).toHaveLength(2);
+  fireEvent.error(tent().querySelector('[data-camp-tent="rolled"] image')!);
+  expect(tent().querySelectorAll("[data-decoration]")).toHaveLength(0);
+  expect(tent().querySelector('[data-stand-in="tent"]')).toBeTruthy();
+});

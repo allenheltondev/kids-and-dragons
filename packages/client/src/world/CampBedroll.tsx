@@ -4,8 +4,10 @@ import { campPaint } from "./camp-paint";
 import { TENT_ART } from "./camp-scene";
 
 /** Tint only the cloth, leaving a single registered painting's leather and cup untouched. */
-export function CampBedroll({ style, accent }: { style: CampKitStyle; accent: string }): React.JSX.Element {
-  return <CampClothArt {...CAMP_KIT_STYLES[style]} accent={accent} kit={style} fallback={
+export function CampBedroll({ style, accent, cropped = false }: { style: CampKitStyle; accent: string; cropped?: boolean }): React.JSX.Element {
+  const paint = cropped ? campPaint(CAMP_KIT_STYLES[style].path.replace(/^\/assets\//, "")) : null;
+  const viewBox = paint ? `${paint.left * 1024} ${paint.top * 1024} ${(paint.right - paint.left) * 1024} ${(paint.bottom - paint.top) * 1024}` : undefined;
+  return <CampClothArt {...(viewBox ? { viewBox } : {})} {...CAMP_KIT_STYLES[style]} accent={accent} kit={style} fallback={
     <svg viewBox="0 0 1024 1024" aria-hidden="true">
       <image href="/assets/camp/frames/stage1/bedroll.png" width="1024" height="1024" />
     </svg>

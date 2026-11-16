@@ -314,6 +314,8 @@ export interface GameStore {
   tapFriend(friendId: string): Promise<boolean>;
   /** The camp has taken a friend tap. */
   dropFriendTap(key: number): void;
+  /** A local, cosmetic camp reaction. Never sent or applied to run state. */
+  reactFriend(tap: Omit<HeardFriendTap, "key">): void;
   /**
    * "Just watch" on this phone (`true`), or back to making a hero (`false`)
    * (#388, server handlers/watch.ts). Resolves `true` once the server has it;
