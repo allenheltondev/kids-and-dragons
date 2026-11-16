@@ -129,9 +129,11 @@ test.describe("the book's Camp tray", () => {
     let page = await openBook(context);
     await openCamp(page);
     await saysNothingAboutSaving(page);
-    const pieces = page.getByTestId("book-camp-pieces");
-    await expect(pieces.getByText("Found at the Exchange Rift")).toBeVisible();
-    await expect(pieces.getByText("Bought with Dash Cash")).toBeVisible();
+    const pieces = page.getByRole("region", { name: "Our treasures" });
+    await pieces.getByRole("button", { name: "Noodle awning" }).click(TAP);
+    await expect(pieces.getByRole("status")).toContainText("Found at the Exchange Rift");
+    await pieces.getByRole("button", { name: "Lantern string" }).click(TAP);
+    await expect(pieces.getByRole("status")).toContainText("Bought with Dash Cash");
     const friends = page.getByTestId("book-camp-friends");
     await expect(friends.getByText("Met at the Ashspan Bridge")).toBeVisible();
     await friends.getByRole("button", { name: "Say hi to Duckling" }).click();
@@ -145,6 +147,9 @@ test.describe("the book's Camp tray", () => {
     await expect(page.getByText(/no signal/i).first()).toBeVisible(TAP);
     await openCamp(page);
     await context.setOffline(true);
+    // The saved collection is still explorable with no network at all.
+    await pieces.getByRole("button", { name: "Noodle awning" }).click(TAP);
+    await expect(pieces.getByRole("status")).toContainText("Found at the Exchange Rift");
     const kit = page.getByTestId("kit-editor");
     await shelf(page, "color");
     await kit.getByRole("button", { name: "Blue" }).click();

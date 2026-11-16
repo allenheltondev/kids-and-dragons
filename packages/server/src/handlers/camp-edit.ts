@@ -448,7 +448,9 @@ export async function syncCampDowntime(
       return { ...m, character: { ...m.character, look: view } };
     });
   }
-  if (next.camp && (fresh || !next.camp.sources)) {
+  // New projections already carry provenance. Hydrate older snapshots once,
+  // and only when a catalog can resolve it; normal actions need no extra read.
+  if (next.camp && !next.camp.sources && deps.content.campCatalog()) {
     const view = await readCampView(input.run.householdId, state.crew, deps);
     if (view?.sources) next.camp = { ...next.camp, sources: view.sources };
   }
