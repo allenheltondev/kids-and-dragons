@@ -8,6 +8,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { blobKey, parseLock, serializeLock } from "../../packages/shared/src/asset-store";
 import { hashBytes } from "../../packages/shared/src/asset-cache";
@@ -41,7 +42,7 @@ function makeRepo(): string {
   sh(root, "config", "user.email", "test@example.com");
   sh(root, "config", "user.name", "test");
   write(root, "assets.config.json", JSON.stringify({
-    storeUrl: `file://${storeDir}`,
+    storeUrl: pathToFileURL(storeDir).href,
     bucket: null,
     stack: "kad-asset-store",
     region: "us-east-1",
@@ -265,7 +266,7 @@ describe("the everyday loop", () => {
     const origin = makeRepo();
     await cutover(origin);
     const sha = loadLock(origin).files["assets/audio/rain.webm"]!.sha256;
-    expect(urlFor(origin, "assets/audio/rain.webm")).toBe(`file://${storeDir}/sha256/${sha.slice(0, 2)}/${sha}.webm`);
+    expect(urlFor(origin, "assets/audio/rain.webm")).toBe(`${pathToFileURL(storeDir).href}/sha256/${sha.slice(0, 2)}/${sha}.webm`);
   });
 });
 
@@ -311,7 +312,7 @@ describe("merging the lock", () => {
   it("merges two branches that each added art to the same folder", async () => {
     const origin = makeRepo();
     await cutover(origin);
-    const driver = `node ${path.resolve("tools/assets/merge-lock.ts")} %O %A %B`;
+    const driver = `node "${path.resolve("tools/assets/merge-lock.ts").replace(/\\/g, "/")}" %O %A %B`;
     sh(origin, "config", "merge.kad-assets-lock.driver", driver);
     write(origin, ".gitattributes", "assets.lock.json merge=kad-assets-lock\n");
     sh(origin, "add", ".gitattributes");
@@ -476,7 +477,7 @@ describe("archive-history, before a rewrite deletes the git copies", () => {
     write(origin, "assets/cast/pib/assembled.png", "pib v2");
     sh(origin, "commit", "-qam", "v2");
     const shallow = path.join(tmp, "shallow");
-    sh(tmp, "clone", "-q", "--depth", "1", `file://${origin}`, shallow);
+    sh(tmp, "clone", "-q", "--depth", "1", pathToFileURL(origin).href, shallow);
     await expect(archiveHistory(shallow, new DirBlobStore(storeDir))).rejects.toThrow(/shallow.*git fetch --unshallow/);
     expect(fs.existsSync(path.join(storeDir, "history"))).toBe(false);
   });
@@ -492,7 +493,7 @@ describe("stamps on AWS-credentialed writes (#732)", () => {
       delete process.env.KAD_UPLOADED_BY;
     }
     const sha = loadLock(root).files["assets/cast/pib/assembled.png"]!.sha256;
-    const stamp = await storeStamp(`file://${storeDir}`, blobKey(sha, "x.png"));
+    const stamp = await storeStamp(pathToFileURL(storeDir).href, blobKey(sha, "x.png"));
     expect(stamp).toMatchObject({ uploader: "cutover", via: "aws", path: "assets/cast/pib/assembled.png" });
     expect(Date.parse(stamp!.at)).not.toBeNaN();
     expect(JSON.stringify(stamp)).not.toMatch(/arn:|amazonaws|@/);

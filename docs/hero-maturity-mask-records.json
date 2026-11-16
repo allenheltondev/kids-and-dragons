@@ -1,0 +1,482 @@
+{
+  "issue": 490,
+  "mode": "derived coat masks",
+  "output": {
+    "width": 1024,
+    "height": 1024,
+    "format": "PNG",
+    "encoding": "8-bit RGB; R main, G accent, B figure; no alpha"
+  },
+  "method": "Palette draft followed by species cleanup, hand-reviewed maturity traces, nose exclusion boxes and soft boundary fitting. Approved paintings are unchanged.",
+  "review": "All 36 reviewed as original, channel overlay, main-only tint, accent-only tint and paired tint at gameplay size. Landmark regression checks protect eyes, horns, wing gold, nose, mantle and green tail.",
+  "paintings": [
+    {
+      "id": "unicorn-ascendant-base-v2-coat-mask",
+      "path": "assets/characters/unicorn/ascendant/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/unicorn-ascendant-base-v2.png",
+      "derivedFrom": "assets/characters/unicorn/ascendant/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "unicorn-starborn-base-v4-coat-mask",
+      "path": "assets/characters/unicorn/starborn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/unicorn-starborn-base-v4.png",
+      "derivedFrom": "assets/characters/unicorn/starborn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "unicorn-legendary-base-v4-coat-mask",
+      "path": "assets/characters/unicorn/legendary/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/unicorn-legendary-base-v4.png",
+      "derivedFrom": "assets/characters/unicorn/legendary/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "unicorn-ascendant-starweaver-v2-coat-mask",
+      "path": "assets/character-rigs/starweaver/ascendant/unicorn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/unicorn-ascendant-starweaver-v2.png",
+      "derivedFrom": "assets/character-rigs/starweaver/ascendant/unicorn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "unicorn-starborn-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/starborn/unicorn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/unicorn-starborn-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/starborn/unicorn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "unicorn-legendary-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/legendary/unicorn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/unicorn-legendary-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/legendary/unicorn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "dragonling-ascendant-base-v3-coat-mask",
+      "path": "assets/characters/dragonling/ascendant/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/dragonling-ascendant-base-v3.png",
+      "derivedFrom": "assets/characters/dragonling/ascendant/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "dragonling-starborn-base-v3-coat-mask",
+      "path": "assets/characters/dragonling/starborn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/dragonling-starborn-base-v3.png",
+      "derivedFrom": "assets/characters/dragonling/starborn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "dragonling-legendary-base-v1-coat-mask",
+      "path": "assets/characters/dragonling/legendary/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/dragonling-legendary-base-v1.png",
+      "derivedFrom": "assets/characters/dragonling/legendary/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "dragonling-ascendant-starweaver-v2-coat-mask",
+      "path": "assets/character-rigs/starweaver/ascendant/dragonling/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/recovered/dragonling-ascendant-starweaver-v2.png",
+      "derivedFrom": "assets/character-rigs/starweaver/ascendant/dragonling/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "dragonling-starborn-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/starborn/dragonling/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/dragonling-starborn-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/starborn/dragonling/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "dragonling-legendary-starweaver-v3-coat-mask",
+      "path": "assets/character-rigs/starweaver/legendary/dragonling/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/dragonling-legendary-starweaver-v3.png",
+      "derivedFrom": "assets/character-rigs/starweaver/legendary/dragonling/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "griffin-ascendant-base-v3-coat-mask",
+      "path": "assets/characters/griffin/ascendant/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/griffin-ascendant-base-v3.png",
+      "derivedFrom": "assets/characters/griffin/ascendant/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "griffin-starborn-base-v2-coat-mask",
+      "path": "assets/characters/griffin/starborn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/griffin-starborn-base-v2.png",
+      "derivedFrom": "assets/characters/griffin/starborn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "griffin-legendary-base-v1-coat-mask",
+      "path": "assets/characters/griffin/legendary/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/griffin-legendary-base-v1.png",
+      "derivedFrom": "assets/characters/griffin/legendary/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "griffin-ascendant-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/ascendant/griffin/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/griffin-ascendant-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/ascendant/griffin/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "griffin-starborn-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/starborn/griffin/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/griffin-starborn-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/starborn/griffin/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "griffin-legendary-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/legendary/griffin/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/griffin-legendary-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/legendary/griffin/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "bigfoot-ascendant-base-v1-coat-mask",
+      "path": "assets/characters/bigfoot/ascendant/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/bigfoot-ascendant-base-v1.png",
+      "derivedFrom": "assets/characters/bigfoot/ascendant/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "bigfoot-starborn-base-v1-coat-mask",
+      "path": "assets/characters/bigfoot/starborn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/bigfoot-starborn-base-v1.png",
+      "derivedFrom": "assets/characters/bigfoot/starborn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "bigfoot-legendary-base-v1-coat-mask",
+      "path": "assets/characters/bigfoot/legendary/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/bigfoot-legendary-base-v1.png",
+      "derivedFrom": "assets/characters/bigfoot/legendary/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "bigfoot-ascendant-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/ascendant/bigfoot/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/bigfoot-ascendant-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/ascendant/bigfoot/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "bigfoot-starborn-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/starborn/bigfoot/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/bigfoot-starborn-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/starborn/bigfoot/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "bigfoot-legendary-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/legendary/bigfoot/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/bigfoot-legendary-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/legendary/bigfoot/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "kitsune-ascendant-base-v1-coat-mask",
+      "path": "assets/characters/kitsune/ascendant/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/kitsune-ascendant-base-v1.png",
+      "derivedFrom": "assets/characters/kitsune/ascendant/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "kitsune-starborn-base-v1-coat-mask",
+      "path": "assets/characters/kitsune/starborn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/kitsune-starborn-base-v1.png",
+      "derivedFrom": "assets/characters/kitsune/starborn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "kitsune-legendary-base-v1-coat-mask",
+      "path": "assets/characters/kitsune/legendary/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/kitsune-legendary-base-v1.png",
+      "derivedFrom": "assets/characters/kitsune/legendary/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "kitsune-ascendant-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/ascendant/kitsune/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/kitsune-ascendant-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/ascendant/kitsune/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "kitsune-starborn-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/starborn/kitsune/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/kitsune-starborn-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/starborn/kitsune/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "kitsune-legendary-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/legendary/kitsune/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/kitsune-legendary-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/legendary/kitsune/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "manticore-ascendant-base-v1-coat-mask",
+      "path": "assets/characters/manticore/ascendant/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/manticore-ascendant-base-v1.png",
+      "derivedFrom": "assets/characters/manticore/ascendant/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "manticore-starborn-base-v1-coat-mask",
+      "path": "assets/characters/manticore/starborn/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/manticore-starborn-base-v1.png",
+      "derivedFrom": "assets/characters/manticore/starborn/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "manticore-legendary-base-v1-coat-mask",
+      "path": "assets/characters/manticore/legendary/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/manticore-legendary-base-v1.png",
+      "derivedFrom": "assets/characters/manticore/legendary/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "manticore-ascendant-starweaver-v2-coat-mask",
+      "path": "assets/character-rigs/starweaver/ascendant/manticore/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/manticore-ascendant-starweaver-v2.png",
+      "derivedFrom": "assets/character-rigs/starweaver/ascendant/manticore/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "manticore-starborn-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/starborn/manticore/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/manticore-starborn-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/starborn/manticore/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    },
+    {
+      "id": "manticore-legendary-starweaver-v1-coat-mask",
+      "path": "assets/character-rigs/starweaver/legendary/manticore/coat-mask.png",
+      "issue": 490,
+      "generator": "coat.draft_parts + coat-clean.clean; hand-reviewed maturity boundary corrections",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/490/manticore-legendary-starweaver-v1.png",
+      "derivedFrom": "assets/character-rigs/starweaver/legendary/manticore/assembled.png",
+      "cleanup": [
+        "tools/art/coat-clean.py",
+        "tools/art/maturity_masks.py"
+      ]
+    }
+  ]
+}

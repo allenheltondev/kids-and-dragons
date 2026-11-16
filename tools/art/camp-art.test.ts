@@ -132,7 +132,7 @@ describe('camp catalog (#623)', () => {
     ['two crew pieces with one id', `crew('shop_log_bench')['id'] = 'shop_striped_awning'`],
     ['a catalog tent with no bedroll kit', `tent('quilted')['kit'] = 'woolly'`],
     ['a kit style with no tent', `camp['tentStyles'] = [t for t in camp['tentStyles'] if t['id'] != 'patched']`],
-    ['a milestone tent for a tier the art lacks', `tent('mythic')['tier'] = 'starborn'`],
+    ['a milestone tent for a tier the art lacks', `tent('mythic')['tier'] = 'unknown'`],
     ['a tent with no flap', `del tent('sworn')['flap']`],
     ['a tent tinted some other way', `tent('rolled')['tint'] = 'two-layer'`],
     ['a tent with one decoration spot', `tent('rolled')['hangPoints'] = tent('rolled')['hangPoints'][:1]`],

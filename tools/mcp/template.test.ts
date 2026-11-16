@@ -11,7 +11,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
-const template = fs.readFileSync(path.join(ROOT, "infra", "template.yaml"), "utf8");
+const template = fs.readFileSync(path.join(ROOT, "infra", "template.yaml"), "utf8").replace(/\r\n/g, "\n");
 
 function resource(name: string): string {
   const start = template.indexOf(`\n  ${name}:\n`);

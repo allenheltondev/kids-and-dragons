@@ -12,6 +12,7 @@ import http from "node:http";
 import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mcpEndpoint } from "../../packages/server/src/mcp/handler";
 import { MemoryKeyStore, mintKey } from "../../packages/server/src/mcp/keys";
@@ -109,7 +110,7 @@ function repo(): string {
   execFileSync("git", ["init", "-q"], { cwd: root });
   fs.writeFileSync(
     path.join(root, "assets.config.json"),
-    JSON.stringify({ storeUrl: `file://${storeDir}`, mcpUrl: `${base}/api/mcp`, roots: ["assets"], extensions: ["png"], exclude: [] }),
+    JSON.stringify({ storeUrl: pathToFileURL(storeDir).href, mcpUrl: `${base}/api/mcp`, roots: ["assets"], extensions: ["png"], exclude: [] }),
   );
   fs.writeFileSync(path.join(root, "assets/cast/pib/assembled.png"), "pib, painted by an agent");
   // Migrated: an (empty) lock is what says the art lives in the store.

@@ -115,7 +115,7 @@ describe("art paths", () => {
       "kitsune",
       "manticore",
     ];
-    const tiers: TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
+    const tiers = manifest.tiers as TierId[];
     const declared = manifest.gearPortraits.flatMap((group) =>
       group.tiers.flatMap((tier) =>
         group.species.map((creature) => `${group.class}/${tier}/${creature}`),
@@ -176,10 +176,26 @@ it("addresses every delivered static class figure and keeps undeclared figures o
 });
 
 describe("art for tiers past Mythic", () => {
-  it("draws ascendant, starborn and legendary as Mythic, and leaves painted tiers alone", async () => {
+  it("uses the approved maturity tiers and falls back only for undelivered class art", async () => {
     const { artTierOf } = await import("./art-paths");
     expect(artTierOf("sworn")).toBe("sworn");
     expect(artTierOf("mythic")).toBe("mythic");
-    for (const tier of ["ascendant", "starborn", "legendary"] as const) expect(artTierOf(tier)).toBe("mythic");
+    for (const tier of ["ascendant", "starborn", "legendary"] as const) {
+      expect(artTierOf(tier)).toBe(tier);
+      for (const { id } of manifest.species) {
+        const species = id as SpeciesId;
+        const base = `/assets/characters/${species}/${tier}/assembled.png`;
+        const geared = `/assets/character-rigs/starweaver/${tier}/${species}/assembled.png`;
+        expect(characterWorldArtUrl(species, tier, "starweaver")).toBe(geared);
+        expect(characterPortraitArtUrl(species, tier, "starweaver")).toBe(geared);
+        expect(existsSync(new URL(`../../../../${geared.slice(1)}`, import.meta.url))).toBe(true);
+        for (const cls of ["songkeeper", "duskrunner", "thornguard"] as const) {
+          expect(characterWorldArtUrl(species, tier, cls)).toBe(base);
+          expect(characterPortraitArtUrl(species, tier, cls)).toBe(base);
+          expect(gearPortraitUrl(species, cls, tier)).toBeNull();
+        }
+        expect(existsSync(new URL(`../../../../${base.slice(1)}`, import.meta.url))).toBe(true);
+      }
+    }
   });
 });

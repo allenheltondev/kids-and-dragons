@@ -81,10 +81,10 @@ export const TENT_STAND_IN_MIN_ASPECT = 0.65;
 export const HERO_PAINT: Readonly<Record<string, { height: number; width: number }>> = {
   bigfoot: { height: 1.04, width: 0.64 },
   dragonling: { height: 1.1, width: 1.2 },
-  griffin: { height: 1.05, width: 0.99 },
-  kitsune: { height: 1.04, width: 1.1 },
-  manticore: { height: 1.02, width: 1.11 },
-  unicorn: { height: 1.08, width: 0.91 },
+  griffin: { height: 1.05, width: 1.13 },
+  kitsune: { height: 1.04, width: 1.11 },
+  manticore: { height: 1.03, width: 1.11 },
+  unicorn: { height: 1.08, width: 0.92 },
 };
 
 /** A hero with no species: the nominal paint (figure-scale.ts `NOMINAL_PAINT`). */

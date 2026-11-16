@@ -60,7 +60,7 @@ describe("assets.config.json", () => {
 });
 
 describe("the store's budget (#733)", () => {
-  const store = fs.readFileSync(path.join(ROOT, "infra", "asset-store.yaml"), "utf8");
+  const store = fs.readFileSync(path.join(ROOT, "infra", "asset-store.yaml"), "utf8").replace(/\r\n/g, "\n");
   const resource = (name: string): string => {
     const start = store.indexOf(`\n  ${name}:\n`);
     expect(start, name).toBeGreaterThan(0);
