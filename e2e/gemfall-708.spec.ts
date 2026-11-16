@@ -51,7 +51,7 @@ async function tvFits(page: Page) {
   await expect(page.getByTestId("chapter-goal")).toBeVisible();
 }
 
-test("7L: friends recover a slipping table and compensate their wagon pulls on phones and TV", async ({ browser }, info) => {
+test("7L: friends recover a slipping table on phones and TV", async ({ browser }, info) => {
   test.setTimeout(240_000);
   const table = await seedTable({ campaignId: "gemfall", mode: "party", tv: true, chapterId: "gemfall-07l", sceneId: "interaction_set_table", heroes: [
     { name: "Aster", species: "kitsune", class: "songkeeper" }, { name: "Fern", species: "unicorn", class: "thornguard" },
@@ -96,8 +96,29 @@ test("7L: friends recover a slipping table and compensate their wagon pulls on p
     await expect.poll(async () => (await state()).sceneId).toBe("choice_the_rule");
     expect((await state()).party.map(p => p.hp)).toEqual(hp);
 
-    await jump(one.page, "interaction_tether_team");
-    lead = await ready();
+  } finally { await Promise.all([one.context, two.context, tv.context].map(context => context.close())); }
+});
+
+test("7L: friends compensate their wagon pulls on phones and TV", async ({ browser }, info) => {
+  test.setTimeout(180_000);
+  const table = await seedTable({ campaignId: "gemfall", mode: "party", tv: true, chapterId: "gemfall-07l", sceneId: "interaction_tether_team", heroes: [
+    { name: "Aster", species: "kitsune", class: "songkeeper" }, { name: "Fern", species: "unicorn", class: "thornguard" },
+  ] });
+  const one = await openPhone(browser, table.phones[0]!, { viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true });
+  const two = await openPhone(browser, table.phones[1]!, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const tv = await openTv(browser, table);
+  const state = () => roomState<RunState>(one.page, table.code);
+  const progress = async () => { const p = (await state()).prompt; return p?.kind === "interaction" ? p.challenge?.progress : undefined; };
+  const ready = async () => {
+    for (const page of [one.page, two.page]) await task(page);
+    await expect.poll(async () => await controls(one.page).getByRole("button", { name: /ready/ }).count() + await controls(two.page).getByRole("button", { name: /ready/ }).count()).toBe(1);
+    const lead = await controls(one.page).getByRole("button", { name: /ready/ }).count() ? one.page : two.page;
+    await tap(lead, /ready/);
+    return lead;
+  };
+  try {
+    await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
+    const lead = await ready();
     await setPull(one.page, .3);
     await expect(controls(one.page).getByRole("button", { name: "Waiting for the team" })).toBeDisabled();
     const shared = (await state()).prompt;
