@@ -1,3 +1,4 @@
+import { campWithSources } from "./camp-sources.ts";
 /**
  * The chapter-end shop's vote (docs/camp.md §6.2, §12.4; #619): `CAMP_VOTE`.
  *
@@ -38,7 +39,6 @@ import {
   SAVE_DASH_CASH,
   campPieceLabel,
   campVoteWellFormed,
-  campView,
   shopEligible,
   shopOffer,
   shopOptionVotable,
@@ -124,7 +124,7 @@ export async function prepareCampVote(
         }
       : // Another table spent first: what is left, at what the crew now has, to vote on again.
         { visit: shop.visit, balance: camp.dashCash, options: shopOffer(catalog, camp), votes: {}, refreshed: true };
-  return { ok: true, state: { ...withShop(state, next), camp: campView(camp) }, ...(bought.write ? { camp: bought.write } : {}) };
+  return { ok: true, state: { ...withShop(state, next), camp: campWithSources(camp, deps.content) }, ...(bought.write ? { camp: bought.write } : {}) };
 }
 
 type Purchase =

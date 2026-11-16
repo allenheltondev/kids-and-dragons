@@ -1508,3 +1508,32 @@ Before expanding art production, verify the first phase's central question: do c
 and care about their crew's camp? Before tuning shop prices, measure actual first-play rewards,
 time to the first affordable purchase and how often a crew chooses to save. The economy targets in
 §5.2 are hypotheses until those observations exist.
+
+
+## 14. Camp free play (2026-11-15)
+
+Approved additions: friend fetch, a camp band, and an explorable treasure collection.
+The Play page offers these alongside tent visits and campfire questions. Opening an
+activity gives its own playfield the phone's space; Back to activities and Done always work.
+
+- **Fetch:** outdoors, choose a friend who is out. Direction and distance position the
+  visible landing marker against the friend's ring. A close toss is caught, a near miss
+  is chased down, and a wide toss brings back a funny find particular to the friend.
+  The next ring alternates sides. No inventory item is given, nothing is lost, and there
+  is no score or obligation. Sliders support touch and keyboard. Reduced motion shows
+  the landing and result without a flight or chase.
+- **Camp band:** log drum, pot, and lantern bells make three gentle, compatible sounds.
+  Kids can play together; the shared World surface sounds each accepted note once and
+  shows the note's name. Party controllers remain silent. Existing mute, volume, quiet,
+  and audio-unlock behavior applies. A bounded trail records the last few notes for play,
+  without saving or looping a composition.
+- **Treasures:** inspect the crew's actual pieces, defaults, and earned trophies, with
+  provenance resolved from its receipts. Bought pieces say so; found pieces name their
+  adventure; trophies name the completed campaign. The book uses its saved sources
+  and supports the same inspection offline.
+
+Fetch and music use `POST /api/camp-play` and ephemeral `campPlay` channel messages.
+The server validates the seat, downtime, input bounds, and a fetching friend's presence,
+then rate limits each phone (six notes per second or one toss per five seconds). Events
+are scoped to the camp moment, never saved or replayed, never change `seq`, and cannot
+block Ready, Begin, or leaving a rest. The shared layer drops them when downtime ends.

@@ -1,3 +1,4 @@
+import { relayCampPlay } from "./camp-play.ts";
 /**
  * The camp's friends at the table (#624, docs/camp.md §4.4, §8.5, §12.2,
  * §12.5, §13.1): a friend joins through a "Come along" choice, saved when
@@ -290,4 +291,46 @@ describe("tapping a friend (§8.5)", () => {
     harness.clock.advance(FRIEND_TAP_WINDOW_MS);
     expect(await relayFriendTap({ runId: t.runId, playerId: "p_1", friendId: "lamb" }, harness.deps)).toEqual({ ok: true });
   });
+});
+
+
+describe("shared camp activities", () => {
+  it("relays both players' music and fetch, using their own seat, without saving or moving seq", async () => {
+    const { harness, t, ada, thistle } = await friendlyLobby();
+    const before = await t.state();
+    const heard: ChannelMessage[] = [];
+    harness.channel.subscribe(t.code, m => heard.push(m));
+    const toss = { activity: "fetch", friendId: "newt", aim: 70, strength: 60, target: 70 };
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play: toss }, harness.deps)).toEqual({ ok: true });
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_2", play: { activity: "music", instrument: "pot", heroId: ada } }, harness.deps)).toEqual({ ok: true });
+    expect(heard).toEqual([
+      { kind: "campPlay", seq: before.seq, runId: t.runId, momentId: before.campMoment!.id, heroId: ada, play: toss },
+      { kind: "campPlay", seq: before.seq, runId: t.runId, momentId: before.campMoment!.id, heroId: thistle, play: { activity: "music", instrument: "pot" } },
+    ]);
+    expect(await t.state()).toEqual(before);
+    expect(await harness.repo.listEvents(t.runId, before.seq)).toEqual([]);
+  });
+  it("refuses spectators, unknown friends, invalid throws, and a flood of notes", async () => {
+    const { harness, t } = await friendlyLobby();
+    const play = { activity: "music", instrument: "log" };
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_3", play }, harness.deps)).toMatchObject({ code: "FORBIDDEN" });
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play: { activity: "fetch", friendId: "bun", aim: 70, strength: 60, target: 70 } }, harness.deps)).toMatchObject({ code: "ILLEGAL" });
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play: { activity: "fetch", friendId: "newt", aim: 1000, strength: 60, target: 70 } }, harness.deps)).toMatchObject({ code: "ILLEGAL" });
+    for (let i = 0; i < 6; i++) expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play }, harness.deps)).toEqual({ ok: true });
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play }, harness.deps)).toMatchObject({ code: "SLOW_DOWN" });
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_2", play }, harness.deps)).toEqual({ ok: true });
+    harness.clock.advance(1000);
+    expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play }, harness.deps)).toEqual({ ok: true });
+  });
+});
+
+
+it("keeps camp activities out of story scenes and fetch out of indoor rests", async () => {
+  const { harness, t } = await friendlyLobby();
+  const lobby = await t.state();
+  await harness.repo.putState({ ...lobby, phase: "scene", sceneType: "story", campMoment: undefined });
+  expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play: { activity: "music", instrument: "log" } }, harness.deps)).toMatchObject({ code: "ILLEGAL" });
+  await harness.repo.putState({ ...lobby, phase: "scene", sceneType: "rest", campMoment: { ...lobby.campMoment!, kind: "rest", outdoor: false } });
+  expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play: { activity: "fetch", friendId: "newt", aim: 70, strength: 60, target: 70 } }, harness.deps)).toMatchObject({ code: "ILLEGAL" });
+  expect(await relayCampPlay({ runId: t.runId, playerId: "p_1", play: { activity: "music", instrument: "log" } }, harness.deps)).toEqual({ ok: true });
 });

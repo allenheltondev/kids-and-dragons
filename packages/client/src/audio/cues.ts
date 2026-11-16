@@ -51,6 +51,7 @@ export function cueForPresentation(presentation: Presentation): CueId | null {
  * table walks a whole encounter through it.
  */
 export const CUE_QUIET: Record<CueId, "keep" | "drop"> = {
+  "camp-log": "keep", "camp-pot": "keep", "camp-bells": "keep",
   "rift-open": "keep",
   "rift-collapse": "keep",
   "chime-sour": "keep",

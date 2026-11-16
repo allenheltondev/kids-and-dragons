@@ -1,3 +1,4 @@
+import type { CampPlay } from "@kad/shared";
 /**
  * The HTTP half of the sync protocol (architecture §4.2–§4.3).
  *
@@ -215,6 +216,7 @@ export interface Api {
   /** A spectator's cheer, relayed to the room's screens (#388). */
   postCheer(cheer: string, token: string): Promise<void>;
   /** A kid's tap on a camp friend, relayed to the room's screens (#624). */
+  postCampPlay(play: CampPlay, token: string): Promise<void>;
   postFriendTap(friendId: string, token: string): Promise<void>;
   /** "Just watch", or back to making a hero (#388). The patch arrives on the channel. */
   postSpectate(watching: boolean, token: string): Promise<void>;
@@ -560,6 +562,10 @@ export const api: Api = {
       token,
       body: JSON.stringify({ cheer }),
     });
+  },
+
+  async postCampPlay(play, token) {
+    await request<{ ok: boolean }>("/api/camp-play", { method: "POST", headers: JSON_HEADERS, token, body: JSON.stringify({ play }) });
   },
 
   async postFriendTap(friendId, token) {

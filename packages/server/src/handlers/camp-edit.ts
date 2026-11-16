@@ -1,3 +1,4 @@
+import { campWithSources } from "./camp-sources.ts";
 /**
  * Changing the camp at the table (docs/camp.md §4.5, §6.1, §12.1, §12.5;
  * #620): `CAMP_PLACE`, `CAMP_UNDO` and `KIT_EDIT`, and the downtime moment
@@ -51,7 +52,6 @@ import {
   campIntentProblem,
   campKey,
   campMomentKind,
-  campView,
   emptyKit,
   followCampMoment,
   friendRotation,
@@ -118,8 +118,8 @@ export function campRules(catalog: Pick<CampCatalog, "hotspots" | "crewPieces">)
 }
 
 /** The view after a write, keeping the stage-up flag the chapter's end set. */
-function viewAfter(state: RunState, camp: CampRecord): CampView {
-  return { ...campView(camp), ...(state.camp?.grew ? { grew: true as const } : {}) };
+function viewAfter(state: RunState, camp: CampRecord, deps: CampDeps): CampView {
+  return { ...campWithSources(camp, deps.content), ...(state.camp?.grew ? { grew: true as const } : {}) };
 }
 
 async function campHousehold(run: Pick<RunRecord, "id" | "householdId">, state: RunState, deps: CampDeps): Promise<string | null> {
@@ -203,7 +203,7 @@ export async function prepareCampPlace(
     ok: true,
     state: {
       ...state,
-      camp: viewAfter(state, plan.value),
+      camp: viewAfter(state, plan.value, deps),
       campMoment: { ...moment, changes: { ...moment.changes, [playerId]: [...mine, change] } },
     },
     writes: { camp: plan.write },
@@ -249,7 +249,7 @@ export async function prepareCampUndo(
     ok: true,
     state: {
       ...state,
-      camp: viewAfter(state, plan.value),
+      camp: viewAfter(state, plan.value, deps),
       campMoment: { ...moment, changes: { ...moment.changes, [playerId]: mine.slice(0, -1) } },
     },
     writes: { camp: plan.write },
@@ -447,6 +447,12 @@ export async function syncCampDowntime(
       if (shown && shown.revision === view.revision && shown.unlocked.join() === view.unlocked.join()) return m;
       return { ...m, character: { ...m.character, look: view } };
     });
+  }
+  // New projections already carry provenance. Hydrate older snapshots once,
+  // and only when a catalog can resolve it; normal actions need no extra read.
+  if (next.camp && !next.camp.sources && deps.content.campCatalog()) {
+    const view = await readCampView(input.run.householdId, state.crew, deps);
+    if (view?.sources) next.camp = { ...next.camp, sources: view.sources };
   }
   return syncCampFriends(next, input.run.householdId, deps);
 }

@@ -1008,3 +1008,16 @@ describe("a stream the network keeps refusing is never a room that is gone (#470
     expect(status).toHaveBeenLastCalledWith("open");
   });
 });
+
+
+it("parses and hands camp play over live without advancing the story", () => {
+  const heard: unknown[] = [];
+  const sequencer = new MessageSequencer({ handlers: { onState: () => undefined, onPresentation: () => undefined, onProgression: () => undefined, onGap: () => undefined, onCampPlay: p => void heard.push(p) } });
+  sequencer.reset(makeState({ seq: 4 }), 4);
+  const message = { kind: "campPlay" as const, seq: 9, runId: "r_1", momentId: "lobby:1", heroId: "c_1", play: { activity: "music" as const, instrument: "bells" as const } };
+  expect(parseChannelMessage(JSON.stringify(message))).toEqual(message);
+  expect(parseChannelMessage(JSON.stringify({ ...message, play: { activity: "music", instrument: "bad" } }))).toBeNull();
+  sequencer.ingest(message);
+  expect(heard).toEqual([message]);
+  expect(sequencer.seq).toBe(4);
+});

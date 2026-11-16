@@ -36,6 +36,9 @@ export interface Tone {
 const C4 = 262, E4 = 330, G4 = 392, C5 = 523, E5 = 659, G5 = 784, A5 = 880;
 
 export const CUE_TONES: Record<CueId, Tone[]> = {
+  "camp-log": [{ type: "triangle", freq: [196, 98], at: 0, duration: 0.22, gain: 0.15 }, { type: "noise", freq: [0, 0], at: 0, duration: 0.025, gain: 0.035 }],
+  "camp-pot": [{ type: "sine", freq: [392, 392], at: 0, duration: 0.65, gain: 0.11 }, { type: "sine", freq: [790, 790], at: 0, duration: 0.2, gain: 0.025 }],
+  "camp-bells": [{ type: "sine", freq: [784, 784], at: 0, duration: 0.8, gain: 0.085 }, { type: "sine", freq: [1176, 1176], at: 0, duration: 0.45, gain: 0.025 }],
   "rift-open": [
     { type: "noise", freq: [0, 0], at: 0, duration: 1.5, gain: 0.025 },
     { type: "sine", freq: [294, 587], at: 0.12, duration: 1.88, gain: 0.075 },

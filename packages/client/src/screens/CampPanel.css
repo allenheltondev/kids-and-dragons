@@ -7,7 +7,7 @@
   z-index: 60;
   display: flex;
   flex-direction: column;
-  background: var(--kad-bg, #0d0b1a);
+  background: radial-gradient(ellipse at 10% 0%, #35433466, transparent 65%), #141b23;
   color: var(--kad-ink, #f4f0ff);
 }
 .camp-panel__head {
@@ -36,7 +36,7 @@
 .camp-panel__title:focus-visible { outline: 2px solid var(--kad-border-strong, #bdb2ff); outline-offset: 2px; }
 /*
  * Held at the top while a page scrolls under it (playtest, 2026-11-14): the picture, where every
- * change shows as it is made, the tent button and the tabs. The picture gives way first on a short
+ * change shows as it is made, and the tabs. The picture gives way first on a short
  * screen, so the tabs are always in reach.
  */
 .camp-panel__top {
@@ -327,3 +327,60 @@
   .camp-button--new { animation: none; }
 }
 html[data-motion="reduced"] .camp-button--new { animation: none; }
+
+/* A camp welcome, with the same painted assets as the shared screen. */
+.camp-panel__head { background: #18232b; }
+.camp-panel__top { background: #1c2930; }
+.camp-panel__tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  overflow: visible;
+}
+.camp-panel__tabs:not(:has([data-camp-tab="friends"])) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.camp-panel__tab {
+  flex-direction: column;
+  min-inline-size: 0;
+  white-space: normal;
+  text-align: center;
+  border-radius: 0.75rem;
+  padding: 0.45rem 0.15rem;
+  font-size: 0.8rem;
+  background: #142027;
+}
+@media (max-width: 26rem) {
+  .camp-panel__tab > :first-child:not(:only-child) { display: block; }
+}
+.camp-panel__body { min-block-size: 0; padding-bottom: max(2rem, env(safe-area-inset-bottom)); }
+.camp-panel__body > * { inline-size: 100%; max-inline-size: 48rem; margin-inline: auto; }
+.camp-play { display: flex; flex-direction: column; gap: 1.1rem; }
+.camp-play p { line-height: 1.5; margin: 0.3rem 0 0.8rem; }
+.camp-play__visit { padding: 0.9rem; border-radius: 1rem; background: #233039; }
+.camp-play__visit h4 { margin: 0; font-size: 1.05rem; }
+.camp-play__choices { display: grid; gap: 0.65rem; }
+.camp-play__choice {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  gap: 0.2rem 0.6rem;
+  align-items: center;
+  padding: 0.9rem;
+  min-block-size: 4.5rem;
+  border: 1px solid #c5b68c66;
+  border-radius: 1rem;
+  background: linear-gradient(120deg, #324039, #202b34);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.camp-play__choice > :first-child { grid-row: span 2; color: #ffe3a1; }
+.camp-play__choice > span { grid-column: 2; font-size: 0.85rem; color: #d4dfd5; }
+.camp-play__choice > :last-child { grid-column: 3; grid-row: 1 / span 2; }
+.camp-play__choice:hover { border-color: #ffd36e; background: #34463e; }
+.camp-play__choice:active { background: #405444; }
+@media (max-height: 600px) {
+  .camp-panel__top > .camp-panel__picture { max-block-size: 18vh; }
+  .camp-panel__top > .camp-panel__picture:has(.kad-static-camp__chips) { max-block-size: 24vh; }
+}
+
+.camp-play__question:empty { display: none; }
+.camp-play__question:not(:empty) { padding: 0.8rem; border-inline-start: 3px solid #ffd36e; color: #ffe3a1; background: #142027; border-radius: 0.4rem; }

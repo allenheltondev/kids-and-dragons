@@ -1,3 +1,4 @@
+import type { CampPlay, CampPlayMessage } from "@kad/shared";
 /**
  * The client-side contract.
  *
@@ -176,6 +177,7 @@ export interface GameStore {
    * queues or drops it so a friend never jitters (world/camp-taps.ts).
    */
   friendTaps: readonly HeardFriendTap[];
+  campPlays: readonly (CampPlayMessage & { key: number })[];
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -307,6 +309,8 @@ export interface GameStore {
    * was not sent (too many too fast, or the friend is not out); nothing else
    * depends on it, so nothing lands in `error`.
    */
+  playCamp(play: CampPlay): Promise<boolean>;
+  dropCampPlay(key: number): void;
   tapFriend(friendId: string): Promise<boolean>;
   /** The camp has taken a friend tap. */
   dropFriendTap(key: number): void;

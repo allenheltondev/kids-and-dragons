@@ -122,6 +122,7 @@ function openPanel(state: RunState): ReturnType<typeof render> {
     </>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Camp" }));
+  page(/My camp|Our kits/);
   return view;
 }
 
@@ -448,8 +449,9 @@ describe("going into her tent (playtest, 2026-11-14)", () => {
     expect(screen.queryByTestId("tent-button")).toBeNull();
   });
 
-  it("is in the panel, over its pages", () => {
+  it("is on the Play page", () => {
     openPanel(table());
+    page(/^Play$/);
     expect(within(screen.getByRole("dialog")).getByTestId("tent-button")).toBeTruthy();
   });
 });
@@ -464,5 +466,45 @@ describe("the panel's pages", () => {
     fireEvent.click(screen.getByRole("button", { name: "Done" }));
     act(() => openCampPanel());
     expect(screen.getByRole("tab", { name: /Camp spots/ }).getAttribute("aria-selected")).toBe("true");
+  });
+});
+
+
+describe("camp welcome", () => {
+  it("opens with things to do, then hands customization to its own page", () => {
+    render(<CampPanel state={table()} me={me} held={false} dispatch={dispatch} />);
+    act(() => openCampPanel());
+    expect(screen.getByRole("tab", { name: "Play" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.queryByTestId("kit-editor")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Give us a campfire question" }));
+    expect(screen.getByRole("status").textContent).toContain("If your tent could walk");
+    fireEvent.click(screen.getByRole("button", { name: "Another question" }));
+    expect(screen.getByRole("status").textContent).toContain("dragon pack");
+    expect(sent).toEqual([]);
+    fireEvent.click(screen.getByRole("button", { name: "Go in my tent" }));
+    expect(sent).toEqual([{ type: "CAMP_TENT", characterId: "c_1", inside: true }]);
+    fireEvent.click(screen.getByRole("button", { name: /Pick a tent, colors, and treasures/ }));
+    expect(screen.getByTestId("kit-editor")).toBeTruthy();
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: "My camp" }));
+  });
+
+  it("supports arrow navigation and keeps focus inside until Done returns it", () => {
+    render(<><button onClick={() => openCampPanel()}>Visit camp</button><CampPanel state={table()} me={me} held={false} dispatch={dispatch} /></>);
+    const trigger = screen.getByRole("button", { name: "Visit camp" });
+    trigger.focus();
+    fireEvent.click(trigger);
+    const play = screen.getByRole("tab", { name: "Play" });
+    play.focus();
+    fireEvent.keyDown(play, { key: "ArrowRight" });
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: "My camp" }));
+    fireEvent.keyDown(document.activeElement!, { key: "Home" });
+    expect(document.activeElement).toBe(play);
+    const done = screen.getByRole("button", { name: "Done" });
+    done.focus();
+    fireEvent.keyDown(done, { key: "Tab", shiftKey: true });
+    expect(screen.getByRole("dialog").contains(document.activeElement)).toBe(true);
+    expect(document.activeElement).not.toBe(done);
+    fireEvent.click(done);
+    expect(document.activeElement).toBe(trigger);
   });
 });

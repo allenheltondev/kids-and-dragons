@@ -132,7 +132,11 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // moved in. What grew is what every screen needs before it draws: which file a painting is
 // drawn from on this device (world/art-paths.ts, the half-size and full-size WebP rules) and
 // `useRunStateFields` in the store. 333KB measured after sitting at 332 exactly.
-const FIRST_PAINT_BUDGET_KB = 334;
+// 334 -> 336 for camp free play (#785): 335KB measured. About 1KB is the
+// bounded camp-play parser and relay queue in the shared channel/store, which
+// must hear live room events before a camp screen opens. No camp UI, artwork,
+// renderer, or audio engine moved into the first-paint graph (18 chunks).
+const FIRST_PAINT_BUDGET_KB = 336;
 
 /**
  * Everything, including what is lazily fetched.
@@ -379,7 +383,11 @@ const FIRST_PAINT_BUDGET_KB = 334;
 // with the walk that says whether this party can still take one (shared chapter-trail.ts, in the
 // entry with the goal card), the summary's "Still out there" line, and the card's CSS. 1840KB
 // measured on top of #779. First paint 333KB, unchanged. 2KB of slack.
-const TOTAL_BUDGET_KB = 1842;
+// 1842 -> 1859 for camp free play (#785): 1857KB measured. Fetch's aiming and
+// shared presentation, the camp band, treasure inspection, keyboard navigation,
+// and their styling add about 15KB, mostly in the lazy room/camp chunks. Existing
+// paintings are reused; no dependency was added. Keep 2KB of total slack.
+const TOTAL_BUDGET_KB = 1859;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

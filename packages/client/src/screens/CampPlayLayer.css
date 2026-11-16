@@ -1,0 +1,10 @@
+.camp-play-layer { position: absolute; inset: 0; z-index: 16; pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5em; }
+.camp-play-layer__fetch { inline-size: min(25em, 65%); max-block-size: 70%; font-size: 0.8em; filter: drop-shadow(0 0.3em 0.4em #0008); }
+.camp-play-layer__fetch > span { display: block; text-align: center; padding: 0.3em; border-radius: 0.5em; background: #152d26; color: #ffe5ac; }
+.camp-play-layer__music { display: flex; gap: 0.3em; flex-wrap: wrap; max-inline-size: 70%; }
+.camp-play-layer__note { padding: 0.4em 0.7em; background: #f4d292; color: #223b2c; border: 2px solid #fff4d2; border-radius: 1em; animation: camp-note 0.3s ease-out; }
+.camp-play-layer__note[data-instrument="pot"] { background: #bfe6ed; }
+.camp-play-layer__note[data-instrument="bells"] { background: #e0c5ed; }
+@keyframes camp-note { from { transform: translateY(0.5em) scale(0.9); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .camp-play-layer__note { animation: none; } }
+html[data-motion="reduced"] .camp-play-layer__note { animation: none; }

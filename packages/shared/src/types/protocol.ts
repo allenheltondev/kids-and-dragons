@@ -618,7 +618,8 @@ export type ChannelMessage =
   | ({ kind: "preview" } & PreviewMessage)
   | ({ kind: "arrival" } & ArrivalMessage)
   | ({ kind: "cheer" } & CheerMessage)
-  | ({ kind: "friendTap" } & FriendTapMessage);
+  | ({ kind: "friendTap" } & FriendTapMessage)
+  | ({ kind: "campPlay" } & import("../camp-play.js").CampPlayMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4

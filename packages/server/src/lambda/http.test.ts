@@ -2593,6 +2593,7 @@ const SHARED = [
   { path: "/api/cheer", method: "POST", probe: "/api/cheer" },
   // A kid tapping a camp friend (#624, handlers/friend-tap.ts).
   { path: "/api/friend-tap", method: "POST", probe: "/api/friend-tap" },
+  { path: "/api/camp-play", method: "POST", probe: "/api/camp-play" },
   { path: "/api/spectate", method: "POST", probe: "/api/spectate" },
   // A phone saying it is still here, or leaving (#258, handlers/presence.ts).
   { path: "/api/presence", method: "POST", probe: "/api/presence" },
