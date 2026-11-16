@@ -29,6 +29,9 @@
  * anything to complain.
  */
 export type CueId =
+  | "camp-log"
+  | "camp-pot"
+  | "camp-bells"
   | "rift-open"
   | "rift-collapse"
   | "chime-sour"

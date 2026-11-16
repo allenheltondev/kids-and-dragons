@@ -78,6 +78,9 @@ export interface CueSpec {
 }
 
 export const CUE_SPECS: Record<CueId, CueSpec> = {
+  "camp-log": { brief: "A soft hollow wooden log tap, low G. Gentle and short.", seconds: 0.22 },
+  "camp-pot": { brief: "A warm cooking pot tapped with a spoon, middle G.", seconds: 0.65 },
+  "camp-bells": { brief: "A small gentle lantern bell, high G with a soft fading tail.", seconds: 0.8 },
   "rift-open": { brief: "A soft inward rush of air and a glassy rising shimmer, like a breath held. Wonder, not threat.", seconds: 2.0 },
   "rift-collapse": { brief: "The same shimmer folding closed and settling into silence. Gentle, never a bang.", seconds: 1.6 },
   "chime-sour": { brief: "One small Riftseeker chime struck, its note bending flat and wobbling: not yet. One continuous wavering note, no returning strike.", seconds: 1.4 },

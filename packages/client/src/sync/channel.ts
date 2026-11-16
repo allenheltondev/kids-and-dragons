@@ -1,3 +1,4 @@
+import { readCampPlay, type CampPlayMessage } from "@kad/shared";
 /**
  * The realtime half of the sync protocol (architecture §4.2–§4.4).
  *
@@ -93,6 +94,7 @@ export interface SequencerHandlers {
   /** A spectator cheered (`CheerMessage`, #388). Live, unordered, like a preview. */
   onCheer?(message: CheerMessage): void;
   /** A kid tapped a camp friend (`FriendTapMessage`, #624). Live, unordered, like a cheer. */
+  onCampPlay?(message: CampPlayMessage): void;
   onFriendTap?(message: FriendTapMessage): void;
 }
 
@@ -186,6 +188,10 @@ export class MessageSequencer {
     }
     if (message.kind === "cheer") {
       this.handlers.onCheer?.(message);
+      return;
+    }
+    if (message.kind === "campPlay") {
+      this.handlers.onCampPlay?.(message);
       return;
     }
     if (message.kind === "friendTap") {
@@ -430,6 +436,12 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     return { kind: "cheer", seq: candidate.seq, runId: candidate.runId, cheer: cheer.id };
   }
 
+  if (candidate.kind === "campPlay") {
+    const raw = candidate as Partial<CampPlayMessage>;
+    const play = readCampPlay(raw.play);
+    if (!play || typeof raw.heroId !== "string" || raw.heroId.length > 200 || typeof raw.momentId !== "string" || raw.momentId.length > 200) return null;
+    return { kind: "campPlay", seq: candidate.seq, runId: candidate.runId, heroId: raw.heroId, momentId: raw.momentId, play };
+  }
   if (candidate.kind === "friendTap") {
     // Short ids and the catalog's words, never anything long: the TV shows the words as they are.
     const { friendId, heroId, words } = candidate as Partial<FriendTapMessage>;

@@ -1,3 +1,4 @@
+import { relayCampPlay } from "../handlers/camp-play.ts";
 /**
  * The HTTP API entry point — every game route, one function.
  *
@@ -182,6 +183,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/cheer") return (deps) => postCheer(req, deps);
+    if (req.path === "/api/camp-play") return (deps) => postCampPlay(req, deps);
     if (req.path === "/api/friend-tap") return (deps) => postFriendTap(req, deps);
     if (req.path === "/api/spectate") return (deps) => postSpectate(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
@@ -1487,4 +1489,11 @@ function statusFor(err: ActionError): number {
     case "HERO_BUSY":
       return 409;
   }
+}
+
+async function postCampPlay(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "camp play needs a room session token");
+  const result = await relayCampPlay({ runId: session.runId, playerId: session.playerId, householdId: session.householdId, play: req.body.play }, deps);
+  return result.ok ? json(200, { ok: true }) : error(result.status, result.code, result.message);
 }

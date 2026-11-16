@@ -245,6 +245,8 @@ export interface KitMilestoneUnlock {
  * slim: no receipts, no history.
  */
 export interface CampView {
+  /** Kid-facing provenance, resolved by the server from the crew's receipts. */
+  sources?: Record<string, string>;
   /** The record's revision, which a later intent names so a stale one is refused (§12.4). */
   revision: number;
   frameStage: FrameStage;

@@ -50,6 +50,9 @@ const notes = (frequencies: number[], spacing: number, duration: number): Voice[
   frequencies.map((freq, i) => bell(freq, i * spacing, duration, 0.22, (i % 2 ? 1 : -1) * 0.2));
 
 const cueVoices: Partial<Record<CueId, Voice[]>> = {
+  "camp-log": wood(0, 0.16, 196),
+  "camp-pot": [{ ...bell(392, 0, 0.65, 0.16), partials: [[1, 1], [2.015, 0.15], [3.9, 0.04]] }],
+  "camp-bells": [bell(784, 0, 0.8, 0.12)],
   // Riftlight recipes: no changes to the approved Gemfall arrangements.
   "rift-open": [
     { at: 0, duration: 1.8, freq: 0, noise: true, cutoff: 1500, highpass: 250, gain: 0.09, swell: true },

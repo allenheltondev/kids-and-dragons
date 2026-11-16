@@ -1,3 +1,4 @@
+import { campWithSources } from "./camp-sources.ts";
 /**
  * Dash Cash during play and at the chapter's end (docs/camp.md §5.2, §5.3,
  * §12.2; #619): lucky drops saved as they land, and the chapter's pay with
@@ -33,7 +34,7 @@
  *     logged; the story has already happened.
  */
 
-import { CHAPTER_FINISH_PAY, campView, chapterPay, dropKey, shopIsOpen, shopOffer, shopOpensIn } from "@kad/shared";
+import { CHAPTER_FINISH_PAY, chapterPay, dropKey, shopIsOpen, shopOffer, shopOpensIn } from "@kad/shared";
 import type { CampClaimResult, CampFind, CampRecord, CampShopView, CampTally, CampView, LuckyDrop, RunState } from "@kad/shared";
 import type { RunRecord } from "../store/repository.ts";
 import { chapterCountsTowardShop, claimLuckyDrop, claimRefusal, payChapter, readCamp, withClaimReceipt, withShopCount, type CampDeps } from "./camp.ts";
@@ -175,7 +176,7 @@ export async function prepareChapterEndCamp(
       ? { visit: input.visit, balance: camp.dashCash, options: shopOffer(catalog, camp), votes: {} }
       : undefined;
   return {
-    view: { camp: campView(camp), campTally, ...(campShop ? { campShop } : {}) },
+    view: { camp: campWithSources(camp, deps.content), campTally, ...(campShop ? { campShop } : {}) },
     settle: { householdId, chapterId, pay },
   };
 }

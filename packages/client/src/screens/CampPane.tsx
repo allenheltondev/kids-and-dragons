@@ -1,3 +1,4 @@
+import { CampTreasures } from "./CampActivities";
 /**
  * "Camp": the crew's camp in the adventure book (docs/camp.md §7, §12.6; #629).
  *
@@ -44,7 +45,7 @@ import { BookTableNote, handOffToCamp, useBookTable } from "./book-table";
 import { StillCamp } from "../world/StillCamp";
 import { campLayoutFor } from "../world/lobby-camp";
 import { campBackdropFamily } from "../world/camp-backdrop";
-import { CREW_PIECE_ART, pieceName } from "../world/camp-scene";
+import { pieceName } from "../world/camp-scene";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { journalKitState, loadKitQueue, withQueuedKit } from "../store/kit-queue";
@@ -381,29 +382,7 @@ function CrewCamp({
           </section>
         ) : null}
 
-        {pieces.length > 0 ? (
-          <section className="book-camp__section" aria-labelledby={`${base}-pieces`} data-testid="book-camp-pieces">
-            <h3 className="book-camp__heading" id={`${base}-pieces`}>
-              <Icon name="crew" />
-              <span>Things in your camp</span>
-            </h3>
-            <p className="book-camp__from">Your crew changes these together, at the table.</p>
-            <ul className="book-camp__pieces">
-              {pieces.map((id) => {
-                const art = CREW_PIECE_ART.find((p) => p.id === id)?.path;
-                return (
-                  <li key={id} className="book-camp__piece" data-piece={id}>
-                    <span className="book-camp__piece-art" aria-hidden="true">
-                      {art ? <img src={`/assets/${art}`} alt="" /> : <Icon name="crew" size="1.6em" />}
-                    </span>
-                    <span className="book-camp__piece-name">{pieceName(id)}</span>
-                    <span className="book-camp__from">{crew.sources[id]}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ) : null}
+        {pieces.length > 0 ? <CampTreasures pieces={pieces} sources={crew.sources} /> : null}
       </section>
     </div>
   );

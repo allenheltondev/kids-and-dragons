@@ -1,0 +1,68 @@
+.camp-activities, .camp-activities__menu, .camp-activity { display: flex; flex-direction: column; gap: 0.7rem; min-inline-size: 0; }
+.camp-activity { padding: 0.9rem; border: 1px solid #c5b68c66; border-radius: 1rem; background: linear-gradient(145deg, #2d3c38, #182730); }
+.camp-activity h3 { margin: 0; font-family: var(--kad-font-display); font-size: 1.25rem; }
+.camp-activity p { margin: 0; line-height: 1.45; }
+.camp-activity__words:empty { display: none; }
+.camp-activity__words { color: #ffe3a1; font-size: 0.95rem; }
+.camp-fetch__picks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.camp-fetch__pick { display: flex; align-items: center; gap: 0.4rem; min-block-size: 48px; border: 2px solid #bdba8b55; border-radius: 0.7rem; padding: 0.35rem 0.6rem; background: #17282b; color: inherit; font: inherit; cursor: pointer; }
+.camp-fetch__pick[aria-pressed="true"] { border-color: #ffd36e; }
+.camp-fetch__pick img { inline-size: 2.3rem; block-size: 2.8rem; object-fit: contain; }
+.camp-fetch__scene { position: relative; isolation: isolate; overflow: hidden; inline-size: 100%; aspect-ratio: 1.65; border: 1px solid #a4ad7877; border-radius: 1rem; background-size: cover; background-position: center; }
+.camp-fetch__ring { position: absolute; left: var(--fetch-target); top: 47%; inline-size: 21%; block-size: 13%; border: 3px solid #fff1a5; border-radius: 50%; background: #ffe08a33; transform: translate(-50%, -50%); box-shadow: 0 0 0 2px #263a29; }
+.camp-fetch__friend { position: absolute; z-index: 2; left: var(--fetch-target); top: 5%; inline-size: 27%; block-size: 49%; transform: translateX(-50%); filter: drop-shadow(0 0.3rem 0.15rem #16261c66); display: grid; place-items: end center; }
+.camp-fetch__friend img { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center bottom; }
+.camp-fetch__leaf { position: absolute; z-index: 3; left: 15%; top: 80%; inline-size: 12%; block-size: 15%; object-fit: contain; transform: translate(-50%, -50%); filter: drop-shadow(0 0.2rem 0.1rem #15221666); }
+.camp-fetch__landing { position: absolute; left: var(--fetch-x); top: var(--fetch-y); transform: translate(-50%, -50%); color: #fff; background: #243e2ce6; border: 2px solid #fff; inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%; display: grid; place-items: center; font-weight: 900; }
+.camp-fetch__return { position: absolute; z-index: 4; left: 17%; top: 63%; border-radius: 50%; padding: 0.15rem 0.5rem; background: #fff3c9; color: #223b2c; font-weight: 900; opacity: 0; animation: fetch-return 5s both; }
+.camp-fetch__scene.is-playing .camp-fetch__leaf { animation: fetch-leaf 5s both; }
+.camp-fetch__scene.is-playing .camp-fetch__friend { animation: fetch-friend 5s both; }
+@keyframes fetch-leaf { 0% { left: 15%; top: 80%; } 15% { top: 10%; } 30%, 62% { left: var(--fetch-x); top: var(--fetch-y); } 88%, 100% { left: 15%; top: 80%; } }
+@keyframes fetch-friend { 0%, 30% { left: var(--fetch-target); top: 5%; } 58%, 65% { left: var(--fetch-x); top: calc(var(--fetch-y) - 42%); } 90%, 100% { left: 22%; top: 36%; } }
+@keyframes fetch-return { 0%, 85% { opacity: 0; } 90%, 100% { opacity: 1; } }
+.camp-fetch__controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.camp-fetch__controls label { display: flex; flex-direction: column; font-weight: 700; }
+.camp-fetch__controls label span { font-size: 0.8rem; color: #d4dfd5; font-weight: 400; }
+.camp-fetch__controls input { inline-size: 100%; min-inline-size: 0; min-block-size: 48px; margin: 0; accent-color: #ffd36e; cursor: pointer; }
+.camp-band__instruments { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.camp-band__instrument, .camp-treasures__pick { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; min-inline-size: 0; min-block-size: 48px; padding: 0.7rem 0.25rem; border: 2px solid #bdba8b66; border-radius: 0.8rem; background: radial-gradient(ellipse at top, #68573166, #192a30); color: inherit; font: inherit; cursor: pointer; }
+.camp-band__instrument img { inline-size: 100%; block-size: 4.5rem; object-fit: contain; }
+.camp-band__instrument strong { font-size: 0.9rem; }
+.camp-band__instrument span { color: #ffe3a1; }
+.camp-band__instrument:active { background: #685731; border-color: #ffd36e; }
+.camp-band__trail { display: flex; flex-wrap: wrap; gap: 0.3rem; min-block-size: 1.8rem; }
+.camp-band__trail span { border-radius: 999px; background: #f4d292; color: #222f27; font-size: 0.8rem; padding: 0.15rem 0.45rem; }
+.camp-band__trail [data-instrument="pot"] { background: #bfe6ed; }
+.camp-band__trail [data-instrument="bells"] { background: #e0c5ed; }
+.camp-treasures__shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(6.5rem, 100%), 1fr)); gap: 0.5rem; }
+.camp-treasures__pick { font-size: 0.85rem; }
+.camp-treasures__pick img { inline-size: 100%; block-size: 4rem; object-fit: contain; }
+.camp-treasures__pick[aria-pressed="true"] { border-color: #ffd36e; box-shadow: inset 0 0 0 1px #ffd36e; }
+.camp-treasures__memory { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem; border-radius: 0.8rem; background: #fff0ce; color: #25382d; }
+.camp-treasures__memory > img { inline-size: 27%; block-size: 6rem; object-fit: contain; }
+.camp-treasures__memory h4 { margin: 0 0 0.3rem; }
+.camp-treasures__memory span { display: block; font-size: 0.85rem; margin-block-start: 0.4rem; }
+@media (prefers-reduced-motion: reduce) {
+  .camp-fetch__scene.is-playing .camp-fetch__leaf, .camp-fetch__scene.is-playing .camp-fetch__friend, .camp-fetch__return { animation: none; }
+  .camp-fetch__scene.is-playing .camp-fetch__leaf { left: var(--fetch-x); top: var(--fetch-y); }
+  .camp-fetch__scene.is-playing .camp-fetch__return { opacity: 1; }
+}
+html[data-motion="reduced"] .camp-fetch__scene.is-playing .camp-fetch__leaf, html[data-motion="reduced"] .camp-fetch__scene.is-playing .camp-fetch__friend, html[data-motion="reduced"] .camp-fetch__return { animation: none; }
+html[data-motion="reduced"] .camp-fetch__scene.is-playing .camp-fetch__leaf { left: var(--fetch-x); top: var(--fetch-y); }
+html[data-motion="reduced"] .camp-fetch__scene.is-playing .camp-fetch__return { opacity: 1; }
+
+/* The activity has its own painted playfield; give it the phone's space. */
+.camp-panel:has(.camp-activity) .camp-panel__picture { display: none; }
+.camp-fetch__scene { position: sticky; top: 0; }
+.camp-activity h3:focus { outline: none; }
+@media (max-height: 650px) {
+  .camp-fetch__scene { aspect-ratio: 2.2; }
+  .camp-fetch__picks:has(> :only-child) { display: none; }
+}
+
+.camp-treasures__memory { position: sticky; top: 0; z-index: 3; }
+
+.camp-fetch__return { inline-size: 15%; block-size: 19%; padding: 0.2rem; display: grid; place-items: center; }
+.camp-fetch__return > img, .camp-fetch__return > svg { inline-size: 100%; block-size: 100%; object-fit: contain; }
+
+.camp-play:has(.camp-activity) > :not(.camp-activities) { display: none; }

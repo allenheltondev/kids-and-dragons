@@ -1,3 +1,4 @@
+import { CampPlayLayer } from "../screens/CampPlayLayer";
 /**
  * WorldView — the shared board (spec §2).
  *
@@ -144,6 +145,7 @@ export function WorldView({
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">
       <WorldSounds />
+      {gatesPresentations ? <CampPlayLayer /> : null}
       {interaction && <div className="world-game-scenery"><GameScenery /></div>}
       {drawn ? (
         <RendererBoundary>

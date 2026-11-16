@@ -1,3 +1,4 @@
+import { CampActivities } from "./CampActivities";
 /**
  * The phone's camp (docs/camp.md §3, §4.5, §5.3, §6.1, §12.5, §12.6; #620):
  *
@@ -592,21 +593,45 @@ function PackedCamp({ state }: { state: RunState }): ReactElement {
   );
 }
 
-/** The panel's pages: her own kit, her look, the crew's friends, and the crew's shared spots. */
-export type CampTab = "kit" | "look" | "friends" | "spots";
+/** Optional table talk: no score, timer, or saved obligation. */
+const CAMP_QUESTIONS = [
+  "If your tent could walk, where would it take you?",
+  "What would a dragon pack for a picnic?",
+  "Invent a silly name for your crew's campfire soup.",
+  "What made your hero laugh on your last adventure?",
+  "If the moon visited camp, where would it sleep?",
+  "Show everyone how your hero snores!",
+];
+function CampfireQuestions(): ReactElement {
+  const [question, setQuestion] = useState<number | null>(null);
+  return (
+    <section className="camp-play__visit" aria-label="Around the campfire">
+      <h4>Around the campfire</h4>
+      <p>Something silly to share with your crew.</p>
+      <p className="camp-play__question" role="status" aria-live="polite">{question === null ? "" : CAMP_QUESTIONS[question]}</p>
+      <Button variant="secondary" size="md" block icon={<Icon name="rest" />} onClick={() => setQuestion(question === null ? 0 : (question + 1) % CAMP_QUESTIONS.length)}>
+        {question === null ? "Give us a campfire question" : "Another question"}
+      </Button>
+    </section>
+  );
+}
+
+/** Play first, then her kit, look, friends, and the crew's shared spots. */
+export type CampTab = "play" | "kit" | "look" | "friends" | "spots";
 
 /** The page last open, for this page load: a kid who was choosing a coat comes back to the coats. */
-let lastTab: CampTab = "kit";
+let lastTab: CampTab = "play";
 
 /** Back to the first page (tests; a new household on the same page load would not mind either way). */
 export function resetCampTab(): void {
-  lastTab = "kit";
+  lastTab = "play";
 }
 
 /**
  * The panel itself (playtest, 2026-11-14): the camp's picture held at the top, where every change
- * shows as it is made, the tent button under it, and one page of controls at a time behind a row
- * of tabs, rather than one long scroll of everything. Open only in downtime.
+ * shows as it is made, and one page of controls at a time behind a row of tabs. Play opens
+ * the activities; an active game uses its own playfield instead of a second camp picture.
+ * Open only in downtime.
  */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
@@ -638,13 +663,25 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
       pending.current = at;
       setTab(at.part === "look" ? "look" : "kit");
     }
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     headingRef.current?.focus({ preventScroll: at !== null });
+    return () => { if (previous?.isConnected) previous.focus({ preventScroll: true }); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent): void => {
       if (event.key === "Escape") closeCampPanel();
+      if (event.key === "Tab") {
+        const controls = [...(panelRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled):not([tabindex="-1"]), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]') ?? [])];
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === headingRef.current)) {
+          event.preventDefault(); last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault(); first?.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -670,6 +707,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
   const mine = state.party.filter((m) => m.playerId === me.playerId);
   const friends = state.campMoment?.friends;
   const tabs: { id: CampTab; label: string; icon: string }[] = [
+    { id: "play", label: "Play", icon: "rest" },
     { id: "kit", label: mine.length > 1 ? "Our kits" : "My camp", icon: "bag" },
     { id: "look", label: mine.length > 1 ? "Our looks" : "My look", icon: "star" },
     ...(friends && friends.cards.length > 0 ? [{ id: "friends" as const, label: "Friends", icon: "heart" }] : []),
@@ -700,9 +738,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
           </div>
         ) : null}
         {indoors ? <PackedCamp state={state} /> : null}
-        <div className="camp-panel__tent">
-          <TentButton state={state} me={me} held={held} dispatch={dispatch} block />
-        </div>
+
         <div className="camp-panel__tabs" role="tablist" aria-label="Camp" id={tabsId}>
           {tabs.map((t) => (
             <button
@@ -710,7 +746,16 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
               type="button"
               role="tab"
               id={`${tabsId}-${t.id}`}
+              tabIndex={shown === t.id ? 0 : -1}
               aria-selected={shown === t.id}
+              onKeyDown={(event) => {
+                const index = tabs.findIndex((item) => item.id === t.id);
+                const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : event.key === "ArrowRight" ? (index + 1) % tabs.length : event.key === "ArrowLeft" ? (index + tabs.length - 1) % tabs.length : null;
+                if (next === null) return;
+                event.preventDefault();
+                setTab(tabs[next]!.id);
+                document.getElementById(`${tabsId}-${tabs[next]!.id}`)?.focus();
+              }}
               aria-controls={`${tabsId}-page`}
               className="camp-panel__tab kad-focusable"
               onClick={() => setTab(t.id)}
@@ -724,7 +769,31 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
       </div>
       <div className="camp-panel__body" ref={pageRef} role="tabpanel" id={`${tabsId}-page`} aria-labelledby={`${tabsId}-${shown}`}>
         {/* The first-session choice (§5.3), wherever the Camp button was found first. */}
-        <KitWelcome state={state} me={me} held={held} dispatch={dispatch} />
+        {shown === "play" ? (
+          <section className="camp-play" aria-label="Camp activities">
+            <CampActivities key={state.campMoment?.id} state={state} held={held} />
+            <div className="camp-play__visit">
+              <h4>{indoors ? "Get cozy" : "Your cozy corner"}</h4>
+              <p>{indoors ? "Your bedroll and pack are here until the next adventure." : "Watch your hero settle in on the shared screen. Come back out whenever you like."}</p>
+              <TentButton state={state} me={me} held={held} dispatch={dispatch} block />
+            </div>
+            {friends && friends.cards.length > 0 ? <CampFriends state={state} /> : (
+              <p className="camp-panel__rule"><Icon name="heart" />Friends you make on adventures can join you here. There is always room for one more.</p>
+            )}
+            <div className="camp-play__choices">
+              {tabs.filter((item) => item.id === "kit" || item.id === "look" || item.id === "spots").map((item) => (
+                <button key={item.id} type="button" className="camp-play__choice kad-focusable" onClick={() => { setTab(item.id); document.getElementById(`${tabsId}-${item.id}`)?.focus(); }}>
+                  <Icon name={item.icon} />
+                  <strong>{item.label}</strong>
+                  <span>{item.id === "kit" ? "Pick a tent, colors, and treasures" : item.id === "look" ? "Dress your hero for adventure" : "Decorate together with your crew"}</span>
+                  <Icon name="forward" />
+                </button>
+              ))}
+            </div>
+            <CampfireQuestions />
+          </section>
+        ) : null}
+        {shown === "kit" ? <KitWelcome state={state} me={me} held={held} dispatch={dispatch} /> : null}
         {shown === "kit" || shown === "look"
           ? mine.map((member) => {
               const kit = state.kits?.[member.character.id];

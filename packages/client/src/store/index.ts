@@ -403,6 +403,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
             set({ cheers: [...get().cheers, { key: ++cheerKey, cheer }].slice(-MAX_CHEERS) });
           },
+          onCampPlay: (message) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== message.runId || get().state?.campMoment?.id !== message.momentId) return;
+            set({ campPlays: [...get().campPlays, { ...message, key: ++cheerKey }].slice(-12) });
+          },
           onFriendTap: ({ runId, friendId, heroId, words }) => {
             if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
             set({ friendTaps: [...get().friendTaps, { key: ++cheerKey, friendId, heroId, words }].slice(-MAX_CHEERS) });
@@ -553,7 +557,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     function disconnect(): void {
       // Previews, arrivals and cheers are live-only: a fresh channel starts
       // from nobody picking, nobody new and nobody cheering.
-      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [], friendTaps: [] });
+      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [], friendTaps: [], campPlays: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -821,7 +825,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       arrivals: [],
       arrivalsDropped: 0,
       cheers: [],
-      friendTaps: [],
+      friendTaps: [], campPlays: [],
       savedHeroes: {},
       heldHeroes: {},
       error: null,
@@ -1544,6 +1548,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         set({ cheers: get().cheers.filter((heard) => heard.key !== key) });
       },
 
+      async playCamp(play) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try { await deps.api.postCampPlay(play, session.sessionToken); return true; } catch { return false; }
+      },
+      dropCampPlay(key) { set({ campPlays: get().campPlays.filter(play => play.key !== key) }); },
       async tapFriend(friendId: string) {
         const session = get().session;
         if (!session?.playerId || !session.sessionToken) return false;

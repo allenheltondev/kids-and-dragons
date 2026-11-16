@@ -1,3 +1,4 @@
+import { relayCampPlay } from "./handlers/camp-play.ts";
 /**
  * Local dev server — architecture §7.
  *
@@ -624,6 +625,16 @@ async function main(): Promise<void> {
       },
       deps,
     );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/camp-play", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "camp play needs a room session token");
+    const result = await relayCampPlay({ runId: session.runId, playerId: session.playerId, householdId: session.householdId, play: req.body?.play }, deps);
     if (!result.ok) return sendError(res, result.status, result.code, result.message);
     res.json({ ok: true });
   });

@@ -1,3 +1,4 @@
+import { campSources } from "./camp-sources.ts";
 /**
  * The crew's camp and each hero's kit, on the server (docs/camp.md §9, §12):
  * reading them, changing them safely, and claiming a reward once. The storage
@@ -100,7 +101,9 @@ export async function readCampView(
   deps: CampDeps,
 ): Promise<CampView | null> {
   try {
-    return campView(await readCamp(householdId, crew, deps));
+    const camp = await readCamp(householdId, crew, deps);
+    const catalog = deps.content.campCatalog();
+    return { ...campView(camp), ...(catalog ? { sources: campSources(camp, catalog, deps.content) } : {}) };
   } catch (err) {
     console.error(`camp: could not read ${householdId}'s camp${crew ? ` for ${crew}` : ""}:`, err);
     return null;
