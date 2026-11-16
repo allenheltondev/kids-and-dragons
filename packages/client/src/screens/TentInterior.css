@@ -1,0 +1,33 @@
+.tent-room { display: flex; flex-direction: column; gap: 0.65rem; min-inline-size: 0; }
+.tent-room h3 { margin: 0; font: 700 1.25rem var(--kad-font-display); }
+.tent-room__scene { position: relative; isolation: isolate; overflow: hidden; aspect-ratio: 1.3; inline-size: 100%; border: 2px solid #e6c58a99; border-radius: 45% 45% 1rem 1rem / 10% 10% 1rem 1rem; box-shadow: inset 0 0 2rem #2b1b22aa; background: #785b49; }
+.tent-room__walls { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+.tent-room__bedroll { position: absolute; left: 0; bottom: 3%; inline-size: 65%; block-size: 37%; filter: drop-shadow(0 0.3rem 0.15rem #38251e55); }
+.tent-room__bedroll > svg { inline-size: 100%; block-size: 100%; }
+.tent-room__shelf { position: absolute; right: 7%; top: 51%; inline-size: 29%; block-size: 24%; border-block-end: 0.7rem solid #774b2f; border-radius: 0.35rem; box-shadow: 0 0.3rem 0 #523523; display: grid; place-items: end center; }
+.tent-room__shelf::after { content: ""; position: absolute; top: 100%; inline-size: 75%; block-size: 0.8rem; border-inline: 0.4rem solid #523523; }
+.tent-room__shelf svg { inline-size: 80%; block-size: 95%; filter: drop-shadow(0 0.15rem #3d2a2755); }
+.tent-room__empty { color: #fff1c9; font-size: 0.72rem; text-align: center; padding: 0.3rem; }
+.tent-room__lamp { position: absolute; top: 11%; right: 8%; inline-size: 23%; block-size: 30%; min-inline-size: 48px; min-block-size: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #ffe6a5; background: radial-gradient(ellipse, #fff0a433, transparent 68%); padding: 0.5rem; cursor: pointer; }
+.tent-room__lamp svg { inline-size: 90%; block-size: 100%; filter: drop-shadow(0 0 0.5rem #ffe19b); }
+.tent-room__light-note { position: absolute; top: 43%; right: 4%; max-inline-size: 35%; text-align: center; color: #fff1c6; font-size: 0.75rem; text-shadow: 0 1px 2px #281e26; }
+.tent-room__scene.is-dim .tent-room__glow { opacity: 0.1; }
+.tent-room__scene.is-dim { background: #372c3e; }
+.tent-room__scene.is-dim .tent-room__walls, .tent-room__scene.is-dim .tent-room__bedroll, .tent-room__scene.is-dim .tent-room__shelf { filter: brightness(0.58); }
+.tent-room__scene.is-dim .tent-room__lamp svg { filter: brightness(0.7); }
+.tent-room__scene.is-open .tent-room__cloth { opacity: 0; }
+.tent-room__favorite { font-size: 0.9rem; color: #ffe2aa; line-height: 1.45; }
+.tent-room__picker { border: 1px solid #d5ba8155; border-radius: 0.8rem; padding: 0.2rem 0.7rem 0.7rem; background: #1c2b32; }
+.tent-room__picker > summary { display: list-item; min-block-size: 48px; align-content: center; color: #ffe2aa; font-weight: 700; cursor: pointer; }
+.tent-room__picker p { font-size: 0.85rem; margin: 0.25rem 0 0.7rem; }
+.tent-room__choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(6rem, 100%), 1fr)); gap: 0.5rem; }
+.tent-room__choice-art { inline-size: 3rem; block-size: 3rem; }
+.tent-room__choice-art svg { inline-size: 100%; block-size: 100%; }
+.tent-room__book { border: 1px solid #c5b68c66; border-radius: 1rem; padding: 0.4rem 0.8rem 0.8rem; background: #24312f; }
+.tent-room__book > summary { min-block-size: 48px; align-content: center; font-weight: 700; cursor: pointer; color: #ffe2aa; }
+.camp-panel:has(.tent-room) .camp-panel__picture { display: none; }
+.camp-friend__trait { font-size: 0.75rem; color: #d9d6bd; }
+@media (max-height: 650px) { .tent-room__scene { aspect-ratio: 1.65; } }
+
+.camp-play:has(.tent-room) > :not(:has(.tent-room)) { display: none; }
+.tent-room h3:focus { outline: none; }

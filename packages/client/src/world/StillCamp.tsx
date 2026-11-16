@@ -46,7 +46,7 @@ import { campPieceOwner } from "./camp-ownership";
 import { campBoxes, campFitFor, campReachOf, campRowScale, piecePainting, rectOf, type CampBox, type CampBoxInput } from "./camp-boxes";
 import { chipRows } from "./camp-chips";
 import { campPaint } from "./camp-paint";
-import { hotspotName, tentArt } from "./camp-scene";
+import { DECORATION_ART, hotspotName, tentArt, type KitArt } from "./camp-scene";
 import "./StaticStage.css";
 
 /** The paint's share of a figure canvas's height: what a piece's size is measured against. */
@@ -71,6 +71,27 @@ function ArtOr({ src, children, onMissing }: { src: string | null; children: Rea
       }}
     />
   );
+}
+
+/** Painted decorations use the same 1024px hang points and size as the moving camp. */
+function HungDecoration({ id, slot, x, y, side }: { id: string; slot: number; x: number; y: number; side: number }): React.JSX.Element | null {
+  const [failed, setFailed] = useState(false);
+  const art = DECORATION_ART.find(d => d.id === id);
+  if (!art || failed) return null;
+  return <image href={`/assets/${art.path}`} x={x - side / 2} y={y - side / 2} width={side} height={side} data-decoration={id} data-slot={slot} onError={() => setFailed(true)} />;
+}
+function StillTent({ tent, src, accent, tinted, slots, fallback, owed }: { tent: KitArt; src: string; accent: string; tinted: boolean; slots: readonly (string | null)[]; fallback: React.JSX.Element; owed: (path: string) => void }): React.JSX.Element {
+  const [missing, setMissing] = useState<string | null>(null);
+  if (missing === src) return fallback;
+  const paint = campPaint(tent.path);
+  const side = paint ? Math.max(paint.right - paint.left, paint.bottom - paint.top) * 1024 * 0.24 : 0;
+  return <svg viewBox="0 0 1024 1024" aria-hidden="true">
+    <CampClothArt path={src} tent={tent.id} cloth={tinted ? campTentCloth(tent.id) : undefined} accent={accent} onMissing={path => { setMissing(src); owed(path); }} fallback={fallback} />
+    {side > 0 ? slots.map((id, slot) => {
+      const point = tent.hangPoints?.[slot];
+      return id && point ? <HungDecoration key={`${slot}:${id}`} id={id} slot={slot} x={point.x} y={point.y} side={side} /> : null;
+    }) : null}
+  </svg>;
 }
 
 /** A soft-edged tent in her color, before her tent is painted; `width` is its drawn width over its height. */
@@ -369,7 +390,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           }} data-mirrored={piece.id.startsWith("bedroll") && piece.x > .5 ? "true" : undefined}>
             {owner && kitStyle ? <CampBedroll style={kitStyle} accent={accent} />
               : piece.id === "campfire" ? <Campfire active={false} />
-              : tent && tentSrc ? <CampClothArt path={tentSrc} tent={tent.id} cloth={owner?.accent ? campTentCloth(tent.id) : undefined} accent={accent} onMissing={owed} fallback={
+              : tent && tentSrc ? <StillTent tent={tent} src={tentSrc} tinted={Boolean(owner?.accent)} accent={accent} slots={owner?.slots ?? []} owed={owed} fallback={
                 <TentStandIn accent={accent} owned={owner !== undefined} width={b.width / b.height} decorations={(owner?.slots ?? []).filter((s) => s !== null).length} />
               } />
               : piece.id.startsWith("souvenirs_") ? (

@@ -1566,6 +1566,11 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      reactFriend(tap) {
+        const state = get().state;
+        if (!state || state.closed || !state.campMoment?.friends?.out.includes(tap.friendId)) return;
+        set({ friendTaps: [...get().friendTaps, { ...tap, key: ++cheerKey }].slice(-MAX_CHEERS) });
+      },
       dropFriendTap(key: number) {
         set({ friendTaps: get().friendTaps.filter((tap) => tap.key !== key) });
       },

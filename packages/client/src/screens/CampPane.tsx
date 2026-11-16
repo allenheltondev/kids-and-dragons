@@ -1,3 +1,4 @@
+import { TentInterior } from "./TentInterior";
 import { CampTreasures } from "./CampActivities";
 /**
  * "Camp": the crew's camp in the adventure book (docs/camp.md §7, §12.6; #629).
@@ -312,7 +313,13 @@ function CrewCamp({
 
       {kit && table ? <BookTableNote table={table} focus={{ hero: hero.id, part: "tent" }} /> : null}
       {kit ? (
-        <BookKit hero={hero} kit={kit} friends={crew.friends.map(card)} edit={edit} />
+        <>
+          <BookKit hero={hero} kit={kit} friends={crew.friends.map(card)} edit={edit} />
+          <details className="tent-room__book">
+            <summary className="kad-focusable">{`Peek inside ${hero.name}'s ${crew.camp.frameStage >= 2 ? "tent" : "bedroll nook"}`}</summary>
+            <TentInterior hero={hero} kit={kit} covered={crew.camp.frameStage >= 2} family={family} edit={edit} />
+          </details>
+        </>
       ) : (
         <p className="book-camp__from">{`${hero.name}'s kit comes along the next time your book opens with a signal.`}</p>
       )}

@@ -1,3 +1,5 @@
+import { TentInterior } from "./TentInterior";
+import { friendTrait } from "../world/friend-personality";
 import { CampActivities } from "./CampActivities";
 /**
  * The phone's camp (docs/camp.md §3, §4.5, §5.3, §6.1, §12.5, §12.6; #620):
@@ -142,7 +144,10 @@ export function TentButton({ state, me, held, dispatch, block = false }: { state
             icon={<Icon name={inside ? "forward" : "rest"} />}
             disabled={held}
             aria-pressed={inside}
-            onClick={() => dispatch({ type: "CAMP_TENT", characterId: member.character.id, inside: !inside })}
+            onClick={() => {
+              if (!inside && !campPanelOpen()) openCampPanel({ hero: member.character.id, part: "inside" });
+              dispatch({ type: "CAMP_TENT", characterId: member.character.id, inside: !inside });
+            }}
             data-testid="tent-button"
           >
             {`${who}${label}`}
@@ -151,6 +156,11 @@ export function TentButton({ state, me, held, dispatch, block = false }: { state
       })}
     </>
   );
+}
+
+function LiveTentInterior({ member, kit, held, dispatch, covered, family }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; covered: boolean; family: string }): ReactElement {
+  const shown = withOwnEdits(kit, useOwnEdits("KIT_EDIT", member.character.id));
+  return <div data-camp-hero={member.character.id}><div data-camp-focus="inside"><TentInterior hero={member.character} kit={shown} covered={covered} held={held} autoFocus family={family} edit={change => dispatch({ type: "KIT_EDIT", characterId: member.character.id, revision: shown.revision, ...change })} /></div></div>;
 }
 
 /** The first-session choice (§5.3): one tap picks a style (in a color), and it can be skipped. */
@@ -297,11 +307,14 @@ function CampFriends({ state }: { state: RunState }): ReactElement | null {
             disabled={resting !== null}
             onClick={() => call(card)}
             data-friend={card.id}
+            aria-label={indoors ? `Say hi to ${card.name}` : `Call ${card.name} over`}
+            aria-describedby={`${base}-${card.id}-trait`}
           >
             <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
               <FriendArt card={card} />
             </span>
             <span className="camp-option__label">{indoors ? `Say hi to ${card.name}` : `Call ${card.name} over`}</span>
+            <span id={`${base}-${card.id}-trait`} className="camp-friend__trait">{friendTrait(card.id)}</span>
           </button>
         ))}
       </div>
@@ -661,7 +674,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
     const at = takeCampFocus();
     if (at) {
       pending.current = at;
-      setTab(at.part === "look" ? "look" : "kit");
+      setTab(at.part === "inside" ? "play" : at.part === "look" ? "look" : "kit");
     }
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     headingRef.current?.focus({ preventScroll: at !== null });
@@ -773,9 +786,15 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
           <section className="camp-play" aria-label="Camp activities">
             <CampActivities key={state.campMoment?.id} state={state} held={held} />
             <div className="camp-play__visit">
-              <h4>{indoors ? "Get cozy" : "Your cozy corner"}</h4>
-              <p>{indoors ? "Your bedroll and pack are here until the next adventure." : "Watch your hero settle in on the shared screen. Come back out whenever you like."}</p>
+              {!mine.some(member => state.campMoment?.inTent?.includes(member.character.id)) ? <>
+                <h4>{indoors ? "Get cozy" : "Your cozy corner"}</h4>
+                <p>{indoors ? "Your bedroll and pack are here until the next adventure." : "Watch your hero settle in on the shared screen. Come back out whenever you like."}</p>
+              </> : null}
               <TentButton state={state} me={me} held={held} dispatch={dispatch} block />
+              {mine.filter(member => state.campMoment?.inTent?.includes(member.character.id)).map(member => {
+                const kit = state.kits?.[member.character.id];
+                return kit ? <LiveTentInterior key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} covered={campHasTents(state)} family={campFamilyFor(state, chapter)} /> : null;
+              })}
             </div>
             {friends && friends.cards.length > 0 ? <CampFriends state={state} /> : (
               <p className="camp-panel__rule"><Icon name="heart" />Friends you make on adventures can join you here. There is always room for one more.</p>

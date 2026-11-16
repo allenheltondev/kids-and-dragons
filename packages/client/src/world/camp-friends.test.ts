@@ -323,3 +323,20 @@ it("sizes each friend at its band, and its own height without one", () => {
   expect(friendHeightCm({ figure: "entities/mosshorn" })).toBe(150);
   expect(friendHeightCm(card("duckling"))).toBe(20);
 });
+
+
+it("lets a social friend greet another friend through the same safe walking paths", () => {
+  const { app, stage } = camp();
+  run(app, 1);
+  expect(stage.tapFriend({ figureId: "friend:duckling", heroId: "friend:kid_goat", words: "Duckling gives Kid Goat a cheerful peep." })).toBe("start");
+  let greeted = false;
+  for (let t = 0; t < 40 && !greeted; t += 0.05) {
+    app.ticker.frame(50);
+    const duck = figure(stage, "friend:duckling");
+    const goat = figure(stage, "friend:kid_goat");
+    const distance = Math.abs(duck.x - goat.x);
+    greeted = !duck.walking && duck.lane === goat.lane && distance > 0.01 * 1920 && distance < 0.12 * 1920 && duck.alpha > 0.9;
+  }
+  expect(greeted).toBe(true);
+  stage.destroy();
+});

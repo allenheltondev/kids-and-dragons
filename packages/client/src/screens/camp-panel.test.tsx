@@ -14,7 +14,7 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import type { CampMoment, CampView, ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { CampButton, CampPanel, KitWelcome, TentButton, resetCampTab } from "./CampPanel";
-import { closeCampPanel, openCampPanel } from "./camp-panel";
+import { closeCampPanel, openCampPanel, takeCampFocus } from "./camp-panel";
 import { announceKitNews, announceLookNews, clearKitNews, seeCampNews } from "../store/kit-news";
 import { kitAccent } from "@kad/shared";
 import { campClothMatrix } from "../world/camp-kit-art";
@@ -300,7 +300,7 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
     page(/Friends/);
     const section = screen.getByTestId("camp-friends");
     // A named button for each friend out, and none for the one taking its turn later.
-    expect(within(section).getAllByRole("button").map((b) => b.textContent)).toEqual(["Call Lamb over", "Call Bun over", "Call Mosshorn over", "Call Duckling over"]);
+    expect(within(section).getAllByRole("button").map((b) => b.getAttribute("aria-label"))).toEqual(["Call Lamb over", "Call Bun over", "Call Mosshorn over", "Call Duckling over"]);
     for (let i = 0; i < 10; i++) fireEvent.click(within(section).getByRole("button", { name: "Call Bun over" }));
     expect(taps).toEqual(["bun"]);
     expect(within(section).getByRole("status").textContent).toBe("Bun is on the way!");
@@ -315,7 +315,7 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
     openPanel({ ...indoor, phase: "scene", sceneType: "rest", sceneId: "rest_bell_house", campMoment: { ...indoor.campMoment!, id: "rest:rest_bell_house|x", kind: "rest", outdoor: false } } as RunState);
     page(/Friends/);
     const section = screen.getByTestId("camp-friends");
-    expect(within(section).getAllByRole("button").map((b) => b.textContent)).toEqual(["Say hi to Lamb", "Say hi to Bun", "Say hi to Mosshorn", "Say hi to Duckling"]);
+    expect(within(section).getAllByRole("button").map((b) => b.getAttribute("aria-label"))).toEqual(["Say hi to Lamb", "Say hi to Bun", "Say hi to Mosshorn", "Say hi to Duckling"]);
     fireEvent.click(within(section).getByRole("button", { name: "Say hi to Bun" }));
     expect(taps).toEqual(["bun"]);
     expect(within(section).getByRole("status").textContent).toBe("Bun says hi! Look at the TV.");
@@ -433,6 +433,7 @@ describe("going into her tent (playtest, 2026-11-14)", () => {
     const view = render(<TentButton state={table()} me={me} held={false} dispatch={dispatch} />);
     fireEvent.click(screen.getByRole("button", { name: "Go in my tent" }));
     expect(sent).toEqual([{ type: "CAMP_TENT", characterId: "c_1", inside: true }]);
+    expect(takeCampFocus()).toEqual({ hero: "c_1", part: "inside" });
     view.rerender(<TentButton state={table({ campMoment: moment({ inTent: ["c_1"] }) })} me={me} held={false} dispatch={dispatch} />);
     const out = screen.getByRole("button", { name: "Come out of the tent" });
     expect(out.getAttribute("aria-pressed")).toBe("true");
@@ -507,4 +508,13 @@ describe("camp welcome", () => {
     fireEvent.click(done);
     expect(document.activeElement).toBe(trigger);
   });
+});
+
+
+it("shows only this phone's interiors when its heroes go inside", () => {
+  openPanel(table({ campMoment: moment({ inTent: [me.character.id, friend.character.id] }) }));
+  page(/^Play$/);
+  expect(screen.getByRole("region", { name: "Sparklehoof's tent" })).toBeTruthy();
+  expect(screen.queryByRole("region", { name: "Thistle's tent" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Come out of the tent" })).toBeTruthy();
 });

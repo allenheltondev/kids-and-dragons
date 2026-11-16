@@ -13,7 +13,7 @@ type Listener = () => void;
  */
 export interface CampFocus {
   hero: string;
-  part: "tent" | "decor" | "look";
+  part: "tent" | "decor" | "look" | "inside";
 }
 
 let open = false;

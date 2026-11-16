@@ -1537,3 +1537,30 @@ The server validates the seat, downtime, input bounds, and a fetching friend's p
 then rate limits each phone (six notes per second or one toss per five seconds). Events
 are scoped to the camp moment, never saved or replayed, never change `seq`, and cannot
 block Ready, Begin, or leaving a rest. The shared layer drops them when downtime ends.
+
+
+## 15. Friends with personalities and tent interiors (2026-11-16)
+
+The shared camp's friends now have small, optional social moments. Bun investigates a
+hero's actual decoration, the duckling follows its awake buddy, and friends greet one
+another. Each catalog friend has a distinct response to each camp-band instrument.
+An ambient moment begins after eight seconds and then no more than once every eighteen
+seconds. Music reactions are spaced at least four seconds apart. These are local
+presentation, never needs, rewards, saved events, or changes to the story sequence.
+
+Reactions use the existing friend-tap queue and safe walking paths. Sleeping, ready,
+removed, and disconnected heroes are not ambient follow targets. Reduced motion and
+the still renderer show the words alone. The lifecycle stops when the camp moment ends.
+
+Entering your tent opens its interior on your own phone. The room shows your chosen
+bedroll and pack, cloth color, a lantern you can dim, and a shelf keepsake. Exterior
+hanging decorations stay outside.
+Stage-one campers have a bedroll nook under the stars instead. The doorway uses the
+camp's existing terrain painting. Other players' interiors are never offered here.
+
+The shelf displays **your first personal tent decoration**, also visible on the outside.
+Choosing from the pieces you may already hang uses the same `KIT_EDIT.slots`, validates
+against the same catalog, and moves an already-hung piece without duplication. There is
+no second inventory or save field. The book's "Peek inside" uses that same view and its
+existing offline queue, so a shelf choice made without a signal survives and later syncs.
+The lantern's brightness is a local play preference for the current visit.
