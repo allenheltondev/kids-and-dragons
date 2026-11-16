@@ -500,8 +500,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
    * would keep the canvas for the page's life) and destroyed with the camp.
    */
   const tintedTextures: Texture[] = [];
+  const canvasTextures = new WeakMap<HTMLCanvasElement, Texture>();
   const canvasTexture = (canvas: HTMLCanvasElement): Texture => {
+    const cached = canvasTextures.get(canvas);
+    if (cached && !cached.destroyed) return cached;
     const texture = Texture.from(canvas, true);
+    canvasTextures.set(canvas, texture);
     tintedTextures.push(texture);
     return texture;
   };

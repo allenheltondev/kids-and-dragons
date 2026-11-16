@@ -1,3 +1,4 @@
+import { isTvBrowser } from "../display/tv";
 import { campClothMatrix } from "./camp-kit-art";
 
 /** The SVG cloth tint, rasterized once for the WebGL camp's texture. */
@@ -42,22 +43,22 @@ function clothFilter(accent: string): string {
  * reading back a pixel at a time: a TV's slow processor spent seconds on that
  * pixel loop for every tent, flap and bedroll a color change touched.
  */
-function tinted(source: CanvasImageSource, accent: string): HTMLCanvasElement | null {
+function tinted(source: CanvasImageSource, accent: string, side: number): HTMLCanvasElement | null {
   const tint = document.createElement("canvas");
-  tint.width = tint.height = 1024;
+  tint.width = tint.height = side;
   const fast = tint.getContext("2d");
   if (fast && "filter" in fast && typeof document.body !== "undefined") {
     fast.filter = `url(#${clothFilter(accent)})`;
-    fast.drawImage(source, 0, 0, 1024, 1024);
+    fast.drawImage(source, 0, 0, side, side);
     return tint;
   }
   // No canvas filters (an older browser): the pixel loop.
   const slow = document.createElement("canvas");
-  slow.width = slow.height = 1024;
+  slow.width = slow.height = side;
   const colored = slow.getContext("2d", { willReadFrequently: true });
   if (!colored) return null;
-  colored.drawImage(source, 0, 0, 1024, 1024);
-  const image = colored.getImageData(0, 0, 1024, 1024);
+  colored.drawImage(source, 0, 0, side, side);
+  const image = colored.getImageData(0, 0, side, side);
   const matrix = campClothMatrix(accent).split(" ").map(Number);
   for (let i = 0; i < image.data.length; i += 4) {
     const r = image.data[i]!, g = image.data[i + 1]!, b = image.data[i + 2]!;
@@ -70,19 +71,24 @@ function tinted(source: CanvasImageSource, accent: string): HTMLCanvasElement | 
 }
 
 export function campKitCanvas(source: CanvasImageSource, cloth: string, accent: string): HTMLCanvasElement | null {
-  const key = `${cloth}:${accent}`;
+  // Camp pieces occupy a small part of the TV picture. Half-size rasters avoid
+  // processing and uploading four times as many pixels on its slower CPU/GPU.
+  const side = isTvBrowser() ? 512 : 1024;
+  const key = `${side}:${cloth}:${accent}`;
   const known = cache.get(source)?.get(key);
   if (known) return known;
   try {
     const canvas = document.createElement("canvas");
-    canvas.width = canvas.height = 1024;
+    canvas.width = canvas.height = side;
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
-    ctx.drawImage(source, 0, 0, 1024, 1024);
-    const tint = tinted(source, accent);
+    ctx.drawImage(source, 0, 0, side, side);
+    const tint = tinted(source, accent, side);
     if (!tint) return null;
+    if (side !== 1024) ctx.scale(side / 1024, side / 1024);
     ctx.clip(new Path2D(cloth), "evenodd");
-    ctx.drawImage(tint, 0, 0);
+    if (side === 1024) ctx.drawImage(tint, 0, 0);
+    else ctx.drawImage(tint, 0, 0, 1024, 1024);
     const variants = cache.get(source) ?? new Map<string, HTMLCanvasElement>();
     if (variants.size >= 16) variants.delete(variants.keys().next().value!);
     variants.set(key, canvas);
