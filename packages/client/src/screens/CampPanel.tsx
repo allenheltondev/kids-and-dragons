@@ -686,12 +686,20 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
     const onKey = (event: KeyboardEvent): void => {
       if (event.key === "Escape") closeCampPanel();
       if (event.key === "Tab") {
-        const controls = [...(panelRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled):not([tabindex="-1"]), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]') ?? [])];
+        const controls = [...(panelRef.current?.querySelectorAll<HTMLElement>(
+          "button, a[href], area[href], input, select, textarea, summary, [tabindex]",
+        ) ?? [])].filter(control => {
+          // Closed details can still report child rectangles; only its summary is tabbable.
+          const closed = control.closest("details:not([open])");
+          return control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]")
+            && (!closed || control.matches("details:not([open]) > summary:first-of-type"))
+            && control.getClientRects().length > 0 && getComputedStyle(control).visibility === "visible";
+        });
         const first = controls[0];
         const last = controls.at(-1);
-        if (event.shiftKey && (document.activeElement === first || document.activeElement === headingRef.current)) {
+        if (event.shiftKey && (document.activeElement === first || !controls.includes(document.activeElement as HTMLElement))) {
           event.preventDefault(); last?.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
+        } else if (!event.shiftKey && (document.activeElement === last || !controls.includes(document.activeElement as HTMLElement))) {
           event.preventDefault(); first?.focus();
         }
       }

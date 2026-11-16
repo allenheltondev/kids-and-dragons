@@ -1,3 +1,4 @@
+import catalog from "../../../../content/camp.json";
 import { describe, expect, it } from "vitest";
 import { campFriendMoment, campMusicReaction, friendTrait } from "./friend-personality";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
@@ -26,6 +27,19 @@ describe("friends with personalities", () => {
     expect(campMusicReaction(state, "pot", "hero", 0)?.words).not.toBe(bun?.words);
     expect(campMusicReaction(state, "log", "missing")).toBeNull();
     expect(friendTrait("unknown")).toBeTruthy();
+  });
+  it("gives every catalog friend distinct instrument reactions and a personal trait", () => {
+    for (const { id, name, figure } of catalog.friends) {
+      const card = { id, name, figure };
+      const next = { ...state, campMoment: { ...state.campMoment!, friends: { rotation: [card.id], out: [card.id], cards: [card] } } };
+      const words = (["log", "pot", "bells"] as const).map(instrument => campMusicReaction(next, instrument, "hero")?.words);
+      expect(new Set(words).size, card.id).toBe(3);
+      expect(friendTrait(card.id), card.id).not.toBe(friendTrait("unknown"));
+    }
+    const { id, name, figure } = catalog.friends.find(card => card.id === "harbor_gull")!;
+    const gull = { id, name, figure };
+    const next = { ...state, campMoment: { ...state.campMoment!, friends: { rotation: [gull.id, "bun"], out: [gull.id, "bun"], cards: [gull, state.campMoment!.friends!.cards[0]!] } } };
+    expect(campFriendMoment(next, 2)?.words).toContain("shows a shiny pebble to");
   });
   it("has no ambient activity outside outdoor downtime or with no friends out", () => {
     expect(campFriendMoment({ ...state, phase: "scene", sceneType: "story" }, 0)).toBeNull();

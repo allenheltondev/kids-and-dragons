@@ -9,7 +9,7 @@
  * and the panel goes with the downtime, holding nothing up.
  */
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { CampMoment, CampView, ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
@@ -490,6 +490,8 @@ describe("camp welcome", () => {
   });
 
   it("supports arrow navigation and keeps focus inside until Done returns it", () => {
+    // jsdom has no layout; these dialog controls are painted in the browser.
+    const rects = vi.spyOn(HTMLElement.prototype, "getClientRects").mockReturnValue([{}] as unknown as DOMRectList);
     render(<><button onClick={() => openCampPanel()}>Visit camp</button><CampPanel state={table()} me={me} held={false} dispatch={dispatch} /></>);
     const trigger = screen.getByRole("button", { name: "Visit camp" });
     trigger.focus();
@@ -507,6 +509,7 @@ describe("camp welcome", () => {
     expect(document.activeElement).not.toBe(done);
     fireEvent.click(done);
     expect(document.activeElement).toBe(trigger);
+    rects.mockRestore();
   });
 });
 

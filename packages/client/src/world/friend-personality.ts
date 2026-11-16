@@ -7,7 +7,7 @@ const PROFILES: Record<string, { trait: string; music: Record<CampInstrument, st
   duckling: { trait: "Your tiny marching buddy", music: { log: "marches in a very small parade", pot: "answers the pot with a squeaky peep", bells: "taps both feet, then forgets which foot was next" } },
   mosshorn: { trait: "Gentle leaf collector", music: { log: "bobs its antlers to the low notes", pot: "listens with one enormous ear", bells: "shakes a leaf in time with the bells" } },
   kid_goat: { trait: "Champion of little hops", music: { log: "tries a springy little two-step", pot: "gives the pot a very serious nod", bells: "bounces as if the grass were a trampoline" } },
-  quay_gull: { trait: "Collector of shiny things", music: { log: "taps a beak against a smooth pebble", pot: "looks into the pot for the bird making that noise", bells: "conducts with one very important wing" } },
+  harbor_gull: { trait: "Collector of shiny things", music: { log: "taps a beak against a smooth pebble", pot: "looks into the pot for the bird making that noise", bells: "conducts with one very important wing" } },
   silver_otter: { trait: "Playful pebble juggler", music: { log: "pats the ground like a second drummer", pot: "claps tiny paws for the pot", bells: "rolls a pebble from paw to paw with the tune" } },
 };
 export function friendTrait(id: string): string { return PROFILES[id]?.trait ?? "Always glad to see your crew"; }
@@ -28,7 +28,7 @@ export function campFriendMoment(state: RunState, step: number): FriendReaction 
   const friend = (kind === 0 ? friends.find(f => f.id === "bun") : kind === 1 ? friends.find(f => f.id === "duckling") : undefined) ?? friends[Math.floor(step / 3) % friends.length]!;
   if (kind === 2 && friends.length > 1) {
     const other = friends.find(f => f.id !== friend.id)!;
-    const gesture = friend.id === "mosshorn" ? "offers a leaf to" : friend.id === "duckling" ? "gives a cheerful peep to" : friend.id === "quay_gull" ? "shows a shiny pebble to" : friend.id === "silver_otter" ? "rolls a pebble toward" : friend.id === "bun" ? "bows her ribbon toward" : "shares a little greeting with";
+    const gesture = friend.id === "mosshorn" ? "offers a leaf to" : friend.id === "duckling" ? "gives a cheerful peep to" : friend.id === "harbor_gull" ? "shows a shiny pebble to" : friend.id === "silver_otter" ? "rolls a pebble toward" : friend.id === "bun" ? "bows her ribbon toward" : "shares a little greeting with";
     return { friendId: friend.id, heroId: `friend:${other.id}`, words: `${friend.name} ${gesture} ${other.name}.` };
   }
   const hero = heroes.find(h => state.kits?.[h.character.id]?.buddy === friend.id) ?? heroes[0];
