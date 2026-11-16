@@ -1,24 +1,27 @@
-/** Capture every Riftlight activity on its actual TV and small phone surfaces. */
+/** Capture every Riftlight or Gemfall activity on its actual TV and small phone surfaces. */
 import fs from 'node:fs';
 import { expect } from '@playwright/test';
 import { openTable } from './table.ts';
 import type { Chapter } from '../../packages/shared/src/index.ts';
-const dir = 'test-results/playtest/riftlight-catalog';
+const campaign = process.argv[2] ?? "riftlight";
+if (!["riftlight", "gemfall"].includes(campaign)) throw Error("Choose riftlight or gemfall.");
+const dir = process.env.KAD_REVIEW_OUT ?? `test-results/playtest/${campaign}-catalog`;
 fs.mkdirSync(dir, { recursive: true });
 const findings: { chapter: string; scene: string; image: string; broken: string[] }[] = [];
-for (const file of fs.readdirSync('content/chapters').filter(f => f.startsWith('riftlight-'))) {
+for (const file of fs.readdirSync('content/chapters').filter(f => f.startsWith(campaign + '-') && (!process.argv[3] || f.includes(process.argv[3])))) {
   const chapter = JSON.parse(fs.readFileSync('content/chapters/' + file, 'utf8')) as Chapter;
   const scenes = Object.entries(chapter.scenes).filter(([, scene]) => scene.type === 'interaction');
   if (!scenes.length) continue;
   const table = await openTable({ chapterId: chapter.id, sceneId: scenes[0]![0], players: 2, startServer: false });
   try {
-    for (const phone of table.phones) await phone.setViewportSize({ width: 360, height: 640 });
+    for (const phone of table.phones) await phone.setViewportSize({ width: 320, height: 640 });
     for (const [sceneId] of scenes) {
       if (sceneId !== scenes[0]![0]) await table.goto(sceneId);
       for (const phone of table.phones) await expect(phone.getByRole('region', { name: 'Interaction controls' })).toBeVisible();
       const lead = await table.lead();
-      await lead.getByRole('button', { name: /We.*ready/i }).click();
+      await lead.getByRole('button', { name: /We.*ready/i }).press('Enter');
       await expect.poll(async () => { const p = (await table.state()).prompt; return p?.kind === 'interaction' && p.phase === 'active'; }).toBe(true);
+      for (const page of [table.tv, ...table.phones]) await expect.poll(() => page.locator('.game__board img').evaluateAll(images => images.every(img => (img as { complete: boolean }).complete))).toBe(true);
       const image = await table.snap(chapter.id + '-' + sceneId, dir);
       const broken: string[] = [];
       for (const page of [table.tv, ...table.phones]) {

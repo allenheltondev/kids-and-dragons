@@ -2252,11 +2252,13 @@
       "narration": "The reeds keep swinging shut, like doors in a draft. \"Wait for it,\" Gullet hums. \"Wait. Now!\" Pole through when the gap is wide.",
       "interaction": {
         "kind": "timing",
-        "cue": "Pole through when the marker reaches the widest gap in the reeds.",
+        "cue": "Read the gold interval. Start with enough time to pole through.",
         "actionLabel": "Pole through!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_barge",
@@ -2322,11 +2324,13 @@
       "narration": "Somebody on the island ahead is grumbling. But first comes the biggest stump yet, rolling like a sleeping cow. \"Fend it off!\" hums Gullet. \"Push when it rolls close. Not before!\"",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to push the stump off when the marker is in the gold.",
+        "cue": "Read the gold interval. Start with enough time to push off the stump.",
         "actionLabel": "Push off the stump",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_tussock",
@@ -2568,11 +2572,13 @@
       "narration": "The ribbon rises as the cousins shift their poles. Wait for a clear gap, then duck. The cousin in three hats folds almost flat. The hats do not.",
       "interaction": {
         "kind": "timing",
-        "cue": "Duck when the marker is in the clear gap.",
+        "cue": "Read the gold interval. Start with enough time to duck under.",
         "actionLabel": "Duck under",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "interaction_wisp_crowd",
@@ -2699,11 +2705,12 @@
       "narration": "The prospectors climb aboard one at a time. Help each one aboard just as the raft dips toward them. The tallest says his hat was heavier than this.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to pull them aboard when the marker is in the gold.",
+        "cue": "Support the passenger in the sling. Bring them aboard gently as their weight shifts.",
         "actionLabel": "Bring them aboard",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "scene_wisp_lead",
@@ -2794,11 +2801,12 @@
       "narration": "The paper wants to curl. The charcoal wants to roll. Rub just as the charcoal passes over the rune. The frog watches your thumb closely.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to rub when the marker is in the gold, right over the rune.",
+        "cue": "Line up the paper with the rune. Press enough to copy it without tearing it.",
         "actionLabel": "Rub the rune",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "press"
       },
       "onSuccess": {
         "goto": "scene_nan_washtub",
@@ -2869,11 +2877,13 @@
       "narration": "Gullet's cousins stamp their poles on the weir. Wait for the short gap between stamps, then move. One cousin's hats bounce on every beat.",
       "interaction": {
         "kind": "timing",
-        "cue": "Pole across when the marker is inside the gold beat.",
+        "cue": "Read the gold interval. Start with enough time to pole across.",
         "actionLabel": "Pole across",
         "target": 0.5,
         "width": 0.24,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "ending_forded_clean",
@@ -2905,11 +2915,13 @@
       "narration": "Gullet's cousins stamp their poles on the weir. Your practiced beat gives you longer to move together. One cousin's hats bounce on every beat.",
       "interaction": {
         "kind": "timing",
-        "cue": "Pole across when the marker is inside the gold beat.",
+        "cue": "Read the gold interval. Start with enough time to pole across.",
         "actionLabel": "Pole across",
         "target": 0.5,
         "width": 0.5,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "ending_forded_clean",
@@ -3319,7 +3331,8 @@
       "interaction_tussock_balance": {
         "props": [
           "prop_rope_pole"
-        ]
+        ],
+        "figure": "cast/gullet"
       },
       "interaction_gate_rubbing": {
         "props": [

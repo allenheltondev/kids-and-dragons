@@ -797,14 +797,6 @@
       }
     ]
   },
-  "gemfall-03b/interaction_gate_rubbing/interaction/cue": {
-    "": [
-      {
-        "clip": "35ddd454e57036f6a069f9d40b8544330b62c2adc0c881ab1459c31cc21deca9",
-        "ms": 3707
-      }
-    ]
-  },
   "gemfall-03b/interaction_gate_rubbing/narration": {
     "": [
       {
@@ -917,14 +909,6 @@
       }
     ]
   },
-  "gemfall-03b/interaction_ribbon_duck/interaction/cue": {
-    "": [
-      {
-        "clip": "5934b72cdfe9b4d9641d07337460cb26ba082619e47c3bb0c2d1b326cee73151",
-        "ms": 2306
-      }
-    ]
-  },
   "gemfall-03b/interaction_ribbon_duck/narration": {
     "": [
       {
@@ -1003,14 +987,6 @@
       }
     ]
   },
-  "gemfall-03b/interaction_stumps/interaction/cue": {
-    "": [
-      {
-        "clip": "0a0bc7a8f8a66d60794f0070c8f34ba67cf864bea5be80bf7701eb26d7de58d2",
-        "ms": 3307
-      }
-    ]
-  },
   "gemfall-03b/interaction_stumps/narration": {
     "": [
       {
@@ -1065,14 +1041,6 @@
       }
     ]
   },
-  "gemfall-03b/interaction_tussock_balance/interaction/cue": {
-    "": [
-      {
-        "clip": "082d36b69a9f13e8fd8393650510f29853eb3bf064eb8407281ab06cb5f2e6df",
-        "ms": 2761
-      }
-    ]
-  },
   "gemfall-03b/interaction_tussock_balance/narration": {
     "": [
       {
@@ -1113,14 +1081,6 @@
       }
     ]
   },
-  "gemfall-03b/interaction_weir_practiced/interaction/cue": {
-    "": [
-      {
-        "clip": "e183bebd3bd04b55ac0f26d48ff0ddd7d44a24e9155b436a903add3a330c04b7",
-        "ms": 3207
-      }
-    ]
-  },
   "gemfall-03b/interaction_weir_practiced/narration": {
     "": [
       {
@@ -1150,14 +1110,6 @@
       {
         "clip": "c02a3e6f23571316592588c33c5a2c6b4ebf289122916e63eaf1191d007f7810",
         "ms": 5207
-      }
-    ]
-  },
-  "gemfall-03b/interaction_weir_song/interaction/cue": {
-    "": [
-      {
-        "clip": "e183bebd3bd04b55ac0f26d48ff0ddd7d44a24e9155b436a903add3a330c04b7",
-        "ms": 3207
       }
     ]
   },

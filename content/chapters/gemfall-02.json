@@ -2774,11 +2774,13 @@
       ],
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to push when the marker is in the gold, just as the drover pulls.",
+        "cue": "Read the gold interval. Start with enough time to push.",
         "actionLabel": "Push!",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_hedge_mob",
@@ -2954,11 +2956,12 @@
       "narration": "The fauns from the canal bridge catch up with their long brace pole. \"You helped our bridge,\" they say. One branch is tangled. Hold the brace where the branch can slip free.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the marker is in the gold to set the brace while Pib frees the branch.",
+        "cue": "Find a firm support under the branch. Ease it up without bending it.",
         "actionLabel": "Guide the branch",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "choice_pib_gift",
@@ -3176,11 +3179,13 @@
       ],
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to creep past when the marker is in the gold, just as the bell rattles.",
+        "cue": "Read the gold interval. Start with enough time to slip past.",
         "actionLabel": "Slip past",
         "target": 0.5,
         "width": 0.24,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "watch",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_plank_bridge",
@@ -3303,7 +3308,8 @@
           "prop_straw_hat",
           "prop_straw_hat",
           "prop_straw_hat"
-        ]
+        ],
+        "figure": "entities/jackalope"
       },
       "interaction_egg_prices": {
         "props": [

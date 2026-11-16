@@ -170,7 +170,7 @@ function useRoomSounds(prompt: InteractionPrompt | null, now: number, connected:
     }
     if (spec.kind === "timing") {
       const lamp = lampAt(prompt, now);
-      const word = prompt.challenge?.version === 3 ? crossingSafe(prompt, crossingPhase(prompt, now)) ? "now" : "wait" : lamp.safe ? "now" : lamp.soon ? "soon" : "wait";
+      const word = (prompt.challenge?.version ?? 0) >= 3 ? crossingSafe(prompt, crossingPhase(prompt, now)) ? "now" : "wait" : lamp.safe ? "now" : lamp.soon ? "soon" : "wait";
       if (word !== seen.lamp && seen.lamp !== "") { if (word === "soon") cue("tick"); if (word === "now") padNote(3); }
       seen.lamp = word;
     }
@@ -199,7 +199,7 @@ function Stamp({ prompt, now, settled = true }: { prompt: InteractionPrompt; now
 
 /** The game's name and the story's cue, the same heading on every screen. */
 function GameHead({ prompt }: { prompt: InteractionPrompt }) {
-  const game = gameGuide(prompt, useRunState()?.chapterId?.startsWith("riftlight-"));
+  const game = gameGuide(prompt, useRunState()?.chapterId?.startsWith("riftlight-"), useRunState()?.chapterId?.startsWith("gemfall-"));
   return <header className="game__head">
     <span className="game__badge"><Icon name={game.icon} /> {game.name}</span>
     <h3 className="game__cue">{prompt.spec.cue}</h3>
@@ -228,12 +228,12 @@ export function StoryInteractionWorld() {
   if (!prompt || !state) return null;
   const view = { prompt, party: state.party, connected, now };
   const status = settled ? tvStatus(view) : "Watch it land. Nearly home!";
-  return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}${state.chapterId?.startsWith("riftlight-") ? " game--riftlight" : ""}`} aria-label="Story interaction">
+  return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}${/^(riftlight|gemfall)-/.test(state.chapterId ?? "") ? " game--landscape" : ""}`} aria-label="Story interaction">
     <GameHead prompt={prompt} />
     {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <div className="game__board">
       {(prompt.spec.kind === "play" || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={state.party} now={now} />}
-      {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {gameGuide(prompt, state.chapterId?.startsWith("riftlight-")).how}</p>}
+      {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {gameGuide(prompt, state.chapterId?.startsWith("riftlight-"), state.chapterId?.startsWith("gemfall-")).how}</p>}
       <Board prompt={prompt} party={state.party} now={now} settled={settled} />
       {prompt.spec.kind !== "relay" && <Stamp prompt={prompt} now={now} settled={settled} />}
       {prompt.spec.kind !== "relay" && prompt.phase === "result" && settled && <p className={`game__outcome game__outcome--${prompt.outcome ?? "failure"}`}><Icon name={prompt.outcome === "failure" ? "shuffle" : "star"} /> {outcomeLine(prompt)}</p>}
@@ -263,7 +263,9 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   prompt: InteractionPrompt; party: PartyMember[]; runId: string; updatedAt: string; playerId: string;
   dispatch: ReturnType<typeof useSend>; busy: boolean;
 }) {
-  const riftlight = useRunState()?.chapterId?.startsWith("riftlight-") ?? false;
+  const chapterId = useRunState()?.chapterId;
+  const gemfall = chapterId?.startsWith("gemfall-") ?? false;
+  const riftlight = chapterId?.startsWith("riftlight-") ?? false;
   const settled = useRelayArrival(prompt);
   const connected = party.filter((member) => member.connected).map((member) => member.playerId);
   const actor = interactionActor(prompt, connected);
@@ -280,7 +282,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   latest.current = { prompt, busy, dispatch };
   /** Resolves false when the server refused it or it never arrived, so a gesture can take itself back. */
   const send = (action: InteractionAction): Promise<boolean> => dispatch({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action,
-    ...(prompt.challenge?.version === 3 && (action.action === "commit" || action.action === "arrange" || action.action === "adjust") ? { rulesVersion: 3 as const } : {}) });
+    ...(prompt.challenge?.version && (action.action === "commit" || action.action === "arrange" || action.action === "adjust") ? { rulesVersion: prompt.challenge.version } : {}) });
   useEffect(() => { speak(prompt.spec.cue, { source: "prompt" }); }, [prompt.openedSeq, prompt.spec.cue]);
   // Hold leases expire without a release message, including a closed phone.
   // The ordinary sequenced action lane handles concurrent renewals and retries.
@@ -321,7 +323,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   // A phone that cannot aim (reduced motion) needs the help open, not folded away.
   const needsHand = !prompt.challenge && still && mine && prompt.phase === "active" && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing");
   const controls = prompt.phase === "active" ? <KindControls prompt={prompt} playerId={playerId} connected={connected} mine={mine} now={now} busy={busy} send={send} answer={answer} setAnswer={setAnswer} holding={holding} setHolding={setHolding} setStop={setStop} /> : null;
-  return <section className={`story-interaction game game--phone game--${prompt.spec.kind} game--${prompt.phase}${mine ? " game--lead" : ""}${riftlight ? " game--riftlight" : ""}`} aria-label="Interaction controls">
+  return <section className={`story-interaction game game--phone game--${prompt.spec.kind} game--${prompt.phase}${mine ? " game--lead" : ""}${riftlight || gemfall ? " game--landscape" : ""}`} aria-label="Interaction controls">
     <GameHead prompt={prompt} />
     {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <p className={`game__job game__job--${job.lookAt}`}>
@@ -330,7 +332,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
     </p>
     <div className="game__board">
       {((prompt.spec.kind === "play" && prompt.spec.options.length > 1) || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={party} now={now} />}
-      {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {gameGuide(prompt, riftlight).how}</p>}
+      {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {gameGuide(prompt, riftlight, gemfall).how}</p>}
       {prompt.phase !== "ready" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} stop={stop} settled={settled} busy={busy} onSkillAction={send} onCover={async (index) => {
         setAnswer([String(index)]);
         const accepted = await send(prompt.challenge ? { action: "commit", round: prompt.challenge.round, answer: [String(index)] } : { action: "answer", answer: [String(index)] });
@@ -346,7 +348,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
         <Button variant="primary" size="lg" block icon={<Icon name="forward" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "continue" })}>See what happens next</Button>
         {mine && <Button variant="secondary" size="lg" block icon={<Icon name="shuffle" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "retry" })}>Try again</Button>}
       </>}
-      {prompt.phase === "ready" && mine && <Button variant="primary" size="lg" block icon={<Icon name="ready" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "start", relaxed, rulesVersion: riftlight ? 3 : 2 })}>We’re ready</Button>}
+      {prompt.phase === "ready" && mine && <Button variant="primary" size="lg" block icon={<Icon name="ready" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "start", relaxed, rulesVersion: gemfall ? 4 : riftlight ? 3 : 2 })}>We’re ready</Button>}
       {prompt.phase === "active" && <>
         {mine && <div className="game-actions-row">
           <Button variant="ghost" icon={<Icon name="shuffle" />} className="story-interaction__button" disabled={busy} onClick={() => send({ action: "retry" })}>Start this attempt again</Button>

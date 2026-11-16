@@ -88,15 +88,15 @@
 .game--phone .rift-field { height: 12em; min-height: 9em; }
 .rift-hero { bottom: 14%; }
 .rift-hero small { font-size: .7em; }
-.game--riftlight.game--active .game-stamp { display: none; }
-.game--riftlight.game--result .game-stamp, .game--riftlight.game--result .game__outcome { display: none; }
-.game--riftlight.game--result .rift-progress, .game--riftlight.game--result .rift-hint,
-.game--riftlight.game--result .rift-read > span, .game--riftlight.game--result .rift-supports { display: none; }
-.game--riftlight.game--result .rift-field { height: 8em; min-height: 6em; }
-.game--phone.game--riftlight.game--result .game__board { flex: 0 0 auto; padding-block: .5em; }
-.game--phone.game--riftlight.game--result .game__controls { flex: 0 0 auto; }
-.game--phone.game--riftlight:has(.rift-game) .game-actions-row { display: none; }
-.game--phone.game--riftlight:has(.rift-game) .game__help { margin-block-start: .3em; }
+.game--landscape.game--active .game-stamp { display: none; }
+.game--landscape.game--result .game-stamp, .game--landscape.game--result .game__outcome { display: none; }
+.game--landscape.game--result .rift-progress, .game--landscape.game--result .rift-hint,
+.game--landscape.game--result .rift-read > span, .game--landscape.game--result .rift-supports { display: none; }
+.game--landscape.game--result .rift-field { height: 8em; min-height: 6em; }
+.game--phone.game--landscape.game--result .game__board { flex: 0 0 auto; padding-block: .5em; }
+.game--phone.game--landscape.game--result .game__controls { flex: 0 0 auto; }
+.game--phone.game--landscape:has(.rift-game) .game-actions-row { display: none; }
+.game--phone.game--landscape:has(.rift-game) .game__help { margin-block-start: .3em; }
 @media (max-height: 700px) {
   .game--phone .rift-field { height: 8em; min-height: 8em; }
   .game--phone .rift-progress { font-size: .75em; }
@@ -109,3 +109,6 @@
 .rift-flight[data-good=true] { filter: drop-shadow(0 0 .6em #fff0a7); }
 @keyframes rift-throw { 0% { left: 10%; bottom: 22%; } 50% { left: var(--halfway); bottom: var(--peak); } 100% { left: var(--landing); bottom: 22%; } }
 @media (prefers-reduced-motion: reduce) { .rift-game * { animation: none !important; transition: none !important; } }
+
+.rift-field--work .rift-timing-subject { left: 30%; width: 45%; height: 75%; bottom: 12%; }
+.rift-field--work .rift-far-prop { left: 55%; width: 35%; height: 55%; }

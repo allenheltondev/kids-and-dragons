@@ -1828,11 +1828,13 @@
       "narration": "Now the hedge knits its branches into a green gate with one thorny latch. It sits there looking innocent. Slip the latch just as the branches part.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to slip the latch when the marker is in the gold.",
+        "cue": "Read the gold interval. Start with enough time to slip the latch.",
         "actionLabel": "Slip the latch",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_mosshorns",
@@ -2296,11 +2298,12 @@
       "narration": "Press the crumb into the soft spot when the marker meets the gold. A beetle waits nearby, as if it has an appointment.",
       "interaction": {
         "kind": "precision",
-        "cue": "Press when the marker is inside the gold soft spot.",
+        "cue": "Place the mending crumb over the split. Join the bark without crushing it.",
         "actionLabel": "Press gently",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "handling": "press"
       },
       "onSuccess": {
         "goto": "interaction_spring_cup",
@@ -2385,11 +2388,12 @@
       "narration": "A broad cloth holds the calf. Lift together just as the sling swings level, then carry it home. The calf tastes the cloth. Disappointing.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to lift when the marker is in the gold.",
+        "cue": "Find the support under the calf. Lift the sling gently as its weight shifts.",
         "actionLabel": "Lift the sling",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "scene_lost_calf_carry",
@@ -2419,11 +2423,13 @@
       "narration": "Lay the moss strip flat, the way the unicorns taught you, and step only when the echo hunter turns its ear away. It listens hard.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to step when the marker is in the gold, while its ear is turned away.",
+        "cue": "Read the gold interval. Start with enough time to step softly.",
         "actionLabel": "Step softly",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "watch",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_glade_heart",
@@ -2715,7 +2721,8 @@
           "prop_fern",
           "prop_fern",
           "prop_fern"
-        ]
+        ],
+        "figure": "entities/mosshorn"
       },
       "interaction_herd_map": {
         "props": [],
@@ -2723,7 +2730,8 @@
           "prop_fern",
           "prop_fern",
           "prop_fern"
-        ]
+        ],
+        "figure": "entities/mosshorn"
       },
       "interaction_small_mend": {
         "props": [
@@ -2738,7 +2746,8 @@
       "interaction_calf_load": {
         "props": [
           "wind-blanket"
-        ]
+        ],
+        "figure": "entities/mosshorn"
       },
       "interaction_quiet_moss": {
         "props": [

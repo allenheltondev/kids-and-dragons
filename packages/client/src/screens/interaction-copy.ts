@@ -28,9 +28,13 @@ export const GAME: Record<InteractionKind, { name: string; icon: string; how: st
   play: { name: "Everyone joins in", icon: "heart", how: "Pick something to do. What you pick shows up on the TV. No wrong answers." },
 };
 
-export function gameGuide(prompt: InteractionPrompt, riftlight = false): typeof GAME[InteractionKind] {
+export function gameGuide(prompt: InteractionPrompt, riftlight = false, gemfall = false): typeof GAME[InteractionKind] {
   const game = GAME[prompt.spec.kind];
-  if (!riftlight && prompt.challenge?.version !== 3) return game;
+  const gemfallRules = prompt.challenge?.version === 4 || gemfall && prompt.phase === "ready";
+  if (gemfallRules && prompt.spec.kind === "precision" && prompt.spec.handling === "hum") return { ...game, name: "Hold a steady hum", how: "Find the steady note, then add enough voice to hold it. A wandering note loses strength; too much voice strains the hold." };
+  if (gemfallRules && prompt.spec.kind === "precision") return { ...game, name: "Place and steady", how: "Move your grip to the support point, then choose enough effort to move the weight without straining it. The weight shifts after each safe move." };
+  if (gemfallRules && prompt.spec.kind === "cooperate") return { ...game, how: "Choose your effort together. The near rope has more leverage. A friend's chosen pull changes the effort still needed. Too much strains the cords; too little stays put." };
+  if ((prompt.challenge?.version ?? 0) < 3 && !(prompt.phase === "ready" && (riftlight || gemfall))) return game;
   if (prompt.spec.kind === "precision") return { ...game, name: "Find the landing", how: "Choose strength and height on your phone. Read the wind and the arc. Clear the edge and land inside the gold." };
   if (prompt.spec.kind === "timing") return { ...game, name: "Read the opening", how: "Gold shows when the way is clear. The white bar shows how long your move takes. Start while the whole bar fits in the gold." };
   if (prompt.spec.kind === "balance") return { ...game, name: "Steady both ends", how: "Take an end of the beam. Raising your end changes the tilt. Keep it level as the weight rolls, then take a careful step." };
@@ -82,7 +86,9 @@ export function tvStatus(view: TableView): string {
   if (prompt.phase === "ready") {
     return `${lead}: tap "We're ready" on your phone when everyone is set.`;
   }
-  if (prompt.challenge?.version === 3) {
+  if ((prompt.challenge?.version ?? 0) >= 3) {
+    if (prompt.challenge?.version === 4 && spec.kind === "precision") return spec.handling === "hum" ? `${lead}: find the note, then set your voice strength.` : `${lead}: support the weight, then set your effort.`;
+    if (prompt.challenge?.version === 4 && spec.kind === "cooperate") return "Everyone: set your effort on your phone.";
     if (spec.kind === "precision") return `${lead}: aim on your phone. Choose strength and height to clear the edge and land in the gold.`;
     if (spec.kind === "timing") return `${lead}: start while the opening has time for your whole move. Watch the gold on your phone.`;
     if (spec.kind === "balance") return `Everyone: steady your end of the beam. ${lead}: step when both ends are level.`;
@@ -178,7 +184,9 @@ export function phoneJob(view: TableView, playerId: string): Job {
       ? { headline: "You start this one.", detail: "Tap \"We're ready\" when everyone is looking at the TV.", lookAt: "phone" }
       : { headline: `${lead} starts this one.`, detail: "Look at the TV and get ready.", lookAt: "tv" };
   }
-  if (prompt.challenge?.version === 3) {
+  if ((prompt.challenge?.version ?? 0) >= 3) {
+    if (prompt.challenge?.version === 4 && spec.kind === "precision") return { headline: mine ? "Find support. Steady the weight." : `Help ${lead} find the support point.`, detail: "Move your grip, then add just enough effort.", lookAt: mine ? "phone" : "tv" };
+    if (prompt.challenge?.version === 4 && spec.kind === "cooperate") return { headline: prompt.challenge.pulls[playerId] === undefined ? "Choose your share of the effort." : "Your effort is set.", detail: "Read the pulls already set. The near rope has more leverage.", lookAt: "both" };
     if (spec.kind === "precision") return { headline: mine ? "Choose your strength and arc." : `Help ${lead} judge the wind.`, detail: "Clear the edge and land inside the gold.", lookAt: mine ? "phone" : "tv" };
     if (spec.kind === "timing") return { headline: mine ? "Wait for enough time to finish." : `Help ${lead} read the opening.`, detail: "The white bar must fit inside the gold opening.", lookAt: mine ? "phone" : "tv" };
     if (spec.kind === "balance") return { headline: "Keep both ends level.", detail: mine ? "Adjust your end, then step when it is steady." : `${lead} takes the step. Help steady your end.`, lookAt: "both" };

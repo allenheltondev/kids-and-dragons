@@ -33,7 +33,7 @@ export function act(chapter: Chapter, state: RunState, action: InteractionAction
   const result = applyIntent(
     state,
     { playerId, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action,
-      ...(prompt.challenge?.version === 3 && (action.action === "commit" || action.action === "arrange" || action.action === "adjust") ? { rulesVersion: 3 as const } : {}) } },
+      ...(prompt.challenge?.version && (action.action === "commit" || action.action === "arrange" || action.action === "adjust") ? { rulesVersion: prompt.challenge.version } : {}) } },
     { ...base, now },
   );
   expect(result.error, `${chapter.id}/${state.sceneId}: ${JSON.stringify(action)} by ${playerId}`).toBeUndefined();

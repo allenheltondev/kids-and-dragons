@@ -40,6 +40,36 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
   });
 }
 
+describe("Gemfall steady work", () => {
+  it("sends the chosen support and effort with the Gemfall rules, without a moving toss", () => {
+    const send = seed(precision, { challenge: { ...skillStart(["p"]), version: 4 } });
+    render(<StoryInteractionControls />);
+    expect(document.querySelector(".gem-field")).toBeTruthy();
+    expect(document.querySelector(".skill-shot, .rift-trajectory")).toBeNull();
+    fireEvent.change(screen.getByRole("slider", { name: "Support position" }), { target: { value: "50" } });
+    fireEvent.change(screen.getByRole("slider", { name: /^Effort$/ }), { target: { value: "45" } });
+    fireEvent.click(screen.getByRole("button", { name: /^Toss!$/ }));
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "commit", round: 0, rulesVersion: 4, position: .45, angle: .5 }));
+  });
+  it("keeps the TV read-only and shows an outcome without active gauges", () => {
+    seed(precision, { phase: "result", outcome: "success", resolvedActorId: "p", challenge: { ...skillStart(["p"]), version: 4, progress: 2 } });
+    useGameStore.getState().state!.party[0]!.connected = false;
+    render(<StoryInteractionWorld />);
+    expect(screen.getByText("Safely in place.")).toBeTruthy();
+    expect(screen.queryByRole("slider")).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(document.querySelector(".gem-force")).toBeNull();
+    expect(document.querySelector(".gem-hero")).toBeTruthy();
+  });
+  it("can apply the remaining crew's set efforts after an unset friend leaves", () => {
+    seed({ kind: "cooperate", cue: "Brace it", supportLabel: "Hold", actionLabel: "Move it" }, {
+      challenge: { ...skillStart(["p", "away"]), version: 4, pulls: { p: .4 } },
+    });
+    render(<StoryInteractionControls />);
+    expect(screen.getByRole("button", { name: "Move with the remaining crew" }).hasAttribute("disabled")).toBe(false);
+  });
+});
+
 describe("Riftlight crossing results", () => {
   it.each(["phone", "TV"] as const)("shows the outcome without rescoring a recovered winning move on the %s", surface => {
     seed({ kind: "timing", cue: "Cross in the opening", actionLabel: "Cross", target: .5, width: .3, periodMs: 5000 }, {

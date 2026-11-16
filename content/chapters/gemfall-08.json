@@ -16,7 +16,10 @@
       "id": "settled_bones",
       "label": "Got the restless bones to lie back down",
       "flag": "remains_settled",
-      "reveal": ["scene_mouth", "scene_bells_first"],
+      "reveal": [
+        "scene_mouth",
+        "scene_bells_first"
+      ],
       "hint": "Help the bones lie back down?",
       "xp": 12
     },
@@ -5674,11 +5677,13 @@
       "narration": "Above the post, the stair turns into a steep chimney of warm rock. A rope hangs down it. Gusts blow through the opening. Climb in the quiet between them.",
       "interaction": {
         "kind": "timing",
-        "cue": "Climb when the marker reaches the gap between gusts.",
+        "cue": "Read the gold interval. Start with enough time to climb.",
         "actionLabel": "Climb!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "wind",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_overlook",
@@ -5986,11 +5991,12 @@
       "narration": "The stone wheel turns a little, then sticks. Under its rim, a small moth-shaped latch is moving. Wait for the wheel to settle, then catch the latch gently.",
       "interaction": {
         "kind": "precision",
-        "cue": "Stop at the calm place to release the latch.",
+        "cue": "Support the latch before easing it loose. Too much effort strains the old fitting.",
         "actionLabel": "Release the old latch",
         "target": 0.6,
         "width": 0.34,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "scene_titan_goes",
@@ -6073,7 +6079,7 @@
       "narration": "The Keeper loops cords around the cracked seal. Pull them smoothly together while its warm breath joins the pieces. A moth helps by sitting on a crack. It has misunderstood the job.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Pull the bracing cords smoothly together to hold the seal pieces still.",
+        "cue": "Share the effort between the near and far ropes. Use enough to move the load without straining the cords.",
         "actionLabel": "Hold the seal steady",
         "supportLabel": "Brace a piece"
       },

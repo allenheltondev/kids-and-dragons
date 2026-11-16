@@ -255,7 +255,16 @@ export async function openTable(options: TableOptions): Promise<Table> {
     await page.close();
     return file;
   };
-  const shoot = async () => Promise.all([...(seeded.tv ? [tv] : []), ...phones].map((page) => page.screenshot()));
+  const shoot = async () => {
+    const images: Buffer[] = [];
+    // Separate contexts represent devices. Foreground each before capturing so Chromium
+    // supplies its next paint even when another table or test has been using the browser.
+    for (const page of [...(seeded.tv ? [tv] : []), ...phones]) {
+      await page.bringToFront();
+      images.push(await page.screenshot());
+    }
+    return images;
+  };
   const slug = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "snap";
 
   return {

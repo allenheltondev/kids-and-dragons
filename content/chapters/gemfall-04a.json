@@ -35,7 +35,10 @@
       "id": "sashes",
       "label": "Read the centaurs' sash-maps yourselves",
       "flag": "read_the_sashes",
-      "reveal": ["scene_waystation", "scene_waystation_letters_arrived"],
+      "reveal": [
+        "scene_waystation",
+        "scene_waystation_letters_arrived"
+      ],
       "hint": "Read the sash-maps yourselves?",
       "xp": 8
     }
@@ -1934,11 +1937,13 @@
       "narration": "The ridge path climbs through tall grass, and prides like to know who is coming. The grass hides your steps only while the wind rushes. When it stops, freeze.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to creep only while the wind is rushing through the grass.",
+        "cue": "Read the gold interval. Start with enough time to creep.",
         "actionLabel": "Creep!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "wind",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_cub_scouts",
@@ -2205,11 +2210,12 @@
       "narration": "Lift together just as the post swings level, then carry it to the new hole. A tuft of tail-fur tickles somebody's nose.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to lift when the marker is in the gold.",
+        "cue": "Support the post near its weight. Lift it without straining the ropes.",
         "actionLabel": "Lift the post",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "interaction_post_hole",
@@ -2244,11 +2250,12 @@
       "narration": "Pin each tag just as the sash lies flat in the breeze. The warden calls out landmarks.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to pin when the marker is in the gold, while the sash lies flat.",
+        "cue": "Line up the tags with their support. Press them into place gently.",
         "actionLabel": "Pin the route tags",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "press"
       },
       "onSuccess": {
         "goto": "interaction_sashes_pinned",
@@ -2409,11 +2416,13 @@
       "narration": "A cart cover keeps flopping into the fire. Set the long brace just as the cover swings up. Leave the wolves a warm patch, away from the humming packs.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to set the brace when the marker is in the gold, as the cover swings up.",
+        "cue": "Read the gold interval. Start with enough time to set the brace.",
         "actionLabel": "Set the brace",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "rest_wolf_fire",
@@ -2593,7 +2602,8 @@
           "prop_tall_grass",
           "prop_tall_grass",
           "prop_tall_grass"
-        ]
+        ],
+        "figure": "entities/cinder_wolf"
       },
       "interaction_pride_windbreak": {
         "props": [

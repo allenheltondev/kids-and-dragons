@@ -397,7 +397,10 @@ const FIRST_PAINT_BUDGET_KB = 336;
 // boards, their shared rules, outcome rendering, and restored cast presentation
 // are an explicit feature cost, with no new dependency. The first-paint graph
 // remains 18 chunks at 336KB under its unchanged 336KB cap. Keep 3KB of slack.
-const TOTAL_BUDGET_KB = 1886;
+// 1886 -> 1894 for Gemfall: 1892KB measured. Adds deliberate support/effort
+// controls and weighted team hauling, reusing the crossing and carry renderer.
+// No new dependency; the first-paint cap remains unchanged.
+const TOTAL_BUDGET_KB = 1894;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

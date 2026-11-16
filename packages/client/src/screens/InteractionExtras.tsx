@@ -21,6 +21,7 @@ import { Button } from "../ui/Button";
 import { RelayCatcher, RelayWorld, relaySeats } from "./RelayGame";
 import { RelayFlightCatcher } from "./RelayFlightGame";
 import { SkillGame } from "./SkillGame";
+import { GemfallSkillGame } from "./GemfallSkillGame";
 import { RiftlightSkillGame } from "./RiftlightSkillGame";
 import { showing } from "./interaction-copy";
 import { buzz, litStep, padNote } from "./game-feel";
@@ -243,10 +244,11 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
   const scene = state?.sceneId ? currentChapter?.scenes?.[state.sceneId] : undefined;
   const cast = scene && "cast" in scene ? scene.cast : undefined;
   const reaction = reactionFigure(state?.sceneId ?? null, prompt, still ? 0 : elapsed, currentChapter);
-  const subject = reaction ? fitArt(`/assets/cast/${reaction}/assembled.png`) : cast?.[0] ? castArtUrl(cast[0].figure) ?? undefined : undefined;
+  const subject = appearance?.figure ? castArtUrl(appearance.figure) ?? undefined : reaction ? fitArt(`/assets/cast/${reaction}/assembled.png`) : cast?.[0] ? castArtUrl(cast[0].figure) ?? undefined : undefined;
   const creature = cast?.find(member => member.figure.startsWith("entities/"));
-  if (prompt.challenge?.version === 3 && ["precision", "timing", "balance"].includes(spec.kind)) return <RiftlightSkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} props={appearance?.props} watcher={creature ? castArtUrl(creature.figure) ?? undefined : undefined} busy={busy} send={onSkillAction} />;
-  if (prompt.challenge && spec.kind !== "tracking") return <SkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} object={object} subject={prompt.challenge.version === 3 ? subject : undefined} busy={busy} send={onSkillAction} />;
+  if (prompt.challenge?.version === 4 && ["precision", "cooperate"].includes(spec.kind)) return <GemfallSkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} playerId={playerId} object={object} subject={appearance?.figure ? subject : undefined} busy={busy} send={onSkillAction} />;
+  if ((prompt.challenge?.version ?? 0) >= 3 && ["precision", "timing", "balance"].includes(spec.kind)) return <RiftlightSkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} props={appearance?.props} watcher={creature ? castArtUrl(creature.figure) ?? undefined : undefined} busy={busy} send={onSkillAction} />;
+  if (prompt.challenge && spec.kind !== "tracking") return <SkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} object={object} subject={prompt.challenge.version ? subject : undefined} busy={busy} send={onSkillAction} />;
   switch (spec.kind) {
     case "precision":
       if (building && active && !still) return null;
@@ -275,7 +277,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
           const correct = slot === trackedCover(spec);
           const reveal = (!active && correct) || ((still || prompt.relaxed) && correct);
           const excluded = prompt.challenge?.excluded.includes(String(slot));
-          const body = <><PaintedCover bells={bells} icon={appearance?.coverIcons?.[source] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} reveal={reveal} raised={excluded || !active && (correct || picked === slot)} /><strong>{label}</strong>{excluded ? <small>Empty — leave it up</small> : !active && <small>{correct ? "Found it!" : picked === slot ? "Your pick" : ""}</small>}</>;
+          const body = <><PaintedCover bells={bells} icon={appearance?.coverIcons?.[source] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} targetUrl={appearance?.figure ? castArtUrl(appearance.figure) ?? undefined : undefined} reveal={reveal} raised={excluded || !active && (correct || picked === slot)} /><strong>{label}</strong>{excluded ? <small>Empty — leave it up</small> : !active && <small>{correct ? "Found it!" : picked === slot ? "Your pick" : ""}</small>}</>;
           return active && building ? <button key={slot} type="button" className="game-cover-pick kad-focusable" aria-label={`${spec.actionLabel}: ${label}`} disabled={busy || excluded} data-picked={picked === slot} onClick={() => { buzz(15); void onCover?.(slot); }}>{body}</button>
             : <div key={slot} className="game-cover-pick" data-picked={picked === slot} data-correct={correct}>{body}</div>;
         })}</div>{prompt.challenge?.feedback && <p className="skill-feedback" role="status">{prompt.challenge.feedback}</p>}</div>;
@@ -290,7 +292,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
           const hop = moving && destination !== at ? Math.sin(Math.PI * t) * (destination > at ? -1 : 0.4) : 0;
           const reveal = (!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec));
           return <span className="story-interaction__cover" key={index} style={{ left: `${(position + 0.5) / spec.covers.length * 100}%`, translate: `0 ${(hop * 1.4).toFixed(2)}em` }}>
-            <PaintedCover bells={bells} icon={appearance?.coverIcons?.[index] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} diving={elapsed > step * .5 && elapsed < step} reveal={reveal} />
+            <PaintedCover bells={bells} icon={appearance?.coverIcons?.[index] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} targetUrl={appearance?.figure ? castArtUrl(appearance.figure) ?? undefined : undefined} diving={elapsed > step * .5 && elapsed < step} reveal={reveal} />
           </span>;
         })}
         {labels.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
@@ -403,7 +405,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
       const chosen = (id: string) => spec.options.find((o) => o.id === prompt.contributions?.[id]);
       const count = connected.filter((id) => prompt.contributions?.[id] !== undefined).length;
       return <div className="story-interaction__reactions game-play" aria-live="polite">
-        {state?.chapterId?.startsWith("riftlight-") && subject && <img className="game-play-subject" src={subject} alt="" />}
+        {/^(riftlight|gemfall)-/.test(state?.chapterId ?? "") && subject && <img className="game-play-subject" src={subject} alt="" />}
         {(prompt.taps ?? 0) > 0 && <div className={`skill-creation${appearance?.optionProps ? " skill-creation--painted" : ""}`} aria-label="What we made together">{spec.options.map(option => {
           const count = prompt.playCounts?.[option.id] ?? Object.values(prompt.contributions ?? {}).filter(id => id === option.id).length;
           return count > 0 ? <div key={option.id} className="skill-creation__part" style={{ "--growth": Math.min(5, count) } as CSSProperties}>

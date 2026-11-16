@@ -824,14 +824,6 @@
       }
     ]
   },
-  "gemfall-02/interaction_hedge_brace/interaction/cue": {
-    "": [
-      {
-        "clip": "c0ca172ba07754bae54f5b85853e4ffad3d8c8c5776138240df1a7d8ce95e3f1",
-        "ms": 4607
-      }
-    ]
-  },
   "gemfall-02/interaction_hedge_brace/narration": {
     "": [
       {
@@ -944,14 +936,6 @@
       }
     ]
   },
-  "gemfall-02/interaction_stuck_wagon/interaction/cue": {
-    "": [
-      {
-        "clip": "d9312cd740c3206c881685c11522c8a5c4fe7abf4039de640a5bc431c1356e04",
-        "ms": 4107
-      }
-    ]
-  },
   "gemfall-02/interaction_stuck_wagon/narration": {
     "": [
       {
@@ -1029,14 +1013,6 @@
           "Rush drover",
           "Drover"
         ]
-      }
-    ]
-  },
-  "gemfall-02/interaction_wolf_sneak/interaction/cue": {
-    "": [
-      {
-        "clip": "23747b3c730c0d37c0107c86f323e0eb75951505346e686ac978610660d08ca9",
-        "ms": 4507
       }
     ]
   },

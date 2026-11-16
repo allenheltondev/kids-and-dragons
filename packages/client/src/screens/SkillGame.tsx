@@ -184,7 +184,7 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
       {editable && !watching && <>
         <div className="skill-pads">{spec.options.map((o, index) => <button type="button" className="kad-focusable" key={o.id} disabled={busy || answers.length >= spec.answer.length} onClick={() => { padNote(index); void arrange([...answers, o.id]); }}><PaintedGlyph label={o.label} /><Icon name={o.icon} /><strong>{o.label}</strong></button>)}</div>
         <div className="skill-edit-row">{action("Change last step", () => void arrange(answers.slice(0, -1)), !answers.length, true)}
-          {!pattern && action("Test these steps", () => void commit({ answer: answers, testOnly: true }), game.version === 3 ? answers.length !== spec.answer.length : !answers.length, true)}</div>
+          {!pattern && action("Test these steps", () => void commit({ answer: answers, testOnly: true }), (game.version ?? 0) >= 3 ? answers.length !== spec.answer.length : !answers.length, true)}</div>
         {action(spec.actionLabel, () => void commit({ answer: answers }), answers.length !== spec.answer.length)}
       </>}
     </>;

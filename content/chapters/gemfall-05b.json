@@ -1452,7 +1452,7 @@
       "narration": "The spare planks have a tag: CARRY IT LEVEL. The bridge sways, and so does the plank. Everyone keeps their end steady.",
       "interaction": {
         "kind": "balance",
-        "cue": "Adjust the shifting plank until it is level before each careful step.",
+        "cue": "Take an end of the load. Adjust your own end as the ground changes, then step when it is level.",
         "actionLabel": "Carry the plank",
         "objectLabel": "A long spare plank"
       },
@@ -1978,11 +1978,13 @@
       "narration": "Slap! A wave rolls down the stream. Slap! Another. The stones are slick, but there is a gap between waves, if you watch for it.",
       "interaction": {
         "kind": "timing",
-        "cue": "Hop when the marker reaches the quiet gap after a wave.",
+        "cue": "Read the gold interval. Start with enough time to hop.",
         "actionLabel": "Hop!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_drake_bank",
@@ -2232,11 +2234,13 @@
       "narration": "Use the ivy brace you practiced at the falls. Take each step along the ledge just as the wind drops.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to step when the marker is in the gold, while the wind drops.",
+        "cue": "Read the gold interval. Start with enough time to step along the ledge.",
         "actionLabel": "Step along the ledge",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "wind",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_foothills_view",

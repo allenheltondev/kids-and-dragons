@@ -128,12 +128,12 @@
 .skill-stones .painted-glyph { width: 2.6em; height: 2.6em; }
 .game--tv .skill-game--memory { justify-content: center; gap: 1em; }
 .game--tv .skill-game--memory .skill-stones li { min-width: 7em; min-height: 8em; }
-.game--phone.game--riftlight.game--play .game-bubbles { display: none; }
-.game--phone.game--riftlight.game--play .game-heroes { display: none; }
-.game--phone.game--riftlight.game--play .skill-creation__painting { height: 4em; }
-.game--phone.game--riftlight.game--play .skill-creation { padding: .3em 0; }
-.game--phone.game--riftlight.game--play .skill-creation__part { font-size: .7em; }
-.game--phone.game--riftlight.game--play .game__head { display: none; }
+.game--phone.game--landscape.game--play .game-bubbles { display: none; }
+.game--phone.game--landscape.game--play .game-heroes { display: none; }
+.game--phone.game--landscape.game--play .skill-creation__painting { height: 4em; }
+.game--phone.game--landscape.game--play .skill-creation { padding: .3em 0; }
+.game--phone.game--landscape.game--play .skill-creation__part { font-size: .7em; }
+.game--phone.game--landscape.game--play .game__head { display: none; }
 .skill-subject { display: block; width: 25%; height: 8em; object-fit: contain; filter: drop-shadow(0 .3em .2em #0008); }
 .skill-mechanism--cast { display: flex; align-items: center; justify-content: center; gap: 1em; }
 .skill-mechanism--cast .skill-stones { flex: 1; }
@@ -143,18 +143,18 @@
 .game--phone .skill-mechanism--cast { gap: .3em; }
 .game-play-subject { display: block; width: 40%; height: 12em; object-fit: contain; margin: auto; filter: drop-shadow(0 .3em .2em #0008); }
 .game--phone .game-play-subject { display: none; }
-.game--phone.game--riftlight .game-options--play .game-option { padding: .4em; gap: .25em; font-size: .8em; }
-.game--phone.game--riftlight .game-options--play .game-option__icon { inline-size: 2em; block-size: 2em; font-size: 1em; }
-.game--phone.game--riftlight .game-actions-row { display: none; }
+.game--phone.game--landscape .game-options--play .game-option { padding: .4em; gap: .25em; font-size: .8em; }
+.game--phone.game--landscape .game-options--play .game-option__icon { inline-size: 2em; block-size: 2em; font-size: 1em; }
+.game--phone.game--landscape .game-actions-row { display: none; }
 @media (max-height: 700px) {
-  .game--phone.game--riftlight:has(.skill-game) .game__board { padding-block: .25em; }
-  .game--phone.game--riftlight:has(.skill-game) .game__job { padding-block: .35em; font-size: .9em; }
-  .game--phone.game--riftlight .skill-game { gap: .3em; }
-  .game--phone.game--riftlight .skill-reading { display: none; }
-  .game--phone.game--riftlight .skill-subject { height: 3.5em; }
-  .game--phone.game--riftlight .skill-stones { padding-block: .3em; gap: .25em; }
-  .game--phone.game--riftlight .skill-stones li { min-width: 2.7em; min-height: 3em; padding: .5em .25em .2em; }
-  .game--phone.game--riftlight .skill-pads button { min-height: 2.5em; padding: .25em; }
-  .game--phone.game--riftlight .skill-edit-row { font-size: .7em; }
-  .game--phone.game--riftlight .skill-pattern-reference { font-size: .75em; padding: .3em; }
+  .game--phone.game--landscape:has(.skill-game) .game__board { padding-block: .25em; }
+  .game--phone.game--landscape:has(.skill-game) .game__job { padding-block: .35em; font-size: .9em; }
+  .game--phone.game--landscape .skill-game { gap: .3em; }
+  .game--phone.game--landscape .skill-reading { display: none; }
+  .game--phone.game--landscape .skill-subject { height: 3.5em; }
+  .game--phone.game--landscape .skill-stones { padding-block: .3em; gap: .25em; }
+  .game--phone.game--landscape .skill-stones li { min-width: 2.7em; min-height: 3em; padding: .5em .25em .2em; }
+  .game--phone.game--landscape .skill-pads button { min-height: 2.5em; padding: .25em; }
+  .game--phone.game--landscape .skill-edit-row { font-size: .7em; }
+  .game--phone.game--landscape .skill-pattern-reference { font-size: .75em; padding: .3em; }
 }

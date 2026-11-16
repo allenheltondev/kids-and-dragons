@@ -545,14 +545,6 @@
       }
     ]
   },
-  "gemfall-04a/interaction_marker_load/interaction/cue": {
-    "": [
-      {
-        "clip": "c380fdb3f53f358841e62a7f7d2c0f32236aa4394f2c66d92b49550086fb8c25",
-        "ms": 2466
-      }
-    ]
-  },
   "gemfall-04a/interaction_marker_load/narration": {
     "": [
       {
@@ -643,14 +635,6 @@
       }
     ]
   },
-  "gemfall-04a/interaction_pride_windbreak/interaction/cue": {
-    "": [
-      {
-        "clip": "01421e02d9e5a510fa750570642936cf8a248fb8f5cda628a9f098bbf171ae44",
-        "ms": 4307
-      }
-    ]
-  },
   "gemfall-04a/interaction_pride_windbreak/narration": {
     "": [
       {
@@ -683,14 +667,6 @@
       }
     ]
   },
-  "gemfall-04a/interaction_ridge_creep/interaction/cue": {
-    "": [
-      {
-        "clip": "4caeddc16b800e51d8bdecac031719e942a8486d4c76491046c3a7dd7e3976fb",
-        "ms": 4107
-      }
-    ]
-  },
   "gemfall-04a/interaction_ridge_creep/narration": {
     "": [
       {
@@ -720,14 +696,6 @@
       {
         "clip": "909ba320b2fc20037bb72f4edc8b75e192e6bdaef306746a2ff1d04deed4e855",
         "ms": 4807
-      }
-    ]
-  },
-  "gemfall-04a/interaction_sash_frame/interaction/cue": {
-    "": [
-      {
-        "clip": "61f5ffa5b6c2256b8a74746303c376e284da31d089296e7e8c8fbe46a9b447f7",
-        "ms": 4107
       }
     ]
   },
