@@ -90,6 +90,7 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     }
     for (const prop of appearance?.props ?? []) urls.add(`/assets/story-props/${prop}.webp`);
     for (const icon of appearance?.coverIcons ?? []) urls.add(`/assets/story-props/${icon}.webp`);
+    for (const prop of Object.values(appearance?.optionProps ?? {})) urls.add(`/assets/story-props/${prop}.webp`);
   }
   for(const url of chapter.presentation?.warmUrls ?? [])urls.add(url);
   return [...urls];

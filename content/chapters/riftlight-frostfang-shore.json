@@ -332,11 +332,13 @@
       "art": "scenes/riftlight/frostfang-ladder",
       "interaction": {
         "kind": "timing",
-        "cue": "Climb a rung when the marker reaches the quiet gap between gusts.",
+        "cue": "Climb a rung in the long quiet gap between gusts.",
         "actionLabel": "Climb a rung!",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "wind",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "river_line",
@@ -829,7 +831,9 @@
         "actionLabel": "Carry the kid!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "goats",
@@ -1564,7 +1568,9 @@
         "actionLabel": "Run!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "ascend",
@@ -2152,13 +2158,15 @@
       "ladder_hold": {
         "props": [
           "rope-ladder",
-          "rope-taut"
+          "rope-taut",
+          "wind-banner"
         ]
       },
       "bar_carry": {
         "props": [
           "coat-kid",
-          "rope-sag"
+          "rope-sag",
+          "water-surge"
         ]
       },
       "wave_gap": {

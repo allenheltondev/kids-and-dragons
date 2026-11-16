@@ -781,7 +781,9 @@
         "actionLabel": "NOW!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "washed",

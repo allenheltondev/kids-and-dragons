@@ -982,7 +982,9 @@
         "actionLabel": "Grab the sled!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "watch",
+        "durationMs": 250
       },
       "onSuccess": {
         "goto": "decision",

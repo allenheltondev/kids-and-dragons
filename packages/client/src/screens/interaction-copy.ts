@@ -28,6 +28,16 @@ export const GAME: Record<InteractionKind, { name: string; icon: string; how: st
   play: { name: "Everyone joins in", icon: "heart", how: "Pick something to do. What you pick shows up on the TV. No wrong answers." },
 };
 
+export function gameGuide(prompt: InteractionPrompt, riftlight = false): typeof GAME[InteractionKind] {
+  const game = GAME[prompt.spec.kind];
+  if (!riftlight && prompt.challenge?.version !== 3) return game;
+  if (prompt.spec.kind === "precision") return { ...game, name: "Find the landing", how: "Choose strength and height on your phone. Read the wind and the arc. Clear the edge and land inside the gold." };
+  if (prompt.spec.kind === "timing") return { ...game, name: "Read the opening", how: "Gold shows when the way is clear. The white bar shows how long your move takes. Start while the whole bar fits in the gold." };
+  if (prompt.spec.kind === "balance") return { ...game, name: "Steady both ends", how: "Take an end of the beam. Raising your end changes the tilt. Keep it level as the weight rolls, then take a careful step." };
+  if (prompt.spec.kind === "sequence") return { ...game, how: "Read your clues aloud. Put the whole plan together and test it. The response tells you how many parts work. Use your clues to decide what to change." };
+  return game;
+}
+
 export interface TableView {
   prompt: InteractionPrompt;
   party: readonly PartyMember[];
@@ -71,6 +81,12 @@ export function tvStatus(view: TableView): string {
   }
   if (prompt.phase === "ready") {
     return `${lead}: tap "We're ready" on your phone when everyone is set.`;
+  }
+  if (prompt.challenge?.version === 3) {
+    if (spec.kind === "precision") return `${lead}: aim on your phone. Choose strength and height to clear the edge and land in the gold.`;
+    if (spec.kind === "timing") return `${lead}: start while the opening has time for your whole move. Watch the gold on your phone.`;
+    if (spec.kind === "balance") return `Everyone: steady your end of the beam. ${lead}: step when both ends are level.`;
+    if (spec.kind === "sequence") return `Read your clues aloud. ${lead}: arrange the whole plan, test it, then put it into action.`;
   }
   if (prompt.challenge) {
     if (spec.kind === "balance") return `Everyone: adjust your lift. ${lead}: take a careful step when the load is steady in the gold.`;
@@ -161,6 +177,12 @@ export function phoneJob(view: TableView, playerId: string): Job {
     return mine
       ? { headline: "You start this one.", detail: "Tap \"We're ready\" when everyone is looking at the TV.", lookAt: "phone" }
       : { headline: `${lead} starts this one.`, detail: "Look at the TV and get ready.", lookAt: "tv" };
+  }
+  if (prompt.challenge?.version === 3) {
+    if (spec.kind === "precision") return { headline: mine ? "Choose your strength and arc." : `Help ${lead} judge the wind.`, detail: "Clear the edge and land inside the gold.", lookAt: mine ? "phone" : "tv" };
+    if (spec.kind === "timing") return { headline: mine ? "Wait for enough time to finish." : `Help ${lead} read the opening.`, detail: "The white bar must fit inside the gold opening.", lookAt: mine ? "phone" : "tv" };
+    if (spec.kind === "balance") return { headline: "Keep both ends level.", detail: mine ? "Adjust your end, then step when it is steady." : `${lead} takes the step. Help steady your end.`, lookAt: "both" };
+    if (spec.kind === "sequence") return { headline: "Read your clue. Build the whole plan.", detail: mine ? "Test your arrangement, then put it into action." : `${lead} arranges it. Explain what your clue means.`, lookAt: "phone" };
   }
   if (prompt.challenge) {
     if (spec.kind === "balance") return { headline: "Steady the shifting load.", detail: mine ? "Adjust your lift, then take a careful step in the gold." : `Adjust your lift. ${lead} takes the next step.`, lookAt: "both" };

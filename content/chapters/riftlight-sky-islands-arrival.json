@@ -2180,7 +2180,9 @@
         "actionLabel": "Run!",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "wind",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "basket_plan",
@@ -2219,7 +2221,7 @@
       "narration": "The fuel must go up to the basket. Sorrel steadies the ladder, and Pip waits at the top, arms out like a very small harbor. \"Toss them up to me,\" he calls. \"Lady Olivia says I have excellent hands.\" Sorrel says, \"Do not drop one on me.\"",
       "interaction": {
         "kind": "precision",
-        "cue": "Toss when the marker reaches Pip's arms.",
+        "cue": "Aim the wood toward Pip. Clear the edge and let him catch it.",
         "actionLabel": "Toss the log",
         "target": 0.5,
         "width": 0.35,
@@ -2756,7 +2758,7 @@
       "fuel_chain": {
         "props": [
           "relay-log",
-          "fight-signal-pole",
+          "rope-basket",
           "rope-ladder"
         ]
       },
@@ -2766,7 +2768,13 @@
           "barley-tea",
           "wind-blanket",
           "camp-firepit"
-        ]
+        ],
+        "optionProps": {
+          "kite": "kite-shade",
+          "tea": "barley-tea",
+          "blanket": "wind-blanket",
+          "story": "camp-firepit"
+        }
       },
       "song_echo": {
         "props": [

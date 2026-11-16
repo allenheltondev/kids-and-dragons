@@ -1785,7 +1785,7 @@
       "art": "scenes/riftlight/cairnstep-capstone",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the capstone is over the middle scratch.",
+        "cue": "Guide the capstone over the edge and onto the middle scratch.",
         "actionLabel": "Set the capstone",
         "target": 0.5,
         "width": 0.3,

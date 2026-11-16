@@ -114,13 +114,15 @@ describe("the whole chapter", () => {
         scene_visual: { type: "interaction", interaction: { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 } },
         scene_prop: { type: "interaction", interaction: { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "Bundle" } },
         scene_effort: { type: "interaction", interaction: { kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" } },
+        scene_play: { type: "interaction", interaction: { kind: "play", cue: "Make camp", actionLabel: "Rest", participation: "any", options: [{ id: "tea", label: "Tea", icon: "heart", reaction: "Warm tea." }] } },
       } as never,
-      presentation: { interactions: { scene_visual: { props: [], coverIcons: ["rope-loop", "carved-stone"] }, scene_prop: { props: ["relay-sack"] } } },
+      presentation: { interactions: { scene_visual: { props: [], coverIcons: ["rope-loop", "carved-stone"] }, scene_prop: { props: ["relay-sack"] }, scene_play: { optionProps: { tea: "barley-tea" } } } },
     } as Chapter;
     const urls = chapterAssets(authored, []);
     expect(urls).toContain("/assets/story-props/rope-loop.webp");
     expect(urls).toContain("/assets/story-props/carved-stone.webp");
     expect(urls).toContain("/assets/story-props/relay-sack.webp");
+    expect(urls).toContain("/assets/story-props/barley-tea.webp");
     expect(urls).toContain("/assets/ui/relay/catching-hands.webp");
     expect(urls).toContain("/assets/story-props/rope-basket.webp");
     const effortOnly = { ...authored, scenes: { scene_effort: authored.scenes.scene_effort! } } as Chapter;

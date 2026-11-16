@@ -32,7 +32,8 @@ export function act(chapter: Chapter, state: RunState, action: InteractionAction
   const now = new Date(Date.parse(base.now) + afterMs).toISOString();
   const result = applyIntent(
     state,
-    { playerId, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action } },
+    { playerId, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action,
+      ...(prompt.challenge?.version === 3 && (action.action === "commit" || action.action === "arrange" || action.action === "adjust") ? { rulesVersion: 3 as const } : {}) } },
     { ...base, now },
   );
   expect(result.error, `${chapter.id}/${state.sceneId}: ${JSON.stringify(action)} by ${playerId}`).toBeUndefined();

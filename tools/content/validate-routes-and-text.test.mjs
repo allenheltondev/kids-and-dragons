@@ -44,12 +44,15 @@ describe("the files themselves", () => {
       chapter.presentation.interactions.misspelled_scene = { props: ["rope-loop"] };
       chapter.presentation.interactions.interaction_cups = { props: [], coverIcons: ["snow-mound", "wind-bells"] };
       chapter.scenes.interaction_stones.interaction.options[0].icon = "starr";
+      chapter.presentation.interactions.interaction_roots.optionProps = { misspelled: "unknown-option-prop" };
     });
     expect(result.code).not.toBe(0);
     expect(result.out).toContain('problem: unknown story prop id "unknown-prop"');
     expect(result.out).toContain("does not name an interaction scene");
     expect(result.out).toContain("has 2 icons for 3 covers");
     expect(result.out).toContain('problem: unknown icon id "starr"');
+    expect(result.out).toContain("does not name a free-play option");
+    expect(result.out).toContain('unknown or missing story prop "unknown-option-prop"');
   });
 
   it("accepts flags earned only by the untimed helping hand", () => {

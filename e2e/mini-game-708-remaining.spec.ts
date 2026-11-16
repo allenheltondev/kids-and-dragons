@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { skillAim, type RunState } from "@kad/shared";
+import { crossingWindow, skillAim, type RunState } from "@kad/shared";
 import { seedTable, openPhone, openTv, onAir } from "./seed";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
@@ -16,9 +16,11 @@ async function task(page: Page) {
 async function boardFits(page: Page) {
   await expect.poll(() => page.locator(".game--tv .game__board").evaluate(el => {
     const board = el.getBoundingClientRect();
-    const scene = el.querySelector(".skill-scene")!.getBoundingClientRect();
-    return el.scrollHeight <= el.clientHeight + 1 && scene.top >= board.top && scene.bottom <= board.bottom + 1;
-  })).toBe(true);
+    const scene = el.querySelector(".skill-scene, .rift-field")!.getBoundingClientRect();
+    return { fits: el.scrollHeight <= el.clientHeight + 1 && scene.top >= board.top && scene.bottom <= board.bottom + 1,
+      scrollHeight: el.scrollHeight, clientHeight: el.clientHeight, boardTop: board.top, boardBottom: board.bottom,
+      sceneTop: scene.top, sceneBottom: scene.bottom };
+  })).toMatchObject({ fits: true });
 }
 
 for (const [chapterId, sceneId, next] of [
@@ -34,8 +36,9 @@ for (const [chapterId, sceneId, next] of [
       await Promise.all([onAir(phone.page), onAir(tv.page)]);
       await task(phone.page);
       const hp = (await state()).party[0]!.hp;
+      const aimLabel = chapterId.startsWith("riftlight-") ? "Crossing moment" : "Aim at the gold";
       await controls(phone.page).getByRole("button", { name: /ready/ }).click();
-      await expect(controls(phone.page).getByRole("slider", { name: "Aim at the gold" })).toBeVisible();
+      await expect(controls(phone.page).getByRole("slider", { name: aimLabel })).toBeVisible();
       await boardFits(tv.page);
       await phone.page.screenshot({ path: info.outputPath("climb-phone-320.png") });
       await tv.page.screenshot({ path: info.outputPath("climb-tv.png") });
@@ -44,14 +47,15 @@ for (const [chapterId, sceneId, next] of [
         const before = await state(), p = before.prompt;
         if (p?.kind !== "interaction" || p.phase !== "active") break;
         const committedRound = p.challenge!.round;
-        await expect(controls(phone.page).locator(".skill-game")).toHaveAttribute("data-round", String(committedRound));
-        await controls(phone.page).getByRole("slider", { name: "Aim at the gold" }).fill("0");
+        await expect(controls(phone.page).locator(".skill-game, .rift-game")).toHaveAttribute("data-round", String(committedRound));
+        await controls(phone.page).getByRole("slider", { name: aimLabel }).fill("0");
         await controls(phone.page).getByRole("button", { name: p.spec.actionLabel, exact: true }).click();
         await expect.poll(async () => {
           const p = (await state()).prompt;
           return p?.kind === "interaction" && (p.phase === "result" || p.challenge!.round > committedRound);
         }).toBe(true);
         if (!reloaded) { await phone.page.reload(); await onAir(phone.page); await task(phone.page); reloaded = true; }
+        await boardFits(tv.page);
       }
       expect((await state()).prompt).toMatchObject({ phase: "result", outcome: "failure" });
       expect((await state()).party[0]!.hp).toBe(hp);
@@ -71,8 +75,9 @@ for (const [chapterId, sceneId, next] of [
         const p = (await state()).prompt;
         if (p?.kind !== "interaction" || p.phase !== "active") break;
         const committedRound = p.challenge!.round;
-        await expect(controls(phone.page).locator(".skill-game")).toHaveAttribute("data-round", String(committedRound));
-        await controls(phone.page).getByRole("slider", { name: "Aim at the gold" }).fill(String(skillAim(p).target * 100));
+        await expect(controls(phone.page).locator(".skill-game, .rift-game")).toHaveAttribute("data-round", String(committedRound));
+        const position = p.challenge!.version === 3 ? crossingWindow(p).start + .01 : skillAim(p).target;
+        await controls(phone.page).getByRole("slider", { name: aimLabel }).fill(String(Math.ceil(position * 100)));
         await controls(phone.page).getByRole("button", { name: p.spec.actionLabel, exact: true }).click();
         await expect.poll(async () => {
           const p = (await state()).prompt;

@@ -40,6 +40,58 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
   });
 }
 
+describe("Riftlight crossing results", () => {
+  it.each(["phone", "TV"] as const)("shows the outcome without rescoring a recovered winning move on the %s", surface => {
+    seed({ kind: "timing", cue: "Cross in the opening", actionLabel: "Cross", target: .5, width: .3, periodMs: 5000 }, {
+      phase: "result", outcome: "success", stopPosition: .5,
+      challenge: { ...skillStart(["p"]), version: 3, progress: 2, round: 3, strain: 0, feedback: "Across! Read the next opening from this safe footing." },
+    });
+    const { container } = render(surface === "TV" ? <StoryInteractionWorld /> : <StoryInteractionControls />);
+    expect(screen.getByText("Across safely.")).toBeTruthy();
+    expect(container.querySelector(".rift-time")).toBeNull();
+    expect(container.querySelector(".rift-feedback")).toBeNull();
+    expect(screen.queryByText(/Closing\. Wait|Watch for a long opening|Enough time\. Go/)).toBeNull();
+    expect(container.querySelector('.rift-field[data-safe="true"]')).toBeTruthy();
+    if (surface === "phone") expect(screen.getByRole("button", { name: "See what happens next" })).toBeTruthy();
+  });
+  it.each(["failure", "assisted"] as const)("shows an outcome-only %s result without a live meter", outcome => {
+    seed({ kind: "timing", cue: "Cross", actionLabel: "Cross", target: .5, width: .3, periodMs: 5000 }, {
+      phase: "result", outcome, stopPosition: 0,
+      challenge: { ...skillStart(["p"]), version: 3, strain: outcome === "failure" ? 1 : .2 },
+    });
+    const { container } = render(<StoryInteractionControls />);
+    expect(container.querySelector(".rift-read")?.textContent).toBe(outcome === "failure" ? "Back on safe footing." : "A helping hand makes a way.");
+    expect(container.querySelector(".rift-time")).toBeNull();
+  });
+});
+
+describe.each(["precision", "timing"] as const)("Riftlight %s outcome hero", kind => {
+  it.each(["phone", "TV"] as const)("keeps the finisher on the %s after turn order advances, including after disconnect", surface => {
+    for (const connected of [true, false]) {
+      seed({ kind, cue: "Make the move", actionLabel: "Go", target: .5, width: .3, periodMs: 5000 }, {
+        phase: "result", outcome: "success", resolvedActorId: "finisher", playerIds: ["p", "finisher"],
+        challenge: { ...skillStart(["p", "finisher"]), version: 3, progress: 2, nextParticipant: 0 },
+      });
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, party: [...state.party, {
+        ...state.party[0]!, playerId: "finisher", connected,
+        character: resolveCharacter(makeCharacter({ id: "finisher", ownerPlayerId: "finisher", name: "Fern" }), makeRules(), makeItems()),
+      }] } });
+      const { container, unmount } = render(surface === "TV" ? <StoryInteractionWorld /> : <StoryInteractionControls />);
+      expect(container.querySelector(".rift-hero small")?.textContent).toBe("Fern");
+      unmount();
+    }
+  });
+  it("keeps calculated turn ownership during active play", () => {
+    seed({ kind, cue: "Make the move", actionLabel: "Go", target: .5, width: .3, periodMs: 5000 }, {
+      resolvedActorId: "previous-finisher",
+      challenge: { ...skillStart(["p"]), version: 3, progress: 0 },
+    });
+    const { container } = render(<StoryInteractionControls />);
+    expect(container.querySelector(".rift-hero small")?.textContent).toBe("Sparklehoof");
+  });
+});
+
 describe("reusable story controls", () => {
   it.each([
     ["wagons", wagons.scenes.check_search.interaction, wagons.presentation.interactions.check_search, [[0, 1, 2], [1, 0, 2], [2, 0, 1], [2, 1, 0]], "Right", "2"],

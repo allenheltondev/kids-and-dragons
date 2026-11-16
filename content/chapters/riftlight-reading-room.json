@@ -60,21 +60,25 @@
     "interactions": {
       "drips": {
         "props": [
-          "ice-knob"
+          "ice-knob",
+          "water-surge"
         ]
       },
       "wait_slow": {
         "props": [
+          "prop_lantern",
           "ice-knob"
         ]
       },
       "wait_long": {
         "props": [
+          "prop_lantern",
           "ice-knob"
         ]
       },
       "wait_knack": {
         "props": [
+          "prop_lantern",
           "ice-knob"
         ]
       },
@@ -535,7 +539,9 @@
         "actionLabel": "Crawl!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 750
       },
       "cast": [
         {
@@ -805,12 +811,14 @@
       ],
       "narration": "Hold the lamp low and still, and breathe slow. Inside the ice, the cloud drifts and thins and thickens. Lift the lamp at the clearest moment.",
       "interaction": {
-        "kind": "precision",
-        "cue": "Lift the lamp when the ice is clearest.",
+        "kind": "timing",
+        "cue": "Lift the lamp while the ice stays clear.",
         "actionLabel": "Lift the lamp",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 6000
+        "periodMs": 6000,
+        "setting": "watch",
+        "durationMs": 250
       },
       "cast": [
         {
@@ -847,12 +855,14 @@
       ],
       "narration": "The old ice takes a long, cold while. The cold creeps up through your boots and into your toes. Hold the lamp low and still, and lift it at the clearest moment. It comes and goes fast.",
       "interaction": {
-        "kind": "precision",
-        "cue": "Lift the lamp when the ice is clearest.",
+        "kind": "timing",
+        "cue": "Lift the lamp while the ice stays clear.",
         "actionLabel": "Lift the lamp",
         "target": 0.5,
         "width": 0.2,
-        "periodMs": 6000
+        "periodMs": 6000,
+        "setting": "watch",
+        "durationMs": 250
       },
       "cast": [
         {
@@ -889,12 +899,14 @@
       ],
       "narration": "You breathe the way the hall's song taught you: a long breath, a rest, a long breath. The cloud inside the ice drifts in time with you. Lift the lamp at the clearest moment.",
       "interaction": {
-        "kind": "precision",
-        "cue": "Lift the lamp when the ice is clearest.",
+        "kind": "timing",
+        "cue": "Lift the lamp while the ice stays clear.",
         "actionLabel": "Lift the lamp",
         "target": 0.5,
         "width": 0.45,
-        "periodMs": 6000
+        "periodMs": 6000,
+        "setting": "watch",
+        "durationMs": 250
       },
       "cast": [
         {

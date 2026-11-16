@@ -65,22 +65,25 @@
       },
       "float_dig": {
         "props": [
-          "goat-brush"
+          "goat-brush",
+          "water-surge"
         ]
       },
       "cross_rhythm": {
         "props": [
+          "coat-kid",
           "rope-loop"
         ]
       },
       "cross_crest": {
         "props": [
+          "coat-kid",
           "rope-loop"
         ]
       },
       "cross_float": {
         "props": [
-          "wind-blanket",
+          "coat-kid",
           "rope-loop"
         ]
       }
@@ -1014,12 +1017,14 @@
       "rift": "steady",
       "narration": "Puddle hands you a flat shell. \"When a wave rolls under the mud, wiggle. Not before. Not after.\"",
       "interaction": {
-        "kind": "precision",
+        "kind": "timing",
         "cue": "Wiggle the mud loose as each wave rolls under it.",
         "actionLabel": "Wiggle!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 250
       },
       "onSuccess": {
         "goto": "floated"
@@ -1610,7 +1615,9 @@
         "actionLabel": "Go, goat!",
         "target": 0.5,
         "width": 0.45,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "rift",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "goat_home"
@@ -1647,7 +1654,9 @@
         "actionLabel": "Go, goat!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "rift",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "goat_home"
@@ -1687,7 +1696,9 @@
         "actionLabel": "Push them over",
         "target": 0.5,
         "width": 0.5,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "rift",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "goat_home"

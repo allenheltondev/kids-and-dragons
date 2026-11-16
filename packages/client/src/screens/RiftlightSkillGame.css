@@ -1,0 +1,111 @@
+.rift-game { display: flex; flex-direction: column; gap: .65em; min-height: 0; }
+.rift-game p { margin: 0; }
+.rift-progress { display: flex; justify-content: center; gap: .6em; }
+.rift-progress span { display: grid; place-items: center; width: 1.6em; height: 1.6em; border: 1px solid #f2d294; border-radius: 50%; background: #29243b; color: #f5dfae; font-weight: 800; }
+.rift-progress span[data-current=true] { box-shadow: 0 0 0 .15em #ffe4a344; }
+.rift-progress span[data-done=true] { background: #d3ebc3; color: #223b23; }
+.rift-read { text-align: center; color: #ffdf97; font-size: 1.15em; font-weight: 800; text-shadow: 0 2px 3px #000; }
+.rift-read span { display: block; color: #fff4d6; font-size: .72em; font-weight: 500; margin-top: .25em; }
+.rift-field { position: relative; isolation: isolate; height: clamp(11em, 30cqw, 25em); min-height: 10em; overflow: hidden; border-bottom: 2px solid #dec08a88; border-radius: 1em; background: linear-gradient(0deg, #152a26b3, transparent 65%); }
+.rift-field img { object-fit: contain; pointer-events: none; filter: drop-shadow(0 .25em .15em #0008); }
+.rift-ground { position: absolute; left: 0; right: 0; bottom: 7%; height: 13%; border-radius: 50%; background: radial-gradient(ellipse, #211e1cbb, transparent 70%); }
+.rift-hero { position: absolute; bottom: 8%; width: 20%; height: 48%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+.rift-hero img, .rift-hero > .hero-sparkle-host { display: block; width: 100%; height: 100%; min-height: 0; flex: 0 0 100%; object-fit: contain; object-position: bottom; }
+.rift-hero small { position: absolute; top: 100%; white-space: nowrap; color: #fff3cf; font-weight: 800; text-shadow: 0 2px 3px #000; }
+.rift-hero--thrower { left: 9%; height: 38%; }
+.rift-obstacle { position: absolute; bottom: 22%; width: 6%; transform: translateX(-50%); border-radius: 50% 40% 10% 10%; background: linear-gradient(105deg, #e2cfab, #5e625c 50%, #303b3c); box-shadow: 0 .3em .3em #0008; }
+.rift-landing { position: absolute; bottom: 19%; height: 9%; border: 2px solid #ffe2a1; background: #e8c16a55; box-shadow: 0 0 1em #ffdf8c77; border-radius: 50%; }
+.rift-destination { position: absolute; height: 5em; width: 130%; bottom: 40%; left: -15%; }
+.rift-object { position: absolute; width: 14%; height: 25%; bottom: 19%; transform: translateX(-50%); }
+.rift-prop-fallback { display: grid; place-items: center; color: #ffe3a0; font-size: 2em; }
+.rift-trajectory { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.rift-trajectory polyline { stroke: #ffedbc; stroke-width: .5; fill: none; vector-effect: non-scaling-stroke; filter: drop-shadow(0 1px 2px #000); }
+.rift-trajectory circle { fill: #fff1bf; stroke: #55412b; stroke-width: .3; }
+.rift-aim-surface { position: absolute; inset: 0; touch-action: none; cursor: crosshair; }
+.rift-hint { text-align: center; font-size: .8em; color: #fff1d0; text-shadow: 0 2px 3px #000; }
+.rift-aim-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+.rift-aim-controls label, .rift-still { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; font-size: .8em; color: #fff0d0; }
+.rift-aim-controls input, .rift-still input { width: 100%; accent-color: #f4cc77; min-height: 2.5em; }
+.rift-bank { position: absolute; bottom: 10%; width: 33%; height: 20%; border-radius: 45% 30% 0 0; background: linear-gradient(#b8b9a0, #59695e 35%, #253d3d); box-shadow: 0 .3em .4em #0008; }
+.rift-bank--near { left: 0; }
+.rift-bank--far { right: 0; }
+.rift-hazard { position: absolute; width: 42%; height: 65%; left: 30%; bottom: 15%; transition: opacity .2s, transform .2s; }
+.rift-timing-subject { position: absolute; left: 6%; bottom: 22%; width: 22%; height: 38%; }
+.rift-weather { position: absolute; left: 30%; width: 40%; height: 65%; bottom: 16%; opacity: .95; transition: opacity .2s; }
+.rift-weather i { position: absolute; inset: 5% 0; border-radius: 45% 30% 35% 40%; border: .35em solid #b7edf1bb; background: linear-gradient(135deg, #619fa3aa, #477c9c99); box-shadow: inset 0 .3em 1em #d8f4e4aa; }
+.rift-weather i:nth-child(2) { inset: 22% -5% -10%; opacity: .7; }
+.rift-weather i:nth-child(3) { inset: 45% 8% -15%; opacity: .4; }
+.rift-weather__painting { width: 100%; height: 100%; object-fit: contain; }
+.rift-field--water .rift-weather { width: 64%; left: 20%; height: 60%; bottom: 10%; }
+.rift-field--water[data-open=true] .rift-weather { transform: translateY(30%); }
+.rift-floe { position: absolute; width: 42%; height: 40%; bottom: 5%; }
+.rift-floe--near { left: 0; }
+.rift-floe--far { right: -8%; }
+.rift-field[data-open=true] .rift-floe--far { right: 12%; }
+.rift-floe--far { transition: right .15s; }
+.rift-field--wind .rift-weather i { height: 12%; inset-block-start: 10%; background: #f1e5b133; border-width: .15em 0 0; border-color: #fff4d6; transform: skewX(-20deg); }
+.rift-field--wind .rift-weather i:nth-child(2) { top: 40%; }
+.rift-field--wind .rift-weather i:nth-child(3) { top: 70%; }
+.rift-field--rift .rift-weather i { border-color: #e7caff; background: linear-gradient(90deg, #6e499baa, #dbbbef44); box-shadow: 0 0 1.2em #ddb8ff99; border-radius: 50%; }
+.rift-field--shelter .rift-weather i { border-radius: 10% 20% 45% 25%; background: linear-gradient(#c9d6d3, #677d87); border-color: #e0ece3; }
+.rift-field--watch .rift-weather i { border-radius: 50%; background: radial-gradient(ellipse, #ffe5a644, #39302b88); border-color: #e7cf9a88; }
+.rift-field--watch .rift-bank { display: none; }
+.rift-watcher { position: absolute; bottom: 15%; left: 30%; width: 58%; height: 76%; transform: scale(1.03); transform-origin: center bottom; transition: transform .3s; }
+.rift-field[data-open=true] .rift-watcher { transform: scale(.97); }
+.rift-field[data-open=true] .rift-weather { opacity: .18; }
+.rift-far-prop { position: absolute; right: 2%; bottom: 20%; height: 45%; width: 22%; }
+.rift-crossing-path { position: absolute; bottom: 21%; left: 30%; width: 40%; height: 4%; background: #ffe6a5; box-shadow: 0 0 1em #ffe6a5; opacity: .25; }
+.rift-field[data-safe=true] .rift-crossing-path { opacity: 1; }
+.rift-time { height: 1.8em; position: relative; border-radius: .5em; border: 1px solid #d4b783; background: #28263ee6; overflow: hidden; }
+.rift-time__opening { position: absolute; inset-block: 0; background: #c7a44c; border-inline: 2px solid #ffe4a5; }
+.rift-time__travel { position: absolute; top: 25%; height: 50%; border: 2px solid white; background: #ffffff55; }
+.rift-time__travel[data-safe=false] { border-color: #f7b7ac; }
+.rift-beam { position: absolute; bottom: 45%; left: 12%; width: 76%; height: .7em; border-radius: 1em; background: linear-gradient(#ddbc7b, #78604a); transform-origin: center; transition: transform .25s; }
+.rift-beam__painting { position: absolute; width: 100%; height: 5em; bottom: -1.5em; object-fit: fill !important; }
+.rift-beam__weight { position: absolute; bottom: .8em; width: 2em; height: 2em; border-radius: .4em; transform: translateX(-50%); background: linear-gradient(110deg, #e8c28d, #8d5b3b); border: 2px solid #e6cba0; box-shadow: 0 .2em .3em #0008; transition: left .3s; }
+.rift-hero--carrier { height: 40%; width: 18%; }
+.rift-prop-support { position: absolute; bottom: 10%; right: 12%; width: 12%; height: 35%; border-inline: .4em solid #bca77c; border-top: .5em solid #bca77c; color: #fff1c7; font-size: .65em; text-align: center; }
+.rift-supports { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; font-size: .8em; }
+.rift-supports > div { display: flex; flex-direction: column; gap: .2em; }
+.rift-supports span { display: flex; align-items: center; gap: .5em; }
+.rift-supports meter { flex: 1; min-width: 1em; }
+.rift-lift-controls { display: grid; grid-template-columns: 1fr 1fr; gap: .5em; }
+.rift-feedback { padding: .5em .7em; border-radius: .6em; border: 1px solid #d2b681; background: #211d30e8; color: #fff1d2; font-size: .8em; }
+.rift-strain { display: flex; align-items: center; gap: .5em; font-size: .75em; }
+.rift-strain meter { flex: 1; }
+.game--tv .rift-game { flex: 1; gap: .3em; font-size: .85em; }
+.game--tv:has(.rift-game) .game__head > :is(.game__badge, .game__cue) { display: none; }
+.game--tv:has(.rift-game) .game__head:not(:has(.game__edge)) { display: none; }
+.game--tv .rift-field { flex: 1; height: auto; min-height: 0; background: transparent; border: 0; }
+.game--tv .rift-hero { height: 60%; }
+.game--tv .rift-hero--thrower { height: 65%; width: 24%; }
+.game--tv .rift-read { font-size: 1.35em; }
+.game--tv .rift-hint { display: none; }
+.game--tv .rift-game:has(.rift-feedback) .rift-read > span { display: none; }
+.game--phone:has(.rift-game) .game__head, .game--phone:has(.rift-game) .game__job-detail { display: none; }
+.game--phone .rift-game { gap: .45em; }
+.game--phone .rift-read { font-size: 1em; }
+.game--phone .rift-field { height: 12em; min-height: 9em; }
+.rift-hero { bottom: 14%; }
+.rift-hero small { font-size: .7em; }
+.game--riftlight.game--active .game-stamp { display: none; }
+.game--riftlight.game--result .game-stamp, .game--riftlight.game--result .game__outcome { display: none; }
+.game--riftlight.game--result .rift-progress, .game--riftlight.game--result .rift-hint,
+.game--riftlight.game--result .rift-read > span, .game--riftlight.game--result .rift-supports { display: none; }
+.game--riftlight.game--result .rift-field { height: 8em; min-height: 6em; }
+.game--phone.game--riftlight.game--result .game__board { flex: 0 0 auto; padding-block: .5em; }
+.game--phone.game--riftlight.game--result .game__controls { flex: 0 0 auto; }
+.game--phone.game--riftlight:has(.rift-game) .game-actions-row { display: none; }
+.game--phone.game--riftlight:has(.rift-game) .game__help { margin-block-start: .3em; }
+@media (max-height: 700px) {
+  .game--phone .rift-field { height: 8em; min-height: 8em; }
+  .game--phone .rift-progress { font-size: .75em; }
+  .game--phone .rift-read { font-size: .9em; }
+  .game--phone .rift-hint { font-size: .7em; }
+}
+.rift-field[data-still=true] * { animation: none !important; transition: none !important; }
+.rift-flight { position: absolute; left: var(--landing); bottom: 22%; height: 25%; width: 14%; transform: translateX(-50%); animation: rift-throw .7s ease-out both; pointer-events: none; }
+.rift-flight__object { width: 100%; height: 100%; }
+.rift-flight[data-good=true] { filter: drop-shadow(0 0 .6em #fff0a7); }
+@keyframes rift-throw { 0% { left: 10%; bottom: 22%; } 50% { left: var(--halfway); bottom: var(--peak); } 100% { left: var(--landing); bottom: 22%; } }
+@media (prefers-reduced-motion: reduce) { .rift-game * { animation: none !important; transition: none !important; } }

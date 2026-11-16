@@ -668,7 +668,7 @@
       "narration": "Pip says a pebble only goes through when the opening glows bright. Juniper says please do not hit a whale. Aim for the middle of the shimmer.",
       "interaction": {
         "kind": "precision",
-        "cue": "Toss when the marker is in the bright middle.",
+        "cue": "Aim the pebble into the bright middle.",
         "actionLabel": "Toss the pebble",
         "target": 0.5,
         "width": 0.3,
@@ -909,7 +909,9 @@
         "actionLabel": "Sing to Hiccup",
         "target": 0.5,
         "width": 0.25,
-        "periodMs": 6000
+        "periodMs": 6000,
+        "setting": "watch",
+        "durationMs": 250
       },
       "onSuccess": {
         "goto": "sung_out",

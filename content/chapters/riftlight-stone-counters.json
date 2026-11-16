@@ -61,7 +61,8 @@
     "interactions": {
       "grass_wind": {
         "props": [
-          "prop_tall_grass"
+          "prop_tall_grass",
+          "wind-banner"
         ]
       },
       "pebble": {
@@ -468,7 +469,9 @@
         "actionLabel": "Look now!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "wind",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "wind_drops",
@@ -1472,7 +1475,9 @@
         "actionLabel": "Go now!",
         "target": 0.5,
         "periodMs": 4000,
-        "width": 0.3
+        "width": 0.3,
+        "setting": "rift",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "past",
@@ -1519,7 +1524,9 @@
         "actionLabel": "Go now!",
         "target": 0.5,
         "periodMs": 4000,
-        "width": 0.18
+        "width": 0.18,
+        "setting": "rift",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "past",

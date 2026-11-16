@@ -1444,7 +1444,9 @@
         "actionLabel": "Crawl through!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 3500
+        "periodMs": 3500,
+        "setting": "shelter",
+        "durationMs": 750
       },
       "onSuccess": {
         "goto": "seam_back",
@@ -1542,7 +1544,9 @@
           },
           {
             "type": "findLook",
-            "looks": ["aurora"],
+            "looks": [
+              "aurora"
+            ],
             "rewardId": "riftlight-hidden-glacier-rift.aurora"
           }
         ]
@@ -1561,7 +1565,9 @@
           },
           {
             "type": "findLook",
-            "looks": ["aurora"],
+            "looks": [
+              "aurora"
+            ],
             "rewardId": "riftlight-hidden-glacier-rift.aurora"
           }
         ]
@@ -2667,8 +2673,7 @@
     "interactions": {
       "holes": {
         "props": [
-          "snow-mound",
-          "ticking-crystal"
+          "coat-kid"
         ]
       },
       "squeeze_hold": {
