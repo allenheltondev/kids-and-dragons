@@ -1,10 +1,10 @@
-/** Phone-to-TV repaint coverage on a slow TV without canvas filters. */
+/** Phone-to-TV body texture assignment coverage on a slow TV without canvas filters. */
 import { test, expect } from "@playwright/test";
 import { onAir, openPhone, openTv, seedTable } from "./seed";
 
 const TIZEN = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 Chrome/76.0.3809.146 TV Safari/537.36";
 
-test("phone colors repaint the TV and reuse a previous color texture", async ({ browser }, info) => {
+test("phone colors update the TV body texture and reuse a previous color texture", async ({ browser }, info) => {
   const table = await seedTable({
     mode: "party", tv: true,
     camp: { real: true, grownBy: ["gemfall"] },
@@ -16,7 +16,7 @@ test("phone colors repaint the TV and reuse a previous color texture", async ({ 
     });
   });
   const phone = await openPhone(browser, table.phones[0]!);
-  const timings: { color: string; responseMs: number; repaintMs: number }[] = [];
+  const timings: { color: string; responseMs: number; bodyTextureAssignedMs: number }[] = [];
   try {
     const cdp = await tv.context.newCDPSession(tv.page);
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 6 });
@@ -26,7 +26,8 @@ test("phone colors repaint the TV and reuse a previous color texture", async ({ 
     await phone.page.locator('[data-testid="camp-button"]:visible').first().click();
     await phone.page.getByRole("tab", { name: "My camp", exact: true }).click();
 
-    // Inspect the painted tent, rather than counting a state patch as a repaint.
+    // Inspect the assigned body texture, rather than counting a state patch.
+    // This does not wait for the separate flap or a subsequent Pixi render.
     const texture = () => tv.page.evaluate(`(() => {
       const tent = window.__kadCamp?.()?.camp()?.view?.getChildByLabel("piece:tent_0", true);
       return tent?.children.filter(n => n.texture && !n.label.startsWith("camp-ground-"))
@@ -46,7 +47,7 @@ test("phone colors repaint the TV and reuse a previous color texture", async ({ 
         if (firstBlue === undefined) firstBlue = await texture();
         else expect(await texture()).toBe(firstBlue);
       }
-      timings.push({ color, responseMs, repaintMs: Date.now() - started });
+      timings.push({ color, responseMs, bodyTextureAssignedMs: Date.now() - started });
     }
     await info.attach("phone-to-tv-timings", { body: JSON.stringify(timings, null, 2), contentType: "application/json" });
     await tv.page.screenshot({ path: info.outputPath("tv-camp.png") });

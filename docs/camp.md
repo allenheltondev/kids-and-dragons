@@ -1575,7 +1575,8 @@ The camp reuses a live Pixi texture when the same cached color canvas is selecte
 all textures it owns are still destroyed with the camp.
 
 `e2e/camp-latency.spec.ts` exercises phone picks against a separate TV browser with
-canvas filters disabled and 6x CPU throttling, checks the painted tent changes, and
-attaches request/repaint timings. These local timings do not measure the deployed API,
+canvas filters disabled and 6x CPU throttling, checks the tent body texture assignment, and
+attaches request and `bodyTextureAssignedMs` timings. The latter measures assignment
+to the body Sprite, not a rendered frame or completion of the separately loaded flap. These local timings do not measure the deployed API,
 Samsung hardware, or the family's network. Confirm the reported live delay on the TV
 after deployment; this optimization alone does not establish its production cause.
