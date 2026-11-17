@@ -26,7 +26,7 @@ for(const [chapterId,sceneId,players,reducedMotion] of cases){
   for(const phone of table.phones) await phone.setViewportSize({width:320,height:640});
   for(const phone of table.phones) await expect(phone.getByRole('region',{name:'Interaction controls'})).toBeVisible();
   const get=async()=>{const s=await table.state();if(s.prompt?.kind!=='interaction')throw Error('No game');return {s,p:s.prompt};};
-  const phoneFor=async()=>{const {s,p}=await get();const id=interactionActor(p,s.party.filter(m=>m.connected).map(m=>m.playerId));return table.phone(s.party.findIndex(m=>m.playerId===id));};
+  const phoneFor=async()=>{const {s,p}=await get();const id=interactionActor(p,s.party.filter(m=>m.connected).map(m=>m.playerId));const phone=table.phone(s.party.findIndex(m=>m.playerId===id));await phone.bringToFront();return phone;};
   await (await phoneFor()).getByRole('button',{name:/We.*ready/i}).press('Enter');
   await expect.poll(async()=>(await get()).p.phase).toBe('active');
   for(const page of [table.tv,...table.phones]) await expect.poll(()=>page.locator('.game__board img').evaluateAll(images=>images.every(img=>(img as { complete: boolean }).complete))).toBe(true);
@@ -52,7 +52,7 @@ for(const [chapterId,sceneId,players,reducedMotion] of cases){
     for(let seat=0;seat<players;seat++){const {s,p}=await get(),id=s.party[seat]!.playerId,target=haulNeeded(p,s.party.filter(m=>m.connected).map(m=>m.playerId),id),phone=table.phone(seat);await phone.getByRole('slider',{name:'Effort',exact:true}).fill(String(Math.round(target*100)));await phone.getByRole('button',{name:'Set my effort',exact:true}).press('Enter');await expect.poll(async()=>{const p=(await get()).p;return p.challenge!.round!==round||p.challenge!.pulls[id]!==undefined;}).toBe(true);}
    }
   }else if(kind==='timing'){
-   while((await get()).p.phase==='active'){const {p}=await get(),phone=await phoneFor();if(reducedMotion) await phone.getByRole('slider',{name:'Crossing moment'}).fill(String(Math.ceil((crossingWindow(p).start+.02)*100))); else await expect(phone.getByRole('region',{name:'Interaction controls'}).locator('.rift-field')).toHaveAttribute('data-safe','true');await move(async()=>{await phone.getByRole('button',{name:p.spec.actionLabel,exact:true}).press('Enter');});}
+   while((await get()).p.phase==='active'){const {p}=await get(),phone=await phoneFor();if(reducedMotion) await phone.getByRole('slider',{name:'Crossing moment'}).fill(String(Math.ceil((crossingWindow(p).start+.02)*100))); else await phone.waitForFunction("document.querySelector('.game--phone .rift-field')?.getAttribute('data-safe') === 'true'");await move(async()=>{await phone.getByRole('button',{name:p.spec.actionLabel,exact:true}).press('Enter');});}
   }else if(kind==='balance'){
    while((await get()).p.phase==='active'){
     const {s,p}=await get(),ids=s.party.filter(m=>m.connected).map(m=>m.playerId),carry=carryState(p,ids);
@@ -70,7 +70,7 @@ for(const [chapterId,sceneId,players,reducedMotion] of cases){
    await move(async()=>{await (await phoneFor()).getByRole('button',{name:`${spec.actionLabel}: ${spec.covers[target]}`,exact:true}).press('Enter');});
   }else if(kind==='play'){
    const {p}=await get();if(p.spec.kind!=='play')throw Error();
-   for(let seat=0;seat<players;seat++){const option=p.spec.options[seat%p.spec.options.length]!;await table.phone(seat).getByRole('button',{name:option.label,exact:true}).press('Enter');await expect.poll(async()=>(await get()).p.taps??0).toBeGreaterThanOrEqual(seat+1);}
+   for(let turn=0;turn<Math.max(players,p.spec.stages?.length??0);turn++){const option=p.spec.options[turn%p.spec.options.length]!,phone=table.phone(turn%players);await phone.bringToFront();await phone.getByRole('button',{name:option.label,exact:true}).press('Enter');await expect.poll(async()=>(await get()).p.taps??0).toBeGreaterThanOrEqual(turn+1);}
    console.log(await table.snap(sceneId+'-choices',out));
    await (await phoneFor()).getByRole('button',{name:p.spec.actionLabel,exact:true}).press('Enter');
   }

@@ -26,6 +26,8 @@ The engine matrix completes every authored scene with one, two, and four heroes,
 
 The browser checks drive real phone controls for slipping carries, compensated and excessive hauling, reloads, small screens, health charged only on continuation, earned flags/items, and a read-only TV. The hauling recovery layout is also checked at the largest text setting and with a wider fallback font. The TV uses a side-by-side action/feedback layout rather than allowing recovery text to push the subject out of its board.
 
+All 121 active activities were captured with zero failed image URLs. Eleven representative browser flows reached their success result and story continuation: calf lifting, bark mending, humming, four-person climbing, wagon timing, water-tray carrying, four-person seal bracing, expressive play, tracking, shared route clues, and rune memory. The visual review caught stretched cargo and a TV backdrop stacking error; cargo now keeps its proportions, and the loaded game painting sits above the world background. These are running-browser observations, separate from the engine matrix.
+
 With a local server running:
 
 ```powershell
