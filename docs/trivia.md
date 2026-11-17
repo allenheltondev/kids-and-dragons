@@ -1,7 +1,8 @@
 # Trivia: the Field Guide quiz in the adventure book
 
-**Status: proposed (2026-11-17).** Decisions marked *decided* are the product owner's own, from
-2026-11-17. Everything else is a proposal for review. Nothing here is built.
+**Status: design approved (2026-11-17); not built.** Decisions marked *decided* are the product
+owner's own, from 2026-11-17, and the owner approved the rest of this doc the same day. Only §8's
+open questions are still open.
 
 **Review status:** repository references are implementation context. File names, type names and
 interfaces below are the intended shape. They may be refined during implementation as long as the
@@ -23,6 +24,9 @@ callbacks, and the creature tips that win fights.
 - **It is hard enough to mean something** (*decided*: "not a softball"). The ladder asks for a
   real number of right answers (§5). A wrong answer is never explained and can't be retried on the
   spot (§4).
+- **Every question shows a picture** (*decided*): the painting of the page it is about. A
+  question about the cloud whale has the cloud whale on screen, and a question about the Sallow
+  Wastelands has the Wastelands behind it (§3.5).
 - **It points back at the guide** (*decided*). A wrong answer about a creature or a biome offers a
   link to that part of the Field Guide. She reads it there, and the question comes back later.
 - **It is not** a way to get stronger. No XP, coins, items, stat points or Help dice. Rewards are
@@ -82,7 +86,8 @@ other entries of the same kind. A writer keeps, rewrites or drops each one.
     "Woven seaweed"
   ],
   "also": ["creature.restless_remains"],     // other pages the question or its options name (§3.3)
-  "link": "entry"                             // "entry" | "shelf" | "none" (§4.3)
+  "link": "entry",                            // "entry" | "shelf" | "none" (§4.3)
+  "image": "creature.restless_remains"       // optional: show another page's painting (§3.5)
 }
 ```
 
@@ -94,9 +99,9 @@ other entries of the same kind. A writer keeps, rewrites or drops each one.
   `content:validate` fails a question that uses another entry's title without listing it in `also`.
   It matches against every entry's `title`, the same way `content:continuity` finds names.
 - **Five or six wrong options, not three.** Three are drawn each time the question is asked (§4.2).
-- **Words only, under 10 words an option**, and questions under 20 words. A later phase may add
-  picture options ("Which one is the Gullet?") from the entity and cast art, which already exists
-  for every creature and person.
+- **Options are words, under 10 words each**, and questions are under 20 words. The picture is
+  the question's own (§3.5). A later phase may add picture options ("Which one is the Gullet?")
+  from the entity and cast art.
 - **Voice rules apply**: US spelling, no em dashes, warm and never scary. These are the same checks
   as Gemfall text (`spelling.test.mjs`).
 
@@ -115,6 +120,31 @@ Aim for **four or five questions a creature or biome**, and **two or three for e
 32 of them) that is roughly 130 + 110 = **about 240 questions** for a household that has found
 everything. The ladder (§5) is sized so that its top rungs need most of the guide discovered:
 playing unlocks questions, and questions unlock rewards.
+
+### 3.5 The picture (*decided*)
+
+Every question is asked over a painting, so the quiz looks like the guide and a kid who has read
+the guide recognizes what she is being asked about.
+
+- **By default it is the `entry`'s own painting**, the one its Field Guide page shows (`art` in
+  `content/field-guide.json`). A creature, a people, a folk or a person is shown as its figure on
+  the guide's card. A biome or another place is shown as its backdrop, filling the top of the
+  screen behind the question.
+- **`image` names a different page** when the entry's own picture would give the answer away, or
+  when another picture fits better. Example: "Who builds their shells from these?" over the
+  Restless Remains. It must be the `entry` or in `also`, so it is a page she has found.
+- **Today 71 of the 75 pages have a painting.** The four class pages (Thornguard, Duskrunner,
+  Starweaver, Songkeeper) have none, so their questions use the class's gear portrait
+  (`assets/gear-portraits/<class>`). `content:validate` fails a question that resolves to no
+  picture, so a page added to the guide later can't get questions until it has art. That makes
+  "every question has a picture" a gate, not a hope.
+- **A `link: "shelf"` question still shows its picture.** The painting has no caption, so
+  recognizing the bone crawler from its shell is knowing the guide, which is the point. Only the
+  name is kept off screen.
+- **Offline**, the pictures are the ones the book already saves for the guide once it has been
+  opened with a signal (spec §2.3), so the quiz fetches nothing new. A question whose picture is not on the phone
+  yet is held back from an offline round rather than shown without one. On a phone, places draw
+  the half-size copy (`@0.5x.webp`), as backdrops do everywhere else.
 
 ## 4. A round
 
@@ -260,14 +290,14 @@ household hasn't found.
 
 ## 7. What it costs to build, in order
 
-1. **Content and validation**: `trivia.json`, its schema and types, the spoiler and link checks in
-   `content:validate`, and `trivia:draft`. Write the creature and biome questions first.
+1. **Content and validation**: `trivia.json`, its schema and types, the spoiler, link and picture
+   checks in `content:validate`, and `trivia:draft`. Write the creature and biome questions first.
 2. **Rules in shared**: the pool (found entries, mastered, cooling down), drawing a round and its
    options, marking an answer, and the ladder. All pure and all tested, like `look-unlocks.ts`.
 3. **Server**: `TriviaRecord`, the answer endpoint, rung grants writing look and kit receipts,
    badges, and the journal read.
-4. **Client**: the Quiz button and round screen in the Guide pane, the guide links, the offline
-   queue, and reward toasts.
+4. **Client**: the Quiz button and round screen in the Guide pane (each question over its
+   picture), the guide links, the offline queue, and reward toasts.
 5. **Art**: the ladder's decorations, frames and special.
 
 Phase 1 can ship with the badges and the looks that need no new art (titles), and the rest as its
