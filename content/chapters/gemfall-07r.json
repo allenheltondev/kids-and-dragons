@@ -2447,11 +2447,13 @@
       "narration": "Past the slide, small red stones trickle across the road in bursts. Ping, ping, ping. Then they stop. \"Go in the gaps!\" calls the warden.",
       "interaction": {
         "kind": "timing",
-        "cue": "Dash when the marker reaches the quiet gap between falling stones.",
+        "cue": "Read the gold interval. Start with enough time to dash.",
         "actionLabel": "Dash!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "wind",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_switchback",
@@ -2743,7 +2745,7 @@
       "narration": "The sacks keep leaning uphill. Odo brings a plank with THIS WAY UP painted on both ends. Brace the load together.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Choose a smooth pull together. Ease off before the sacks jerk loose.",
+        "cue": "Share the effort between the near and far ropes. Use enough to move the load without straining the cords.",
         "actionLabel": "Move the load",
         "supportLabel": "Brace a sack"
       },
@@ -2774,7 +2776,7 @@
       "narration": "The master turns into the pullout. She will send the Caravan Stone home if you hold the wagon steady while she unloads. The mules start their lunch.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Set a smooth pull together to keep the wagon from rolling.",
+        "cue": "Share the effort between the near and far ropes. Use enough to move the load without straining the cords.",
         "actionLabel": "Unload the stone",
         "supportLabel": "Brace the wagon"
       },

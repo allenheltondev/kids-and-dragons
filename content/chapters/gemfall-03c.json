@@ -370,11 +370,13 @@
       "narration": "Pudding gallops off with the bucket on her head. Every few steps she stops at a cabbage stall to chew. \"Wait for the chew!\" wails Burdock. \"Then grab!\"",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap when Pudding stops to chew.",
+        "cue": "Read the gold interval. Start with enough time to grab the bucket.",
         "actionLabel": "Grab the bucket!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_three_cards",
@@ -755,11 +757,13 @@
       "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Everybody braces.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to link arms when the marker is in the gold, just as the scarves charge.",
+        "cue": "Read the gold interval. Start with enough time to hold the line.",
         "actionLabel": "Hold the line!",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "interaction_clear_lane",
@@ -2459,11 +2463,13 @@
       "narration": "Near the soup tent, empty bowls are rolling out of a basket into the mud. Catch each bowl and stack it before the next hungry traveler arrives.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap when a bowl reaches the basket rim.",
+        "cue": "Read the gold interval. Start with enough time to catch the bowl.",
         "actionLabel": "Catch the bowl",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_soup_line",
@@ -2487,11 +2493,13 @@
       "narration": "Hoofbeats race down the line. A relay-runner needs a clear lane, but a loose awning sags across the road. Lift it just as she passes.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to lift the awning when the marker is in the gold.",
+        "cue": "Read the gold interval. Start with enough time to lift the awning.",
         "actionLabel": "Lift the awning!",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_relay_message",
@@ -2583,14 +2591,15 @@
       "tags": [
         "force"
       ],
-      "narration": "The stuck wagon leans hard into its rut. Tap when the marker crosses the gold to give it one good heave. The drover has named the rut. \"Do not encourage it.\"",
+      "narration": "The stuck wagon leans hard into its rut. Set your support under the wheel, then lift it steadily out. The drover has named the rut. \"Do not encourage it.\"",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the marker is in the gold.",
+        "cue": "Find the support under the wheel. Lift it gently out of the rut.",
         "actionLabel": "Heave!",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "scene_dusk_wolves",
@@ -2717,11 +2726,13 @@
       "narration": "The Brackens saved you a place. Their cart rocks into the ford. Step with the lead drover's slow count to keep it level. The littlest Bracken holds the bread. It is an important job.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap on the slow step, when the marker is in the gold.",
+        "cue": "Read the gold interval. Start with enough time to slow step.",
         "actionLabel": "Slow step",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "end_forded",
@@ -2763,11 +2774,12 @@
       "narration": "The wagon crew you freed wades up with a long brace. Set it at the wheel just right, and the wagon rights itself. The drakes argue over the bread.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap when the marker is in the gold to set the brace.",
+        "cue": "Set the brace under the weight. Hold it without forcing it.",
         "actionLabel": "Set the brace",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "end_forded",

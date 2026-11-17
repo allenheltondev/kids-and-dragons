@@ -1542,11 +1542,12 @@
       "narration": "The apprentice stretches the knotted string along the crack. \"Pull your end tight just as the knot lines up with the edge. It only reads true when it's tight.\"",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to pull tight when the marker is in the gold, as the knot lines up.",
+        "cue": "Support the knot. Tighten the string without straining it.",
         "actionLabel": "Pull it tight",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "tension"
       },
       "onSuccess": {
         "goto": "scene_engineers",
@@ -2024,7 +2025,7 @@
       "narration": "Brask brings a tray of water with a tiny cork boat on it. \"Engineers' level.\" Carry it flat across the planks. Keep the boat in the middle.",
       "interaction": {
         "kind": "balance",
-        "cue": "Everyone lift or lower your side until the water is flat, then carry the tray.",
+        "cue": "Take an end of the load. Adjust your own end as the ground changes, then step when it is level.",
         "actionLabel": "Carry the tray",
         "objectLabel": "A tray of brimming water"
       },
@@ -2354,11 +2355,13 @@
       "narration": "The warden has checked the crossing rope. Brace it the way you practiced, just as the span sways back toward you.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to brace the rope when the marker is in the gold, as the span sways back.",
+        "cue": "Read the gold interval. Start with enough time to brace and cross.",
         "actionLabel": "Brace and cross",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_far_rim",
@@ -2393,11 +2396,13 @@
       "narration": "The last cart clears the span. Your notes show the quiet moment. Wait for the warden's gold signal, then step out.",
       "interaction": {
         "kind": "timing",
-        "cue": "Step when the gold signal marks the settled interval.",
+        "cue": "Read the gold interval. Start with enough time to step onto the span.",
         "actionLabel": "Step onto the span",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_far_rim",
@@ -2557,6 +2562,9 @@
         "props": [
           "prop_letters"
         ]
+      },
+      "check_pony": {
+        "figure": "entities/pony"
       }
     },
     "fights": [

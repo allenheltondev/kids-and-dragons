@@ -828,14 +828,6 @@
       }
     ]
   },
-  "gemfall-05c/interaction_dawn_rope/interaction/cue": {
-    "": [
-      {
-        "clip": "2140b48e03107a7c66e83732d8eeb8f901638ece931b07ca83889d2941a23176",
-        "ms": 4007
-      }
-    ]
-  },
   "gemfall-05c/interaction_dawn_rope/narration": {
     "": [
       {
@@ -897,14 +889,6 @@
       {
         "clip": "e19359c1434c96a55b09227911ed981e49b3722151d9d1b95b54126ddaefc460",
         "ms": 6107
-      }
-    ]
-  },
-  "gemfall-05c/interaction_kept_stone/interaction/cue": {
-    "": [
-      {
-        "clip": "cce6eef3bad38489880146c75da7db1fc6e91c5ee13a45ad19fea8bf05176dea",
-        "ms": 4207
       }
     ]
   },

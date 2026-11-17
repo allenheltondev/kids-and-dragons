@@ -2403,7 +2403,7 @@
       "narration": "In the middle of the Pinch lie an old door and two barrels of different heights. \"A table,\" says Pellam, tapping it with his pencil. \"Level, please. I will be measuring.\" Lift or lower your side before each step. If the door tips too far, it will land on your toes.",
       "interaction": {
         "kind": "balance",
-        "cue": "Adjust your lift to the gold before each careful step. The door shifts as you carry it.",
+        "cue": "Take an end of the load. Adjust your own end as the ground changes, then step when it is level.",
         "actionLabel": "Carry the door",
         "objectLabel": "An old door"
       },
@@ -2544,11 +2544,13 @@
       "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of boxes start sliding down the bend. Both sides yelp. Read the gap before dashing through. A bad dash means bruised knees before you can help at the wagon.",
       "interaction": {
         "kind": "timing",
-        "cue": "Dash through the gold opening. A near miss leaves room to recover; rough dashes cost footing.",
+        "cue": "Read the gold interval. Start with enough time to dash.",
         "actionLabel": "Dash!",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_box_crawlers",
@@ -2807,11 +2809,12 @@
       "narration": "A passing warden takes the cart. You hold a little humming stone on a quiet rock. Wait for the calm middle of its pulse. A goat watches, chewing.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap at the calm middle of the hum.",
+        "cue": "Find the steady note, then use just enough voice to hold the hum. Ease off if it grows too strong.",
         "actionLabel": "Hold the small hum",
         "target": 0.5,
         "width": 0.35,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "handling": "hum"
       },
       "onSuccess": {
         "goto": "scene_returning_cart_practice",
@@ -2846,11 +2849,12 @@
       "narration": "You find the calm place inside the wagon's hum. It is bigger than the practice stone, with the same pulse. The mules wait, earmuffs half off.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap at the calm middle, just as you practiced.",
+        "cue": "Find the steady note, then use just enough voice to hold the hum. Ease off if it grows too strong.",
         "actionLabel": "Hold the wagon hum",
         "target": 0.5,
         "width": 0.5,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "handling": "hum"
       },
       "onSuccess": {
         "goto": "scene_tether_holds",
@@ -2975,10 +2979,10 @@
     },
     "interaction_tether_team": {
       "type": "interaction",
-      "narration": "A warden fits a wheel block. A singer holds a steady note. Take the brace rope together and choose a smooth pull in the gold. If one friend pulls too gently, another can make up the difference. Sharp jerks strain the brace. If it gives way, the masks will take the wagon.",
+      "narration": "A warden fits a wheel block. A singer holds a steady note. Share the near and far brace ropes. If one friend pulls too gently, another can make up the difference. Too much force strains the brace. If it gives way, the masks will take the wagon.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Choose smooth pulls in the gold. Read the changing weight before each effort.",
+        "cue": "Share the effort between the near and far ropes. Use enough to move the load without straining the cords.",
         "actionLabel": "Pull smoothly",
         "supportLabel": "Brace the wagon"
       },

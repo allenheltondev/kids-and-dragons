@@ -1391,7 +1391,7 @@ export interface Campaign {
 /** Data loaded and cached with its chapter, rather than bundled as client code. */
 export interface ChapterPresentation {
  fights?: ChapterFightAppearance[];
- interactions: Record<string,{props?:string[];coverIcons?:string[];optionProps?:Record<string,string>}>;
+ interactions: Record<string,{props?:string[];coverIcons?:string[];figure?:string;optionProps?:Record<string,string>}>;
  warmUrls?: string[];
  reactions?: Record<string,{defaultFigure?:string;options?:Record<string,string>;memory?:Record<string,string>;onFailure?:string}>;
  castPoses?: Record<string,Record<string,string>>;

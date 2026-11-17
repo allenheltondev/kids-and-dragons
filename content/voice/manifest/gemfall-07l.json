@@ -801,14 +801,6 @@
       }
     ]
   },
-  "gemfall-07l/interaction_practiced_hold/interaction/cue": {
-    "": [
-      {
-        "clip": "73c8af08e565b6e7737af456fa7cebaaabb861e2e91168a7c42cb8c68cb3d8a6",
-        "ms": 2879
-      }
-    ]
-  },
   "gemfall-07l/interaction_practiced_hold/narration": {
     "": [
       {
@@ -920,14 +912,6 @@
       {
         "clip": "f247a6354b8f3ab787690cd2c1926806aae99b993ba18043e0e569bec1190d1a",
         "ms": 12407
-      }
-    ]
-  },
-  "gemfall-07l/interaction_small_hum/interaction/cue": {
-    "": [
-      {
-        "clip": "80510a6eac85c42d78d06e1c610ee51f8bc61472892b66d7704edf835abcecf1",
-        "ms": 2487
       }
     ]
   },

@@ -63,7 +63,7 @@ export function carryState(prompt: InteractionPrompt, connected: readonly string
   return { left, right, shift, tilt, tolerance, joined, safe: joined && Math.abs(tilt) <= tolerance };
 }
 
-/** Version 3 only. Older games and already-started saves retain their original rules. */
+/** v3 throws; crossings and carries are also shared by Gemfall v4. Older saves keep their rules. */
 export function applyRiftlightAction(prompt: InteractionPrompt, connected: readonly string[], playerId: string,
   action: InteractionAction, _now: string): "success" | "failure" | undefined {
   const game = prompt.challenge!;

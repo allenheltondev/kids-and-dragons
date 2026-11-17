@@ -2914,11 +2914,12 @@
       "narration": "One wheel of Lady Fleecewick's cabinet sticks in a rut. Forty stones slide toward the low corner. \"Lift, dears, just as it sits level! Gently! They bruise!\"",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to lift when the marker is in the gold, while the cushions lie flat.",
+        "cue": "Find a firm support under the cabinet. Raise it without squeezing the glass.",
         "actionLabel": "Lift the cabinet",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "scene_road_gifts",
@@ -2983,11 +2984,13 @@
       "narration": "The last wagons grind around the hairpin, right across the path you need. A mule in a little straw hat watches you think. Wait for a gap, then go.",
       "interaction": {
         "kind": "timing",
-        "cue": "Dash when the marker reaches the open gap between wagons.",
+        "cue": "Read the gold interval. Start with enough time to dash across.",
         "actionLabel": "Dash across!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 3600
+        "periodMs": 3600,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_tidewell",

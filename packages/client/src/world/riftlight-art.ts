@@ -3,7 +3,7 @@ import { fitArt } from "./art-paths";
 import { playbackStepMs, type CastMember, type Chapter, type InteractionPrompt, type RunState } from "@kad/shared";
 
 export type FightAppearance = NonNullable<NonNullable<Chapter["presentation"]>["fights"]>[number];
-export interface InteractionAppearance { props?: string[]; coverIcons?: string[]; optionProps?: Record<string,string> }
+export interface InteractionAppearance { props?: string[]; coverIcons?: string[]; figure?: string; optionProps?: Record<string,string> }
 export function fightAppearance(chapter: Chapter | null, state: RunState | null): FightAppearance | null {
  if (!chapter || !state || chapter.id !== state.chapterId) return null;
  return chapter.presentation?.fights?.find(f => f.chapter === chapter.id && f.scene === state.sceneId) ?? null;

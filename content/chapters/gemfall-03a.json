@@ -2416,11 +2416,13 @@
       "narration": "A brass hat bobs in the black water, then its owner. Pull the rope in the moment a hand grabs it. Pull together, not just harder.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to pull when the marker is in the gold, just as a hand grabs the rope.",
+        "cue": "Read the gold interval. Start with enough time to pull the rope in.",
         "actionLabel": "Pull the rope in",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_wake_fee",
@@ -2460,14 +2462,16 @@
       "tags": [
         "swim"
       ],
-      "narration": "The brown current runs hard, then softens. Without a prepared line, the lull is short. Watch the marker, then step. The heron is supervising.",
+      "narration": "The brown current runs hard, then softens. Without a prepared line, the lull is short. Read the current and leave time for the whole step. The heron is supervising.",
       "interaction": {
         "kind": "timing",
-        "cue": "Step when the marker is inside the gold lull.",
+        "cue": "Read the gold interval. Start with enough time to step across.",
         "actionLabel": "Step across",
         "target": 0.5,
         "width": 0.22,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_east_landing",
@@ -2498,11 +2502,13 @@
       "narration": "The brown current runs hard, then softens. Your prepared line marks the slower edge, so you have longer to step. The heron is supervising.",
       "interaction": {
         "kind": "timing",
-        "cue": "Step when the marker is inside the gold lull.",
+        "cue": "Read the gold interval. Start with enough time to step across.",
         "actionLabel": "Step across",
         "target": 0.5,
         "width": 0.5,
-        "periodMs": 5000
+        "periodMs": 5000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_east_landing",
@@ -2530,11 +2536,13 @@
       "narration": "You give your song, a proud memory and a promise. Old Ossley nods. Lean with the boat each time his pole bites into the fast water. His hat does not wobble.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to lean when the marker is in the gold, just as the pole bites.",
+        "cue": "Read the gold interval. Start with enough time to lean with the boat.",
         "actionLabel": "Lean with the boat",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_east_landing",

@@ -36,7 +36,12 @@
       "id": "outline",
       "label": "Laid out the whole outline of the truth",
       "flag": "drew_the_outline",
-      "reveal": ["scene_tallies", "scene_tallies_hear_tallies", "scene_charm_rings", "scene_verses_sung"],
+      "reveal": [
+        "scene_tallies",
+        "scene_tallies_hear_tallies",
+        "scene_charm_rings",
+        "scene_verses_sung"
+      ],
       "hint": "Lay out everything you know?",
       "xp": 8
     }
@@ -1948,11 +1953,13 @@
       "narration": "The grandmothers wheel their loudest hand bell down to the stones on a little cart. A wheel sticks in a rut. \"Push on the count!\" calls the bell-code expert. \"One, two, NOW!\"",
       "interaction": {
         "kind": "timing",
-        "cue": "Push when the marker reaches the gold, right on the count of NOW.",
+        "cue": "Read the gold interval. Start with enough time to push the cart.",
         "actionLabel": "Push the cart",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_crowd_at_stones",
@@ -2290,11 +2297,12 @@
       "narration": "Ashby will let you carry the stone if you keep its wrapping level. Lift it gently, just as the wrapping hangs level.",
       "interaction": {
         "kind": "precision",
-        "cue": "Tap to lift when the marker is in the gold, while the wrapping hangs level.",
+        "cue": "Support the wrapped stone. Lift gently as its weight shifts.",
         "actionLabel": "Lift the wrapped stone",
         "target": 0.5,
         "width": 0.28,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "handling": "lift"
       },
       "onSuccess": {
         "goto": "scene_crawlers_porch",
@@ -2343,11 +2351,13 @@
       "narration": "Pull the big bell's rope just as it swings down to you. The expert teaches the crew's hand-to-hand passing line. Her clipboard is nearly as tall as she is.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to pull when the marker is in the gold, as the rope swings down.",
+        "cue": "Read the gold interval. Start with enough time to pull the dawn bell.",
         "actionLabel": "Pull the dawn bell",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "interaction_bell_cart",

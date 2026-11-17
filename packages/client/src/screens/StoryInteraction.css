@@ -918,6 +918,7 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
 
 /* One full-pane painting replaces the story stage for the duration of a game. */
 .world-game-scenery { position: absolute; inset: 0; isolation: isolate; pointer-events: none; }
+.world-game-scenery > .game-scenery { z-index: 0; }
 .world-game-scenery .game-scenery img { opacity: 1; }
 .world-game-scenery .game-scenery::after { background: linear-gradient(#100d2222, #100d2255); }
-.kad-surface--world:has(> .world-game-scenery) > :is(.kad-stage, .kad-static-stage, .kad-cast-browser) { visibility: hidden; }
+.kad-surface--world:has(> .world-game-scenery > .game-scenery[data-loaded="true"]) > :is(.kad-stage, .kad-static-stage, .kad-cast-browser) { visibility: hidden; }

@@ -315,6 +315,7 @@
                   "type": "string"
                 }
               },
+              "figure": { "type": "string", "pattern": "^(cast|entities)/[a-z0-9_]+$" },
               "optionProps": {
                 "type": "object",
                 "additionalProperties": { "type": "string", "minLength": 1 }
@@ -2959,6 +2960,7 @@
                   "minimum": 0.05,
                   "maximum": 1
                 },
+                "handling": { "enum": ["lift", "press", "tension", "hum"] },
                 "periodMs": {
                   "type": "integer",
                   "minimum": 2000,
@@ -3103,7 +3105,7 @@
                   "maximum": 20000
                 },
                 "durationMs": { "type": "integer", "minimum": 150, "maximum": 3000 },
-                "setting": { "enum": ["water", "wind", "rift", "shelter", "watch"] }
+                "setting": { "enum": ["water", "wind", "rift", "shelter", "watch", "work"] }
               }
             },
             {

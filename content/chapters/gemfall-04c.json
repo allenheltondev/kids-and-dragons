@@ -1967,11 +1967,13 @@
       "narration": "Past the sergeant's table, a striped pole swings up and down. A patrol goat chews a ledger page. \"Cross on the lift,\" says Holloway, writing GOAT, HUNGRY.",
       "interaction": {
         "kind": "timing",
-        "cue": "Cross when the marker reaches the gold and the striped pole is raised.",
+        "cue": "Read the gold interval. Start with enough time to cross on the lift.",
         "actionLabel": "Cross on the lift",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "water",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_signposts",
@@ -2514,11 +2516,13 @@
       "narration": "Link up around the shared load and walk on each lull between the gusts. Ash piles up like gray snow.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to walk when the marker is in the gold, in the lull between gusts.",
+        "cue": "Read the gold interval. Start with enough time to walk through together.",
         "actionLabel": "Walk through together",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "wind",
+        "durationMs": 850
       },
       "onSuccess": {
         "goto": "scene_road_bend",
@@ -2545,11 +2549,13 @@
       "narration": "The crew you helped parks its supply wagon across the wind. Swing the screen into the wind just as the next gust comes.",
       "interaction": {
         "kind": "timing",
-        "cue": "Tap to swing the screen when the marker is in the gold, as the gust comes.",
+        "cue": "Read the gold interval. Start with enough time to swing the screen.",
         "actionLabel": "Swing the screen",
         "target": 0.5,
         "width": 0.26,
-        "periodMs": 4500
+        "periodMs": 4500,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_road_bend",

@@ -36,7 +36,7 @@ for (const [chapterId, sceneId, next] of [
       await Promise.all([onAir(phone.page), onAir(tv.page)]);
       await task(phone.page);
       const hp = (await state()).party[0]!.hp;
-      const aimLabel = chapterId.startsWith("riftlight-") ? "Crossing moment" : "Aim at the gold";
+      const aimLabel = "Crossing moment";
       await controls(phone.page).getByRole("button", { name: /ready/ }).click();
       await expect(controls(phone.page).getByRole("slider", { name: aimLabel })).toBeVisible();
       await boardFits(tv.page);
@@ -76,7 +76,7 @@ for (const [chapterId, sceneId, next] of [
         if (p?.kind !== "interaction" || p.phase !== "active") break;
         const committedRound = p.challenge!.round;
         await expect(controls(phone.page).locator(".skill-game, .rift-game")).toHaveAttribute("data-round", String(committedRound));
-        const position = p.challenge!.version === 3 ? crossingWindow(p).start + .01 : skillAim(p).target;
+        const position = (p.challenge!.version ?? 0) >= 3 ? crossingWindow(p).start + .01 : skillAim(p).target;
         await controls(phone.page).getByRole("slider", { name: aimLabel }).fill(String(Math.ceil(position * 100)));
         await controls(phone.page).getByRole("button", { name: p.spec.actionLabel, exact: true }).click();
         await expect.poll(async () => {

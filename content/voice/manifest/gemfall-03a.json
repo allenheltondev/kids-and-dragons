@@ -483,22 +483,6 @@
       }
     ]
   },
-  "gemfall-03a/interaction_crossing/interaction/cue": {
-    "": [
-      {
-        "clip": "1e90824dd9e3afbca0ccc102aba11889d9c83b0d9178e719f32b9c0efadf953b",
-        "ms": 2913
-      }
-    ]
-  },
-  "gemfall-03a/interaction_crossing/narration": {
-    "": [
-      {
-        "clip": "9b5d1b4b516b47ad55afd0a53331ffe5b4aefbd4e5c79e6ee69a75296c5da96b",
-        "ms": 10007
-      }
-    ]
-  },
   "gemfall-03a/interaction_crossing/onAssisted/narration": {
     "": [
       {
@@ -520,14 +504,6 @@
       {
         "clip": "6545815953425a2174b07934f42c6e4cb42d172288358fbf7565db77e0dab295",
         "ms": 5407
-      }
-    ]
-  },
-  "gemfall-03a/interaction_crossing_prepared/interaction/cue": {
-    "": [
-      {
-        "clip": "1e90824dd9e3afbca0ccc102aba11889d9c83b0d9178e719f32b9c0efadf953b",
-        "ms": 2913
       }
     ]
   },
@@ -560,14 +536,6 @@
       {
         "clip": "6545815953425a2174b07934f42c6e4cb42d172288358fbf7565db77e0dab295",
         "ms": 5407
-      }
-    ]
-  },
-  "gemfall-03a/interaction_ferry/interaction/cue": {
-    "": [
-      {
-        "clip": "0bc60923370f508da24cb3745b75e45b465b9e55e39e0bf0bb5c3e7f19efda3a",
-        "ms": 4007
       }
     ]
   },
@@ -767,14 +735,6 @@
       {
         "clip": "77daec2e1c1653eee65a32f4ed2acd43032a04d54e42e1264a8f90bf90e1f446",
         "ms": 6807
-      }
-    ]
-  },
-  "gemfall-03a/interaction_night_rope/interaction/cue": {
-    "": [
-      {
-        "clip": "2ec22ccd81e218bce19c67ebbca5e9837933ddb22403a277e1a8493356445189",
-        "ms": 4207
       }
     ]
   },

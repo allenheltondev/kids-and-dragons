@@ -29,6 +29,11 @@ function chapter(): Chapter {
 const PARTY = [makeMember({ character: makeCharacter({ species: "unicorn", tier: "fledgling", class: "songkeeper" }) })];
 
 describe("the scenes ahead", () => {
+  it("warms an interaction subject even when the scene does not cast that figure", () => {
+    const content = chapter();
+    content.presentation = { interactions: { scene_clearing: { figure: "entities/pony" } } };
+    expect(chapterAssets(content, [])).toContain("/assets/entities/pony/assembled.png");
+  });
   it("warms the mimic crossing's retreat prop for the persisted escape payoff", () => {
     expect(chapterAssets(gemfall02 as unknown as Chapter, [])).toContain("/assets/entities/mire_mimic/little.png");
   });

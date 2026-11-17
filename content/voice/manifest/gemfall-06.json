@@ -212,14 +212,6 @@
       }
     ]
   },
-  "gemfall-06/interaction_doorstep/interaction/cue": {
-    "": [
-      {
-        "clip": "759fc9cb1bfa4fc66b7b9b9531b3abebd44bc8385c09c8ec88004e7ee3a60dc6",
-        "ms": 3907
-      }
-    ]
-  },
   "gemfall-06/interaction_doorstep/narration": {
     "": [
       {
@@ -630,14 +622,6 @@
       {
         "clip": "ab47549f1c6ae4ca9b5a0fac5aa646c43627f93c067fca4e383b57504ab9a46a",
         "ms": 4107
-      }
-    ]
-  },
-  "gemfall-06/interaction_wagons/interaction/cue": {
-    "": [
-      {
-        "clip": "4fe8ce5e7c546691806907e2e0d6559e043f8d23525d2de0f20cbcd3826318ee",
-        "ms": 4008
       }
     ]
   },

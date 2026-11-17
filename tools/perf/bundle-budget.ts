@@ -402,7 +402,10 @@ const FIRST_PAINT_BUDGET_KB = 336;
 // trivia rules ride in the adventure book's lazy chunks; the 311 questions are
 // fetched content (content/trivia/), never bundled. No new dependency, and the
 // first-paint graph is unchanged at 336KB under its 336KB cap. Keep 3KB of slack.
-const TOTAL_BUDGET_KB = 1910;
+// 1910 -> 1919 for Gemfall alongside the trivia quiz: 1916KB measured.
+// Adds deliberate support/effort controls and weighted team hauling, reusing
+// the crossing and carry renderer. No new dependency; first paint stays 336KB.
+const TOTAL_BUDGET_KB = 1919;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

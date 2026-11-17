@@ -99,14 +99,14 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
     const floes = props.includes("moving-floe");
     const weather = props.find(id => ["water-surge", "icicle-drips", "wind-banner", "roof-slab", "ice-knob"].includes(id));
     body = <>
-      <p className="rift-read">{!active ? prompt.outcome === "success" ? "Across safely." : prompt.outcome === "assisted" ? "A helping hand makes a way." : "Back on safe footing." : safe ? "Enough time. Go!" : open ? "Closing. Wait for the next opening." : "Watch for a long opening."}{active && <span>{game.strain > 0 ? "Recovery: the opening is slower and wider." : "Start while there is time to finish your move."}</span>}</p>
+      <p className="rift-read">{!active ? prompt.outcome === "success" ? spec.setting === "work" ? "Well timed. Safely done." : "Across safely." : prompt.outcome === "assisted" ? "A helping hand makes a way." : "Back on safe footing." : safe ? "Enough time. Go!" : open ? "Closing. Wait for the next opening." : "Watch for a long opening."}{active && <span>{game.strain > 0 ? "Recovery: the opening is slower and wider." : "Start while there is time to finish your move."}</span>}</p>
       <div className={`rift-field rift-field--crossing rift-field--${spec.setting ?? "water"}`} data-open={open} data-safe={safe} data-still={still}>
-        {floes ? <><Prop id="moving-floe" className="rift-floe rift-floe--near" /><Prop id="moving-floe" className="rift-floe rift-floe--far" /></> : <><div className="rift-bank rift-bank--near" /><div className="rift-bank rift-bank--far" /></>}
-        {watcher && spec.setting === "watch" && !weather ? <img className="rift-watcher" src={watcher} alt="" /> : <div className="rift-weather" aria-hidden="true">{weather ? <Prop id={weather} className="rift-weather__painting" /> : <><i /><i /><i /></>}</div>}
+        {spec.setting === "work" ? null : floes ? <><Prop id="moving-floe" className="rift-floe rift-floe--near" /><Prop id="moving-floe" className="rift-floe rift-floe--far" /></> : <><div className="rift-bank rift-bank--near" /><div className="rift-bank rift-bank--far" /></>}
+        {spec.setting === "work" ? null : watcher && spec.setting === "watch" && !weather ? <img className="rift-watcher" src={watcher} alt="" /> : <div className="rift-weather" aria-hidden="true">{weather ? <Prop id={weather} className="rift-weather__painting" /> : <><i /><i /><i /></>}</div>}
         {!floes && props[0] !== weather && <Prop key={props[0]} id={props[0]} className="rift-timing-subject" />}
         {props[1] && props[1] !== weather && props[1] !== "moving-floe" && <Prop key={props[1]} id={props[1]} className="rift-far-prop" />}
-        {hero(actor, "rift-hero rift-hero--crossing", { left: `${15 + Math.min(1, game.progress / skillSteps(prompt, ids)) * 48}%` })}
-        <span className="rift-crossing-path" aria-hidden="true" />
+        {hero(actor, "rift-hero rift-hero--crossing", { left: `${15 + (spec.setting === "work" ? 0 : Math.min(1, game.progress / skillSteps(prompt, ids)) * 48)}%` })}
+        {spec.setting !== "work" && <span className="rift-crossing-path" aria-hidden="true" />}
       </div>
       {active && <><div className="rift-time" role="img" aria-label={safe ? "Enough time to cross" : open ? "Opening is too short now" : "Wait for the opening"}>
         {openings.map((w, i) => <span key={i} className="rift-time__opening" style={{ left: `${w.start * 100}%`, width: `${(w.end - w.start) * 100}%` }} />)}
@@ -124,7 +124,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
     const level = playerId ? prompt.levels?.[playerId] ?? 0 : 0;
     body = <>
       <p className="rift-read">{!active ? prompt.outcome === "success" ? "Delivered safely." : "Back on safe footing." : carry.safe ? "Level. Take a careful step." : !carry.joined ? "Everyone take an end." : carry.tilt > 0 ? "Right end dipping" : "Left end dipping"}<span>{game.progress === 0 ? "Get both ends off the ground." : game.progress === 1 ? "Higher ground under the left end." : "Higher ground under the right end."}</span></p>
-      <div className="rift-field rift-field--carry" data-still={still}>
+      <div className={`rift-field rift-field--carry${game.version === 4 ? " rift-field--cargo" : ""}`} data-still={still}>
         <div className="rift-ground" />
         <div className="rift-beam" style={{ transform: `rotate(${Math.max(-18, Math.min(18, carry.tilt * 35))}deg)` }}>
           <Prop id={props[0]} className="rift-beam__painting" />

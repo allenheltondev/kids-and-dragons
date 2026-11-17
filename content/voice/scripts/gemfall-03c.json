@@ -822,12 +822,12 @@
     ]
   },
   "gemfall-03c/interaction_wagon_level/narration": {
-    "source": "sha256:875be5023ffe4911cd0f17edcd7321cd2490d36409da7833cf737dd0984e47da",
-    "reviewed": true,
+    "source": "sha256:0fe1be1e648ec40f956a08d8af861ccad562b0491c21e6b34520b51af8cc928f",
+    "reviewed": false,
     "lines": [
       {
         "by": "narrator",
-        "text": "The stuck wagon leans hard into its rut. Tap when the marker crosses the gold to give it one good heave. The drover has named the rut."
+        "text": "The stuck wagon leans hard into its rut. Set your support under the wheel, then lift it steadily out. The drover has named the rut."
       },
       {
         "by": "lead_drover",

@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { seedTable, openPhone, openTv, onAir } from "./seed";
 import { roomState } from "./room-state";
 import { API } from "./api";
-import { pullNeeded, pullTarget, type RunState } from "@kad/shared";
+import { haulNeeded, haulTarget, type RunState } from "@kad/shared";
 
 test.use({ actionTimeout: 15_000 });
 
@@ -25,11 +25,11 @@ async function tap(page: Page, name: string | RegExp) {
 }
 async function setPull(page: Page, power: number) {
   await page.bringToFront();
-  const slider = controls(page).getByRole("slider", { name: "Pull strength" });
+  const slider = controls(page).getByRole("slider", { name: "Effort" });
   await slider.scrollIntoViewIfNeeded();
   const box = (await slider.boundingBox())!;
   await slider.click({ position: { x: 8 + (box.width - 16) * power, y: box.height / 2 } });
-  await tap(page, "Set my pull");
+  await tap(page, "Set my effort");
 }
 async function jump(page: Page, sceneId: string) {
   await page.evaluate(async sceneId => {
@@ -42,7 +42,8 @@ async function tvFits(page: Page) {
   await expect.poll(() => board.evaluate(el => {
     const b = el.getBoundingClientRect();
     const problems = el.scrollHeight > el.clientHeight + 1 ? [`board scrolls: ${el.scrollHeight}/${el.clientHeight}`] : [];
-    for (const row of el.querySelectorAll(".skill-scene, .skill-route, .skill-reading, .skill-gauge, .skill-team, .skill-feedback, .skill-strain")) {
+    for (const row of el.querySelectorAll(".skill-scene, .skill-route, .skill-reading, .skill-gauge, .skill-team, .skill-feedback, .skill-strain, .rift-field, .rift-progress, .rift-read, .rift-time, .rift-feedback, .gem-field, .gem-reading, .gem-force, .gem-team")) {
+      if (!row.getClientRects().length) continue;
       const r = row.getBoundingClientRect();
       if (r.top < b.top || r.bottom > b.bottom) problems.push(`${row.className}: ${Math.round(r.top)}–${Math.round(r.bottom)} outside ${Math.round(b.top)}–${Math.round(b.bottom)}`);
     }
@@ -72,25 +73,25 @@ test("7L: friends recover a slipping table on phones and TV", async ({ browser }
     await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
     const hp = (await state()).party.map(p => p.hp);
     let lead = await ready();
-    for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await tap(phone, "Lift my side");
+    for (const [phone, side] of [[one.page, "left"], [two.page, "right"]] as const) for (let n = 0; n < 2; n++) await tap(phone, `Lift ${side} end`);
     await tap(lead, "Take a careful step");
     await expect.poll(progress).toBe(1);
     await tap(lead, "Take a careful step");
-    await expect(controls(one.page)).toContainText("The load dips");
-    expect((await state()).prompt).toMatchObject({ challenge: { progress: 1, strain: .3 } });
+    await expect(controls(one.page)).toContainText("The left end dips");
+    expect((await state()).prompt).toMatchObject({ challenge: { progress: 1, strain: .2 } });
     await two.page.reload();
     await onAir(two.page); await task(two.page);
-    await expect(controls(two.page)).toContainText("The load dips");
+    await expect(controls(two.page)).toContainText("The left end dips");
     await expect(tv.page.getByText("Where you left off", { exact: true })).toBeHidden({ timeout: 20_000 });
     await tvFits(tv.page);
-    await controls(one.page).locator(".skill-scene").scrollIntoViewIfNeeded();
-    await expect(controls(one.page).locator("img.skill-scene__object")).toHaveJSProperty("naturalWidth", 512);
+    await controls(one.page).locator(".rift-field, .gem-field").scrollIntoViewIfNeeded();
+    await expect(controls(one.page).locator("img.rift-beam__painting")).toHaveJSProperty("naturalWidth", 512);
     await one.page.screenshot({ path: info.outputPath("table-phone-320.png") });
     await tv.page.screenshot({ path: info.outputPath("table-tv.png") });
-    for (const phone of [one.page, two.page]) await tap(phone, "Lift my side");
+    await tap(one.page, "Lift left end");
     await tap(lead, "Take a careful step");
     await expect.poll(progress).toBe(2);
-    for (const phone of [one.page, two.page]) for (let n = 0; n < 2; n++) await tap(phone, "Lower my side");
+    for (let n = 0; n < 2; n++) await tap(one.page, "Ease left end");
     await tap(lead, "Take a careful step");
     await tap(lead, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("choice_the_rule");
@@ -119,27 +120,47 @@ test("7L: friends compensate their wagon pulls on phones and TV", async ({ brows
   try {
     await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
     const lead = await ready();
-    await setPull(one.page, .3);
-    await expect(controls(one.page).getByRole("button", { name: "Waiting for the team" })).toBeDisabled();
+    await expect(controls(lead)).toHaveClass(/game--active/);
+    const attempt = (await state()).prompt;
+    if (attempt?.kind !== "interaction") throw Error("Expected the shared wagon pull");
+    const help = controls(lead).locator("details.game__help");
+    await help.locator("summary").click();
+    await help.getByRole("button", { name: "Start this attempt again", exact: true }).click();
+    await expect.poll(async () => (await state()).prompt).toMatchObject({ phase: "ready", attempt: attempt.attempt + 1 });
+    await expect(controls(lead)).toHaveClass(/game--ready/);
+    const readyHelp = controls(lead).locator("details.game__help");
+    if (!await readyHelp.getByRole("checkbox", { name: /Relaxed play/ }).isVisible()) await readyHelp.locator("summary").click();
+    await readyHelp.getByRole("checkbox", { name: /Relaxed play/ }).check();
+    await ready();
+    await expect.poll(async () => (await state()).prompt).toMatchObject({ phase: "active", relaxed: true });
+    await setPull(one.page, 0);
+    await expect(controls(two.page).locator(".gem-force__safe")).toHaveCount(0);
+    await expect(controls(two.page)).toContainText("Aster must revise their 0% effort");
+    await expect(controls(two.page).locator(".gem-force")).toHaveAttribute("aria-label", /no safe effort/);
+    await controls(one.page).getByRole("slider", { name: "Effort", exact: true }).fill("30");
+    await tap(one.page, "Revise my effort");
+    await expect(controls(two.page).locator(".gem-force__safe")).toHaveCount(1);
+    await expect(controls(two.page)).not.toContainText("must revise their 0% effort");
+    await expect(controls(one.page).getByRole("button", { name: "Your effort is set" })).toBeDisabled();
     const shared = (await state()).prompt;
     if (shared?.kind !== "interaction") throw Error("Expected the shared wagon pull");
-    const needed = pullNeeded(shared, shared.playerIds);
-    expect(needed).toBeGreaterThan(pullTarget(shared));
-    await expect(controls(two.page).getByRole("img", { name: /Safe pull:/ })).toHaveAttribute("aria-label", `Safe pull: ${Math.round((needed - .13) * 100)} to ${Math.round((needed + .13) * 100)} percent`);
+    const needed = haulNeeded(shared, shared.playerIds, table.phones[1]!.playerId);
+    expect(needed).toBeGreaterThan(haulTarget(shared));
+    await expect(controls(two.page).getByRole("img", { name: /Effort .*; safe effort/ })).toHaveAttribute("aria-label", `Effort 20 percent; safe effort ${Math.round(needed * 100)} percent`);
     await two.page.screenshot({ path: info.outputPath("wagon-compensation-phone.png") });
     await setPull(two.page, .5);
     await expect.poll(progress).toBe(1);
     for (const phone of [one.page, two.page]) await setPull(phone, 1);
-    await expect(controls(one.page)).toContainText("A sharp jerk");
+    await expect(controls(one.page)).toContainText("The cords strain");
     expect((await state()).prompt).toMatchObject({ challenge: { progress: 1 } });
     await two.page.reload(); await onAir(two.page); await task(two.page);
-    await expect(controls(two.page)).toContainText("A sharp jerk");
+    await expect(controls(two.page)).toContainText("The cords strain");
     for (const page of [one.page, two.page, tv.page]) {
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.evaluate(() => { document.documentElement.dataset.motion = "reduced"; });
     }
     await expect(controls(one.page).locator(".skill-rope-drag")).toHaveCount(0);
-    await controls(one.page).locator(".skill-scene").scrollIntoViewIfNeeded();
+    await controls(one.page).locator(".rift-field, .gem-field").scrollIntoViewIfNeeded();
     await one.page.screenshot({ path: info.outputPath("wagon-phone-320.png") });
     await tv.page.evaluate(async () => { document.documentElement.dataset.text = "largest"; await document.fonts.ready; });
     await tv.page.screenshot({ path: info.outputPath("wagon-tv-largest.png") });
@@ -169,10 +190,11 @@ test("7L: rough box dashes cost health and a failed wagon brace withholds the st
     await phone.page.evaluate(() => { document.documentElement.dataset.motion = "reduced"; });
     const hp = (await state()).party[0]!.hp;
     await tap(phone.page, /ready/);
-    const aim = controls(phone.page).getByRole("slider", { name: "Aim at the gold" });
+    const aim = controls(phone.page).getByRole("slider", { name: "Crossing moment" });
     await aim.press("Home");
     await tap(phone.page, "Dash!");
-    await expect(controls(phone.page)).toContainText("A rough landing");
+    await expect(controls(phone.page)).toContainText("Too soon");
+    await tap(phone.page, "Dash!");
     await tap(phone.page, "Dash!");
     await tap(phone.page, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("scene_box_crawlers");
@@ -180,7 +202,7 @@ test("7L: rough box dashes cost health and a failed wagon brace withholds the st
     await jump(phone.page, "interaction_tether_team"); await task(phone.page);
     await tap(phone.page, /ready/);
     await setPull(phone.page, 1);
-    await expect(controls(phone.page)).toContainText("A sharp jerk");
+    await expect(controls(phone.page)).toContainText("The cords strain");
     await setPull(phone.page, 1);
     await tap(phone.page, "See what happens next");
     await expect.poll(async () => (await state()).sceneId).toBe("scene_tether_slips");

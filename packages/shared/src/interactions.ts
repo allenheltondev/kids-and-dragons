@@ -1,7 +1,7 @@
 /** Reusable story mechanics. All completion and branching is decided by the engine. */
 export type InteractionSpec =
-  | { kind: "precision"; cue: string; actionLabel: string; target: number; width: number; periodMs: number }
-  | { kind: "timing"; cue: string; actionLabel: string; target: number; width: number; periodMs: number; durationMs?: number; setting?: "water" | "wind" | "rift" | "shelter" | "watch" }
+  | { kind: "precision"; cue: string; actionLabel: string; target: number; width: number; periodMs: number; handling?: "lift" | "press" | "tension" | "hum" }
+  | { kind: "timing"; cue: string; actionLabel: string; target: number; width: number; periodMs: number; durationMs?: number; setting?: "water" | "wind" | "rift" | "shelter" | "watch" | "work" }
   | { kind: "tracking"; cue: string; actionLabel: string; covers: string[]; start: number; swaps: [number, number][]; stepMs: number }
   | { kind: "memory"; cue: string; actionLabel: string; options: InteractionOption[]; answer: string[]; stepMs: number }
   | { kind: "balance"; cue: string; actionLabel: string; objectLabel: string }
@@ -58,14 +58,14 @@ export interface InteractionPrompt {
 }
 
 export type InteractionAction =
-  | { action: "start"; relaxed: boolean; rulesVersion?: 2 | 3 }
-  | { action: "commit"; round: number; rulesVersion?: 3; position?: number; angle?: number; answer?: string[]; testOnly?: boolean }
-  | { action: "arrange"; round: number; rulesVersion?: 3; answer: string[] }
+  | { action: "start"; relaxed: boolean; rulesVersion?: 2 | 3 | 4 }
+  | { action: "commit"; round: number; rulesVersion?: 3 | 4; position?: number; angle?: number; answer?: string[]; testOnly?: boolean }
+  | { action: "arrange"; round: number; rulesVersion?: 3 | 4; answer: string[] }
   | { action: "stop"; position: number }
   | { action: "support"; mode: "hold" | "prop" | "release" }
   | { action: "complete" }
   | { action: "answer"; answer: string[] }
-  | { action: "adjust"; direction: "up" | "down"; steps?: number; round?: number; rulesVersion?: 3 }
+  | { action: "adjust"; direction: "up" | "down"; steps?: number; round?: number; rulesVersion?: 3 | 4 }
   | ({ action: "catch" } & Partial<import("./relay.js").RelayCatchInput>)
   | ({ action: "pass" } & Partial<import("./relay.js").RelayThrowInput>)
   | { action: "play"; optionId: string }
@@ -229,7 +229,7 @@ export function skillCompletions(prompt: InteractionPrompt): Record<string, numb
 
 export function interactionActor(prompt: InteractionPrompt, connected: readonly string[]): string | undefined {
   if (prompt.challenge && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing")) {
-    if (prompt.challenge.version === 3) {
+    if ((prompt.challenge.version ?? 0) >= 3) {
       const roster = prompt.challenge.participants ?? prompt.playerIds;
       const start = Math.max(0, roster.indexOf(prompt.actorId));
       for (let offset = 0; offset < roster.length; offset++) {

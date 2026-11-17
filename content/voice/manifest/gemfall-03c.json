@@ -83,14 +83,6 @@
       }
     ]
   },
-  "gemfall-03c/check_block_jumpers/interaction/cue": {
-    "": [
-      {
-        "clip": "64639298390e3b01bf7c028fd9ad101832353ae0787f24f6ae1c44828557f460",
-        "ms": 4407
-      }
-    ]
-  },
   "gemfall-03c/check_block_jumpers/narration": {
     "": [
       {
@@ -240,14 +232,6 @@
       {
         "clip": "e89da6d643e6e08a0f7b4b9355f3885507288864955a0e503e273821fbf1eb6b",
         "ms": 3707
-      }
-    ]
-  },
-  "gemfall-03c/check_goat_chase/interaction/cue": {
-    "": [
-      {
-        "clip": "84a226d8fde7fe68860a9fd95f19013e650700a5c201e7dfcf3ec0bf0edce41c",
-        "ms": 1993
       }
     ]
   },
@@ -836,14 +820,6 @@
       }
     ]
   },
-  "gemfall-03c/interaction_bracken_crossing/interaction/cue": {
-    "": [
-      {
-        "clip": "c58d92a38a5271ac3cf97297e53420ab74877cfe2cb9e8be49f5fc196d1c9a65",
-        "ms": 3407
-      }
-    ]
-  },
   "gemfall-03c/interaction_bracken_crossing/narration": {
     "": [
       {
@@ -881,14 +857,6 @@
       {
         "clip": "3a80f0a6ee95e3be435b4a038c58a544aa1a617632ad18cbcd2fc05b4a15309e",
         "ms": 11107
-      }
-    ]
-  },
-  "gemfall-03c/interaction_clear_lane/interaction/cue": {
-    "": [
-      {
-        "clip": "8332fb109f70dfa5b47b098fbc3e47082ecd2acec9225987138db754b76a912a",
-        "ms": 2843
       }
     ]
   },
@@ -1018,14 +986,6 @@
       }
     ]
   },
-  "gemfall-03c/interaction_soup_bowls/interaction/cue": {
-    "": [
-      {
-        "clip": "7c29b3b154be8b8d03611c8c9108c825c0cc125485900bce6c8a0482f80c4ea4",
-        "ms": 2256
-      }
-    ]
-  },
   "gemfall-03c/interaction_soup_bowls/narration": {
     "": [
       {
@@ -1076,14 +1036,6 @@
       }
     ]
   },
-  "gemfall-03c/interaction_surge_brace/interaction/cue": {
-    "": [
-      {
-        "clip": "e91fc803ad739138ba95e2c6fc522184d0378c7bd343b04f6a38aca3be443e7c",
-        "ms": 2916
-      }
-    ]
-  },
   "gemfall-03c/interaction_surge_brace/narration": {
     "": [
       {
@@ -1113,32 +1065,6 @@
       {
         "clip": "7b0882adb1fbcde11e6006fde5948f88bd895cf144261b140eeb90779b17ef72",
         "ms": 4807
-      }
-    ]
-  },
-  "gemfall-03c/interaction_wagon_level/interaction/cue": {
-    "": [
-      {
-        "clip": "8dbd8f81efda946cb7787a0b32afbe5b1133cecaa27503a20dc12c54c7cbb9e6",
-        "ms": 1964
-      }
-    ]
-  },
-  "gemfall-03c/interaction_wagon_level/narration": {
-    "": [
-      {
-        "clip": "2f78f7e71bd04ae8ba67478a8230a28c932a1986ef4891d31b919f11c2441d3b",
-        "ms": 8807
-      },
-      {
-        "clip": "3f1cc9a8bcc8c8be999f7428101c473d4210477f09f60b3c0fdba007918a786b",
-        "ms": 4607,
-        "by": "lead_drover",
-        "figure": "entities/centaur",
-        "names": [
-          "Lead Drover",
-          "Drover"
-        ]
       }
     ]
   },

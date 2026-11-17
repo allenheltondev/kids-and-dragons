@@ -1,10 +1,12 @@
 import { aimWidth, edgeScale, interactionActor, skillCompletions, playbackOver, precisionSuccess, trackedCover, type InteractionAction, type InteractionPrompt } from "./interactions.js";
+import { applyGemfallAction } from "./gemfall-games.js";
 import { applyRiftlightAction } from "./riftlight-games.js";
 
 /** A round identifies the situation being acted on, including a recovery. */
 export interface SkillChallenge {
-  /** Missing on older saved attempts: their rules stay unchanged. */
-  version?: 3;
+  /** v3: Riftlight throws/crossings/carries; v4: Gemfall steady work/hauling.
+   * Missing on older saved attempts: their rules stay unchanged. */
+  version?: 3 | 4;
   lastAngle?: number;
   lastThrow?: { landing: number; peak: number; good: boolean };
   participants?: string[];
@@ -23,8 +25,8 @@ export function skillStart(participants?: readonly string[]): SkillChallenge {
   return { participants: participants ? [...participants] : undefined, round: 0, progress: 0, strain: 0, feedback: "", pulls: {}, arrangement: [], matched: 0, excluded: [] };
 }
 export function skillSteps(prompt: InteractionPrompt, connected?: readonly string[]): number {
-  if (prompt.challenge?.version === 3 && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing")) {
-    return Math.max(2, prompt.challenge.participants?.length ?? prompt.playerIds.length);
+  if ((prompt.challenge?.version ?? 0) >= 3 && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing")) {
+    return Math.max(2, prompt.challenge?.participants?.length ?? prompt.playerIds.length);
   }
   if (prompt.spec.kind === "precision" || prompt.spec.kind === "timing") {
     const roster = prompt.challenge?.participants ?? prompt.playerIds;
@@ -62,7 +64,8 @@ const unit = (n: unknown): n is number => typeof n === "number" && Number.isFini
 export function applySkillAction(prompt: InteractionPrompt, connected: readonly string[], playerId: string,
   action: InteractionAction, now: string): "success" | "failure" | undefined {
   const game = prompt.challenge!;
-  if (game.version === 3 && ["precision", "timing", "balance"].includes(prompt.spec.kind)) return applyRiftlightAction(prompt, connected, playerId, action, now);
+  if (game.version === 4 && ["precision", "cooperate"].includes(prompt.spec.kind)) return applyGemfallAction(prompt, connected, playerId, action);
+  if ((game.version ?? 0) >= 3 && ["precision", "timing", "balance"].includes(prompt.spec.kind)) return applyRiftlightAction(prompt, connected, playerId, action, now);
   const spec = prompt.spec;
   const lead = interactionActor(prompt, connected);
   if (action.action === "adjust" && spec.kind === "balance") {
@@ -149,7 +152,7 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
     while (matched < answer.length && answer[matched] === spec.answer[matched]) matched++;
     game.matched = matched; game.arrangement = [...answer];
     if (spec.kind === "sequence") {
-      if (game.version === 3 && action.testOnly) {
+      if ((game.version ?? 0) >= 3 && action.testOnly) {
         if (answer.length !== spec.answer.length) throw Error("Put the whole plan together before testing.");
         const responding = answer.filter((id, i) => id === spec.answer[i]).length;
         game.matched = responding === spec.answer.length ? responding : 0;

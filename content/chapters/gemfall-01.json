@@ -2776,11 +2776,13 @@
       "narration": "The letters are drifting toward the canal! A post clerk runs beside you with a ladle. Wait until a letter floats close, then grab it.",
       "interaction": {
         "kind": "timing",
-        "cue": "Grab the letter when the marker reaches the gold beside the canal.",
+        "cue": "Read the gold interval. Start with enough time to grab.",
         "actionLabel": "Grab!",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 4000
+        "periodMs": 4000,
+        "setting": "work",
+        "durationMs": 600
       },
       "onSuccess": {
         "goto": "scene_gull_dive",
@@ -3023,7 +3025,7 @@
       "narration": "Everything goes on a carrying board, even a fishbowl. Raise or lower your side until it is level. The fish is counting on you.",
       "interaction": {
         "kind": "balance",
-        "cue": "Adjust your lift as the board shifts, then take each careful step.",
+        "cue": "Take an end of the load. Adjust your own end as the ground changes, then step when it is level.",
         "actionLabel": "Carry the bags",
         "objectLabel": "The family's bags and fishbowl"
       },

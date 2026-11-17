@@ -88,6 +88,7 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
       urls.add("/assets/ui/relay/catching-hands.webp");
       urls.add("/assets/story-props/rope-basket.webp");
     }
+    if (appearance?.figure) { const figure = castArtUrl(appearance.figure); if (figure) urls.add(figure); }
     for (const prop of appearance?.props ?? []) urls.add(`/assets/story-props/${prop}.webp`);
     for (const icon of appearance?.coverIcons ?? []) urls.add(`/assets/story-props/${icon}.webp`);
     for (const prop of Object.values(appearance?.optionProps ?? {})) urls.add(`/assets/story-props/${prop}.webp`);
