@@ -1,0 +1,64 @@
+{
+  "$schema": "../../schemas/trivia-ladder.schema.json",
+  "$comment": "The Field Guide quiz's ladder (docs/trivia.md §5): questions mastered, per kid, across every hero. Each rung grants once and is never taken back. A title here must be a look in content/looks.json with unlock { \"from\": \"trivia\", \"rung\": <at> }. Owed art, not shipped until it is drawn: the tent decorations deco_quiz_bookmark (10), deco_quiz_lamp (80) and deco_quiz_bookshelf (175), the nameplate frames Scroll (50) and Gilded Scroll (220), and the special Inkglow (120). The 80 rung gives only a decoration, so it waits for its art and is left out until then. The first-try track gives badges only.",
+  "rungs": [
+    {
+      "at": 10,
+      "badge": {
+        "id": "trivia-10",
+        "name": "Curious Reader",
+        "blurb": "Ten questions right. The Field Guide is starting to stick."
+      }
+    },
+    {
+      "at": 25,
+      "title": "the_learned"
+    },
+    {
+      "at": 50,
+      "badge": {
+        "id": "trivia-50",
+        "name": "Lore Hound",
+        "blurb": "Fifty questions right. You sniff out the answer every time."
+      }
+    },
+    {
+      "at": 120,
+      "badge": {
+        "id": "trivia-120",
+        "name": "Sage of the Guide",
+        "blurb": "A hundred and twenty right! Grown-ups ask you about monsters now."
+      }
+    },
+    {
+      "at": 175,
+      "title": "the_well_read"
+    },
+    {
+      "at": 220,
+      "badge": {
+        "id": "trivia-220",
+        "name": "Keeper of Every Page",
+        "blurb": "Two hundred and twenty right. You could have written the Field Guide."
+      }
+    }
+  ],
+  "firstTry": [
+    {
+      "at": 25,
+      "badge": {
+        "id": "trivia-first-25",
+        "name": "Sharp Memory",
+        "blurb": "Twenty-five right on the very first try."
+      }
+    },
+    {
+      "at": 100,
+      "badge": {
+        "id": "trivia-first-100",
+        "name": "Never Forgets",
+        "blurb": "A hundred right on the first try. Nothing slips past you."
+      }
+    }
+  ]
+}

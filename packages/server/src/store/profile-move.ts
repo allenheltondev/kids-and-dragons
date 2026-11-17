@@ -44,6 +44,9 @@ export interface StoredRow {
   GSI1SK?: string;
   ttl?: number;
   v?: number;
+  /** On her `PLAYER#` row: her quiz record and its revision (docs/trivia.md §6.1), carried as they are. */
+  trivia?: unknown;
+  triviaRev?: number;
   entity: string;
   data: unknown;
 }
@@ -73,8 +76,12 @@ export type MoveStep =
    * pointer is one more way to gain a household, so it is fenced like the rest.
    */
   | { op: "account-open"; cognitoSub: string }
-  /** Gone from the old home, if it is still exactly the row read. */
-  | { op: "delete"; PK: string; SK: string; data: unknown }
+  /**
+   * Gone from the old home, if it is still exactly the row read. `triviaRev`
+   * (her profile row only): her quiz record is still at the revision read, so
+   * a quiz answer landing mid-move is never carried away stale.
+   */
+  | { op: "delete"; PK: string; SK: string; data: unknown; triviaRev?: number }
   /**
    * Written in the new home, where nothing has that key yet (`ifAbsent`). A
    * forward is the one row written over whatever is there: she may have moved
@@ -132,7 +139,7 @@ export function planMove(input: MoveProfileInput): MoveStep[] | null {
   // is the reason this exists, and "taken off the list" was the group's word.
   const { retired: _left, ...profile } = rows.player.data as { retired?: true };
   steps.push(
-    { op: "delete", PK: rows.player.PK, SK: rows.player.SK, data: rows.player.data },
+    { op: "delete", PK: rows.player.PK, SK: rows.player.SK, data: rows.player.data, triviaRev: rows.player.triviaRev ?? 0 },
     {
       op: "put",
       item: { ...rows.player, PK: HH(to), SK: PLAYER_SK(move.player.id), data: { ...profile, householdId: to } },

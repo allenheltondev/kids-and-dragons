@@ -1,0 +1,1507 @@
+{
+  "$schema": "../../schemas/trivia.schema.json",
+  "$comment": "Field Guide quiz questions about the creature pages (creature.*) (docs/trivia.md §3). Authored, never generated: `npm run trivia:draft -- <entry id>` proposes drafts to edit. Checked by `npm run content:validate` (tools/content/trivia-bank.mjs).",
+  "questions": [
+    {
+      "id": "creature.bone_crawler.shell",
+      "entry": "creature.bone_crawler",
+      "ask": "What does a bone crawler build its shell from?",
+      "answer": "Old fossil pieces",
+      "wrong": [
+        "River pebbles",
+        "Other crawlers' claws",
+        "Broken pots",
+        "Dragon scales",
+        "Woven seaweed"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.bone_crawler.outgrown",
+      "entry": "creature.bone_crawler",
+      "ask": "What happens when a bone crawler outgrows its shell?",
+      "answer": "A younger crawler moves in",
+      "wrong": [
+        "It eats the old shell",
+        "It buries the shell in the sand",
+        "It breaks the shell into spirals",
+        "It wears two shells at once",
+        "It gives the shell to the sea"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.bone_crawler.swarm",
+      "entry": "creature.bone_crawler",
+      "ask": "A swarm of bone crawlers rushes at your pack. What are they after?",
+      "answer": "Something in it humming with magic",
+      "wrong": [
+        "Your lunch",
+        "A warm place to sleep",
+        "Your shiny buttons",
+        "Your spare socks",
+        "A new shell to live in"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.bone_crawler.tip",
+      "entry": "creature.bone_crawler",
+      "ask": "How can you get a swarm of bone crawlers off you?",
+      "answer": "Throw the glowing thing somewhere you are not",
+      "wrong": [
+        "Stand very still and quiet",
+        "Offer them some fish",
+        "Hum them a lullaby",
+        "Splash them with seawater",
+        "Crouch down and look small"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.bone_crawler.hook",
+      "entry": "creature.bone_crawler",
+      "ask": "Which creature is a hermit crab that moved into history?",
+      "answer": "Bone Crawler",
+      "wrong": [
+        "Glassback Crab",
+        "Mire Mimic",
+        "Echo Hunter",
+        "Silver Otter",
+        "Restless Remains"
+      ],
+      "also": [
+        "creature.glassback_crab",
+        "creature.mire_mimic",
+        "creature.echo_hunter",
+        "creature.silver_otter",
+        "creature.restless_remains"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.cinder_wolf.coat",
+      "entry": "creature.cinder_wolf",
+      "ask": "What do cinder wolves carry under their coats?",
+      "answer": "A warm glow, like a hearth",
+      "wrong": [
+        "Spare bones for winter",
+        "Stolen gemstones",
+        "Their sleeping cubs",
+        "Frost from the mountain",
+        "Seeds for the spring"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cinder_wolf.roads",
+      "entry": "creature.cinder_wolf",
+      "ask": "Why do cinder wolf packs end up on the roads?",
+      "answer": "The mountain grumbled and the prey moved",
+      "wrong": [
+        "They love to chase caravans",
+        "They are guarding a hidden den",
+        "They follow the smell of soup",
+        "They want to race travelers",
+        "They are hunting for treasure"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cinder_wolf.tip",
+      "entry": "creature.cinder_wolf",
+      "ask": "A cinder wolf pack is on your road. What is the best idea?",
+      "answer": "Give them easier prey somewhere else",
+      "wrong": [
+        "Run, since wolves are slow",
+        "Feed one so the pack goes tame",
+        "Light a big fire to scare them",
+        "Sing them to sleep",
+        "Hide in the tall grass"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cinder_wolf.sleep",
+      "entry": "creature.cinder_wolf",
+      "ask": "How does a pack of cinder wolves sleep?",
+      "answer": "Piled up together in a stack",
+      "wrong": [
+        "Alone, in separate caves",
+        "Curled in pools of lava",
+        "Up in the branches of trees",
+        "Buried in deep snow",
+        "In a long line beside the road"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cinder_wolf.howl",
+      "entry": "creature.cinder_wolf",
+      "ask": "What do cinder wolves howl at, in long complaints?",
+      "answer": "The mountain",
+      "wrong": [
+        "The moon",
+        "The river",
+        "Passing caravans",
+        "The stars",
+        "The wind"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cloud_whale.sing",
+      "entry": "creature.cloud_whale",
+      "ask": "When do cloud whales sing?",
+      "answer": "Near storms",
+      "wrong": [
+        "At sunrise",
+        "When they are hungry",
+        "Only at midnight",
+        "When they land",
+        "On their birthdays"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cloud_whale.navigators",
+      "entry": "creature.cloud_whale",
+      "ask": "What do kitsune navigators do with cloud whale songs?",
+      "answer": "Write them down and steer by them",
+      "wrong": [
+        "Sing them to sleepy babies",
+        "Sell them at the market",
+        "Use them to call up storms",
+        "Teach them to the fish",
+        "Cover their ears until they stop"
+      ],
+      "also": [
+        "character.kitsune"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cloud_whale.fliers",
+      "entry": "creature.cloud_whale",
+      "ask": "What do cloud whales let smaller fliers do?",
+      "answer": "Rest in the calm behind their fins",
+      "wrong": [
+        "Drink rain from their spouts",
+        "Nest inside their mouths",
+        "Race them through the clouds",
+        "Ride on their noses to the moon",
+        "Pick the bugs off their backs"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cloud_whale.remember",
+      "entry": "creature.cloud_whale",
+      "ask": "How long does a cloud whale remember a traveler it has met?",
+      "answer": "For decades",
+      "wrong": [
+        "For one afternoon",
+        "Until the next storm",
+        "For a single day",
+        "It never remembers anyone",
+        "Until it falls asleep"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.cloud_whale.hook",
+      "entry": "creature.cloud_whale",
+      "ask": "Which creature is too big to land, and too gentle to mind?",
+      "answer": "Cloud Whale",
+      "wrong": [
+        "Legend Dragon",
+        "Reefglider",
+        "Mosshorn",
+        "Frost Wyrm",
+        "Kavari"
+      ],
+      "also": [
+        "creature.legend_dragon",
+        "creature.reefglider",
+        "creature.mosshorn",
+        "creature.frost_wyrm",
+        "creature.kavari"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.echo_hunter.sense",
+      "entry": "creature.echo_hunter",
+      "ask": "How does an echo hunter find its way in the dark?",
+      "answer": "By listening to sound",
+      "wrong": [
+        "By its sharp eyes",
+        "By smell",
+        "By feeling the heat of things",
+        "By tasting the air",
+        "By following a map",
+        "By its glowing whiskers"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.echo_hunter.scare",
+      "entry": "creature.echo_hunter",
+      "ask": "How do you make an echo hunter back away?",
+      "answer": "Make lots of noises at once",
+      "wrong": [
+        "Make one sound over and over",
+        "Shine a bright light at it",
+        "Throw food down the tunnel",
+        "Wave your arms at it",
+        "Sing it a slow song"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.echo_hunter.approach",
+      "entry": "creature.echo_hunter",
+      "ask": "How should you come near an echo hunter, so it files you as known?",
+      "answer": "Making steady, unhurried sounds",
+      "wrong": [
+        "Running and shouting",
+        "Carrying a bright lantern",
+        "Banging two pots together",
+        "Crawling on your belly",
+        "Whistling a quick tune"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.echo_hunter.reread",
+      "entry": "creature.echo_hunter",
+      "ask": "What does an echo hunter do in its favorite chambers?",
+      "answer": "Listens again, like rereading a good book",
+      "wrong": [
+        "Paints pictures on the walls",
+        "Hides its treasure there",
+        "Sleeps all winter long",
+        "Hunts for glowing crystals",
+        "Sings to its babies"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.echo_hunter.hook",
+      "entry": "creature.echo_hunter",
+      "ask": "Which creature has never seen anything, yet knows the tunnels best?",
+      "answer": "Echo Hunter",
+      "wrong": [
+        "Frost Wyrm",
+        "Mire Mimic",
+        "Bone Crawler",
+        "Glassback Crab",
+        "Kavari"
+      ],
+      "also": [
+        "creature.frost_wyrm",
+        "creature.mire_mimic",
+        "creature.bone_crawler",
+        "creature.glassback_crab",
+        "creature.kavari"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.embermoth.warning",
+      "entry": "creature.embermoth",
+      "ask": "What can a settling swarm of embermoths warn you about?",
+      "answer": "The mountain is about to erupt",
+      "wrong": [
+        "A storm coming in from the sea",
+        "Wolves close by",
+        "An avalanche on the peaks",
+        "A flood in the valley",
+        "Winter coming early"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.embermoth.fear",
+      "entry": "creature.embermoth",
+      "ask": "What is the one thing an embermoth is afraid of?",
+      "answer": "Anything that stamps",
+      "wrong": [
+        "Bright lanterns",
+        "Cold water",
+        "Loud singing",
+        "Big dragons",
+        "Strong wind",
+        "Children"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.embermoth.wisp",
+      "entry": "creature.embermoth",
+      "ask": "Why do embermoths dislike will-o'-wisps?",
+      "answer": "Their light has no heat in it",
+      "wrong": [
+        "They steal the moths' lanterns",
+        "They are far too loud",
+        "They eat moth eggs",
+        "They burn the moths' wings",
+        "They block the warm cracks"
+      ],
+      "also": [
+        "creature.will_o_wisp"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.embermoth.lantern",
+      "entry": "creature.embermoth",
+      "ask": "What do embermoths do around a traveler's lantern?",
+      "answer": "Crowd it in a polite ring",
+      "wrong": [
+        "Fly straight into the flame",
+        "Blow it out with their wings",
+        "Carry it away",
+        "Hide from its light",
+        "Cover it in gray dust"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.embermoth.hook",
+      "entry": "creature.embermoth",
+      "ask": "Which creature shows the mountain's mood on small gray wings?",
+      "answer": "Embermoth",
+      "wrong": [
+        "Kavari",
+        "Cinder Wolf",
+        "Will-o'-Wisp",
+        "Reefglider",
+        "Glassback Crab"
+      ],
+      "also": [
+        "creature.kavari",
+        "creature.cinder_wolf",
+        "creature.will_o_wisp",
+        "creature.reefglider",
+        "creature.glassback_crab"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.frost_wyrm.tunnels",
+      "entry": "creature.frost_wyrm",
+      "ask": "Where does a frost wyrm dig its tunnels?",
+      "answer": "Deep in the old ice",
+      "wrong": [
+        "Under warm sand",
+        "Inside hollow trees",
+        "In the muddy riverbank",
+        "Beneath the marsh",
+        "Through hot volcano rock"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.frost_wyrm.tip",
+      "entry": "creature.frost_wyrm",
+      "ask": "A frost wyrm is after you. How do you make it stop?",
+      "answer": "Get out of its tunnel",
+      "wrong": [
+        "Hide deeper in its tunnel",
+        "Fight until it gets tired",
+        "Offer it a fish",
+        "Light a fire in the tunnel",
+        "Lie down and play dead",
+        "Shout as loud as you can"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.frost_wyrm.grudge",
+      "entry": "creature.frost_wyrm",
+      "ask": "Does a frost wyrm hold a grudge after you leave?",
+      "answer": "No, it takes no notes",
+      "wrong": [
+        "Yes, for a hundred years",
+        "Yes, it follows you home",
+        "Only if you took something",
+        "Yes, until the spring thaw",
+        "Yes, it tells the other wyrms"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.frost_wyrm.singing",
+      "entry": "creature.frost_wyrm",
+      "ask": "Why does a frost wyrm coil beneath the yetis' singing halls?",
+      "answer": "To feel the low notes through the ice",
+      "wrong": [
+        "To keep the halls warm",
+        "To steal their food",
+        "To guard them from danger",
+        "To dig its way inside",
+        "To sleep through the noise"
+      ],
+      "also": [
+        "npc.yeti"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.frost_wyrm.polish",
+      "entry": "creature.frost_wyrm",
+      "ask": "What does a frost wyrm polish its tunnel walls with?",
+      "answer": "Its ridged scales",
+      "wrong": [
+        "Its long tongue",
+        "Snow and sand",
+        "Its icy breath",
+        "Its sharp claws",
+        "Chunks of glacier"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.glassback_crab.shell",
+      "entry": "creature.glassback_crab",
+      "ask": "What does a glassback crab's shell do?",
+      "answer": "Shows the colors around it",
+      "wrong": [
+        "Glows in the dark",
+        "Sings when the wind blows",
+        "Grows little flowers",
+        "Gets hot when the crab is angry",
+        "Makes a loud cracking sound"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.glassback_crab.warning",
+      "entry": "creature.glassback_crab",
+      "ask": "What does a glassback crab do before it charges?",
+      "answer": "Gives one warning",
+      "wrong": [
+        "Buries itself in the sand",
+        "Calls the other crabs",
+        "Blows a stream of bubbles",
+        "Hides inside its shell",
+        "Spins in a circle"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.glassback_crab.escape",
+      "entry": "creature.glassback_crab",
+      "ask": "How do you get a glassback crab to stop chasing you?",
+      "answer": "Get off its warm ground",
+      "wrong": [
+        "Give it a gemstone",
+        "Splash it with cold water",
+        "Stand still and wait",
+        "Shout its name",
+        "Throw it a fish"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.glassback_crab.miners",
+      "entry": "creature.glassback_crab",
+      "ask": "Why do treasure hunters keep trying to mine glassback crabs?",
+      "answer": "Their shells shine like gemstones",
+      "wrong": [
+        "They hide gold in their burrows",
+        "Their claws are made of silver",
+        "They sleep on piles of coins",
+        "Their eggs are worth a fortune",
+        "They guard old dragon hoards"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.glassback_crab.borders",
+      "entry": "creature.glassback_crab",
+      "ask": "How do neighbor glassback crabs settle their borders each year?",
+      "answer": "They face each other for a whole day",
+      "wrong": [
+        "They race to the river",
+        "They have a claw-snapping fight",
+        "They trade their mineral gardens",
+        "They stack rocks into towers",
+        "They dig a long ditch"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.jackalope.roads",
+      "entry": "creature.jackalope",
+      "ask": "How does a jackalope think of the realm's roads?",
+      "answer": "As its own racetrack",
+      "wrong": [
+        "As a place to nap",
+        "As a danger to stay away from",
+        "As a good place to dig burrows",
+        "As a market for trading",
+        "As a way home"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.jackalope.contest",
+      "entry": "creature.jackalope",
+      "ask": "What do jackalopes have antler-hooking contests over?",
+      "answer": "Windfall apples",
+      "wrong": [
+        "Shiny pebbles",
+        "Carrots",
+        "Acorns",
+        "Clover flowers",
+        "Pinecones"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.jackalope.warren",
+      "entry": "creature.jackalope",
+      "ask": "A jackalope warren lets you come close. What does that tell you?",
+      "answer": "The neighborhood is safe",
+      "wrong": [
+        "A storm is coming",
+        "Wolves are close by",
+        "They want your food",
+        "The road ahead is closed",
+        "They are about to race"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.jackalope.kitsune",
+      "entry": "creature.jackalope",
+      "ask": "Why don't jackalopes like the kitsune?",
+      "answer": "They raced one, and it was really three",
+      "wrong": [
+        "They always cheat at cards",
+        "They step on the burrows",
+        "They are much too slow",
+        "They never share their apples",
+        "They chase the young ones"
+      ],
+      "also": [
+        "character.kitsune"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.jackalope.hook",
+      "entry": "creature.jackalope",
+      "ask": "Which creature is the fastest thing around, and needs you to know it?",
+      "answer": "Jackalope",
+      "wrong": [
+        "Silver Otter",
+        "Snowhorn Goat",
+        "Cinder Wolf",
+        "Mosshorn",
+        "Reefglider"
+      ],
+      "also": [
+        "creature.silver_otter",
+        "creature.snowhorn_goat",
+        "creature.cinder_wolf",
+        "creature.mosshorn",
+        "creature.reefglider"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.kavari.younger",
+      "entry": "creature.kavari",
+      "ask": "Which way does a Kavari grow as time passes?",
+      "answer": "Younger, until it is an egg",
+      "wrong": [
+        "Older, like other birds",
+        "Bigger, until it fills the cave",
+        "Brighter, until it glows",
+        "Taller every winter",
+        "Wiser, until it can talk"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.kavari.burst",
+      "entry": "creature.kavari",
+      "ask": "What happens when a Kavari egg bursts?",
+      "answer": "A snowstorm fills the cave",
+      "wrong": [
+        "A rainbow lights the sky",
+        "The cave floods with water",
+        "Thunder shakes the mountain",
+        "A warm wind melts the ice",
+        "Tiny chicks fly out"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.kavari.storm_length",
+      "entry": "creature.kavari",
+      "ask": "How long does a Kavari's indoor snowstorm last?",
+      "answer": "Exactly two days",
+      "wrong": [
+        "One hour",
+        "A whole winter",
+        "Exactly seven days",
+        "Until someone sings",
+        "One night"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.kavari.signs",
+      "entry": "creature.kavari",
+      "ask": "What warns you that a Kavari egg is about to burst?",
+      "answer": "A low hum and creeping frost",
+      "wrong": [
+        "Loud chirping inside",
+        "The egg turns bright red",
+        "Warm steam from the shell",
+        "A crack of thunder",
+        "Bubbles in the puddles"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.kavari.reach",
+      "entry": "creature.kavari",
+      "ask": "How far does a Kavari's snowstorm spread?",
+      "answer": "Never past the cave entrance",
+      "wrong": [
+        "Across the whole mountain",
+        "All the way to the sea",
+        "Over the nearest village",
+        "Through every valley nearby",
+        "Up into the clouds"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.legend_dragon.home",
+      "entry": "creature.legend_dragon",
+      "ask": "Where does a legend dragon make its home?",
+      "answer": "On or under a great mountain",
+      "wrong": [
+        "At the bottom of the sea",
+        "In a hollow tree",
+        "On a drifting cloud",
+        "Inside a frozen lake",
+        "Deep in a desert"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.legend_dragon.hoard",
+      "entry": "creature.legend_dragon",
+      "ask": "What does a legend dragon spend decades doing with its hoard?",
+      "answer": "Rearranging it, maybe by weight",
+      "wrong": [
+        "Counting every coin out loud",
+        "Burying it deeper",
+        "Giving pieces away",
+        "Melting it into one big lump",
+        "Hiding it in new caves"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.legend_dragon.test",
+      "entry": "creature.legend_dragon",
+      "ask": "What does a legend dragon like to test visitors with?",
+      "answer": "Questions it already knows the answers to",
+      "wrong": [
+        "Feats of strength",
+        "A race up the mountain",
+        "Its fiery breath",
+        "A staring contest",
+        "A game of hide and seek"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.legend_dragon.moths",
+      "entry": "creature.legend_dragon",
+      "ask": "What do embermoths do for a legend dragon in its lair?",
+      "answer": "Dust its scales",
+      "wrong": [
+        "Guard its hoard",
+        "Carry its messages",
+        "Sing it to sleep",
+        "Warm its eggs",
+        "Count its coins"
+      ],
+      "also": [
+        "creature.embermoth"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.legend_dragon.hook",
+      "entry": "creature.legend_dragon",
+      "ask": "Which creature is the mountain's tenant, though nobody has read the lease?",
+      "answer": "Legend Dragon",
+      "wrong": [
+        "Frost Wyrm",
+        "Cinder Wolf",
+        "Glassback Crab",
+        "Echo Hunter",
+        "Kavari"
+      ],
+      "also": [
+        "creature.frost_wyrm",
+        "creature.cinder_wolf",
+        "creature.glassback_crab",
+        "creature.echo_hunter",
+        "creature.kavari"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.loftmire.sand",
+      "entry": "creature.loftmire",
+      "ask": "Which way does a loftmire's sand fall?",
+      "answer": "Upward, back to its cloud",
+      "wrong": [
+        "Down, like rain",
+        "Sideways in the wind",
+        "Into the river",
+        "Round and round in circles",
+        "Straight into the ground"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.loftmire.danger",
+      "entry": "creature.loftmire",
+      "ask": "Where is the real danger with a loftmire?",
+      "answer": "Its dust, not the cloud",
+      "wrong": [
+        "Its loud thunder",
+        "Its sharp teeth",
+        "Its cold rain",
+        "The lightning inside it",
+        "Its dark shadow"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.loftmire.upfall",
+      "entry": "creature.loftmire",
+      "ask": "What does every child in the marsh call a loftmire?",
+      "answer": "Upfall",
+      "wrong": [
+        "Downpour",
+        "Skyfish",
+        "Sandstorm",
+        "Cloudcatcher",
+        "Mistwalker",
+        "Puffball"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.loftmire.rescue",
+      "entry": "creature.loftmire",
+      "ask": "A friend is floating up under a loftmire. How do you help?",
+      "answer": "Hold them and brush them down",
+      "wrong": [
+        "Throw more sand on them",
+        "Pop the cloud with an arrow",
+        "Shout at the cloud",
+        "Let them float to the top",
+        "Tie a balloon to them"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.loftmire.speed",
+      "entry": "creature.loftmire",
+      "ask": "How fast does a loftmire drift?",
+      "answer": "At walking pace",
+      "wrong": [
+        "Faster than a horse",
+        "As fast as the wind",
+        "It never moves at all",
+        "As fast as a bird",
+        "Only an inch a year"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mire_mimic.disguise",
+      "entry": "creature.mire_mimic",
+      "ask": "What does a mire mimic pretend to be?",
+      "answer": "Safe ground, a log, or a boat",
+      "wrong": [
+        "A friendly frog",
+        "A pile of treasure",
+        "A tall tree",
+        "A cozy cottage",
+        "A bright lantern"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mire_mimic.name_it",
+      "entry": "creature.mire_mimic",
+      "ask": "How do you end a mire mimic's ambush?",
+      "answer": "Say out loud what it really is",
+      "wrong": [
+        "Tiptoe past very quietly",
+        "Offer it a satchel",
+        "Praise its scenery",
+        "Close your eyes",
+        "Lie down beside it"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mire_mimic.stamp",
+      "entry": "creature.mire_mimic",
+      "ask": "What moves a mire mimic off its hunting spot?",
+      "answer": "Strong stamping",
+      "wrong": [
+        "Soft singing",
+        "A bright light",
+        "Cold water",
+        "Sweet honey",
+        "A gentle breeze"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mire_mimic.sulk",
+      "entry": "creature.mire_mimic",
+      "ask": "What does a mire mimic do after someone spots it in public?",
+      "answer": "Sulks, flatly and for a long time",
+      "wrong": [
+        "Laughs and swims away",
+        "Chases them home",
+        "Turns into a bird",
+        "Bows to the crowd",
+        "Hides up a tree"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mire_mimic.footbridge",
+      "entry": "creature.mire_mimic",
+      "ask": "Besides logs and boats, what did one mire mimic once pretend to be?",
+      "answer": "A small footbridge",
+      "wrong": [
+        "A big castle",
+        "A fishing net",
+        "A market stall",
+        "A tall lighthouse",
+        "A garden fence"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mosshorn.seedlings",
+      "entry": "creature.mosshorn",
+      "ask": "How do mosshorns trade seedlings with each other?",
+      "answer": "By gently knocking antlers",
+      "wrong": [
+        "By dropping them in streams",
+        "By burying them in mud",
+        "By carrying them in their mouths",
+        "By shaking their tails",
+        "By leaving them on stumps"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mosshorn.paths",
+      "entry": "creature.mosshorn",
+      "ask": "What should wise travelers do where a mosshorn will not walk?",
+      "answer": "Not walk there either",
+      "wrong": [
+        "Plant new flowers there",
+        "Run through it quickly",
+        "Set up camp there",
+        "Follow the lights there",
+        "Call for the herd"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mosshorn.stranger",
+      "entry": "creature.mosshorn",
+      "ask": "What does a mosshorn do when it meets a calm stranger?",
+      "answer": "Inspects them once, then stays forever or goes",
+      "wrong": [
+        "Runs away every time",
+        "Charges at them",
+        "Eats from their hand",
+        "Follows them home",
+        "Sings to them"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mosshorn.minnows",
+      "entry": "creature.mosshorn",
+      "ask": "What shelters in a mosshorn's antler roots when it wades in a stream?",
+      "answer": "Minnows",
+      "wrong": [
+        "Frogs",
+        "Turtles",
+        "Ducklings",
+        "Water snails",
+        "Dragonflies"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.mosshorn.wisp",
+      "entry": "creature.mosshorn",
+      "ask": "Why does a mosshorn dislike will-o'-wisps?",
+      "answer": "They lead calves off the safe paths",
+      "wrong": [
+        "They burn the antler flowers",
+        "They are too noisy",
+        "They eat the moss",
+        "They scare the minnows",
+        "They steal the seedlings"
+      ],
+      "also": [
+        "creature.will_o_wisp"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.reefglider.patterns",
+      "entry": "creature.reefglider",
+      "ask": "What do the patterns on a reefglider's back match?",
+      "answer": "The coral it grew up over",
+      "wrong": [
+        "The stars at night",
+        "Its mother's patterns",
+        "The waves in a storm",
+        "The shells it collects",
+        "The colors of sunset"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.reefglider.new_things",
+      "entry": "creature.reefglider",
+      "ask": "How does a reefglider check out something new?",
+      "answer": "Circles it for one afternoon",
+      "wrong": [
+        "Pokes it with a fin",
+        "Hides from it for a week",
+        "Bumps it with its nose",
+        "Sings at it",
+        "Swims away fast"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.reefglider.dislikes",
+      "entry": "creature.reefglider",
+      "ask": "What does a reefglider dislike?",
+      "answer": "Nothing that anyone knows of",
+      "wrong": [
+        "Sharks",
+        "Storms",
+        "Cold water",
+        "Fishing boats",
+        "Loud singing"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.reefglider.storm",
+      "entry": "creature.reefglider",
+      "ask": "Why do reefgliders ride the front edge of a storm current?",
+      "answer": "For the view, it seems",
+      "wrong": [
+        "To find food",
+        "To escape hungry sharks",
+        "To clean their fins",
+        "To race each other",
+        "To catch the rain"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.reefglider.hook",
+      "entry": "creature.reefglider",
+      "ask": "Which creature is a kite the sea flies for itself?",
+      "answer": "Reefglider",
+      "wrong": [
+        "Cloud Whale",
+        "Silver Otter",
+        "Embermoth",
+        "Kavari",
+        "River Drake"
+      ],
+      "also": [
+        "creature.cloud_whale",
+        "creature.silver_otter",
+        "creature.embermoth",
+        "creature.kavari",
+        "creature.river_drake"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.restless_remains.wakes",
+      "entry": "creature.restless_remains",
+      "ask": "What wakes the restless remains?",
+      "answer": "Something taken, or a promise broken",
+      "wrong": [
+        "A full moon",
+        "Loud music",
+        "A thunderstorm",
+        "Someone stepping on them",
+        "A cold winter night"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.restless_remains.settle",
+      "entry": "creature.restless_remains",
+      "ask": "How do you make the restless remains lie back down?",
+      "answer": "Put back what was taken",
+      "wrong": [
+        "Run out of sight",
+        "Shout at the bones",
+        "Bury them in sand",
+        "Ring a loud bell",
+        "Throw them a bone"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.restless_remains.water_line",
+      "entry": "creature.restless_remains",
+      "ask": "Where will the restless remains never follow anyone?",
+      "answer": "Past the water line",
+      "wrong": [
+        "Into the caves",
+        "Up the hills",
+        "Past the old gate",
+        "Into the forest",
+        "Across the bridge"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.restless_remains.songs",
+      "entry": "creature.restless_remains",
+      "ask": "What helps the restless bones settle lower on still nights?",
+      "answer": "Songs carried over the water",
+      "wrong": [
+        "Gentle rain",
+        "The full moon",
+        "Warm campfires",
+        "Quiet snowfall",
+        "Bells from a faraway town"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.restless_remains.hook",
+      "entry": "creature.restless_remains",
+      "ask": "Which creature is not a monster, but a grievance wearing whatever was available?",
+      "answer": "Restless Remains",
+      "wrong": [
+        "Bone Crawler",
+        "Will-o'-Wisp",
+        "Loftmire",
+        "Mire Mimic",
+        "Echo Hunter"
+      ],
+      "also": [
+        "creature.bone_crawler",
+        "creature.will_o_wisp",
+        "creature.loftmire",
+        "creature.mire_mimic",
+        "creature.echo_hunter"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.river_drake.job",
+      "entry": "creature.river_drake",
+      "ask": "What job has a river drake given itself?",
+      "answer": "Toll collector",
+      "wrong": [
+        "Ferry captain",
+        "Bridge builder",
+        "Fish seller",
+        "Lighthouse keeper",
+        "Boat mender"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.river_drake.toll",
+      "entry": "creature.river_drake",
+      "ask": "What does a river drake ask for as its toll?",
+      "answer": "Dropped food",
+      "wrong": [
+        "Gold coins",
+        "Shiny buttons",
+        "A song",
+        "A riddle answered",
+        "Your best hat"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.river_drake.tip",
+      "entry": "creature.river_drake",
+      "ask": "A river drake blocks your boat. What is a complete answer?",
+      "answer": "Pay the toll",
+      "wrong": [
+        "Row faster past it",
+        "Splash it with an oar",
+        "Sing it a lullaby",
+        "Hide under a blanket",
+        "Throw rocks in the water"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.river_drake.stone",
+      "entry": "creature.river_drake",
+      "ask": "What does a river drake keep on its hoard shelf and refuse to discuss?",
+      "answer": "A perfect otter-polished stone",
+      "wrong": [
+        "A golden crown",
+        "A ferry bell",
+        "A broken oar",
+        "A silver key",
+        "A glass bottle"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.river_drake.otters",
+      "entry": "creature.river_drake",
+      "ask": "Why does a river drake dislike silver otters?",
+      "answer": "They call the toll borrowing",
+      "wrong": [
+        "They steal its fish",
+        "They splash it awake",
+        "They tease it from the bank",
+        "They tell boats where it hides",
+        "They tangle up its hoard"
+      ],
+      "also": [
+        "creature.silver_otter"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.silver_otter.shelf",
+      "entry": "creature.silver_otter",
+      "ask": "What does every silver otter keep under a root?",
+      "answer": "A shelf of polished stones and buttons",
+      "wrong": [
+        "A nest of eggs",
+        "A pile of fish bones",
+        "A stash of acorns",
+        "A bed of soft moss",
+        "A store of berries"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.silver_otter.returns",
+      "entry": "creature.silver_otter",
+      "ask": "Why do silver otters return lost things to travelers?",
+      "answer": "To be part of the thing's story",
+      "wrong": [
+        "For a reward of fish",
+        "Because it is their duty",
+        "To trade for buttons",
+        "Because the river told them to",
+        "To make travelers leave"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.silver_otter.fee",
+      "entry": "creature.silver_otter",
+      "ask": "What does the otters' lost-and-found usually charge?",
+      "answer": "Nothing",
+      "wrong": [
+        "One button",
+        "A shiny stone",
+        "A fish",
+        "A song",
+        "A copper coin"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.silver_otter.mudslides",
+      "entry": "creature.silver_otter",
+      "ask": "Who grades the otters' mudslide runs, very harshly?",
+      "answer": "The young otters",
+      "wrong": [
+        "The oldest otter",
+        "The ducks",
+        "The ferryman",
+        "The fish",
+        "The herons"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.silver_otter.trade",
+      "entry": "creature.silver_otter",
+      "ask": "How do silver otters trade with boggarts?",
+      "answer": "In silence, sizing everything up",
+      "wrong": [
+        "With loud bargaining",
+        "By swapping letters",
+        "At a busy market",
+        "With copper coins",
+        "By singing back and forth"
+      ],
+      "also": [
+        "npc.boggart"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.snowhorn_goat.slope",
+      "entry": "creature.snowhorn_goat",
+      "ask": "What happens when a snowhorn herd leaves a slope?",
+      "answer": "The slope fails within the day",
+      "wrong": [
+        "Flowers bloom there",
+        "Wolves move in",
+        "It snows for a week",
+        "The slope stays safe forever",
+        "Ice turns it to glass"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.snowhorn_goat.staring",
+      "entry": "creature.snowhorn_goat",
+      "ask": "Who do snowhorn goats have staring contests with?",
+      "answer": "Griffins",
+      "wrong": [
+        "Eagles",
+        "Mountain lions",
+        "Snow owls",
+        "Each other",
+        "Their own reflections"
+      ],
+      "also": [
+        "character.griffin"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "creature.snowhorn_goat.horn",
+      "entry": "creature.snowhorn_goat",
+      "ask": "What do snowhorn goats leave for travelers to find?",
+      "answer": "Pieces of shed horn",
+      "wrong": [
+        "Bundles of lichen",
+        "Tufts of warm wool",
+        "Shiny stones",
+        "Little snowmen",
+        "Maps scratched in ice"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.snowhorn_goat.climbers",
+      "entry": "creature.snowhorn_goat",
+      "ask": "How does a snowhorn goat help climbers?",
+      "answer": "It lets them notice where it goes",
+      "wrong": [
+        "It leads them down the mountain",
+        "It carries their packs",
+        "It digs them a path",
+        "It pulls them out of the snow",
+        "It bleats when they go wrong"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.snowhorn_goat.hook",
+      "entry": "creature.snowhorn_goat",
+      "ask": "Which creature has never once been wrong about an avalanche?",
+      "answer": "Snowhorn Goat",
+      "wrong": [
+        "Frost Wyrm",
+        "Mosshorn",
+        "Kavari",
+        "Cinder Wolf",
+        "Jackalope"
+      ],
+      "also": [
+        "creature.frost_wyrm",
+        "creature.mosshorn",
+        "creature.kavari",
+        "creature.cinder_wolf",
+        "creature.jackalope"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "creature.will_o_wisp.what",
+      "entry": "creature.will_o_wisp",
+      "ask": "What is a will-o'-wisp, really?",
+      "answer": "A memory that got loose",
+      "wrong": [
+        "A lost firefly",
+        "A tiny fallen star",
+        "The ghost of a lamp",
+        "A spark from a campfire",
+        "A baby moon"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.will_o_wisp.please",
+      "entry": "creature.will_o_wisp",
+      "ask": "What has almost nobody ever tried with a wisp?",
+      "answer": "Saying please",
+      "wrong": [
+        "Following it",
+        "Chasing it",
+        "Singing to it",
+        "Catching it in a jar",
+        "Blowing on it"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.will_o_wisp.leads",
+      "entry": "creature.will_o_wisp",
+      "ask": "Where does a wisp lead anyone who follows it?",
+      "answer": "To the place its memory lived",
+      "wrong": [
+        "Straight into a trap",
+        "Home to their own bed",
+        "To buried treasure",
+        "To the nearest road",
+        "In circles forever"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.will_o_wisp.route",
+      "entry": "creature.will_o_wisp",
+      "ask": "A wisp is showing you a way. What should you notice?",
+      "answer": "It may not be a real route",
+      "wrong": [
+        "It is the fastest way",
+        "It always leads home",
+        "It glows brighter near treasure",
+        "It turns blue near water",
+        "It only works at night"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "creature.will_o_wisp.replay",
+      "entry": "creature.will_o_wisp",
+      "ask": "What does a wisp keep replaying?",
+      "answer": "The good part",
+      "wrong": [
+        "A sad song",
+        "Its first flight",
+        "A scary story",
+        "The last sunset",
+        "A bad dream"
+      ],
+      "also": [],
+      "link": "entry"
+    }
+  ]
+}

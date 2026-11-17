@@ -1,12 +1,19 @@
 # Trivia: the Field Guide quiz in the adventure book
 
-**Status: design approved (2026-11-17); not built.** Decisions marked *decided* are the product
-owner's own, from 2026-11-17, and the owner approved the rest of this doc the same day. Nothing
-is still open; §8 lists the later phases.
+**Status: built (2026-11-17), phase 1.** The question bank (311 questions over all 75 Field Guide
+pages), its validation, the shared rules, the server's record and answer endpoint, and the quiz in
+the adventure book's Guide pane all ship. The ladder ships its **badges and titles**, which need no
+new art. **Owed:** the art for two nameplate frames, one special and three tent decorations, and
+the rungs that give them (§5.2). Decisions marked *decided* are the product owner's own, from
+2026-11-17, and the owner approved the rest of this doc the same day. §8 lists the later phases.
 
-**Review status:** repository references are implementation context. File names, type names and
-interfaces below are the intended shape. They may be refined during implementation as long as the
-behavior they describe holds.
+**Where it lives in the code:** content in `content/trivia/` (§3.1), types in
+`packages/shared/src/types/trivia.ts`, the rules in `packages/shared/src/trivia.ts`, the checks in
+`tools/content/trivia-bank.mjs`, the endpoint in `packages/server/src/handlers/trivia.ts`, and the
+screen in `packages/client/src/screens/GuideQuiz.tsx` (with `quiz-rules.ts`,
+`store/trivia-queue.ts`, `store/book-trivia-sync.ts` and `store/trivia-round.ts`). To look at it,
+a dev-server table can seed a household's finds (`openTable({ guide: [...] })`,
+`SeedRequest.guide` in `dev-seed.ts`), then open `/journal` on its phone.
 
 **Purpose:** the Field Guide (spec §12) is the realm's canon written for an eight-year-old, and a
 lot of work went into it. Most kids open a page once, when the toast says "New in your Field
@@ -59,9 +66,13 @@ callbacks, and the creature tips that win fights.
 
 ### 3.1 Authored, with a drafting tool
 
-Questions are **authored content**, in `content/trivia.json` (schema `schemas/trivia.schema.json`,
-types in `packages/shared/src/types/trivia.ts`), and checked by `npm run content:validate`. They
-are not generated at runtime. Two reasons:
+Questions are **authored content**, one file per group in `content/trivia/`: `creatures.json`,
+`biomes.json`, `classes.json`, `landmarks.json` and `others.json` (character, npc, individual and
+faction pages), each `{ "questions": [...] }` (schema `schemas/trivia.schema.json`, types in
+`packages/shared/src/types/trivia.ts`, groups in shared `TRIVIA_GROUPS`). The rewards are
+`content/trivia/ladder.json` (schema `schemas/trivia-ladder.schema.json`). `npm run
+content:validate` checks them all, and fails a missing group file or any other file in the
+folder. They are not generated at runtime. Two reasons:
 
 1. **Reading level.** Guide prose is written to be read aloud ("more heirloom than armor"). A phone
    question that a kid reads alone needs short options. Machine-cut options from `lore.pastimes`
@@ -100,7 +111,10 @@ other entries of the same kind. A writer keeps, rewrites or drops each one.
   wrong. The question is in the pool only when every one of those has been found too. This is the
   spoiler rule: a kid who has never met the Restless Remains never sees the name in a wrong option.
   `content:validate` fails a question that uses another entry's title without listing it in `also`.
-  It matches against every entry's `title`, the same way `content:continuity` finds names.
+  It matches every entry's `title` as whole words, ignoring case and a leading "The", the longest
+  title claiming the span, and its plain plurals too ("the yetis", "Thornguards", "cloud
+  whales"). So a "Which people…" question whose options are peoples waits until every one of
+  them is found.
 - **Five or six wrong options, not three.** Three are drawn each time the question is asked (§4.2).
 - **Options are words, under 10 words each**, and questions are under 20 words. The picture is
   the question's own (§3.5). A later phase may add picture options ("Which one is the Gullet?")
@@ -141,8 +155,12 @@ That is **about 270 questions** for a household that has found everything.
   Rookery, the Whirlpool) and get 2 or 3, mostly tying them to their class or their region ("Which
   heroes train at the Dojo?").
 
+What shipped: creatures 95 (5 each), biomes 65 (5 each), classes 24 (6 each), landmarks 55, and
+peoples, folk, named characters and factions 72: **311** in all. A few per group are `shelf`
+questions ("Which creature is…") whose wrong options are other pages' names, so they wait until
+those pages are found too.
+
 The ladder (§5) is sized so that its top rungs need most of the guide discovered:
-playing unlocks questions, and questions unlock rewards. The ladder (§5) is sized so that its top rungs need most of the guide discovered:
 playing unlocks questions, and questions unlock rewards.
 
 ### 3.5 The picture (*decided*)
@@ -158,8 +176,11 @@ the guide recognizes what she is being asked about.
   when another picture fits better. Example: "Who builds their shells from these?" over the
   Restless Remains. It must be the `entry` or in `also`, so it is a page she has found.
 - **Today 71 of the 75 pages have a painting.** The four class pages (Thornguard, Duskrunner,
-  Starweaver, Songkeeper) have none, so their questions use the class's gear portrait
-  (`assets/gear-portraits/<class>`). `content:validate` fails a question that resolves to no
+  Starweaver, Songkeeper) have none, so their questions use the class's sworn gear portrait on one
+  fixed species: `/assets/gear-portraits/<class>/sworn/<species>.png`, with thornguard on bigfoot,
+  duskrunner on kitsune, starweaver on dragonling and songkeeper on griffin (shared
+  `TRIVIA_CLASS_PORTRAIT_SPECIES`; `guidePagePicture`, `triviaPicture`). A figure is drawn
+  from the same file its guide card draws. `content:validate` fails a question that resolves to no
   picture, so a page added to the guide later can't get questions until it has art. That makes
   "every question has a picture" a gate, not a hope.
 - **A `link: "shelf"` question still shows its picture.** The painting has no caption, so
@@ -180,8 +201,11 @@ the guide recognizes what she is being asked about.
   has found, that she has not yet answered right, and that are not cooling down (§4.2). Questions
   about pages found most recently are drawn a little more often, so a new find shows up soon.
 - If the pool holds fewer than 8 questions, the round is shorter. If it is empty, the Quiz button
-  says why: "You've answered everything you've found. Go find more!" or "Back tomorrow:
-  some questions are resting." This is the brake on endless quizzing: the pool refills by playing.
+  says why: "You've answered everything you've found. Go find more!", or, offline with
+  pictures not yet saved (§3.5), "Some questions need their pictures. Open your book with a
+  signal, then come back." A household with nothing found reads "Find things on an adventure, and
+  questions about them show up here." This is the brake on endless quizzing: the pool refills by
+  playing.
 - The four options are shuffled every time a question is asked.
 
 ### 4.2 A wrong answer (*decided*)
@@ -190,8 +214,8 @@ the guide recognizes what she is being asked about.
   doesn't mark the right option, explain it or hint at it.
 - **No second try.** The round moves on to the next question.
 - **The question goes back into her pool, shuffled** (*decided*: next round). It cools down until
-  her next round, so it is
-  never asked twice in one sitting. When it comes back, three wrong options are drawn fresh from
+  her next round (the miss records the round it happened in, `missed[id].round`), so it is
+  never asked twice in one round. When it comes back, three wrong options are drawn fresh from
   its five or six, and the right one is in a new place. A kid who remembers "it wasn't the second
   one" or "it wasn't river pebbles" has learned nothing that counts. The way to answer it is to
   know it.
@@ -248,18 +272,47 @@ when the art is briefed. The shape:
   first ask, and **Never Forgets** at 100. These reward knowing it cold without making the main
   ladder harsher.
 
+### 5.0 What ships now, and what is owed
+
+`content/trivia/ladder.json` ships the rewards that need no new art:
+
+| Mastered | Ships now | Owed (art first) |
+|---:|---|---|
+| 10 | badge `trivia-10` **Curious Reader** | `deco_quiz_bookmark` |
+| 25 | title `the_learned` **the Learned** | |
+| 50 | badge `trivia-50` **Lore Hound** | nameplate frame **Scroll** |
+| 80 | (no rung yet) | `deco_quiz_lamp` |
+| 120 | badge `trivia-120` **Sage of the Guide** | special **Inkglow** |
+| 175 | title `the_well_read` **the Well-Read** | `deco_quiz_bookshelf` |
+| 220 | badge `trivia-220` **Keeper of Every Page** | nameplate frame **Gilded Scroll** |
+
+First try: `trivia-first-25` **Sharp Memory**, `trivia-first-100` **Never Forgets**.
+
+**The next step is the owed art, through the art-creation skill**: two nameplate frames (Scroll,
+Gilded Scroll), one special (Inkglow) and three tent decorations (`deco_quiz_bookmark`,
+`deco_quiz_lamp`, `deco_quiz_bookshelf`), declared in `assets/manifest.json`. As each lands, its
+look goes in `content/looks.json` with `unlock: { "from": "trivia", "rung": N }` and its rung in
+the ladder names it; rung 80 is added with its lamp. The ladder's `$comment` lists the same owed
+pieces. Tent decorations also need `KitUnlock.from: "trivia"`, which is not built yet (§5.1). A
+rung already granted is in `record.rungs`, so a reward added to it later is backfilled the way a
+title is: on read for looks (`readEarnedLook`), and on her next batch for written receipts.
+
 ### 5.1 How a reward reaches her heroes
 
 - **Badges** are hers, on her profile page. `kid-profile.ts` computes badges from rows the game
-  already keeps (`BadgeInput`). It gains `trivia: { mastered: number; firstTry: number }`, and the
-  trivia badges sit beside the find and level badges.
+  already keeps (`BadgeInput`). It gains `trivia?: TriviaCounts` (`{ mastered, firstTry }`) and
+  `triviaLadder?: TriviaLadder | null`; with both, `deriveBadges` adds the trivia badges after the
+  find badges (shared `triviaBadges`). The server's `profile.ts` passes `triviaCounts(record)` and
+  `content.triviaLadder()`, so a quiz badge can also be picked as her page's flair.
 - **Looks** are written as receipts on **each of her heroes'** looks, with a new source, `{ from:
   "trivia", rung: number }` beside `starter`, `found` and `milestone` (`types/look.ts`). The look
-  shelf names where it came from: "From the quiz." Only looks every species can wear are used
-  (titles, frames, specials), never a coat, so every hero she has gets every quiz look. A hero she
-  makes later is backfilled on read, the way milestone looks are (`readEarnedLook`).
-- **Tent decorations** are written as kit receipts on each of her heroes (`KitUnlock`, new `from:
-  "trivia"`). They show in her hero's own tent slots in every crew's camp she plays in. They are
+  shelf names where it came from: "From the quiz." (`TRIVIA_LOOK_SOURCE`). Only looks every
+  species can wear are used (titles, frames, specials), never a coat (`looks-catalog.mjs` refuses
+  one), so every hero she has gets every quiz look. A hero she makes later is backfilled on read,
+  the way milestone looks are (`readEarnedLook(..., { triviaRungs })`), and the title is written
+  to him on her next batch. Today the ladder gives two titles; frames and the special are owed.
+- **Tent decorations** (owed, not built) are to be written as kit receipts on each of her heroes
+  (`KitUnlock`, new `from: "trivia"`). They show in her hero's own tent slots in every crew's camp she plays in. They are
   never crew pieces, because a crew's camp is shared (docs/camp.md §7).
 - **New art is owed**: three decorations, two frames and one special. These are declared in
   `assets/manifest.json` and owed in `npm run art:inventory`, through the art-creation skill. Until
@@ -270,22 +323,27 @@ when the art is briefed. The shape:
 
 ### 6.1 What is stored
 
-One record per player profile, `TriviaRecord`, kept beside her profile (store `repository.ts`):
+One record per player profile, `TriviaRecord`, kept on her `PLAYER#` row beside `data` as
+`trivia` and `triviaRev` (store `repository.ts` `getTrivia` / `putTrivia`, written conditional on
+its revision; it moves with a profile transfer and is deleted with her):
 
 ```ts
 interface TriviaRecord {
-  v: number;
+  v: number; // TRIVIA_RECORD_VERSION, 1
   /** Question id → when it was mastered, and whether on the first ask. */
   mastered: Record<string, { at: string; firstTry: boolean }>;
-  /** Question id → when it was last answered wrong (its cooldown, §4.2). */
-  missed: Record<string, string>;
+  /** Question id → when, and in which round, it was last answered wrong (its cooldown, §4.2). */
+  missed: Record<string, { at: string; round: string }>;
   /** The rungs granted, so a grant is never written twice. */
   rungs: number[];
 }
 ```
 
-It rides the book's read (`JournalResponse.trivia`, optional like `camp` and `story`) and is saved
-with the book in IndexedDB, so the quiz opens offline from the last copy the phone read.
+It rides the book's read (`JournalResponse.trivia`, optional like `camp` and `story`; a kid who
+has never quizzed reads as an empty record) and is saved with the book in IndexedDB, so the quiz
+opens offline from the last copy the phone read. A read that comes back without it (the server's
+record read failed, or a server from before the quiz) keeps the saved copy's record rather than
+wiping it.
 
 ### 6.2 Answering offline
 
@@ -293,12 +351,20 @@ The quiz has to work in the car, so the phone holds the whole question bank (it 
 like `field-guide.json`), including the right answers. The phone marks answers on the spot. **The
 server decides what counts**:
 
-- Each answer is queued as `{ questionId, optionsShown, picked, at }` and sent over the same queue
-  and device binding as book kit edits (`store/kit-queue.ts`, `POST /api/journal/trivia`).
+- Each answer is queued as `TriviaAnswer { questionId, optionsShown, picked, at, round }` in
+  `localStorage` `kad.triviaQueue` (`store/trivia-queue.ts`, tied to the device token like
+  `store/kit-queue.ts`) and sent in batches of up to 40 to `POST /api/journal/trivia`
+  (`JournalTriviaRequest { answers }`; the server takes up to 200). The player is the one the
+  device binding names (or a family tablet's seat session); the body never names her. Queued
+  answers are sent before queued kit edits, so a title just earned is hers before a queued pick of
+  it arrives. A family tablet keeps nothing: it sends at once with the seat's session.
 - The server checks each answer: the question exists, its `entry` and `also` are in the household's
   guide, the picked option was one of the four shown, and it is the right one. Then it merges the
   answer into the record (mastered is a union; a later right answer clears a miss), grants any new
-  rung, and returns the record.
+  rung, and returns `JournalTriviaResponse { trivia, verdicts, granted, badges }`: one verdict per
+  answer (`counted`, `already`, `missed`, or a refusal: `unknown-question`, `not-found`,
+  `bad-options`, `not-shown`, or `retried` for a right answer in the round it was missed in), the
+  rungs newly granted and the badges newly earned.
 - **The device wins, as for kit edits**, because a kid's quiz is only on her one phone. Two
   devices for one profile simply union.
 - Rewards show on the phone at once ("You earned the Learned!") and are confirmed when the queue
@@ -312,7 +378,7 @@ household hasn't found.
 
 ## 7. What it costs to build, in order
 
-1. **Content and validation**: `trivia.json`, its schema and types, the spoiler, link and picture
+1. **Content and validation**: `content/trivia/`, its schemas and types, the spoiler, link and picture
    checks in `content:validate`, and `trivia:draft`. Write creatures, biomes and classes first,
    then landmarks, then the rest.
 2. **Rules in shared**: the pool (found entries, mastered, cooling down), drawing a round and its
@@ -323,8 +389,8 @@ household hasn't found.
    picture), the guide links, the offline queue, and reward toasts.
 5. **Art**: the ladder's decorations, frames and special.
 
-Phase 1 can ship with the badges and the looks that need no new art (titles), and the rest as its
-art lands.
+Steps 1 to 4 are built. Phase 1 ships with the badges and the looks that need no new art (titles),
+and the rest as its art lands (step 5, §5.0).
 
 ## 8. Later phases (*decided*: planned, not in this one)
 

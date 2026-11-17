@@ -22,6 +22,8 @@ import type { ChapterOutcome } from "./chapter.js";
 import type { CampClaimResult, CampFriendCard, CampView, HeroKitView, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
 import type { BookEditField, BookKitChange } from "../camp-book.js";
 import type { HeroLookView, LookUnlockNews } from "./look.js";
+import type { TriviaAnswer, TriviaRecord, TriviaRung } from "./trivia.js";
+import type { TriviaRefusal } from "../trivia.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -1050,6 +1052,47 @@ export interface JournalResponse {
    * content has no camp, so there is none to keep.
    */
   campError?: true;
+  /**
+   * Her Field Guide quiz record (docs/trivia.md §6.1): what she has mastered,
+   * what is cooling down, and the ladder rungs granted. Saved with the book,
+   * so the quiz opens offline from the last copy read; the phone's queued
+   * answers (`POST /api/journal/trivia`) are merged over it. Optional because
+   * a server from before the quiz sends none: read it as an empty record.
+   */
+  trivia?: TriviaRecord;
+}
+
+/**
+ * `POST /api/journal/trivia` (docs/trivia.md §6.2): a batch of her queued
+ * quiz answers, oldest first. Authorised as the book's read and
+ * `POST /api/journal/kit` are (the server's `resolveKid`): the player is the
+ * one the device binding names, never one named in the body.
+ */
+export interface JournalTriviaRequest {
+  answers: TriviaAnswer[];
+}
+
+/** What the server made of one queued answer. */
+export type JournalTriviaVerdict =
+  /** Right, and newly mastered: it counts. */
+  | "counted"
+  /** Right, but already mastered: nothing changes. */
+  | "already"
+  /** Wrong: recorded as a miss for its round. */
+  | "missed"
+  /** Refused, never counted (shared trivia.ts `markAnswer`). */
+  | TriviaRefusal;
+
+/** `POST /api/journal/trivia`'s answer: her record as it now stands, and what was newly granted. */
+export interface JournalTriviaResponse {
+  /** Her merged record, to replace the phone's copy (the device wins: its answers are merged in, never dropped for a stale copy). */
+  trivia: TriviaRecord;
+  /** One per answer sent, in order. */
+  verdicts: { questionId: string; at: string; verdict: JournalTriviaVerdict }[];
+  /** Main-ladder rungs this batch granted (their titles now written to each of her heroes' looks). */
+  granted: TriviaRung[];
+  /** Badges (ladder and first-try track) this batch newly earned, for the phone's toast. */
+  badges: Badge[];
 }
 
 /** The book's Camp tray (docs/camp.md §7, §12.6; #629). */

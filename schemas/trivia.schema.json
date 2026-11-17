@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/trivia.schema.json",
+  "title": "Field Guide quiz questions",
+  "description": "content/trivia/<group>.json: one group's questions for the Field Guide quiz (docs/trivia.md §3). Mirrors TriviaBankFile in packages/shared/src/types/trivia.ts; where the two disagree, the TypeScript type wins. tools/content/trivia-bank.mjs checks what the schema cannot see: ids unique across every file, entry, also and image naming Field Guide pages, every other page's title the words use listed in also, the word limits, a link \"entry\" whose answer is not the page's own name, and a picture for every question.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "questions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "$comment": {
+      "type": "string"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/question"
+      }
+    }
+  },
+  "$defs": {
+    "guideId": {
+      "type": "string",
+      "pattern": "^[a-z]+\\.[a-z0-9_]+$"
+    },
+    "option": {
+      "description": "An option as the phone shows it: words, under 10 of them, no em dashes.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[^\\u2014]*$"
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entry",
+        "ask",
+        "answer",
+        "wrong",
+        "also",
+        "link"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique across every bank file: <entry id>.<slug>.",
+          "type": "string",
+          "pattern": "^[a-z]+\\.[a-z0-9_]+\\.[a-z0-9_]+$"
+        },
+        "entry": {
+          "description": "The Field Guide page it is about: a key of content/field-guide.json entries.",
+          "$ref": "#/$defs/guideId"
+        },
+        "ask": {
+          "description": "The question, under 20 words.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "^[^\\u2014]*$"
+        },
+        "answer": {
+          "$ref": "#/$defs/option"
+        },
+        "wrong": {
+          "description": "Five or six wrong options; three are drawn each time it is asked (§4.2).",
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        },
+        "also": {
+          "description": "Every other Field Guide page the question or any option names (§3.3); the question is asked only once the household has found them all.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/guideId"
+          }
+        },
+        "link": {
+          "description": "entry: a wrong answer's link opens the page. shelf: it opens the page's tab, because the answer is the page's own name (§4.3).",
+          "enum": [
+            "entry",
+            "shelf"
+          ]
+        },
+        "image": {
+          "description": "Ask it over another page's painting (§3.5): the entry or one of also.",
+          "$ref": "#/$defs/guideId"
+        }
+      }
+    }
+  }
+}

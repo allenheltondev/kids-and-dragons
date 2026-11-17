@@ -19,6 +19,7 @@ contract; where a schema disagrees with them, the schema is wrong.
   interaction, `--record MS` for motion, `--open` for visible browsers. Starts the dev server
   if none is up. For looking, not testing: the table is a throwaway household
   (tools/playtest/table.ts is the library under it)
+- `npm run trivia:draft -- <entry id> [--seed N]` — candidate Field Guide quiz questions for one page, to edit into `content/trivia/<group>.json` (creatures, biomes, classes, landmarks, others; the rewards are `content/trivia/ladder.json`); `content:validate` checks the spoiler rule (`also`), the links and every question's picture ([docs/trivia.md](docs/trivia.md))
 - `npm run content:graph` — a chapter's scene graph, with its gates labeled
 - `npm run content:cast` — scenes whose words name someone the chapter casts elsewhere but whose own `cast` leaves them off (reports, never gates)
 - `npm run content:dialogue` — how many spine scenes with someone on stage have a quoted line, which do not, and cast members never quoted (reports, never gates; the recorded voices are only heard in quotes)

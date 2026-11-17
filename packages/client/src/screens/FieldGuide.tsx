@@ -1,5 +1,6 @@
 import { PagedOptions } from "../ui/PagedOptions";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import type { FieldGuide as FieldGuideData, FieldGuideCategory, FieldGuideEntry } from "@kad/shared";
 import {
   guideIndexScroll,
@@ -33,9 +34,11 @@ const SECTIONS: ReadonlyArray<{ id: FieldGuideCategory; label: string; one: stri
  * sends an intent. #109 replaces `FieldGuideDetailPlaceholder` with the real
  * detail screen for `guideEntry`.
  */
-export function FieldGuide({ backToBag = true }: {
+export function FieldGuide({ backToBag = true, quiz }: {
   /** In play the guide sits beside the bag; the journal has its own way back. */
   backToBag?: boolean;
+  /** The adventure book's Quiz button (GuideQuiz.tsx), beside the progress line; never in play. */
+  quiz?: ReactNode;
 } = {}) {
   const guideEntry = usePlayerNavigation((n) => n.guideEntry);
   const [guide, setGuide] = useState<FieldGuideData | null>(null);
@@ -60,14 +63,14 @@ export function FieldGuide({ backToBag = true }: {
       {open ? (
         <FieldGuideDetail guide={guide as FieldGuideData} entryId={open.id} />
       ) : (
-        <FieldGuideIndex guide={guide} />
+        <FieldGuideIndex guide={guide} quiz={quiz} />
       )}
     </section>
   );
 }
 
 /** Tabs by category, a progress line, and a grid of cards. */
-export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
+export function FieldGuideIndex({ guide, quiz }: { guide: FieldGuideData | null; quiz?: ReactNode }) {
   const discoveries = useFieldGuideDiscoveries();
   const seen = useFieldGuideSeen();
   // In the navigation store, not local state: opening a card unmounts this
@@ -98,7 +101,14 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
 
   return (
     <>
-      <p className="field-guide__summary">{found} of {all.length} found</p>
+      {quiz ? (
+        <div className="field-guide__summary-row">
+          <p className="field-guide__summary">{found} of {all.length} found</p>
+          {quiz}
+        </div>
+      ) : (
+        <p className="field-guide__summary">{found} of {all.length} found</p>
+      )}
       <div className="field-guide__meter" aria-hidden="true"><span style={{ inlineSize: `${String(all.length === 0 ? 0 : (found / all.length) * 100)}%` }} /></div>
       {section && (
         <div className="field-guide__tabs" role="tablist" aria-label="Field Guide sections">

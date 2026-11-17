@@ -126,6 +126,13 @@ export const SW_PRECACHE_CONTENT: readonly string[] = [
   "/content/world.json",
   "/content/field-guide.json",
   "/content/help.json",
+  // The Field Guide quiz (docs/trivia.md §6.2): the whole bank and its ladder, so a round works in the car.
+  "/content/trivia/creatures.json",
+  "/content/trivia/biomes.json",
+  "/content/trivia/classes.json",
+  "/content/trivia/landmarks.json",
+  "/content/trivia/others.json",
+  "/content/trivia/ladder.json",
 ];
 
 /**

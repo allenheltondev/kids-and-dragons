@@ -2610,6 +2610,8 @@ const SHARED = [
   { path: "/api/journal", method: "GET", probe: "/api/journal" },
   // A kid's own kit or buddy, from the adventure book (#629, handlers/camp-book.ts).
   { path: "/api/journal/kit", method: "POST", probe: "/api/journal/kit" },
+  // A kid's queued Field Guide quiz answers (docs/trivia.md §6.2, handlers/trivia.ts).
+  { path: "/api/journal/trivia", method: "POST", probe: "/api/journal/trivia" },
   // What a kid picked for her own page (#299, handlers/profile.ts).
   { path: "/api/profile/flair", method: "POST", probe: "/api/profile/flair" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },

@@ -1,0 +1,873 @@
+{
+  "$schema": "../../schemas/trivia.schema.json",
+  "$comment": "Field Guide quiz questions about the landmark pages (location.*) (docs/trivia.md §3). Authored, never generated: `npm run trivia:draft -- <entry id>` proposes drafts to edit. Checked by `npm run content:validate` (tools/content/trivia-bank.mjs).",
+  "questions": [
+    {
+      "id": "location.academy.heroes",
+      "entry": "location.academy",
+      "ask": "Which heroes go to school at the Academy?",
+      "answer": "Starweavers",
+      "wrong": [
+        "Thornguards",
+        "Duskrunners",
+        "Songkeepers",
+        "Mapmakers",
+        "Healers"
+      ],
+      "also": [
+        "class.starweaver",
+        "class.thornguard",
+        "class.duskrunner",
+        "class.songkeeper"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "location.academy.homework",
+      "entry": "location.academy",
+      "ask": "Why does homework float away at the Academy?",
+      "answer": "The roof is open to the sky",
+      "wrong": [
+        "The wind blows through the windows",
+        "The desks are made of clouds",
+        "A spell makes paper light",
+        "The students tie it to kites",
+        "The teacher sneezes on it"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.academy.telescope",
+      "entry": "location.academy",
+      "ask": "What does the big telescope at the Academy do?",
+      "answer": "It sneezes",
+      "wrong": [
+        "It sings",
+        "It hiccups",
+        "It snores",
+        "It giggles",
+        "It yawns"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.conservatory.heroes",
+      "entry": "location.conservatory",
+      "ask": "Which heroes go to school at the Conservatory?",
+      "answer": "Songkeepers",
+      "wrong": [
+        "Thornguards",
+        "Duskrunners",
+        "Starweavers",
+        "Mapmakers",
+        "Healers"
+      ],
+      "also": [
+        "class.songkeeper",
+        "class.thornguard",
+        "class.duskrunner",
+        "class.starweaver"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "location.conservatory.greenhouse",
+      "entry": "location.conservatory",
+      "ask": "The Conservatory is a music school. What else is it?",
+      "answer": "A greenhouse",
+      "wrong": [
+        "A bakery",
+        "A lighthouse",
+        "A library",
+        "A boathouse",
+        "A bell tower"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.conservatory.plants",
+      "entry": "location.conservatory",
+      "ask": "Who do the plants at the Conservatory lean toward?",
+      "answer": "Whoever is singing best",
+      "wrong": [
+        "Whoever waters them most",
+        "The sunniest window",
+        "The oldest teacher",
+        "Whoever plays the loudest drum",
+        "Whoever is feeling sad"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.dojo.heroes",
+      "entry": "location.dojo",
+      "ask": "Which heroes go to school at the Dojo?",
+      "answer": "Thornguards",
+      "wrong": [
+        "Duskrunners",
+        "Starweavers",
+        "Songkeepers",
+        "Mapmakers",
+        "Healers"
+      ],
+      "also": [
+        "class.thornguard",
+        "class.duskrunner",
+        "class.starweaver",
+        "class.songkeeper"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "location.dojo.door",
+      "entry": "location.dojo",
+      "ask": "How long has the Dojo's teacher held the same door shut?",
+      "answer": "Forty years",
+      "wrong": [
+        "Four days",
+        "Ten years",
+        "A hundred years",
+        "Since breakfast",
+        "Seven summers"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.dojo.pillows",
+      "entry": "location.dojo",
+      "ask": "How do students at the Dojo practice Brace?",
+      "answer": "By catching falling pillows",
+      "wrong": [
+        "By holding up the roof",
+        "By pushing a boulder",
+        "By standing under a waterfall",
+        "By lifting a sleeping goat",
+        "By leaning on a door"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.rookery.heroes",
+      "entry": "location.rookery",
+      "ask": "Which heroes go to school at the Rookery?",
+      "answer": "Duskrunners",
+      "wrong": [
+        "Thornguards",
+        "Starweavers",
+        "Songkeepers",
+        "Mapmakers",
+        "Healers"
+      ],
+      "also": [
+        "class.duskrunner",
+        "class.thornguard",
+        "class.starweaver",
+        "class.songkeeper"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "location.rookery.run_by",
+      "entry": "location.rookery",
+      "ask": "Who runs the Rookery?",
+      "answer": "The crows, all of them together",
+      "wrong": [
+        "One very old owl",
+        "A retired sea captain",
+        "The city's mayor",
+        "A family of cats",
+        "The chimney sweeps"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.rookery.sign",
+      "entry": "location.rookery",
+      "ask": "What does the sign on the Rookery's chimney say?",
+      "answer": "No messing (with us)",
+      "wrong": [
+        "Keep off the roof",
+        "Crows only",
+        "Mind your step",
+        "No shiny things",
+        "Knock first"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.the_whirlpool.what",
+      "entry": "location.the_whirlpool",
+      "ask": "What is the Whirlpool?",
+      "answer": "A standing spiral of water",
+      "wrong": [
+        "A tall tower of ice",
+        "A ring of floating rocks",
+        "A cave under the waves",
+        "A rainbow that never fades",
+        "A bridge made of sea foam"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.the_whirlpool.which_place",
+      "entry": "location.the_whirlpool",
+      "ask": "Which place is a spiral of water you can see from shore?",
+      "answer": "The Whirlpool",
+      "wrong": [
+        "The Bone Yard",
+        "Skullwater Cave",
+        "Mermaid Cove",
+        "The Open Sea",
+        "Stone Crossing"
+      ],
+      "also": [
+        "location.bone_yard",
+        "location.skullwater_cave",
+        "biome.mermaid_cove",
+        "biome.open_sea",
+        "location.stone_crossing"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "location.bone_yard.where",
+      "entry": "location.bone_yard",
+      "ask": "Where is the Bone Yard?",
+      "answer": "At the mouth of the Glacierflow",
+      "wrong": [
+        "On top of a volcano",
+        "Deep inside a hedge maze",
+        "On a floating island",
+        "Under a frozen lake",
+        "Behind a waterfall"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bone_yard.manners",
+      "entry": "location.bone_yard",
+      "ask": "What do folk say to do at the Bone Yard?",
+      "answer": "Take nothing and hum something",
+      "wrong": [
+        "Take one bone home for luck",
+        "Shout your name three times",
+        "Knock on the biggest skull",
+        "Leave a coin on every bone",
+        "Dig as deep as you can"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bone_yard.tired",
+      "entry": "location.bone_yard",
+      "ask": "Folk say the bones at the Bone Yard are not angry. What are they?",
+      "answer": "Tired",
+      "wrong": [
+        "Hungry",
+        "Jealous",
+        "Scared",
+        "Bored",
+        "Cold"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bone_yard.quieter",
+      "entry": "location.bone_yard",
+      "ask": "What makes the Bone Yard quieter on still nights?",
+      "answer": "Songs carried across the water",
+      "wrong": [
+        "Snow falling on the bones",
+        "Guards walking in circles",
+        "A tall wall of hedges",
+        "Fog rolling in from the sea",
+        "Lanterns left by visitors"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bone_yard.danger",
+      "entry": "location.bone_yard",
+      "ask": "How dangerous does the guide say the Bone Yard is?",
+      "answer": "Very dangerous",
+      "wrong": [
+        "Not dangerous",
+        "Mostly harmless",
+        "Be careful",
+        "Legendary",
+        "A mystery"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bramblewood.hedges",
+      "entry": "location.bramblewood",
+      "ask": "What did Bramblewood's founders plant before the town grew?",
+      "answer": "Thick, tall hedges",
+      "wrong": [
+        "A ring of giant mushrooms",
+        "A wall of sunflowers",
+        "A moat full of lilies",
+        "Rows of tall pine trees",
+        "A ring of apple orchards"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bramblewood.short_path",
+      "entry": "location.bramblewood",
+      "ask": "What gets you the short path through Bramblewood's hedges?",
+      "answer": "Being sincere",
+      "wrong": [
+        "Flattering the hedge",
+        "Running very fast",
+        "Paying a coin",
+        "Singing a song",
+        "Bringing a map"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bramblewood.pruning",
+      "entry": "location.bramblewood",
+      "ask": "In Bramblewood, whose job is it to prune the hedges?",
+      "answer": "Only the keepers",
+      "wrong": [
+        "Anyone with shears",
+        "The visitors",
+        "The town goats",
+        "Whoever is tallest",
+        "The mayor's children"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bramblewood.opinions",
+      "entry": "location.bramblewood",
+      "ask": "What is special about Bramblewood's hedges?",
+      "answer": "They have opinions",
+      "wrong": [
+        "They glow at night",
+        "They grow fruit pies",
+        "They are made of glass",
+        "They never need water",
+        "They bloom only in winter"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.bramblewood.which_town",
+      "entry": "location.bramblewood",
+      "ask": "Which place grew up inside tall hedges that decide who gets through?",
+      "answer": "Bramblewood",
+      "wrong": [
+        "MossHome",
+        "Stone Crossing",
+        "The Exchange",
+        "Redspire Citadel",
+        "Skullwater Cave"
+      ],
+      "also": [
+        "location.mosshome",
+        "location.stone_crossing",
+        "location.exchange",
+        "location.redspire_citadel",
+        "location.skullwater_cave"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "location.exchange.began",
+      "entry": "location.exchange",
+      "ask": "How did the Exchange begin?",
+      "answer": "As a market that never packed up",
+      "wrong": [
+        "As a castle for a king",
+        "As a fishing village",
+        "As a camp for lost sailors",
+        "As a school for traders",
+        "As a toll bridge"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.exchange.empty_chair",
+      "entry": "location.exchange",
+      "ask": "Why is one chair at an Exchange table kept empty?",
+      "answer": "For whoever arrives next",
+      "wrong": [
+        "For a friendly ghost",
+        "For the mayor",
+        "For good luck at sea",
+        "For the city's founder",
+        "For a lost friend"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.exchange.dock_merchant",
+      "entry": "location.exchange",
+      "ask": "What should you ask a dock merchant at the Exchange?",
+      "answer": "Where something is going",
+      "wrong": [
+        "Where something came from",
+        "How old it is",
+        "Who made it",
+        "Why it costs so much",
+        "Who owned it before"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.exchange.plaques",
+      "entry": "location.exchange",
+      "ask": "How many founding plaques stand around the Exchange's harbor?",
+      "answer": "Seventeen",
+      "wrong": [
+        "One",
+        "Three",
+        "Seven",
+        "Twelve",
+        "Forty"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.exchange.which_city",
+      "entry": "location.exchange",
+      "ask": "Which place began as a market that never packed up and went home?",
+      "answer": "The Exchange",
+      "wrong": [
+        "MossHome",
+        "Stone Crossing",
+        "Redspire Citadel",
+        "Bramblewood",
+        "Skullwater Cave"
+      ],
+      "also": [
+        "location.mosshome",
+        "location.stone_crossing",
+        "location.redspire_citadel",
+        "location.bramblewood",
+        "location.skullwater_cave"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "location.hollow_gate.what",
+      "entry": "location.hollow_gate",
+      "ask": "What does the Hollow Gate look like?",
+      "answer": "A crumbling stone archway",
+      "wrong": [
+        "A wooden castle door",
+        "A tall iron fence",
+        "A gate of woven reeds",
+        "A bridge of white bone",
+        "A round door in a hill"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.hollow_gate.never_knock",
+      "entry": "location.hollow_gate",
+      "ask": "What does everyone agree you must never do at the Hollow Gate?",
+      "answer": "Knock on it",
+      "wrong": [
+        "Sing near it",
+        "Touch its stones",
+        "Say its name",
+        "Leave a gift",
+        "Draw a picture of it"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.hollow_gate.only_glows",
+      "entry": "location.hollow_gate",
+      "ask": "What is the only thing the Hollow Gate has ever done?",
+      "answer": "Glow",
+      "wrong": [
+        "Open",
+        "Move",
+        "Hum",
+        "Shake",
+        "Grow taller"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.hollow_gate.where",
+      "entry": "location.hollow_gate",
+      "ask": "Where is the Hollow Gate?",
+      "answer": "In the heart of a marsh",
+      "wrong": [
+        "On a mountaintop",
+        "Under the sea",
+        "In a city square",
+        "Deep in a forest",
+        "On a floating island"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mosshome.built",
+      "entry": "location.mosshome",
+      "ask": "How is MossHome built?",
+      "answer": "Into and beside old living trees",
+      "wrong": [
+        "Inside a dry stone cave",
+        "On stilts over a lake",
+        "Out of blocks of ice",
+        "On top of a cliff",
+        "From shiny red bricks"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mosshome.compost",
+      "entry": "location.mosshome",
+      "ask": "What are most of MossHome's founding rules about?",
+      "answer": "Compost",
+      "wrong": [
+        "Treasure",
+        "Dragons",
+        "Fighting",
+        "Taxes",
+        "Music"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mosshome.grown_shut",
+      "entry": "location.mosshome",
+      "ask": "At MossHome, what should you do if a door has grown shut?",
+      "answer": "Ask again next season",
+      "wrong": [
+        "Knock louder",
+        "Climb in a window",
+        "Cut it open",
+        "Bring the door a present",
+        "Shout until it opens"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mosshome.records",
+      "entry": "location.mosshome",
+      "ask": "What do people travel to MossHome to look at?",
+      "answer": "Old records nobody else kept",
+      "wrong": [
+        "Piles of gold and gems",
+        "A famous dragon's egg",
+        "The tallest tower in the realm",
+        "A magic mirror",
+        "The biggest market stalls"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mount_red_sky.where",
+      "entry": "location.mount_red_sky",
+      "ask": "Where is Mount Red Sky?",
+      "answer": "At the center of the realm",
+      "wrong": [
+        "At the edge of the sea",
+        "Far in the frozen north",
+        "Deep under the ground",
+        "On a floating island",
+        "Behind the city walls"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mount_red_sky.thank",
+      "entry": "location.mount_red_sky",
+      "ask": "Why should you never thank Mount Red Sky out loud?",
+      "answer": "It might take an interest",
+      "wrong": [
+        "It might get bored",
+        "It cannot hear you",
+        "It only likes songs",
+        "It might fall asleep",
+        "It would start to cry"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mount_red_sky.open_hands",
+      "entry": "location.mount_red_sky",
+      "ask": "How must a Gemfall be taken on Mount Red Sky?",
+      "answer": "With open hands",
+      "wrong": [
+        "With a closed fist",
+        "With a big net",
+        "In a metal bucket",
+        "With your eyes shut",
+        "Before the sun comes up"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.mount_red_sky.danger",
+      "entry": "location.mount_red_sky",
+      "ask": "How dangerous does the guide say Mount Red Sky is?",
+      "answer": "Legendary",
+      "wrong": [
+        "Not dangerous",
+        "Mostly harmless",
+        "Be careful",
+        "Very dangerous",
+        "A mystery"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.redspire_citadel.obsidian",
+      "entry": "location.redspire_citadel",
+      "ask": "What is Redspire Citadel built from?",
+      "answer": "Obsidian",
+      "wrong": [
+        "Marble",
+        "Sandstone",
+        "Ice",
+        "Wood",
+        "Red brick"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.redspire_citadel.watch",
+      "entry": "location.redspire_citadel",
+      "ask": "What was Redspire Citadel built to watch?",
+      "answer": "The red sky",
+      "wrong": [
+        "The sea for ships",
+        "The road for robbers",
+        "The forest for fires",
+        "The river for floods",
+        "The town for thieves"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.redspire_citadel.forge_smoke",
+      "entry": "location.redspire_citadel",
+      "ask": "Folk say the realm is fine as long as what keeps rising at the citadel?",
+      "answer": "The forge smoke",
+      "wrong": [
+        "The flags",
+        "The bread",
+        "The tide",
+        "The banners",
+        "The moon"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.redspire_citadel.windows",
+      "entry": "location.redspire_citadel",
+      "ask": "What color do Redspire Citadel's windows glow all night?",
+      "answer": "Violet",
+      "wrong": [
+        "Red",
+        "Gold",
+        "Green",
+        "Blue",
+        "White"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.redspire_citadel.headquarters",
+      "entry": "location.redspire_citadel",
+      "ask": "Who has their headquarters at Redspire Citadel?",
+      "answer": "The Skywardens",
+      "wrong": [
+        "The Royal Guard",
+        "The Night Watch",
+        "The Mapmakers' Guild",
+        "The Lantern Keepers",
+        "The Dock Merchants"
+      ],
+      "also": [
+        "faction.skywardens"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "location.skullwater_cave.shape",
+      "entry": "location.skullwater_cave",
+      "ask": "What shape is the opening of Skullwater Cave?",
+      "answer": "A skull",
+      "wrong": [
+        "A crescent moon",
+        "A giant shell",
+        "A keyhole",
+        "A heart",
+        "A star"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.skullwater_cave.knock",
+      "entry": "location.skullwater_cave",
+      "ask": "What do folk say to do before you go into Skullwater Cave?",
+      "answer": "Knock",
+      "wrong": [
+        "Hum a tune",
+        "Light a candle",
+        "Shout hello",
+        "Take off your boots",
+        "Leave a coin"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.skullwater_cave.tide",
+      "entry": "location.skullwater_cave",
+      "ask": "What decides when you can visit Skullwater Cave?",
+      "answer": "The tide",
+      "wrong": [
+        "The trolls",
+        "The cave itself",
+        "The ship captains",
+        "A big bell",
+        "The weather"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.skullwater_cave.surprises",
+      "entry": "location.skullwater_cave",
+      "ask": "What does Skullwater Cave dislike even more than visitors?",
+      "answer": "Surprises",
+      "wrong": [
+        "Loud singing",
+        "Bright lights",
+        "Cold water",
+        "Muddy boots",
+        "Bad jokes"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.skullwater_cave.keepers",
+      "entry": "location.skullwater_cave",
+      "ask": "Who looks after the outer galleries of Skullwater Cave?",
+      "answer": "The stone trolls",
+      "wrong": [
+        "The sailors",
+        "The crows",
+        "The mapmakers",
+        "The fishers",
+        "The seals"
+      ],
+      "also": [
+        "npc.stone_troll"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "location.stone_crossing.why_bridge",
+      "entry": "location.stone_crossing",
+      "ask": "Why did the trolls build the bridge at Stone Crossing?",
+      "answer": "The river was being unreasonable",
+      "wrong": [
+        "To charge everyone gold",
+        "To reach a lost treasure",
+        "To keep the drake out",
+        "Because a king asked them",
+        "To win a bet"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.stone_crossing.ferryman",
+      "entry": "location.stone_crossing",
+      "ask": "How do you tip the ferryman at Stone Crossing?",
+      "answer": "With a song",
+      "wrong": [
+        "With a coin",
+        "With a riddle",
+        "With a fish",
+        "With a joke",
+        "With a hug"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.stone_crossing.troll",
+      "entry": "location.stone_crossing",
+      "ask": "At Stone Crossing, you pay the drake. What do you do for the troll?",
+      "answer": "Answer the troll's riddle",
+      "wrong": [
+        "Give the troll a gold coin",
+        "Sing the troll a song",
+        "Bring the troll bread",
+        "Bow to the troll",
+        "Carry the troll's bag"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "location.stone_crossing.brag",
+      "entry": "location.stone_crossing",
+      "ask": "What should you never brag about at Stone Crossing?",
+      "answer": "The current",
+      "wrong": [
+        "Your strength",
+        "Your money",
+        "Your boots",
+        "The weather",
+        "Your riddles"
+      ],
+      "also": [],
+      "link": "entry"
+    }
+  ]
+}

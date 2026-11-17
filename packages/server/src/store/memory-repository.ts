@@ -40,6 +40,8 @@ import type {
 import type {
   CampaignProgressRecord,
   CampWrite,
+  TriviaRow,
+  TriviaWrite,
   CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
@@ -137,6 +139,9 @@ interface TableItem {
   retiring?: boolean;
   /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping, like `sweeping`. */
   lastPlayedAt?: string;
+  /** On a `PLAYER#` row: her quiz record (docs/trivia.md §6.1), and its revision. Bookkeeping beside `data`. */
+  trivia?: unknown;
+  triviaRev?: number;
   entity: string;
   data: unknown;
 }
@@ -743,6 +748,7 @@ export class MemoryRepository implements GameRepository {
       } else if (step.op === "delete") {
         const row = this.get(step.PK, step.SK);
         if (!row || !isDeepStrictEqual(row.data, step.data)) return "changed";
+        if (step.triviaRev !== undefined && (row.triviaRev ?? 0) !== step.triviaRev) return "changed";
       } else if (step.op === "put") {
         if (step.ifAbsent && this.get(step.item.PK, step.item.SK)) return "changed";
       }
@@ -815,6 +821,20 @@ export class MemoryRepository implements GameRepository {
     // A profile being deleted (#252) is gone to every reader already.
     const row = this.get(HH(householdId), PLAYER_SK(playerId));
     return row && !row.sweeping ? (row.data as PlayerProfile) : null;
+  }
+
+  async getTrivia(householdId: string, playerId: string): Promise<TriviaRow | null> {
+    const row = this.get(HH(householdId), PLAYER_SK(playerId));
+    if (!row || row.sweeping) return null;
+    return { record: row.trivia ?? null, revision: row.triviaRev ?? 0 };
+  }
+
+  async putTrivia(write: TriviaWrite): Promise<boolean> {
+    // As the real store's condition: her row, not being deleted, at the revision read.
+    const row = this.items.get(rowKey(HH(write.householdId), PLAYER_SK(write.playerId)));
+    if (!row || row.sweeping || (row.triviaRev ?? 0) !== write.expectedRevision) return false;
+    this.put({ ...row, trivia: write.record, triviaRev: write.expectedRevision + 1 });
+    return true;
   }
 
   async listPlayers(householdId: string): Promise<PlayerProfile[]> {

@@ -91,6 +91,9 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
       else set.colors.set(color, coat.id);
       if (coat.unlock.from === "starter") set.starters += 1;
     }
+    if (coat.unlock.from === "trivia") {
+      fail(`/coats/${i}/unlock`, `${coat.id} is a coat earned by the quiz`, "Quiz looks go on every hero she has, so they are titles, frames or specials, never a coat (docs/trivia.md §5.1).");
+    }
   });
   if (catalog.coats.length > 0) {
     for (const id of [...species].sort()) {

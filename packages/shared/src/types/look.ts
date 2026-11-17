@@ -62,9 +62,11 @@ export interface HeroLook {
 
 /** A look she holds beyond the starters, and where it came from (§6). */
 export interface LookUnlock {
-  from: "starter" | "found" | "milestone";
+  from: "starter" | "found" | "milestone" | "trivia";
   /** The find that gave it. */
   rewardId?: string;
+  /** The quiz ladder's rung that gave it (`from: "trivia"`; docs/trivia.md §5.1). */
+  rung?: number;
   /** ISO; absent on a backfilled milestone. */
   at?: string;
   /** Where it came from, as the book says it: "Finished The Gemfall". */
@@ -121,7 +123,7 @@ export interface LookUnlockNews {
    * What earned it, which says when it is told: after the transformation
    * (`tier`), after the rank-up moment (`rank`), otherwise at once.
    */
-  cause: "tier" | "rank" | "campaign" | "camp" | "found";
+  cause: "tier" | "rank" | "campaign" | "camp" | "found" | "trivia";
 }
 
 // ---------------------------------------------------------------------------
@@ -147,7 +149,14 @@ export type LookUnlockRule =
   /** Her crew befriending one of the camp's friends (content/camp.json `friends`). */
   | { from: "milestone"; friend: string }
   /** A camp milestone: her crew's first friend, or its grand camp (frame stage 4, docs/camp.md §4.1). */
-  | { from: "milestone"; camp: "firstFriend" | "fullCamp" };
+  | { from: "milestone"; camp: "firstFriend" | "fullCamp" }
+  /**
+   * A rung of the Field Guide quiz's ladder (docs/trivia.md §5.1; content/trivia/ladder.json):
+   * written to each of her heroes when she masters `rung` questions, and
+   * backfilled on read for a hero she makes later. Only every-species looks
+   * (titles, frames, specials), never a coat. The shelf says "From the quiz".
+   */
+  | { from: "trivia"; rung: number };
 
 /** Which of her two parts a colour is for (§4.2): a unicorn's coat or mane, a Bigfoot's fur or skin. */
 export type CoatPart = "main" | "accent";

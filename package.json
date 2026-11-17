@@ -19,6 +19,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "content:validate": "node tools/content/validate.mjs",
+    "trivia:draft": "node tools/content/trivia-draft.mjs",
     "content:proofs": "node tools/content/graph-proofs.ts",
     "content:pin": "node tools/content/pin-gemfall.ts",
     "content:continuity": "node tools/content/continuity.mjs",

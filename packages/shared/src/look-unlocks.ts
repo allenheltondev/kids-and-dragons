@@ -174,9 +174,11 @@ export function earnedLooks(catalog: LookCatalog, standing: LookStanding, names:
 /** One receipt to write. */
 export interface LookGrant {
   id: LookId;
-  from: "found" | "milestone";
+  from: "found" | "milestone" | "trivia";
   source?: string;
   rewardId?: string;
+  /** The quiz rung, for `from: "trivia"`. */
+  rung?: number;
 }
 
 /**
@@ -194,6 +196,7 @@ export function withLookGrants(look: HeroLook, grants: readonly LookGrant[], at?
     unlocked[g.id] = {
       from: g.from,
       ...(g.rewardId ? { rewardId: g.rewardId } : {}),
+      ...(g.rung !== undefined ? { rung: g.rung } : {}),
       ...(at ? { at } : {}),
       ...(g.source ? { source: g.source } : {}),
     };
@@ -226,6 +229,25 @@ export function foundLookGrants(
   return out;
 }
 
+/** How the look shelf names a quiz receipt (docs/trivia.md §5.1). */
+export const TRIVIA_LOOK_SOURCE = "From the quiz";
+
+/**
+ * What the quiz's ladder gives one hero (docs/trivia.md §5.1): every look in
+ * the catalog whose unlock is `{ from: "trivia", rung }` for a rung in
+ * `rungs` (the rungs her `TriviaRecord` holds), and that is for her (titles,
+ * frames and specials are everyone's; a coat never is a quiz look).
+ */
+export function triviaLookGrants(catalog: LookCatalog, rungs: readonly number[], species?: SpeciesId): LookGrant[] {
+  const held = new Set(rungs);
+  const out: LookGrant[] = [];
+  for (const entry of catalogLooks(catalog)) {
+    if (entry.unlock.from !== "trivia" || !held.has(entry.unlock.rung) || !lookIsFor(entry, species)) continue;
+    out.push({ id: entry.id, from: "trivia", rung: entry.unlock.rung, source: TRIVIA_LOOK_SOURCE });
+  }
+  return out;
+}
+
 /**
  * Her look as it stands (§6, camp.md §12.3): what is stored, or an empty
  * look, with every milestone her own row says she holds added as a receipt
@@ -237,11 +259,19 @@ export function foundLookGrants(
 export function readEarnedLook(
   catalog: LookCatalog | null | undefined,
   character: Pick<Character, "look"> & Partial<Pick<Character, "species" | "committed" | "provisional" | "finished">>,
-  options: { camp?: LookCampStanding | null; names?: LookNames; also?: readonly MilestoneStanding[] } = {},
+  options: {
+    camp?: LookCampStanding | null;
+    names?: LookNames;
+    also?: readonly MilestoneStanding[];
+    /** Her quiz rungs (`TriviaRecord.rungs`), so a hero made after a rung still gets its looks (docs/trivia.md §5.1). */
+    triviaRungs?: readonly number[];
+  } = {},
 ): HeroLook {
   const stored = character.look ?? emptyLook();
   if (!catalog) return stored;
-  return withLookGrants(stored, milestoneGrants(earnedLooks(catalog, heroLookStanding(character, options.also, options.camp), options.names)));
+  const grants = milestoneGrants(earnedLooks(catalog, heroLookStanding(character, options.also, options.camp), options.names));
+  if (options.triviaRungs?.length) grants.push(...triviaLookGrants(catalog, options.triviaRungs, character.species));
+  return withLookGrants(stored, grants);
 }
 
 /** Whether a look has anything to show or keep: a choice or a receipt. A look with neither is as good as none. */

@@ -8,7 +8,8 @@
  */
 
 import { useEffect } from "react";
-import type { FieldGuide } from "@kad/shared";
+import { TRIVIA_GROUPS, triviaBankOf } from "@kad/shared";
+import type { FieldGuide, TriviaBank, TriviaBankFile, TriviaLadder } from "@kad/shared";
 import { useGameStore } from "../store";
 
 /**
@@ -34,6 +35,45 @@ export function loadFieldGuide(): Promise<FieldGuide> {
 /** Test seam: forget the cached guide. */
 export function resetFieldGuideCache(): void {
   fieldGuide = null;
+}
+
+/** The Field Guide quiz's content (docs/trivia.md §6.2): every question, and the ladder. */
+export interface TriviaContent {
+  bank: TriviaBank;
+  ladder: TriviaLadder;
+}
+
+let triviaContent: Promise<TriviaContent> | null = null;
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`${url}: ${response.status}`);
+  return (await response.json()) as T;
+}
+
+/**
+ * `content/trivia/<group>.json` for every group, as one bank, and
+ * `content/trivia/ladder.json`, fetched on first ask and kept, the way the
+ * field guide is. The service worker precaches every file
+ * (`SW_PRECACHE_CONTENT`), so the quiz opens offline. A failed fetch clears
+ * the cache so the next ask retries.
+ */
+export function loadTriviaContent(): Promise<TriviaContent> {
+  triviaContent ??= Promise.all([
+    Promise.all(TRIVIA_GROUPS.map((group) => fetchJson<TriviaBankFile>(`/content/trivia/${group}.json`))),
+    fetchJson<TriviaLadder>("/content/trivia/ladder.json"),
+  ])
+    .then(([files, ladder]) => ({ bank: triviaBankOf(files), ladder: { rungs: ladder.rungs, firstTry: ladder.firstTry } }))
+    .catch((error: unknown) => {
+      triviaContent = null;
+      throw error;
+    });
+  return triviaContent;
+}
+
+/** Test seam: forget the cached quiz content. */
+export function resetTriviaContentCache(): void {
+  triviaContent = null;
 }
 
 export function useEnsureContent(): void {

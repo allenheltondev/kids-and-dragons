@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/trivia-ladder.schema.json",
+  "title": "Field Guide quiz ladder",
+  "description": "content/trivia/ladder.json: the rewards for questions mastered (docs/trivia.md §5). Mirrors TriviaLadder in packages/shared/src/types/trivia.ts. tools/content/trivia-bank.mjs checks rungs ascending, badge ids unique, and every title a trivia look in content/looks.json at its rung.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "rungs",
+    "firstTry"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "$comment": {
+      "type": "string"
+    },
+    "rungs": {
+      "description": "The main ladder, smallest first: each a badge, a title, or both.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rung"
+      }
+    },
+    "firstTry": {
+      "description": "Questions mastered on the first ask, smallest first: badges only.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/firstTry"
+      }
+    }
+  },
+  "$defs": {
+    "badge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "blurb"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^trivia-[a-z0-9-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "blurb": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140,
+          "pattern": "^[^\\u2014]*$"
+        }
+      }
+    },
+    "rung": {
+      "description": "One rung: at, and a badge, a title, or both.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at"
+      ],
+      "minProperties": 2,
+      "properties": {
+        "at": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "badge": {
+          "$ref": "#/$defs/badge"
+        },
+        "title": {
+          "description": "A title id in content/looks.json whose unlock is { \"from\": \"trivia\", \"rung\": <at> }.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      }
+    },
+    "firstTry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "badge"
+      ],
+      "properties": {
+        "at": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "badge": {
+          "$ref": "#/$defs/badge"
+        }
+      }
+    }
+  }
+}
