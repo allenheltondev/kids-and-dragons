@@ -66,6 +66,22 @@ describe("a seeded table", () => {
     }
   });
 
+  it("records the Field Guide pages asked for as the first phone's finds, oldest first", async () => {
+    const h = harness();
+    const seeded = await seed(h, {
+      mode: "party",
+      tv: true,
+      heroes: [{ name: "Sam", species: "unicorn" }],
+      ready: false,
+      guide: ["creature.bone_crawler", "biome.plains"],
+    });
+    const book = await h.repo.getFieldGuide(seeded.phones[0]!.householdId);
+    expect(Object.keys(book.entries).sort()).toEqual(["biome.plains", "creature.bone_crawler"]);
+    expect(book.entries["creature.bone_crawler"]!.firstFoundBy).toBe(seeded.phones[0]!.playerId);
+    expect(book.entries["creature.bone_crawler"]!.foundAt < book.entries["biome.plains"]!.foundAt).toBe(true);
+    expect(readSeedRequest({ mode: "party", tv: true, heroes: [], guide: "creature.bone_crawler" })).toMatch(/guide/);
+  });
+
   it("is a phone's own room when there is no TV: the first hero hosts it", async () => {
     const h = harness();
     const seeded = await seed(h, {

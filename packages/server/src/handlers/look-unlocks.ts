@@ -30,7 +30,7 @@
  * earned) is written and not announced.
  *
  * `heroLookOf` is the read side: her stored look with every milestone her row
- * (and, given one, her crew's camp) says she holds, which every server view
+ * (and, given one, her crew's camp, and given them her quiz rungs) says she holds, which every server view
  * of her look goes through, so the book and the table offer what she has
  * earned even before anything has been written for her.
  */
@@ -92,9 +92,17 @@ export function campStanding(camp: Pick<CampView, "friends" | "frameStage"> | nu
 export function heroLookOf(
   hero: Character,
   deps: Pick<CampDeps, "content">,
-  options: { camp?: LookCampStanding | null } = {},
+  options: {
+    camp?: LookCampStanding | null;
+    /** Her owner's quiz rungs (trivia.ts `triviaRungsOf`), so a quiz title not yet written to her is read back (docs/trivia.md §5.1). */
+    triviaRungs?: readonly number[];
+  } = {},
 ): HeroLook | null {
-  const look = readEarnedLook(deps.content.looksCatalog(), hero, { camp: options.camp ?? null, names: lookNames(deps) });
+  const look = readEarnedLook(deps.content.looksCatalog(), hero, {
+    camp: options.camp ?? null,
+    names: lookNames(deps),
+    ...(options.triviaRungs?.length ? { triviaRungs: options.triviaRungs } : {}),
+  });
   return lookHasAnything(look) ? look : null;
 }
 

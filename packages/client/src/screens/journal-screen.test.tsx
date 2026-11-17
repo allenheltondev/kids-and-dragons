@@ -18,6 +18,7 @@ import { useGameStore } from "../store";
 import { getFieldGuideDiscoveries, setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { currentRoute, navigate } from "../router";
 import { JournalScreen, savedWhen } from "./JournalScreen";
+import { resetFieldGuideCache, resetTriviaContentCache } from "./content";
 
 const ITEMS: ItemCatalog = {
   honey_cake: { kind: "consumable", name: "Honey Cake", text: "Heals a little. Tastes like summer.", icon: "potion" },
@@ -192,6 +193,45 @@ describe("JournalScreen", () => {
       expect(getFieldGuideDiscoveries()).toEqual(later);
       unmount();
       expect(getFieldGuideDiscoveries()).toEqual(later);
+    });
+
+    it("keeps the Field Guide quiz off the book while a scene is live, and offers it in downtime (docs/trivia.md §2)", async () => {
+      const question = {
+        id: "biome.sunward_fields.color", entry: "biome.sunward_fields", ask: "What color are the Sunward Fields?", answer: "Gold",
+        wrong: ["Blue", "Gray", "Pink", "Black", "White"], also: [], link: "entry",
+      };
+      const guide = { version: 1, entries: { "biome.sunward_fields": { id: "biome.sunward_fields", category: "places", kind: "biome", title: "The Sunward Fields", art: "/assets/biomes/sunward_fields/bg.webp" } } };
+      vi.stubGlobal("fetch", async (url: string) => {
+        const json = (body: unknown) => new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
+        if (url === "/content/field-guide.json") return json(guide);
+        if (url === "/content/trivia/ladder.json") return json({ rungs: [], firstTry: [] });
+        if (url === "/content/trivia/biomes.json") return json({ questions: [question] });
+        if (url.startsWith("/content/trivia/")) return json({ questions: [] });
+        throw new TypeError(url);
+      });
+      resetFieldGuideCache();
+      resetTriviaContentCache();
+      try {
+        seat(null, { sceneType: "rest" });
+        // Seated, the room feeds the guide.
+        setFieldGuideDiscoveries(journal().fieldGuide);
+        const user = userEvent.setup();
+        mount(journal());
+        await user.click(await screen.findByRole("button", { name: "Guide" }));
+        expect(await screen.findByText("1 of 1 found")).toBeTruthy();
+        // Downtime (a rest): the quiz is offered.
+        expect(await screen.findByRole("button", { name: "Quiz" })).toBeTruthy();
+        // The next scene goes live: the quiz is put away until the next rest.
+        act(() => {
+          useGameStore.setState({ state: makeState({ roomCode: "WXYZ", phase: "scene", sceneType: "story", party: [makeMember({ playerId: "p_1", character: SPARKLEHOOF })] }) });
+        });
+        expect(screen.queryByTestId("quiz-open")).toBeNull();
+        expect(screen.getByText("1 of 1 found")).toBeTruthy();
+      } finally {
+        vi.unstubAllGlobals();
+        resetFieldGuideCache();
+        resetTriviaContentCache();
+      }
     });
 
     it("wakes the game's stream when the signal goes, as the game's own pages do", async () => {

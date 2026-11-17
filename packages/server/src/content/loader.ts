@@ -20,7 +20,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { checkEncounterEnvironment, EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
+import { checkEncounterEnvironment, EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy, TRIVIA_GROUPS } from "@kad/shared";
 import {
   campaignMode,
   chapterFlagWrites,
@@ -48,6 +48,10 @@ import type {
   RulesContent,
   Scene,
   SceneId,
+  TriviaBank,
+  TriviaBankFile,
+  TriviaLadder,
+  TriviaQuestion,
   WorldMap,
 } from "@kad/shared";
 import { contentDir } from "../paths.ts";
@@ -171,6 +175,16 @@ export interface ContentStore {
    * none: then no look can be chosen, and every hero draws as before looks.
    */
   looksCatalog(): LookCatalog | null;
+  /**
+   * The Field Guide quiz's questions (docs/trivia.md §3), every
+   * `content/trivia/<group>.json` in `TRIVIA_GROUPS` order, as one bank.
+   * `null` when the content set has no `content/trivia/`: then the quiz has
+   * nothing to ask and every answer is refused. `content:validate`
+   * (tools/content/trivia-bank.mjs) checks the shipped one.
+   */
+  triviaBank(): TriviaBank | null;
+  /** `content/trivia/ladder.json` (docs/trivia.md §5). `null` when there is none: no rung is granted. */
+  triviaLadder(): TriviaLadder | null;
 }
 
 class LoadedContent implements ContentStore {
@@ -186,10 +200,19 @@ class LoadedContent implements ContentStore {
     private readonly _bestiary: Bestiary | null = null,
     private readonly _campCatalog: CampCatalog | null = null,
     private readonly _looksCatalog: LookCatalog | null = null,
+    private readonly _trivia: { bank: TriviaBank | null; ladder: TriviaLadder | null } = { bank: null, ladder: null },
   ) {}
 
   looksCatalog(): LookCatalog | null {
     return this._looksCatalog;
+  }
+
+  triviaBank(): TriviaBank | null {
+    return this._trivia.bank;
+  }
+
+  triviaLadder(): TriviaLadder | null {
+    return this._trivia.ladder;
   }
 
   world(): WorldMap | null {
@@ -459,7 +482,31 @@ async function readAll(root: string): Promise<ContentStore> {
         titles: looksFile.titles,
       }
     : null;
-  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary, camp, looks);
+  const trivia = await readTrivia(root);
+  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary, camp, looks, trivia);
+}
+
+/**
+ * The Field Guide quiz (docs/trivia.md): every group's bank file and the
+ * ladder, optional the same way as the looks catalog. A missing group file is
+ * an empty group; no `trivia/` at all is no quiz. Only the shape is checked
+ * here: `content:validate` (tools/content/trivia-bank.mjs) checks the rest.
+ */
+async function readTrivia(root: string): Promise<{ bank: TriviaBank | null; ladder: TriviaLadder | null }> {
+  const dir = path.join(root, "trivia");
+  try {
+    await fs.access(dir);
+  } catch {
+    return { bank: null, ladder: null };
+  }
+  const bank: TriviaQuestion[] = [];
+  for (const group of TRIVIA_GROUPS) {
+    const file = await readJson<TriviaBankFile>(path.join(dir, `${group}.json`), []);
+    if (file && Array.isArray(file.questions)) bank.push(...file.questions);
+  }
+  const ladderFile = await readJson<TriviaLadder>(path.join(dir, "ladder.json"), []);
+  const ladder = ladderFile && Array.isArray(ladderFile.rungs) && Array.isArray(ladderFile.firstTry) ? { rungs: ladderFile.rungs, firstTry: ladderFile.firstTry } : null;
+  return { bank, ladder };
 }
 
 /**

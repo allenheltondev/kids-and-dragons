@@ -92,6 +92,13 @@ export interface SeedRequest {
    * table is remembered here, and only dev-server.ts asks (`withSeededDice`).
    */
   dice?: number;
+  /**
+   * Field Guide pages the new household has found (canon ids, as
+   * content/field-guide.json names them), recorded as the first phone's finds,
+   * oldest first, before anybody acts. For looking at the adventure book's
+   * Guide and its quiz (docs/trivia.md) without playing a campaign first.
+   */
+  guide?: string[];
 }
 
 /** A seeded camp (`SeedRequest.camp`). */
@@ -173,6 +180,8 @@ export function readSeedRequest(body: unknown): SeedRequest | string {
   if (b.crews !== undefined && (!Array.isArray(b.crews) || b.crews.length > 3 || b.code !== undefined || b.tv === true)) return "crews is a short list, for a new household a phone opens";
   if (b.dice !== undefined && (typeof b.dice !== "number" || !Number.isInteger(b.dice) || b.dice < 1 || b.dice > 20)) return "dice must be a d20 face, 1 to 20";
   if (b.dice !== undefined && b.code !== undefined) return "dice loads a new table's die, not one already rolling";
+  if (b.guide !== undefined && (!Array.isArray(b.guide) || b.guide.length > 500 || !b.guide.every((id) => typeof id === "string"))) return "guide is a list of Field Guide ids";
+  if (b.guide !== undefined && b.code !== undefined) return "guide is for a new household";
   return b as unknown as SeedRequest;
 }
 
@@ -278,6 +287,15 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
   const runId = phones[0]?.session.runId ?? (await deps.repo.getRoom(code))?.runId;
   if (!runId) return fail("NOT_FOUND", `no open room ${code}`);
   if (input.dice !== undefined) loadedDice.set(runId, input.dice);
+  const finder = phones[0];
+  if (input.guide?.length && finder) {
+    // A minute apart, oldest first, so the quiz's "newest finds more often" has an order to read.
+    const start = Date.now() - input.guide.length * 60_000;
+    await deps.repo.recordDiscoveries(
+      finder.householdId,
+      input.guide.map((canonId, i) => ({ canonId, playerId: finder.playerId, runId, foundAt: new Date(start + i * 60_000).toISOString() })),
+    );
+  }
   deps = withSeededDice(deps, runId);
 
   // The rest is what the phones send.

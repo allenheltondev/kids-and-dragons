@@ -551,6 +551,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         ]);
         await repo.putRun({ id: "r_1", householdId: "h_club", roomCode: "ABCD", campaignId: "gemfall", status: "complete", createdAt: T });
         await repo.putCampaignProgress({ householdId: "h_club", campaignId: "gemfall", status: "active", setbacks: 1, updatedAt: T });
+        expect(await repo.putTrivia({ householdId: "h_club", playerId: "p_ada", record: { v: 1, mastered: {}, missed: {}, rungs: [10] }, expectedRevision: 0 })).toBe(true);
         expect(await repo.putTransferCodeIfAbsent(code())).toBe(true);
       }
 
@@ -568,6 +569,16 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.getPlayer("h_home", "p_ada")).toBeNull();
         await repo.endRetiring("h_home");
         expect(await move({ householdId: "h_home" })).toBe("moved");
+      });
+
+      it("moves nothing when her quiz record was written after the read", async () => {
+        await club();
+        const read = await repo.readProfileMove("h_club", "p_ada");
+        expect(await repo.putTrivia({ householdId: "h_club", playerId: "p_ada", record: { v: 1, mastered: {}, missed: {}, rungs: [10, 25] }, expectedRevision: 1 })).toBe(true);
+        expect(await repo.moveProfile({ move: read!, code: "MOVEHERNOW", nowIso: nowIso(), to: { householdId: "h_home" }, forwardTtl: forwardTtl() })).toBe("changed");
+        expect(await repo.getTrivia("h_club", "p_ada")).toMatchObject({ revision: 2 });
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+        expect(await repo.getTrivia("h_home", "p_ada")).toMatchObject({ record: { rungs: [10, 25] }, revision: 2 });
       });
 
       it("reads what is hers and nothing else", async () => {
@@ -591,6 +602,9 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(ada?.retired).toBeUndefined();
         // What she chose for her page (#299) is hers, so it moved with her.
         expect(ada?.flair).toEqual({ v: 1, color: "berry", frames: { c_spark: "ivy" } });
+        // Her quiz record (docs/trivia.md §6.1) is on her row, so it moved with her too.
+        expect(await repo.getTrivia("h_home", "p_ada")).toEqual({ record: { v: 1, mastered: {}, missed: {}, rungs: [10] }, revision: 1 });
+        expect(await repo.getTrivia("h_club", "p_ada")).toBeNull();
         expect((await repo.getCharacter("h_home", "c_spark"))?.committed.level).toBe(3);
         expect((await repo.getCharacter("h_home", "c_spark"))?.householdId).toBe("h_home");
         expect((await repo.listCharacters("h_home")).map((c) => c.id).sort()).toEqual(["c_moth", "c_spark"]);
@@ -1215,6 +1229,36 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.getLastPlayed("h_1", "p_1")).toBeNull();
         expect(await repo.readProfileMove("h_1", "p_1")).toBeNull();
         expect(await rows(repo)).not.toContain("HH#h_1 PLAYER#p_1");
+      });
+
+      it("keeps her quiz record beside her profile, conditional on its revision (docs/trivia.md §6.1)", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        expect(await repo.getTrivia("h_1", "p_1")).toBeNull();
+        // Never makes a profile row.
+        const record = { v: 1, mastered: { "creature.a.b": { at, firstTry: true } }, missed: {}, rungs: [] };
+        expect(await repo.putTrivia({ householdId: "h_1", playerId: "p_1", record, expectedRevision: 0 })).toBe(false);
+        expect(await rows(repo)).not.toContain("HH#h_1 PLAYER#p_1");
+
+        await repo.putPlayer(player("p_1"));
+        expect(await repo.getTrivia("h_1", "p_1")).toEqual({ record: null, revision: 0 });
+        expect(await repo.putTrivia({ householdId: "h_1", playerId: "p_1", record, expectedRevision: 0 })).toBe(true);
+        // A second writer that read revision 0 loses the race.
+        expect(await repo.putTrivia({ householdId: "h_1", playerId: "p_1", record: { ...record, rungs: [10] }, expectedRevision: 0 })).toBe(false);
+        expect(await repo.getTrivia("h_1", "p_1")).toEqual({ record, revision: 1 });
+        expect(await repo.putTrivia({ householdId: "h_1", playerId: "p_1", record: { ...record, rungs: [10] }, expectedRevision: 1 })).toBe(true);
+
+        // Her profile's writes and a join leave it alone, and it leaves them alone.
+        await repo.touchPlayer("h_1", "p_1", at, null);
+        await repo.putPlayer({ ...player("p_1"), displayName: "Ada" });
+        expect(await repo.getTrivia("h_1", "p_1")).toEqual({ record: { ...record, rungs: [10] }, revision: 2 });
+        expect((await repo.getPlayer("h_1", "p_1"))?.displayName).toBe("Ada");
+        expect(await repo.getLastPlayed("h_1", "p_1")).toBe(at);
+
+        // It goes when she does.
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(true);
+        expect(await repo.getTrivia("h_1", "p_1")).toBeNull();
+        expect(await repo.putTrivia({ householdId: "h_1", playerId: "p_1", record, expectedRevision: 2 })).toBe(false);
+        expect((await rows(repo)).filter((r) => r.includes("p_1"))).toEqual([]);
       });
 
       it("deletes an idle kid only if she has not played since the cutoff", async () => {

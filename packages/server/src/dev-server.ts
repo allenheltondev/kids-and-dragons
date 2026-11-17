@@ -62,6 +62,7 @@ import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { editKitFromBook } from "./handlers/camp-book.ts";
+import { answerTrivia } from "./handlers/trivia.ts";
 import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
 import { checkHealth, wantsDeep } from "./handlers/health.ts";
@@ -837,6 +838,18 @@ async function main(): Promise<void> {
     const kid = await resolveKid(req, base);
     if (!kid) return sendError(res, 401, "FORBIDDEN", "the adventure book needs this device's token");
     const result = await editKitFromBook({ householdId: kid.householdId, playerId: kid.playerId, body: req.body ?? {} }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // A batch of a kid's queued quiz answers (see handlers/trivia.ts).
+  app.post("/api/journal/trivia", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const kid = await resolveKid(req, base);
+    if (!kid) return sendError(res, 401, "FORBIDDEN", "the quiz needs this device's token");
+    const result = await answerTrivia({ householdId: kid.householdId, playerId: kid.playerId, body: req.body ?? {} }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

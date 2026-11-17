@@ -26,10 +26,13 @@
  * her room session straight away, or not at all.
  */
 
-import { bookFieldNames, type BookKitChange, type BookKitRequest, type BookKitResponse, type HeroLookView, type JournalKit } from "@kad/shared";
+import { bookFieldNames, catalogLook, type BookKitChange, type BookKitRequest, type BookKitResponse, type HeroLookView, type JournalKit } from "@kad/shared";
 import { ApiError, request } from "../sync/client";
 import { loadPlayerDeviceToken } from "./persistence";
 import { useGameStore } from "./index";
+import { LOOKS } from "../world/hero-name";
+import { hasQueuedTriviaAnswers } from "./trivia-queue";
+import { pendingTriviaAnswers, triviaSendsSettled } from "./book-trivia-sync";
 import {
   demoteQueuedKitChange,
   dropKitQueue,
@@ -129,12 +132,13 @@ function send(body: BookKitRequest, auth: { deviceToken: string } | { sessionTok
 async function saveKit(deviceToken: string, characterId: string, kit: JournalKit, look?: HeroLookView): Promise<void> {
   try {
     const db = await import("./journal-db");
-    const saved = await db.loadSavedJournal(deviceToken);
-    if (!saved) return;
-    const camp = saved.journal.camp ? { ...saved.journal.camp, kits: { ...saved.journal.camp.kits, [characterId]: kit } } : undefined;
-    const heroes = look ? saved.journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : saved.journal.heroes;
-    if (!camp && !look) return;
-    await db.saveJournal({ ...saved, journal: { ...saved.journal, heroes, ...(camp ? { camp } : {}) } });
+    // One read, patch and write, in the saved book's lane, so a quiz answer saved at the same time is kept.
+    await db.updateSavedJournal(deviceToken, (journal) => {
+      const camp = journal.camp ? { ...journal.camp, kits: { ...journal.camp.kits, [characterId]: kit } } : undefined;
+      const heroes = look ? journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : journal.heroes;
+      if (!camp && !look) return null;
+      return { ...journal, heroes, ...(camp ? { camp } : {}) };
+    });
   } catch {
     /* the next read with a signal saves it */
   }
@@ -170,6 +174,16 @@ export function flushKitQueue(apply: ApplyKit): Promise<void> {
   return running;
 }
 
+/**
+ * Whether a change picks a look the quiz gives (docs/trivia.md §5.1): a title
+ * earned offline is only hers on the server once the answers that earn it
+ * have landed, so the change waits behind them rather than being refused as
+ * "not a pick she has" and let go for good.
+ */
+export function dependsOnQuiz(changes: readonly BookKitChange[]): boolean {
+  return changes.some((change) => change.after !== null && catalogLook(LOOKS, change.after)?.unlock.from === "trivia");
+}
+
 /** A 4xx that says "not now" rather than "never": a timeout or a throttle. The change waits and is sent again. */
 const RETRYABLE: ReadonlySet<number> = new Set([408, 425, 429]);
 
@@ -187,6 +201,12 @@ async function drain(apply: ApplyKit): Promise<void> {
     if (typeof navigator !== "undefined" && navigator.onLine === false) {
       demoteQueuedKitChange(deviceToken, entry.id);
       waitForSignal();
+      return;
+    }
+    if (hasQueuedTriviaAnswers() && dependsOnQuiz(entry.changes)) {
+      // Her quiz answers have not landed yet (no signal, or the server could not take them just now):
+      // this pick and everything after it wait, in order, and go once they have (the book sends answers first).
+      setStatus({ offline: true });
       return;
     }
     busy = entry.id;
@@ -251,7 +271,9 @@ export async function editBookKit(
   const entry: QueuedKitChange = { id: `pending-${String(++pendingSeq)}`, ...input, changes: [...input.changes], direct: true, at: new Date().toISOString() };
   pending = [...pending, entry];
   emit();
-  const sent = chain.then(async () => {
+  // A pick the quiz gives waits for her answers in flight to land first (`dependsOnQuiz`).
+  const quiz = pendingTriviaAnswers().length > 0 && dependsOnQuiz(input.changes) ? triviaSendsSettled() : Promise.resolve();
+  const sent = Promise.all([chain, quiz]).then(async () => {
     try {
       const response = await send(bodyOf({ ...input, direct: true }), { sessionToken });
       apply(input.characterId, response.kit, response.look);

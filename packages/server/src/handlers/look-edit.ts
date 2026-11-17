@@ -39,6 +39,7 @@ import { rewrite } from "./claim.ts";
 import { CAMP_WRITE_ATTEMPTS, type CampDeps, type CampWriteResult } from "./camp.ts";
 import type { HandlerDeps } from "./deps.ts";
 import { campStanding, lookNames } from "./look-unlocks.ts";
+import { heroTriviaRungs } from "./trivia.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
 
@@ -98,7 +99,9 @@ export async function prepareLookEdit(
   if (!hero) return { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } };
   // Her look with every milestone she holds (#669), her crew's included: the
   // write below stores what was read, so a backfilled receipt is kept.
-  const stored = readEarnedLook(catalog, hero, { camp: campStanding(state.camp), names: lookNames(deps) });
+  // And every quiz title her owner's rungs give (docs/trivia.md §5.1), for a hero made after them.
+  const triviaRungs = await heroTriviaRungs(hero, deps);
+  const stored = readEarnedLook(catalog, hero, { camp: campStanding(state.camp), names: lookNames(deps), triviaRungs });
   if (stored.revision !== intent.revision) {
     // Changed elsewhere since (the book, another phone): the newer look stands.
     const error: EditError = { code: "STALE_DECISION", message: "Your look changed on another screen. Look again." };
@@ -129,7 +132,11 @@ export async function mutateLook(
   characterId: string,
   fn: (look: HeroLook, hero: Character) => LookEdit | null,
   deps: Pick<HandlerDeps, "repo"> & Partial<Pick<HandlerDeps, "content">>,
-  options: { camp?: LookCampStanding | null } = {},
+  options: {
+    camp?: LookCampStanding | null;
+    /** Her quiz rungs (trivia.ts `triviaRungsOf`): a quiz title not yet written to her is hers to pick, and this write keeps it. */
+    triviaRungs?: readonly number[];
+  } = {},
 ): Promise<CampWriteResult<HeroLook>> {
   let last: HeroLook | undefined;
   for (let attempt = 0; attempt < CAMP_WRITE_ATTEMPTS; attempt++) {
@@ -137,7 +144,13 @@ export async function mutateLook(
     if (!hero) return { ok: false, reason: "missing" };
     // With the content to hand, her look as she holds it (#669): her row's
     // milestones, and her crews' camps' given `camp`, read back and kept by this write.
-    const stored = deps.content ? readEarnedLook(deps.content.looksCatalog(), hero, { camp: options.camp ?? null, names: lookNames({ content: deps.content }) }) : readLook(hero);
+    const stored = deps.content
+      ? readEarnedLook(deps.content.looksCatalog(), hero, {
+          camp: options.camp ?? null,
+          names: lookNames({ content: deps.content }),
+          ...(options.triviaRungs?.length ? { triviaRungs: options.triviaRungs } : {}),
+        })
+      : readLook(hero);
     const edit = fn(structuredClone(stored), hero);
     if (edit === null || !lookEditChanges(stored, edit)) return { ok: true, value: stored, changed: false };
     last = stored;

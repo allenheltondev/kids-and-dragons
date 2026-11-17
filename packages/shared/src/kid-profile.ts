@@ -13,7 +13,10 @@
  * (`PlayerProfile.flair`, architecture §3.2). No photos, no free text.
  */
 
+import { triviaBadges } from "./trivia.ts";
+import type { TriviaCounts } from "./trivia.ts";
 import type { FinishedCampaign, Souvenir } from "./types/domain.js";
+import type { TriviaLadder } from "./types/trivia.js";
 
 /** Bumped when the stored shape of `ProfileFlair` changes (architecture §3.2). */
 export const PROFILE_FLAIR_VERSION = 1;
@@ -83,6 +86,14 @@ export interface BadgeInput {
   souvenirs: readonly Pick<Souvenir, "id">[];
   /** Field Guide entries credited to her. */
   finds: number;
+  /**
+   * Her Field Guide quiz (docs/trivia.md §5.1): questions mastered, and those
+   * mastered on the first ask (shared trivia.ts `triviaCounts`). Absent: no
+   * quiz badges.
+   */
+  trivia?: TriviaCounts;
+  /** `content/trivia/ladder.json`, whose badges `trivia` is read against. Absent: no quiz badges. */
+  triviaLadder?: TriviaLadder | null;
 }
 
 /** The finds a badge is given at, smallest first. */
@@ -128,6 +139,8 @@ export function deriveBadges(input: BadgeInput): Badge[] {
   for (const find of FIND_BADGES) {
     if (input.finds >= find.at) badges.push({ id: find.id, name: find.name, blurb: find.blurb });
   }
+  // The quiz's ladder, then its first-try track (docs/trivia.md §5).
+  if (input.trivia && input.triviaLadder) badges.push(...triviaBadges(input.trivia, input.triviaLadder));
   return badges;
 }
 

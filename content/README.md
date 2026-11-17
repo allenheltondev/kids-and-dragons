@@ -142,9 +142,21 @@ content/
   campaigns/<id>.json            a story arc, listing its chapters        → Campaign
   chapters/<id>.json             one ~30-minute sitting                   → Chapter
   maps/<id>.json                 encounter boards — rows + spawn points   → EncounterMap
+  trivia/<group>.json            the Field Guide quiz's questions, one file per group
+                                 (creatures, biomes, classes, landmarks, others) → TriviaBankFile
+  trivia/ladder.json             what right answers earn: badges and titles → TriviaLadder
 schemas/
   rules|abilities|items|chapter|campaign|map|help|camp.schema.json  JSON Schema, draft 2020-12
+  trivia|trivia-ladder.schema.json                                   the quiz (docs/trivia.md)
 ```
+
+**The quiz** (`content/trivia/`, [docs/trivia.md](../docs/trivia.md)) asks only about Field Guide
+pages a household has found. A question names its `entry`, lists in `also` every other page its
+ask or options name (the spoiler rule `content:validate` checks), has 5 or 6 wrong options, and a
+`link` (`entry`, or `shelf` when the answer is the page's own name). `npm run trivia:draft --
+<entry id>` proposes candidates from a page to edit, never to ship as they are. The validator's
+title match is whole words, so a plural ("yetis", "the stone trolls") is not caught: list those
+pages in `also` by hand.
 
 ## Authoring XP
 

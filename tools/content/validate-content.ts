@@ -59,6 +59,8 @@ import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 import { campCatalogProblems, chapterBefriends, chapterFinds } from "./camp-catalog.mjs";
 import { chapterLookFinds, looksCatalogProblems } from "./looks-catalog.mjs";
+import { LADDER as TRIVIA_LADDER, TRIVIA_DIR, triviaBankProblems } from "./trivia-bank.mjs";
+import { TRIVIA_GROUPS } from "../../packages/shared/src/types/trivia.ts";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 import type { AuthoredEnemySpec, Bestiary } from "../../packages/shared/src/bestiary.ts";
 import type { AbilityCatalog } from "../../packages/shared/src/encounter.ts";
@@ -409,7 +411,7 @@ function describe(err: ErrorObject): string {
 
 // ----------------------------------------------------------------------------- schema pass
 
-const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "looks", "voice-script", "voice-cast", "voice-lexicon"] as const;
+const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "looks", "trivia", "trivia-ladder", "voice-script", "voice-cast", "voice-lexicon"] as const;
 type SchemaName = (typeof SCHEMA_NAMES)[number];
 const AJV_OPTIONS = { allErrors: true, strict: true, allowUnionTypes: true } as const;
 
@@ -2405,6 +2407,63 @@ function check(rep: Report): void {
 
   rep.under("camp", () => checkCamp(rep, ajv, chaptersById, brokenChapterIds, new Set(loadedCampaigns.map(({ campaign }) => campaign.id))));
   rep.under("looks", () => checkLooks(rep, ajv, rules, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)), chaptersById));
+  rep.under("trivia", () => checkTrivia(rep, ajv, fieldGuide));
+}
+
+/**
+ * The Field Guide quiz (docs/trivia.md §3, §5): each group's bank file and
+ * the ladder against their schemas, then what the schemas cannot see
+ * (trivia-bank.mjs) against the Field Guide, the looks catalog and the art on
+ * disk. Every group has a file, empty or not, so a question cannot sit in a
+ * file nothing loads.
+ */
+/**
+ * Whether a quiz picture is there. The art is this checkout's, whichever tree
+ * is judged (REPO_ASSETS): a staged tree carries the content, not the paintings.
+ */
+function quizPictureExists(rep: Report): (path: string) => boolean {
+  return (path) => rep.set.exists(path) || (path.startsWith("assets/") && repoAssetExists(path.slice("assets/".length)));
+}
+
+function checkTrivia(rep: Report, ajv: Schemas, fieldGuide: FieldGuide | null): void {
+  rep.section("trivia");
+  const files: { path: string; data: unknown }[] = [];
+  let shaped = true;
+  for (const group of TRIVIA_GROUPS) {
+    const path = `${TRIVIA_DIR}/${group}.json`;
+    if (!rep.set.has(path)) {
+      rep.fail(path, "", `${path} is missing`, "Every quiz group has its file, with an empty questions list until it is written (docs/trivia.md §3).");
+      shaped = false;
+      continue;
+    }
+    const data = readJson<unknown>(rep, path);
+    if (data === null || !validateAgainstSchema(rep, ajv, "trivia", path, data)) {
+      shaped = false;
+      continue;
+    }
+    files.push({ path, data });
+  }
+  const known = new Set([...TRIVIA_GROUPS.map((g) => `${TRIVIA_DIR}/${g}.json`), TRIVIA_LADDER]);
+  for (const stray of rep.set.list(TRIVIA_DIR)) {
+    if (!known.has(stray)) rep.fail(stray, "", "is not a quiz group", `The quiz loads ${TRIVIA_GROUPS.join(", ")} and ladder.json only (shared TRIVIA_GROUPS).`);
+  }
+  let ladder: unknown = null;
+  if (!rep.set.has(TRIVIA_LADDER)) {
+    rep.fail(TRIVIA_LADDER, "", `${TRIVIA_LADDER} is missing`, "The quiz's rewards live there (docs/trivia.md §5).");
+    shaped = false;
+  } else {
+    ladder = readJson<unknown>(rep, TRIVIA_LADDER);
+    if (ladder === null || !validateAgainstSchema(rep, ajv, "trivia-ladder", TRIVIA_LADDER, ladder)) shaped = false;
+  }
+  if (!shaped) return;
+  const looks = rep.set.has("content/looks.json") ? (rep.set.json("content/looks.json") as LookCatalog | null) : null;
+  const problems = triviaBankProblems({ files, ladder, guide: fieldGuide ?? { entries: {} }, looks, exists: quizPictureExists(rep) });
+  for (const { file, at, problem, hint } of problems) rep.fail(file, at, problem, hint);
+  if (!problems.length) {
+    const count = files.reduce((n, f) => n + ((f.data as { questions?: unknown[] }).questions?.length ?? 0), 0);
+    const l = ladder as { rungs: unknown[]; firstTry: unknown[] };
+    rep.ok(`${TRIVIA_DIR}  trivia  (${count} question(s) in ${files.length} group(s); ladder of ${l.rungs.length} rung(s), ${l.firstTry.length} first-try)`);
+  }
 }
 
 /**

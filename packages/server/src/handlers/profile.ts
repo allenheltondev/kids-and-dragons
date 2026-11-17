@@ -15,13 +15,16 @@ import {
   deriveBadges,
   PROFILE_FLAIR_VERSION,
   readFlair,
+  triviaCounts,
   type Badge,
   type Character,
   type FieldGuideFind,
   type KidProfileView,
   type PlayerProfile,
+  type TriviaRecord,
 } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { readTrivia } from "./trivia.ts";
 
 export interface ProfileInput {
   householdId: string;
@@ -37,6 +40,8 @@ export function badgesOf(
   characters: readonly Character[],
   entries: Record<string, FieldGuideFind>,
   deps: Pick<HandlerDeps, "content">,
+  /** Her quiz record (docs/trivia.md §5.1), for the quiz's badges. Null: none read, so none shown. */
+  trivia: TriviaRecord | null = null,
 ): { badges: Badge[]; finds: KidProfileView["finds"] } {
   const mine = characters.filter((c) => c.ownerPlayerId === input.playerId);
   const credited = Object.entries(entries)
@@ -51,6 +56,7 @@ export function badgesOf(
     heroLevels: mine.map((c) => c.committed.level),
     souvenirs: mine.flatMap((c) => c.souvenirs),
     finds: credited.length,
+    ...(trivia ? { trivia: triviaCounts(trivia), triviaLadder: deps.content.triviaLadder() } : {}),
   });
   return { badges, finds: { count: credited.length, recent: credited.slice(0, HIGHLIGHTS).map(([id]) => id) } };
 }
@@ -62,8 +68,9 @@ export function viewOf(
   characters: readonly Character[],
   entries: Record<string, FieldGuideFind>,
   deps: Pick<HandlerDeps, "content">,
+  trivia: TriviaRecord | null = null,
 ): KidProfileView {
-  const { badges, finds } = badgesOf(input, characters, entries, deps);
+  const { badges, finds } = badgesOf(input, characters, entries, deps, trivia);
   const heroIds = new Set(characters.filter((c) => c.ownerPlayerId === input.playerId).map((c) => c.id));
   return {
     displayName: player.displayName,
@@ -81,14 +88,20 @@ export async function saveFlair(
   input: ProfileInput & { body: unknown },
   deps: HandlerDeps,
 ): Promise<HandlerResult<KidProfileView>> {
-  const [player, characters, book] = await Promise.all([
+  const [player, characters, book, trivia] = await Promise.all([
     deps.repo.getPlayer(input.householdId, input.playerId),
     deps.repo.listCharacters(input.householdId),
     deps.repo.getFieldGuide(input.householdId),
+    // Her quiz badges are hers to pick too. A record that cannot be read refuses
+    // none of the rest: only a quiz badge could not be picked just now.
+    readTrivia(input.householdId, input.playerId, deps).catch((err: unknown) => {
+      console.error(`profile: could not read ${input.playerId}'s quiz record:`, err);
+      return null;
+    }),
   ]);
   if (!player) return fail("NOT_FOUND", "no such player");
 
-  const { badges } = badgesOf(input, characters, book.entries, deps);
+  const { badges } = badgesOf(input, characters, book.entries, deps, trivia);
   const heroIds = new Set(characters.filter((c) => c.ownerPlayerId === input.playerId).map((c) => c.id));
   const checked = checkFlairRequest(input.body, heroIds, badges);
   if (!checked.ok) return fail("ILLEGAL", checked.message);
@@ -97,5 +110,5 @@ export async function saveFlair(
   const next: PlayerProfile = checked.flair ? { ...rest, flair: checked.flair } : rest;
   // `updatePlayer` writes only a profile that is there and not being deleted (#252).
   if (!(await deps.repo.updatePlayer(next))) return fail("NOT_FOUND", "no such player");
-  return ok(viewOf(input, next, characters, book.entries, deps));
+  return ok(viewOf(input, next, characters, book.entries, deps, trivia));
 }

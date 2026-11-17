@@ -1,0 +1,1025 @@
+{
+  "$schema": "../../schemas/trivia.schema.json",
+  "$comment": "Field Guide quiz questions about the biome pages (biome.*) (docs/trivia.md §3). Authored, never generated: `npm run trivia:draft -- <entry id>` proposes drafts to edit. Checked by `npm run content:validate` (tools/content/trivia-bank.mjs).",
+  "questions": [
+    {
+      "id": "biome.eastern_plains.people",
+      "entry": "biome.eastern_plains",
+      "ask": "Which people call the Eastern Plains their homeland?",
+      "answer": "Manticores",
+      "wrong": [
+        "Griffins",
+        "Dragonlings",
+        "Unicorns",
+        "Yetis",
+        "Centaurs"
+      ],
+      "also": [
+        "character.manticore",
+        "character.griffin",
+        "character.dragonling",
+        "character.unicorn",
+        "npc.yeti",
+        "npc.centaur"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "biome.eastern_plains.greeting",
+      "entry": "biome.eastern_plains",
+      "ask": "When you meet someone on the Eastern Plains, what should you do first?",
+      "answer": "Wave hello",
+      "wrong": [
+        "Bow very low",
+        "Shout your name",
+        "Offer a snack",
+        "Stand very still",
+        "Clap three times"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.eastern_plains.marker",
+      "entry": "biome.eastern_plains",
+      "ask": "You find a pride marker on the Eastern Plains. What should you do?",
+      "answer": "Walk around it",
+      "wrong": [
+        "Step right over it",
+        "Add a stone to it",
+        "Pick it up and carry it",
+        "Jump over it quickly",
+        "Knock on it twice"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.eastern_plains.riddles",
+      "entry": "biome.eastern_plains",
+      "ask": "On the Eastern Plains, what score do the prides keep with the bridge trolls?",
+      "answer": "Riddles",
+      "wrong": [
+        "Footraces",
+        "Arm wrestling",
+        "Pie contests",
+        "Coin tosses",
+        "Staring contests"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.eastern_plains.handover",
+      "entry": "biome.eastern_plains",
+      "ask": "Where do Eastern Plains escorts stop and hand travelers to new guides?",
+      "answer": "At the salty southern flats",
+      "wrong": [
+        "At the top of a glacier",
+        "Inside a dark cave",
+        "On a floating island",
+        "At the edge of a forest",
+        "Beside a coral reef"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.enchanted_woods.lost",
+      "entry": "biome.enchanted_woods",
+      "ask": "If you get lost in the Enchanted Woods, what should you do?",
+      "answer": "Say sorry to things, in order of size",
+      "wrong": [
+        "Climb the tallest tree you can find",
+        "Follow the prettiest path you see",
+        "Shout your name as loud as you can",
+        "Walk backward until you see the road",
+        "Sing until the trees get bored"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.enchanted_woods.pretty_path",
+      "entry": "biome.enchanted_woods",
+      "ask": "A path in the Enchanted Woods looks prettier than yesterday. What does that mean?",
+      "answer": "It wants something",
+      "wrong": [
+        "It is the safest way",
+        "It leads straight home",
+        "Someone just swept it",
+        "Spring came early",
+        "It is brand new"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.enchanted_woods.promises",
+      "entry": "biome.enchanted_woods",
+      "ask": "Why does the realm make its most serious promises in the Enchanted Woods?",
+      "answer": "The forest remembers them",
+      "wrong": [
+        "Nobody can overhear you there",
+        "The air makes people honest",
+        "It is the quietest place",
+        "Promises grow into trees there",
+        "It is halfway for everyone"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.enchanted_woods.reshelving",
+      "entry": "biome.enchanted_woods",
+      "ask": "What happened in the Enchanted Woods on the night called the Reshelving?",
+      "answer": "Every trail moved at once",
+      "wrong": [
+        "Every tree lost its leaves",
+        "The river ran backward",
+        "All the birds sang at midnight",
+        "The moon turned green",
+        "Snow fell in summer"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.enchanted_woods.lost_on_purpose",
+      "entry": "biome.enchanted_woods",
+      "ask": "Why do some people walk into the Enchanted Woods on purpose?",
+      "answer": "To get lost",
+      "wrong": [
+        "To find gold",
+        "To catch fireflies",
+        "To sleep in the trees",
+        "To pick berries",
+        "To hide from the rain"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.expanse.nothing_grows",
+      "entry": "biome.expanse",
+      "ask": "Why do people say nothing grows in the Expanse?",
+      "answer": "The ground has not decided what to be",
+      "wrong": [
+        "A dragon ate every seed",
+        "The wind blows them all away",
+        "The snow never melts",
+        "Nobody ever planted anything",
+        "The sun never shines there"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.expanse.wind",
+      "entry": "biome.expanse",
+      "ask": "What does the wind do over the Expanse, people say?",
+      "answer": "It practices before blowing anywhere else",
+      "wrong": [
+        "It sleeps all winter long",
+        "It sings old songs",
+        "It hides from the sun",
+        "It carries lost letters",
+        "It turns into snow"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.expanse.stories",
+      "entry": "biome.expanse",
+      "ask": "Every old story about the Expanse disagrees, except on one thing. What?",
+      "answer": "You do not go and check",
+      "wrong": [
+        "A great city once stood there",
+        "A dragon sleeps beneath it",
+        "It will bloom again someday",
+        "Giants built it long ago",
+        "Its name means empty"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.expanse.plateau",
+      "entry": "biome.expanse",
+      "ask": "If you can see the Expanse's plateau clearly, what is about to happen?",
+      "answer": "The weather will change its mind",
+      "wrong": [
+        "A storm will pass you by",
+        "Someone is coming home",
+        "It will be a lucky day",
+        "The moon will rise early",
+        "Spring is on its way"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.expanse.which",
+      "entry": "biome.expanse",
+      "ask": "Which place is a silent northern waste that the realm keeps its back to?",
+      "answer": "The Expanse",
+      "wrong": [
+        "Frostfang Peaks",
+        "Glacier of Origins",
+        "The Sallow Wastelands",
+        "Whispering Marsh",
+        "The Eastern Plains"
+      ],
+      "also": [
+        "biome.frostfang_peaks",
+        "biome.glacier_of_origins",
+        "biome.sallow_wastelands",
+        "biome.whispering_marsh",
+        "biome.eastern_plains"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "biome.frostfang_peaks.people",
+      "entry": "biome.frostfang_peaks",
+      "ask": "Which people live high up in the Frostfang Peaks?",
+      "answer": "Griffins",
+      "wrong": [
+        "Manticores",
+        "Dragonlings",
+        "Unicorns",
+        "Yetis",
+        "Centaurs"
+      ],
+      "also": [
+        "character.griffin",
+        "character.manticore",
+        "character.dragonling",
+        "character.unicorn",
+        "npc.yeti",
+        "npc.centaur"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "biome.frostfang_peaks.cairn",
+      "entry": "biome.frostfang_peaks",
+      "ask": "On the Frostfang Peaks, what does a re-stacked pile of stones tell you?",
+      "answer": "Someone is watching that route",
+      "wrong": [
+        "Treasure is buried below",
+        "A storm is coming",
+        "The path is closed",
+        "A goat lives nearby",
+        "Turn back at once"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.frostfang_peaks.watch_log",
+      "entry": "biome.frostfang_peaks",
+      "ask": "What word fills most nights of the Frostfang Peaks watch log?",
+      "answer": "Nothing",
+      "wrong": [
+        "Snow",
+        "Danger",
+        "Help",
+        "Wind",
+        "Storm",
+        "Visitors"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.frostfang_peaks.pass",
+      "entry": "biome.frostfang_peaks",
+      "ask": "What should you never say about a mountain pass in the Frostfang Peaks?",
+      "answer": "That it is probably fine",
+      "wrong": [
+        "That it is too steep",
+        "That it is pretty",
+        "That it is closed",
+        "That it is haunted",
+        "That it is short"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.frostfang_peaks.counting",
+      "entry": "biome.frostfang_peaks",
+      "ask": "Coming down the Frostfang Peaks, what does the mountain expect?",
+      "answer": "The same number of people who went up",
+      "wrong": [
+        "A gift left at the top",
+        "A song on the way down",
+        "Quiet footsteps only",
+        "A stone from the very top",
+        "Your name carved in the ice"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.glacier_of_origins.which",
+      "entry": "biome.glacier_of_origins",
+      "ask": "Which place is where the Great River begins?",
+      "answer": "Glacier of Origins",
+      "wrong": [
+        "Frostfang Peaks",
+        "Whispering Marsh",
+        "Enchanted Woods",
+        "Red Sky Foothills",
+        "The Sallow Wastelands"
+      ],
+      "also": [
+        "biome.frostfang_peaks",
+        "biome.whispering_marsh",
+        "biome.enchanted_woods",
+        "biome.red_sky_foothills",
+        "biome.sallow_wastelands"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "biome.glacier_of_origins.ice",
+      "entry": "biome.glacier_of_origins",
+      "ask": "What do people say is kept in the ice of the Glacier of Origins?",
+      "answer": "Old memories",
+      "wrong": [
+        "Frozen treasure",
+        "Lost ships",
+        "Ancient seeds",
+        "Giant footprints",
+        "Hidden gold"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.glacier_of_origins.shouting",
+      "entry": "biome.glacier_of_origins",
+      "ask": "Why should you never shout on the Glacier of Origins?",
+      "answer": "Nobody knows what you might wake",
+      "wrong": [
+        "The ice might crack",
+        "It scares the fish",
+        "The echo never stops",
+        "It starts a snow slide",
+        "It hurts the glacier's feelings"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.glacier_of_origins.tea",
+      "entry": "biome.glacier_of_origins",
+      "ask": "On the Glacier of Origins, what do yetis make from the most important meltwater years?",
+      "answer": "Tea",
+      "wrong": [
+        "Soup",
+        "Ice sculptures",
+        "Snow globes",
+        "Songs",
+        "Candles"
+      ],
+      "also": [
+        "npc.yeti"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "biome.glacier_of_origins.shown",
+      "entry": "biome.glacier_of_origins",
+      "ask": "If the ice of the Glacier of Origins shows you something, what does that mean?",
+      "answer": "It is now yours to deal with",
+      "wrong": [
+        "You should forget it fast",
+        "It is only a dream",
+        "You must tell nobody",
+        "It will happen tomorrow",
+        "You are very lucky"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.mermaid_cove.rescue",
+      "entry": "biome.mermaid_cove",
+      "ask": "If someone saves you from the water at Mermaid Cove, what do you owe?",
+      "answer": "A story at dinner",
+      "wrong": [
+        "A shiny shell",
+        "A day of work",
+        "A song at dawn",
+        "A gold coin",
+        "A new fishing net"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.mermaid_cove.promises",
+      "entry": "biome.mermaid_cove",
+      "ask": "At Mermaid Cove, what is special about promises?",
+      "answer": "Every promise is a real one",
+      "wrong": [
+        "They last only one day",
+        "They must be sung",
+        "Only elders can make them",
+        "They are written on shells",
+        "They can be traded for pearls"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.mermaid_cove.nightly",
+      "entry": "biome.mermaid_cove",
+      "ask": "What does Mermaid Cove hold every single night?",
+      "answer": "Song circles",
+      "wrong": [
+        "Fireworks",
+        "Boat races",
+        "Feasts on the beach",
+        "Lantern parades",
+        "Sandcastle contests"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.mermaid_cove.alliance",
+      "entry": "biome.mermaid_cove",
+      "ask": "What is still a mystery about Mermaid Cove's old alliance?",
+      "answer": "What it was made against",
+      "wrong": [
+        "Who signed it",
+        "Which shell it is written on",
+        "Who keeps the only copy",
+        "Whether it still holds",
+        "Where the signing took place"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.mermaid_cove.kindest",
+      "entry": "biome.mermaid_cove",
+      "ask": "What do sailors say about the water at Mermaid Cove?",
+      "answer": "It is the kindest water on the map",
+      "wrong": [
+        "It is the coldest water on the map",
+        "It is the deepest water on the map",
+        "It is the saltiest water on the map",
+        "It is the stormiest water on the map",
+        "It is the fastest water on the map"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.open_sea.owner",
+      "entry": "biome.open_sea",
+      "ask": "Who owns the Open Sea?",
+      "answer": "Nobody owns it",
+      "wrong": [
+        "The first sailors",
+        "The biggest harbor",
+        "A sea queen",
+        "Whoever sails it most",
+        "The oldest coast"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.open_sea.weather",
+      "entry": "biome.open_sea",
+      "ask": "What do people say about the weather out on the Open Sea?",
+      "answer": "It lives there",
+      "wrong": [
+        "It comes from the north",
+        "It follows the ships",
+        "It sleeps at night",
+        "It is always calm",
+        "It blows in from the land"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.open_sea.guest",
+      "entry": "biome.open_sea",
+      "ask": "On the Open Sea, out of sight of land, how should you speak?",
+      "answer": "Like a polite guest",
+      "wrong": [
+        "Very loudly",
+        "Only in whispers",
+        "Only in songs",
+        "Never about home",
+        "Only to the captain"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.open_sea.edge",
+      "entry": "biome.open_sea",
+      "ask": "What is past the edge of the map, beyond the Open Sea?",
+      "answer": "No one has ever checked",
+      "wrong": [
+        "A giant waterfall",
+        "A wall of ice",
+        "A ring of islands",
+        "The end of the world",
+        "A second sun"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.open_sea.accepts",
+      "entry": "biome.open_sea",
+      "ask": "People say the Open Sea does not take things. What does it do instead?",
+      "answer": "It accepts them",
+      "wrong": [
+        "It borrows them",
+        "It hides them",
+        "It returns them",
+        "It keeps them safe",
+        "It counts them"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.plains.news",
+      "entry": "biome.plains",
+      "ask": "What do people on the Plains say about news?",
+      "answer": "It arrives three days old",
+      "wrong": [
+        "It travels on the wind",
+        "It is always true",
+        "It comes by bird",
+        "It is sung at dawn",
+        "It is never shared"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.plains.camp",
+      "entry": "biome.plains",
+      "ask": "Where should you never camp on the Plains?",
+      "answer": "Where the road bends",
+      "wrong": [
+        "Beside the river",
+        "On top of a hill",
+        "Under a lone tree",
+        "Next to a signpost",
+        "In the tall grass"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.plains.songs",
+      "entry": "biome.plains",
+      "ask": "How do the centaurs keep the history of the Plains?",
+      "answer": "In songs, one verse per landmark",
+      "wrong": [
+        "In thick books",
+        "Carved on road stones",
+        "Woven into blankets",
+        "Painted on wagons",
+        "In knots tied on rope"
+      ],
+      "also": [
+        "npc.centaur"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "biome.plains.debate",
+      "entry": "biome.plains",
+      "ask": "What argument on the Plains has gone on for nine generations?",
+      "answer": "The Shortcut Debate",
+      "wrong": [
+        "The Road Width Debate",
+        "The Campfire Quarrel",
+        "The Signpost Argument",
+        "The Map Color Debate",
+        "The Wagon Wheel Quarrel"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.plains.proud",
+      "entry": "biome.plains",
+      "ask": "What are the Plains proud of being?",
+      "answer": "The space between other places",
+      "wrong": [
+        "The oldest land in the realm",
+        "The greenest place in the realm",
+        "The windiest place in the realm",
+        "The quietest corner of the realm",
+        "The home of every road builder"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.red_sky_foothills.people",
+      "entry": "biome.red_sky_foothills",
+      "ask": "Which people settled the Red Sky Foothills to keep an eye on the mountain?",
+      "answer": "Dragonlings",
+      "wrong": [
+        "Griffins",
+        "Manticores",
+        "Yetis",
+        "Centaurs",
+        "Unicorns"
+      ],
+      "also": [
+        "character.dragonling",
+        "character.griffin",
+        "character.manticore",
+        "npc.yeti",
+        "npc.centaur",
+        "character.unicorn"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "biome.red_sky_foothills.warm_cave",
+      "entry": "biome.red_sky_foothills",
+      "ask": "In the Red Sky Foothills, what should you do at a cave that stays warm all winter?",
+      "answer": "Knock, because it is someone's house",
+      "wrong": [
+        "Light a fire inside",
+        "Run away fast",
+        "Leave a gemstone inside",
+        "Sleep there for the night",
+        "Call down into it"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.red_sky_foothills.moths",
+      "entry": "biome.red_sky_foothills",
+      "ask": "In the Red Sky Foothills, what does it mean when the moths are leaving?",
+      "answer": "It is time to leave too",
+      "wrong": [
+        "Spring has come",
+        "Rain is coming",
+        "The flowers are blooming",
+        "A wedding is near",
+        "The gems are ready to pick"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.red_sky_foothills.gathering",
+      "entry": "biome.red_sky_foothills",
+      "ask": "What is the rule for gathering gemstones in the Red Sky Foothills?",
+      "answer": "Take only what the mountain drops",
+      "wrong": [
+        "Dig as deep as you like",
+        "Take one gem per visit",
+        "Gather only at night",
+        "Share half with a neighbor",
+        "Gather only in spring"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.red_sky_foothills.rent",
+      "entry": "biome.red_sky_foothills",
+      "ask": "How does the mountain pay its rent to the Red Sky Foothills?",
+      "answer": "In gemstones",
+      "wrong": [
+        "In warm springs",
+        "In rain",
+        "In fresh ash",
+        "In gold coins",
+        "In firewood"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sallow_wastelands.nickname",
+      "entry": "biome.sallow_wastelands",
+      "ask": "What do travelers often call the Sallow Wastelands?",
+      "answer": "The Saltrot",
+      "wrong": [
+        "The Mudmouth",
+        "The Gray Flats",
+        "The Soggy Mile",
+        "The Bogland",
+        "The Sinkfields"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sallow_wastelands.smooth_mud",
+      "entry": "biome.sallow_wastelands",
+      "ask": "In the Sallow Wastelands, where should you never step?",
+      "answer": "Where the mud is smooth",
+      "wrong": [
+        "Where the mud is bumpy",
+        "On the shell-banks",
+        "Where the grass is tall",
+        "Near the old trees",
+        "Where the ground looks wet"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sallow_wastelands.trust",
+      "entry": "biome.sallow_wastelands",
+      "ask": "How many times can you trust a path in the Sallow Wastelands?",
+      "answer": "Once",
+      "wrong": [
+        "Twice",
+        "Three times",
+        "Every day",
+        "Seven times",
+        "As often as you like"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sallow_wastelands.guides",
+      "entry": "biome.sallow_wastelands",
+      "ask": "Who knows the safe paths across the Sallow Wastelands?",
+      "answer": "Guides who learn them each season",
+      "wrong": [
+        "Old maps in the city",
+        "Birds that fly overhead",
+        "Anyone with good boots",
+        "Signposts along the way",
+        "Tide charts at the harbor"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sallow_wastelands.flood",
+      "entry": "biome.sallow_wastelands",
+      "ask": "What once washed up whole in the Sallow Wastelands after a flood?",
+      "answer": "A bridge",
+      "wrong": [
+        "A castle",
+        "A windmill",
+        "A lighthouse",
+        "A barn",
+        "A tower"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sky_islands.why_up",
+      "entry": "biome.sky_islands",
+      "ask": "In the story told to children, why did the Sky Islands leave the sea?",
+      "answer": "They got tired of it",
+      "wrong": [
+        "A storm blew them up",
+        "A wizard lifted them",
+        "They wanted to see the stars",
+        "Birds carried them away",
+        "The sea pushed them out"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sky_islands.whistling",
+      "entry": "biome.sky_islands",
+      "ask": "On the Sky Islands, what does whistling on a windless day do?",
+      "answer": "It asks the wind a question",
+      "wrong": [
+        "It blows the clouds away",
+        "It scares the birds away",
+        "It brings bad luck",
+        "It makes it rain",
+        "It wakes a sleeping island"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sky_islands.temples",
+      "entry": "biome.sky_islands",
+      "ask": "What do the Sky Islands temples argue about with no answer?",
+      "answer": "Who follows whom, islands or whales",
+      "wrong": [
+        "Which wind is fastest",
+        "Who sings the best songs",
+        "Whose turn it is to steer",
+        "Where the rain comes from",
+        "Who owns the clouds"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sky_islands.becalming",
+      "entry": "biome.sky_islands",
+      "ask": "What happened in the Great Becalming, on the Sky Islands?",
+      "answer": "The islands drifted into one big pile-up",
+      "wrong": [
+        "Every island fell into the sea",
+        "The wind blew for a year straight",
+        "All the clouds turned gold",
+        "The islands froze solid",
+        "The sky went dark for a week"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sky_islands.round_island",
+      "entry": "biome.sky_islands",
+      "ask": "Why do sailors never quite trust a very round island in the sea?",
+      "answer": "It might be a fallen sky island",
+      "wrong": [
+        "It might be a sleeping whale",
+        "It might sink at high tide",
+        "It might be full of crabs",
+        "It might drift away at night",
+        "It might be a giant turtle"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sunward_fields.which",
+      "entry": "biome.sunward_fields",
+      "ask": "Which place grows much of the realm's food?",
+      "answer": "The Sunward Fields",
+      "wrong": [
+        "The Plains",
+        "Whispering Marsh",
+        "Enchanted Woods",
+        "Red Sky Foothills",
+        "Mermaid Cove"
+      ],
+      "also": [
+        "biome.plains",
+        "biome.whispering_marsh",
+        "biome.enchanted_woods",
+        "biome.red_sky_foothills",
+        "biome.mermaid_cove"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "biome.sunward_fields.weather",
+      "entry": "biome.sunward_fields",
+      "ask": "Why should you never praise the weather in the Sunward Fields before the harvest?",
+      "answer": "It gets ideas",
+      "wrong": [
+        "It gets shy",
+        "It gets bored",
+        "It gets jealous",
+        "It falls asleep",
+        "It stops listening"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sunward_fields.scarecrow",
+      "entry": "biome.sunward_fields",
+      "ask": "In the Sunward Fields, what should you do with a scarecrow that works too well?",
+      "answer": "Introduce it at the next festival",
+      "wrong": [
+        "Take it down at once",
+        "Give it a new hat",
+        "Move it to another field",
+        "Thank it with a pie",
+        "Lock it in the barn"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sunward_fields.honeycake",
+      "entry": "biome.sunward_fields",
+      "ask": "In the Sunward Fields, why does nobody settle who invented the honeycake?",
+      "answer": "It would end four festivals",
+      "wrong": [
+        "Nobody remembers the recipe",
+        "The judges keep eating the cake",
+        "Each recipe is very different",
+        "The oldest baker refuses",
+        "The bees will not say"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.sunward_fields.history",
+      "entry": "biome.sunward_fields",
+      "ask": "How do the Sunward Fields remember their history?",
+      "answer": "As a calendar of festivals",
+      "wrong": [
+        "In a big stone book",
+        "On carved fence posts",
+        "With paintings on barns",
+        "In letters to the city",
+        "With knots tied in rope"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.whispering_marsh.whisper",
+      "entry": "biome.whispering_marsh",
+      "ask": "In the Whispering Marsh, what should you answer a whisper with?",
+      "answer": "A hum",
+      "wrong": [
+        "Your name",
+        "A whistle",
+        "A clap",
+        "A shout",
+        "A riddle"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.whispering_marsh.sinks",
+      "entry": "biome.whispering_marsh",
+      "ask": "In the Whispering Marsh, what happens to things that sink?",
+      "answer": "They are filed away",
+      "wrong": [
+        "They are lost forever",
+        "They float back up",
+        "They turn into frogs",
+        "They grow roots",
+        "They wash out to sea"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.whispering_marsh.visit",
+      "entry": "biome.whispering_marsh",
+      "ask": "Why do people visit the Whispering Marsh?",
+      "answer": "To hear voices they miss",
+      "wrong": [
+        "To catch giant fish",
+        "To pick marsh berries",
+        "To swim in warm pools",
+        "To race their boats",
+        "To dig for gold"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.whispering_marsh.light",
+      "entry": "biome.whispering_marsh",
+      "ask": "A light in the Whispering Marsh knows where you live. What does the guide say about that?",
+      "answer": "It learned that from somewhere",
+      "wrong": [
+        "It is your lucky star",
+        "It wants to visit you",
+        "It lives next door to you",
+        "It is only guessing",
+        "It can read your mind"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "biome.whispering_marsh.drawer",
+      "entry": "biome.whispering_marsh",
+      "ask": "People say the Whispering Marsh is the realm's what?",
+      "answer": "Quiet drawer",
+      "wrong": [
+        "Loud bell",
+        "Front door",
+        "Oldest road",
+        "Busy kitchen",
+        "Tall lookout"
+      ],
+      "also": [],
+      "link": "entry"
+    }
+  ]
+}

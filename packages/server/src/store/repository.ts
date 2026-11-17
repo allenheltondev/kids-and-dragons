@@ -26,7 +26,30 @@ import type {
   RoomMode,
   RunState,
   ServerMessage,
+  TriviaRecord,
 } from "@kad/shared";
+
+/**
+ * A kid's Field Guide quiz record as stored (docs/trivia.md §6.1): on her
+ * `PLAYER#` row, as top-level bookkeeping beside `data` (like
+ * `lastPlayedAt`), so a `putPlayer` from an older read never takes it away,
+ * it moves with her (#251) and it goes when she does (#252).
+ */
+export interface TriviaRow {
+  /** As stored, unread: the handler reads it tolerantly (shared `readTriviaRecord`). `null`: nothing written yet. */
+  record: unknown;
+  /** Bumped by every write; 0 while nothing has been written. What `putTrivia` is conditional on. */
+  revision: number;
+}
+
+/** One write of her quiz record (`putTrivia`). */
+export interface TriviaWrite {
+  householdId: string;
+  playerId: string;
+  record: TriviaRecord;
+  /** The revision read (`TriviaRow.revision`). The store writes `expectedRevision + 1`. */
+  expectedRevision: number;
+}
 
 /**
  * `FORGET#<playerId>` (#252): a kid being deleted, and every table that may
@@ -977,6 +1000,20 @@ export interface GameRepository {
   updatePlayer(player: PlayerProfile): Promise<boolean>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;
   listPlayers(householdId: string): Promise<PlayerProfile[]>;
+
+  // --- her quiz record (beside her profile; docs/trivia.md §6.1) ------------
+  /**
+   * Her quiz record and its revision, strongly consistent since a conditional
+   * write follows it. `null` when she is not there or is being deleted (as
+   * `getPlayer`); `{ record: null, revision: 0 }` while nothing is written.
+   */
+  getTrivia(householdId: string, playerId: string): Promise<TriviaRow | null>;
+  /**
+   * Write her quiz record over the revision read. `false`, and nothing
+   * written, when it has moved on since, or she is gone or being deleted:
+   * read again and retry. Never makes a profile row.
+   */
+  putTrivia(write: TriviaWrite): Promise<boolean>;
 
   putDevice(device: DeviceBinding): Promise<void>;
   /** GSI1 lookup — a returning phone resolves without knowing its household. */

@@ -91,7 +91,7 @@
     "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 },
     "name": { "type": "string", "minLength": 1, "maxLength": 24 },
     "unlock": {
-      "description": "How a look is had (§6): a free starter, a find, or a milestone (a tier, a class rank, a finished campaign, a camp friend, a camp milestone).",
+      "description": "How a look is had (§6): a free starter, a find, a milestone (a tier, a class rank, a finished campaign, a camp friend, a camp milestone), or a rung of the Field Guide quiz (docs/trivia.md §5.1).",
       "oneOf": [
         { "type": "object", "additionalProperties": false, "required": ["from"], "properties": { "from": { "enum": ["starter", "found"] } } },
         { "type": "object", "additionalProperties": false, "required": ["from", "tier"], "properties": { "from": { "const": "milestone" }, "tier": { "type": "string" } } },
@@ -111,7 +111,14 @@
         },
         { "type": "object", "additionalProperties": false, "required": ["from", "campaign"], "properties": { "from": { "const": "milestone" }, "campaign": { "type": "string" } } },
         { "type": "object", "additionalProperties": false, "required": ["from", "friend"], "properties": { "from": { "const": "milestone" }, "friend": { "type": "string" } } },
-        { "type": "object", "additionalProperties": false, "required": ["from", "camp"], "properties": { "from": { "const": "milestone" }, "camp": { "enum": ["firstFriend", "fullCamp"] } } }
+        { "type": "object", "additionalProperties": false, "required": ["from", "camp"], "properties": { "from": { "const": "milestone" }, "camp": { "enum": ["firstFriend", "fullCamp"] } } },
+        {
+          "description": "A rung of the Field Guide quiz's ladder (docs/trivia.md §5.1): rung is the questions mastered, and content/trivia/ladder.json must name this look at that rung. Titles, frames and specials only, never a coat.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["from", "rung"],
+          "properties": { "from": { "const": "trivia" }, "rung": { "type": "integer", "minimum": 1 } }
+        }
       ]
     }
   }

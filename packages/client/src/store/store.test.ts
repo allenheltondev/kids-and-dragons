@@ -489,6 +489,26 @@ describe("joining", () => {
     expect((JSON.parse(h.storage.getItem("kad.journal")!) as { journal: { camp?: unknown } }).journal.camp).toBeUndefined();
   });
 
+  it("keeps the saved quiz record when a read comes back without one (docs/trivia.md §6.1)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    const base = { heroes: [] as ResolvedCharacter[], fieldGuide: {}, finders: {}, whereabouts: null };
+    const trivia = { v: 1, mastered: { "creature.bone_crawler.shell": { at: "2026-11-17T00:00:00.000Z", firstTry: true } }, missed: {}, rungs: [] };
+    h.api.loadJournal.mockResolvedValueOnce({ ...base, trivia });
+    await h.store.getState().loadJournal();
+
+    // The record read failed this time (or an older server): her mastered questions stand.
+    h.api.loadJournal.mockResolvedValueOnce(base);
+    expect((await h.store.getState().loadJournal())?.journal.trivia).toEqual(trivia);
+    expect((JSON.parse(h.storage.getItem("kad.journal")!) as { journal: { trivia?: unknown } }).journal.trivia).toEqual(trivia);
+
+    // A record that is there replaces the saved one (a refused rung is withdrawn on read, §6.2).
+    const fresh = { v: 1, mastered: {}, missed: {}, rungs: [] };
+    h.api.loadJournal.mockResolvedValueOnce({ ...base, trivia: fresh });
+    expect((await h.store.getState().loadJournal())?.journal.trivia).toEqual(fresh);
+  });
+
   it("forgets the saved journal when the server refuses the binding", async () => {
     const h = harness();
     await h.store.getState().createRoom("travel", "Allen");
