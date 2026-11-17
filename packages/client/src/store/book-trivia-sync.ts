@@ -19,7 +19,7 @@
  * shown from memory until it lands (`pendingTriviaAnswers`), or not at all.
  */
 
-import { mergeTriviaRecords, readTriviaRecord, type JournalTriviaRequest, type JournalTriviaResponse, type TriviaAnswer, type TriviaRecord } from "@kad/shared";
+import { mergeTriviaRecords, readTriviaRecord, type Badge, type JournalResponse, type JournalTriviaRequest, type JournalTriviaResponse, type TriviaAnswer, type TriviaRecord } from "@kad/shared";
 import { ApiError, request } from "../sync/client";
 import { loadPlayerDeviceToken } from "./persistence";
 import { useGameStore } from "./index";
@@ -109,13 +109,28 @@ export function mergeServerTrivia(saved: TriviaRecord | null | undefined, answer
   return mergeTriviaRecords(readTriviaRecord(saved ?? null), readTriviaRecord(answered));
 }
 
-/** Put the record the server answered with into the saved book, so the quiz opens offline as it now is. */
-async function saveTrivia(deviceToken: string, record: TriviaRecord): Promise<void> {
+/**
+ * A book with the server's answer laid in: her record (`mergeServerTrivia`)
+ * and the badges it newly earned on her own page, by id, so the Me pane's
+ * list and flair picker have them in the same sitting (docs/trivia.md §5.1).
+ * A fresh read of the book puts them in their own order.
+ */
+export function withTriviaResponse(journal: JournalResponse, record: TriviaRecord, badges: readonly Badge[] = []): JournalResponse {
+  const trivia = mergeServerTrivia(journal.trivia, record);
+  const profile = journal.profile;
+  if (!profile || badges.length === 0) return { ...journal, trivia };
+  const held = new Set(profile.badges.map((b) => b.id));
+  const earned = badges.filter((b) => !held.has(b.id));
+  return earned.length === 0 ? { ...journal, trivia } : { ...journal, trivia, profile: { ...profile, badges: [...profile.badges, ...earned] } };
+}
+
+/** Put the server's answer into the saved book, so the quiz and her page open offline as they now are. */
+async function saveTrivia(deviceToken: string, record: TriviaRecord, badges: readonly Badge[]): Promise<void> {
   try {
     const db = await import("./journal-db");
     const saved = await db.loadSavedJournal(deviceToken);
     if (!saved) return;
-    await db.saveJournal({ ...saved, journal: { ...saved.journal, trivia: mergeServerTrivia(saved.journal.trivia, record) } });
+    await db.saveJournal({ ...saved, journal: withTriviaResponse(saved.journal, record, badges) });
   } catch {
     /* the next read with a signal saves it */
   }
@@ -170,7 +185,7 @@ async function drain(apply: ApplyTrivia): Promise<void> {
       const response = await send({ answers: batch.map(triviaAnswerOf) }, { deviceToken });
       removeQueuedTriviaAnswers(deviceToken, ids);
       apply(response.trivia, response);
-      await saveTrivia(deviceToken, response.trivia);
+      await saveTrivia(deviceToken, response.trivia, response.badges);
       if (status.offline) setStatus({ offline: false });
     } catch (error) {
       if (noSignal(error)) {
@@ -183,7 +198,8 @@ async function drain(apply: ApplyTrivia): Promise<void> {
         setStatus({ offline: false });
         return;
       }
-      if (error instanceof ApiError && error.status >= 400 && error.status < 500 && !RETRYABLE.has(error.status)) {
+      // STALE_DECISION (409) is the server losing a write race after its retries: "try again", never "never".
+      if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.code !== "STALE_DECISION" && !RETRYABLE.has(error.status)) {
         removeQueuedTriviaAnswers(deviceToken, ids);
         if (!status.notes.includes(TRIVIA_LOST_NOTE)) setStatus({ notes: [...status.notes, TRIVIA_LOST_NOTE] });
         continue;
@@ -242,6 +258,11 @@ export async function answerTrivia(answer: TriviaAnswer, apply: ApplyTrivia): Pr
 /** Every answer the book has made and the server has not yet answered: the phone's queue, or a tablet's sends in flight. */
 export function unsentTriviaAnswers(): TriviaAnswer[] {
   return [...loadTriviaQueue(loadPlayerDeviceToken()), ...pending];
+}
+
+/** Settles once every answer a seat without a binding has sent so far has been answered (or refused). */
+export function triviaSendsSettled(): Promise<void> {
+  return chain;
 }
 
 /** Test seam: forget the status and anything in flight. */

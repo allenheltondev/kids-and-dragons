@@ -38,7 +38,7 @@ import { setJournalFinders } from "../store/journal-finders";
 import { NO_LOOK, dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
 import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
 import { dropTriviaQueue, hasQueuedTriviaAnswers } from "../store/trivia-queue";
-import { flushTriviaQueue, mergeServerTrivia, type ApplyTrivia } from "../store/book-trivia-sync";
+import { flushTriviaQueue, withTriviaResponse, type ApplyTrivia } from "../store/book-trivia-sync";
 import { QuizButton, QuizOverlay, shownTriviaRecord } from "./GuideQuiz";
 import { quizOfflineArt, triviaLookRungs, withTriviaLooks } from "./quiz-rules";
 import { LOOKS } from "../world/hero-name";
@@ -222,12 +222,15 @@ export function JournalScreen(): ReactElement {
   }, []);
   /*
    * Her quiz record as the server last answered (docs/trivia.md §6.2): laid
-   * over the open book's copy, so the quiz shows what counted. The saved copy
-   * is kept by the sender (store/book-trivia-sync.ts).
+   * over the open book's copy, so the quiz shows what counted, with any badge
+   * it earned on her page. The saved copy is kept by the sender
+   * (store/book-trivia-sync.ts).
    */
-  const applyTrivia = useCallback<ApplyTrivia>((record) => {
-    setLoad((was) => (was.status === "ready" ? { ...was, journal: { ...was.journal, trivia: mergeServerTrivia(was.journal.trivia, record) } } : was));
-  }, []);
+  const applyTrivia = useCallback<ApplyTrivia>((record, response) => {
+    setLoad((was) => (was.status === "ready" ? { ...was, journal: withTriviaResponse(was.journal, record, response.badges) } : was));
+    // A title pick waiting on these answers (book-kit-sync.ts `dependsOnQuiz`) can go now.
+    if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
+  }, [applyKit]);
   /*
    * Kit changes and quiz answers queued with no signal go as the book opens
    * and whenever the signal comes back (docs/camp.md §7, docs/trivia.md §6.2).

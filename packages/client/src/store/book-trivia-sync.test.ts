@@ -9,7 +9,7 @@
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { emptyTriviaRecord, type JournalResponse, type JournalTriviaResponse, type TriviaAnswer, type TriviaBank, type TriviaRecord } from "@kad/shared";
-import { answerTrivia, bookTriviaStatus, flushTriviaQueue, mergeServerTrivia, pendingTriviaAnswers, resetBookTriviaSync, TRIVIA_LOST_NOTE } from "./book-trivia-sync";
+import { answerTrivia, bookTriviaStatus, flushTriviaQueue, mergeServerTrivia, pendingTriviaAnswers, resetBookTriviaSync, TRIVIA_LOST_NOTE, withTriviaResponse } from "./book-trivia-sync";
 import { useGameStore } from "./index";
 import { TRIVIA_QUEUE_KEY, dropTriviaQueue, enqueueTriviaAnswer, hasQueuedTriviaAnswers, loadTriviaQueue, withQueuedTrivia } from "./trivia-queue";
 import { defaultStorage, saveIdentity } from "./persistence";
@@ -135,6 +135,41 @@ describe("sending the quiz's answers", () => {
     await flushTriviaQueue(() => undefined);
     expect(hasQueuedTriviaAnswers()).toBe(false);
     expect(bookTriviaStatus().notes).toEqual([TRIVIA_LOST_NOTE]);
+  });
+
+  it("keeps the answers when the server lost a write race (409 STALE_DECISION), and sends them on the next try", async () => {
+    enqueueTriviaAnswer("dev_1", answer());
+    serve(() => reply(409, { ok: false, error: { code: "STALE_DECISION", message: "Your quiz answers could not be saved just now. Try again." } }));
+    await flushTriviaQueue(() => undefined);
+    expect(loadTriviaQueue("dev_1")).toHaveLength(1);
+    expect(bookTriviaStatus().notes).toEqual([]);
+    expect(bookTriviaStatus().offline).toBe(true);
+
+    serve(() => reply(200, RESPONSE));
+    const applied: TriviaRecord[] = [];
+    await flushTriviaQueue((record) => applied.push(record));
+    expect(sent).toHaveLength(2);
+    expect(sent[1]!.body.answers).toMatchObject([{ questionId: "creature.bone_crawler.shell" }]);
+    expect(applied).toEqual([MASTERED]);
+    expect(hasQueuedTriviaAnswers()).toBe(false);
+    expect(bookTriviaStatus()).toEqual({ offline: false, notes: [] });
+  });
+
+  it("puts the badges an answer earned on her page, open and saved, once each", async () => {
+    const badge = { id: "trivia-10", name: "Curious Reader", blurb: "Ten right answers." };
+    const book = { heroes: [], fieldGuide: FOUND, finders: {}, whereabouts: null, profile: { badges: [{ id: "finds-1", name: "Sharp Eyes", blurb: "x" }] } } as unknown as JournalResponse;
+    const open = withTriviaResponse(book, MASTERED, [badge]);
+    expect(open.profile!.badges.map((b) => b.id)).toEqual(["finds-1", "trivia-10"]);
+    expect(open.trivia).toEqual(MASTERED);
+    // Answered again (a resend, or the next batch), it is not listed twice.
+    expect(withTriviaResponse(open, MASTERED, [badge]).profile!.badges).toHaveLength(2);
+
+    await saveJournal({ deviceToken: "dev_1", savedAt: "2026-11-17T09:00:00.000Z", journal: book } as Parameters<typeof saveJournal>[0]);
+    enqueueTriviaAnswer("dev_1", answer());
+    serve(() => reply(200, { ...RESPONSE, badges: [badge] }));
+    await flushTriviaQueue(() => undefined);
+    const saved = await loadSavedJournal("dev_1");
+    expect(saved!.journal.profile!.badges.map((b) => b.id)).toEqual(["finds-1", "trivia-10"]);
   });
 
   it("keeps the answers when the server is busy", async () => {
