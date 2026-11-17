@@ -120,12 +120,14 @@ test("7L: friends compensate their wagon pulls on phones and TV", async ({ brows
   try {
     await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
     const lead = await ready();
+    await expect(controls(lead)).toHaveClass(/game--active/);
     const attempt = (await state()).prompt;
     if (attempt?.kind !== "interaction") throw Error("Expected the shared wagon pull");
     const help = controls(lead).locator("details.game__help");
     await help.locator("summary").click();
     await help.getByRole("button", { name: "Start this attempt again", exact: true }).click();
     await expect.poll(async () => (await state()).prompt).toMatchObject({ phase: "ready", attempt: attempt.attempt + 1 });
+    await expect(controls(lead)).toHaveClass(/game--ready/);
     const readyHelp = controls(lead).locator("details.game__help");
     if (!await readyHelp.getByRole("checkbox", { name: /Relaxed play/ }).isVisible()) await readyHelp.locator("summary").click();
     await readyHelp.getByRole("checkbox", { name: /Relaxed play/ }).check();
