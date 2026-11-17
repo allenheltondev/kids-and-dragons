@@ -1127,8 +1127,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
         const profile = await deps.api.saveFlair(choice, deviceToken);
         const db = await journalDb();
-        const saved = await db.loadSavedJournal(deviceToken, deps.storage);
-        if (saved) await db.saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        await db.updateSavedJournal(deviceToken, (journal) => ({ ...journal, profile }), deps.storage);
         return profile;
       },
 

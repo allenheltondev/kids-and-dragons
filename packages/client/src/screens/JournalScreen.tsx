@@ -38,7 +38,7 @@ import { setJournalFinders } from "../store/journal-finders";
 import { NO_LOOK, dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
 import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
 import { dropTriviaQueue, hasQueuedTriviaAnswers } from "../store/trivia-queue";
-import { flushTriviaQueue, withTriviaResponse, type ApplyTrivia } from "../store/book-trivia-sync";
+import { badgesHeld, flushTriviaQueue, withTriviaResponse, type ApplyTrivia } from "../store/book-trivia-sync";
 import { QuizButton, QuizOverlay, shownTriviaRecord } from "./GuideQuiz";
 import { quizOfflineArt, triviaLookRungs, withTriviaLooks } from "./quiz-rules";
 import { LOOKS } from "../world/hero-name";
@@ -227,7 +227,7 @@ export function JournalScreen(): ReactElement {
    * (store/book-trivia-sync.ts).
    */
   const applyTrivia = useCallback<ApplyTrivia>((record, response) => {
-    setLoad((was) => (was.status === "ready" ? { ...was, journal: withTriviaResponse(was.journal, record, response.badges) } : was));
+    setLoad((was) => (was.status === "ready" ? { ...was, journal: withTriviaResponse(was.journal, record, badgesHeld(response)) } : was));
     // A title pick waiting on these answers (book-kit-sync.ts `dependsOnQuiz`) can go now.
     if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
   }, [applyKit]);

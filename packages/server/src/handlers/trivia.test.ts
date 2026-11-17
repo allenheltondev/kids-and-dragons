@@ -174,6 +174,9 @@ describe("POST /api/journal/trivia", () => {
     expect(again.verdicts.map((v) => v.verdict)).toEqual(["already", "already"]);
     expect(again.granted).toEqual([]);
     expect(again.badges).toEqual([]);
+    // Nothing new to toast, but every badge she holds, so a phone that never heard the first reply still lays it on her page.
+    expect(first.earnedBadges?.map((b) => b.id)).toEqual(["trivia-1"]);
+    expect(again.earnedBadges?.map((b) => b.id)).toEqual(["trivia-1"]);
     expect((await harness.repo.getTrivia(householdId, "p_1"))?.revision).toBe(1);
     // A wrong answer to a mastered question takes nothing back.
     const wrong = bodyOf<JournalTriviaResponse>(await post(ada.deviceToken, { answers: [answer("creature.moth.wings", { picked: "Wrong one" })] }));

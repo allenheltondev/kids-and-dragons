@@ -124,13 +124,17 @@ export function withTriviaResponse(journal: JournalResponse, record: TriviaRecor
   return earned.length === 0 ? { ...journal, trivia } : { ...journal, trivia, profile: { ...profile, badges: [...profile.badges, ...earned] } };
 }
 
+/** The quiz badges to lay on her page: all she holds (`earnedBadges`), or from a server before it, the new ones. */
+export function badgesHeld(response: Pick<JournalTriviaResponse, "badges" | "earnedBadges">): Badge[] {
+  return response.earnedBadges ?? response.badges;
+}
+
 /** Put the server's answer into the saved book, so the quiz and her page open offline as they now are. */
 async function saveTrivia(deviceToken: string, record: TriviaRecord, badges: readonly Badge[]): Promise<void> {
   try {
     const db = await import("./journal-db");
-    const saved = await db.loadSavedJournal(deviceToken);
-    if (!saved) return;
-    await db.saveJournal({ ...saved, journal: withTriviaResponse(saved.journal, record, badges) });
+    // One read, patch and write, in the saved book's lane, so a kit change saved at the same time is kept.
+    await db.updateSavedJournal(deviceToken, (journal) => withTriviaResponse(journal, record, badges));
   } catch {
     /* the next read with a signal saves it */
   }
@@ -185,7 +189,7 @@ async function drain(apply: ApplyTrivia): Promise<void> {
       const response = await send({ answers: batch.map(triviaAnswerOf) }, { deviceToken });
       removeQueuedTriviaAnswers(deviceToken, ids);
       apply(response.trivia, response);
-      await saveTrivia(deviceToken, response.trivia, response.badges);
+      await saveTrivia(deviceToken, response.trivia, badgesHeld(response));
       if (status.offline) setStatus({ offline: false });
     } catch (error) {
       if (noSignal(error)) {

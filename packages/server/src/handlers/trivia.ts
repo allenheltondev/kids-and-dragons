@@ -185,8 +185,10 @@ export async function answerTrivia(input: TriviaInput, deps: HandlerDeps): Promi
   await grantTriviaLooks(input.householdId, input.playerId, result.record.rungs, nowIso, deps);
 
   const had = new Set(ladder ? triviaBadges(triviaCounts(result.before), ladder).map((b) => b.id) : []);
-  const badges: Badge[] = ladder ? triviaBadges(triviaCounts(result.record), ladder).filter((b) => !had.has(b.id)) : [];
-  return ok({ trivia: result.record, verdicts: result.verdicts, granted: result.granted, badges });
+  // Every quiz badge the record holds (her page), and of those the ones this batch earned (the toast).
+  const earnedBadges: Badge[] = ladder ? triviaBadges(triviaCounts(result.record), ladder) : [];
+  const badges = earnedBadges.filter((b) => !had.has(b.id));
+  return ok({ trivia: result.record, verdicts: result.verdicts, granted: result.granted, badges, earnedBadges });
 }
 
 /**

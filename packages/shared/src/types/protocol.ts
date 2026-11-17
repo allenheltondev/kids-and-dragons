@@ -1093,6 +1093,13 @@ export interface JournalTriviaResponse {
   granted: TriviaRung[];
   /** Badges (ladder and first-try track) this batch newly earned, for the phone's toast. */
   badges: Badge[];
+  /**
+   * Every quiz badge her record now holds, for her page: the phone lays these
+   * on by id, so a badge whose first answer never reached the phone (a lost
+   * reply, then a resend that earns nothing new) is still hers there.
+   * Optional because a server from before it sends none.
+   */
+  earnedBadges?: Badge[];
 }
 
 /** The book's Camp tray (docs/camp.md §7, §12.6; #629). */

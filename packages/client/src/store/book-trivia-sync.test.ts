@@ -8,8 +8,10 @@
 
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { emptyTriviaRecord, type JournalResponse, type JournalTriviaResponse, type TriviaAnswer, type TriviaBank, type TriviaRecord } from "@kad/shared";
-import { answerTrivia, bookTriviaStatus, flushTriviaQueue, mergeServerTrivia, pendingTriviaAnswers, resetBookTriviaSync, TRIVIA_LOST_NOTE, withTriviaResponse } from "./book-trivia-sync";
+import { emptyTriviaRecord, type HeroLookView, type JournalResponse, type JournalTriviaResponse, type TriviaAnswer, type TriviaBank, type TriviaRecord } from "@kad/shared";
+import { answerTrivia, badgesHeld, bookTriviaStatus, flushTriviaQueue, mergeServerTrivia, pendingTriviaAnswers, resetBookTriviaSync, TRIVIA_LOST_NOTE, withTriviaResponse } from "./book-trivia-sync";
+import { flushKitQueue, resetBookKitSync } from "./book-kit-sync";
+import { dropKitQueue, enqueueKitChanges } from "./kit-queue";
 import { useGameStore } from "./index";
 import { TRIVIA_QUEUE_KEY, dropTriviaQueue, enqueueTriviaAnswer, hasQueuedTriviaAnswers, loadTriviaQueue, withQueuedTrivia } from "./trivia-queue";
 import { defaultStorage, saveIdentity } from "./persistence";
@@ -56,7 +58,9 @@ function serve(answerWith: () => Response | Promise<Response>): void {
 beforeEach(() => {
   saveIdentity({ householdId: "h_1", playerId: "p_1", displayName: "Ada", deviceToken: "dev_1" } as Parameters<typeof saveIdentity>[0]);
   dropTriviaQueue();
+  dropKitQueue();
   resetBookTriviaSync();
+  resetBookKitSync();
   sent.length = 0;
 });
 afterEach(() => {
@@ -155,21 +159,45 @@ describe("sending the quiz's answers", () => {
     expect(bookTriviaStatus()).toEqual({ offline: false, notes: [] });
   });
 
-  it("puts the badges an answer earned on her page, open and saved, once each", async () => {
+  it("puts the badges she holds on her page, open and saved, once each", async () => {
     const badge = { id: "trivia-10", name: "Curious Reader", blurb: "Ten right answers." };
     const book = { heroes: [], fieldGuide: FOUND, finders: {}, whereabouts: null, profile: { badges: [{ id: "finds-1", name: "Sharp Eyes", blurb: "x" }] } } as unknown as JournalResponse;
     const open = withTriviaResponse(book, MASTERED, [badge]);
     expect(open.profile!.badges.map((b) => b.id)).toEqual(["finds-1", "trivia-10"]);
     expect(open.trivia).toEqual(MASTERED);
-    // Answered again (a resend, or the next batch), it is not listed twice.
     expect(withTriviaResponse(open, MASTERED, [badge]).profile!.badges).toHaveLength(2);
 
-    await saveJournal({ deviceToken: "dev_1", savedAt: "2026-11-17T09:00:00.000Z", journal: book } as Parameters<typeof saveJournal>[0]);
+    // The reply that earned it was lost: the answer stayed queued, and the server's answer to the
+    // resend earns nothing new (no toast) but lists every badge she holds, so her page still gets it.
+    await saveJournal({ deviceToken: "dev_1", savedAt: "2026-11-17T09:00:00.000Z", journal: book });
     enqueueTriviaAnswer("dev_1", answer());
-    serve(() => reply(200, { ...RESPONSE, badges: [badge] }));
-    await flushTriviaQueue(() => undefined);
+    serve(() => reply(200, { ...RESPONSE, verdicts: [{ ...RESPONSE.verdicts[0]!, verdict: "already" }], badges: [], earnedBadges: [badge] } satisfies JournalTriviaResponse));
+    const shown: string[][] = [];
+    await flushTriviaQueue((record, response) => shown.push(badgesHeld(response).map((b) => b.id)));
+    expect(shown).toEqual([["trivia-10"]]);
+    expect(hasQueuedTriviaAnswers()).toBe(false);
     const saved = await loadSavedJournal("dev_1");
     expect(saved!.journal.profile!.badges.map((b) => b.id)).toEqual(["finds-1", "trivia-10"]);
+  });
+
+  it("keeps a kit change and a quiz answer both, when their replies are saved at the same time", async () => {
+    const hero = { id: "c_1", name: "Ada", look: null } as unknown as JournalResponse["heroes"][number];
+    const book = { heroes: [hero], fieldGuide: FOUND, finders: {}, whereabouts: null } as unknown as JournalResponse;
+    await saveJournal({ deviceToken: "dev_1", savedAt: "2026-11-17T09:00:00.000Z", journal: book });
+    const look = { coat: null, accent: null, special: null, nameplate: null, title: "the_learned", unlocked: [] } as unknown as HeroLookView;
+    enqueueTriviaAnswer("dev_1", answer());
+    enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: null, after: "tide" }] });
+    serve(() =>
+      sent.at(-1)!.url === "/api/journal/trivia"
+        ? reply(200, RESPONSE)
+        : reply(200, { kit: { revision: 6, style: null, tent: null, color: "tide", slots: [], unlocked: [], buddies: {} }, look, applied: ["color"], refused: [] }),
+    );
+    // Both queues answered and saving at once: each patch reads what the other wrote.
+    await Promise.all([flushTriviaQueue(() => undefined), flushKitQueue(() => undefined)]);
+    expect(sent.map((s) => s.url).sort()).toEqual(["/api/journal/kit", "/api/journal/trivia"]);
+    const saved = await loadSavedJournal("dev_1");
+    expect(saved!.journal.trivia).toEqual(MASTERED);
+    expect(saved!.journal.heroes[0]!.look).toEqual(look);
   });
 
   it("keeps the answers when the server is busy", async () => {

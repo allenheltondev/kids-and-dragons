@@ -132,12 +132,13 @@ function send(body: BookKitRequest, auth: { deviceToken: string } | { sessionTok
 async function saveKit(deviceToken: string, characterId: string, kit: JournalKit, look?: HeroLookView): Promise<void> {
   try {
     const db = await import("./journal-db");
-    const saved = await db.loadSavedJournal(deviceToken);
-    if (!saved) return;
-    const camp = saved.journal.camp ? { ...saved.journal.camp, kits: { ...saved.journal.camp.kits, [characterId]: kit } } : undefined;
-    const heroes = look ? saved.journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : saved.journal.heroes;
-    if (!camp && !look) return;
-    await db.saveJournal({ ...saved, journal: { ...saved.journal, heroes, ...(camp ? { camp } : {}) } });
+    // One read, patch and write, in the saved book's lane, so a quiz answer saved at the same time is kept.
+    await db.updateSavedJournal(deviceToken, (journal) => {
+      const camp = journal.camp ? { ...journal.camp, kits: { ...journal.camp.kits, [characterId]: kit } } : undefined;
+      const heroes = look ? journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : journal.heroes;
+      if (!camp && !look) return null;
+      return { ...journal, heroes, ...(camp ? { camp } : {}) };
+    });
   } catch {
     /* the next read with a signal saves it */
   }
