@@ -228,7 +228,7 @@ export function StoryInteractionWorld() {
   if (!prompt || !state) return null;
   const view = { prompt, party: state.party, connected, now };
   const status = settled ? tvStatus(view) : "Watch it land. Nearly home!";
-  return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}${/^(riftlight|gemfall)-/.test(state.chapterId ?? "") ? " game--landscape" : ""}`} aria-label="Story interaction">
+  return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}${/^(riftlight|gemfall)-/.test(state.chapterId ?? "") ? " game--landscape" : ""}`} aria-label="Story interaction" data-scene={prompt.sceneId}>
     <GameHead prompt={prompt} />
     {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <div className="game__board">
@@ -323,7 +323,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   // A phone that cannot aim (reduced motion) needs the help open, not folded away.
   const needsHand = !prompt.challenge && still && mine && prompt.phase === "active" && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing");
   const controls = prompt.phase === "active" ? <KindControls prompt={prompt} playerId={playerId} connected={connected} mine={mine} now={now} busy={busy} send={send} answer={answer} setAnswer={setAnswer} holding={holding} setHolding={setHolding} setStop={setStop} /> : null;
-  return <section className={`story-interaction game game--phone game--${prompt.spec.kind} game--${prompt.phase}${mine ? " game--lead" : ""}${riftlight || gemfall ? " game--landscape" : ""}`} aria-label="Interaction controls">
+  return <section className={`story-interaction game game--phone game--${prompt.spec.kind} game--${prompt.phase}${mine ? " game--lead" : ""}${riftlight || gemfall ? " game--landscape" : ""}`} aria-label="Interaction controls" data-scene={prompt.sceneId}>
     <GameHead prompt={prompt} />
     {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <p className={`game__job game__job--${job.lookAt}`}>

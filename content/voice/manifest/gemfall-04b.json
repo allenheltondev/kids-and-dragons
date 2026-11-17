@@ -539,14 +539,6 @@
       }
     ]
   },
-  "gemfall-04b/interaction_calf_load/narration": {
-    "": [
-      {
-        "clip": "3d461ded1db2b3cbdfd8a91a3b37e90d0e13e69b97ed3e2688c40961310f0e87",
-        "ms": 9707
-      }
-    ]
-  },
   "gemfall-04b/interaction_calf_load/onAssisted/narration": {
     "": [
       {
@@ -864,14 +856,6 @@
       {
         "clip": "58b26c427a54c875f9b1c1f4587937e806f41ee2401e2f886e1699c712861dd2",
         "ms": 12707
-      }
-    ]
-  },
-  "gemfall-04b/interaction_small_mend/narration": {
-    "": [
-      {
-        "clip": "07a2141fca6abf7603a1cf9a9ec6fa26ac4caa42e3a8299d2f1bd78d81a90a92",
-        "ms": 6907
       }
     ]
   },

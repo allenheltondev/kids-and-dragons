@@ -1068,24 +1068,6 @@
       }
     ]
   },
-  "gemfall-03c/interaction_wagon_level/narration": {
-    "": [
-      {
-        "clip": "2f78f7e71bd04ae8ba67478a8230a28c932a1986ef4891d31b919f11c2441d3b",
-        "ms": 8807
-      },
-      {
-        "clip": "3f1cc9a8bcc8c8be999f7428101c473d4210477f09f60b3c0fdba007918a786b",
-        "ms": 4607,
-        "by": "lead_drover",
-        "figure": "entities/centaur",
-        "names": [
-          "Lead Drover",
-          "Drover"
-        ]
-      }
-    ]
-  },
   "gemfall-03c/interaction_wagon_level/onAssisted/narration": {
     "": [
       {

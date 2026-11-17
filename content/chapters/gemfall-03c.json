@@ -2591,7 +2591,7 @@
       "tags": [
         "force"
       ],
-      "narration": "The stuck wagon leans hard into its rut. Tap when the marker crosses the gold to give it one good heave. The drover has named the rut. \"Do not encourage it.\"",
+      "narration": "The stuck wagon leans hard into its rut. Set your support under the wheel, then lift it steadily out. The drover has named the rut. \"Do not encourage it.\"",
       "interaction": {
         "kind": "precision",
         "cue": "Find the support under the wheel. Lift it gently out of the rut.",

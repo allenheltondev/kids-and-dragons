@@ -13,6 +13,7 @@ for (const file of fs.readdirSync('content/chapters').filter(f => f.startsWith(c
   const chapter = JSON.parse(fs.readFileSync('content/chapters/' + file, 'utf8')) as Chapter;
   const scenes = Object.entries(chapter.scenes).filter(([, scene]) => scene.type === 'interaction');
   if (!scenes.length) continue;
+  if (process.env.KAD_REVIEW_RESUME === '1' && scenes.every(([scene]) => findings.some(f => f.chapter === chapter.id && f.scene === scene))) continue;
   const table = await openTable({ chapterId: chapter.id, sceneId: scenes[0]![0], players: 2, startServer: false });
   try {
     for (const phone of table.phones) await phone.setViewportSize({ width: 320, height: 640 });
@@ -25,7 +26,17 @@ for (const file of fs.readdirSync('content/chapters').filter(f => f.startsWith(c
       await expect.poll(async () => { const p = (await table.state()).prompt; return p?.kind === 'interaction' && p.phase === 'active'; }).toBe(true);
       for (const page of [table.tv, ...table.phones]) {
         await page.bringToFront();
-        await expect.poll(() => page.locator('.game__board img, .game-scenery img').evaluateAll(images => images.every(img => !img.getClientRects().length || (img as { complete: boolean }).complete)), { timeout: 15000 }).toBe(true);
+        const surface = page.getByRole('region', { name: page === table.tv ? 'Story interaction' : 'Interaction controls' });
+        await expect(surface).toHaveAttribute('data-scene', sceneId);
+        await expect(surface).toHaveClass(/game--active/);
+        const loaded = () => page.locator('.game__board img, .game-scenery img').evaluateAll(images => images.every(img => !img.getClientRects().length || (img as { complete: boolean }).complete));
+        try { await expect.poll(loaded, { timeout: 15000 }).toBe(true); }
+        catch {
+          console.log('Reloading a stalled art request:', chapter.id, sceneId);
+          await page.reload();
+          await expect(page.getByRole('region', { name: page === table.tv ? 'Story interaction' : 'Interaction controls' })).toBeVisible();
+          await expect.poll(loaded, { timeout: 15000 }).toBe(true);
+        }
       }
       const image = await table.snap(chapter.id + '-' + sceneId, dir);
       const broken: string[] = [];

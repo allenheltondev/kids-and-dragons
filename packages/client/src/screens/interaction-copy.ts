@@ -185,6 +185,7 @@ export function phoneJob(view: TableView, playerId: string): Job {
       : { headline: `${lead} starts this one.`, detail: "Look at the TV and get ready.", lookAt: "tv" };
   }
   if ((prompt.challenge?.version ?? 0) >= 3) {
+    if (prompt.challenge?.version === 4 && spec.kind === "precision" && spec.handling === "hum") return { headline: mine ? "Find the note. Hold it gently." : `Help ${lead} steady the hum.`, detail: "Find the steady pitch, then add just enough voice.", lookAt: mine ? "phone" : "tv" };
     if (prompt.challenge?.version === 4 && spec.kind === "precision") return { headline: mine ? "Find support. Steady the weight." : `Help ${lead} find the support point.`, detail: "Move your grip, then add just enough effort.", lookAt: mine ? "phone" : "tv" };
     if (prompt.challenge?.version === 4 && spec.kind === "cooperate") return { headline: prompt.challenge.pulls[playerId] === undefined ? "Choose your share of the effort." : "Your effort is set.", detail: "Read the pulls already set. The near rope has more leverage.", lookAt: "both" };
     if (spec.kind === "precision") return { headline: mine ? "Choose your strength and arc." : `Help ${lead} judge the wind.`, detail: "Clear the edge and land inside the gold.", lookAt: mine ? "phone" : "tv" };

@@ -17,6 +17,8 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
   const actor = active ? interactionActor(prompt, ids) : prompt.resolvedActorId ?? interactionActor(prompt, ids);
   const precision = prompt.spec.kind === "precision";
   const handling = prompt.spec.kind === "precision" ? prompt.spec.handling ?? "lift" : "haul";
+  const positionLabel = handling === "hum" ? "Note position" : "Support position";
+  const effortLabel = handling === "hum" ? "Voice strength" : "Effort";
   const [grip, setGrip] = useState(game.lastAngle ?? .2), [effort, setEffort] = useState(playerId ? game.pulls[playerId] ?? .2 : .2);
   const [error, setError] = useState(false), [failed, setFailed] = useState(false);
   const sending = useRef(false);
@@ -64,8 +66,8 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
     </div><p className="gem-caption">{precision ? "Gold on the subject: steady position. Gold on the gauge: safe effort." : !canCompensate ? "No safe share yet. Ask a friend to revise their effort." : "The near rope has more leverage. You can revise your effort before everyone sets theirs."}</p></>}
     {active && send && playerId && (!precision || mine) && <>
       <div className="gem-inputs">
-        {precision && <label>Support position <output>{Math.round(grip * 100)}%</output><input aria-label="Support position" type="range" min="0" max="100" value={Math.round(grip * 100)} disabled={busy} onChange={e => setGrip(Number(e.target.value) / 100)} /></label>}
-        <label>Effort <output>{Math.round(effort * 100)}%</output><input aria-label="Effort" type="range" min="0" max="100" value={Math.round(effort * 100)} disabled={busy} onChange={e => setEffort(Number(e.target.value) / 100)} /></label>
+        {precision && <label>{positionLabel} <output>{Math.round(grip * 100)}%</output><input aria-label={positionLabel} type="range" min="0" max="100" value={Math.round(grip * 100)} disabled={busy} onChange={e => setGrip(Number(e.target.value) / 100)} /></label>}
+        <label>{effortLabel} <output>{Math.round(effort * 100)}%</output><input aria-label={effortLabel} type="range" min="0" max="100" value={Math.round(effort * 100)} disabled={busy} onChange={e => setEffort(Number(e.target.value) / 100)} /></label>
       </div>
       <Button block disabled={busy || unchanged && !allSet} onClick={() => void post()}>{allSet ? "Move with the remaining crew" : ready ? unchanged ? "Your effort is set" : "Revise my effort" : precision ? prompt.spec.actionLabel : "Set my effort"}</Button>
     </>}

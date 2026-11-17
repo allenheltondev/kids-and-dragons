@@ -34,14 +34,14 @@ for(const [chapterId,sceneId,players,reducedMotion] of cases){
   const kind=(await get()).p.spec.kind;
   const move=async(extra:()=>Promise<void>)=>{const before=(await get()).p.challenge?.round;await extra();await expect.poll(async()=>{const p=(await get()).p;return p.phase==='result'||p.challenge?.round!==before;}).toBe(true);};
   if(kind==='precision'){
-   const phone=await phoneFor();await phone.getByRole('slider',{name:'Effort',exact:true}).fill('0');await phone.getByRole('slider',{name:'Support position'}).fill('0');
+   const phone=await phoneFor(),spec=(await get()).p.spec,hum=spec.kind==='precision'&&spec.handling==='hum',positionLabel=hum?'Note position':'Support position',effortLabel=hum?'Voice strength':'Effort';await phone.getByRole('slider',{name:effortLabel,exact:true}).fill('0');await phone.getByRole('slider',{name:positionLabel}).fill('0');
    await move(async()=>{await phone.getByRole('button',{name:(await get()).p.spec.actionLabel,exact:true}).press('Enter');});
-   await phone.reload();await expect(phone.getByRole('slider',{name:'Support position'})).toBeVisible();
+   await phone.reload();await expect(phone.getByRole('slider',{name:positionLabel})).toBeVisible();
    console.log(await table.snap(sceneId+'-miss-and-reload',out));
    while((await get()).p.phase==='active'){
     const {p}=await get(),target=steadySituation(p),next=await phoneFor();
-    await next.getByRole('slider',{name:'Support position'}).fill(String(Math.round(target.support*100)));
-    await next.getByRole('slider',{name:'Effort',exact:true}).fill(String(Math.round(target.load*100)));
+    await next.getByRole('slider',{name:positionLabel}).fill(String(Math.round(target.support*100)));
+    await next.getByRole('slider',{name:effortLabel,exact:true}).fill(String(Math.round(target.load*100)));
     await move(async()=>{await next.getByRole('button',{name:p.spec.actionLabel,exact:true}).press('Enter');});
    }
   }else if(kind==='cooperate'){

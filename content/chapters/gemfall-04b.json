@@ -2295,7 +2295,7 @@
     },
     "interaction_small_mend": {
       "type": "interaction",
-      "narration": "Press the crumb into the soft spot when the marker meets the gold. A beetle waits nearby, as if it has an appointment.",
+      "narration": "Set the crumb over the split and press gently enough for the bark to join. A beetle waits nearby, as if it has an appointment.",
       "interaction": {
         "kind": "precision",
         "cue": "Place the mending crumb over the split. Join the bark without crushing it.",
@@ -2385,7 +2385,7 @@
       "tags": [
         "force"
       ],
-      "narration": "A broad cloth holds the calf. Lift together just as the sling swings level, then carry it home. The calf tastes the cloth. Disappointing.",
+      "narration": "A broad cloth holds the calf. Find where the sling supports its weight, then lift gently and carry it home. The calf tastes the cloth. Disappointing.",
       "interaction": {
         "kind": "precision",
         "cue": "Find the support under the calf. Lift the sling gently as its weight shifts.",

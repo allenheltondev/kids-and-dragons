@@ -6076,7 +6076,7 @@
           "name": "Seal-Keeper"
         }
       ],
-      "narration": "The Keeper loops cords around the cracked seal. Pull them smoothly together while its warm breath joins the pieces. A moth helps by sitting on a crack. It has misunderstood the job.",
+      "narration": "The Keeper loops cords around the cracked seal. Keep them just tight enough to hold the pieces while its warm breath joins them. A moth helps by sitting on a crack. It has misunderstood the job.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Share the effort between the near and far ropes. Use enough to move the load without straining the cords.",

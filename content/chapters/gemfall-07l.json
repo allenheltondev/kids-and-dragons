@@ -2979,7 +2979,7 @@
     },
     "interaction_tether_team": {
       "type": "interaction",
-      "narration": "A warden fits a wheel block. A singer holds a steady note. Take the brace rope together and choose a smooth pull in the gold. If one friend pulls too gently, another can make up the difference. Sharp jerks strain the brace. If it gives way, the masks will take the wagon.",
+      "narration": "A warden fits a wheel block. A singer holds a steady note. Share the near and far brace ropes. If one friend pulls too gently, another can make up the difference. Too much force strains the brace. If it gives way, the masks will take the wagon.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Share the effort between the near and far ropes. Use enough to move the load without straining the cords.",
