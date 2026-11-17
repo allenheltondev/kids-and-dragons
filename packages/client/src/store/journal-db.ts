@@ -144,7 +144,9 @@ export function saveJournal(saved: SavedJournal, storage?: KeyValueStorage): Pro
  * Patch the saved book: read it, `patch` its journal, and write it back, all
  * in one turn of the lane, so no other write lands between the read and the
  * write. `patch` returning null (or there being no saved book for this
- * binding) writes nothing.
+ * binding) writes nothing. In IndexedDB the read and the write are one
+ * readwrite transaction, so two tabs patching at once both keep their change;
+ * the lane covers the fallback copies (localStorage, memory) within a page.
  */
 export function updateSavedJournal(
   deviceToken: string,
@@ -152,6 +154,31 @@ export function updateSavedJournal(
   storage?: KeyValueStorage,
 ): Promise<void> {
   return inLane(async () => {
+    // IndexedDB first, as one readwrite transaction: the read and the put cannot be split by
+    // another tab's write (IndexedDB runs overlapping readwrite transactions on a store one at
+    // a time), which the lane alone, one per page, could not promise.
+    let atomic: "written" | "nothing" | "absent";
+    try {
+      atomic = await withStore("readwrite", async (store) => {
+        const stored: unknown = await request(store.get(RECORD_KEY));
+        if (stored === undefined) return "absent" as const;
+        const saved = validSavedJournal(stored, deviceToken);
+        const journal = saved ? patch(saved.journal) : null;
+        if (!saved || !journal) return "nothing" as const;
+        await request(store.put({ ...saved, journal }, RECORD_KEY));
+        return "written" as const;
+      });
+    } catch {
+      atomic = "absent";
+    }
+    if (atomic === "written") {
+      memory = null;
+      dropLegacy(safeStorage(storage));
+      return;
+    }
+    if (atomic === "nothing") return;
+    // No book in IndexedDB (a legacy localStorage copy, or no IndexedDB at all): the fallback
+    // paths, one page's writes kept in turn by the lane.
     const saved = await loadSavedJournal(deviceToken, storage);
     if (!saved) return;
     const journal = patch(saved.journal);
