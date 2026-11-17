@@ -1,8 +1,8 @@
 # Trivia: the Field Guide quiz in the adventure book
 
 **Status: design approved (2026-11-17); not built.** Decisions marked *decided* are the product
-owner's own, from 2026-11-17, and the owner approved the rest of this doc the same day. Only §8's
-open questions are still open.
+owner's own, from 2026-11-17, and the owner approved the rest of this doc the same day. Nothing
+is still open; §8 lists the later phases.
 
 **Review status:** repository references are implementation context. File names, type names and
 interfaces below are the intended shape. They may be refined during implementation as long as the
@@ -27,8 +27,11 @@ callbacks, and the creature tips that win fights.
 - **Every question shows a picture** (*decided*): the painting of the page it is about. A
   question about the cloud whale has the cloud whale on screen, and a question about the Sallow
   Wastelands has the Wastelands behind it (§3.5).
-- **It points back at the guide** (*decided*). A wrong answer about a creature or a biome offers a
-  link to that part of the Field Guide. She reads it there, and the question comes back later.
+- **It covers the whole guide** (*decided*): creatures and biomes, and also the four **classes**
+  and the **landmarks** (Stone Crossing, the Hollow Gate, Mount Red Sky and the rest), then
+  peoples, folk, named characters and factions (§3.4).
+- **It points back at the guide** (*decided*). Every wrong answer offers a link to that part of
+  the Field Guide. She reads it there, and the question comes back later.
 - **It is not** a way to get stronger. No XP, coins, items, stat points or Help dice. Rewards are
   cosmetic, like every look and kit piece (docs/hero-looks.md §6, docs/camp.md §5), so a kid who
   quizzes in the car never sits down at the table ahead of a sibling who doesn't.
@@ -86,7 +89,7 @@ other entries of the same kind. A writer keeps, rewrites or drops each one.
     "Woven seaweed"
   ],
   "also": ["creature.restless_remains"],     // other pages the question or its options name (§3.3)
-  "link": "entry",                            // "entry" | "shelf" | "none" (§4.3)
+  "link": "entry",                            // "entry" | "shelf" (§4.3)
   "image": "creature.restless_remains"       // optional: show another page's painting (§3.5)
 }
 ```
@@ -115,10 +118,31 @@ other entries of the same kind. A writer keeps, rewrites or drops each one.
 
 ### 3.4 How many
 
-Aim for **four or five questions a creature or biome**, and **two or three for every other page**
-(peoples, places, folk, classes, factions). At today's 75 entries (19 creatures and 13 biomes, so
-32 of them) that is roughly 130 + 110 = **about 240 questions** for a household that has found
-everything. The ladder (§5) is sized so that its top rungs need most of the guide discovered:
+| Pages | Today | Questions each | About |
+|---|---:|---|---:|
+| Creatures | 19 | 4 or 5 | 85 |
+| Biomes | 13 | 4 or 5 | 60 |
+| Classes (*decided*) | 4 | 5 or 6 | 22 |
+| Landmarks (*decided*) | 14 | 3 or 4 | 50 |
+| Peoples, folk, named characters, factions | 25 | 2 or 3 | 60 |
+
+That is **about 270 questions** for a household that has found everything.
+
+- **Classes** get the most per page. A kid plays one for months, and the page holds what she
+  should know about it: its gear ("What does a Thornguard carry?" a thorn bracer), its home
+  landmark (the Dojo), its job at the front or the back, and its three moves by rank ("Which move
+  does a Thornguard learn first?" Shove). Questions about other classes' moves teach her what her
+  friends at the table can do. The class pages are short today (a line and the `class` block), so
+  some questions will draw on `content/abilities.json` too; the answer must still be on the guide
+  page, so the link always helps. Where it isn't, the page gains a line first (through
+  `canon:field-guide`, never by hand).
+- **Landmarks** are the 14 location pages. Nine have a full place write-up (origin, beliefs,
+  neighbors) and get 4 questions. Five are short (the Academy, the Conservatory, the Dojo, the
+  Rookery, the Whirlpool) and get 2 or 3, mostly tying them to their class or their region ("Which
+  heroes train at the Dojo?").
+
+The ladder (§5) is sized so that its top rungs need most of the guide discovered:
+playing unlocks questions, and questions unlock rewards. The ladder (§5) is sized so that its top rungs need most of the guide discovered:
 playing unlocks questions, and questions unlock rewards.
 
 ### 3.5 The picture (*decided*)
@@ -165,7 +189,8 @@ the guide recognizes what she is being asked about.
 - **The answer is not shown.** The screen says her pick was not it, gently: "Not this time." It
   doesn't mark the right option, explain it or hint at it.
 - **No second try.** The round moves on to the next question.
-- **The question goes back into her pool, shuffled.** It cools down until her next round, so it is
+- **The question goes back into her pool, shuffled** (*decided*: next round). It cools down until
+  her next round, so it is
   never asked twice in one sitting. When it comes back, three wrong options are drawn fresh from
   its five or six, and the right one is in a new place. A kid who remembers "it wasn't the second
   one" or "it wasn't river pebbles" has learned nothing that counts. The way to answer it is to
@@ -173,24 +198,20 @@ the guide recognizes what she is being asked about.
 - **Wrong answers cost nothing else.** No lost progress, no broken streak on the ladder. The only
   cost is that the question doesn't count yet.
 
-### 4.3 The link to the guide (*decided* for creatures and biomes)
+### 4.3 The link to the guide (*decided*: every kind of page)
 
-After a wrong answer about a **creature or a biome**, the screen offers one button: **"Read about
+After every wrong answer, whatever the page is about, the screen offers one button: **"Read about
 it in the Field Guide."** The question's `link` says where the button goes:
 
-- **`entry`**: that creature's or biome's page (`selectGuideEntry`). Use this when the question names
+- **`entry`**: the page the question is about (`selectGuideEntry`). Use this when the question names
   its subject ("What does a bone crawler build its shell from?"). Reading the page is the point:
   the answer is in there, and the question will be back.
-- **`shelf`**: the Creatures or Places tab (`selectGuideTab`), not a page. Use this when the answer
+- **`shelf`**: that page's tab (Creatures, Peoples, Classes, Folk, Places or Factions;
+  `selectGuideTab`), not the page itself. Use this when the answer
   is the subject's name ("Which creature is a hermit crab that moved into history?"). Opening the
   page would give away the answer, so the link sends her to the shelf and the reading is hers to do.
-- **`none`**: no button. This is the default for questions about peoples, folk, places other than
-  biomes, classes and factions, as decided. It can be revisited once creatures and biomes have been
-  watched in use.
-
-`content:validate` fails a creature or biome question with `link: "none"`, a `link: "entry"`
-whose correct answer is the entry's own title, and any `link` on a question that isn't about a
-creature or biome. Following the link ends the round's current question (already marked wrong),
+`content:validate` fails a question with no `link`, and a `link: "entry"` whose correct answer is
+the entry's own title. Following the link ends the round's current question (already marked wrong),
 closes the quiz onto the guide, and keeps the rest of the round for when she comes back.
 
 ### 4.4 A right answer
@@ -199,7 +220,7 @@ The right option glows, there's a small chime, and the question is **mastered**.
 pool for good and counts once toward the ladder. A mastered question is never asked again, so
 right answers can't be farmed.
 
-## 5. The ladder (*decided*: badges and cosmetics for heroes and camp)
+## 5. The ladder (*decided*: badges and cosmetics for heroes and camp, at these counts)
 
 Right answers are counted per kid (player profile), across every hero and campaign. Each rung
 grants once and is never taken back, the same as every look and kit receipt.
@@ -214,13 +235,14 @@ grants once and is never taken back, the same as every look and kit receipt.
 | 175 | | title **the Well-Read** | `deco_quiz_bookshelf` |
 | 220 | **Keeper of Every Page** | nameplate frame **Gilded Scroll** | |
 
-The names, ids and counts are placeholders for the owner to set. The shape is the proposal:
+The counts are decided. The badge, look and decoration names are working names that may change
+when the art is briefed. The shape:
 
 - **The first reward is reachable early** (10). A kid who has played two or three chapters has
   enough finds to get there, so she learns the quiz pays.
 - **The middle needs real reading** (50 to 120). With wrong answers cooling down and coming back
   with new options, getting here means knowing pages, not guessing.
-- **The top needs most of the guide found** (175 and up, out of about 240). These rungs come from
+- **The top needs most of the guide found** (175 and up, out of about 270). These rungs come from
   playing campaigns as much as from quizzing.
 - **A separate "first try" track** for badges only: **Sharp Memory** at 25 questions mastered on the
   first ask, and **Never Forgets** at 100. These reward knowing it cold without making the main
@@ -291,7 +313,8 @@ household hasn't found.
 ## 7. What it costs to build, in order
 
 1. **Content and validation**: `trivia.json`, its schema and types, the spoiler, link and picture
-   checks in `content:validate`, and `trivia:draft`. Write the creature and biome questions first.
+   checks in `content:validate`, and `trivia:draft`. Write creatures, biomes and classes first,
+   then landmarks, then the rest.
 2. **Rules in shared**: the pool (found entries, mastered, cooling down), drawing a round and its
    options, marking an answer, and the ladder. All pure and all tested, like `look-unlocks.ts`.
 3. **Server**: `TriviaRecord`, the answer endpoint, rung grants writing look and kit receipts,
@@ -303,16 +326,14 @@ household hasn't found.
 Phase 1 can ship with the badges and the looks that need no new art (titles), and the rest as its
 art lands.
 
-## 8. Open questions for the owner
+## 8. Later phases (*decided*: planned, not in this one)
 
-1. **The ladder's numbers and rewards** (§5): the counts, the names, and how many rungs give a tent
-   decoration and how many give a look.
-2. **The cooldown**: until her next round (proposed), or until the next day? A day is stricter, but
-   it can empty a small pool for the rest of a car ride.
-3. **The link for other pages**: peoples and places are as much the lore as creatures. Should
-   `entry` and `shelf` links open to them after the first version?
-4. **Story questions**: the p1 scenes a household visited (the end-of-chapter recap's revelations)
-   would make good questions too. They have the same spoiler shape but need a "visited" record per
-   household. Proposed as a later phase, not this one.
-5. **The table version**: one shared question on the TV in the lobby, answered from each phone,
-   from the same bank. This could come after the book's quiz has been watched in use.
+1. **Story questions.** Questions about the revelations (the `priority: 1` scenes) a household
+   actually visited, the ones the end-of-chapter recap retells. They have the same spoiler shape as
+   guide questions, but each needs a record of which p1 scenes the household has seen. The picture
+   is the scene's backdrop, and the link goes to the Story page.
+2. **Picture options.** "Which one is the Gullet?" with four portraits as the options, from the
+   entity and cast art. The same rules apply: every portrait must be a page she has found, and the
+   wrong portraits are drawn fresh each time.
+
+A shared question on the TV in the lobby was considered and is not planned.
