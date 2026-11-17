@@ -11,6 +11,7 @@
  * | Account pointer  | ACCT#<sub>      | HH#<hhId>          |
  * | Household        | HH#<hhId>       | META               |
  * | Player profile   | HH#<hhId>       | PLAYER#<playerId>  |
+ *   (her quiz record, docs/trivia.md §6.1, is on that row: `trivia`, `triviaRev`)
  * | Device binding   | HH#<hhId>       | DEVICE#<deviceId>  |
  * | Co-organizer     | HH#<hhId>       | OWNER#<sub>        |
  * | Character        | HH#<hhId>       | CHAR#<charId>      |

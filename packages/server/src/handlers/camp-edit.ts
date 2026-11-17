@@ -89,6 +89,7 @@ import type { CampWrite, CharacterWrite, RunRecord } from "../store/repository.t
 import { mutateCamp, planCamp, planKit, readCamp, readCampView, type CampDeps } from "./camp.ts";
 import { discoveryHousehold } from "./field-guide.ts";
 import { campStanding, heroLookOf } from "./look-unlocks.ts";
+import { heroTriviaRungs } from "./trivia.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
 
@@ -425,7 +426,9 @@ export async function syncCampDowntime(
       try {
         const row = await deps.repo.getCharacter(m.homeHouseholdId ?? input.run.householdId, m.character.id);
         // Her look with every milestone she holds (look-unlocks.ts), her crew's included.
-        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key), row ? heroLookOf(row, deps, { camp: campStanding(next.camp) }) : null] as const;
+        // And her owner's quiz titles (docs/trivia.md §5.1), for a hero made after them.
+        const triviaRungs = row ? await heroTriviaRungs(row, deps) : [];
+        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key), row ? heroLookOf(row, deps, { camp: campStanding(next.camp), triviaRungs }) : null] as const;
       } catch (err) {
         console.error(`camp: could not read hero ${m.character.id}'s kit:`, err);
         return null;

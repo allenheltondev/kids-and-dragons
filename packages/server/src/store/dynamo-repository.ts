@@ -55,6 +55,8 @@ import type {
 import type {
   CampaignProgressRecord,
   CampWrite,
+  TriviaRow,
+  TriviaWrite,
   CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
@@ -146,6 +148,9 @@ interface TableItem {
   ttl?: number;
   /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping beside `data`, like `sweeping`. */
   lastPlayedAt?: string;
+  /** On a `PLAYER#` row: her quiz record (docs/trivia.md §6.1), and its revision. Bookkeeping beside `data`, like `lastPlayedAt`. */
+  trivia?: unknown;
+  triviaRev?: number;
   /** On a household `META` row while the retention sweep decides whether to retire it (#524). */
   retiring?: boolean;
   /** On a household `META` row, or a `PLAYER#` row (#252), once deleting it has begun. */
@@ -1291,9 +1296,15 @@ export class DynamoRepository implements GameRepository {
           Delete: {
             TableName,
             Key: { PK: step.PK, SK: step.SK },
-            ConditionExpression: "#d = :d",
+            // Her profile row: her quiz record (beside `data`) still at the revision read, too.
+            ConditionExpression:
+              step.triviaRev === undefined
+                ? "#d = :d"
+                : step.triviaRev === 0
+                  ? "#d = :d AND attribute_not_exists(triviaRev)"
+                  : "#d = :d AND triviaRev = :tr",
             ExpressionAttributeNames: { "#d": "data" },
-            ExpressionAttributeValues: { ":d": step.data },
+            ExpressionAttributeValues: { ":d": step.data, ...(step.triviaRev ? { ":tr": step.triviaRev } : {}) },
           },
         };
       case "put":
@@ -1435,6 +1446,40 @@ export class DynamoRepository implements GameRepository {
     // A profile being deleted (#252) is gone to every reader already.
     const row = await this.get(HH(householdId), PLAYER_SK(playerId));
     return row && !row.sweeping ? (row.data as PlayerProfile) : null;
+  }
+
+  async getTrivia(householdId: string, playerId: string): Promise<TriviaRow | null> {
+    // Consistent: a conditional write on the revision read follows it.
+    const row = await this.get(HH(householdId), PLAYER_SK(playerId), true);
+    if (!row || row.sweeping) return null;
+    return { record: row.trivia ?? null, revision: row.triviaRev ?? 0 };
+  }
+
+  async putTrivia(write: TriviaWrite): Promise<boolean> {
+    // An update beside `data`, never a Put of the row: her profile, when she
+    // last played and a delete's mark are not the quiz's to touch.
+    const first = write.expectedRevision === 0;
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(write.householdId), SK: PLAYER_SK(write.playerId) },
+          UpdateExpression: "SET trivia = :record, triviaRev = :next",
+          ConditionExpression: first
+            ? "attribute_exists(PK) AND attribute_not_exists(sweeping) AND attribute_not_exists(triviaRev)"
+            : "attribute_exists(PK) AND attribute_not_exists(sweeping) AND triviaRev = :rev",
+          ExpressionAttributeValues: {
+            ":record": write.record,
+            ":next": write.expectedRevision + 1,
+            ...(first ? {} : { ":rev": write.expectedRevision }),
+          },
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
   }
 
   async listPlayers(householdId: string): Promise<PlayerProfile[]> {

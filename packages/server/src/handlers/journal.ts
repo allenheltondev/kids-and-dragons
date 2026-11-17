@@ -15,6 +15,7 @@ import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { listHeroes } from "./heroes.ts";
 import { viewOf } from "./profile.ts";
 import { journalCamp } from "./camp-book.ts";
+import { readTrivia } from "./trivia.ts";
 import type { CampaignProgressRecord } from "../store/repository.ts";
 
 export interface JournalInput {
@@ -34,13 +35,20 @@ export async function getJournal(
   input: JournalInput,
   deps: HandlerDeps,
 ): Promise<HandlerResult<JournalResponse>> {
-  const [heroes, book, characters, players, whereabouts, attempts] = await Promise.all([
-    listHeroes(input, deps),
+  // Her quiz record (docs/trivia.md §6.1). A failed read leaves it out (and
+  // logs): the rest of the book is whole, and her quiz titles stand as written.
+  const trivia = readTrivia(input.householdId, input.playerId, deps).catch((err: unknown) => {
+    console.error(`journal: could not read ${input.playerId}'s quiz record:`, err);
+    return undefined;
+  });
+  const [heroes, book, characters, players, whereabouts, attempts, record] = await Promise.all([
+    trivia.then((t) => listHeroes({ ...input, triviaRungs: t?.rungs ?? [] }, deps)),
     deps.repo.getFieldGuide(input.householdId),
     deps.repo.listCharacters(input.householdId),
     deps.repo.listPlayers(input.householdId),
     whereaboutsOf(input.householdId, deps),
     deps.repo.listCampaignProgress(input.householdId),
+    trivia,
   ]);
   if (!heroes.ok) return heroes;
   const finders = findersOf(players, characters, deps);
@@ -50,7 +58,7 @@ export async function getJournal(
   // A failed read says so (`campError`): the phone keeps the camp it saved.
   const camp = await journalCamp(input.householdId, mine, deps);
   const me = players.find((p) => p.id === input.playerId);
-  const profile = me ? viewOf(input, me, characters, book.entries, deps) : undefined;
+  const profile = me ? viewOf(input, me, characters, book.entries, deps, record ?? null) : undefined;
   return ok({
     heroes: heroes.value.heroes,
     fieldGuide: book.entries,
@@ -60,6 +68,8 @@ export async function getJournal(
     ...(profile ? { profile } : {}),
     story: storyOf(attempts, deps),
     ...camp,
+    // Absent only when the read failed; a kid who has never quizzed reads as an empty record.
+    ...(record ? { trivia: record } : {}),
   });
 }
 

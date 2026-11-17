@@ -1,0 +1,136 @@
+/* The Field Guide quiz (docs/trivia.md): a button beside the guide's progress
+   line, and a round that opens over the guide in the guide's own colours. */
+
+/* The guide's progress line, with the Quiz button beside it; wraps on a small phone at large text. */
+.field-guide__summary-row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4em 0.75em;
+  margin: 0 0.75em; min-inline-size: 0;
+}
+.field-guide__summary-row .field-guide__summary { margin: 0; }
+
+.quiz-entry {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4em;
+  min-block-size: var(--kad-touch-min); min-inline-size: var(--kad-touch-min); padding: 0 1em;
+  font: inherit; font-weight: var(--kad-weight-bold); color: var(--kad-accent-ink);
+  border: 0.08em solid #ffe9a8; border-radius: var(--kad-radius-pill);
+  background: linear-gradient(#ffe9a8, #e8b85a); box-shadow: 0 0.15em 0.4em #0007;
+}
+.quiz-entry .kad-icon { color: inherit; }
+.quiz-entry__empty {
+  display: flex; align-items: center; gap: 0.4em; margin: 0; flex: 1 1 14em; min-inline-size: 0;
+  font-size: 0.9em; color: var(--kad-ink-dim);
+}
+.quiz-entry__empty .kad-icon { flex: none; color: #e5c281; }
+
+/* Over the guide: the whole pane, so the guide is one tap away underneath. */
+.quiz {
+  position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; min-block-size: 0;
+  background: radial-gradient(ellipse at 50% 0%, #3c2d42, #171225 70%);
+  color: var(--kad-ink);
+}
+.quiz__bar { display: flex; align-items: center; justify-content: space-between; gap: 0.5em; padding: 0.5em 0.75em 0.25em; flex-wrap: wrap; }
+.quiz__title {
+  display: flex; align-items: center; gap: 0.4em; margin: 0; min-inline-size: 0;
+  font-family: var(--kad-font-display); font-size: 1.2em; color: #f3ddb3;
+}
+.quiz__title .kad-icon { color: #e9c985; }
+.quiz__stop {
+  display: inline-flex; align-items: center; gap: 0.3em; min-block-size: var(--kad-touch-min); min-inline-size: var(--kad-touch-min);
+  padding: 0 0.9em; font: inherit; font-weight: var(--kad-weight-bold); color: #e6d3b0;
+  border: 0.08em solid #ad885777; border-radius: var(--kad-radius-pill); background: linear-gradient(#3c2d42, #20192f);
+}
+.quiz__body { flex: 1 1 auto; min-block-size: 0; padding: 0.25em 0.75em 1em; overflow-y: auto; }
+.quiz__busy { margin: 2em auto; text-align: center; color: var(--kad-ink-dim); }
+
+.quiz__card { display: flex; flex-direction: column; gap: 0.6em; max-inline-size: 36em; margin: 0 auto; }
+.quiz__count { display: flex; align-items: center; justify-content: space-between; gap: 0.5em; margin: 0; font-size: 0.9em; color: var(--kad-ink-dim); flex-wrap: wrap; }
+.quiz__pips { display: inline-flex; gap: 0.3em; }
+.quiz__pip { inline-size: 0.6em; block-size: 0.6em; border-radius: 50%; border: 1px solid #ad8857aa; background: transparent; }
+.quiz__pip--done { background: #ad8857; }
+.quiz__pip--on { background: #ffe9a8; border-color: #ffe9a8; }
+
+/* A place fills the top of the screen behind the question; a figure stands in its light, as on its guide card. */
+.quiz__backdrop {
+  position: relative; flex: none; inline-size: 100%; aspect-ratio: 16 / 9; max-block-size: 38cqh; overflow: hidden;
+  border: 0.08em solid #ad8857aa; border-radius: var(--kad-radius-lg); background: #0d0a1e;
+}
+.quiz__backdrop img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+/* One fixed cell, so a tall figure is fitted inside it rather than sizing the row (and covering the question). */
+.quiz__figure {
+  display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center; overflow: hidden;
+  inline-size: 100%; block-size: min(34cqh, 15em); min-block-size: 8em; flex: none;
+  border-radius: var(--kad-radius-lg); background: radial-gradient(ellipse at 50% 60%, #5a4668aa, transparent 70%);
+}
+.quiz__figure img { inline-size: 100%; block-size: 100%; object-fit: contain; filter: drop-shadow(0 0.2em 0.3em #0009); }
+
+.quiz__ask {
+  margin: 0; font-family: var(--kad-font-display); font-size: 1.25em; line-height: 1.3; color: #f3ddb3; text-align: center;
+}
+.quiz__ask:focus { outline: none; }
+.quiz__ask:focus-visible { outline: 0.15em solid var(--kad-gold); outline-offset: 0.2em; border-radius: var(--kad-radius-sm); }
+
+/* Four big options, one under another on a phone and two by two where there is room. */
+.quiz__options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(13em, 100%), 1fr)); gap: 0.5em; }
+.quiz__option {
+  min-block-size: max(var(--kad-touch-min), 3.2em); padding: 0.5em 0.9em; font: inherit; font-weight: var(--kad-weight-bold);
+  line-height: 1.25; text-align: center; overflow-wrap: anywhere; color: var(--kad-ink);
+  border: 0.1em solid #ad8857aa; border-radius: 1.1em 0.6em 1.1em 0.6em;
+  background: radial-gradient(ellipse at 50% 25%, #5a4668, #231d35 78%); box-shadow: inset 0 0.15em #ffffff10, 0 0.25em 0.6em #0003;
+  transition: transform 0.12s ease;
+}
+.quiz__option:not([aria-disabled="true"]):active { transform: scale(0.97); }
+.quiz__option[aria-disabled="true"] { cursor: default; }
+.quiz__option[aria-disabled="true"]:not(.quiz__option--right):not(.quiz__option--wrong) { opacity: 0.6; }
+/* Right: the option glows gold. Shown by more than colour: the verdict says it in words. */
+.quiz__option--right {
+  color: var(--kad-accent-ink); border-color: #ffe9a8; background: linear-gradient(#ffe9a8, #e8b85a);
+  box-shadow: 0 0 0 0.15em var(--kad-gold), 0 0 1.4em rgba(245, 200, 108, 0.65);
+  animation: quiz-glow 1.2s ease-out 1;
+}
+/* Wrong: her pick is only dimmed and outlined. The right one is never marked. */
+.quiz__option--wrong { border-style: dashed; border-color: #ad8857; background: #1a1528; color: var(--kad-ink-dim); }
+@keyframes quiz-glow {
+  0% { box-shadow: 0 0 0 0 var(--kad-gold), 0 0 0 rgba(245, 200, 108, 0); transform: scale(1); }
+  35% { box-shadow: 0 0 0 0.3em var(--kad-gold), 0 0 2.2em rgba(245, 200, 108, 0.9); transform: scale(1.03); }
+  100% { box-shadow: 0 0 0 0.15em var(--kad-gold), 0 0 1.4em rgba(245, 200, 108, 0.65); transform: scale(1); }
+}
+
+.quiz__after { display: flex; flex-direction: column; align-items: stretch; gap: 0.5em; min-block-size: 1em; }
+.quiz__verdict { margin: 0.2em 0 0; text-align: center; font-family: var(--kad-font-display); font-size: 1.15em; color: #e6d3b0; }
+.quiz__verdict--right { color: var(--kad-gold-hi); }
+.quiz__next, .quiz__link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4em;
+  min-block-size: var(--kad-touch-min); padding: 0.4em 1em; font: inherit; font-weight: var(--kad-weight-bold);
+  border-radius: var(--kad-radius-pill); text-align: center;
+}
+.quiz__next { color: var(--kad-accent-ink); border: 0.08em solid #ffe9a8; background: linear-gradient(#ffe9a8, #e8b85a); }
+.quiz__link { color: #f3ddb3; border: 0.08em solid #ad8857aa; background: linear-gradient(#3c2d42, #20192f); }
+.quiz__link .kad-icon { color: #e5c281; }
+
+.quiz__done, .quiz__whose {
+  display: flex; flex-direction: column; align-items: stretch; gap: 0.6em; max-inline-size: 26em; margin: 1.5em auto 0; text-align: center;
+}
+.quiz__done > .kad-icon { align-self: center; color: #e9c985; }
+.quiz__done p, .quiz__whose p { margin: 0; }
+.quiz__whose-picks { display: grid; gap: 0.5em; }
+
+.quiz__reward, .quiz__note {
+  display: flex; align-items: center; gap: 0.6em; margin: 0.25em 0.75em; padding: 0.5em 0.8em;
+  border-radius: var(--kad-radius-md); flex-wrap: wrap;
+}
+.quiz__reward { border: 1px solid #ffe9a8; background: linear-gradient(#5a4320, #3a2d14); color: #fff1cf; }
+.quiz__note { border: 1px solid #ffd36e; background: #3a2d14; color: #fff1cf; }
+.quiz__reward p, .quiz__note p { flex: 1 1 10em; margin: 0; min-inline-size: 0; }
+.quiz__reward-star { font-size: 1.6em; color: var(--kad-gold-hi); }
+.quiz__reward-ok {
+  flex: none; min-inline-size: var(--kad-touch-min); min-block-size: var(--kad-touch-min); padding: 0 0.8em;
+  font: inherit; font-weight: var(--kad-weight-bold); color: var(--kad-accent-ink);
+  border: 0; border-radius: var(--kad-radius-pill); background: linear-gradient(#ffe9a8, #e8b85a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz__option { transition: none; }
+  .quiz__option--right { animation: none; }
+}
+:root[data-motion="reduced"] .quiz__option { transition: none; }
+:root[data-motion="reduced"] .quiz__option--right { animation: none; }

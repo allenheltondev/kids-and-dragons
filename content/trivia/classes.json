@@ -1,0 +1,374 @@
+{
+  "$schema": "../../schemas/trivia.schema.json",
+  "$comment": "Field Guide quiz questions about the four class pages (class.*); their picture is the class's gear portrait (docs/trivia.md §3). Authored, never generated: `npm run trivia:draft -- <entry id>` proposes drafts to edit. Checked by `npm run content:validate` (tools/content/trivia-bank.mjs).",
+  "questions": [
+    {
+      "id": "class.thornguard.gear",
+      "entry": "class.thornguard",
+      "ask": "What gear does a Thornguard wear?",
+      "answer": "A thorn bracer",
+      "wrong": [
+        "A dusk hood",
+        "A star circlet",
+        "A song bell on a cord",
+        "A leather shield",
+        "An iron helmet"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.thornguard.place_in_a_fight",
+      "entry": "class.thornguard",
+      "ask": "Where does a Thornguard stand when trouble comes?",
+      "answer": "In front of everyone",
+      "wrong": [
+        "At the very back",
+        "Up in the trees",
+        "Off to one side",
+        "Behind the biggest rock",
+        "Hidden in the grass"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.thornguard.home",
+      "entry": "class.thornguard",
+      "ask": "Where do Thornguards go to learn their moves?",
+      "answer": "The Dojo",
+      "wrong": [
+        "The Barracks",
+        "The Armory",
+        "The Old Fort",
+        "The Shield Hall",
+        "The Watchtower"
+      ],
+      "also": [
+        "location.dojo"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "class.thornguard.apprentice_move",
+      "entry": "class.thornguard",
+      "ask": "Which move does a Thornguard learn first, as an apprentice?",
+      "answer": "Shove",
+      "wrong": [
+        "Bramble Wall",
+        "Unbreakable",
+        "Vanish",
+        "Glimmer",
+        "Soothe"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.thornguard.expert_move",
+      "entry": "class.thornguard",
+      "ask": "Which new move does a Thornguard learn on becoming an expert?",
+      "answer": "Bramble Wall",
+      "wrong": [
+        "Shove",
+        "Unbreakable",
+        "Twin Step",
+        "Tanglelight",
+        "Chorus"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.thornguard.master_move",
+      "entry": "class.thornguard",
+      "ask": "What is the move a Thornguard learns at master rank?",
+      "answer": "Unbreakable",
+      "wrong": [
+        "Shove",
+        "Bramble Wall",
+        "Storm of Blades",
+        "Starfall",
+        "Encore"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.duskrunner.gear",
+      "entry": "class.duskrunner",
+      "ask": "What gear does a Duskrunner wear?",
+      "answer": "A dusk hood",
+      "wrong": [
+        "A thorn bracer",
+        "A star circlet",
+        "A song bell on a cord",
+        "A pair of soft boots",
+        "A silver mask"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.duskrunner.never_where",
+      "entry": "class.duskrunner",
+      "ask": "A Duskrunner is everywhere at once, but never where?",
+      "answer": "Where the trouble lands",
+      "wrong": [
+        "Where the treasure is",
+        "Where the party sleeps",
+        "Where the snacks are",
+        "Where the map ends",
+        "Where the sun shines"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.duskrunner.home",
+      "entry": "class.duskrunner",
+      "ask": "Where do Duskrunners go to learn their moves?",
+      "answer": "The Rookery",
+      "wrong": [
+        "The Shadow Hall",
+        "The Night Market",
+        "The Old Tower",
+        "The Hideout",
+        "The Cellar"
+      ],
+      "also": [
+        "location.rookery"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "class.duskrunner.apprentice_move",
+      "entry": "class.duskrunner",
+      "ask": "Which move does a Duskrunner learn first, as an apprentice?",
+      "answer": "Vanish",
+      "wrong": [
+        "Twin Step",
+        "Storm of Blades",
+        "Shove",
+        "Glimmer",
+        "Soothe"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.duskrunner.expert_move",
+      "entry": "class.duskrunner",
+      "ask": "Which new move does a Duskrunner learn on becoming an expert?",
+      "answer": "Twin Step",
+      "wrong": [
+        "Vanish",
+        "Storm of Blades",
+        "Bramble Wall",
+        "Tanglelight",
+        "Chorus"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.duskrunner.master_move",
+      "entry": "class.duskrunner",
+      "ask": "What is the move a Duskrunner learns at master rank?",
+      "answer": "Storm of Blades",
+      "wrong": [
+        "Vanish",
+        "Twin Step",
+        "Unbreakable",
+        "Starfall",
+        "Encore"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.starweaver.gear",
+      "entry": "class.starweaver",
+      "ask": "What gear does a Starweaver wear?",
+      "answer": "A star circlet",
+      "wrong": [
+        "A thorn bracer",
+        "A dusk hood",
+        "A song bell on a cord",
+        "A crystal wand",
+        "A moon necklace"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.starweaver.sky_pieces",
+      "entry": "class.starweaver",
+      "ask": "What does a Starweaver pull down and put where it is needed?",
+      "answer": "Little pieces of the sky",
+      "wrong": [
+        "Rain from the clouds",
+        "Leaves from tall trees",
+        "Fruit from high branches",
+        "Snow from the mountains",
+        "Feathers from passing birds"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.starweaver.home",
+      "entry": "class.starweaver",
+      "ask": "Where do Starweavers go to learn their moves?",
+      "answer": "The Academy",
+      "wrong": [
+        "The Observatory",
+        "The Tower of Stars",
+        "The Library",
+        "The Moon Hall",
+        "The Lantern House"
+      ],
+      "also": [
+        "location.academy"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "class.starweaver.apprentice_move",
+      "entry": "class.starweaver",
+      "ask": "Which move does a Starweaver learn first, as an apprentice?",
+      "answer": "Glimmer",
+      "wrong": [
+        "Tanglelight",
+        "Starfall",
+        "Shove",
+        "Vanish",
+        "Soothe"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.starweaver.expert_move",
+      "entry": "class.starweaver",
+      "ask": "Which new move does a Starweaver learn on becoming an expert?",
+      "answer": "Tanglelight",
+      "wrong": [
+        "Glimmer",
+        "Starfall",
+        "Bramble Wall",
+        "Twin Step",
+        "Chorus"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.starweaver.master_move",
+      "entry": "class.starweaver",
+      "ask": "What is the move a Starweaver learns at master rank?",
+      "answer": "Starfall",
+      "wrong": [
+        "Glimmer",
+        "Tanglelight",
+        "Unbreakable",
+        "Storm of Blades",
+        "Encore"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.songkeeper.gear",
+      "entry": "class.songkeeper",
+      "ask": "What gear does a Songkeeper carry?",
+      "answer": "A song bell on a cord",
+      "wrong": [
+        "A thorn bracer",
+        "A dusk hood",
+        "A star circlet",
+        "A little silver flute",
+        "A drum on a strap"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.songkeeper.job",
+      "entry": "class.songkeeper",
+      "ask": "What does a Songkeeper do for the party?",
+      "answer": "Keeps everybody standing",
+      "wrong": [
+        "Carries everybody's bags",
+        "Finds the hidden doors",
+        "Stands in front of everybody",
+        "Cooks the best meals",
+        "Draws the maps"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.songkeeper.home",
+      "entry": "class.songkeeper",
+      "ask": "Where do Songkeepers go to learn their moves?",
+      "answer": "The Conservatory",
+      "wrong": [
+        "The Music Hall",
+        "The Bell Tower",
+        "The Choir House",
+        "The Opera House",
+        "The Song Hall"
+      ],
+      "also": [
+        "location.conservatory"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "class.songkeeper.apprentice_move",
+      "entry": "class.songkeeper",
+      "ask": "Which move does a Songkeeper learn first, as an apprentice?",
+      "answer": "Soothe",
+      "wrong": [
+        "Chorus",
+        "Encore",
+        "Shove",
+        "Vanish",
+        "Glimmer"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.songkeeper.expert_move",
+      "entry": "class.songkeeper",
+      "ask": "Which new move does a Songkeeper learn on becoming an expert?",
+      "answer": "Chorus",
+      "wrong": [
+        "Soothe",
+        "Encore",
+        "Bramble Wall",
+        "Twin Step",
+        "Tanglelight"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "class.songkeeper.master_move",
+      "entry": "class.songkeeper",
+      "ask": "What is the move a Songkeeper learns at master rank?",
+      "answer": "Encore",
+      "wrong": [
+        "Soothe",
+        "Chorus",
+        "Unbreakable",
+        "Storm of Blades",
+        "Starfall"
+      ],
+      "also": [],
+      "link": "entry"
+    }
+  ]
+}

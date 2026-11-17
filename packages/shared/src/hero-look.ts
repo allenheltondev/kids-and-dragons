@@ -330,10 +330,11 @@ export function migrateLook(data: unknown): HeroLook {
   for (const [id, value] of Object.entries(unlockedRaw as Record<string, unknown>)) {
     if (typeof value !== "object" || value === null) throw new StoredLookError(`look.unlocked.${id}: expected a receipt`);
     const r = value as Record<string, unknown>;
-    if (r["from"] !== "starter" && r["from"] !== "found" && r["from"] !== "milestone") throw new StoredLookError(`look.unlocked.${id}.from`);
+    if (r["from"] !== "starter" && r["from"] !== "found" && r["from"] !== "milestone" && r["from"] !== "trivia") throw new StoredLookError(`look.unlocked.${id}.from`);
     unlocked[id] = {
       from: r["from"],
       ...(typeof r["rewardId"] === "string" ? { rewardId: r["rewardId"] } : {}),
+      ...(typeof r["rung"] === "number" ? { rung: r["rung"] } : {}),
       ...(typeof r["at"] === "string" ? { at: r["at"] } : {}),
       ...(typeof r["source"] === "string" ? { source: r["source"] } : {}),
     };

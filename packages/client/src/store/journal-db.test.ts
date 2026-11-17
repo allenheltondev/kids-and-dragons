@@ -91,6 +91,32 @@ describe("journal in IndexedDB", () => {
   });
 });
 
+describe("patching the saved book (updateSavedJournal)", () => {
+  it("keeps both patches when two tabs patch at once: each its own lane, one IndexedDB", async () => {
+    await saveJournal(saved());
+    // Two tabs: two copies of the module, so two lanes that know nothing of each other.
+    vi.resetModules();
+    const tabA = await import("./journal-db");
+    vi.resetModules();
+    const tabB = await import("./journal-db");
+    await Promise.all([
+      tabA.updateSavedJournal("dev_1", (j) => ({ ...j, trivia: { v: 1, mastered: { q_1: { at: "2026-11-17T10:00:00.000Z", firstTry: true } }, missed: {}, rungs: [] } })),
+      tabB.updateSavedJournal("dev_1", (j) => ({ ...j, finders: { p_1: "Ada" } })),
+    ]);
+    const now = await loadSavedJournal("dev_1");
+    expect(now?.journal.trivia?.mastered).toHaveProperty("q_1");
+    expect(now?.journal.finders).toEqual({ p_1: "Ada" });
+  });
+
+  it("writes nothing for another binding's book, or when the patch declines", async () => {
+    await saveJournal(saved());
+    const { updateSavedJournal } = await import("./journal-db");
+    await updateSavedJournal("dev_2", (j) => ({ ...j, finders: { p_9: "Nope" } }));
+    await updateSavedJournal("dev_1", () => null);
+    expect((await loadSavedJournal("dev_1"))?.journal.finders).toEqual({});
+  });
+});
+
 describe("when IndexedDB is missing or throws", () => {
   it("falls back to localStorage when it is missing", async () => {
     // @ts-expect-error simulating a browser without IndexedDB

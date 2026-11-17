@@ -9,7 +9,8 @@
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { bookKitProblem, mergeBookKit, type BookKitChange, type BookKitResponse, type JournalKit } from "@kad/shared";
-import { UNSAVED_NOTE, bookKitStatus, editBookKit, flushKitQueue, pendingKitEdits, resetBookKitSync } from "./book-kit-sync";
+import { UNSAVED_NOTE, bookKitStatus, dependsOnQuiz, editBookKit, flushKitQueue, pendingKitEdits, resetBookKitSync } from "./book-kit-sync";
+import { dropTriviaQueue, enqueueTriviaAnswer } from "./trivia-queue";
 import { useGameStore } from "./index";
 import { KIT_QUEUE_KEY, dropKitQueue, enqueueKitChanges, hasQueuedKitChanges, journalKitState, kitQueueUnsaved, loadKitQueue, withQueuedKit } from "./kit-queue";
 import { defaultStorage, saveIdentity } from "./persistence";
@@ -31,6 +32,7 @@ function serve(reply: () => Response | Promise<Response>): void {
 beforeEach(() => {
   saveIdentity({ householdId: "h_1", playerId: "p_1", displayName: "Ada", deviceToken: "dev_1" } as Parameters<typeof saveIdentity>[0]);
   dropKitQueue();
+  dropTriviaQueue();
   resetBookKitSync();
   sent.length = 0;
 });
@@ -110,6 +112,43 @@ describe("sending the book's kit changes", () => {
     expect(sent.map((s) => s.body.characterId)).toEqual(["c_gone", "c_1"]);
     expect(loadKitQueue("dev_1")).toEqual([]);
     expect(bookKitStatus().notes).toEqual(["One of your changes could not be saved."]);
+  });
+
+  it("knows a pick of a look the quiz gives from any other pick", () => {
+    expect(dependsOnQuiz([{ field: "title", before: null, after: "the_learned" }])).toBe(true);
+    expect(dependsOnQuiz([{ field: "title", before: "the_learned", after: null }])).toBe(false);
+    expect(dependsOnQuiz([{ field: "title", before: null, after: "the_bold" }, { field: "color", before: "rose", after: "tide" }])).toBe(false);
+  });
+
+  it("holds a quiz title pick while the answers that earn it are still queued, and sends it once they land (docs/trivia.md §6.2)", async () => {
+    // Earned and worn offline: the answers are queued, and the trivia send just failed (the server was busy).
+    enqueueTriviaAnswer("dev_1", { questionId: "q_1", optionsShown: ["a", "b", "c", "d"], picked: "a", at: "2026-11-17T10:00:00.000Z", round: "r_1" });
+    serve(() => answer(200, { kit: KIT, applied: ["title"], refused: [] }));
+    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "title", before: null, after: "the_learned" }] }, () => undefined);
+    // Never sent: a healthy kit endpoint would refuse a title the server does not know she has, and it would be let go for good.
+    expect(sent).toEqual([]);
+    expect(loadKitQueue("dev_1")).toHaveLength(1);
+    expect(bookKitStatus()).toMatchObject({ offline: true, notes: [] });
+
+    // An unrelated pick queued behind it waits too, so the last tap still stands.
+    enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] });
+    await flushKitQueue(() => undefined);
+    expect(sent).toEqual([]);
+
+    // The answers land; the held picks go, in order.
+    dropTriviaQueue();
+    await flushKitQueue(() => undefined);
+    expect(sent.length).toBeGreaterThan(0);
+    expect(sent[0]!.body.changes).toEqual(expect.arrayContaining([{ field: "title", before: null, after: "the_learned" }]));
+    expect(loadKitQueue("dev_1")).toEqual([]);
+  });
+
+  it("sends a pick that does not need the quiz while answers are still queued", async () => {
+    enqueueTriviaAnswer("dev_1", { questionId: "q_1", optionsShown: ["a", "b", "c", "d"], picked: "a", at: "2026-11-17T10:00:00.000Z", round: "r_1" });
+    serve(() => answer(200, { kit: { ...KIT, color: "tide" }, applied: ["color"], refused: [] }));
+    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, () => undefined);
+    expect(sent).toHaveLength(1);
+    expect(loadKitQueue("dev_1")).toEqual([]);
   });
 
   for (const status of [408, 429]) {

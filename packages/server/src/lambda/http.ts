@@ -55,6 +55,7 @@ import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts"
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { editKitFromBook } from "../handlers/camp-book.ts";
+import { answerTrivia } from "../handlers/trivia.ts";
 import { saveFlair } from "../handlers/profile.ts";
 import { getState } from "../handlers/state.ts";
 import { checkHealth, wantsDeep } from "../handlers/health.ts";
@@ -275,6 +276,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/journal/kit") return (deps) => postBookKitRoute(req, deps);
+  if (req.method === "POST" && req.path === "/api/journal/trivia") return (deps) => postTriviaRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/profile/flair") return (deps) => postFlairRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
   if (req.method === "GET" && req.path === "/api/device") return (deps) => getDeviceRoute(req, deps);
@@ -971,6 +973,18 @@ async function postBookKitRoute(req: Req, deps: HandlerDeps) {
   const kid = await resolveKid(req, deps);
   if (!kid) return error(401, "FORBIDDEN", "the adventure book needs this device's token");
   const result = await editKitFromBook({ householdId: kid.householdId, playerId: kid.playerId, body: req.body }, deps);
+  return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
+}
+
+/**
+ * A batch of a kid's queued Field Guide quiz answers (handlers/trivia.ts,
+ * docs/trivia.md §6.2). Authorised as the kit's write is: the device token (or
+ * the room session a family tablet's picked kid holds) names the kid; the body never does.
+ */
+async function postTriviaRoute(req: Req, deps: HandlerDeps) {
+  const kid = await resolveKid(req, deps);
+  if (!kid) return error(401, "FORBIDDEN", "the quiz needs this device's token");
+  const result = await answerTrivia({ householdId: kid.householdId, playerId: kid.playerId, body: req.body }, deps);
   return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
 }
 

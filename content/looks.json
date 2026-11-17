@@ -119,6 +119,8 @@
     { "id": "of_the_riftlight", "text": "of the Riftlight", "unlock": { "from": "milestone", "campaign": "riftlight" } },
     { "id": "of_the_hollow_crown", "text": "of the Hollow Crown", "unlock": { "from": "milestone", "campaign": "the-hollow-crown" } },
     { "id": "friend_of_bun", "text": "Friend of Bun", "unlock": { "from": "milestone", "friend": "bun" } },
-    { "id": "keeper_of_the_fire", "text": "Keeper of the Fire", "unlock": { "from": "milestone", "camp": "fullCamp" } }
+    { "id": "keeper_of_the_fire", "text": "Keeper of the Fire", "unlock": { "from": "milestone", "camp": "fullCamp" } },
+    { "id": "the_learned", "text": "the Learned", "unlock": { "from": "trivia", "rung": 25 } },
+    { "id": "the_well_read", "text": "the Well-Read", "unlock": { "from": "trivia", "rung": 175 } }
   ]
 }

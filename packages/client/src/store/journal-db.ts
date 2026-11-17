@@ -119,7 +119,74 @@ function dropLegacy(storage: KeyValueStorage): void {
   }
 }
 
-export async function saveJournal(saved: SavedJournal, storage?: KeyValueStorage): Promise<void> {
+/**
+ * Every write to the saved book takes its turn here, one after another. The
+ * book's senders (its kit changes, its quiz answers, her flair) each patch
+ * the copy as the server answers, and two of them reading the same old copy
+ * and putting back their own patched whole would let the later one erase the
+ * earlier one's change after both queues have let go of it. In one lane, each
+ * patch reads what the one before it wrote (`updateSavedJournal`).
+ */
+let lane: Promise<unknown> = Promise.resolve();
+
+function inLane<T>(run: () => Promise<T>): Promise<T> {
+  const next = lane.then(run, run);
+  lane = next.catch(() => undefined);
+  return next;
+}
+
+/** Save the whole book, in its turn after any write already under way. */
+export function saveJournal(saved: SavedJournal, storage?: KeyValueStorage): Promise<void> {
+  return inLane(() => writeJournal(saved, storage));
+}
+
+/**
+ * Patch the saved book: read it, `patch` its journal, and write it back, all
+ * in one turn of the lane, so no other write lands between the read and the
+ * write. `patch` returning null (or there being no saved book for this
+ * binding) writes nothing. In IndexedDB the read and the write are one
+ * readwrite transaction, so two tabs patching at once both keep their change;
+ * the lane covers the fallback copies (localStorage, memory) within a page.
+ */
+export function updateSavedJournal(
+  deviceToken: string,
+  patch: (journal: SavedJournal["journal"]) => SavedJournal["journal"] | null,
+  storage?: KeyValueStorage,
+): Promise<void> {
+  return inLane(async () => {
+    // IndexedDB first, as one readwrite transaction: the read and the put cannot be split by
+    // another tab's write (IndexedDB runs overlapping readwrite transactions on a store one at
+    // a time), which the lane alone, one per page, could not promise.
+    let atomic: "written" | "nothing" | "absent";
+    try {
+      atomic = await withStore("readwrite", async (store) => {
+        const stored: unknown = await request(store.get(RECORD_KEY));
+        if (stored === undefined) return "absent" as const;
+        const saved = validSavedJournal(stored, deviceToken);
+        const journal = saved ? patch(saved.journal) : null;
+        if (!saved || !journal) return "nothing" as const;
+        await request(store.put({ ...saved, journal }, RECORD_KEY));
+        return "written" as const;
+      });
+    } catch {
+      atomic = "absent";
+    }
+    if (atomic === "written") {
+      memory = null;
+      dropLegacy(safeStorage(storage));
+      return;
+    }
+    if (atomic === "nothing") return;
+    // No book in IndexedDB (a legacy localStorage copy, or no IndexedDB at all): the fallback
+    // paths, one page's writes kept in turn by the lane.
+    const saved = await loadSavedJournal(deviceToken, storage);
+    if (!saved) return;
+    const journal = patch(saved.journal);
+    if (journal) await writeJournal({ ...saved, journal }, storage);
+  });
+}
+
+async function writeJournal(saved: SavedJournal, storage?: KeyValueStorage): Promise<void> {
   const ls = safeStorage(storage);
   try {
     await withStore("readwrite", async (store) => {
@@ -187,4 +254,5 @@ export async function clearSavedJournal(storage?: KeyValueStorage): Promise<void
 /** Test seam: forget the in-memory copy. */
 export function resetJournalMemory(): void {
   memory = null;
+  lane = Promise.resolve();
 }

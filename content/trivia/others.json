@@ -1,0 +1,1118 @@
+{
+  "$schema": "../../schemas/trivia.schema.json",
+  "$comment": "Field Guide quiz questions about peoples, folk, named characters and factions (character.*, npc.*, individual.*, faction.*) (docs/trivia.md §3). Authored, never generated: `npm run trivia:draft -- <entry id>` proposes drafts to edit. Checked by `npm run content:validate` (tools/content/trivia-bank.mjs).",
+  "questions": [
+    {
+      "id": "character.bigfoot.mane",
+      "entry": "character.bigfoot",
+      "ask": "What grows in a bigfoot's mane, passed down through its family?",
+      "answer": "Moss",
+      "wrong": [
+        "Ivy",
+        "Tiny flowers",
+        "Mushrooms",
+        "Pine needles",
+        "Clover",
+        "Berries"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.bigfoot.chair",
+      "entry": "character.bigfoot",
+      "ask": "How long does a bigfoot take to grow a good chair?",
+      "answer": "Nine years",
+      "wrong": [
+        "Nine days",
+        "Three months",
+        "One summer",
+        "Ninety years",
+        "Two weeks",
+        "One winter"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.bigfoot.forgive",
+      "entry": "character.bigfoot",
+      "ask": "A bigfoot forgives almost anything. What is the one thing it does not?",
+      "answer": "Carelessness with living things",
+      "wrong": [
+        "Being late for supper",
+        "Telling a bad joke",
+        "Asking too many questions",
+        "Stepping on its toes",
+        "Losing a borrowed book",
+        "Talking during a quiet watch"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.dragonling.law",
+      "entry": "character.dragonling",
+      "ask": "What is the one law dragonlings live by in the foothills?",
+      "answer": "Take what the mountain drops, never pry",
+      "wrong": [
+        "Never dig in a cave after dark",
+        "Share every gem you ever find",
+        "Never wake a sleeping volcano",
+        "Never fly higher than the smoke",
+        "Give your first gem to the eldest"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.dragonling.races",
+      "entry": "character.dragonling",
+      "ask": "Where do dragonlings hold their wing-sprint races?",
+      "answer": "Through cooled lava tubes",
+      "wrong": [
+        "Over frozen waterfalls",
+        "Around the tallest peak",
+        "Through hollow tree trunks",
+        "Across hot sand dunes",
+        "Between storm clouds"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.dragonling.trade",
+      "entry": "character.dragonling",
+      "ask": "What will a dragonling trade when it has nothing left to trade?",
+      "answer": "The story of the last trade",
+      "wrong": [
+        "Its favorite warm rock",
+        "A song about the mountain",
+        "Its next gemstone, in advance",
+        "A scale from its tail",
+        "A ride on its back"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.griffin.first_flight",
+      "entry": "character.griffin",
+      "ask": "What is a young griffin's very first flight?",
+      "answer": "A rescue drill",
+      "wrong": [
+        "A race around the peaks",
+        "A sunrise parade",
+        "A mail delivery",
+        "A hunting trip",
+        "A visit to its grandparents"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.griffin.thermals",
+      "entry": "character.griffin",
+      "ask": "In a griffin thermal-riding contest, what wins?",
+      "answer": "An elegant spiral",
+      "wrong": [
+        "The highest climb",
+        "The fastest dive",
+        "The longest glide",
+        "The loudest cry",
+        "The most loops"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.griffin.cairns",
+      "entry": "character.griffin",
+      "ask": "What do griffins keep re-stacking, just to be ready?",
+      "answer": "Watch cairns",
+      "wrong": [
+        "Firewood piles",
+        "Nest twigs",
+        "Snow blocks",
+        "Supply crates",
+        "Stone steps"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.kitsune.gifts",
+      "entry": "character.kitsune",
+      "ask": "What small gift does a kitsune leave on a windowsill?",
+      "answer": "A flower that lasts until it is noticed",
+      "wrong": [
+        "A paper fox",
+        "A shiny feather",
+        "A tiny folded map",
+        "A jar of wind",
+        "A riddle on a leaf"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.kitsune.theater",
+      "entry": "character.kitsune",
+      "ask": "What does kitsune illusion theater retell as a play?",
+      "answer": "The week's news",
+      "wrong": [
+        "Old fairy tales",
+        "Last night's dreams",
+        "Famous battles",
+        "The history of the sky",
+        "Recipes from home"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.kitsune.who",
+      "entry": "character.kitsune",
+      "ask": "Which people keep the drifting islands connected with wind, stories and illusion?",
+      "answer": "Kitsune",
+      "wrong": [
+        "Griffin",
+        "Dragonling",
+        "Unicorn",
+        "Manticore",
+        "Bigfoot"
+      ],
+      "also": [
+        "character.griffin",
+        "character.dragonling",
+        "character.unicorn",
+        "character.manticore",
+        "character.bigfoot"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "character.manticore.greeting",
+      "entry": "character.manticore",
+      "ask": "In a manticore's formal greeting, what does it do with its tail?",
+      "answer": "Curls it away",
+      "wrong": [
+        "Wags it slowly",
+        "Raises it high",
+        "Taps it three times",
+        "Wraps it around its paws",
+        "Points it at the sky"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.manticore.naps",
+      "entry": "character.manticore",
+      "ask": "How does a manticore pride take its sunset nap?",
+      "answer": "In one big pile, by age",
+      "wrong": [
+        "Each on its own rock",
+        "In a circle facing out",
+        "Taking turns on watch",
+        "Up in the branches",
+        "In a long line by the road"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.manticore.insult",
+      "entry": "character.manticore",
+      "ask": "What happens if you insult a manticore?",
+      "answer": "You get a formal note about it",
+      "wrong": [
+        "It roars at you",
+        "It never speaks to you again",
+        "It steals your lunch",
+        "It challenges you to a race",
+        "Its whole pride hisses at you"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.unicorn.feels",
+      "entry": "character.unicorn",
+      "ask": "What does a unicorn feel coming, the way farmers feel weather?",
+      "answer": "A broken promise",
+      "wrong": [
+        "A storm",
+        "A lost traveler",
+        "A forest fire",
+        "A new friend",
+        "A bad dream",
+        "A change of season"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.unicorn.guessing",
+      "entry": "character.unicorn",
+      "ask": "What do unicorns make guesses about for fun?",
+      "answer": "Where the Woods will move a trail",
+      "wrong": [
+        "When the first snow will fall",
+        "Which flower will bloom first",
+        "How old a tree is",
+        "Who will win a race",
+        "Where a lost ball landed"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "character.unicorn.ceremony",
+      "entry": "character.unicorn",
+      "ask": "After a unicorn mends a hurt glade, what does it hold?",
+      "answer": "A tiny, very serious ceremony",
+      "wrong": [
+        "A big, loud party",
+        "A picnic for friends",
+        "A race through the trees",
+        "A long nap in the grass",
+        "A singing contest"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.boggart.collects",
+      "entry": "npc.boggart",
+      "ask": "What do boggarts collect?",
+      "answer": "Lost buttons, keys and secrets",
+      "wrong": [
+        "Shiny gemstones",
+        "Old bones",
+        "Pretty seashells",
+        "Fallen feathers",
+        "Pressed flowers",
+        "Rare mushrooms"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.boggart.filing",
+      "entry": "npc.boggart",
+      "ask": "A boggart says it never steals. What does it call picking things up?",
+      "answer": "Filing",
+      "wrong": [
+        "Borrowing",
+        "Cleaning",
+        "Rescuing",
+        "Saving",
+        "Gardening",
+        "Trading"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.boggart.reward",
+      "entry": "npc.boggart",
+      "ask": "How does a boggart decide how much to reward you?",
+      "answer": "By how well you paid attention",
+      "wrong": [
+        "By how much you pay",
+        "By how loudly you ask",
+        "By how polite you are",
+        "By how far you traveled",
+        "By how many buttons you bring"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.boughkin.tree",
+      "entry": "npc.boughkin",
+      "ask": "What kind of tree is a boughkin?",
+      "answer": "A beech",
+      "wrong": [
+        "An oak",
+        "A willow",
+        "A pine",
+        "A birch",
+        "A maple",
+        "An apple tree"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.boughkin.stays",
+      "entry": "npc.boughkin",
+      "ask": "Why do most boughkin stay in one place?",
+      "answer": "Moving is slow and costly",
+      "wrong": [
+        "Their roots are stuck forever",
+        "They are afraid of roads",
+        "They are always asleep",
+        "They are not allowed to move",
+        "They cannot see very far"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.boughkin.rain",
+      "entry": "npc.boughkin",
+      "ask": "In a rain recollection, what do boughkin compare?",
+      "answer": "Showers from years apart",
+      "wrong": [
+        "Puddles on the path",
+        "Colors of the clouds",
+        "Who got the wettest",
+        "Rainbows they have seen",
+        "How loud the thunder was"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.burrowfolk.looks",
+      "entry": "npc.burrowfolk",
+      "ask": "What animal do burrowfolk look a bit like?",
+      "answer": "A badger",
+      "wrong": [
+        "A rabbit",
+        "A mole",
+        "An otter",
+        "A hedgehog",
+        "A beaver",
+        "A fox"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.burrowfolk.stones",
+      "entry": "npc.burrowfolk",
+      "ask": "What do burrowfolk children carry home to learn their maps?",
+      "answer": "Ordinary stones",
+      "wrong": [
+        "Shiny gems",
+        "Seed packets",
+        "Bird feathers",
+        "Old coins",
+        "Clay pots"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.burrowfolk.shelf",
+      "entry": "npc.burrowfolk",
+      "ask": "What does the stone shelf in a burrowfolk home keep a record of?",
+      "answer": "Its repairs, visitors and mistakes",
+      "wrong": [
+        "How rich the family is",
+        "Every gem the family found",
+        "The family's birthdays",
+        "Its best harvests",
+        "Prizes the family has won"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.centaur.routes",
+      "entry": "npc.centaur",
+      "ask": "How do centaur foals learn the old routes?",
+      "answer": "As songs, one verse per landmark",
+      "wrong": [
+        "From painted maps",
+        "By following their parents' tracks",
+        "From books at school",
+        "By counting their steps",
+        "From the stars at night"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.centaur.warning",
+      "entry": "npc.centaur",
+      "ask": "How many times will a centaur give you a warning?",
+      "answer": "Once",
+      "wrong": [
+        "Twice",
+        "Three times",
+        "Never",
+        "Every hour",
+        "Until you listen"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.centaur.who",
+      "entry": "npc.centaur",
+      "ask": "Which people wear a caravan sash that is also a map of every road walked?",
+      "answer": "Centaurs",
+      "wrong": [
+        "Manticores",
+        "Fauns",
+        "Burrowfolk",
+        "Frogfolk",
+        "Merfolk"
+      ],
+      "also": [
+        "character.manticore",
+        "npc.faun",
+        "npc.burrowfolk",
+        "npc.frogfolk",
+        "npc.merfolk"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "npc.faun.song",
+      "entry": "npc.faun",
+      "ask": "What can a faun work-song tell you from half a mile away?",
+      "answer": "What stage the season is in",
+      "wrong": [
+        "Who the best singer is",
+        "What is for supper",
+        "Which field is biggest",
+        "When the rain will come",
+        "How tired the workers are"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.faun.flute",
+      "entry": "npc.faun",
+      "ask": "What does a faun's irrigation flute do?",
+      "answer": "Waters a row while you play it",
+      "wrong": [
+        "Calls the rain clouds",
+        "Scares the crows away",
+        "Wakes the whole village",
+        "Makes the plants grow taller",
+        "Tells the time of day"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.faun.pie",
+      "entry": "npc.faun",
+      "ask": "Why do fauns bake one extra pie for every festival?",
+      "answer": "A boggart always takes one",
+      "wrong": [
+        "For the judges to share",
+        "For the first guest to arrive",
+        "For good luck next year",
+        "For the winner's prize",
+        "For the smallest faun"
+      ],
+      "also": [
+        "npc.boggart"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "npc.frogfolk.safe",
+      "entry": "npc.frogfolk",
+      "ask": "How do frogfolk keep the marsh safe to cross?",
+      "answer": "Marked channels and mist lanterns",
+      "wrong": [
+        "Tall stone walls",
+        "Bridges made of rope",
+        "Loud warning bells",
+        "Painted rocks",
+        "Fences of reeds"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.frogfolk.wakes",
+      "entry": "npc.frogfolk",
+      "ask": "Why are wakes not allowed in frogfolk channel races?",
+      "answer": "Wakes wake things",
+      "wrong": [
+        "They tip boats over",
+        "They splash the crowd",
+        "They muddy the water",
+        "They scare the fish",
+        "They make it too easy"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.frogfolk.pause",
+      "entry": "npc.frogfolk",
+      "ask": "When a frogfolk pauses before answering, what is it doing?",
+      "answer": "Checking the true answer",
+      "wrong": [
+        "Trying to remember your name",
+        "Waiting for you to leave",
+        "Thinking of a joke",
+        "Catching a fly",
+        "Feeling too shy to speak"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.harvest_sprite.tends",
+      "entry": "npc.harvest_sprite",
+      "ask": "What do harvest sprites take care of?",
+      "answer": "Plants the big folk overlook",
+      "wrong": [
+        "The tallest trees",
+        "The farmers' prize pumpkins",
+        "Only the flowers",
+        "Orchards in bloom",
+        "Seeds at the market"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.harvest_sprite.medal",
+      "entry": "npc.harvest_sprite",
+      "ask": "What do harvest sprites give the season's best beet?",
+      "answer": "A small woven medal",
+      "wrong": [
+        "A golden crown",
+        "A song of its own",
+        "A painted sign",
+        "A big party",
+        "A shiny stone"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.harvest_sprite.ride",
+      "entry": "npc.harvest_sprite",
+      "ask": "What do harvest sprites sometimes ride, without it knowing?",
+      "answer": "A jackalope",
+      "wrong": [
+        "A bumblebee",
+        "A field mouse",
+        "A big beetle",
+        "A sparrow",
+        "A snail"
+      ],
+      "also": [
+        "creature.jackalope"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "npc.merfolk.circles",
+      "entry": "npc.merfolk",
+      "ask": "How often do merfolk song circles meet?",
+      "answer": "Every night",
+      "wrong": [
+        "Every full moon",
+        "Once a year",
+        "Once a week",
+        "Only on holidays",
+        "Only at high tide"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.merfolk.coral",
+      "entry": "npc.merfolk",
+      "ask": "What do merfolk grow coral into?",
+      "answer": "Archways, nurseries and furniture",
+      "wrong": [
+        "Swords and shields",
+        "Musical instruments",
+        "Boats",
+        "Jewelry to trade",
+        "Walls to keep others out"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.merfolk.grievances",
+      "entry": "npc.merfolk",
+      "ask": "What is written in the merfolk registry of grievances?",
+      "answer": "Nothing, it is empty",
+      "wrong": [
+        "Every broken promise",
+        "A list of sea monsters",
+        "Ten long pages",
+        "Complaints about noisy boats",
+        "Names of rude swimmers"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.selkie.coat",
+      "entry": "npc.selkie",
+      "ask": "To a selkie, what is its seal coat?",
+      "answer": "Its very self",
+      "wrong": [
+        "A warm blanket",
+        "A disguise",
+        "A gift from the sea",
+        "Its best outfit",
+        "A lucky charm"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.selkie.shelf",
+      "entry": "npc.selkie",
+      "ask": "When a selkie hangs its coat on a high shelf, what does it mean?",
+      "answer": "I trust this house",
+      "wrong": [
+        "I am staying a long time",
+        "I am cold",
+        "I am the guest of honor",
+        "I will leave at dawn",
+        "Please do not talk to me"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.selkie.jokes",
+      "entry": "npc.selkie",
+      "ask": "How do selkies measure what a joke is worth?",
+      "answer": "How far it traveled to reach you",
+      "wrong": [
+        "How loudly people laugh",
+        "How short it is",
+        "How old it is",
+        "How many fish are in it",
+        "How silly the ending is"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.sheeple.split",
+      "entry": "npc.sheeple",
+      "ask": "When a flock of sheeple comes apart, how does it split?",
+      "answer": "Into threes",
+      "wrong": [
+        "Into pairs",
+        "One by one",
+        "Into fives",
+        "Into tens",
+        "In half"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.sheeple.gather",
+      "entry": "npc.sheeple",
+      "ask": "What does the sheeple's Gather call mean?",
+      "answer": "Come here",
+      "wrong": [
+        "Run away",
+        "Danger",
+        "Time to eat",
+        "Good night",
+        "Look up"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.sheeple.friends",
+      "entry": "npc.sheeple",
+      "ask": "What is the best way to make friends with sheeple?",
+      "answer": "Be still, gentle and patient",
+      "wrong": [
+        "Bring them new hats",
+        "Sing them a song",
+        "Call out hello very loudly",
+        "Give each one a name",
+        "Run in circles with them"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.skupper.puff",
+      "entry": "npc.skupper",
+      "ask": "What happens when a skupper gets startled?",
+      "answer": "It puffs up round and floats",
+      "wrong": [
+        "It changes color",
+        "It digs into the mud",
+        "It turns invisible",
+        "It sings very loudly",
+        "It plays dead"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.skupper.time",
+      "entry": "npc.skupper",
+      "ask": "How can a skupper tell the time?",
+      "answer": "By counting waving fiddler crabs",
+      "wrong": [
+        "By the shape of the clouds",
+        "By how wet the mud is",
+        "By the sun on the water",
+        "By ringing a shell bell",
+        "By how hungry it feels"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.skupper.flood",
+      "entry": "npc.skupper",
+      "ask": "To a skupper, when is a flood properly over?",
+      "answer": "When it has a name everyone accepts",
+      "wrong": [
+        "When the mud is dry",
+        "When the town is rebuilt",
+        "After three sunny days",
+        "When the crabs come back",
+        "When the tide goes out"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.stone_troll.toll",
+      "entry": "npc.stone_troll",
+      "ask": "What toll does a stone troll ask to cross its bridge?",
+      "answer": "A story, a riddle or a promise",
+      "wrong": [
+        "One gold coin",
+        "A basket of food",
+        "A shiny stone",
+        "A day of work",
+        "A song and a dance"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.stone_troll.listen",
+      "entry": "npc.stone_troll",
+      "ask": "How does a stone troll learn the day's whole traffic?",
+      "answer": "One palm flat on the bridge",
+      "wrong": [
+        "Counting footprints",
+        "Asking the river",
+        "Watching from a tower",
+        "Listening to the birds",
+        "Talking to every traveler"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.stone_troll.tired",
+      "entry": "npc.stone_troll",
+      "ask": "Stone trolls are politely tired of one question. Which one?",
+      "answer": "Do you eat travelers?",
+      "wrong": [
+        "Can you swim?",
+        "How old are you?",
+        "Are you made of rock?",
+        "Can I cross for free?",
+        "Why are you so slow?"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.witch_order.question",
+      "entry": "npc.witch_order",
+      "ask": "What does a witch ask before saying what magic can do?",
+      "answer": "What do you actually want?",
+      "wrong": [
+        "Can you pay me?",
+        "Who sent you?",
+        "Do you have the ingredients?",
+        "Is the moon full?",
+        "What is your name?"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.witch_order.who_learns",
+      "entry": "npc.witch_order",
+      "ask": "Who can become a witch?",
+      "answer": "Any folk who learns the craft",
+      "wrong": [
+        "Only those born in the marsh",
+        "Only the oldest families",
+        "Only those who own a cat",
+        "Only one person each year",
+        "Only those who find a hat"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.witch_order.truest",
+      "entry": "npc.witch_order",
+      "ask": "What do witches call the truest work in their craft?",
+      "answer": "Keeping a tangled memory company",
+      "wrong": [
+        "Brewing the perfect potion",
+        "Winning at remedy fairs",
+        "Flying the fastest broom",
+        "Finding rare ingredients",
+        "Writing the thickest notebook"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.yeti.tea",
+      "entry": "npc.yeti",
+      "ask": "What is special about the water in yeti tea?",
+      "answer": "It melted from a named year",
+      "wrong": [
+        "It comes from the warmest spring",
+        "It is rain caught under a full moon",
+        "It is snow from the tallest peak",
+        "It is stirred a hundred times",
+        "It is sea water with honey"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.yeti.visit",
+      "entry": "npc.yeti",
+      "ask": "If you visit yetis again forty years later, what happens?",
+      "answer": "They remember you in detail",
+      "wrong": [
+        "They have forgotten you",
+        "They ask your name again",
+        "They make you wait outside",
+        "They hide in the ice",
+        "They give you a new name"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "npc.yeti.who",
+      "entry": "npc.yeti",
+      "ask": "Which people read memories caught in the glacier ice?",
+      "answer": "Yeti",
+      "wrong": [
+        "Griffin",
+        "Bigfoot",
+        "Stone Troll",
+        "Unicorn",
+        "Merfolk"
+      ],
+      "also": [
+        "character.griffin",
+        "character.bigfoot",
+        "npc.stone_troll",
+        "character.unicorn",
+        "npc.merfolk"
+      ],
+      "link": "shelf"
+    },
+    {
+      "id": "individual.marda_thorn.runs",
+      "entry": "individual.marda_thorn",
+      "ask": "What does Marda Thorn run?",
+      "answer": "A wide-doored inn",
+      "wrong": [
+        "A bakery",
+        "A ferry",
+        "A blacksmith's forge",
+        "A school",
+        "A market stall"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "individual.marda_thorn.knows",
+      "entry": "individual.marda_thorn",
+      "ask": "What does Marda Thorn know about the hedges?",
+      "answer": "Who came through them this month",
+      "wrong": [
+        "How old every hedge is",
+        "Where the berries grow",
+        "How to trim them",
+        "Who planted them",
+        "Where the holes are"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "individual.old_ossley.when",
+      "entry": "individual.old_ossley",
+      "ask": "When does Old Ossley take people over the water?",
+      "answer": "When the stones are under",
+      "wrong": [
+        "Only at sunrise",
+        "When the moon is full",
+        "On market days",
+        "When the river freezes",
+        "Only on holidays"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "individual.old_ossley.drake",
+      "entry": "individual.old_ossley",
+      "ask": "Why does the river drake like Old Ossley?",
+      "answer": "He pays without arguing",
+      "wrong": [
+        "He sings while he rows",
+        "He never splashes",
+        "He brings it fish",
+        "He rows very slowly",
+        "He tells good jokes"
+      ],
+      "also": [
+        "creature.river_drake"
+      ],
+      "link": "entry"
+    },
+    {
+      "id": "individual.pib.size",
+      "entry": "individual.pib",
+      "ask": "About how big is Pib?",
+      "answer": "The size of a teapot",
+      "wrong": [
+        "The size of a thimble",
+        "The size of a cat",
+        "As big as a door",
+        "The size of an acorn",
+        "As tall as a hedge"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "individual.pib.job",
+      "entry": "individual.pib",
+      "ask": "What job does Pib take extremely seriously?",
+      "answer": "Keeping the hedges",
+      "wrong": [
+        "Guarding the inn",
+        "Baking the bread",
+        "Ringing the town bell",
+        "Counting the sheep",
+        "Painting the signs"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "faction.deep_hollow_cult.laws",
+      "entry": "faction.deep_hollow_cult",
+      "ask": "What does the Deep Hollow Cult believe about the world's laws?",
+      "answer": "They are broken",
+      "wrong": [
+        "They are perfect",
+        "They were written by dragons",
+        "They change every year",
+        "They do not exist",
+        "They are kept in one book"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "faction.deep_hollow_cult.recruit",
+      "entry": "faction.deep_hollow_cult",
+      "ask": "How does the Deep Hollow Cult find new members?",
+      "answer": "By being kind to the desperate",
+      "wrong": [
+        "By holding big festivals",
+        "By sending letters",
+        "By winning arguments",
+        "By paying in gold",
+        "By putting up posters"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "faction.deep_hollow_cult.choirs",
+      "entry": "faction.deep_hollow_cult",
+      "ask": "What do the cult's resonance choirs ring their chords through?",
+      "answer": "Crystal",
+      "wrong": [
+        "Hollow logs",
+        "Seashells",
+        "Iron bells",
+        "Long horns",
+        "Glass jars"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "faction.skywardens.log",
+      "entry": "faction.skywardens",
+      "ask": "What is the proudest Skywarden log entry in four centuries?",
+      "answer": "Nothing",
+      "wrong": [
+        "A dragon sighting",
+        "A great battle",
+        "A falling star",
+        "A storm that was stopped",
+        "A door in the sky"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "faction.skywardens.recruits",
+      "entry": "faction.skywardens",
+      "ask": "What is a new Skywarden recruit handed first?",
+      "answer": "A ledger",
+      "wrong": [
+        "A sword",
+        "A shield",
+        "A horse",
+        "A spyglass",
+        "A helmet"
+      ],
+      "also": [],
+      "link": "entry"
+    },
+    {
+      "id": "faction.skywardens.games",
+      "entry": "faction.skywardens",
+      "ask": "What do the Skywardens compete at in their watch-games?",
+      "answer": "Naming the clouds",
+      "wrong": [
+        "Sword fighting",
+        "Counting the stars",
+        "Hide and seek",
+        "Kite flying",
+        "Spotting birds"
+      ],
+      "also": [],
+      "link": "entry"
+    }
+  ]
+}

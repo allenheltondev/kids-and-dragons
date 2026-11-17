@@ -28,6 +28,7 @@ import { seatHero } from "./progression.ts";
 import { heroSaved } from "./save.ts";
 import { heroLookOf } from "./look-unlocks.ts";
 import { heroCampStandings } from "./camp-book.ts";
+import { triviaRungsOf } from "./trivia.ts";
 
 export interface ListHeroesInput {
   householdId: string;
@@ -37,6 +38,11 @@ export interface ListHeroesInput {
    * this room would do with her, by the same rules a seat is decided by.
    */
   runId?: string;
+  /**
+   * Her quiz rungs (docs/trivia.md §5.1), when the caller has read them
+   * already (the journal); absent, they are read here.
+   */
+  triviaRungs?: readonly number[];
 }
 
 export async function listHeroes(
@@ -63,11 +69,13 @@ export async function listHeroes(
   // Her crews' camps (#669): the book has no room's camp, so a camp look she
   // has earned (a first friend, a grand camp) is read off the crews she sat with.
   const camps = await heroCampStandings(input.householdId, own, deps);
+  // Her quiz titles, read back for a hero made after the rung that gave them.
+  const triviaRungs = input.triviaRungs ?? (own.length > 0 ? await triviaRungsOf(input.householdId, input.playerId, deps) : []);
   const heroes = own
     .map((character) => {
       // Her look as she holds it (#669): every milestone her row and her crews'
       // camps say she has earned read back, and where each came from, for the book's shelves.
-      const look = heroLookOf(character, deps, { camp: camps.get(character.id) ?? null });
+      const look = heroLookOf(character, deps, { camp: camps.get(character.id) ?? null, triviaRungs });
       const hero = resolveCharacter(look ? { ...character, look } : character, rules, items);
       return look ? { ...hero, look: lookView(look, { sources: true }) } : hero;
     })

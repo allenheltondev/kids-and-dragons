@@ -16,6 +16,8 @@ import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/tes
 import { makeRng } from "@kad/shared";
 import type {
   LookCatalog,
+  TriviaBank,
+  TriviaLadder,
   CampCatalog,
   AbilityCatalog,
   Bestiary,
@@ -112,6 +114,10 @@ export function makeContent(
     campCatalog?: CampCatalog | null;
     /** The hero looks catalog (#664). Absent: a small starter set (`LOOKS_FIXTURE`). */
     looksCatalog?: LookCatalog | null;
+    /** The Field Guide quiz's questions (docs/trivia.md). Absent: none. */
+    triviaBank?: TriviaBank | null;
+    /** The quiz's ladder. Absent: none. */
+    triviaLadder?: TriviaLadder | null;
   } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
@@ -143,6 +149,8 @@ export function makeContent(
     bestiary: () => overrides.bestiary ?? null,
     campCatalog: () => overrides.campCatalog ?? null,
     looksCatalog: () => (overrides.looksCatalog === undefined ? LOOKS_FIXTURE : overrides.looksCatalog),
+    triviaBank: () => overrides.triviaBank ?? null,
+    triviaLadder: () => overrides.triviaLadder ?? null,
     // The same selection the real store makes (shared `chapterFor`), over
     // whatever chapters this fixture was given — so a test about a routed
     // beat exercises the rule rather than a fixture's idea of it.

@@ -26,6 +26,7 @@ import { HeroName } from "./HeroName";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
+import { campMomentKind } from "@kad/shared";
 import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
 import { isPromptForPlayer, useGameStore, useItems, useWorld } from "../store";
@@ -34,8 +35,13 @@ import { useReconnectOnWake } from "../sync/wake-reconnect";
 import { isMyCombatTurn } from "../store/combat";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
-import { dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
+import { NO_LOOK, dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
 import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
+import { dropTriviaQueue, hasQueuedTriviaAnswers } from "../store/trivia-queue";
+import { badgesHeld, flushTriviaQueue, withTriviaResponse, type ApplyTrivia } from "../store/book-trivia-sync";
+import { QuizButton, QuizOverlay, shownTriviaRecord } from "./GuideQuiz";
+import { quizOfflineArt, triviaLookRungs, withTriviaLooks } from "./quiz-rules";
+import { LOOKS } from "../world/hero-name";
 import { ApiError } from "../sync/client";
 import { useBackStep } from "../store/back-steps";
 import { selectGuideEntry } from "../store/player-navigation";
@@ -47,7 +53,7 @@ import { FieldGuide } from "./FieldGuide";
 import { Icon } from "./icons";
 import { TrayObject } from "./TrayObjects";
 import { Atlas, AtlasUnrolling, placeOf } from "./WorldMapPanel";
-import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
+import { loadFieldGuide, loadTriviaContent, useEnsureContent, useEnsureWorld, type TriviaContent } from "./content";
 import { offlineArtFor, warm } from "../sw/warm";
 import { heroOfflineArt } from "../world/hero-art";
 import { usePersistStorage } from "../storage/persist";
@@ -132,12 +138,18 @@ export function JournalScreen(): ReactElement {
     loadJournal().then(
       (found) => {
         // No binding, so nobody's queued kit changes to send (#629).
-        if (found === null) dropKitQueue();
+        if (found === null) {
+          dropKitQueue();
+          dropTriviaQueue();
+        }
         if (live) setLoad(found === null ? { status: "new" } : { status: "ready", ...found });
       },
       (error: unknown) => {
         // The server said no: the binding is revoked, and queued kit changes go unsent (docs/camp.md §7).
-        if (error instanceof ApiError && error.status >= 400 && error.status < 500) dropKitQueue();
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+          dropKitQueue();
+          dropTriviaQueue();
+        }
         if (live) setLoad({ status: "failed" });
       },
     );
@@ -183,7 +195,10 @@ export function JournalScreen(): ReactElement {
       // And her heroes, with their coat masks (docs/hero-looks.md §5.4): her colour, and the Look
       // page's Color shelf, are tinted from what is saved here when there is no signal.
       const heroes = journal.heroes.flatMap((h) => heroOfflineArt(h));
-      void warm([...offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), ...heroes], { essential: true });
+      const found = Object.keys(journal.fieldGuide);
+      // And the quiz's pictures as this device draws them (docs/trivia.md §3.5): a place's copy, a class's gear portrait.
+      const quiz = quizOfflineArt(guide, found);
+      void warm([...new Set([...offlineArtFor(useGameStore.getState().world, guide, found), ...quiz, ...heroes])], { essential: true });
     });
     return () => {
       live = false;
@@ -206,20 +221,35 @@ export function JournalScreen(): ReactElement {
     });
   }, []);
   /*
-   * Kit changes queued with no signal go as the book opens and whenever the
-   * signal comes back (docs/camp.md §7). Opened from the saved copy, the first
-   * try finds no signal and says so ("Saved on this phone").
+   * Her quiz record as the server last answered (docs/trivia.md §6.2): laid
+   * over the open book's copy, so the quiz shows what counted, with any badge
+   * it earned on her page. The saved copy is kept by the sender
+   * (store/book-trivia-sync.ts).
+   */
+  const applyTrivia = useCallback<ApplyTrivia>((record, response) => {
+    setLoad((was) => (was.status === "ready" ? { ...was, journal: withTriviaResponse(was.journal, record, badgesHeld(response)) } : was));
+    // A title pick waiting on these answers (book-kit-sync.ts `dependsOnQuiz`) can go now.
+    if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
+  }, [applyKit]);
+  /*
+   * Kit changes and quiz answers queued with no signal go as the book opens
+   * and whenever the signal comes back (docs/camp.md §7, docs/trivia.md §6.2).
+   * Answers first: a title they earn is then hers before a queued pick of it
+   * is sent. Opened from the saved copy, the first try finds no signal.
    */
   const ready = load.status === "ready";
   useEffect(() => {
     if (!ready) return;
     const send = (): void => {
-      if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
+      const answers = hasQueuedTriviaAnswers() ? flushTriviaQueue(applyTrivia) : Promise.resolve();
+      void answers.then(() => {
+        if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
+      });
     };
     send();
     window.addEventListener("online", send);
     return () => window.removeEventListener("online", send);
-  }, [ready, fresh, applyKit]);
+  }, [ready, fresh, applyKit, applyTrivia]);
 
   // Back to the game she is seated in (a phone's or a family tablet's seat, #299); home with none.
   const play = useCallback(() => {
@@ -232,6 +262,12 @@ export function JournalScreen(): ReactElement {
   // from a mirror still catching up (`synced`): a stale question is no reason to leave the book.
   usePresenceBeat();
   useReconnectOnWake();
+  /*
+   * The quiz is the book's, never the table's (docs/trivia.md §2): seated at a
+   * live game it waits while a scene, a check or a fight is on, as the book's
+   * place on the tray does (layout/BookTab.tsx), and is back in downtime.
+   */
+  const quizAllowed = useGameStore((store) => !seated || (store.state !== null && campMomentKind(store.state) !== null));
   const asked = useGameStore((store) => {
     const { state, session } = store;
     if (!seated || !state || !store.synced) return false;
@@ -327,7 +363,8 @@ export function JournalScreen(): ReactElement {
         {pane === "look" ? <LookTray journal={load.journal} onKit={applyKit} /> : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
-            <FieldGuide backToBag={false} />
+            <FieldGuide backToBag={false} quiz={quizAllowed ? <QuizButton journal={load.journal} onTrivia={applyTrivia} /> : undefined} />
+            {quizAllowed ? <QuizOverlay journal={load.journal} onTrivia={applyTrivia} /> : null}
           </div>
         ) : null}
       </div>
@@ -358,8 +395,28 @@ function CampTray({ journal, fresh, onKit }: { journal: JournalResponse; fresh: 
   );
 }
 
+/**
+ * Her heroes with the quiz's looks laid on (docs/trivia.md §5.1): a title a
+ * rung gives is on every hero's shelf, "From the quiz", the moment the phone
+ * marks the answer that reaches it, before the server has written it.
+ */
+function useQuizLooks(journal: JournalResponse): JournalResponse {
+  const [content, setContent] = useState<TriviaContent | null>(null);
+  useEffect(() => {
+    let live = true;
+    loadTriviaContent().then((c) => { if (live) setContent(c); }, () => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
+  const rungs = triviaLookRungs(shownTriviaRecord(journal, content), LOOKS);
+  if (rungs.length === 0) return journal;
+  return { ...journal, heroes: journal.heroes.map((h) => ({ ...h, look: withTriviaLooks(h.look ?? NO_LOOK, rungs, LOOKS, h.species) })) };
+}
+
 /** The Look tray (#664), for the hero the book has open. */
-function LookTray({ journal, onKit }: { journal: JournalResponse; onKit: ApplyKit }): ReactElement {
+function LookTray({ journal: read, onKit }: { journal: JournalResponse; onKit: ApplyKit }): ReactElement {
+  const journal = useQuizLooks(read);
   const [hero, choose] = useChosenHero(journal.heroes);
   return (
     <ChunkBoundary inline message="Your hero's look couldn’t open.">

@@ -1067,9 +1067,20 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           return seat ? { journal: await deps.api.loadJournalAsSeat(seat), savedAt: null } : null;
         }
         try {
-          const read = await deps.api.loadJournal(deviceToken);
+          const fetched = await deps.api.loadJournal(deviceToken);
           const db = await journalDb();
           const savedAt = new Date().toISOString();
+          /*
+           * A read with no quiz record (docs/trivia.md §6.1) is a server whose
+           * record read failed, or one from before the quiz: keep the record the
+           * saved copy has rather than wiping her mastered questions. A real
+           * "never quizzed" comes back as an empty record, not as a gap.
+           */
+          let read = fetched;
+          if (!fetched.trivia) {
+            const kept = (await db.loadSavedJournal(deviceToken, deps.storage))?.journal.trivia;
+            if (kept) read = { ...fetched, trivia: kept };
+          }
           if (read.campError) {
             /*
              * The server read everything but the camp (#656): keep the camp the
@@ -1116,8 +1127,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
         const profile = await deps.api.saveFlair(choice, deviceToken);
         const db = await journalDb();
-        const saved = await db.loadSavedJournal(deviceToken, deps.storage);
-        if (saved) await db.saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        await db.updateSavedJournal(deviceToken, (journal) => ({ ...journal, profile }), deps.storage);
         return profile;
       },
 

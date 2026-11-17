@@ -79,6 +79,7 @@ import type { CharacterWrite } from "../store/repository.ts";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { mutateKit, readCamp, type CampDeps } from "./camp.ts";
 import { bookLookProblem, mutateLook } from "./look-edit.ts";
+import { triviaRungsOf } from "./trivia.ts";
 
 // ---------------------------------------------------------------------------
 // The read
@@ -432,7 +433,8 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
         return Object.fromEntries(BOOK_LOOK_FIELDS.map((f) => [f, next[f]])) as LookEdit;
       },
       deps,
-      { camp },
+      // Her quiz titles (docs/trivia.md §5.1) are hers to pick, written or not.
+      { camp, triviaRungs: await triviaRungsOf(input.householdId, input.playerId, deps) },
     );
     if (lookSeen.problem !== null) return fail("ILLEGAL", lookSeen.problem);
     if (!written.ok) {
