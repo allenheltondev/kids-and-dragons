@@ -42,6 +42,21 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
 }
 
 describe("Gemfall steady work", () => {
+  it.each(["phone", "TV"] as const)("hides impossible haul guidance on the %s until a zero pull is revised", surface => {
+    seed({ kind: "cooperate", cue: "Haul", supportLabel: "Brace", actionLabel: "Move" }, {
+      challenge: { ...skillStart(["zero", "p"]), version: 4, pulls: { zero: 0 } },
+    });
+    const state = useGameStore.getState().state!;
+    state.party.push({ ...state.party[0]!, playerId: "zero", character: { ...state.party[0]!.character, name: "Aster" } });
+    const { container } = render(surface === "TV" ? <StoryInteractionWorld /> : <StoryInteractionControls />);
+    expect(container.querySelector(".gem-force__safe")).toBeNull();
+    expect(screen.getByText("Aster must revise their 0% effort so everyone helps.")).toBeTruthy();
+    expect(container.querySelector(".gem-force")?.getAttribute("aria-label")).toContain("no safe effort");
+    const prompt = state.prompt as InteractionPrompt;
+    act(() => useGameStore.setState({ state: { ...state, prompt: { ...prompt, challenge: { ...prompt.challenge!, pulls: { zero: .4 } } } } }));
+    expect(container.querySelector(".gem-force__safe")).toBeTruthy();
+    expect(screen.queryByText(/must revise their 0% effort/)).toBeNull();
+  });
   it("marks a game backdrop ready only after it loads and resets readiness for a fallback", () => {
     seed();
     useGameStore.setState({ chapter: { id: "test", biome: "sunward_fields", scenes: { test: { type: "story", narration: "Here", choices: [], art: "scenes/gemfall/exchange-docks" } } } as never });

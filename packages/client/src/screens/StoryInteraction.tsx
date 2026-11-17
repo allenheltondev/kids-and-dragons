@@ -362,7 +362,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
         <input type="checkbox" checked={relaxed} onChange={(event) => setRelaxed(event.target.checked)} /> <span><strong>Relaxed play</strong><small>{HELPING_HAND.relaxed}</small></span>
       </label>}
       <p className="game__help-text">{HELPING_HAND.hand}</p>
-      {riftlight && mine && prompt.phase === "active" && <Button variant="secondary" block disabled={busy} onClick={() => send({ action: "retry" })}>Start this attempt again</Button>}
+      {(riftlight || gemfall) && mine && prompt.phase === "active" && <Button variant="secondary" block disabled={busy} onClick={() => send({ action: "retry" })}>Start this attempt again</Button>}
       <Button variant="secondary" block icon={<Icon name="hand" />} className="story-interaction__button" disabled={busy} onClick={() => send({ action: "assist" })}>Take a helping hand</Button>
     </details>}
   </section>;

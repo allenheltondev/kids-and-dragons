@@ -120,7 +120,25 @@ test("7L: friends compensate their wagon pulls on phones and TV", async ({ brows
   try {
     await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
     const lead = await ready();
-    await setPull(one.page, .3);
+    const attempt = (await state()).prompt;
+    if (attempt?.kind !== "interaction") throw Error("Expected the shared wagon pull");
+    const help = controls(lead).locator("details.game__help");
+    await help.locator("summary").click();
+    await help.getByRole("button", { name: "Start this attempt again", exact: true }).click();
+    await expect.poll(async () => (await state()).prompt).toMatchObject({ phase: "ready", attempt: attempt.attempt + 1 });
+    const readyHelp = controls(lead).locator("details.game__help");
+    if (!await readyHelp.getByRole("checkbox", { name: /Relaxed play/ }).isVisible()) await readyHelp.locator("summary").click();
+    await readyHelp.getByRole("checkbox", { name: /Relaxed play/ }).check();
+    await ready();
+    await expect.poll(async () => (await state()).prompt).toMatchObject({ phase: "active", relaxed: true });
+    await setPull(one.page, 0);
+    await expect(controls(two.page).locator(".gem-force__safe")).toHaveCount(0);
+    await expect(controls(two.page)).toContainText("Aster must revise their 0% effort");
+    await expect(controls(two.page).locator(".gem-force")).toHaveAttribute("aria-label", /no safe effort/);
+    await controls(one.page).getByRole("slider", { name: "Effort", exact: true }).fill("30");
+    await tap(one.page, "Revise my effort");
+    await expect(controls(two.page).locator(".gem-force__safe")).toHaveCount(1);
+    await expect(controls(two.page)).not.toContainText("must revise their 0% effort");
     await expect(controls(one.page).getByRole("button", { name: "Your effort is set" })).toBeDisabled();
     const shared = (await state()).prompt;
     if (shared?.kind !== "interaction") throw Error("Expected the shared wagon pull");

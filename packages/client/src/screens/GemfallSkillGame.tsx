@@ -33,7 +33,10 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
   const haul = !precision && playerId ? haulWindow(prompt, ids, playerId) : null;
   const tolerance = reading?.tolerance ?? haul?.tolerance ?? (prompt.relaxed ? .2 : .12);
   const share = haul?.effort ?? target;
-  const canCompensate = share >= -tolerance && share <= 1 + tolerance;
+  const zeroPulls = precision ? [] : members.filter(m => m.playerId !== playerId && game.pulls[m.playerId] === 0);
+  const canCompensate = zeroPulls.length === 0 && share >= -tolerance && share <= 1 + tolerance;
+  const revision = zeroPulls.length ? `${zeroPulls.map(m => m.character.name).join(" and ")} must revise their 0% effort so everyone helps.`
+    : !precision && !canCompensate ? "No safe share yet. Ask a friend to revise their effort." : undefined;
   const safeStart = Math.max(precision ? 0 : .01, share - tolerance), safeEnd = Math.min(1, share + tolerance);
   const shown = precision ? reading!.lift : playerId ? effort : ids.reduce((sum, id) => sum + (game.pulls[id] ?? 0) * haulWeight(prompt, id), 0) / Math.max(1, ids.reduce((sum, id) => sum + haulWeight(prompt, id), 0));
   const outcome = prompt.outcome === "success" ? "Safely in place." : prompt.outcome === "assisted" ? "A helping hand makes a way." : "Set down safely. See where the story goes.";
@@ -60,7 +63,7 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
       </div>}
       {!precision && <div className="gem-team">{members.map(m => <span key={m.playerId} data-ready={game.pulls[m.playerId] !== undefined}>{m.character.name}: {game.pulls[m.playerId] !== undefined ? `${Math.round(game.pulls[m.playerId]! * 100)}% set` : haulWeight(prompt, m.playerId) > 1 ? "near rope" : "far rope"}</span>)}</div>}
     </div>
-    {active && <><div className="gem-force" role="img" aria-label={`Effort ${Math.round(shown * 100)} percent; safe effort ${Math.round(target * 100)} percent`}>
+    {active && <><div className="gem-force" role="img" aria-label={canCompensate ? `Effort ${Math.round(shown * 100)} percent; safe effort ${Math.round(target * 100)} percent` : `Effort ${Math.round(shown * 100)} percent; no safe effort until the team revises its pulls`}>
       {canCompensate && <span className="gem-force__safe" style={{ left: `${safeStart * 100}%`, width: `${Math.max(0, safeEnd - safeStart) * 100}%` }} />}
       <span className="gem-force__needle" style={{ left: `${Math.min(1, shown) * 100}%` }} />
     </div><p className="gem-caption">{precision ? "Gold on the subject: steady position. Gold on the gauge: safe effort." : !canCompensate ? "No safe share yet. Ask a friend to revise their effort." : "The near rope has more leverage. You can revise your effort before everyone sets theirs."}</p></>}
@@ -71,7 +74,7 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
       </div>
       <Button block disabled={busy || unchanged && !allSet} onClick={() => void post()}>{allSet ? "Move with the remaining crew" : ready ? unchanged ? "Your effort is set" : "Revise my effort" : precision ? prompt.spec.actionLabel : "Set my effort"}</Button>
     </>}
-    {game.feedback && active && <p className="rift-feedback" role="status">{game.feedback}</p>}
+    {(revision || game.feedback) && active && <p className="rift-feedback" role="status">{revision ?? game.feedback}</p>}
     {active && game.strain > 0 && <label className="rift-strain">Support strain<meter aria-label="Accumulated strain" min="0" max="1" value={game.strain} /></label>}
     {error && <p role="alert">That move did not arrive. Try again.</p>}
   </div>;
