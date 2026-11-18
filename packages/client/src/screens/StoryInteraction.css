@@ -105,7 +105,6 @@
 .game__board > .interaction-art { flex: 0 1 auto; min-block-size: 3em; block-size: clamp(4em, 24cqw, 7em); }
 .game--tv .game__board > .interaction-art { block-size: clamp(4em, 16cqw, 9em); }
 .game--tv .game__board > .interaction-art .interaction-art__prop { inline-size: clamp(4em, 16cqw, 10em); }
-.game--tv .game__board > .interaction-art .interaction-art__hero { inline-size: clamp(3em, 10cqw, 7em); }
 
 /* --- under the board: the TV's "who, what, which phone" line -------------- */
 

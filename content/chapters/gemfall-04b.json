@@ -2745,7 +2745,7 @@
       },
       "interaction_calf_load": {
         "props": [
-          "wind-blanket"
+          "calf-sling"
         ],
         "figure": "entities/mosshorn"
       },

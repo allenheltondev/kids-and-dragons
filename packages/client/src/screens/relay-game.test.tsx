@@ -116,8 +116,9 @@ it.each([false, true])("moves one prop through two phones and the TV, reduced mo
   };
   await throwTo("Fern", 0.44);
   const flight = tv.querySelector(".relay-world__flight") as HTMLElement;
-  expect(flight.style.getPropertyValue("--from-x")).toBe("10%");
-  expect(flight.style.getPropertyValue("--to-x")).toBe("50%");
+  const heroes = tv.querySelectorAll<HTMLElement>(".relay-world__hero");
+  expect(flight.style.getPropertyValue("--from-x")).toBe(heroes[0]!.style.left);
+  expect(flight.style.getPropertyValue("--to-x")).toBe(heroes[1]!.style.left);
   expect(tv.querySelectorAll(painted)).toHaveLength(1);
   await act(async () => { useGameStore.setState({ session: { ...useGameStore.getState().session!, playerId: "p1" } }); });
   if (!still) await act(async () => { vi.advanceTimersByTime(1500); });

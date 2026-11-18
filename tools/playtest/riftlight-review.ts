@@ -2,7 +2,8 @@
  * Uses a running local dev server and throwaway tables; captures TV and 360 x 640 phones. */
 import { openTable } from './table.ts';
 import { interactionActor, throwSituation, throwFlight, crossingWindow, carryState, type InteractionPrompt } from '../../packages/shared/src/index.ts';
-import { expect } from '@playwright/test';
+import { expect as baseExpect } from '@playwright/test';
+const expect=baseExpect.configure({timeout:30000});
 import fs from 'node:fs';
 const out='test-results/playtest/riftlight-revision';
 fs.mkdirSync(out,{recursive:true});

@@ -1,0 +1,13 @@
+/* Square source canvases retain their proportions and the same painted foot origin.
+   The stage chooses one scale for everyone; species height changes both axes. */
+.game-figure-stage { container-type: size; }
+.game .game-figure-stage .game-figure {
+  --figure-side: calc(min(var(--figure-height, 110cqh), var(--figure-width, 32cqw)) * var(--figure-scale, 1));
+  position: absolute;
+  width: var(--figure-side); height: var(--figure-side);
+  inline-size: var(--figure-side); block-size: var(--figure-side);
+  max-width: none; max-height: none; max-inline-size: none;
+  bottom: calc(var(--figure-ground, 12%) - var(--figure-side) * .121);
+  object-fit: contain; object-position: center;
+  transform: translateX(-50%);
+}

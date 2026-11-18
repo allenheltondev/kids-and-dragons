@@ -1,0 +1,23 @@
+<html><body><div id="root"></div><script type="module">
+import RefreshRuntime from '/@react-refresh';
+RefreshRuntime.injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => type => type;
+window.__vite_plugin_react_preamble_installed__ = true;
+</script><script type="module">
+import React from '/node_modules/.vite/deps/react.js';
+import ReactDOM from '/node_modules/.vite/deps/react-dom_client.js';
+const {createRoot}=ReactDOM;
+import { GemfallSkillGame } from '/src/screens/GemfallSkillGame';
+import { RiftlightSkillGame } from '/src/screens/RiftlightSkillGame';
+import { SkillGame } from '/src/screens/SkillGame';
+import { RelayWorld } from '/src/screens/RelayGame';
+import '/src/styles/theme.css?import'; import '/src/styles/components.css?import'; import '/src/screens/StoryInteraction.css?import';
+const q=new URLSearchParams(location.search),kind=q.get('kind')??'gem',tv=q.has('tv'),n=Number(q.get('n')??2);
+const party=['bigfoot','kitsune','unicorn','dragonling'].slice(0,n).map((species,i)=>({playerId:String(i),connected:true,character:{species,name:species,tier:'fledgling',class:'thornguard'}}));
+const prompt={kind:'interaction',openedSeq:1,attempt:0,phase:'active',startedAt:new Date().toISOString(),playerIds:party.map(m=>m.playerId),actorId:q.get('actor')??'0',caughtBy:kind==='relay'?(q.get('actor')??'0'):undefined,passed:q.get('actor')==='1'?['0']:[],supports:{},spec:{kind:kind==='relay'?'relay':['carry','cargo','legacycarry'].includes(kind)?'balance':kind==='haul'?'cooperate':kind==='cross'?'timing':'precision',cue:'Steady the weight',handling:['press','hum','tension'].includes(kind)?kind:'lift',objectLabel:'Basket',actionLabel:'Lift the sling',target:.5,width:.28,periodMs:4500,setting:'water'},challenge:{version:['gem','haul','press','hum','tension','cargo'].includes(kind)?4:['legacy','legacycarry'].includes(kind)?2:3,participants:party.map(m=>m.playerId),round:0,progress:0,strain:0,feedback:'',pulls:{},arrangement:[],matched:0,excluded:[]}};
+const Component=['gem','haul','press','hum','tension'].includes(kind)?GemfallSkillGame:kind==='relay'?RelayWorld:['legacy','legacycarry'].includes(kind)?SkillGame:RiftlightSkillGame;
+createRoot(document.getElementById('root')).render(React.createElement('div', {className:`game game--${tv?'tv':'phone'} game--active game--precision game--landscape`,style:{height:q.has('compact')?'300px':tv?'560px':'480px',width:'100%',margin:0}},React.createElement('div',{className:'game__board'},React.createElement(Component,{prompt,party,now:Date.now(),playerId:tv?undefined:prompt.actorId,subject:kind==='gem'?{url:'/assets/entities/mosshorn/assembled@1x.webp',figure:'entities/mosshorn',size:q.get('size')??'small'}:undefined,object:kind==='gem'?'calf-sling':kind==='legacycarry'?'carry-beam':'wind-blanket',props:[kind==='carry'?'carry-beam':'rope-basket','wind-blanket'],send:async()=>true}))));
+document.body.style.margin='0';
+
+</script></body></html>

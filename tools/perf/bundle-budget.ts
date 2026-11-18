@@ -405,7 +405,9 @@ const FIRST_PAINT_BUDGET_KB = 336;
 // 1910 -> 1919 for Gemfall alongside the trivia quiz: 1916KB measured.
 // Adds deliberate support/effort controls and weighted team hauling, reusing
 // the crossing and carry renderer. No new dependency; first paint stays 336KB.
-const TOTAL_BUDGET_KB = 1919;
+// 1919 -> 1923 for padding-aware NPC/prop sizing and shared load rigging.
+// Measured total 1922KB, with first paint still 336KB and 1KB of total slack.
+const TOTAL_BUDGET_KB = 1923;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

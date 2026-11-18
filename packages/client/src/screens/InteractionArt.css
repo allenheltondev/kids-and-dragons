@@ -3,7 +3,7 @@
 .interaction-art__prop>.kad-icon{inline-size:100%;block-size:100%;object-fit:contain}
 .interaction-art__support{opacity:.85;inline-size:clamp(2.5em,10cqw,5em)}
 .interaction-art__main{z-index:2}
-.interaction-art__hero{position:absolute;bottom:-5%;inline-size:clamp(2.4em,9cqw,5em);block-size:64%;object-fit:contain;transform:translateX(-50%);z-index:3}
+.interaction-art__hero{position:absolute;object-fit:contain;transform:translateX(-50%);z-index:3}
 .interaction-art__hero--catch{transform:translateX(-50%) translateY(-6%) rotate(-6deg)}
 .interaction-art__reaction{position:absolute;right:1%;bottom:0;block-size:95%;inline-size:30%;object-fit:contain;z-index:4}
 .interaction-art[data-still=false] .interaction-art__prop{transition:opacity .12s,filter .12s}
@@ -33,3 +33,7 @@
 .interaction-art[data-scene=interaction_egg_baskets] .interaction-art__main{inline-size:clamp(6em,22cqw,9em)}
 
 .painted-cover .painted-cover__target{z-index:4;inline-size:45%;block-size:65%;left:28%;bottom:15%;filter:drop-shadow(0 0 .25em #ffd974)}
+
+.interaction-art { block-size: clamp(6em, 16cqh, 10em); }
+
+.interaction-art__reaction { --subject-ground: 12%; }

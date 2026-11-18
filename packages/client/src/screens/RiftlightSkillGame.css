@@ -9,10 +9,9 @@
 .rift-field { position: relative; isolation: isolate; height: clamp(11em, 30cqw, 25em); min-height: 10em; overflow: hidden; border-bottom: 2px solid #dec08a88; border-radius: 1em; background: linear-gradient(0deg, #152a26b3, transparent 65%); }
 .rift-field img { object-fit: contain; pointer-events: none; filter: drop-shadow(0 .25em .15em #0008); }
 .rift-ground { position: absolute; left: 0; right: 0; bottom: 7%; height: 13%; border-radius: 50%; background: radial-gradient(ellipse, #211e1cbb, transparent 70%); }
-.rift-hero { position: absolute; bottom: 8%; width: 20%; height: 48%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+.rift-hero { display: flex; flex-direction: column; align-items: center; }
 .rift-hero img, .rift-hero > .hero-sparkle-host { display: block; width: 100%; height: 100%; min-height: 0; flex: 0 0 100%; object-fit: contain; object-position: bottom; }
 .rift-hero small { position: absolute; top: 100%; white-space: nowrap; color: #fff3cf; font-weight: 800; text-shadow: 0 2px 3px #000; }
-.rift-hero--thrower { left: 9%; height: 38%; }
 .rift-obstacle { position: absolute; bottom: 22%; width: 6%; transform: translateX(-50%); border-radius: 50% 40% 10% 10%; background: linear-gradient(105deg, #e2cfab, #5e625c 50%, #303b3c); box-shadow: 0 .3em .3em #0008; }
 .rift-landing { position: absolute; bottom: 19%; height: 9%; border: 2px solid #ffe2a1; background: #e8c16a55; box-shadow: 0 0 1em #ffdf8c77; border-radius: 50%; }
 .rift-destination { position: absolute; height: 5em; width: 130%; bottom: 40%; left: -15%; }
@@ -61,9 +60,8 @@
 .rift-time__travel { position: absolute; top: 25%; height: 50%; border: 2px solid white; background: #ffffff55; }
 .rift-time__travel[data-safe=false] { border-color: #f7b7ac; }
 .rift-beam { position: absolute; bottom: 45%; left: 12%; width: 76%; height: .7em; border-radius: 1em; background: linear-gradient(#ddbc7b, #78604a); transform-origin: center; transition: transform .25s; }
-.rift-beam__painting { position: absolute; width: 100%; height: 5em; bottom: -1.5em; object-fit: fill !important; }
+.rift-beam__painting { position: absolute; width: 100%; height: 5em; bottom: -1.5em; object-fit: contain !important; }
 .rift-beam__weight { position: absolute; bottom: .8em; width: 2em; height: 2em; border-radius: .4em; transform: translateX(-50%); background: linear-gradient(110deg, #e8c28d, #8d5b3b); border: 2px solid #e6cba0; box-shadow: 0 .2em .3em #0008; transition: left .3s; }
-.rift-hero--carrier { height: 40%; width: 18%; }
 .rift-prop-support { position: absolute; bottom: 10%; right: 12%; width: 12%; height: 35%; border-inline: .4em solid #bca77c; border-top: .5em solid #bca77c; color: #fff1c7; font-size: .65em; text-align: center; }
 .rift-supports { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; font-size: .8em; }
 .rift-supports > div { display: flex; flex-direction: column; gap: .2em; }
@@ -77,16 +75,13 @@
 .game--tv:has(.rift-game) .game__head > :is(.game__badge, .game__cue) { display: none; }
 .game--tv:has(.rift-game) .game__head:not(:has(.game__edge)) { display: none; }
 .game--tv .rift-field { flex: 1; height: auto; min-height: 0; background: transparent; border: 0; }
-.game--tv .rift-hero { height: 60%; }
-.game--tv .rift-hero--thrower { height: 65%; width: 24%; }
 .game--tv .rift-read { font-size: 1.35em; }
 .game--tv .rift-hint { display: none; }
 .game--tv .rift-game:has(.rift-feedback) .rift-read > span { display: none; }
 .game--phone:has(.rift-game) .game__head, .game--phone:has(.rift-game) .game__job-detail { display: none; }
 .game--phone .rift-game { gap: .45em; }
 .game--phone .rift-read { font-size: 1em; }
-.game--phone .rift-field { height: 12em; min-height: 9em; }
-.rift-hero { bottom: 14%; }
+.game--phone .rift-field { height: 10em; min-height: 10em; }
 .rift-hero small { font-size: .7em; }
 .game--landscape.game--active .game-stamp { display: none; }
 .game--landscape.game--result .game-stamp, .game--landscape.game--result .game__outcome { display: none; }
@@ -113,3 +108,16 @@
 .rift-field--work .rift-timing-subject { left: 30%; width: 45%; height: 75%; bottom: 12%; }
 .rift-field--work .rift-far-prop { left: 55%; width: 35%; height: 55%; }
 .rift-field--cargo .rift-beam__painting { object-fit: contain !important; width: 50%; left: 25%; height: 3.5em; bottom: 0; }
+
+.rift-field { --figure-width: 52cqw; }
+.rift-field:has(.rift-hero--carrier) { --figure-width: 32cqw; }
+.game-figure-stage .rift-hero--thrower { left: 18%; }
+
+.rift-hero small { top: calc(87.9% + .15em); }
+.game--phone .rift-hero small { display: none; }
+
+.rift-watcher { --subject-ground: 12%; }
+.rift-field--carry .game-load-straps { z-index: 1; }
+.rift-beam__painting { height: min(5em, 50cqh); bottom: 0; }
+
+.rift-beam:has([data-measured="true"]) { background: transparent; box-shadow: none; }

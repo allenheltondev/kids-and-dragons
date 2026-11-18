@@ -1,3 +1,6 @@
+import { GamePropImage, type GamePropShape } from "./GameSubject";
+import { GameLoad } from "./GameLoad";
+import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
 import { aimWidth, balanceLift, balanceTarget, balanceTolerance, edgePace, interactionActor, interactionClues, playbackMs, precisionPosition,
   pullNeeded, skillAim, skillSteps, type InteractionAction, type InteractionPrompt, type PartyMember } from "@kad/shared";
@@ -14,6 +17,7 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
   prompt: InteractionPrompt; party: PartyMember[]; now: number; playerId?: string; object?: string; subject?: string; busy?: boolean;
   send?: (action: InteractionAction) => Promise<boolean>;
 }) {
+  const [loadShape,setLoadShape]=useState<GamePropShape>();
   const game = prompt.challenge!;
   const spec = prompt.spec;
   const connected = party.filter(m => m.connected);
@@ -45,21 +49,20 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
   const token = (className = "skill-scene__object", style?: CSSProperties) => object && !failed
     ? <img className={className} style={style} src={propUrl(object)} alt="" draggable={false} onError={() => setFailed(true)} />
     : <span className={className} style={style} aria-hidden="true"><Icon name="star" /></span>;
-  const heroes = <div className="skill-scene__heroes" aria-hidden="true">{connected.map(member => <HeroImage key={member.playerId} hero={member.character} place="world" alt="" />)}</div>;
+  const heroes = <div className="skill-scene__heroes game-figure-stage" style={gameFigureStageStyle(connected.length)} aria-hidden="true">{connected.map(member => <HeroImage key={member.playerId} className="game-figure" style={{ ...gameFigureStyle(member.character), left: `${(connected.indexOf(member) + .5) * 100 / connected.length}%` }} hero={member.character} place="world" alt="" />)}</div>;
   const progress = <ol className="skill-route" aria-label={`${game.progress} of ${skillSteps(prompt, ids)} safe stages`}>{Array.from({ length: skillSteps(prompt, ids) }, (_, i) => <li key={i} data-done={i < game.progress} data-current={i === game.progress}><span>{i < game.progress ? "✓" : i + 1}</span></li>)}</ol>;
   let body;
   if (spec.kind === "balance") {
     const lift = balanceLift(prompt, ids);
     const target = balanceTarget(prompt);
     const tolerance = balanceTolerance(prompt);
-    const tilt = (lift - target) * 42;
     const joined = ids.length > 0 && ids.every(id => (prompt.levels?.[id] ?? 0) > 0);
     body = <>
       <div className="skill-scene skill-scene--balance" data-still={still}>
         <div className="skill-scene__path" aria-hidden="true" />
-        <div className="skill-carry" style={{ "--tilt": `${still ? 0 : tilt}deg`, "--travel": `${game.progress * 24}%` } as CSSProperties}>
-          <span className="skill-carry__beam" />{token()}
-        </div>{heroes}
+        <GameLoad shape={loadShape} className="skill-carry" crew={connected.map((member,i)=>({member,x:(i+.5)*100/connected.length}))} cameraWidth={connected.length>=3?32:55} left={Math.min(40,15+game.progress*12)} right={Math.min(95,70+game.progress*12)} rise={lift*.04} tilt={(lift-target)*.08}>
+          <span className="skill-carry__beam" />{object&&!failed?<GamePropImage url={propUrl(object)} className="skill-scene__object" onShape={setLoadShape} onError={()=>setFailed(true)} />:token()}
+        </GameLoad>{heroes}
       </div>
       {progress}
       <p className="skill-reading">{game.progress === 0 ? "Take the weight" : game.progress === 1 ? "The load leans away. Lift higher" : "Over the ridge. Ease it lower"}</p>

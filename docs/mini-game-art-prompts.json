@@ -178,6 +178,22 @@
         "opaque": false,
         "encoding": "RGBA, alpha bbox crop, Lanczos fit inside 440x440 centered on 512x512, lossless WebP method 6"
       }
+    },
+    {
+      "id": "calf-sling",
+      "path": "assets/story-props/calf-sling.webp",
+      "issue": 795,
+      "generator": "imagegen (built-in; model not reported)",
+      "uploadedBy": "codex",
+      "original": "art/source/originals/795/calf-sling.png",
+      "prompt": "Use case: illustration-story. Create one new game prop, using the supplied wind blanket ONLY as a reference for the warm detailed hand-painted storybook gouache style and textile texture. Subject: an EMPTY open animal-carrying cloth sling, shallow boat-like cream canvas hammock with a low golden-tan front rim, modest folded back rim and two sturdy brown rope loop handles extending sideways to left and right. Front three-quarter perspective but almost frontal for side-by-side game staging. The whole center above the low sling floor must stay empty/transparent, so a separately composited calf can stand there fully visible. Broad shallow bowl across lower third, handles ending at left and right, no high arch over the center. Single isolated cutout, genuine transparent background including the central opening. Square canvas, object inside the central 85 percent with ample clear margins. No animal, no character, no hands, no scene, no cast shadow, no text, no watermarks. Finished dimensional painterly edges, soft material shading, readable at 100px game size. This is a new sling painting, not a flying blanket.",
+      "output": {
+        "width": 512,
+        "height": 512,
+        "format": "WebP",
+        "opaque": false,
+        "encoding": "RGBA, alpha-over-64 bounds crop, Lanczos contain within 460px, painted bottom at y486, lossless WebP method6"
+      }
     }
   ],
   "sceneAssignments": [
