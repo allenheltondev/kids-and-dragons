@@ -1,3 +1,4 @@
+import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
 import { haulNeeded, haulWindow, haulTarget, haulWeight, interactionActor, skillSteps, steadyReading, type InteractionAction, type InteractionPrompt, type PartyMember } from "@kad/shared";
 import { HeroImage } from "../world/hero-art-dom";
@@ -49,9 +50,9 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
   return <div className={`gem-game gem-game--${prompt.spec.kind} gem-game--${handling}`} data-round={game.round}>
     <div className="rift-progress" aria-label={`${game.progress} of ${skillSteps(prompt, ids)} safe moves`}>{Array.from({ length: skillSteps(prompt, ids) }, (_, i) => <span key={i} data-done={i < game.progress} data-current={i === game.progress}>{i < game.progress ? "✓" : i + 1}</span>)}</div>
     <p className="gem-reading">{!active ? outcome : precision ? reading!.safe ? "Supported. Just enough effort." : !reading!.supported ? handling === "hum" ? "Find the steady note first." : "Find the support point first." : shown < target ? handling === "hum" ? "Give the note a little more voice." : "Add a little effort." : "Ease the pressure." : ["Take the weight", "The slope gets steeper", "Set it down gently"][Math.min(2, game.progress)]}</p>
-    <div className="gem-field" data-supported={reading?.supported} data-safe={reading?.safe}>
+    <div className="gem-field game-figure-stage" style={gameFigureStageStyle(members.length)} data-supported={reading?.supported} data-safe={reading?.safe}>
       <div className="gem-ground" />
-      {members.map((m, i) => <HeroImage key={m.playerId} className="gem-hero" hero={m.character} place="world" alt="" style={{ left: `${members.length === 1 ? 20 : 13 + i * 74 / (members.length - 1)}%` }} />)}
+      {members.map((m, i) => <HeroImage key={m.playerId} className="gem-hero game-figure" hero={m.character} place="world" alt="" style={{ ...gameFigureStyle(m.character), left: `${members.length <= 2 ? 22 + i * 56 : i < Math.ceil(members.length / 2) ? 13 + i * 15 : 87 - (members.length - 1 - i) * 15}%` }} />)}
       <div className="gem-load" style={{ "--rise": `${Math.min(8, game.progress * 3) + Math.min(.8, shown) * 8}%`, "--bend": `${Math.max(-12, Math.min(12, (shown - target) * 35))}deg` } as CSSProperties}>
         {object && !failed ? <img className="gem-object" src={propUrl(object)} alt="" draggable={false} onError={() => setFailed(true)} /> : <span className="gem-object gem-object--fallback" aria-hidden="true">✦</span>}
         {subject && <img className="gem-subject" src={subject} alt="" draggable={false} />}

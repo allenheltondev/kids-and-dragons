@@ -1,3 +1,4 @@
+import { gameFigureStageStyle, gameFigureStyle, gameFigureHandY } from "./game-figure";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { relayHolder, relayPosition, type InteractionPrompt, type PartyMember } from "@kad/shared";
 import { HeroImage } from "../world/hero-art-dom";
@@ -45,30 +46,31 @@ export function RelayWorld({ prompt, party, object, settled = true, now = Date.n
   const caught = !!holder && prompt.caughtBy === holder;
   const passed = prompt.passed ?? [];
   const last = [...passed].reverse().find((id) => order.includes(id));
-  const x = (id?: string) => id ? 10 + order.indexOf(id) * 80 / Math.max(1, order.length) : 90;
+  const x = (id?: string) => id ? (order.length <= 2 ? 22 : 14) + order.indexOf(id) * (order.length <= 2 ? 68 : 76) / Math.max(1, order.length) : 90;
   const parked = !order.length && !delivered;
   const target = parked ? 50 : delivered ? 90 : x(holder);
   const label = prompt.spec.objectLabel;
   const name = party.find((m) => m.playerId === holder)?.character.name;
   const from = last ? x(last) : -12;
-  const pose = { "--from-x": `${from}%`, "--to-x": `${target}%`, "--from-y": last ? "64%" : "20%", "--to-y": caught || delivered || ready ? "64%" : "32%" } as CSSProperties;
+  const handY = (id?: string) => gameFigureHandY(party.find(m => m.playerId === id)?.character);
+  const pose = { "--from-x": `${from}%`, "--to-x": `${target}%`, "--from-y": last ? handY(last) : "20%", "--to-y": caught || delivered || ready ? handY(holder) : "32%" } as CSSProperties;
   const flight = prompt.relay?.flight;
   if (flight && !caught && (!delivered || !settled) && !ready) {
     const progress = reducedMotion() ? 1 : relayPosition(flight, now);
     const origin = flight.fromId ? x(flight.fromId) : -8;
     pose.left = `${origin + (target - origin) * progress + Math.sin(progress * Math.PI) * (flight.landing - 0.5) * 20}%`;
-    pose.top = `${flight.dropped || progress >= 1 ? 80 : 64 - Math.sin(progress * Math.PI) * (flight.quality === "wild" ? 50 : 36)}%`;
+    pose.top = flight.dropped ? "80%" : `calc(${handY(flight.fromId)} * ${1 - progress} + ${handY(holder)} * ${progress} - ${Math.sin(progress * Math.PI) * (flight.quality === "wild" ? 50 : 36)}%)`;
     pose.rotate = reducedMotion() ? undefined : `${Math.sin(progress * Math.PI) * (flight.quality === "wild" ? 150 : 25)}deg`;
   }
   return <div className="relay-world" data-caught={caught} data-delivered={delivered} data-phase={parked ? "ready" : prompt.phase}>
     {prompt.relay && <RelayScore prompt={prompt} />}
     <p className="relay-world__caption" role="status">{parked ? "Waiting for a friend to reconnect" : ready ? "From hand to hand, all the way home" : prompt.phase === "result" && prompt.outcome === "failure" ? "The delivery took a tumble!" : delivered ? settled ? "Delivered together!" : "On its way home!" : caught ? `${name} has ${label}!` : `${name}, catch ${label}!`}</p>
-    <div className="relay-world__stage" aria-label={`The journey of ${label}`}>
+    <div className="relay-world__stage game-figure-stage" style={gameFigureStageStyle(order.length + 1)} aria-label={`The journey of ${label}`}>
       <span className="relay-world__path" aria-hidden="true" />
       <ol className="relay-world__heroes">{order.map((id) => {
         const m = party.find((member) => member.playerId === id)!;
         const done = passed.includes(id);
-        return <li key={id} className="relay-world__hero" data-active={id === holder} data-done={done} style={{ left: `${x(id)}%` }}>
+        return <li key={id} className="relay-world__hero game-figure" data-active={id === holder} data-done={done} style={{ ...gameFigureStyle(m.character), left: `${x(id)}%` }}>
           <HeroImage hero={m.character} place="world" alt="" draggable={false} onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
           <span className="relay-world__footlight" aria-hidden="true" />
           <strong>{m.character.name}</strong><small>{done ? "Passed!" : id === holder ? caught ? "Got it!" : "Your turn!" : "Next"}</small>

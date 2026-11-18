@@ -1,3 +1,4 @@
+import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { fitArt } from "../world/art-paths";
 import { useState, type CSSProperties } from "react";
 import { balanceReady, supportsReady } from "@kad/shared";
@@ -59,14 +60,14 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
  if(spec.kind==="play")style.filter=prompt.reactions?.length?"drop-shadow(0 0 6px #e6c878)":"none";
  const extras=state?.sceneId==="hatch_party"?["skupper_child","skupper_grandmother","skupper_weaver"]:state?.sceneId==="camp_play"&&state.chapterId==="riftlight-sky-islands-arrival"?["camp_hen"]:[];
  const reaction=reactionFigure(state?.sceneId??null,prompt,elapsed,chapter);
- return <div className="interaction-art" aria-hidden="true" data-kind={spec.kind} data-scene={state?.sceneId??undefined} data-still={still} data-phase={prompt.phase} key={prompt.openedSeq+":"+prompt.attempt}>
+ return <div className="interaction-art game-figure-stage" style={gameFigureStageStyle(party.length)} aria-hidden="true" data-kind={spec.kind} data-scene={state?.sceneId??undefined} data-still={still} data-phase={prompt.phase} key={prompt.openedSeq+":"+prompt.attempt}>
   {props.slice(1).map((id,index)=><Picture key={id} id={id} className="interaction-art__support" style={{left:(spec.kind==="precision"?10+spec.target*80:id==="fight-signal-pole"||id==="rope-basket"?85:15+index*70/Math.max(1,props.length-2))+"%",top:"58%"}} />)}
   {primary&&<Picture id={primary} style={style} className="interaction-art__main" />}
   {extras.map((id,index)=><img key={id} className="interaction-art__extra" src={fitArt("/assets/cast/"+id+"/assembled.png")} alt="" style={{left:(10+index*65/Math.max(1,extras.length-1))+"%"}} />)}
   {reaction&&<img className="interaction-art__reaction" src={fitArt("/assets/cast/"+reaction+"/assembled.png")} alt="" />}
   {["cooperate","balance","precision","timing"].includes(spec.kind)&&party.map((member,index)=><HeroImage key={member.playerId}
-   className="interaction-art__hero"
+   className="interaction-art__hero game-figure"
    hero={member.character} place="world" alt=""
-   style={{left:(15+index*70/Math.max(1,party.length))+"%"}} />)}
+   style={{...gameFigureStyle(member.character),left:((index+.5)*100/Math.max(1,party.length))+"%"}} />)}
  </div>;
 }

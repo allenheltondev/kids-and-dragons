@@ -1,0 +1,47 @@
+/** Render the actual production mini-game components at phone and TV sizes.
+ * npx tsx tools/playtest/figure-scale-review.ts (requires a running Vite server).
+ * Checks painted-foot alignment, canonical species ratios, and usable figure sizes;
+ * writes screenshots for composition review, independently of server/gameplay tests. */
+import { chromium, expect } from '@playwright/test';
+import fs from 'node:fs';
+const base=process.env.KAD_E2E_BASE_URL??'http://localhost:5173';
+const out=process.env.KAD_REVIEW_OUT??'test-results/playtest/figure-scale';
+fs.mkdirSync(out,{recursive:true});
+const html=fs.readFileSync(new URL('./fixtures/figure-scale.html',import.meta.url),'utf8');
+const browser=await chromium.launch({headless:true,args:["--disable-features=LocalNetworkAccessChecks"],...(process.env.KAD_CHROMIUM?{executablePath:process.env.KAD_CHROMIUM}:{})});
+try {
+ for(const count of [2,4]) for(const kind of ['gem','throw','cross','carry','legacy','relay']) for(const tv of [false,true]) {
+  const page=await browser.newPage({viewport:tv?{width:1180,height:640}:{width:320,height:640},reducedMotion:'reduce'});
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.route('**/__figure-review?*',route=>route.fulfill({contentType:'text/html',body:html}));
+  await page.goto(`${base}/__figure-review?kind=${kind}&n=${count}${tv?'&tv':''}`,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('.game-figure').first()).toBeVisible();
+  await expect.poll(()=>page.locator('img').evaluateAll(es=>es.every(e=>(e as {complete:boolean}).complete)),{timeout:30000}).toBe(true);
+  await page.locator('*').evaluateAll(es=>es.forEach(e=>e.getAnimations().forEach((a: {cancel():void})=>a.cancel())));
+  const boxes=await page.locator('.game-figure').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().toJSON()));
+  expect(errors).toEqual([]);
+  expect(boxes[0].height).toBeGreaterThan(tv?100:70);
+  for(const [i,box] of boxes.entries()) {
+   expect(box.width).toBeCloseTo(box.height,0);
+   expect(box.y+box.height*.879).toBeCloseTo(boxes[0].y+boxes[0].height*.879,0);
+   if(i>0) expect(box.height/boxes[0].height).toBeCloseTo([215,85,165,95][i]!/215,2);
+  }
+  await page.screenshot({path:`${out}/${kind}-${count}-${tv?'tv':'phone'}.png`});
+  const held=kind==='relay'?await page.locator('.relay-world__flight').boundingBox():null;
+  if(count===2 && ['throw','cross','relay'].includes(kind)) {
+   await page.goto(`${base}/__figure-review?kind=${kind}&n=${count}&actor=1${tv?'&tv':''}`,{waitUntil:'domcontentloaded'});
+   await expect(page.locator('.game-figure').first()).toBeVisible();
+   if(kind==='relay') {
+    await page.locator('*').evaluateAll(es=>es.forEach(e=>e.getAnimations().forEach((a: {cancel():void})=>a.cancel())));
+    expect((await page.locator('.relay-world__flight').boundingBox())!.y).toBeGreaterThan(held!.y);
+   } else {
+    const small=await page.locator('.game-figure').boundingBox();
+    expect(small!.height/boxes[0].height).toBeCloseTo(85/215,2);
+   }
+  }
+  console.log(`${kind}: ${count} heroes, ${tv?'TV':'phone'} passed`);
+  await page.close();
+ }
+} finally {await browser.close();}
+
+

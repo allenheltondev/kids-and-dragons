@@ -3,8 +3,8 @@
 .skill-game p { margin: 0; }
 .skill-scene { position: relative; min-height: 11em; overflow: hidden; border-radius: 1em; background: linear-gradient(0deg, #10251ce0, #203d4055 30%, transparent 75%); border-bottom: .3em solid #b68a45; }
 .skill-scene__object, .skill-shot { position: absolute; width: clamp(4em, 26cqw, 8em); height: 7em; object-fit: contain; filter: drop-shadow(0 .3em .2em #0008); }
-.skill-scene__heroes { position: absolute; display: flex; justify-content: space-around; inset: auto 0 0; height: 5.2em; }
-.skill-scene__heroes > :is(img, .hero-sparkle-host) { width: 23%; max-width: 6em; object-fit: contain; object-position: bottom; filter: drop-shadow(0 .15em .15em #0009); }
+.skill-scene__heroes { position: absolute; inset: 0; pointer-events: none; }
+.skill-scene__heroes > :is(img, .hero-sparkle-host) { filter: drop-shadow(0 .15em .15em #0009); }
 .skill-carry { position: absolute; left: calc(15% + var(--travel) * .5); bottom: 3.8em; width: 55%; height: 5em; transform: rotate(var(--tilt)); transform-origin: 50% 90%; transition: transform .3s, left .5s; }
 .skill-carry .skill-scene__object { bottom: 0; left: 50%; transform: translateX(-50%); }
 .skill-carry__beam { position: absolute; bottom: 0; left: 0; right: 0; height: .55em; border-radius: 1em; background: linear-gradient(#ead08e, #76502d); box-shadow: 0 .2em .2em #0008; }
@@ -72,13 +72,11 @@
 @container world (max-height: 26em) {
   .game--tv .skill-game { font-size: .75em; }
 }
-.game--tv .skill-scene__heroes { height: 6em; }
-.game--tv .skill-scene__heroes > :is(img, .hero-sparkle-host) { max-width: 10em; }
 .game--tv .skill-carry { bottom: 4.5em; height: 5em; }
 .game--tv .skill-scene__object, .game--tv .skill-shot { width: 9em; height: 8em; }
 .game--tv .skill-mechanism__prop { height: 8em; }
 .game--tv .skill-stones li { min-width: 5em; min-height: 6em; }
-@media (max-height: 700px) { .game--phone .skill-scene { min-height: 8em; } .game--phone .skill-scene__heroes { height: 4em; } .game--phone .skill-carry { bottom: 2.8em; } .game--phone .skill-rope-drag { height: 5em; } }
+@media (max-height: 700px) { .game--phone .skill-scene { min-height: 8em; } .game--phone .skill-carry { bottom: 2.8em; } .game--phone .skill-rope-drag { height: 5em; } }
 @media (prefers-reduced-motion: reduce) { .skill-game * { transition: none !important; animation: none !important; } }
 .skill-scene[data-still=true] * { transition: none; animation: none; }
 .game--phone:has(.skill-game) .game__job-detail { display: none; }
@@ -108,13 +106,8 @@
 /* Let the party occupy the scene rather than a miniature inset. */
 .game--tv .skill-scene { background: transparent; border: 0; border-radius: 0; }
 .game--tv .skill-aim { background: transparent; }
-.game--tv .skill-scene__heroes { height: clamp(7em, 22cqw, 12em); }
-.game--tv .skill-scene__heroes > :is(img, .hero-sparkle-host) { height: 100%; max-width: none; }
-.skill-scene--aim .skill-scene__heroes { height: 50%; pointer-events: none; }
 .game--tv .skill-game--precision > .skill-scene, .game--tv .skill-game--timing > .skill-scene { flex: 1; min-height: 0; }
-.game--tv .skill-scene--aim .skill-scene__heroes { height: 55%; }
 .skill-scene--aim .skill-opening { z-index: 1; }
-.game--phone .skill-scene__heroes > :is(img, .hero-sparkle-host) { height: 100%; }
 
 .skill-route { flex-wrap: wrap; gap: .4em; }
 .skill-pattern-reference { padding: .5em; border: 1px solid #cfb97d; border-radius: .5em; background: #252638dd; font-size: .85em; text-align: center; }

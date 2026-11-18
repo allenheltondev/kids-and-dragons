@@ -1,3 +1,4 @@
+import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
 import { aimWidth, balanceLift, balanceTarget, balanceTolerance, edgePace, interactionActor, interactionClues, playbackMs, precisionPosition,
   pullNeeded, skillAim, skillSteps, type InteractionAction, type InteractionPrompt, type PartyMember } from "@kad/shared";
@@ -45,7 +46,7 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
   const token = (className = "skill-scene__object", style?: CSSProperties) => object && !failed
     ? <img className={className} style={style} src={propUrl(object)} alt="" draggable={false} onError={() => setFailed(true)} />
     : <span className={className} style={style} aria-hidden="true"><Icon name="star" /></span>;
-  const heroes = <div className="skill-scene__heroes" aria-hidden="true">{connected.map(member => <HeroImage key={member.playerId} hero={member.character} place="world" alt="" />)}</div>;
+  const heroes = <div className="skill-scene__heroes game-figure-stage" style={gameFigureStageStyle(connected.length)} aria-hidden="true">{connected.map(member => <HeroImage key={member.playerId} className="game-figure" style={{ ...gameFigureStyle(member.character), left: `${(connected.indexOf(member) + .5) * 100 / connected.length}%` }} hero={member.character} place="world" alt="" />)}</div>;
   const progress = <ol className="skill-route" aria-label={`${game.progress} of ${skillSteps(prompt, ids)} safe stages`}>{Array.from({ length: skillSteps(prompt, ids) }, (_, i) => <li key={i} data-done={i < game.progress} data-current={i === game.progress}><span>{i < game.progress ? "✓" : i + 1}</span></li>)}</ol>;
   let body;
   if (spec.kind === "balance") {
