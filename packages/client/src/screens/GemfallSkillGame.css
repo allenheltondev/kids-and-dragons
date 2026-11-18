@@ -61,3 +61,5 @@
 .gem-load--sling .gem-subject { --subject-ground: 5cqw; z-index: 1; }
 
 .gem-sling-front { position:absolute; left:0; bottom:-1.75cqw; width:100%; height:auto; clip-path:inset(83% 0 0); z-index:2; }
+
+.gem-load:has(.gem-object[data-measured="true"]) .gem-cradle { display: none; }

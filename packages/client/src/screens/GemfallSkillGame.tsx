@@ -1,4 +1,4 @@
-import { GameSubjectImage, type GameSubject } from "./GameSubject";
+import { GameSubjectImage, GamePropImage, type GameSubject, type GamePropShape } from "./GameSubject";
 import { GameLoad } from "./GameLoad";
 import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
@@ -22,6 +22,7 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
   const handling = prompt.spec.kind === "precision" ? prompt.spec.handling ?? "lift" : "haul";
   const positionLabel = handling === "hum" ? "Note position" : "Support position";
   const effortLabel = handling === "hum" ? "Voice strength" : "Effort";
+  const [propShape,setPropShape]=useState<GamePropShape>();
   const [grip, setGrip] = useState(game.lastAngle ?? .2), [effort, setEffort] = useState(playerId ? game.pulls[playerId] ?? .2 : .2);
   const [error, setError] = useState(false), [failed, setFailed] = useState(false);
   const sending = useRef(false);
@@ -56,8 +57,8 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
     <div className="gem-field game-figure-stage" style={gameFigureStageStyle(members.length)} data-supported={reading?.supported} data-safe={reading?.safe}>
       <div className="gem-ground" />
       {members.map((m, i) => <HeroImage key={m.playerId} className="gem-hero game-figure" hero={m.character} place="world" alt="" style={{ ...gameFigureStyle(m.character), left: `${members.length <= 2 ? 22 + i * 56 : i < Math.ceil(members.length / 2) ? 13 + i * 15 : 87 - (members.length - 1 - i) * 15}%` }} />)}
-      <GameLoad className={`gem-load${object==="calf-sling"?" gem-load--sling":""}`} attachmentRise={object==="calf-sling"?.12:0} attachmentInset={object==="calf-sling"?.018:0} crew={crew} cameraWidth={members.length>=3?32:55} left={object==="calf-sling"?32.5:25} rise={Math.min(.04,shown*.05)} tilt={(shown-target)*.04} enabled={handling==="lift"||handling==="haul"}>
-        {object && !failed ? <img className="gem-object" src={propUrl(object)} alt="" draggable={false} onError={() => setFailed(true)} /> : <span className="gem-object gem-object--fallback" aria-hidden="true">✦</span>}
+      <GameLoad shape={object==="calf-sling"?undefined:propShape} className={`gem-load${object==="calf-sling"?" gem-load--sling":""}`} attachmentRise={object==="calf-sling"?.12:0} attachmentInset={object==="calf-sling"?.018:0} crew={crew} cameraWidth={members.length>=3?32:55} left={object==="calf-sling"?32.5:25} rise={Math.min(.04,shown*.05)} tilt={(shown-target)*.04} enabled={handling==="lift"||handling==="haul"}>
+        {object && !failed ? object==="calf-sling"?<img className="gem-object" src={propUrl(object)} alt="" draggable={false} onError={()=>setFailed(true)} />:<GamePropImage className="gem-object" url={propUrl(object)} onShape={setPropShape} onError={()=>setFailed(true)} /> : <span className="gem-object gem-object--fallback" aria-hidden="true">✦</span>}
         {object==="calf-sling"&&!failed&&<img className="gem-sling-front" src={propUrl(object)} alt="" draggable={false} />}
         {subject && <GameSubjectImage className="gem-subject" subject={subject} />}
         {handling === "lift" || handling === "haul" ? <span className="gem-cradle" aria-hidden="true" /> : <span className="gem-contact-effect" aria-hidden="true" />}

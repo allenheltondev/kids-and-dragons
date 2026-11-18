@@ -10,7 +10,7 @@ fs.mkdirSync(out,{recursive:true});
 const html=fs.readFileSync(new URL('./fixtures/figure-scale.html',import.meta.url),'utf8');
 const browser=await chromium.launch({headless:true,args:["--disable-features=LocalNetworkAccessChecks"],...(process.env.KAD_CHROMIUM?{executablePath:process.env.KAD_CHROMIUM}:{})});
 try {
- for(const count of [2,4]) for(const kind of ['gem','haul','press','hum','tension','throw','cross','carry','legacy','legacycarry','relay']) for(const tv of [false,true]) {
+ for(const count of [2,4]) for(const kind of ['gem','haul','press','hum','tension','throw','cross','carry','cargo','legacy','legacycarry','relay']) for(const tv of [false,true]) {
   const page=await browser.newPage({viewport:tv?{width:1180,height:640}:{width:320,height:640},reducedMotion:'reduce'});
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   await page.route('**/__figure-review?*',route=>route.fulfill({contentType:'text/html',body:html}));
@@ -27,7 +27,7 @@ try {
    if(i>0) expect(box.height/boxes[0].height).toBeCloseTo([215,85,165,95][i]!/215,2);
   }
   await page.screenshot({path:`${out}/${kind}-${count}-${tv?'tv':'phone'}.png`});
-  if(['gem','haul','carry','legacycarry'].includes(kind)) {
+  if(['gem','haul','carry','cargo','legacycarry'].includes(kind)) {
    const stage=await page.locator('.game-load-straps').boundingBox();
    const paths=await page.locator('.game-load-straps path').evaluateAll(es=>es.map(e=>e.getAttribute('d')!.match(/-?[\d.]+/g)!.map(Number)));
    expect(paths).toHaveLength(boxes.length);
@@ -52,6 +52,14 @@ try {
    await expect(page.locator('.gem-subject')).toHaveAttribute('data-height-cm','150');
    await expect(page.locator('.gem-subject')).toHaveAttribute('data-measured','true');
    await expect.poll(async()=>{const box=await page.locator('.gem-subject').boundingBox();return Math.round(box!.height/calf!.height*100);}).toBe(200);
+  }
+  if(kind==='carry') {
+   await expect(page.locator('.rift-beam__painting')).toHaveAttribute('data-measured','true');
+   const field=await page.locator('.rift-field').boundingBox();
+   const paint=await page.locator('.rift-beam__painting').boundingBox();
+   const fill=Number(await page.locator('.rift-beam__painting').getAttribute('data-paint-width'));
+   const height=Number(await page.locator('.rift-beam__painting').getAttribute('data-paint-height'));
+   expect(paint!.width*fill).toBeGreaterThan(Math.min(field!.width*.76,field!.height*.55*fill/height)*.95);
   }
   if(kind==='carry') expect(await page.evaluate("getComputedStyle(document.querySelector('.rift-beam__painting')).objectFit")).toBe('contain');
   const held=kind==='relay'?await page.locator('.relay-world__flight').boundingBox():null;

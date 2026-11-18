@@ -1,3 +1,4 @@
+import { GamePropImage, type GamePropShape } from "./GameSubject";
 import { GameLoad } from "./GameLoad";
 import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
@@ -16,6 +17,7 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
   prompt: InteractionPrompt; party: PartyMember[]; now: number; playerId?: string; object?: string; subject?: string; busy?: boolean;
   send?: (action: InteractionAction) => Promise<boolean>;
 }) {
+  const [loadShape,setLoadShape]=useState<GamePropShape>();
   const game = prompt.challenge!;
   const spec = prompt.spec;
   const connected = party.filter(m => m.connected);
@@ -58,8 +60,8 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
     body = <>
       <div className="skill-scene skill-scene--balance" data-still={still}>
         <div className="skill-scene__path" aria-hidden="true" />
-        <GameLoad className="skill-carry" crew={connected.map((member,i)=>({member,x:(i+.5)*100/connected.length}))} cameraWidth={connected.length>=3?32:55} left={Math.min(40,15+game.progress*12)} right={Math.min(95,70+game.progress*12)} rise={lift*.04} tilt={(lift-target)*.08}>
-          <span className="skill-carry__beam" />{token()}
+        <GameLoad shape={loadShape} className="skill-carry" crew={connected.map((member,i)=>({member,x:(i+.5)*100/connected.length}))} cameraWidth={connected.length>=3?32:55} left={Math.min(40,15+game.progress*12)} right={Math.min(95,70+game.progress*12)} rise={lift*.04} tilt={(lift-target)*.08}>
+          <span className="skill-carry__beam" />{object&&!failed?<GamePropImage url={propUrl(object)} className="skill-scene__object" onShape={setLoadShape} onError={()=>setFailed(true)} />:token()}
         </GameLoad>{heroes}
       </div>
       {progress}

@@ -151,3 +151,5 @@
   .game--phone.game--landscape .skill-edit-row { font-size: .7em; }
   .game--phone.game--landscape .skill-pattern-reference { font-size: .75em; padding: .3em; }
 }
+
+.skill-carry:has([data-measured="true"]) .skill-carry__beam { display: none; }

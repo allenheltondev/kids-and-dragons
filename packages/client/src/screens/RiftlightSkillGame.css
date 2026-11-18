@@ -120,3 +120,5 @@
 .rift-watcher { --subject-ground: 12%; }
 .rift-field--carry .game-load-straps { z-index: 1; }
 .rift-beam__painting { height: min(5em, 50cqh); bottom: 0; }
+
+.rift-beam:has([data-measured="true"]) { background: transparent; box-shadow: none; }

@@ -1,4 +1,4 @@
-import { GameSubjectImage, type GameSubject } from "./GameSubject";
+import { GameSubjectImage, GamePropImage, type GameSubject, type GamePropShape } from "./GameSubject";
 import { GameLoad } from "./GameLoad";
 import { gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
@@ -30,6 +30,7 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
   const mine = actor === playerId;
   const active = prompt.phase === "active";
   const still = reducedMotion();
+  const [carryShape,setCarryShape]=useState<GamePropShape>();
   const [strength, setStrength] = useState(0.45);
   const [angle, setAngle] = useState(0.5);
   const [moment, setMoment] = useState(0.1);
@@ -129,8 +130,8 @@ export function RiftlightSkillGame({ prompt, party, now, playerId, props = [], w
       <p className="rift-read">{!active ? prompt.outcome === "success" ? "Delivered safely." : "Back on safe footing." : carry.safe ? "Level. Take a careful step." : !carry.joined ? "Everyone take an end." : carry.tilt > 0 ? "Right end dipping" : "Left end dipping"}<span>{game.progress === 0 ? "Get both ends off the ground." : game.progress === 1 ? "Higher ground under the left end." : "Higher ground under the right end."}</span></p>
       <div className={`game-figure-stage rift-field rift-field--carry${game.version === 4 ? " rift-field--cargo" : ""}`} data-still={still}>
         <div className="rift-ground" />
-        <GameLoad className="rift-beam" cameraWidth={32} left={12} crew={members.map(m=>({member:m,x:carry.left.includes(m.playerId)?12+carry.left.indexOf(m.playerId)*14:72+carry.right.indexOf(m.playerId)*14}))} rise={ids.reduce((sum,id)=>sum+(prompt.levels?.[id]??0),0)/Math.max(1,ids.length)*.04} tilt={carry.tilt*.08}>
-          <Prop id={props[0]} className="rift-beam__painting" />
+        <GameLoad shape={carryShape} className="rift-beam" cameraWidth={32} left={12} crew={members.map(m=>({member:m,x:carry.left.includes(m.playerId)?12+carry.left.indexOf(m.playerId)*14:72+carry.right.indexOf(m.playerId)*14}))} rise={ids.reduce((sum,id)=>sum+(prompt.levels?.[id]??0),0)/Math.max(1,ids.length)*.04} tilt={carry.tilt*.08}>
+          {props[0]?<GamePropImage url={propUrl(props[0])} className="rift-beam__painting" onShape={setCarryShape} onError={()=>setCarryShape(undefined)} />:<Prop className="rift-beam__painting" />}
         </GameLoad>
         {members.map(m => <span key={m.playerId}>{hero(m.playerId, "rift-hero rift-hero--carrier", { left: `${carry.left.includes(m.playerId) ? 12 + carry.left.indexOf(m.playerId) * 14 : 72 + carry.right.indexOf(m.playerId) * 14}%` })}</span>)}
         {(!carry.left.length || !carry.right.length) && <span className="rift-prop-support">Solo support</span>}
