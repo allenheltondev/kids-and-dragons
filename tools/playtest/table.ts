@@ -215,7 +215,7 @@ export async function openTable(options: TableOptions): Promise<Table> {
   const byPlayer = new Map(seeded.phones.map((phone, i) => [phone.playerId, i]));
   const sessionOf = (n: number): SeededPhone => seeded.phones[n] ?? seeded.phones[0]!;
   const state = async (): Promise<RunState> => {
-    const response = await fetch(new URL(`/api/state?code=${seeded.code}`, api), { headers: { authorization: `Bearer ${sessionOf(0).session.sessionToken}` } });
+    const response = await fetch(new URL(`/api/state?code=${seeded.code}`, api), { headers: { authorization: `Bearer ${sessionOf(0).session.sessionToken}`, connection: "close" } });
     return ((await response.json()) as { state: RunState }).state;
   };
   const act = async (intent: ClientIntent, n = 0): Promise<void> => {

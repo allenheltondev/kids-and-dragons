@@ -28,7 +28,7 @@ for(const [chapterId,sceneId,players,reducedMotion] of cases){
   for(const phone of table.phones) await expect(phone.getByRole('region',{name:'Interaction controls'})).toBeVisible();
   const get=async()=>{const s=await table.state();if(s.prompt?.kind!=='interaction')throw Error('No game');return {s,p:s.prompt};};
   const phoneFor=async()=>{const {s,p}=await get();const id=interactionActor(p,s.party.filter(m=>m.connected).map(m=>m.playerId));const phone=table.phone(s.party.findIndex(m=>m.playerId===id));await phone.bringToFront();return phone;};
-  await (await phoneFor()).getByRole('button',{name:/We.*ready/i}).press('Enter');
+  await (await phoneFor()).getByRole('button',{name:/We.*ready/i}).click();
   await expect.poll(async()=>(await get()).p.phase).toBe('active');
   for(const page of [table.tv,...table.phones]) await expect.poll(()=>page.locator('.game__board img').evaluateAll(images=>images.every(img=>(img as { complete: boolean }).complete))).toBe(true);
   if(sceneId==='interaction_calf_load') for(const page of [table.tv,...table.phones]) {
