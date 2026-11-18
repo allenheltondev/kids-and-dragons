@@ -257,27 +257,31 @@ test("7L: four friends and the brace feedback fit the largest-text TV", async ({
 });
 
 
-test("compact Gemfall phones preserve room for the gauge and usable controls", async ({ browser }, info) => {
-  const table = await seedTable({campaignId:"gemfall",mode:"party",tv:true,chapterId:"gemfall-04b",sceneId:"interaction_calf_load",heroes:[{name:"Aster",species:"unicorn"}]});
+for(const game of [
+  {name:"Gemfall",chapter:"gemfall-04b",scene:"interaction_calf_load",field:".gem-field",cutoff:740,min:6},
+  {name:"Riftlight",chapter:"riftlight-ashspan-bridge",scene:"carry_beam",field:".rift-field",cutoff:700,min:8},
+] as const) test(`compact ${game.name} phones preserve room for the gauge and usable controls`, async ({ browser }, info) => {
+  const table = await seedTable({campaignId:game.name==="Gemfall"?"gemfall":undefined,mode:"party",tv:true,chapterId:game.chapter,sceneId:game.scene,heroes:[{name:"Aster",species:"unicorn"}]});
   const phone = await openPhone(browser,table.phones[0]!,{viewport:{width:320,height:480}});
   try {
     await onAir(phone.page); await task(phone.page);
     await tap(phone.page,/We.re ready/);
-    const field=controls(phone.page).locator(".gem-field");
+    const field=controls(phone.page).locator(game.field);
     await expect(field).toBeVisible();
-    for(const height of [480,800,640,480]) {
+    for(const height of [480,800,720,640,480]) {
       await phone.page.setViewportSize({width:320,height});
       await expect.poll(()=>field.evaluate(el=>{
         const css=getComputedStyle(el),em=parseFloat(css.fontSize);
         return {height:Math.round(parseFloat(css.height)/em*100)/100,min:Math.round(parseFloat(css.minHeight)/em*100)/100};
-      })).toEqual({height:height<=740?8:10,min:height<=740?6:10});
+      })).toEqual({height:height<=game.cutoff?8:10,min:height<=game.cutoff?game.min:10});
     }
-    await expect(controls(phone.page).locator(".gem-force")).toBeVisible();
-    await tap(phone.page,"Lift the sling");
+    await expect(controls(phone.page).locator(game.name==="Gemfall"?".gem-force":".rift-supports")).toBeVisible();
+    if(game.name==="Riftlight") await tap(phone.page,"Lift left end");
+    await tap(phone.page,game.name==="Gemfall"?"Lift the sling":"Take a careful step");
     await expect.poll(async()=>{
       const state=await roomState<RunState>(phone.page,table.code);
       return state.prompt?.kind==="interaction"?state.prompt.challenge?.round:undefined;
     }).toBe(1);
-    await phone.page.screenshot({path:info.outputPath("calf-controls-320x480.png")});
+    await phone.page.screenshot({path:info.outputPath(`${game.name.toLowerCase()}-controls-320x480.png`)});
   } finally {await phone.context.close();}
 });

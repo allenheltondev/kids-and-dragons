@@ -81,7 +81,7 @@
 .game--phone:has(.rift-game) .game__head, .game--phone:has(.rift-game) .game__job-detail { display: none; }
 .game--phone .rift-game { gap: .45em; }
 .game--phone .rift-read { font-size: 1em; }
-.game--phone .rift-field { height: 12em; min-height: 9em; }
+.game--phone .rift-field { height: 10em; min-height: 10em; }
 .rift-hero small { font-size: .7em; }
 .game--landscape.game--active .game-stamp { display: none; }
 .game--landscape.game--result .game-stamp, .game--landscape.game--result .game__outcome { display: none; }
@@ -112,7 +112,6 @@
 .rift-field { --figure-width: 52cqw; }
 .rift-field:has(.rift-hero--carrier) { --figure-width: 32cqw; }
 .game-figure-stage .rift-hero--thrower { left: 18%; }
-.game--phone .rift-field { height: 10em; min-height: 10em; }
 
 .rift-hero small { top: calc(87.9% + .15em); }
 .game--phone .rift-hero small { display: none; }
