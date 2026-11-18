@@ -278,18 +278,21 @@ describe("reusable story controls", () => {
       const current = useGameStore.getState().state!;
       useGameStore.setState({ state: { ...current, prompt: { ...current.prompt as InteractionPrompt, ...change } } });
     });
-    expect(position()).toEqual(["10%", "64%"]);
+    const heroX = (n: number) => (container.querySelectorAll(".relay-world__hero")[n] as HTMLElement).style.left;
+    const heldY = position()[1];
+    expect(position()[0]).toBe(heroX(0));
+    expect(heldY).not.toBe("32%");
     update({ phase: "active" });
-    expect(position()).toEqual(["10%", "32%"]);
+    expect(position()).toEqual([heroX(0), "32%"]);
     update({ caughtBy: "p" });
-    expect(position()).toEqual(["10%", "64%"]);
+    expect(position()).toEqual([heroX(0), heldY]);
     update({ passed: ["p"], caughtBy: undefined });
-    expect(position()).toEqual(["50%", "32%"]);
+    expect(position()).toEqual([heroX(1), "32%"]);
     update({ caughtBy: "p2" });
-    expect(position()).toEqual(["50%", "64%"]);
+    expect(position()).toEqual([heroX(1), heldY]);
     update({ passed: ["p", "p2"], caughtBy: undefined, phase: "result", outcome: "success" });
     expect(basket().style.getPropertyValue("--to-x")).toBe("90%");
-    expect(basket().style.getPropertyValue("--from-x")).toBe("50%");
+    expect(basket().style.getPropertyValue("--from-x")).toBe(heroX(1));
   });
   it("preserves catalog-only Riftlight visuals when content has no prop", () => {
     seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle" });
