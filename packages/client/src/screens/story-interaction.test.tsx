@@ -42,6 +42,20 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
 }
 
 describe("Gemfall steady work", () => {
+  it("loads authored game art even on a waiting phone", () => {
+    seed(precision,{phase:"ready",actorId:"friend",playerIds:["friend","p"]});
+    const loadChapter=vi.fn(async()=>{});
+    useGameStore.setState({loadChapter});
+    render(<StoryInteractionControls />);
+    expect(loadChapter).toHaveBeenCalledWith("test");
+  });
+  it.each(["ready", "active"] as const)("preserves an authored calf size on the %s board", phase => {
+    seed(precision, { phase, challenge: { ...skillStart(["p"]), version: 4 } });
+    useGameStore.setState({ chapter: { id:"test", scenes:{test:{type:"interaction",cast:[{figure:"entities/mosshorn",size:"small"}]}}, presentation:{interactions:{test:{props:["calf-sling"],figure:"entities/mosshorn"}}} } as never });
+    const {container}=render(<StoryInteractionControls />);
+    expect(container.querySelector('[data-height-cm="75"]')).toBeTruthy();
+    expect(container.querySelector('img[src="/assets/story-props/calf-sling.webp"]')).toBeTruthy();
+  });
   it.each(["phone", "TV"] as const)("hides impossible haul guidance on the %s until a zero pull is revised", surface => {
     seed({ kind: "cooperate", cue: "Haul", supportLabel: "Brace", actionLabel: "Move" }, {
       challenge: { ...skillStart(["zero", "p"]), version: 4, pulls: { zero: 0 } },

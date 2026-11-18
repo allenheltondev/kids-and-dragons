@@ -1,3 +1,4 @@
+import { useEnsureChapter } from "./content";
 /**
  * A story interaction (#493) as the whole screen, on the TV and on every phone.
  *
@@ -244,6 +245,8 @@ export function StoryInteractionWorld() {
 }
 
 export function StoryInteractionControls() {
+  // Waiting phones need the same authored prop/cast data as the acting phone.
+  useEnsureChapter();
   const state = useRunState();
   const me = useMe();
   const send = useSend();

@@ -1,3 +1,4 @@
+import { GameLoad } from "./GameLoad";
 import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
 import { aimWidth, balanceLift, balanceTarget, balanceTolerance, edgePace, interactionActor, interactionClues, playbackMs, precisionPosition,
@@ -53,14 +54,13 @@ export function SkillGame({ prompt, party, now, playerId, object, subject, busy 
     const lift = balanceLift(prompt, ids);
     const target = balanceTarget(prompt);
     const tolerance = balanceTolerance(prompt);
-    const tilt = (lift - target) * 42;
     const joined = ids.length > 0 && ids.every(id => (prompt.levels?.[id] ?? 0) > 0);
     body = <>
       <div className="skill-scene skill-scene--balance" data-still={still}>
         <div className="skill-scene__path" aria-hidden="true" />
-        <div className="skill-carry" style={{ "--tilt": `${still ? 0 : tilt}deg`, "--travel": `${game.progress * 24}%` } as CSSProperties}>
+        <GameLoad className="skill-carry" crew={connected.map((member,i)=>({member,x:(i+.5)*100/connected.length}))} cameraWidth={connected.length>=3?32:55} left={Math.min(40,15+game.progress*12)} right={Math.min(95,70+game.progress*12)} rise={lift*.04} tilt={(lift-target)*.08}>
           <span className="skill-carry__beam" />{token()}
-        </div>{heroes}
+        </GameLoad>{heroes}
       </div>
       {progress}
       <p className="skill-reading">{game.progress === 0 ? "Take the weight" : game.progress === 1 ? "The load leans away. Lift higher" : "Over the ridge. Ease it lower"}</p>

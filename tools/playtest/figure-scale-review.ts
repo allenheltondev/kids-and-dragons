@@ -10,7 +10,7 @@ fs.mkdirSync(out,{recursive:true});
 const html=fs.readFileSync(new URL('./fixtures/figure-scale.html',import.meta.url),'utf8');
 const browser=await chromium.launch({headless:true,args:["--disable-features=LocalNetworkAccessChecks"],...(process.env.KAD_CHROMIUM?{executablePath:process.env.KAD_CHROMIUM}:{})});
 try {
- for(const count of [2,4]) for(const kind of ['gem','throw','cross','carry','legacy','relay']) for(const tv of [false,true]) {
+ for(const count of [2,4]) for(const kind of ['gem','haul','press','hum','tension','throw','cross','carry','legacy','legacycarry','relay']) for(const tv of [false,true]) {
   const page=await browser.newPage({viewport:tv?{width:1180,height:640}:{width:320,height:640},reducedMotion:'reduce'});
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   await page.route('**/__figure-review?*',route=>route.fulfill({contentType:'text/html',body:html}));
@@ -27,6 +27,33 @@ try {
    if(i>0) expect(box.height/boxes[0].height).toBeCloseTo([215,85,165,95][i]!/215,2);
   }
   await page.screenshot({path:`${out}/${kind}-${count}-${tv?'tv':'phone'}.png`});
+  if(['gem','haul','carry','legacycarry'].includes(kind)) {
+   const stage=await page.locator('.game-load-straps').boundingBox();
+   const paths=await page.locator('.game-load-straps path').evaluateAll(es=>es.map(e=>e.getAttribute('d')!.match(/-?[\d.]+/g)!.map(Number)));
+   expect(paths).toHaveLength(boxes.length);
+   for(const [i,path] of paths.entries()) {
+    expect(path.every(Number.isFinite)).toBe(true);
+    expect(path[0]!+stage!.x).toBeGreaterThanOrEqual(boxes[i].x);
+    expect(path[0]!+stage!.x).toBeLessThanOrEqual(boxes[i].right);
+    expect(path[1]!+stage!.y).toBeGreaterThanOrEqual(boxes[i].y);
+    expect(path[1]!+stage!.y).toBeLessThanOrEqual(boxes[i].bottom);
+   }
+  }
+  if(kind==='gem') {
+   await expect(page.locator('.gem-subject')).toHaveAttribute('data-height-cm','75');
+   await expect(page.locator('.gem-subject')).toHaveAttribute('data-measured','true');
+   await expect(page.locator('.gem-caption')).toBeVisible();
+   const calf=await page.locator('.gem-subject').boundingBox();
+   if(count===2&&tv) {
+    await page.evaluate("const image=document.querySelector('.gem-subject');const canvas=document.createElement('canvas');canvas.width=canvas.height=256;canvas.getContext('2d').drawImage(image,64,64,128,128);image.src=canvas.toDataURL();");
+    await expect.poll(async()=>{const box=await page.locator('.gem-subject').boundingBox();return box!.height/calf!.height;}).toBeCloseTo(2,1);
+   }
+   await page.goto(`${base}/__figure-review?kind=gem&n=${count}&size=medium${tv?'&tv':''}`,{waitUntil:'domcontentloaded'});
+   await expect(page.locator('.gem-subject')).toHaveAttribute('data-height-cm','150');
+   await expect(page.locator('.gem-subject')).toHaveAttribute('data-measured','true');
+   await expect.poll(async()=>{const box=await page.locator('.gem-subject').boundingBox();return Math.round(box!.height/calf!.height*100);}).toBe(200);
+  }
+  if(kind==='carry') expect(await page.evaluate("getComputedStyle(document.querySelector('.rift-beam__painting')).objectFit")).toBe('contain');
   const held=kind==='relay'?await page.locator('.relay-world__flight').boundingBox():null;
   if(count===2 && ['throw','cross','relay'].includes(kind)) {
    await page.goto(`${base}/__figure-review?kind=${kind}&n=${count}&actor=1${tv?'&tv':''}`,{waitUntil:'domcontentloaded'});

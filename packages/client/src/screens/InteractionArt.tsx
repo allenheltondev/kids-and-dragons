@@ -1,3 +1,5 @@
+import { GameSubjectImage } from "./GameSubject";
+import { castArtUrl } from "../world/art-paths";
 import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { fitArt } from "../world/art-paths";
 import { useState, type CSSProperties } from "react";
@@ -59,12 +61,16 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
  if(spec.kind==="play"&&primary==="hatch-cover"){const open=spec.stages?.length?Math.min(1,(prompt.taps??0)/spec.stages.length):1;style.transform="translate(-50%,-50%) rotate("+(-open*65)+"deg)";}
  if(spec.kind==="play")style.filter=prompt.reactions?.length?"drop-shadow(0 0 6px #e6c878)":"none";
  const extras=state?.sceneId==="hatch_party"?["skupper_child","skupper_grandmother","skupper_weaver"]:state?.sceneId==="camp_play"&&state.chapterId==="riftlight-sky-islands-arrival"?["camp_hen"]:[];
+ const scene=state?.sceneId?chapter?.scenes?.[state.sceneId]:undefined;
+ const cast=scene&&"cast" in scene?scene.cast:undefined;
  const reaction=reactionFigure(state?.sceneId??null,prompt,elapsed,chapter);
+ const figure=appearance.figure??(cast?.length===1?cast[0]?.figure:undefined)??(reaction?"cast/"+reaction:undefined);
+ const subject=figure?{...cast?.find(m=>m.figure===figure),figure,url:reaction?fitArt("/assets/cast/"+reaction+"/assembled.png"):castArtUrl(figure)}:undefined;
  return <div className="interaction-art game-figure-stage" style={gameFigureStageStyle(party.length)} aria-hidden="true" data-kind={spec.kind} data-scene={state?.sceneId??undefined} data-still={still} data-phase={prompt.phase} key={prompt.openedSeq+":"+prompt.attempt}>
   {props.slice(1).map((id,index)=><Picture key={id} id={id} className="interaction-art__support" style={{left:(spec.kind==="precision"?10+spec.target*80:id==="fight-signal-pole"||id==="rope-basket"?85:15+index*70/Math.max(1,props.length-2))+"%",top:"58%"}} />)}
   {primary&&<Picture id={primary} style={style} className="interaction-art__main" />}
   {extras.map((id,index)=><img key={id} className="interaction-art__extra" src={fitArt("/assets/cast/"+id+"/assembled.png")} alt="" style={{left:(10+index*65/Math.max(1,extras.length-1))+"%"}} />)}
-  {reaction&&<img className="interaction-art__reaction" src={fitArt("/assets/cast/"+reaction+"/assembled.png")} alt="" />}
+  {subject?.url&&<GameSubjectImage className="interaction-art__reaction" left="85%" subject={{...subject,url:subject.url}} />}
   {["cooperate","balance","precision","timing"].includes(spec.kind)&&party.map((member,index)=><HeroImage key={member.playerId}
    className="interaction-art__hero game-figure"
    hero={member.character} place="world" alt=""

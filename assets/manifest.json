@@ -3919,6 +3919,7 @@
       "cairn-leaning",
       "cairn-ledger",
       "cairn-twin",
+      "calf-sling",
       "camp-firepit",
       "capstone-target",
       "carry-beam",
@@ -4066,6 +4067,10 @@
         "durationMs": 3200
       },
       "cairn-twin": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "calf-sling": {
         "preset": "still",
         "durationMs": 3200
       },

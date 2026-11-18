@@ -60,7 +60,7 @@
 .rift-time__travel { position: absolute; top: 25%; height: 50%; border: 2px solid white; background: #ffffff55; }
 .rift-time__travel[data-safe=false] { border-color: #f7b7ac; }
 .rift-beam { position: absolute; bottom: 45%; left: 12%; width: 76%; height: .7em; border-radius: 1em; background: linear-gradient(#ddbc7b, #78604a); transform-origin: center; transition: transform .25s; }
-.rift-beam__painting { position: absolute; width: 100%; height: 5em; bottom: -1.5em; object-fit: fill !important; }
+.rift-beam__painting { position: absolute; width: 100%; height: 5em; bottom: -1.5em; object-fit: contain !important; }
 .rift-beam__weight { position: absolute; bottom: .8em; width: 2em; height: 2em; border-radius: .4em; transform: translateX(-50%); background: linear-gradient(110deg, #e8c28d, #8d5b3b); border: 2px solid #e6cba0; box-shadow: 0 .2em .3em #0008; transition: left .3s; }
 .rift-prop-support { position: absolute; bottom: 10%; right: 12%; width: 12%; height: 35%; border-inline: .4em solid #bca77c; border-top: .5em solid #bca77c; color: #fff1c7; font-size: .65em; text-align: center; }
 .rift-supports { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; font-size: .8em; }
@@ -116,3 +116,7 @@
 
 .rift-hero small { top: calc(87.9% + .15em); }
 .game--phone .rift-hero small { display: none; }
+
+.rift-watcher { --subject-ground: 12%; }
+.rift-field--carry .game-load-straps { z-index: 1; }
+.rift-beam__painting { height: min(5em, 50cqh); bottom: 0; }

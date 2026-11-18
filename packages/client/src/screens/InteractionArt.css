@@ -35,3 +35,5 @@
 .painted-cover .painted-cover__target{z-index:4;inline-size:45%;block-size:65%;left:28%;bottom:15%;filter:drop-shadow(0 0 .25em #ffd974)}
 
 .interaction-art { block-size: clamp(6em, 16cqh, 10em); }
+
+.interaction-art__reaction { --subject-ground: 12%; }

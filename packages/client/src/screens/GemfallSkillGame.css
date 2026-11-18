@@ -38,7 +38,7 @@
 .game--tv:has(.gem-game) > .game__status { font-size: .85em; font-weight: 500; padding: .35em .6em; }
 .game--tv .gem-game .rift-feedback { padding: .25em .4em; }
 .game--tv .gem-field { flex: 1; height: auto; min-height: 0; }
-.game--tv:has(.gem-game) .game__head > :is(.game__badge, .game__cue), .game--tv .gem-caption { display: none; }
+.game--tv:has(.gem-game) .game__head > :is(.game__badge, .game__cue) { display: none; }
 .game--tv:has(.gem-game) .game__head:not(:has(.game__edge)) { display: none; }
 .game--phone:has(.gem-game) .game__head, .game--phone:has(.gem-game) .game__job-detail { display: none; }
 .game--phone:has(.gem-game) .game-actions-row, .game--phone:has(.gem-game) .game-stamp { display: none; }
@@ -46,9 +46,18 @@
 @media (max-height: 740px) {
  .game--phone .gem-game { gap: .3em; }
  .game--phone .gem-field { height: 8em; min-height: 6em; }
- .game--phone .gem-caption { display: none; }
+ .game--phone .gem-caption { font-size: .7em; line-height: 1.15; }
  .game--phone .gem-game .rift-progress { font-size: .75em; }
  .game--phone .gem-game .rift-feedback { font-size: .7em; }
 }
 
 .game--phone .gem-field { height: 10em; min-height: 10em; }
+
+.gem-caption { font-size: .75em; line-height: 1.2; }
+
+.gem-load--sling { left: 32.5%; width: 35%; }
+.gem-load--sling .gem-object { inset: auto 0; bottom: -1.75cqw; height: auto; width: 100%; z-index: 0; }
+.gem-load--sling .gem-cradle { display: none; }
+.gem-load--sling .gem-subject { --subject-ground: 5cqw; z-index: 1; }
+
+.gem-sling-front { position:absolute; left:0; bottom:-1.75cqw; width:100%; height:auto; clip-path:inset(83% 0 0); z-index:2; }

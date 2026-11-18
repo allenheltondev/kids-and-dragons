@@ -1,3 +1,5 @@
+import { GameSubjectImage, type GameSubject } from "./GameSubject";
+import { GameLoad } from "./GameLoad";
 import { gameFigureStageStyle, gameFigureStyle } from "./game-figure";
 import { useRef, useState, type CSSProperties } from "react";
 import { haulNeeded, haulWindow, haulTarget, haulWeight, interactionActor, skillSteps, steadyReading, type InteractionAction, type InteractionPrompt, type PartyMember } from "@kad/shared";
@@ -8,7 +10,7 @@ import "./GemfallSkillGame.css";
 
 /** Deliberate physical work, with the authored subject kept between the heroes. */
 export function GemfallSkillGame({ prompt, party, playerId, object, subject, busy, send }: {
-  prompt: InteractionPrompt; party: PartyMember[]; playerId?: string; object?: string; subject?: string; busy?: boolean;
+  prompt: InteractionPrompt; party: PartyMember[]; playerId?: string; object?: string; subject?: GameSubject; busy?: boolean;
   send?: (action: InteractionAction) => Promise<boolean>;
 }) {
   const game = prompt.challenge!;
@@ -47,17 +49,19 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
     try { setError(!await send({ action: "commit", round: game.round, position: effort, ...(precision ? { angle: grip } : {}) })); }
     catch { setError(true); } finally { sending.current = false; }
   };
+  const crew = members.map((m,i)=>({member:m,x:members.length<=2?22+i*56:i<Math.ceil(members.length/2)?13+i*15:87-(members.length-1-i)*15}));
   return <div className={`gem-game gem-game--${prompt.spec.kind} gem-game--${handling}`} data-round={game.round}>
     <div className="rift-progress" aria-label={`${game.progress} of ${skillSteps(prompt, ids)} safe moves`}>{Array.from({ length: skillSteps(prompt, ids) }, (_, i) => <span key={i} data-done={i < game.progress} data-current={i === game.progress}>{i < game.progress ? "✓" : i + 1}</span>)}</div>
     <p className="gem-reading">{!active ? outcome : precision ? reading!.safe ? "Supported. Just enough effort." : !reading!.supported ? handling === "hum" ? "Find the steady note first." : "Find the support point first." : shown < target ? handling === "hum" ? "Give the note a little more voice." : "Add a little effort." : "Ease the pressure." : ["Take the weight", "The slope gets steeper", "Set it down gently"][Math.min(2, game.progress)]}</p>
     <div className="gem-field game-figure-stage" style={gameFigureStageStyle(members.length)} data-supported={reading?.supported} data-safe={reading?.safe}>
       <div className="gem-ground" />
       {members.map((m, i) => <HeroImage key={m.playerId} className="gem-hero game-figure" hero={m.character} place="world" alt="" style={{ ...gameFigureStyle(m.character), left: `${members.length <= 2 ? 22 + i * 56 : i < Math.ceil(members.length / 2) ? 13 + i * 15 : 87 - (members.length - 1 - i) * 15}%` }} />)}
-      <div className="gem-load" style={{ "--rise": `${Math.min(8, game.progress * 3) + Math.min(.8, shown) * 8}%`, "--bend": `${Math.max(-12, Math.min(12, (shown - target) * 35))}deg` } as CSSProperties}>
+      <GameLoad className={`gem-load${object==="calf-sling"?" gem-load--sling":""}`} attachmentRise={object==="calf-sling"?.12:0} attachmentInset={object==="calf-sling"?.018:0} crew={crew} cameraWidth={members.length>=3?32:55} left={object==="calf-sling"?32.5:25} rise={Math.min(.04,shown*.05)} tilt={(shown-target)*.04} enabled={handling==="lift"||handling==="haul"}>
         {object && !failed ? <img className="gem-object" src={propUrl(object)} alt="" draggable={false} onError={() => setFailed(true)} /> : <span className="gem-object gem-object--fallback" aria-hidden="true">✦</span>}
-        {subject && <img className="gem-subject" src={subject} alt="" draggable={false} />}
+        {object==="calf-sling"&&!failed&&<img className="gem-sling-front" src={propUrl(object)} alt="" draggable={false} />}
+        {subject && <GameSubjectImage className="gem-subject" subject={subject} />}
         {handling === "lift" || handling === "haul" ? <span className="gem-cradle" aria-hidden="true" /> : <span className="gem-contact-effect" aria-hidden="true" />}
-      </div>
+      </GameLoad>
       {precision && <div className="gem-contact" aria-label="Support point and your grip">
         <span className="gem-contact__safe" style={{ left: `${(reading!.support - tolerance) * 100}%`, width: `${tolerance * 200}%` }} />
         <span className="gem-contact__grip" style={{ left: `${shownGrip * 100}%` }} />
@@ -67,7 +71,7 @@ export function GemfallSkillGame({ prompt, party, playerId, object, subject, bus
     {active && <><div className="gem-force" role="img" aria-label={canCompensate ? `Effort ${Math.round(shown * 100)} percent; safe effort ${Math.round(target * 100)} percent` : `Effort ${Math.round(shown * 100)} percent; no safe effort until the team revises its pulls`}>
       {canCompensate && <span className="gem-force__safe" style={{ left: `${safeStart * 100}%`, width: `${Math.max(0, safeEnd - safeStart) * 100}%` }} />}
       <span className="gem-force__needle" style={{ left: `${Math.min(1, shown) * 100}%` }} />
-    </div><p className="gem-caption">{precision ? "Gold on the subject: steady position. Gold on the gauge: safe effort." : !canCompensate ? "No safe share yet. Ask a friend to revise their effort." : "The near rope has more leverage. You can revise your effort before everyone sets theirs."}</p></>}
+    </div><p className="gem-caption">{precision ? "Position and effort: match both gold bands." : !canCompensate ? "No safe share yet. Ask a friend to revise their effort." : "The near rope has more leverage. You can revise your effort before everyone sets theirs."}</p></>}
     {active && send && playerId && (!precision || mine) && <>
       <div className="gem-inputs">
         {precision && <label>{positionLabel} <output>{Math.round(grip * 100)}%</output><input aria-label={positionLabel} type="range" min="0" max="100" value={Math.round(grip * 100)} disabled={busy} onChange={e => setGrip(Number(e.target.value) / 100)} /></label>}

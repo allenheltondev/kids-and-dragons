@@ -2,7 +2,8 @@
  * Uses a running local dev server and throwaway tables; captures TV and 320 x 640 phones. */
 import { openTable } from './table.ts';
 import { interactionActor, steadySituation, haulNeeded, crossingWindow, carryState, type InteractionPrompt } from '../../packages/shared/src/index.ts';
-import { expect } from '@playwright/test';
+import { expect as baseExpect } from '@playwright/test';
+const expect=baseExpect.configure({timeout:30000});
 import fs from 'node:fs';
 const out=process.env.KAD_REVIEW_OUT ?? 'test-results/playtest/gemfall-revision';
 fs.mkdirSync(out,{recursive:true});
@@ -30,6 +31,11 @@ for(const [chapterId,sceneId,players,reducedMotion] of cases){
   await (await phoneFor()).getByRole('button',{name:/We.*ready/i}).press('Enter');
   await expect.poll(async()=>(await get()).p.phase).toBe('active');
   for(const page of [table.tv,...table.phones]) await expect.poll(()=>page.locator('.game__board img').evaluateAll(images=>images.every(img=>(img as { complete: boolean }).complete))).toBe(true);
+  if(sceneId==='interaction_calf_load') for(const page of [table.tv,...table.phones]) {
+   const region=page.getByRole('region',{name:page===table.tv?'Story interaction':'Interaction controls',exact:true});
+   await expect(region.locator('.gem-object[src$="calf-sling.webp"]')).toBeVisible();
+   await expect(region.locator('.gem-subject')).toHaveAttribute('data-height-cm','75');
+  }
   console.log(await table.snap(sceneId+'-small-active',out));
   const kind=(await get()).p.spec.kind;
   const move=async(extra:()=>Promise<void>)=>{const before=(await get()).p.challenge?.round;await extra();await expect.poll(async()=>{const p=(await get()).p;return p.phase==='result'||p.challenge?.round!==before;}).toBe(true);};
