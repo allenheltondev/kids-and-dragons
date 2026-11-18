@@ -62,6 +62,16 @@ try {
    expect(paint!.width*fill).toBeGreaterThan(Math.min(field!.width*.76,field!.height*.55*fill/height)*.95);
   }
   if(kind==='carry') expect(await page.evaluate("getComputedStyle(document.querySelector('.rift-beam__painting')).objectFit")).toBe('contain');
+  if(kind==='gem'&&!tv&&count===2) {
+   for(const height of [480,800,640]) {
+    await page.setViewportSize({width:320,height});
+    const em=height<=740?8:10;
+    await expect.poll(()=>page.evaluate("const field=document.querySelector('.gem-field');const css=getComputedStyle(field);({height:parseFloat(css.height)/parseFloat(css.fontSize),min:parseFloat(css.minHeight)/parseFloat(css.fontSize)})")).toEqual({height:em,min:height<=740?6:10});
+    await expect(page.locator('.gem-force')).toBeVisible();
+    await expect(page.getByRole('button',{name:'Lift the sling'})).toBeVisible();
+    await page.screenshot({path:`${out}/gem-2-phone-${height}.png`});
+   }
+  }
   const held=kind==='relay'?await page.locator('.relay-world__flight').boundingBox():null;
   if(count===2 && ['throw','cross','relay'].includes(kind)) {
    await page.goto(`${base}/__figure-review?kind=${kind}&n=${count}&actor=1${tv?'&tv':''}`,{waitUntil:'domcontentloaded'});

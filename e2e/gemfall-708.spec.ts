@@ -255,3 +255,29 @@ test("7L: four friends and the brace feedback fit the largest-text TV", async ({
     await tvFits(tv.page);
   } finally { await tv.context.close(); }
 });
+
+
+test("compact Gemfall phones preserve room for the gauge and usable controls", async ({ browser }, info) => {
+  const table = await seedTable({campaignId:"gemfall",mode:"party",tv:true,chapterId:"gemfall-04b",sceneId:"interaction_calf_load",heroes:[{name:"Aster",species:"unicorn"}]});
+  const phone = await openPhone(browser,table.phones[0]!,{viewport:{width:320,height:480}});
+  try {
+    await onAir(phone.page); await task(phone.page);
+    await tap(phone.page,/We.re ready/);
+    const field=controls(phone.page).locator(".gem-field");
+    await expect(field).toBeVisible();
+    for(const height of [480,800,640,480]) {
+      await phone.page.setViewportSize({width:320,height});
+      await expect.poll(()=>field.evaluate(el=>{
+        const css=getComputedStyle(el),em=parseFloat(css.fontSize);
+        return {height:Math.round(parseFloat(css.height)/em*100)/100,min:Math.round(parseFloat(css.minHeight)/em*100)/100};
+      })).toEqual({height:height<=740?8:10,min:height<=740?6:10});
+    }
+    await expect(controls(phone.page).locator(".gem-force")).toBeVisible();
+    await tap(phone.page,"Lift the sling");
+    await expect.poll(async()=>{
+      const state=await roomState<RunState>(phone.page,table.code);
+      return state.prompt?.kind==="interaction"?state.prompt.challenge?.round:undefined;
+    }).toBe(1);
+    await phone.page.screenshot({path:info.outputPath("calf-controls-320x480.png")});
+  } finally {await phone.context.close();}
+});

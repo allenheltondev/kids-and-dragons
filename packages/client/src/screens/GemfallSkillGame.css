@@ -43,6 +43,7 @@
 .game--phone:has(.gem-game) .game__head, .game--phone:has(.gem-game) .game__job-detail { display: none; }
 .game--phone:has(.gem-game) .game-actions-row, .game--phone:has(.gem-game) .game-stamp { display: none; }
 .game--phone:has(.gem-game) .game__board { padding-block: .4em; }
+.game--phone .gem-field { height: 10em; min-height: 10em; }
 @media (max-height: 740px) {
  .game--phone .gem-game { gap: .3em; }
  .game--phone .gem-field { height: 8em; min-height: 6em; }
@@ -50,8 +51,6 @@
  .game--phone .gem-game .rift-progress { font-size: .75em; }
  .game--phone .gem-game .rift-feedback { font-size: .7em; }
 }
-
-.game--phone .gem-field { height: 10em; min-height: 10em; }
 
 .gem-caption { font-size: .75em; line-height: 1.2; }
 
