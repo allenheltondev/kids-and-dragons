@@ -137,3 +137,6 @@
 .relay-world__hero.game-figure > strong { inset-block-start: calc(87.9% + .5em); }
 .relay-world__hero.game-figure > small { inset-block-start: calc(87.9% + 2.5em); }
 .relay-world__hero.game-figure .relay-world__footlight { inset-block-end: calc(12.1% - .3em); }
+
+/* The relay floor leaves room below for names: keep the full canvas above it. */
+.relay-world__stage { --figure-height: 82cqh; }

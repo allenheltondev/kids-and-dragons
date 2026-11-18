@@ -39,6 +39,17 @@ try {
     expect(small!.height/boxes[0].height).toBeCloseTo(85/215,2);
    }
   }
+  if(kind==='relay' && tv) {
+   await page.goto(`${base}/__figure-review?kind=relay&n=${count}&tv&compact`,{waitUntil:'domcontentloaded'});
+   await expect(page.locator('.game-figure').first()).toBeVisible();
+   const stage=await page.locator('.relay-world__stage').boundingBox();
+   for(const hero of await page.locator('.game-figure').all()) {
+    const box=await hero.boundingBox();
+    expect(box!.y).toBeGreaterThanOrEqual(stage!.y);
+    expect(box!.y+box!.height).toBeLessThanOrEqual(stage!.y+stage!.height);
+   }
+   await page.screenshot({path:`${out}/relay-${count}-compact-tv.png`});
+  }
   console.log(`${kind}: ${count} heroes, ${tv?'TV':'phone'} passed`);
   await page.close();
  }

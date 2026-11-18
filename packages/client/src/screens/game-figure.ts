@@ -18,5 +18,5 @@ export function gameFigureStageStyle(count: number): CSSProperties {
 export function gameFigureHandY(hero?: HeroArtSubject): string {
   if (!hero) return "64%";
   const scale = figureSize(`characters/${hero.species}`).heightCm / 215;
-  return `calc(73% - min(110cqh, var(--figure-width, 32cqw)) * ${scale * .329})`;
+  return `calc(73% - min(var(--figure-height, 110cqh), var(--figure-width, 32cqw)) * ${scale * .329})`;
 }
