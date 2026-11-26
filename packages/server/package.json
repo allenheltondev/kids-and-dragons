@@ -10,13 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1164.0",
-    "@aws-sdk/client-lambda": "^3.1164.0",
-    "@aws-sdk/client-s3": "^3.1166.0",
-    "@aws-sdk/client-ssm": "^3.1164.0",
+    "@aws-sdk/client-dynamodb": "^3.1175.0",
+    "@aws-sdk/client-lambda": "^3.1175.0",
+    "@aws-sdk/client-s3": "^3.1175.0",
+    "@aws-sdk/client-ssm": "^3.1175.0",
     "@aws-sdk/credential-provider-node": "^3.972.74",
-    "@aws-sdk/lib-dynamodb": "^3.1164.0",
-    "@aws-sdk/s3-request-presigner": "^3.1166.0",
+    "@aws-sdk/lib-dynamodb": "^3.1175.0",
+    "@aws-sdk/s3-request-presigner": "^3.1175.0",
     "@kad/shared": "*",
     "@modelcontextprotocol/server": "^2.4.0",
     "@smithy/hash-node": "^4.5.2",
@@ -24,7 +24,7 @@
     "@smithy/signature-v4": "^5.6.11",
     "aws-jwt-verify": "^5.2.1",
     "express": "^5.2.1",
-    "fast-json-patch": "^3.1.1",
+    "fast-json-patch": "^3.1.2",
     "web-push": "^4.0.0",
     "zod": "^4.6.7"
   },
